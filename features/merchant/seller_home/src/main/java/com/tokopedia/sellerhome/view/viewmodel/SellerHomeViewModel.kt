@@ -153,16 +153,8 @@ class SellerHomeViewModel @Inject constructor(
     fun getTicker() {
         launchCatchError(block = {
             val params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                val useCase = getTickerUseCase.get()
-                useCase.startCollectingResult(_homeTicker)
-                val includeCache = useCase.isFirstLoad
-                        && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                useCase.executeOnBackground(params, includeCache)
-            } else {
-                getTickerUseCase.get().params = params
-                getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
-            }
+            getTickerUseCase.get().params = params
+            getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
         }, onError = {
             _homeTicker.value = Fail(it)
         })
@@ -179,30 +171,13 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
             val useCase = getLayoutUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    if (heightDp == null) {
-                        startCollectingResult(_widgetLayout)
-                    } else {
-                        startCollectingResult(_widgetLayout) {
-                            sellerHomeLayoutHelper.get()
-                                .getInitialWidget(it, heightDp, includeCache)
-                                .flowOn(dispatcher.io)
-                        }
-                    }
-                    executeOnBackground(params, includeCache)
-                }
+            useCase.params = params
+            if (heightDp == null) {
+                getDataFromUseCase(useCase, _widgetLayout)
             } else {
-                useCase.params = params
-                if (heightDp == null) {
-                    getDataFromUseCase(useCase, _widgetLayout)
-                } else {
-                    getDataFromUseCase(useCase, _widgetLayout) { result, isFromCache ->
-                        sellerHomeLayoutHelper.get().getInitialWidget(result, heightDp, isFromCache)
-                            .flowOn(dispatcher.io)
-                    }
+                getDataFromUseCase(useCase, _widgetLayout) { result, isFromCache ->
+                    sellerHomeLayoutHelper.get().getInitialWidget(result, heightDp, isFromCache)
+                        .flowOn(dispatcher.io)
                 }
             }
         }, onError = {
@@ -214,15 +189,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getCardDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.startCollectingResult(_cardWidgetData)
-                val includeCache = useCase.isFirstLoad
-                        && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                useCase.executeOnBackground(params, includeCache)
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _cardWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _cardWidgetData)
         }, onError = {
             _cardWidgetData.value = Fail(it)
         })
@@ -232,17 +200,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getLineGraphDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_lineGraphWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _lineGraphWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _lineGraphWidgetData)
         }, onError = {
             _lineGraphWidgetData.value = Fail(it)
         })
@@ -253,17 +212,8 @@ class SellerHomeViewModel @Inject constructor(
             val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
             val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
             val useCase = getProgressDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_progressWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _progressWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _progressWidgetData)
         }, onError = {
             _progressWidgetData.value = Fail(it)
         })
@@ -272,17 +222,9 @@ class SellerHomeViewModel @Inject constructor(
     fun getPostWidgetData(dataKeys: List<TableAndPostDataKey>) {
         launchCatchError(block = {
             val params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
-            val isCachingEnabled = remoteConfig.isSellerHomeDashboardNewCachingEnabled()
             val useCase = getPostDataUseCase.get()
-            if (isCachingEnabled) {
-                useCase.startCollectingResult(_postListWidgetData)
-                val includeCache = useCase.isFirstLoad
-                        && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                useCase.executeOnBackground(params, includeCache)
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _postListWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _postListWidgetData)
         }, onError = {
             _postListWidgetData.value = Fail(it)
         })
@@ -292,17 +234,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetCarouselDataUseCase.getRequestParams(dataKeys)
             val useCase = getCarouselDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_carouselWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _carouselWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _carouselWidgetData)
         }, onError = {
             _carouselWidgetData.value = Fail(it)
         })
@@ -312,15 +245,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getTableDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.startCollectingResult(_tableWidgetData)
-                val includeCache = useCase.isFirstLoad
-                        && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                useCase.executeOnBackground(params, includeCache)
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _tableWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _tableWidgetData)
         }, onError = {
             _tableWidgetData.value = Fail(it)
         })
@@ -330,17 +256,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getPieChartDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_pieChartWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _pieChartWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _pieChartWidgetData)
         }, onError = {
             _pieChartWidgetData.value = Fail(it)
         })
@@ -350,17 +267,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getBarChartDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_barChartWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _barChartWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _barChartWidgetData)
         }, onError = {
             _barChartWidgetData.value = Fail(it)
         })
@@ -370,17 +278,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
             val useCase = getMultiLineGraphUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_multiLineGraphWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _multiLineGraphWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _multiLineGraphWidgetData)
         }, onError = {
             _multiLineGraphWidgetData.value = Fail(it)
         })
@@ -390,17 +289,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
             val useCase = getAnnouncementUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_announcementWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _announcementWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _announcementWidgetData)
         }, onError = {
             _announcementWidgetData.value = Fail(it)
         })
@@ -410,15 +300,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetRecommendationDataUseCase.createParams(dataKeys)
             val useCase = getRecommendationUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.startCollectingResult(_recommendationWidgetData)
-                val includeCache = useCase.isFirstLoad
-                        && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                useCase.executeOnBackground(params, includeCache)
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _recommendationWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _recommendationWidgetData)
         }, onError = {
             _recommendationWidgetData.value = Fail(it)
         })
@@ -428,15 +311,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetMilestoneDataUseCase.createParams(dataKeys)
             val useCase = getMilestoneDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.startCollectingResult(_milestoneWidgetData)
-                val includeCache = useCase.isFirstLoad
-                        && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                useCase.executeOnBackground(params, includeCache)
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _milestoneWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _milestoneWidgetData)
         }, onError = {
             _milestoneWidgetData.value = Fail(it)
         })
@@ -446,17 +322,8 @@ class SellerHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val params = GetCalendarDataUseCase.createParams(dataKeys)
             val useCase = getCalendarDataUseCase.get()
-            if (remoteConfig.isSellerHomeDashboardNewCachingEnabled()) {
-                useCase.run {
-                    startCollectingResult(_calendarWidgetData)
-                    val includeCache = isFirstLoad
-                            && remoteConfig.isSellerHomeDashboardCachingEnabled()
-                    executeOnBackground(params, includeCache)
-                }
-            } else {
-                useCase.params = params
-                getDataFromUseCase(useCase, _calendarWidgetData)
-            }
+            useCase.params = params
+            getDataFromUseCase(useCase, _calendarWidgetData)
         }, onError = {
             _calendarWidgetData.value = Fail(it)
         })
@@ -555,41 +422,6 @@ class SellerHomeViewModel @Inject constructor(
         val useCaseResult = useCase.executeOnBackground()
         getTransformerFlow(useCaseResult, false).collect {
             liveData.value = Success(it)
-        }
-    }
-
-    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(liveData: MutableLiveData<Result<T>>) {
-        if (!collectingResult) {
-            collectingResult = true
-            launchCatchError(block = {
-                getResultFlow().collect {
-                    withContext(dispatcher.main) {
-                        liveData.value = Success(it)
-                    }
-                }
-            }, onError = {
-                liveData.value = Fail(it)
-            })
-        }
-    }
-
-    private fun <T : Any> CloudAndCacheGraphqlUseCase<*, T>.startCollectingResult(
-        liveData: MutableLiveData<Result<T>>,
-        getTransformedFlow: suspend (result: T) -> Flow<T>
-    ) {
-        if (!collectingResult) {
-            collectingResult = true
-            launchCatchError(block = {
-                getResultFlow().collect { initialResult ->
-                    getTransformedFlow(initialResult).collect {
-                        withContext(dispatcher.main) {
-                            liveData.value = Success(it)
-                        }
-                    }
-                }
-            }, onError = {
-                liveData.value = Fail(it)
-            })
         }
     }
 }
