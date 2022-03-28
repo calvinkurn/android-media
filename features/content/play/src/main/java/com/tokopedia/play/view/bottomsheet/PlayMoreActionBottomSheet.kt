@@ -87,11 +87,13 @@ class PlayMoreActionBottomSheet @Inject constructor(
         super.onCreate(savedInstanceState)
         (requireContext() as Activity).windowManager.defaultDisplay.getMetrics(displayMetrix)
 
-        val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
+        if(requireParentFragment() is PlayUserInteractionFragment){
+            val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
 
-        playViewModel = ViewModelProvider(
-            grandParentActivity, grandParentActivity.viewModelProviderFactory
-        ).get(PlayViewModel::class.java)
+            playViewModel = ViewModelProvider(
+                grandParentActivity, grandParentActivity.viewModelProviderFactory
+            ).get(PlayViewModel::class.java)
+        }
 
         initBottomSheet()
     }
@@ -213,7 +215,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
      */
 
     private fun hideSheets(){
-        (requireParentFragment() as PlayUserInteractionFragment).hideBottomSheet()
+        if (requireParentFragment() is PlayUserInteractionFragment) (requireParentFragment() as PlayUserInteractionFragment).hideBottomSheet()
         playViewModel.hideThreeDotsSheet()
     }
 
