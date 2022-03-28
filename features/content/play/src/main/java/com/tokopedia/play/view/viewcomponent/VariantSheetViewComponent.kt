@@ -291,8 +291,6 @@ class VariantSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
-        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
-        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
         fun onVariantOptionClicked(option: VariantOptionWithAttribute)
         fun onActionClicked(variant: PlayProductUiModel.Product, action: ProductAction)
     }

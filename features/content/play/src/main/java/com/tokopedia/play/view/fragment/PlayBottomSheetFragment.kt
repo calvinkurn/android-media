@@ -30,10 +30,7 @@ import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -43,6 +40,7 @@ import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
 import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
@@ -246,14 +244,6 @@ class PlayBottomSheetFragment @Inject constructor(
         closeVariantSheet()
     }
 
-    override fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product) {
-        shouldDoActionProduct(product = productModel, action = ProductAction.AddToCart, type = BottomInsetsType.VariantSheet)
-    }
-
-    override fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product) {
-        shouldDoActionProduct(product = productModel, action = ProductAction.Buy, type = BottomInsetsType.VariantSheet)
-    }
-
     override fun onActionClicked(variant: PlayProductUiModel.Product, action: ProductAction) {
         playViewModel.submitAction(
             if (action == ProductAction.Buy) BuyProductVariantAction(variant.id)
@@ -418,7 +408,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
         observeBottomInsetsState()
-        observeBuyEvent()
         observeUserReport()
         observeUserReportSubmission()
 
@@ -440,16 +429,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            openVariantSheet(sectionInfo, product, action)
+            variantSheetView.setAction(action)
+            playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
             analytic.clickActionProductWithVariant(product.id, action)
-        } else {
-            shouldDoActionProduct(product, sectionInfo,action,BottomInsetsType.ProductSheet)
         }
-    }
 
-    private fun openVariantSheet(sectionInfo: ProductSectionUiModel.Section, product: PlayProductUiModel.Product, action: ProductAction) {
-        variantSheetView.setAction(action)
-        playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
         playViewModel.submitAction(
             if (action == ProductAction.Buy) BuyProductAction(sectionInfo, product)
             else AtcProductAction(sectionInfo, product)
@@ -468,10 +452,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun hideLoadingView() {
         val loadingDialog = getLoadingDialogFragment()
         if (loadingDialog.isVisible) loadingDialog.dismiss()
-    }
-
-    private fun shouldDoActionProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty, action: ProductAction, type: BottomInsetsType) {
-        viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, sectionInfo, action, type))
     }
 
     private fun shouldOpenProductDetail(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int) {
@@ -546,7 +526,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            is InteractionEvent.DoActionProduct -> doActionProduct(product = event.product, productAction = event.action, type = event.type, sectionInfo = event.sectionInfo)
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
             is InteractionEvent.OpenUserReport -> doActionUserReport()
         }
@@ -557,10 +536,6 @@ class PlayBottomSheetFragment @Inject constructor(
             analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
-    }
-
-    private fun doActionProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, productAction: ProductAction, type: BottomInsetsType) {
-        viewModel.addToCart(product, action = productAction, type = type, sectionInfo = sectionInfo)
     }
 
     private fun doActionUserReport(){
@@ -691,46 +666,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun observeLoggedInInteractionEvent() {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
-    }
-
-    private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> showLoadingView()
-                is PlayResult.Success -> {
-                    hideLoadingView()
-                    val data = it.data.first.getContentIfNotHandled() ?: return@DistinctObserver
-
-                    if (data.isSuccess) {
-                        when (data.action) {
-                            ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                            ProductAction.AddToCart -> doShowToaster(
-                                    bottomSheetType = data.bottomInsetsType,
-                                    toasterType = Toaster.TYPE_NORMAL,
-                                    message = getString(R.string.play_add_to_cart_message_success),
-                                    actionText = getString(R.string.play_action_view),
-                                    actionClickListener = {
-                                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                                        analytic.clickSeeToasterAfterAtc()
-                                    }
-                            )
-                        }
-                        if (data.bottomInsetsType == BottomInsetsType.VariantSheet) {
-                            closeVariantSheet()
-                        }
-                        analytic.clickProductAction(product = data.product, cartId = data.cartId, productAction = data.action, bottomInsetsType = data.bottomInsetsType, shopInfo = playViewModel.latestCompleteChannelData.partnerInfo, sectionInfo = it.data.second)
-                    }
-                    else {
-                        val errMsg = ErrorHandler.getErrorMessage(requireContext(), data.errorMessage)
-                        doShowToaster(
-                                bottomSheetType = data.bottomInsetsType,
-                                toasterType = Toaster.TYPE_ERROR,
-                                message = errMsg
-                        )
-                    }
-                }
-            }
-        })
     }
 
     private fun observeUiState() {
