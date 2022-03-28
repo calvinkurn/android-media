@@ -96,12 +96,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             reputationId: String,
             utmSource: String
         ): CreateReviewBottomSheet {
-            return CreateReviewBottomSheet().apply {
-                this.rating = rating
-                this.productId = productId
-                this.reputationId = reputationId
-                this.utmSource = utmSource
-            }
+            val fragment = CreateReviewBottomSheet()
+            fragment.rating = rating
+            fragment.productId = productId
+            fragment.reputationId = reputationId
+            fragment.utmSource = utmSource
+            return fragment
         }
     }
 
