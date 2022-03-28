@@ -29,4 +29,23 @@ object PlayLiveRoomMetricsCommon {
             0
         }
     }
+
+    /***
+     * Get buffering event from video [duration, timestamp]
+     */
+    @JvmStatic
+    fun getBufferingEventData(bufferCount: Int, timestamp: Long){
+        val currentTimeStamp = System.currentTimeMillis()
+        val duration = currentTimeStamp - timestamp
+    }
+
+    /***
+     * Get watch duration from video
+     */
+    @JvmStatic
+    fun getWatchingDuration(duration: Long){
+        /***
+         * Send to logger
+         */
+    }
 }
