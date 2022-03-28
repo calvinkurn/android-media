@@ -121,8 +121,6 @@ class CouponPreviewViewModel @Inject constructor(
             block = {
                 val result = withContext(dispatchers.io) {
                     updateCouponUseCase.execute(
-                        this,
-                        ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
                         couponId,
                         couponInformation,
                         couponSettings,

@@ -18,8 +18,8 @@ import com.tokopedia.vouchercreation.product.create.util.GenerateImageParamsBuil
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class UpdateCouponFacadeUseCase @Inject constructor(
@@ -40,74 +40,74 @@ class UpdateCouponFacadeUseCase @Inject constructor(
     }
 
     suspend fun execute(
-        scope: CoroutineScope,
-        sourceId: String,
         couponId: Long,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
         allProducts: List<CouponProduct>,
         parentProductId: List<Long>
     ): Boolean {
-        val initiateVoucherDeferred = scope.async { initiateCoupon(IS_UPDATE_MODE) }
-        val shopDeferred = scope.async { getShopBasicDataUseCase.executeOnBackground() }
-        val topProductsDeferred = scope.async { getMostSoldProducts(parentProductId) }
+        return coroutineScope {
+            val initiateVoucherDeferred = async { initiateCoupon(IS_UPDATE_MODE) }
+            val shopDeferred = async { getShopBasicDataUseCase.executeOnBackground() }
+            val topProductsDeferred = async { getMostSoldProducts(parentProductId) }
 
-        val shop = shopDeferred.await()
-        val topProducts = topProductsDeferred.await()
-        val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
+            val shop = shopDeferred.await()
+            val topProducts = topProductsDeferred.await()
+            val topProductImageUrls = topProducts.data.map { getImageUrlOrEmpty(it.pictures) }
 
-        val generateImageDeferred = scope.async {
-            generateImage(
-                sourceId,
-                ImageRatio.HORIZONTAL,
-                couponInformation,
-                couponSettings,
-                shop,
-                topProductImageUrls
-            )
+            val generateImageDeferred = async {
+                generateImage(
+                    ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                    ImageRatio.HORIZONTAL,
+                    couponInformation,
+                    couponSettings,
+                    shop,
+                    topProductImageUrls
+                )
+            }
+
+            val generateSquareImageDeferred = async {
+                generateImage(
+                    ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                    ImageRatio.SQUARE,
+                    couponInformation,
+                    couponSettings,
+                    shop,
+                    topProductImageUrls
+                )
+            }
+
+            val generatePortraitImage = async {
+                generateImage(
+                    ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
+                    ImageRatio.VERTICAL,
+                    couponInformation,
+                    couponSettings,
+                    shop,
+                    topProductImageUrls
+                )
+            }
+
+            val imageUrl = generateImageDeferred.await()
+            val squareImageUrl = generateSquareImageDeferred.await()
+            val portraitImageUrl = generatePortraitImage.await()
+            val voucher = initiateVoucherDeferred.await()
+
+            val updateCouponDeferred = async {
+                updateCoupon(
+                    couponId,
+                    couponInformation,
+                    couponSettings,
+                    allProducts,
+                    voucher.token,
+                    imageUrl,
+                    squareImageUrl,
+                    portraitImageUrl
+                )
+            }
+
+            return@coroutineScope updateCouponDeferred.await()
         }
-
-        val generateSquareImageDeferred = scope.async {
-            generateImage(
-                sourceId,
-                ImageRatio.SQUARE,
-                couponInformation,
-                couponSettings,
-                shop,
-                topProductImageUrls
-            )
-        }
-
-        val generatePortraitImage = scope.async {
-            generateImage(
-                sourceId,
-                ImageRatio.VERTICAL,
-                couponInformation,
-                couponSettings,
-                shop,
-                topProductImageUrls
-            )
-        }
-
-        val imageUrl = generateImageDeferred.await()
-        val squareImageUrl = generateSquareImageDeferred.await()
-        val portraitImageUrl = generatePortraitImage.await()
-        val voucher = initiateVoucherDeferred.await()
-
-        val updateCouponDeferred = scope.async {
-            updateCoupon(
-                couponId,
-                couponInformation,
-                couponSettings,
-                allProducts,
-                voucher.token,
-                imageUrl,
-                squareImageUrl,
-                portraitImageUrl
-            )
-        }
-
-        return updateCouponDeferred.await()
     }
 
 

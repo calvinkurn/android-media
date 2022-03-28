@@ -155,6 +155,7 @@ class CouponDetailViewModelTest {
         //Given
         val coupon = mockk<CouponUiModel>()
 
+        //When
         viewModel.getCouponSettings(coupon)
 
         //Then
