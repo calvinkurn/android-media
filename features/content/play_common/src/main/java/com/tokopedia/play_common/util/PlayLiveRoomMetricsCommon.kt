@@ -28,6 +28,10 @@ object PlayLiveRoomMetricsCommon {
         } catch (e: Exception) {
             0
         }
+
+        /***
+         * Send to logger - put it on view model first fetch - buffer
+         */
     }
 
     /***
@@ -37,6 +41,10 @@ object PlayLiveRoomMetricsCommon {
     fun getBufferingEventData(bufferCount: Int, timestamp: Long){
         val currentTimeStamp = System.currentTimeMillis()
         val duration = currentTimeStamp - timestamp
+
+        /***
+         * Send to logger - data from analytics
+         */
     }
 
     /***
@@ -45,7 +53,17 @@ object PlayLiveRoomMetricsCommon {
     @JvmStatic
     fun getWatchingDuration(duration: Long){
         /***
-         * Send to logger
+         * Send to logger - data from analytics
+         */
+    }
+
+    /***
+     * Get time to first byte
+     */
+    @JvmStatic
+    fun getTimeToFirstByte(duration: Long){
+        /***
+         * Send to logger - data from Video Latency
          */
     }
 }
