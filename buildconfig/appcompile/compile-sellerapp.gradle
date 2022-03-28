@@ -1,6 +1,7 @@
 // Sort alphabetically by name
 includeDynamicFeatureIfEnabled("sellerapp")
 
+includeIfEnabled("features:merchant:shop_discount")
 includeIfEnabled("features:category:tradein")
 includeIfEnabled("features:category:moneyin")
 
