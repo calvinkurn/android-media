@@ -9,4 +9,5 @@
     <color name="imagepicker_dms_font_black_primary_70">#B3000000</color>
     <color name="imagepicker_dms_background_dark_shadow">#D0000000</color>
     <color name="imagepicker_dms_seek_bar">#505050</color>
+    <color name="imagepicker_dms_watermark_text_and_image">#DBDEE2</color>
 </resources>
