@@ -9,7 +9,11 @@ import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
 import com.tokopedia.checkout.domain.model.checkout.Prompt
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
@@ -32,17 +36,25 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
-import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnBottomSheetResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ProductResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.CapturingSlot
+import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -136,7 +148,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val transactionId = "1234"
@@ -161,7 +173,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = emptyList()
+        presenter.setDataCheckoutRequestList(emptyList())
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val mockContext = mockk<Activity>()
@@ -186,7 +198,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = null
+        presenter.setDataCheckoutRequestList(null)
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
@@ -212,7 +224,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val priceValidationData = PriceValidationData().apply {
@@ -242,7 +254,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         every { view.activityContext } returns null
@@ -270,7 +282,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val mockContext = mockk<Activity>()
@@ -300,7 +312,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         every { view.activityContext } returns null
@@ -325,7 +337,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
 
         // When
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
@@ -339,7 +351,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with donation THEN request should contains donation flag true`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         // When
@@ -353,7 +365,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with egold THEN request should contains egold data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val egoldAmount = 10000L
         presenter.egoldAttributeModel = EgoldAttributeModel().apply {
             isChecked = true
@@ -373,7 +385,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with corner address THEN request should contains corner address data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val tmpUserCornerId = "123"
         val tmpCornerId = "456"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -395,7 +407,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout params trade in laku 6 THEN request should contains trade in laku 6 data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
@@ -412,7 +424,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout params trade in indopaket THEN request should contains trade in indopaket data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
@@ -429,7 +441,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout params with fingerprint supported and fingerprint enabled THEN request should contains fingerprint data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
@@ -467,7 +479,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout params with fingerprint supported and fingerprint disabled THEN request should contains fingerprint data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         val deviceId = "12345"
         val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
 
@@ -511,7 +523,7 @@ class ShipmentPresenterCheckoutTest {
         )
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val transactionId = "1234"
@@ -571,7 +583,7 @@ class ShipmentPresenterCheckoutTest {
         )
         presenter.shipmentCartItemModelList = shipmentCartItemModelList
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val transactionId = "1234"
@@ -596,7 +608,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val transactionId = "1234"
@@ -622,7 +634,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val transactionId = "1234"
@@ -647,7 +659,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.setPurchaseProtection(true)
         presenter.listShipmentCrossSellModel = arrayListOf()
 
@@ -674,7 +686,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf()
 
         val prompt = Prompt().apply {
@@ -784,7 +796,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
         presenter.listShipmentCrossSellModel = arrayListOf(ShipmentCrossSellModel().apply {
             isChecked = true
             crossSellModel = CrossSellModel()
@@ -813,7 +825,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
 
         val listCrossSellModel = arrayListOf(ShipmentCrossSellModel(
                 isChecked = true

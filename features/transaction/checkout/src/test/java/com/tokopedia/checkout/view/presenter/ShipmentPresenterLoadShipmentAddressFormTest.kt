@@ -545,6 +545,28 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun `GIVEN null shipment button data WHEN get shipment button data THEN should return new shipment button data`() {
+        // Given
+        presenter.shipmentButtonPaymentModel = null
+
+        // Then
+        assertEquals(0, presenter.shipmentButtonPaymentModel.quantity)
+        assertEquals("-", presenter.shipmentButtonPaymentModel.totalPrice)
+    }
+
+    @Test
+    fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
+        // Given
+        presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel(
+                totalPrice = "Rp1.000", quantity = 1
+        )
+
+        // Then
+        assertEquals(1, presenter.shipmentButtonPaymentModel.quantity)
+        assertEquals("Rp1.000", presenter.shipmentButtonPaymentModel.totalPrice)
+    }
+
+    @Test
     fun `WHEN load checkout page get default value address state THEN should render checkout page`() {
         // Given
         val groupAddress = GroupAddress().apply {

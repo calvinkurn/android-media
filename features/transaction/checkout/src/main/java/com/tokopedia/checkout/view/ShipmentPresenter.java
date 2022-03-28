@@ -337,10 +337,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
-        return dataCheckoutRequestList;
-    }
-
     @Override
     public void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel) {
         this.egoldAttributeModel = egoldAttributeModel;
