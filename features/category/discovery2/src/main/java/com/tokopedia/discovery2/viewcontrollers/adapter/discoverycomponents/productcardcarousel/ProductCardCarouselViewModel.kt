@@ -138,8 +138,9 @@ class ProductCardCarouselViewModel(val application: Application, val components:
                 productCardModelArray.add(DiscoveryDataMapper().mapDataItemToProductCardModel(dataItem, components.name))
             }
         }
+        val mixLeftPadding = if(isMixLeftBannerPresent()) application.applicationContext.resources.getDimensionPixelSize(R.dimen.dp_10) else 0
         val productImageWidth = application.applicationContext.resources.getDimensionPixelSize(R.dimen.disco_product_card_width)
-        maxHeightProductCard.value = productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth)
+        maxHeightProductCard.value = ( productCardModelArray.getMaxHeightForGridView(application.applicationContext, Dispatchers.Default, productImageWidth) + mixLeftPadding )
     }
 
     fun fetchCarouselPaginatedProducts() {
