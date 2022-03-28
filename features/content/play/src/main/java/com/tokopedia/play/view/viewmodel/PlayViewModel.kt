@@ -2035,13 +2035,16 @@ class PlayViewModel @AssistedInject constructor(
         val selectedVariant = _selectedVariant.value
         if (selectedVariant !is NetworkResult.Success) return
 
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(dispatchers.io, block = {
             _selectedVariant.value = NetworkResult.Success(
                 repo.selectVariantOption(
                     variant = selectedVariant.data,
                     selectedOption = option
                 )
             )
+        }) {
+            //Ignore for now since there shouldn't be any error (no network call)
+            //and since there was never error handling for this
         }
     }
 
