@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icOrderTrackingMerchant"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:icon_name="SHOP"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackerMerchantName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        tools:text="Kopi Janji Jiwa, Permata Hijau"
+        android:textColor="@color/Unify_NN950"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="@id/icOrderTrackingMerchant"
+        app:layout_constraintStart_toEndOf="@id/icOrderTrackingMerchant"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivOrderTrackingDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_distance_user_resto"
+        app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
+        app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
+        app:layout_constraintTop_toBottomOf="@id/icOrderTrackingMerchant"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDistanceFromMerchant"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="6Km dari tujuan"
+        app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
+        app:layout_constraintTop_toTopOf="@id/ivOrderTrackingDistance"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icOrderTrackingUserAddress"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_name="SHOP"
+        app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
+        app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
+        app:layout_constraintTop_toBottomOf="@id/ivOrderTrackingDistance"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingAddressTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        app:typographyWeight="bold"
+        app:typographyType="body_2"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
+        app:layout_constraintTop_toTopOf="@id/icOrderTrackingUserAddress"
+        app:layout_constraintBottom_toBottomOf="@id/icOrderTrackingUserAddress"
+        tools:text="Rumah"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingPhoneNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingAddressTitle"
+        tools:text="0812345678"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingDetailAddress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingPhoneNumber"
+        tools:text="Tokopedia Tower, Mailing Room Tokopedia Tower, Mailing Room Tokopedia Tower"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

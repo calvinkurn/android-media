@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgOrderTrackingDriver"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        app:unify_image_type="circle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingDriverName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintEnd_toStartOf="@id/icDriverCall"
+        app:layout_constraintStart_toEndOf="@id/imgOrderTrackingDriver"
+        app:layout_constraintTop_toTopOf="@id/imgOrderTrackingDriver"
+        tools:text="Pria Kusumawardana"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderTrackingDriverPlatNumber"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="2dp"
+        app:typographyType="body_2"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="@id/tvOrderTrackingDriverName"
+        app:layout_constraintStart_toEndOf="@id/imgOrderTrackingDriver"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingDriverName"
+        tools:text="B 2322 AM"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icDriverCall"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvOrderTrackingDriverName"
+        app:layout_constraintBottom_toBottomOf="@id/tvOrderTrackingDriverPlatNumber"
+        app:icon_name="CALL"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDriverInformation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintEnd_toStartOf="@id/icDriverCall"
+        app:layout_constraintStart_toStartOf="@id/tvOrderTrackingDriverName"
+        app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingDriverPlatNumber"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_order_tracking_driver_information"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

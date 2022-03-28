@@ -6,4 +6,6 @@
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
     <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
     <string name="order_tracking_detail_payment_label">Detail Pembayaran</string>
+    <string name="order_tracking_order_number_label">Order Number</string>
+    <string name="order_tracking_estimation_time"><![CDATA[%1s <font color=\"%2$s\">%23$s</font>]]></string>
 </resources>
