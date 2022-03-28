@@ -350,6 +350,6 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         private const val FAILED_VALIDATE_TIME_LIMIT = 10 * 60 * 1000
         private const val FAILED_VALIDATE_TIME_DEFAULT = -1L
 
-        private const val TOASTER_ERROR_DELAY = 500L
+        private const val TOASTER_ERROR_DELAY = 750L
     }
 }
