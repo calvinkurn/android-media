@@ -11,5 +11,4 @@ class TokomemberActivityContextModule(val context: Context) {
     fun provideContext(): Context {
         return context
     }
-
 }

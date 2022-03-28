@@ -10,12 +10,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.RelativeLayout
+import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
+import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tm_dash_intro.*
+import javax.inject.Inject
 
-class TokomemberDashIntroFragment : BaseDaggerFragment(){
+class TokomemberDashIntroFragment : BaseDaggerFragment() {
 
     private var rootView: RelativeLayout? = null
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    private val tokomemberIntroViewmodel: TokomemberDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(TokomemberDashIntroViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,16 +42,73 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        rootView  = view?.findViewById(R.id.rootView)
+        rootView = view.findViewById(R.id.rootView)
         hideStatusBar()
+        observeViewModel()
+        tokomemberIntroViewmodel.getSellerInfo()
     }
-    override fun getScreenName() =""
+
+    override fun getScreenName() = ""
 
     override fun initInjector() {
-
+        DaggerTokomemberDashComponent.builder().build().inject(this)
     }
 
-    @SuppressLint("ObsoleteSdkInt")
+    private fun observeViewModel() {
+        tokomemberIntroViewmodel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    tokomemberIntroViewmodel.getIntroInfo(
+                        it.data.sellerData?.userShopInfo?.info?.shopId ?: ""
+                    )
+                }
+                is Fail -> {
+                }
+            }
+        })
+
+        tokomemberIntroViewmodel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    populateUI(it.data.boardingData?.membershipGetSellerOnboarding)
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
+    private fun populateUI(membershipGetSellerOnboarding: MembershipGetSellerOnboarding?) {
+        tvTitle.text =
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.title?.get(0)
+                ?: ""
+        tvSubtitle.text =
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.subTitle?.get(0)
+                ?: ""
+        tvSectionOne.text =
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+                0
+            )?.benefit
+                ?: ""
+        tvSectionTwo.text =
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+                1
+            )?.benefit
+                ?: ""
+        tvSectionThree.text =
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+                2
+            )?.benefit
+                ?: ""
+        tvSectionFour.text =
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+                3
+            )?.benefit
+                ?: ""
+    }
+
+    @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")
     private fun hideStatusBar() {
         rootView?.fitsSystemWindows = false
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -49,17 +121,33 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(){
                 rootView?.systemUiVisibility = flags
             }
             if (context != null) {
-                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                activity?.window?.statusBarColor = androidx.core.content.ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
             }
         }
         if (Build.VERSION.SDK_INT in 19..20) {
-            activity?.let { setWindowFlag(it, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true) }
+            activity?.let {
+                setWindowFlag(
+                    it,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    true
+                )
+            }
         }
         if (Build.VERSION.SDK_INT >= 19) {
-            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            activity?.window?.decorView?.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         }
         if (Build.VERSION.SDK_INT >= 21) {
-            activity?.let { setWindowFlag(it, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false) }
+            activity?.let {
+                setWindowFlag(
+                    it,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    false
+                )
+            }
             activity?.window?.statusBarColor = Color.TRANSPARENT
         }
     }
@@ -75,11 +163,9 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(){
         win?.attributes = winParams
     }
 
-    companion object{
-
+    companion object {
         fun newInstance(): TokomemberDashIntroFragment {
             return TokomemberDashIntroFragment()
         }
-
     }
 }

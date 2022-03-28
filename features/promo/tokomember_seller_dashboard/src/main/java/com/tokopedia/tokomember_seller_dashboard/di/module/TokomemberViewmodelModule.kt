@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateCardViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,5 +22,11 @@ abstract class TokomemberViewmodelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TokomemberDashIntroViewModel::class)
-    abstract fun giftBoxViewModel(viewModel: TokomemberDashIntroViewModel): ViewModel
+    abstract fun tokomemberDashIntroViewmodel(viewModel: TokomemberDashIntroViewModel): ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TokomemberDashCreateCardViewModel::class)
+    abstract fun tokomemberCardViewmodel(viewModel: TokomemberDashCreateCardViewModel): ViewModel
 }

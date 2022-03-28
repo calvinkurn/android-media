@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class TmOnboardingResponse(
     @Expose
     @SerializedName("data")
-    val data: Data? = null
+    val boardingData: Data? = null
 )
 
 data class SellerHomeInfo(
