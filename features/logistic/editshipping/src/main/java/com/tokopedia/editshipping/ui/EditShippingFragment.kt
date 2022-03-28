@@ -432,14 +432,16 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         val resultCode = availability.isGooglePlayServicesAvailable(activity)
         if (ConnectionResult.SUCCESS == resultCode) {
             val locationPass = LocationPass()
-            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty()!!
-                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty()!!) {
+            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false
+                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false) {
                 locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
                 locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
                 locationPass.generatedAddress = addressLayout?.googleMapAddressString
             } else {
-                locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
-                locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
+                if (editShippingPresenter?.shopInformation != null) {
+                    locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
+                    locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
+                }
             }
             val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
             startActivityForResult(intent, OPEN_MAP_CODE)
