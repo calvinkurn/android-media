@@ -156,6 +156,7 @@ class DrawerSelectionWidget : FrameLayout {
     fun setThumbnailSelected(previousIndex: Int? = null, nextIndex: Int){
         // set previous index item border back to normal
         previousIndex?.let { index ->
+            if(!isThumbnailViewHolder(previousIndex)) return@let
             binding?.rvThumbnail?.findViewHolderForAdapterPosition(index)?.let {
                 (it as ThumbnailViewHolder).setThumbnailSelected(false)
             }
@@ -163,8 +164,13 @@ class DrawerSelectionWidget : FrameLayout {
 
         // set next index item border to selected
         binding?.rvThumbnail?.findViewHolderForAdapterPosition(nextIndex)?.let {
+            if(!isThumbnailViewHolder(nextIndex)) return@let
             (it as ThumbnailViewHolder).setThumbnailSelected(true)
         }
+    }
+
+    private fun isThumbnailViewHolder(index: Int) : Boolean{
+        return binding?.rvThumbnail?.adapter?.getItemViewType(index) == DrawerSelectionAdapter.ITEM_TYPE
     }
 
     fun scrollTo(index: Int) {
