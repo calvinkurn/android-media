@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
@@ -37,7 +39,6 @@ import com.tokopedia.buyerorder.detail.view.customview.RedeemVoucherView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.detail.data.OrderCategory;
-import com.tokopedia.media.loader.ExtensionKt;
 import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
@@ -367,9 +368,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (metaDataInfo != null) {
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
-                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getEntityImage(), properties -> null);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getEntityImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getEntityProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -380,9 +381,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 if(itemType == ITEM_EVENTS){
                     if (TextUtils.isEmpty(metaDataInfo.getProductImage())) {
-                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getProductImage(), properties -> null);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
@@ -394,9 +395,9 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 if (itemType == ITEM_INSURANCE) {
 
                     if (TextUtils.isEmpty(metaDataInfo.getProuductImage())) {
-                        ExtensionKt.loadImageCircle(dealImage, item.getImageUrl(), properties -> null);
+                        ImageHandler.loadImage(context, dealImage, item.getImageUrl(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     } else {
-                        ExtensionKt.loadImageCircle(dealImage, metaDataInfo.getProductImage(), properties -> null);
+                        ImageHandler.loadImage(context, dealImage, metaDataInfo.getProuductImage(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
                     }
                     if (TextUtils.isEmpty(metaDataInfo.getProductName())) {
                         dealsDetails.setText(item.getTitle());
