@@ -6,10 +6,8 @@ import androidx.lifecycle.LifecycleObserver
 
 interface BaseUiComponent : LifecycleObserver {
     fun release()
-    fun componentView(): View
+    fun container(): View
     fun resources(): Resources
-    fun show()
-    fun hide()
     fun isShown(): Boolean
     fun isHidden(): Boolean
 }

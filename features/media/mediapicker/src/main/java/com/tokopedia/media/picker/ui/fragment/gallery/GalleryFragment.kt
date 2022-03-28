@@ -175,7 +175,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         val isMultipleSelectionType = param.get().isMultipleSelectionType()
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(param.get().maxMediaAmount())
+            binding?.drawerSelector?.setMaxAdapterSize(param.get().maxMediaTotal())
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }
@@ -225,6 +225,11 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
                 if(listener?.isMaxVideoDuration(media) == true){
                     listener?.onShowVideoMaxDurationToast()
+                    return false
+                }
+
+                if (listener?.isMaxVideoSize(media) == true) {
+                    listener?.onShowVideoMaxFileSizeToast()
                     return false
                 }
             } else if (!isSelected && !media.isVideo()) {
