@@ -7,6 +7,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 
 class HomeListDiffer : BaseTokopediaNowDiffer() {
     private var oldList: List<Visitable<*>> = emptyList()
@@ -26,6 +27,8 @@ class HomeListDiffer : BaseTokopediaNowDiffer() {
             oldItem.id == newItem.id
         } else if (oldItem is TokoNowCategoryGridUiModel && newItem is TokoNowCategoryGridUiModel) {
             oldItem.id == newItem.id
+        } else if (oldItem is HomeSharingReferralWidgetUiModel && newItem is HomeSharingReferralWidgetUiModel) {
+            oldItem.isSender == newItem.isSender
         } else {
             oldItem == newItem
         }

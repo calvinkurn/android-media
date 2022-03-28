@@ -27,22 +27,9 @@ object SharingMapper {
         state: HomeLayoutItemState,
         isSender: Boolean = true
     ): HomeLayoutItemUiModel {
-        val descRes: Int
-        val btnTextRes: Int
-
-        if (isSender) {
-            descRes = R.string.tokopedianow_home_referral_widget_desc_sender
-            btnTextRes = R.string.tokopedianow_home_referral_widget_button_text_sender
-        } else {
-            descRes = R.string.tokopedianow_home_referral_widget_desc_receiver
-            btnTextRes = R.string.tokopedianow_home_referral_widget_button_text_receiver
-        }
-
         val layout = HomeSharingReferralWidgetUiModel(
             id = response.id,
             state = state,
-            descRes = descRes,
-            btnTextRes = btnTextRes,
             slug = response.widgetParam,
             isSender = isSender
         )

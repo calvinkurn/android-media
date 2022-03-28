@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
+import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -172,7 +173,6 @@ class TokoNowHomeFragment: Fragment(),
         const val SOURCE_TRACKING = "tokonow page"
         const val DEFAULT_QUANTITY = 0
         const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
-        const val SHARE_QUEST_URL = "https://www.tokopedia.com/now/quest-channel"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
         const val REFERRAL_PAGE_URL = "https://tokopedia.com/seru/undang-untung/"
         const val REFERRAL_PAGE_APPLINK = "url=https://tokopedia.com/seru/undang-untung/"
@@ -512,7 +512,11 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    override fun onShareBtnSharingClicked(isSharingReferral: Boolean, slug: String) {
+    override fun onShareBtnSharingReferralClicked(slug: String) {
+        viewModelTokoNow.getReferralSenderHome(slug)
+    }
+
+    override fun onShareBtnSharingEducationalInfoClicked() {
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
@@ -520,15 +524,11 @@ class TokoNowHomeFragment: Fragment(),
             linkerType = NOW_TYPE
         )
 
-        if (isSharingReferral) {
-            viewModelTokoNow.getReferralSenderHome(slug)
-        } else {
-            shareClicked(shareHomeTokonow)
-            analytics.trackClickShareButtonWidget()
-        }
+        shareClicked(shareHomeTokonow)
+        analytics.trackClickShareButtonWidget()
     }
 
-    override fun onCloseBtnSharingClicked(id: String) {
+    override fun onCloseBtnSharingEducationalInfoClicked(id: String) {
         SharedPreferencesUtil.setSharingEducationState(activity)
         viewModelTokoNow.removeWidget(id)
     }
@@ -803,13 +803,13 @@ class TokoNowHomeFragment: Fragment(),
         analytics.trackClickShareButtonTopNav()
     }
 
-    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String, id: String = "") {
+    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String, id: String = "", url: String = SHARE_HOME_URL) {
         shareHomeTokonow?.pageIdConstituents = pageIdConstituents
         shareHomeTokonow?.isScreenShot = isScreenShot
         shareHomeTokonow?.thumbNailTitle = thumbNailTitle
         shareHomeTokonow?.linkerType = linkerType
         shareHomeTokonow?.id = id
-        shareHomeTokonow?.sharingUrl = SHARE_HOME_URL
+        shareHomeTokonow?.sharingUrl = url
     }
 
     private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
@@ -1061,11 +1061,20 @@ class TokoNowHomeFragment: Fragment(),
         onRefreshLayout()
     }
 
-    private fun onSuccessSharingReferralUrlParam(sharingUrlCode: String) {
-        val url = REFERRAL_PAGE_URL + sharingUrlCode
-        val applink = REFERRAL_PAGE_APPLINK + sharingUrlCode
+    private fun onSuccessSharingReferralUrlParam(sharingReferralUrlParam: String) {
+        val url = REFERRAL_PAGE_URL + sharingReferralUrlParam
+        val appLink = REFERRAL_PAGE_APPLINK + sharingReferralUrlParam
 
-        //update data bottomsheet
+        updateShareHomeData(
+            pageIdConstituents = listOf(PAGE_TYPE_HOME),
+            isScreenShot = false,
+            thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
+            linkerType = WEBVIEW_TYPE,
+            id = appLink,
+            url = url
+        )
+
+        showUniversalShareBottomSheet(shareHomeTokonow)
     }
 
     private fun onFailedSharingUrlCode() {

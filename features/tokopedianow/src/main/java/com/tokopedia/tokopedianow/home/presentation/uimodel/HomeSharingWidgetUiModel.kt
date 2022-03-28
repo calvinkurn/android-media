@@ -5,32 +5,27 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 
 sealed class HomeSharingWidgetUiModel (
     open val id: String,
-    open val state: HomeLayoutItemState,
-    open val btnTextRes: Int
+    open val state: HomeLayoutItemState
 ) : HomeLayoutUiModel(id)  {
 
     data class HomeSharingReferralWidgetUiModel(
         override val id: String,
         override val state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
-        override val btnTextRes: Int,
-        val descRes: Int,
         val slug: String,
         val isSender: Boolean
     ): HomeSharingWidgetUiModel(
         id,
-        state,
-        btnTextRes
+        state
     )
 
     data class HomeSharingEducationWidgetUiModel (
         override val id: String,
         override val state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
-        override val btnTextRes: Int,
+        val btnTextRes: Int,
         val serviceType: String
     ): HomeSharingWidgetUiModel(
         id,
-        state,
-        btnTextRes
+        state
     )
 
     override fun type(typeFactory: HomeTypeFactory): Int {

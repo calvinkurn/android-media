@@ -49,15 +49,12 @@ class HomeSharingWidgetViewHolder(
             when(element) {
                 is HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel -> {
                     setReferralData(
-                        descRes = element.descRes,
-                        btnTextRes = element.btnTextRes,
                         isSender = element.isSender,
                         slug = element.slug
                     )
-                    setListener(
-                        elementId = element.id,
-                        isSharingReferral = true,
-                        slug = element.slug
+                    setReferralListener(
+                        slug = element.slug,
+                        isSender = element.isSender
                     )
                 }
                 is HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel -> {
@@ -65,36 +62,48 @@ class HomeSharingWidgetViewHolder(
                         serviceType = element.serviceType,
                         btnTextRes = element.btnTextRes
                     )
-                    setListener(
-                        elementId = element.id,
-                        isSharingReferral = false
+                    setEducationalInfoListener(
+                        elementId = element.id
                     )
                 }
             }
         }
     }
 
-    private fun setListener(elementId: String, isSharingReferral: Boolean, slug: String = "") {
+    private fun setReferralListener(slug: String, isSender: Boolean) {
         binding?.apply {
             btnSharingEducation.setOnClickListener {
-                listener?.onShareBtnSharingClicked(isSharingReferral, slug)
-            }
-
-            iCloseSharingEducation.setOnClickListener {
-                listener?.onCloseBtnSharingClicked(elementId)
+                if (isSender) {
+                    listener?.onShareBtnSharingReferralClicked(slug)
+                } else {
+                    goToInformationPage(REFERRAL_PAGE_URL+slug)
+                }
             }
         }
     }
 
-    private fun setReferralData(descRes: Int, btnTextRes: Int, isSender: Boolean, slug: String) {
+    private fun setEducationalInfoListener(elementId: String) {
+        binding?.apply {
+            btnSharingEducation.setOnClickListener {
+                listener?.onShareBtnSharingEducationalInfoClicked()
+            }
+
+            iCloseSharingEducation.setOnClickListener {
+                listener?.onCloseBtnSharingEducationalInfoClicked(elementId)
+            }
+        }
+    }
+
+    private fun setReferralData(isSender: Boolean, slug: String) {
         binding?.apply {
             iCloseSharingEducation.hide()
             if (isSender) {
-                convertStringToLink(tpSharingEducation, itemView.context, descRes, slug)
+                convertStringToLink(tpSharingEducation, itemView.context, R.string.tokopedianow_home_referral_widget_desc_sender, slug)
+                btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
             } else {
-                tpSharingEducation.text = MethodChecker.fromHtml(itemView.resources.getString(descRes))
+                tpSharingEducation.text = MethodChecker.fromHtml(itemView.resources.getString(R.string.tokopedianow_home_referral_widget_desc_receiver))
+                btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
             }
-            btnSharingEducation.text = itemView.resources.getString(btnTextRes)
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
         }
     }
@@ -132,7 +141,8 @@ class HomeSharingWidgetViewHolder(
     }
 
     interface HomeSharingListener {
-        fun onShareBtnSharingClicked(isSharingReferral: Boolean, slug: String)
-        fun onCloseBtnSharingClicked(id: String)
+        fun onShareBtnSharingReferralClicked(slug: String)
+        fun onShareBtnSharingEducationalInfoClicked()
+        fun onCloseBtnSharingEducationalInfoClicked(id: String)
     }
 }
