@@ -14,7 +14,7 @@ data class ValidateReferralUserResponse(
         val resultStatus: ResultStatus,
         @Expose
         @SerializedName("status")
-        val status: String
+        val status: Int
     ) {
         data class ResultStatus(
             @Expose

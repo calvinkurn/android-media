@@ -115,6 +115,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_INDEX = 1
+        private const val REFERRAL_SENDER = 1
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -604,7 +605,8 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val response = validateReferralUserUseCase.execute(item.slug)
             if(response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
-                homeLayoutItemList.mapSharingReferralData(item)
+                val isSender = REFERRAL_SENDER == response.gamiReferralValidateUser.status
+                homeLayoutItemList.mapSharingReferralData(item, isSender)
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }
