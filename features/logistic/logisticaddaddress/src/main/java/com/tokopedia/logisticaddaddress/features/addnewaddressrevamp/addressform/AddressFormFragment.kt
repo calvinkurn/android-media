@@ -334,14 +334,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     @SuppressLint("SetTextI18n")
     private fun prepareLayout(data: DistrictItem?) {
-
-        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
-        labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
-
+        setupLabelChips()
         binding?.run {
             if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
                 formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
@@ -349,15 +342,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             } else if (userSession.name.contains(toppers, ignoreCase = true)) {
                 formAccount.etNamaPenerima.textFieldWrapper.helperText = getString(R.string.helper_nama_penerima)
             }
-            formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
+            setupFormAccount()
+//            formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
             formAccount.etNomorHp.textFieldInput.setText(userSession.phoneNumber)
-            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
+//            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
                 if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconPhoneBookPositive(userSession.userId)
                 else AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
                 onNavigateToContact()
             }
-            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
+//            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
             formAccount.btnInfo.setOnClickListener {
                 if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
                 else AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
@@ -369,20 +363,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setOnTouchLabelAddress(ANA_NEGATIVE)
             setupRvLabelAlamatChips()
             setTextListener()
+            showNegativeLayout()
+            setupNegativePinpointCard()
             binding?.run {
-                cardAddress.root.gone()
-                formAddress.root.gone()
-                formAddressNegative.root.visible()
-                cardAddressNegative.root.visible()
-
-                if (!isPinpoint) {
-                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-                    cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
-                }
-                else {
-                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                    cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                }
 
                 cardAddressNegative.root.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
@@ -414,10 +397,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setTextListener()
             binding?.run {
                 formattedAddress = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
-                cardAddress.root.visible()
-                formAddress.root.visible()
-                formAddressNegative.root.gone()
-                cardAddressNegative.root.gone()
+                showPositiveLayout()
 
                 cardAddress.addressDistrict.text = formattedAddress
 
@@ -436,15 +416,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
+    private fun setupLabelChips() {
+        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
+        labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
+            .setOrientation(ChipsLayoutManager.HORIZONTAL)
+            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+            .build()
+        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun prepareEditLayout(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) {
 
-        labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
-        labelAlamatChipsLayoutManager = ChipsLayoutManager.newBuilder(view?.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-        staticDimen8dp = context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+        setupLabelChips()
 //        if (data.latitude.isNotEmpty() && data.longitude.isNotEmpty() ) {
             isPositiveFlow = data.latitude.isNotEmpty() && data.longitude.isNotEmpty()
 //        }
@@ -455,15 +439,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 //            } else if (userSession.name.contains(toppers, ignoreCase = true)) {
 //                formAccount.etNamaPenerima.textFieldWrapper.helperText = getString(R.string.helper_nama_penerima)
 //            }
-            formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
+            setupFormAccount()
+//            formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
             formAccount.etNomorHp.textFieldInput.setText(data.phone)
-            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
+//            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
 //                if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconPhoneBookPositive(userSession.userId)
 //                else AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
                 onNavigateToContact()
             }
-            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
+//            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
             formAccount.btnInfo.setOnClickListener {
 //                if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconNamaPenerimaPositive(userSession.userId)
 //                else AddNewAddressRevampAnalytics.onClickIconNamaPenerimaNegative(userSession.userId)
@@ -475,21 +460,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setOnTouchLabelAddress(ANA_NEGATIVE)
             setupRvLabelAlamatChips()
             setTextListener()
+            showNegativeLayout()
+            setupNegativePinpointCard()
             binding?.run {
-                cardAddress.root.gone()
-                formAddress.root.gone()
-                formAddressNegative.root.visible()
-                cardAddressNegative.root.visible()
-
-                if (!isPinpoint) {
-                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-                    cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
-                }
-                else {
-                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                    cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                }
-
                 cardAddressNegative.root.setOnClickListener {
 //                    AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
                     checkKotaKecamatan()
@@ -500,12 +473,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     inputType = InputType.TYPE_NULL
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
-                            AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
+//                            AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
                             showDistrictRecommendationBottomSheet(false)
                         }
                     }
                     setOnClickListener {
-                        AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
+//                        AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
                         showDistrictRecommendationBottomSheet(false)
                     }
                 }
@@ -519,16 +492,13 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setOnTouchLabelAddress(ANA_POSITIVE)
             setupRvLabelAlamatChips()
             setTextListener()
+            showPositiveLayout()
             binding?.run {
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
-                cardAddress.root.visible()
                 cardAddress.btnChange.visibility = View.VISIBLE
                 cardAddress.btnChange.setOnClickListener {
                     goToPinpointPage()
                 }
-                formAddress.root.visible()
-                formAddressNegative.root.gone()
-                cardAddressNegative.root.gone()
 
                 cardAddress.addressDistrict.text = formattedAddress
                 formAddress.etAlamatNew.textFieldInput.setText(data.address1)
@@ -543,8 +513,26 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
         binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
-                doSaveAddress()
+                doSaveEditAddress()
             }
+        }
+    }
+
+    private fun showPositiveLayout() {
+        binding?.run {
+            cardAddress.root.visible()
+            formAddress.root.visible()
+            formAddressNegative.root.gone()
+            cardAddressNegative.root.gone()
+        }
+    }
+
+    private fun showNegativeLayout() {
+        binding?.run {
+            cardAddress.root.gone()
+            formAddress.root.gone()
+            formAddressNegative.root.visible()
+            cardAddressNegative.root.visible()
         }
     }
 
@@ -808,6 +796,27 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     }
 
+    private fun setupFormAccount() {
+        binding?.run {
+            formAccount.etNamaPenerima.textFieldInput.addTextChangedListener(setWrapperWatcher(formAccount.etNamaPenerima.textFieldWrapper, null))
+            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
+            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
+        }
+    }
+
+    private fun setupNegativePinpointCard() {
+        binding?.run {
+            if (!isPinpoint) {
+                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+                cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+            }
+            else {
+                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                cardAddressNegative.addressDistrict.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+            }
+        }
+    }
+
     private fun setTextListener() {
         binding?.run {
             formAccount.etNomorHp.textFieldInput.apply {
@@ -984,13 +993,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun doSaveAddress() {
         setSaveAddressDataModel()
-        saveDataModel?.let {
-            if (isEdit) {
-                viewModel.saveEditAddress(it)
-            } else {
-                viewModel.saveAddress(it)
-            }
-        }
+        saveDataModel?.let { viewModel.saveAddress(it) }
+    }
+
+    private fun doSaveEditAddress() {
+        setSaveAddressDataModel()
+        saveDataModel?.let { viewModel.saveEditAddress(it) }
     }
 
     private fun setSaveAddressDataModel() {
