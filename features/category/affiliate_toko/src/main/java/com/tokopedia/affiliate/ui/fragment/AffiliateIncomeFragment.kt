@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
@@ -323,9 +324,16 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             AFFILIATE_WITHDRAWAL,
             ""
         )) {
-            AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.show()
-            else -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.invisible()
+            AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = true
+            else ->{
+                view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = false
+                initTicker()
+            }
         }
+    }
+
+    private fun initTicker() {
+        view?.findViewById<Ticker>(R.id.affiliate_income_ticker)?.show()
     }
 
     private fun setTarikSaldoButtonUI() {
