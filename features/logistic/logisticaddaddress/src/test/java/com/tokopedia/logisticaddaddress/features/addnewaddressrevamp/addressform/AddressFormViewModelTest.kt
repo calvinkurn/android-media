@@ -27,10 +27,13 @@ class AddressFormViewModelTest {
 
     private val repo: KeroRepository = mockk(relaxed = true)
     private val saveAddressDataModel = SaveAddressDataModel()
+    private val addressId = "12345"
 
     private val districtDetailObserver: Observer<Result<KeroDistrictRecommendation>> = mockk(relaxed = true)
     private val saveAddressObserver: Observer<Result<DataAddAddress>> = mockk(relaxed = true)
     private val defaultAddressObserver: Observer<Result<DefaultAddressData>> = mockk(relaxed = true)
+    private val editAddressObserver: Observer<Result<KeroEditAddressResponse.Data.KeroEditAddress.KeroEditAddressSuccessResponse>> = mockk(relaxed = true)
+    private val detailAddressObserver: Observer<Result<KeroGetAddressResponse.Data>> = mockk(relaxed = true)
 
     private lateinit var addressFormViewModel: AddressFormViewModel
 
@@ -43,6 +46,8 @@ class AddressFormViewModelTest {
         addressFormViewModel.districtDetail.observeForever(districtDetailObserver)
         addressFormViewModel.saveAddress.observeForever(saveAddressObserver)
         addressFormViewModel.defaultAddress.observeForever(defaultAddressObserver)
+        addressFormViewModel.editAddress.observeForever(editAddressObserver)
+        addressFormViewModel.addressDetail.observeForever(detailAddressObserver)
     }
 
     @Test
@@ -86,6 +91,34 @@ class AddressFormViewModelTest {
         coEvery { repo.saveAddress(any()) } throws defaultThrowable
         addressFormViewModel.saveAddress(saveAddressDataModel)
         verify { saveAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `Get Address Detail Data Success`() {
+        coEvery { repo.getAddressDetail(any()) } returns KeroGetAddressResponse.Data()
+        addressFormViewModel.getAddressDetail(addressId)
+        verify { detailAddressObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
+    fun `Get Address Detail Data Fail`() {
+        coEvery { repo.getAddressDetail(any()) } throws defaultThrowable
+        addressFormViewModel.getAddressDetail(addressId)
+        verify { detailAddressObserver.onChanged(match { it is Fail }) }
+    }
+
+    @Test
+    fun `Save Edit Address Data Success`() {
+        coEvery { repo.editAddress(any()) } returns KeroEditAddressResponse.Data()
+        addressFormViewModel.saveEditAddress(saveAddressDataModel)
+        verify { editAddressObserver.onChanged(match { it is Success }) }
+    }
+
+    @Test
+    fun `Save Edit Address Data Fail`() {
+        coEvery { repo.editAddress(any()) } throws defaultThrowable
+        addressFormViewModel.saveEditAddress(saveAddressDataModel)
+        verify { editAddressObserver.onChanged(match { it is Fail }) }
     }
 
 }

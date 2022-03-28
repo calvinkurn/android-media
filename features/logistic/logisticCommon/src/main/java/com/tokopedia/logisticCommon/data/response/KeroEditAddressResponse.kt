@@ -7,37 +7,37 @@ data class KeroEditAddressResponse(
 
     @Expose
     @SerializedName("data")
-    val data: Data
+    val data: Data = Data()
 ) {
     data class Data(
 
         @Expose
         @SerializedName("kero_edit_address")
-        val keroEditAddress: KeroEditAddress,
+        val keroEditAddress: KeroEditAddress = KeroEditAddress(),
     ) {
         data class KeroEditAddress(
 
             @Expose
             @SerializedName("data")
-            val data: KeroEditAddressSuccessResponse,
+            val data: KeroEditAddressSuccessResponse = KeroEditAddressSuccessResponse(),
 
             @Expose
             @SerializedName("server_process_time")
-            val serverProcessTime: String,
+            val serverProcessTime: String = "",
 
             @Expose
             @SerializedName("config")
-            val config: String,
+            val config: String = "",
 
             @Expose
             @SerializedName("status")
-            val status: String
+            val status: String = ""
         ) {
             data class KeroEditAddressSuccessResponse(
 
                 @Expose
                 @SerializedName("is_success")
-                val isSuccess: Int
+                val isSuccess: Int = 0
             )
         }
     }
