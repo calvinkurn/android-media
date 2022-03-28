@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGal
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantOption
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
 /**
@@ -76,8 +77,18 @@ data class ProductVariantAggregatorUiData(
         return (!variantData.hasChildren && !variantData.hasVariant) || cardRedirection.isEmpty() || nearestWarehouse.isEmpty()
     }
 
+    private fun getFirstLevelVariantOptions(): List<VariantOption> {
+        return variantData.variants.firstOrNull()?.options ?: emptyList()
+    }
+
+    fun getFirstLevelVariantImage(variantOptionId: String): String?{
+        if(variantOptionId.isEmpty()) return null
+        return getFirstLevelVariantOptions().firstOrNull { it.id == variantOptionId }?.picture?.original
+    }
+
     fun getVariantGalleryItems(): List<ProductDetailGallery.Item> {
-        return variantData.variants.firstOrNull()?.options?.mapNotNull { option ->
+        val variantOptions = getFirstLevelVariantOptions()
+        return variantOptions.mapNotNull { option ->
             val optionId = option.id ?: "0"
             val imageUrl = option.picture?.original
             val tag = option.value ?: ""
@@ -86,9 +97,10 @@ data class ProductVariantAggregatorUiData(
                 ProductDetailGallery.Item(
                     id = optionId,
                     url = imageUrl,
-                    tag = tag
+                    tag = tag,
+                    type = ProductDetailGallery.Item.Type.Image
                 )
             }
-        } ?: emptyList()
+        }
     }
 }

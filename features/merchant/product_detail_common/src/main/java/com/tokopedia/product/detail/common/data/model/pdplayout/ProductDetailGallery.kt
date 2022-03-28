@@ -2,25 +2,34 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import android.os.Parcelable
 import com.tokopedia.image_gallery.ImageGalleryItem
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ProductDetailGallery(
+    val page: Page,
+    val productId: String = "",
+    val userId: String = "",
     val defaultItem: Item? = null,
     val items: List<Item>,
     val selectedId: String? = null
 ) : Parcelable {
+
+    @IgnoredOnParcel
+    val combinedItems: List<Item> = run {
+        val items = mutableListOf<Item>()
+        defaultItem?.let { items.add(it) }
+        items.addAll(this.items)
+        items
+    }
 
     /**
      * Combine defaultItem and items, then
      * transform them into ImageGalleryItem list -> requirement for unify's ImageGallery
      */
     fun generateImageGalleryItems(isAutoPlay: Boolean = false): ArrayList<ImageGalleryItem> {
-        val items = mutableListOf<Item>()
-        defaultItem?.let { items.add(it) }
-        items.addAll(this.items)
         return ArrayList(
-            items.map { item ->
+            combinedItems.map { item ->
                 ImageGalleryItem(
                     drawable = null,
                     url = item.url,
@@ -56,7 +65,17 @@ data class ProductDetailGallery(
         val id: String,
         val url: String,
         val thumbnailUrl: String = url,
-        val tag: String?
-    ) : Parcelable
+        val tag: String?,
+        val type: Type
+    ) : Parcelable{
+        enum class Type (name: String){
+            Image("image"), Video("video")
+        }
+    }
+
+    enum class Page {
+        ProductDetail,
+        VariantBottomSheet
+    }
 
 }

@@ -161,7 +161,8 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     isTokoNow = isTokoNow,
                     selectedQuantity = selectedQuantity,
-                    shouldShowDeleteButton = shouldShowDeleteButton)
+                    shouldShowDeleteButton = shouldShowDeleteButton,
+                    aggregatorUiData = aggregatorData)
 
             _initialData.postValue(list.asSuccess())
 
@@ -261,8 +262,7 @@ class AtcVariantViewModel @Inject constructor(
                     selectedProductFulfillment = selectedWarehouse?.isFulfillment ?: false,
                     selectedQuantity = selectedQuantity,
                     shouldShowDeleteButton = shouldShowDeleteButton,
-                    uspImageUrl = aggregatorData?.uspImageUrl ?: "",
-                    cashBackPercentage = aggregatorData?.cashBackPercentage ?: 0)
+                    aggregatorUiData = aggregatorData)
 
             if (visitables != null) {
                 _initialData.postValue(visitables.asSuccess())
@@ -597,6 +597,7 @@ class AtcVariantViewModel @Inject constructor(
     fun onVariantImageClicked(
         imageUrl: String,
         productId: String,
+        userId: String,
         mainImageTag: String
     ) {
         val selectedChild = getVariantData()?.getChildByProductId(productId)
@@ -612,10 +613,14 @@ class AtcVariantViewModel @Inject constructor(
         val variantGalleryItems = variantAggregatorData?.getVariantGalleryItems()
 
         val productDetailGalleryData = ProductDetailGallery(
+            productId = productId,
+            userId = userId,
+            page = ProductDetailGallery.Page.VariantBottomSheet,
             defaultItem = ProductDetailGallery.Item(
                 "",
                 defaultImage,
-                tag = mainImageTag
+                tag = mainImageTag,
+                type = ProductDetailGallery.Item.Type.Image
             ),
             items = variantGalleryItems ?: emptyList(),
             selectedId = selectedOptionId

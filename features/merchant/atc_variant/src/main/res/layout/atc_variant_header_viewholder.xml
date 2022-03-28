@@ -22,15 +22,17 @@
             android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_enlarge_img_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="end|bottom"
             android:layout_margin="8dp"
-            app:srcCompat="@drawable/ic_enlarge_icon" />
+            android:adjustViewBounds="true"
+            android:background="@drawable/bg_circle_grey"
+            android:scaleType="centerCrop"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_name="SCREEN_FIT" />
 
     </FrameLayout>
 

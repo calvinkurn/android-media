@@ -1332,6 +1332,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val intent = ProductDetailGalleryActivity.createIntent(
                 context = it,
                 productDetailGallery = ProductDetailGallery(
+                    productId = dynamicProductInfoData.basic.productID,
+                    userId = viewModel.userId,
+                    page = ProductDetailGallery.Page.ProductDetail,
                     items = dynamicProductInfoData.data.getGalleryItems(),
                     selectedId = position.toString()
                 )

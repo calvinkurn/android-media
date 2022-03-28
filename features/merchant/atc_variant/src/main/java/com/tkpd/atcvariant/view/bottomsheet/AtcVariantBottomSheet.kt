@@ -719,7 +719,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
         ProductTrackingCommon.onVariantImageBottomSheetClicked(productId, pageSource)
-        viewModel.onVariantImageClicked(url, productId, getString(R.string.atc_variant_tag_main_image))
+        viewModel.onVariantImageClicked(url, productId, userSessionInterface.userId, getString(R.string.atc_variant_tag_main_image))
     }
 
     override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {

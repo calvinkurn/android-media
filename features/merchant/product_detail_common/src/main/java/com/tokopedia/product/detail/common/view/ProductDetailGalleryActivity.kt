@@ -8,17 +8,22 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.image_gallery.ImageGallery
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.product.detail.common.ProductTrackingCommon
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.showToasterSuccess
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 
 class ProductDetailGalleryActivity : AppCompatActivity() {
 
     private var data: ProductDetailGallery? = null
+    private var trackingQueue:TrackingQueue? = null
 
     private var imageGallery: ImageGallery? = null
     private var closeButton: ImageUnify? = null
+
+    private var currentPosition = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +32,8 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         imageGallery = findViewById(R.id.product_detail_gallery)
         closeButton = findViewById(R.id.product_detail_gallery_close_button)
 
+        trackingQueue = TrackingQueue(applicationContext)
+
         intent?.extras?.let {
             data = it.getParcelable(PRODUCT_DETAIL_GALLERY_DATA)
         }
@@ -34,10 +41,16 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         data?.let { processData(it) }
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackingQueue?.sendAll()
+    }
+
     private fun processData(data: ProductDetailGallery) {
         val isAutoPlay = DeviceConnectionInfo.isConnectWifi(this)
 
         val selectedPosition = data.getSelectedPosition()
+        currentPosition = selectedPosition
 
         val imageGallery = imageGallery ?: return
 
@@ -49,6 +62,22 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
 
             onOverlayHiddenChange = { isHidden ->
                 closeButton?.showWithCondition(!isHidden)
+            }
+
+            onPageChanged = { position ->
+                if (currentPosition != position) {
+                    val item = data.combinedItems[position]
+                    ProductTrackingCommon.eventImageGallerySwipe(
+                        trackingQueue,
+                        data.productId,
+                        item.type.name,
+                        item.url,
+                        position.toString(),
+                        "",
+                        data.page
+                    )
+                    currentPosition = position
+                }
             }
         }
 

@@ -64,6 +64,7 @@ class VideoPictureView @JvmOverloads constructor(
         if (position == -1) {
             return
         }
+        lastPosition = position
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         binding.imageSliderPageControl.setCurrentIndicator(position)
     }
