@@ -4,7 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Space
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,16 +25,94 @@ import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
-import kotlinx.android.synthetic.main.product_card_list_layout.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: ProductCardVideo by lazy{
         ProductCardVideo(this)
+    }
+    private val cardViewProductCard: CardView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.cardViewProductCard)
+    }
+    private val constraintLayoutProductCard: ConstraintLayout by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.constraintLayoutProductCard)
+    }
+    private val outOfStockOverlay: View by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.outOfStockOverlay)
+    }
+    private val labelProductStatus: Label by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.labelProductStatus)
+    }
+    private val textTopAds: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.textTopAds)
+    }
+    private val imageVideoIdentifier: ImageView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.imageVideoIdentifier)
+    }
+    private val progressBarStock: ProgressBarUnify by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.progressBarStock)
+    }
+    private val textViewStockLabel: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.textViewStockLabel)
+    }
+    private val imageThreeDots: ImageView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.imageThreeDots)
+    }
+    private val labelCampaignBackground: ImageView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.labelCampaignBackground)
+    }
+    private val textViewLabelCampaign: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.textViewLabelCampaign)
+    }
+    private val labelBestSeller: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.labelBestSeller)
+    }
+    private val textCategorySide: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.textCategorySide)
+    }
+    private val textCategoryBottom: Typography by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.textCategoryBottom)
+    }
+    private val imageProduct: ImageView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.imageProduct)
+    }
+    private val buttonAddVariant: UnifyButton by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonAddVariant)
+    }
+    private val buttonNotify: UnifyButton by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonNotify)
+    }
+    private val buttonThreeDotsWishlist: FrameLayout by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonThreeDotsWishlist)
+    }
+    private val buttonAddToCartWishlist: UnifyButton by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonAddToCartWishlist)
+    }
+    private val buttonSeeSimilarProductWishlist: UnifyButton by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonSeeSimilarProductWishlist)
+    }
+    private val imageShopBadge: ImageView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.imageShopBadge)
+    }
+    private val imageFreeOngkirPromo: ImageView by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.imageFreeOngkirPromo)
+    }
+    private val buttonAddToCart: UnifyButton by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonAddToCart)
+    }
+    private val buttonDeleteProduct: UnifyButton by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonDeleteProduct)
+    }
+    private val buttonRemoveFromWishlist: FrameLayout by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.buttonRemoveFromWishlist)
+    }
+    private val spaceCampaignBestSeller: Space by lazy(LazyThreadSafetyMode.NONE) {
+        findViewById(R.id.spaceCampaignBestSeller)
     }
 
     constructor(context: Context): super(context) {
@@ -50,7 +132,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
-        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
+        imageProduct.loadImageRounded(productCardModel.productImageUrl)
 
         val isShowCampaign = productCardModel.isShowLabelCampaign()
         renderLabelCampaign(
@@ -82,15 +164,15 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         )
 
         val isShowCampaignOrBestSeller = isShowCampaign || isShowBestSeller
-        spaceCampaignBestSeller?.showWithCondition(isShowCampaignOrBestSeller)
+        spaceCampaignBestSeller.showWithCondition(isShowCampaignOrBestSeller)
 
-        outOfStockOverlay?.showWithCondition(productCardModel.isOutOfStock)
+        outOfStockOverlay.showWithCondition(productCardModel.isOutOfStock)
 
-        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
+        labelProductStatus.initLabelGroup(productCardModel.getLabelProductStatus())
 
-        textTopAds?.showWithCondition(productCardModel.isTopAds)
+        textTopAds.showWithCondition(productCardModel.isTopAds)
 
-        imageVideoIdentifier?.showWithCondition(productCardModel.hasVideo)
+        imageVideoIdentifier.showWithCondition(productCardModel.hasVideo)
 
         renderProductCardContent(productCardModel, isWideContent = true)
 
@@ -98,13 +180,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         renderProductCardFooter(productCardModel, isProductCardList = true)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+        imageThreeDots.showWithCondition(productCardModel.hasThreeDots)
 
         cartExtension.setProductModel(productCardModel)
         video.setProductModel(productCardModel)
 
-        constraintLayoutProductCard?.post {
-            imageThreeDots?.expandTouchArea(
+        constraintLayoutProductCard.post {
+            imageThreeDots.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16),
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
@@ -114,19 +196,19 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
-        imageProduct?.addOnImpressionListener(impressHolder, viewHintListener)
+        imageProduct.addOnImpressionListener(impressHolder, viewHintListener)
     }
 
     fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
-        imageThreeDots?.setOnClickListener(threeDotsClickListener)
+        imageThreeDots.setOnClickListener(threeDotsClickListener)
     }
 
     fun setDeleteProductOnClickListener(deleteProductClickListener: (View) -> Unit) {
-        buttonDeleteProduct?.setOnClickListener(deleteProductClickListener)
+        buttonDeleteProduct.setOnClickListener(deleteProductClickListener)
     }
 
     fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) {
-        buttonRemoveFromWishlist?.setOnClickListener(removeWishlistClickListener)
+        buttonRemoveFromWishlist.setOnClickListener(removeWishlistClickListener)
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
@@ -138,28 +220,28 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     fun setAddVariantClickListener(addVariantClickListener: (View) -> Unit) {
-        buttonAddVariant?.setOnClickListener(addVariantClickListener)
+        buttonAddVariant.setOnClickListener(addVariantClickListener)
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
-        buttonNotify?.setOnClickListener(notifyMeClickListener)
+        buttonNotify.setOnClickListener(notifyMeClickListener)
     }
 
     fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) {
-        buttonThreeDotsWishlist?.setOnClickListener(threeDotsClickListener)
+        buttonThreeDotsWishlist.setOnClickListener(threeDotsClickListener)
     }
 
     fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) {
-        buttonAddToCartWishlist?.setOnClickListener(addToCartWishlistClickListener)
+        buttonAddToCartWishlist.setOnClickListener(addToCartWishlistClickListener)
     }
 
     fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
-        buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
+        buttonSeeSimilarProductWishlist.setOnClickListener(seeSimilarProductWishlistClickListener)
     }
 
-    override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
+    override fun getCardMaxElevation() = cardViewProductCard.maxCardElevation
 
-    override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
+    override fun getCardRadius() = cardViewProductCard.radius
 
     fun applyCarousel() {
         setCardHeightMatchParent()
@@ -167,21 +249,21 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     private fun setCardHeightMatchParent() {
-        val layoutParams = cardViewProductCard?.layoutParams
+        val layoutParams = cardViewProductCard.layoutParams
         layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
-        cardViewProductCard?.layoutParams = layoutParams
+        cardViewProductCard.layoutParams = layoutParams
     }
 
     private fun resizeImageProductSize() {
-        val layoutParams = imageProduct?.layoutParams
+        val layoutParams = imageProduct.layoutParams
         layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
         layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
-        imageProduct?.layoutParams = layoutParams
+        imageProduct.layoutParams = layoutParams
     }
 
     override fun recycle() {
-        imageProduct?.glideClear()
-        imageFreeOngkirPromo?.glideClear()
+        imageProduct.glideClear()
+        imageFreeOngkirPromo.glideClear()
         cartExtension.clear()
         video.clear()
     }
@@ -204,26 +286,26 @@ class ProductCardListView: BaseCustomView, IProductCardView {
      * Special cases for specific pages
      * */
     fun wishlistPage_hideCTAButton(isVisible: Boolean) {
-        buttonAddToCart?.showWithCondition(isVisible)
-        buttonRemoveFromWishlist?.showWithCondition(isVisible)
-        progressBarStock?.showWithCondition(!isVisible)
-        textViewStockLabel?.showWithCondition(!isVisible)
+        buttonAddToCart.showWithCondition(isVisible)
+        buttonRemoveFromWishlist.showWithCondition(isVisible)
+        progressBarStock.showWithCondition(!isVisible)
+        textViewStockLabel.showWithCondition(!isVisible)
     }
 
     fun wishlistPage_enableButtonAddToCart(){
-        buttonAddToCart?.isEnabled = true
-        buttonAddToCart?.buttonVariant = UnifyButton.Variant.GHOST
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
+        buttonAddToCart.isEnabled = true
+        buttonAddToCart.buttonVariant = UnifyButton.Variant.GHOST
+        buttonAddToCart.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_disableButtonAddToCart(){
-        buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
+        buttonAddToCart.isEnabled = false
+        buttonAddToCart.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_setOutOfStock(){
-        buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.buttonVariant = UnifyButton.Variant.FILLED
-        buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
+        buttonAddToCart.isEnabled = false
+        buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
+        buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
     }
 }
