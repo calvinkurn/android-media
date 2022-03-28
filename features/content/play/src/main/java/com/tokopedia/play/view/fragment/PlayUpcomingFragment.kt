@@ -75,7 +75,7 @@ class PlayUpcomingFragment @Inject constructor(
 {
 
     private val toolbarView by viewComponent { ToolbarRoomViewComponent(it, R.id.view_toolbar_room, this) }
-    private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
+    private val partnerInfoView by viewComponent { PartnerInfoViewComponent(it, this) }
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
     private val shareExperienceView by viewComponent { ShareExperienceViewComponent(it, R.id.view_upcoming_share_experience, childFragmentManager, this, this, requireContext(), dispatchers) }
@@ -268,7 +268,7 @@ class PlayUpcomingFragment @Inject constructor(
         state: PlayPartnerInfo
     ) {
         if (prevState == state) return
-        partnerInfoView?.setInfo(state)
+        partnerInfoView.setInfo(state)
     }
 
     private fun renderShareView(
