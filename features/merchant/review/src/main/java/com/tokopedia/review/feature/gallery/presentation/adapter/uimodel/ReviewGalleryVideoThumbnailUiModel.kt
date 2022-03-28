@@ -1,12 +1,11 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
-import com.tokopedia.review.feature.reading.data.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 
 data class ReviewGalleryVideoThumbnailUiModel(
-    val thumbnailUrl: String = "",
-    val videoUrl: String = "",
+    override val mediaUrl: String = "",
+    override val thumbnailUrl: String = "",
     override val rating: Int = 0,
     override val variantName: String = "",
     override val feedbackId: String = "",
@@ -23,7 +22,7 @@ data class ReviewGalleryVideoThumbnailUiModel(
     override val isAnonymous: Boolean = false,
     override val userImage: String = "",
     override val badRatingReason: String = ""
-) : Visitable<ReviewGalleryAdapterTypeFactory>, ReviewGalleryMediaThumbnailUiModel {
+) : ReviewGalleryMediaThumbnailUiModel {
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

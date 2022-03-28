@@ -64,7 +64,7 @@ object InboxReviewMapper {
                     attachment.thumbnailURL?.let { url ->
                         ReviewMediaImageThumbnailUiModel(
                             uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = attachment.thumbnailURL, removable = false
+                                uri = attachment.thumbnailURL
                             )
                         )
                     }
@@ -174,7 +174,7 @@ object InboxReviewMapper {
             mediaThumbnails = data.attachments.map { attachment ->
                 ReviewMediaImageThumbnailUiModel(
                     uiState = ReviewMediaImageThumbnailUiState.Showing(
-                        uri = attachment.thumbnailURL, removable = false
+                        uri = attachment.thumbnailURL
                     )
                 )
             }

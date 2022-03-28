@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="12dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="8dp"
+    tools:background="#CC000000">
+
+    <com.tokopedia.reviewcommon.feature.media.detail.presentation.widget.ReviewDetailRating
+        android:id="@+id/review_detail_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ic_review_detail_toggle_expand_button" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_detail_create_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/review_detail_rating"
+        app:layout_constraintStart_toEndOf="@id/review_detail_rating"
+        app:layout_constraintTop_toTopOf="@id/review_detail_rating"
+        app:typographyType="body_3"
+        tools:text="Kemarin" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_detail_like_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_like_dislike_button"
+        app:layout_constraintTop_toTopOf="@id/ic_review_detail_toggle_expand_button"
+        app:typographyType="body_3"
+        tools:text="200" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_start_like_dislike_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="ic_review_detail_like_button,ic_review_detail_liked_button" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_review_detail_like_button"
+        android:layout_width="24dp"
+        android:layout_height="32dp"
+        android:paddingVertical="8dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="THUMB"
+        app:layout_constraintEnd_toStartOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_review_detail_liked_button"
+        android:layout_width="24dp"
+        android:layout_height="32dp"
+        android:paddingVertical="8dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="THUMB_FILLED"
+        app:layout_constraintEnd_toStartOf="@id/ic_review_detail_toggle_expand_button"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_review_detail_toggle_expand_button"
+        android:layout_width="24dp"
+        android:layout_height="32dp"
+        android:paddingVertical="8dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="8dp"
+        app:icon_color_light_disabled="@color/Unify_Static_White"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_disabled="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_first_row_bottom"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="review_detail_rating,tv_review_detail_create_time,tv_review_detail_like_count,ic_review_detail_like_button,ic_review_detail_toggle_expand_button"
+        tools:layout_constraintTop_toBottomOf="@id/ic_review_detail_toggle_expand_button" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_detail_reviewer_profile_picture"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="2dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_first_row_bottom"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_detail_reviewer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_detail_reviewer_profile_picture"
+        app:layout_constraintStart_toEndOf="@id/iv_review_detail_reviewer_profile_picture"
+        app:layout_constraintTop_toTopOf="@id/iv_review_detail_reviewer_profile_picture"
+        app:typographyType="heading_6"
+        tools:text="Karina" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_detail_reviewer_stats_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        android:translationY="1.84sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_detail_reviewer_profile_picture"
+        app:layout_constraintStart_toEndOf="@id/tv_review_detail_reviewer_name"
+        app:layout_constraintTop_toTopOf="@id/iv_review_detail_reviewer_profile_picture"
+        app:typographyType="body_3"
+        tools:text=" • 999 ulasan lengkap • 20 terbantu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

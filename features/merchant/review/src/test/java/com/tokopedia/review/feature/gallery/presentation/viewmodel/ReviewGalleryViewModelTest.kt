@@ -145,10 +145,10 @@ class ReviewGalleryViewModelTest : ReviewGalleryViewModelTestFixture() {
     }
 
     private fun verifyReviewImagesSuccessEquals(expectedSuccessValue: Success<ProductrevGetReviewImage>) {
-        viewModel.reviewImages.verifySuccessEquals(expectedSuccessValue)
+        viewModel.reviewMedia.verifySuccessEquals(expectedSuccessValue)
     }
 
     private fun verifyReviewImagesErrorEquals(expectedErrorValue: Fail) {
-        viewModel.reviewImages.verifyErrorEquals(expectedErrorValue)
+        viewModel.reviewMedia.verifyErrorEquals(expectedErrorValue)
     }
 }

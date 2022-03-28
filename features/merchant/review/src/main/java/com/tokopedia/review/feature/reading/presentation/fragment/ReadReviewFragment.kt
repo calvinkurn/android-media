@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.reading.presentation.fragment
 
-
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -23,7 +22,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orTrue
@@ -40,17 +38,29 @@ import com.tokopedia.review.common.presentation.listener.ReviewReportBottomSheet
 import com.tokopedia.review.common.presentation.widget.ReviewReportBottomSheet
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
-import com.tokopedia.review.feature.imagepreview.presentation.activity.ReviewImagePreviewActivity
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.LikeDislike
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewDetail
+import com.tokopedia.review.feature.reading.data.ProductTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopReviewList
 import com.tokopedia.review.feature.reading.di.DaggerReadReviewComponent
 import com.tokopedia.review.feature.reading.di.ReadReviewComponent
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapter
 import com.tokopedia.review.feature.reading.presentation.adapter.ReadReviewAdapterTypeFactory
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.factory.ReadReviewSortFilterFactory
-import com.tokopedia.review.feature.reading.presentation.listener.*
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterBottomSheetListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewFilterChipsListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHighlightedTopicListener
+import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
+import com.tokopedia.review.feature.reading.presentation.mapper.ReadReviewDataMapper
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
 import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
 import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
@@ -59,6 +69,7 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewFilter
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -562,30 +573,23 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         reviewItemPosition: Int
     ) {
         imageClickedPosition = reviewItemPosition
-        if (isProductReview)
+        if (isProductReview) {
             ReadReviewTracking.trackOnImageClicked(
                 productReview.feedbackID,
                 viewModel.getProductId()
             )
-        else
+        } else {
             ReadReviewTracking.trackOnShopReviewImageClicked(productReview.feedbackID, shopId)
-        context?.let {
-            val cacheManager = SaveInstanceCacheManager(it, true)
-            cacheManager.put(PRODUCT_REVIEW_KEY, productReview)
-            cacheManager.put(INDEX_KEY, positionClicked)
-            cacheManager.put(SHOP_ID_KEY, shopId)
-            if (isProductReview)
-                cacheManager.put(PRODUCT_ID_KEY, viewModel.getProductId())
-            else {
-                cacheManager.put(PRODUCT_ID_KEY, productReview.shopProductId)
-                cacheManager.put(IS_PRODUCT_REVIEW_KEY, isProductReview)
+        }
+        context?.let { context ->
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context,
+                viewModel.getProductId(),
+                positionClicked.plus(1),
+                ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(productReview, shopId)
+            ).let {
+                startActivityForResult(it, GALLERY_ACTIVITY_CODE)
             }
-            startActivityForResult(
-                ReviewImagePreviewActivity.getIntent(
-                    it, cacheManager.id
-                        ?: ""
-                ), GALLERY_ACTIVITY_CODE
-            )
         }
     }
 

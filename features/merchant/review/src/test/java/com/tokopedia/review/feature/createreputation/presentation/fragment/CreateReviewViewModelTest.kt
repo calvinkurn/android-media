@@ -7,7 +7,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
-import com.tokopedia.review.common.data.ProductrevReviewAttachment
+import com.tokopedia.review.common.data.ProductrevReviewImageAttachment
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.model.BadRatingCategoriesResponse
 import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
@@ -224,10 +224,10 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
     @Test
     fun `when getImageList of less than 5 images should return expected ImageReviewModels and DefaultImageReviewModel`() {
         val selectedImages = listOf(
-            ProductrevReviewAttachment("ImageUrl1", "ImageUrl1"),
-            ProductrevReviewAttachment("ImageUrl2", "ImageUrl2"),
-            ProductrevReviewAttachment("ImageUrl3", "ImageUrl3"),
-            ProductrevReviewAttachment("ImageUrl4", "ImageUrl4")
+            ProductrevReviewImageAttachment("ImageUrl1", "ImageUrl1"),
+            ProductrevReviewImageAttachment("ImageUrl2", "ImageUrl2"),
+            ProductrevReviewImageAttachment("ImageUrl3", "ImageUrl3"),
+            ProductrevReviewImageAttachment("ImageUrl4", "ImageUrl4")
         )
 
         val expectedData = mutableListOf(
@@ -965,7 +965,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             ProductrevGetReviewDetail(
                 review =
                 ProductrevGetReviewDetailReview(
-                    attachments = images
+                    imageAttachments = images
                 )
             )
         )

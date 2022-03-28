@@ -14,7 +14,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 
-class ReviewImagePreviewViewModelTest : ReviewImagePreviewViewModelTestFixture() {
+class ReviewMediaPreviewViewModelTest : ReviewMediaPreviewViewModelTestFixture() {
 
     @Test
     fun `when toggleLike should call toggleLikeReviewUseCase and return expected results`() {

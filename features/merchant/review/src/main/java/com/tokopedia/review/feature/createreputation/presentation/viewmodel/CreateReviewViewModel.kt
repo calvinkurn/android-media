@@ -15,7 +15,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
-import com.tokopedia.review.common.data.ProductrevReviewAttachment
+import com.tokopedia.review.common.data.ProductrevReviewImageAttachment
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
@@ -205,7 +205,7 @@ class CreateReviewViewModel @Inject constructor(
                 getReviewDetailUseCase.executeOnBackground()
             }
             originalImages =
-                response.productrevGetReviewDetail.review.attachments.map { it.fullSize }
+                response.productrevGetReviewDetail.review.imageAttachments.map { it.fullSize }
                     .toMutableList()
             _reviewDetails.postValue(Success(response.productrevGetReviewDetail))
         }) {
@@ -236,7 +236,7 @@ class CreateReviewViewModel @Inject constructor(
         return imageData
     }
 
-    fun getImageList(selectedImage: List<ProductrevReviewAttachment>): MutableList<BaseImageReviewUiModel> {
+    fun getImageList(selectedImage: List<ProductrevReviewImageAttachment>): MutableList<BaseImageReviewUiModel> {
         when (selectedImage.size) {
             MAX_IMAGE_COUNT -> {
                 imageData = (selectedImage.map {

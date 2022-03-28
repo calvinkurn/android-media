@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,7 +36,7 @@ class ReviewGalleryVideoThumbnailViewHolder(
         with(binding) {
             setupBrokenOverlay()
             setupPlayButton()
-            setupThumbnail(element.videoUrl)
+            setupThumbnail(element.mediaUrl)
             setupRating(element.rating)
             setupVariant(element.variantName)
         }
@@ -43,6 +44,7 @@ class ReviewGalleryVideoThumbnailViewHolder(
 
     private fun setupLayout() {
         with(binding) {
+            ivReviewGalleryVideoThumbnailPlayButton.loadImage(com.tokopedia.reviewcommon.R.drawable.ic_review_media_video_thumbnail_play)
             ivReviewGalleryVideoThumbnail.onUrlLoaded = { success ->
                 ivReviewGalleryVideoThumbnailPlayButton.showWithCondition(success)
                 reviewMediaGalleryVideoThumbnailBrokenOverlay.showWithCondition(!success)

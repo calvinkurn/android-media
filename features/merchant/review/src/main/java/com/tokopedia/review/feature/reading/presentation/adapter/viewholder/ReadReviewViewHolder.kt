@@ -17,12 +17,12 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
-import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
@@ -44,8 +44,6 @@ class ReadReviewViewHolder(
         private const val EMPTY_REVIEW_LIKE = 0
     }
 
-    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
-
     private var productInfo: ReadReviewProductInfo? = null
     private var basicInfo: ReviewBasicInfoWidget? = null
     private var reportOption: IconUnify? = null
@@ -65,6 +63,7 @@ class ReadReviewViewHolder(
     init {
         bindViews()
         setupLayout()
+        attachedMedia?.setListener(ReviewMediaThumbnailListener())
     }
 
     override fun bind(element: ReadReviewUiModel) {
@@ -338,7 +337,6 @@ class ReadReviewViewHolder(
         }
         attachedMedia?.apply {
             setData(mediaThumbnails)
-            setListener(reviewMediaThumbnailListener)
             show()
         }
     }

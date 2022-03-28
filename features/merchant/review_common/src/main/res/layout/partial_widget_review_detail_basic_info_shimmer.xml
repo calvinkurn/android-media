@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="12dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    tools:background="#CC000000">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shimmer_star_one"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_color_light_disabled="@color/Neutral_N600"
+        app:icon_color_light_enable="@color/Neutral_N600"
+        app:icon_color_night_disabled="@color/Neutral_N600"
+        app:icon_color_night_enable="@color/Neutral_N600"
+        app:icon_name="STAR_FILLED"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shimmer_star_two"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_color_light_disabled="@color/Neutral_N600"
+        app:icon_color_light_enable="@color/Neutral_N600"
+        app:icon_color_night_disabled="@color/Neutral_N600"
+        app:icon_color_night_enable="@color/Neutral_N600"
+        app:icon_name="STAR_FILLED"
+        app:layout_constraintStart_toEndOf="@id/shimmer_star_one"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shimmer_star_three"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_color_light_disabled="@color/Neutral_N600"
+        app:icon_color_light_enable="@color/Neutral_N600"
+        app:icon_color_night_disabled="@color/Neutral_N600"
+        app:icon_color_night_enable="@color/Neutral_N600"
+        app:icon_name="STAR_FILLED"
+        app:layout_constraintStart_toEndOf="@id/shimmer_star_two"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shimmer_star_four"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_color_light_disabled="@color/Neutral_N600"
+        app:icon_color_light_enable="@color/Neutral_N600"
+        app:icon_color_night_disabled="@color/Neutral_N600"
+        app:icon_color_night_enable="@color/Neutral_N600"
+        app:icon_name="STAR_FILLED"
+        app:layout_constraintStart_toEndOf="@id/shimmer_star_three"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shimmer_star_five"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_color_light_disabled="@color/Neutral_N600"
+        app:icon_color_light_enable="@color/Neutral_N600"
+        app:icon_color_night_disabled="@color/Neutral_N600"
+        app:icon_color_night_enable="@color/Neutral_N600"
+        app:icon_name="STAR_FILLED"
+        app:layout_constraintStart_toEndOf="@id/shimmer_star_four"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="60dp"
+        android:layout_height="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/shimmer_star_five"
+        app:layout_constraintStart_toEndOf="@id/shimmer_star_five"
+        app:layout_constraintTop_toTopOf="@id/shimmer_star_five"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="96dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_star_five"
+        app:loader_type="rect" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

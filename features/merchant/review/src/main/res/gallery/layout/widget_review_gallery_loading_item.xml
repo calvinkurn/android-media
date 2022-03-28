@@ -15,6 +15,7 @@
             android:layout_height="@dimen/layout_lvl0"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="0dp"
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.ImageUnify

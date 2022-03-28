@@ -30,7 +30,7 @@ abstract class ReviewGalleryViewModelTestFixture {
             getReviewImagesUseCase,
             CoroutineTestDispatchersProvider
         )
-        viewModel.reviewImages.observeForever { }
+        viewModel.reviewMedia.observeForever { }
         viewModel.rating.observeForever { }
     }
 }

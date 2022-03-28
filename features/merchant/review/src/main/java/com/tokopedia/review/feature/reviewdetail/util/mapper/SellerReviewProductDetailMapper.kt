@@ -102,9 +102,7 @@ object SellerReviewProductDetailMapper {
                 mediaThumbnails = it.attachments.mapNotNull { attachment ->
                     attachment.thumbnailURL?.let { url ->
                         ReviewMediaImageThumbnailUiModel(
-                            uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = url, removable = false
-                            )
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
                         )
                     }
                 }

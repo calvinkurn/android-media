@@ -34,7 +34,7 @@ class ReviewGalleryImageThumbnailViewHolder(
         this.element = element
         with(binding) {
             setupBrokenOverlay()
-            setupThumbnail(element.imageUrl)
+            setupThumbnail(element.mediaUrl)
             setupRating(element.rating)
             setupVariant(element.variantName)
         }

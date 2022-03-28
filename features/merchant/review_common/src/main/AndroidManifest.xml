@@ -1,2 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.tokopedia.reviewcommon" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.reviewcommon">
+
+    <application>
+        <activity
+            android:name="com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity"
+            android:exported="false"
+            android:theme="@style/ReviewMediaPlayer.FullScreen"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+    </application>
+</manifest>

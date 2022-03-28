@@ -10,7 +10,7 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class ReviewImagePreviewViewModelTestFixture {
+abstract class ReviewMediaPreviewViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var toggleLikeReviewUseCase: ToggleLikeReviewUseCase

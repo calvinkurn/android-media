@@ -9,26 +9,26 @@ sealed interface ReviewMediaImageThumbnailUiState: Parcelable {
 
     @Parcelize
     data class Showing(
-        override val uri: String,
-        override val removable: Boolean
+        override val uri: String = "",
+        override val removable: Boolean = false
     ) : ReviewMediaImageThumbnailUiState
 
     @Parcelize
     data class ShowingSeeMore(
-        override val uri: String,
-        override val removable: Boolean,
-        val totalImageCount: Int
+        override val uri: String = "",
+        override val removable: Boolean = false,
+        val totalImageCount: Int = 0
     ) : ReviewMediaImageThumbnailUiState
 
     @Parcelize
     data class Uploading(
-        override val uri: String,
-        override val removable: Boolean
+        override val uri: String = "",
+        override val removable: Boolean = false
     ) : ReviewMediaImageThumbnailUiState
 
     @Parcelize
     data class UploadFailed(
-        override val uri: String,
-        override val removable: Boolean
+        override val uri: String = "",
+        override val removable: Boolean = false
     ) : ReviewMediaImageThumbnailUiState
 }

@@ -8,9 +8,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
+import com.tokopedia.review.feature.reading.data.ProductReviewImageAttachments
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
 import com.tokopedia.review.feature.reading.data.ProductReviewUser
+import com.tokopedia.review.feature.reading.data.ProductReviewVideoAttachments
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
@@ -151,16 +152,12 @@ class ReadReviewViewModel @Inject constructor(
         return mutableListOf<ReviewMediaThumbnailVisitable>().apply {
             val imageThumbnails = productReview.imageAttachments.map {
                 ReviewMediaImageThumbnailUiModel(
-                    uiState = ReviewMediaImageThumbnailUiState.Showing(
-                        uri = it.imageThumbnailUrl, removable = false
-                    )
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(uri = it.imageThumbnailUrl)
                 )
             }
             val videoThumbnails = productReview.videoAttachments.map {
                 ReviewMediaVideoThumbnailUiModel(
-                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                        uri = it.imageThumbnailUrl, removable = false, playable = true, showDuration = false
-                    )
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = it.url)
                 )
             }
             addAll(videoThumbnails)
@@ -188,13 +185,19 @@ class ReadReviewViewModel @Inject constructor(
     }
 
     private fun mapShopReviewAttachmentsToReviewMediaThumbnails(shopReview: ShopReview): List<ReviewMediaThumbnailVisitable> {
-        return shopReview.attachments.map {
-            ReviewMediaImageThumbnailUiModel(
-                uiState = ReviewMediaImageThumbnailUiState.Showing(
-                    uri = it.thumbnailURL, removable = false
+        return shopReview.videoAttachments.map {
+            ReviewMediaVideoThumbnailUiModel(
+                uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                    uri = it.videoUrl
                 )
             )
-        }
+        }.plus(shopReview.imageAttachments.map {
+            ReviewMediaImageThumbnailUiModel(
+                uiState = ReviewMediaImageThumbnailUiState.Showing(
+                    uri = it.thumbnailURL
+                )
+            )
+        })
     }
 
     private fun mapShopReviewDataToProductReviewData(shopReview: ShopReview) = ProductReview().apply {
@@ -209,8 +212,11 @@ class ReadReviewViewModel @Inject constructor(
             userID = shopReview.reviewerID
             fullName = shopReview.reviewerName
         }
-        imageAttachments = shopReview.attachments.map {
-            ProductReviewAttachments(it.thumbnailURL, it.fullsizeURL)
+        imageAttachments = shopReview.imageAttachments.map {
+            ProductReviewImageAttachments(it.thumbnailURL, it.fullsizeURL)
+        }
+        videoAttachments = shopReview.videoAttachments.map {
+            ProductReviewVideoAttachments(it.videoUrl)
         }
         likeDislike = shopReview.likeDislike
         shopProductId = shopReview.product.productID

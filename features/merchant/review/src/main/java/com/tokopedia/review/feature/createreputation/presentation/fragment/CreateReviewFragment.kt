@@ -799,9 +799,9 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 playAnimation()
                 updateViewBasedOnSelectedRating(rating)
                 createReviewAnonymousCheckbox.isChecked = sentAsAnonymous
-                if (attachments.isNotEmpty()) {
+                if (imageAttachments.isNotEmpty()) {
                     createReviewViewModel.clearImageData()
-                    val imageListData = createReviewViewModel.getImageList(attachments)
+                    val imageListData = createReviewViewModel.getImageList(imageAttachments)
                     imageAdapter.setImageReviewData(imageListData)
                     rvImgReview.show()
                     createReviewAddPhotoEmpty.hide()

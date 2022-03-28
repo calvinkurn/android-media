@@ -13,8 +13,10 @@ import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.ItemReviewHistoryBinding
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 
 class ReviewHistoryViewHolder(
@@ -137,9 +139,15 @@ class ReviewHistoryViewHolder(
                     it.productrevFeedbackHistory.review.feedbackId
                 )
                 reviewAttachedImagesClickListener.onAttachedImagesClicked(
-                    it.productrevFeedbackHistory.product.productName,
-                    it.productrevFeedbackHistory.review.attachments.map { it.fullSize },
-                    position
+                    it.productrevFeedbackHistory.product.productId,
+                    it.productrevFeedbackHistory.review.feedbackId,
+                    position,
+                    it.attachedMediaThumbnail.mediaThumbnails.filterIsInstance<ReviewMediaImageThumbnailUiModel>().map {
+                        it.uiState.uri
+                    },
+                    it.attachedMediaThumbnail.mediaThumbnails.filterIsInstance<ReviewMediaVideoThumbnailUiModel>().map {
+                        it.uiState.uri
+                    }
                 )
             }
         }

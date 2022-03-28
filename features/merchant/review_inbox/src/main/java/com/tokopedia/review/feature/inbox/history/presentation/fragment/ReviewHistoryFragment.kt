@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,15 +30,19 @@ import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponen
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
+import com.tokopedia.review.feature.inbox.history.presentation.mapper.ReviewHistoryDataMapper
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchListener
 import com.tokopedia.review.feature.inbox.history.presentation.util.SearchTextWatcher
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -145,11 +148,13 @@ class ReviewHistoryFragment :
     }
 
     override fun onAttachedImagesClicked(
-        productName: String,
-        attachedImages: List<String>,
-        position: Int
+        productID: String,
+        feedbackID: String,
+        position: Int,
+        images: List<String>,
+        videos: List<String>
     ) {
-        goToImagePreview(productName, attachedImages, position)
+        goToImagePreview(productID, feedbackID, position, images, videos)
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -216,13 +221,23 @@ class ReviewHistoryFragment :
                     renderReviewData(
                         it.data.list.map { history ->
                             val mappedMediaThumbnail = ReviewMediaThumbnailUiModel(
-                                mediaThumbnails = history.review.attachments.map {
-                                    ReviewMediaImageThumbnailUiModel(
-                                        uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                            uri = it.thumbnail, removable = false
+                                mediaThumbnails = history.review.videoAttachments.mapNotNull {
+                                    it.url?.let { url ->
+                                        ReviewMediaVideoThumbnailUiModel(
+                                            uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                                                uri = url
+                                            )
                                         )
-                                    )
-                                }
+                                    }
+                                }.plus(
+                                    history.review.imageAttachments.map {
+                                        ReviewMediaImageThumbnailUiModel(
+                                            uiState = ReviewMediaImageThumbnailUiState.Showing(
+                                                uri = it.thumbnail
+                                            )
+                                        )
+                                    }
+                                )
                             )
                             ReviewHistoryUiModel(history, mappedMediaThumbnail)
                         },
@@ -260,16 +275,25 @@ class ReviewHistoryFragment :
         )
     }
 
-    private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
-        startActivity(context?.let {
-            ImagePreviewSliderActivity.getCallingIntent(
-                it,
-                productName,
-                attachedImages,
-                attachedImages,
-                position
-            )
-        })
+    private fun goToImagePreview(
+        productID: String,
+        feedbackID: String,
+        position: Int,
+        images: List<String>,
+        videos: List<String>
+    ) {
+        context?.let { context ->
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context,
+                productID,
+                position + 1,
+                ReviewHistoryDataMapper.mapReviewHistoryDataToReviewMediaPreviewData(
+                    feedbackID,
+                    images,
+                    videos
+                )
+            ).also { startActivity(it) }
+        }
     }
 
     private fun showError() {

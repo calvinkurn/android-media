@@ -8,9 +8,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
-import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 class ReviewImagePreviewViewModel @Inject constructor(
     private val toggleLikeReviewUseCase: ToggleLikeReviewUseCase,
-    private val getReviewImagesUseCase: GetReviewImagesUseCase,
+    private val getDetailedReviewMediaUseCase: GetDetailedReviewMediaUseCase,
     private val userSession: UserSessionInterface,
     coroutineDispatchers: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatchers.io) {
@@ -28,8 +28,8 @@ class ReviewImagePreviewViewModel @Inject constructor(
     val toggleLikeReviewReview: LiveData<Result<ProductrevLikeReview>>
         get() = _toggleLikeReview
 
-    private val _reviewImages = MediatorLiveData<Result<ProductrevGetReviewImage>>()
-    val reviewImages: LiveData<Result<ProductrevGetReviewImage>>
+    private val _reviewImages = MediatorLiveData<Result<ProductrevGetReviewMedia>>()
+    val reviewImages: LiveData<Result<ProductrevGetReviewMedia>>
         get() = _reviewImages
 
     private val page = MutableLiveData<Int>()
@@ -71,12 +71,12 @@ class ReviewImagePreviewViewModel @Inject constructor(
 
     private fun getReviewImages(productId: String, page: Int) {
         launchCatchError(block = {
-            getReviewImagesUseCase.setParams(
+            getDetailedReviewMediaUseCase.setParams(
                 productId,
                 page
             )
-            val data = getReviewImagesUseCase.executeOnBackground()
-            _reviewImages.postValue(Success(data.productrevGetReviewImage))
+            val data = getDetailedReviewMediaUseCase.executeOnBackground()
+            _reviewImages.postValue(Success(data.productrevGetReviewMedia))
         }) {
             _reviewImages.postValue(Fail(it))
         }

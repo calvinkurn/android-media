@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
@@ -33,7 +32,6 @@ import com.tokopedia.review.common.data.ProductrevGetReviewDetailProduct
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailReputation
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponse
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
-import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.OnBackPressedListener
@@ -44,11 +42,15 @@ import com.tokopedia.review.databinding.FragmentReviewDetailBinding
 import com.tokopedia.review.feature.historydetails.analytics.ReviewDetailTracking
 import com.tokopedia.review.feature.historydetails.di.DaggerReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
+import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDetailDataMapper
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -181,9 +183,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onAttachedImagesClicked(
-        productName: String,
-        attachedImages: List<String>,
-        position: Int
+        productID: String,
+        feedbackID: String,
+        position: Int,
+        images: List<String>,
+        videos: List<String>
     ) {
         (viewModel.reviewDetails.value as? Success)?.let {
             ReviewDetailTracking.eventClickImageGallery(
@@ -192,7 +196,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 viewModel.getUserId()
             )
         }
-        goToImagePreview(productName, attachedImages.filter { it.isNotEmpty() }, position)
+        goToImagePreview(productID, feedbackID, position, images, videos)
     }
 
     override fun onBackPressed() {
@@ -336,16 +340,25 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 }
             }
             addHeaderIcons(editable)
-            if (attachments.isNotEmpty()) {
+            if (imageAttachments.isNotEmpty()) {
                 binding?.reviewDetailAttachedMedia?.apply {
-                    val mappedAttachment = attachments.map {
+                    val mappedImageAttachment = imageAttachments.map {
                         ReviewMediaImageThumbnailUiModel(
                             uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = it.thumbnail, removable = false
+                                uri = it.thumbnail
                             )
                         )
                     }
-                    setData(ReviewMediaThumbnailUiModel(mappedAttachment))
+                    val mappedVideoAttachment = videoAttachments.mapNotNull {
+                        it.url?.let { url ->
+                            ReviewMediaVideoThumbnailUiModel(
+                                uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                                    uri = url
+                                )
+                            )
+                        }
+                    }
+                    setData(ReviewMediaThumbnailUiModel(mappedVideoAttachment.plus(mappedImageAttachment)))
                     setListener(reviewMediaThumbnailListener)
                     show()
                 }
@@ -547,16 +560,22 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         startActivity(shareIntent)
     }
 
-    private fun goToImagePreview(productName: String, attachedImages: List<String>, position: Int) {
-        startActivity(context?.let {
-            ImagePreviewSliderActivity.getCallingIntent(
-                it,
-                productName,
-                attachedImages,
-                attachedImages,
-                position
-            )
-        })
+    private fun goToImagePreview(
+        productID: String,
+        feedbackID: String,
+        position: Int,
+        images: List<String>,
+        videos: List<String>) {
+        context?.let { context ->
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context,
+                productID,
+                position + 1,
+                ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
+                    feedbackID, images, videos
+                )
+            ).let { startActivity(it) }
+        }
     }
 
     private fun goToPdp(productId: String) {
@@ -620,9 +639,11 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             viewModel.reviewDetails.value?.let { reviewDetailsResult ->
                 if (reviewDetailsResult is Success) {
                     onAttachedImagesClicked(
-                        reviewDetailsResult.data.product.productName,
-                        reviewDetailsResult.data.review.attachments.map { it.fullSize },
-                        position
+                        reviewDetailsResult.data.product.productId,
+                        reviewDetailsResult.data.review.feedbackId,
+                        position,
+                        reviewDetailsResult.data.review.imageAttachments.map { it.fullSize },
+                        reviewDetailsResult.data.review.videoAttachments.mapNotNull { it.url },
                     )
                 }
             }

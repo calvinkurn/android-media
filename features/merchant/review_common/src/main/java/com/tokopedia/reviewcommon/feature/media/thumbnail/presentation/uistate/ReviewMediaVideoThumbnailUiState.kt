@@ -10,32 +10,32 @@ sealed interface ReviewMediaVideoThumbnailUiState: Parcelable {
 
     @Parcelize
     data class Showing(
-        val playable: Boolean,
-        override val uri: String,
-        override val removable: Boolean,
-        override val showDuration: Boolean
+        val playable: Boolean = false,
+        override val uri: String = "",
+        override val removable: Boolean = false,
+        override val showDuration: Boolean = false
     ) : ReviewMediaVideoThumbnailUiState
 
     @Parcelize
     data class ShowingSeeMore(
-        val playable: Boolean,
+        val playable: Boolean = false,
         val totalImageCount: Int,
-        override val uri: String,
-        override val removable: Boolean,
-        override val showDuration: Boolean
+        override val uri: String = "",
+        override val removable: Boolean = false,
+        override val showDuration: Boolean = false
     ) : ReviewMediaVideoThumbnailUiState
 
     @Parcelize
     data class Uploading(
-        override val uri: String,
-        override val removable: Boolean,
-        override val showDuration: Boolean
+        override val uri: String = "",
+        override val removable: Boolean = false,
+        override val showDuration: Boolean = false
     ) : ReviewMediaVideoThumbnailUiState
 
     @Parcelize
     data class UploadFailed(
-        override val uri: String,
-        override val removable: Boolean,
-        override val showDuration: Boolean
+        override val uri: String = "",
+        override val removable: Boolean = false,
+        override val showDuration: Boolean = false
     ) : ReviewMediaVideoThumbnailUiState
 }

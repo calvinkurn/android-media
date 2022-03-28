@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reading.presentation.viewmodel
 
 import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.data.ToggleLikeReviewResponse
-import com.tokopedia.review.feature.reading.data.Attachments
+import com.tokopedia.review.feature.reading.data.ImageAttachments
 import com.tokopedia.review.feature.reading.data.Product
 import com.tokopedia.review.feature.reading.data.ProductRating
 import com.tokopedia.review.feature.reading.data.ProductRatingAndTopic
@@ -225,7 +225,7 @@ class ReadReviewViewModelTest : ReadReviewViewModelTestFixture() {
     fun `when mapShopReviewToReadReviewUiModel should return expected list of ReadReviewUiModel`() {
         val productId = "129123"
         val shopReviews = listOf(
-                ShopReview(reviewID = "1", product = Product(productID = productId), attachments = listOf(Attachments())),
+                ShopReview(reviewID = "1", product = Product(productID = productId), imageAttachments = listOf(ImageAttachments())),
                 ShopReview(reviewID = "2", product = Product(productID = productId))
         )
         val isShopViewHolder = true

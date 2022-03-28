@@ -365,16 +365,12 @@ object DynamicProductDetailMapper {
                     if (lastItem && hasNext) {
                         ReviewMediaImageThumbnailUiModel(
                             uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
-                                uri = uri,
-                                removable = false,
-                                totalImageCount = data.detail ?.imageCount.toIntOrZero()
+                                uri = uri, totalImageCount = data.detail ?.imageCount.toIntOrZero()
                             )
                         )
                     } else {
                         ReviewMediaImageThumbnailUiModel(
-                            uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = uri, removable = false
-                            )
+                            uiState = ReviewMediaImageThumbnailUiState.Showing(uri = uri)
                         )
                     }
                 }
