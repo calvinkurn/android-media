@@ -157,7 +157,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             if (throwable is MessageErrorException) {
                 lastFailedValidateError = currentTime
                 lastFailedValidateErrorMessage = throwable.message ?: ""
-            } else {
+            } else if (throwable != null) {
                 lastFailedValidateError = FAILED_VALIDATE_TIME_DEFAULT
                 lastFailedValidateErrorMessage = ""
             }
@@ -186,7 +186,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
             if (throwable is MessageErrorException) {
                 lastFailedValidateMoveToCart = currentTime
                 lastFailedValidateMoveToCartMessage = throwable.message ?: ""
-            } else {
+            } else if (throwable != null) {
                 lastFailedValidateMoveToCart = FAILED_VALIDATE_TIME_DEFAULT
                 lastFailedValidateMoveToCartMessage = ""
             }
