@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.setup.schedule.util
 
+import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.play.broadcaster.R
@@ -10,22 +12,20 @@ import java.util.*
 /**
  * Created by kenny.hadisaputra on 24/03/22
  */
+data class SchedulePickerState(
+    val hasSchedule: Boolean,
+    val isLoading: Boolean,
+)
+
 class SchedulePicker(fragment: Fragment) {
 
     private val weakFragment = WeakReference(fragment)
 
-    private var mHasSchedule: Boolean = false
-    private var mIsLoading: Boolean = false
+    private val toasterViewId = View.generateViewId()
+    private var mState = SchedulePickerState(hasSchedule = false, isLoading =  false)
 
-    fun setLoading(isLoading: Boolean) {
-        mIsLoading = isLoading
-
-        getDatePicker()?.invalidate()
-    }
-
-    fun setHasSchedule(hasSchedule: Boolean) {
-        mHasSchedule = hasSchedule
-
+    fun updateState(fn: (oldState: SchedulePickerState) -> SchedulePickerState) {
+        mState = fn(mState)
         getDatePicker()?.invalidate()
     }
 
@@ -42,7 +42,7 @@ class SchedulePicker(fragment: Fragment) {
         val context = weakFragment.get()?.context ?: return
         val fragmentManager = weakFragment.get()?.childFragmentManager ?: return
 
-        val datePicker = getDatePicker() ?: DateTimePickerUnify(
+        getDatePicker() ?: DateTimePickerUnify(
             context = context,
             minDate = minDate,
             maxDate = maxDate,
@@ -67,7 +67,7 @@ class SchedulePicker(fragment: Fragment) {
              * that does not allow changing close click listener after shown
              */
             setCloseClickListener {
-                if (!mIsLoading) dismiss()
+                if (!mState.isLoading) dismiss()
             }
 
             setShowListener {
@@ -79,14 +79,32 @@ class SchedulePicker(fragment: Fragment) {
                     listener.onSaveSchedule(this@SchedulePicker, getDate().time)
                 }
 
+                /**
+                 * ALERT... ALERT...
+                 * This is a hacky way to show toaster inside DateTimePickerUnify
+                 * If somehow you read this and there's a change in date time picker,
+                 * please don't forget to test and adjust it accordingly
+                 *
+                 * TODO("Use a different class for date & time picker")
+                 */
+                dateTimePicker.addView(
+                    CoordinatorLayout(dateTimePicker.context).apply {
+                        id = toasterViewId
+                    }
+                )
+
                 invalidate()
             }
         }.show(fragmentManager, TAG)
     }
 
+    fun getToasterContainer(): View? {
+        return getDatePicker()?.dateTimePicker
+    }
+
     private fun DateTimePickerUnify.invalidate() {
-        setActionEnabled(!mIsLoading && mHasSchedule)
-        setLoading(mIsLoading)
+        setActionEnabled(!mState.isLoading && mState.hasSchedule)
+        setLoading(mState.isLoading)
     }
 
     private fun DateTimePickerUnify.setActionEnabled(isEnabled: Boolean) {

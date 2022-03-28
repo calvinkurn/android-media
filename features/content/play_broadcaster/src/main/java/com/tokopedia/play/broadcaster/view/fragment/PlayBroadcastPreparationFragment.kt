@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -21,6 +20,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -50,9 +50,10 @@ import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.R as unifyR
 import java.util.*
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -282,6 +283,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeLiveStreamState()
 
         observeUiState()
+        observeUiEvent()
     }
 
     private fun observeTitle() {
@@ -365,6 +367,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            parentViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayBroadcastEvent.ShowScheduleError -> {
+                        val toasterContainer = schedulePicker.getToasterContainer() ?: return@collect
+                        toaster.showErrorInView(
+                            toasterContainer,
+                            event.error,
+                            bottomMargin = resources.getDimensionPixelOffset(
+                                unifyR.dimen.spacing_lvl8
+                            )
+                        )
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
     private fun renderProductMenu(
         prevState: List<ProductTagSectionUiModel>?,
         state: List<ProductTagSectionUiModel>
@@ -388,10 +410,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prevState: ScheduleUiModel?,
         state: ScheduleUiModel,
     ) {
-        schedulePicker.setLoading(state.state == NetworkState.Loading)
-        schedulePicker.setHasSchedule(
-            state.schedule is BroadcastScheduleUiModel.Scheduled
-        )
+        schedulePicker.updateState {
+            it.copy(
+                isLoading = state.state == NetworkState.Loading,
+                hasSchedule = state.schedule is BroadcastScheduleUiModel.Scheduled
+            )
+        }
 
         if (prevState?.state != state.state && state.state == NetworkState.Success) {
             schedulePicker.dismiss()

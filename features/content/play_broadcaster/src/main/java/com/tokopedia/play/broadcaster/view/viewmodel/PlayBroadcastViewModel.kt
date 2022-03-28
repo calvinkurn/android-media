@@ -931,10 +931,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     state = NetworkState.Success,
                 )
             }
-        }) {
+        }) { err ->
             _schedule.update {
                 it.copy(state = NetworkState.Failed)
             }
+            _uiEvent.emit(PlayBroadcastEvent.ShowScheduleError(err))
         }
     }
 
@@ -949,10 +950,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     state = NetworkState.Success,
                 )
             }
-        }) {
+        }) { err ->
             _schedule.update {
                 it.copy(state = NetworkState.Failed)
             }
+            _uiEvent.emit(PlayBroadcastEvent.ShowScheduleError(err))
         }
     }
 
