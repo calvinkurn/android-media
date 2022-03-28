@@ -330,8 +330,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         if (it) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
                     }
                     isPositiveFlow = isLatitudeNotEmpty == true && isLongitudeNotEmpty == true
-                    currentKotaKecamatan = "${editAddressData.provinceName}, ${editAddressData.cityName}, ${editAddressData.districtName}"
-                    prepareEditLayout(editAddressData )
+                    currentKotaKecamatan = "${editAddressData.districtName}, ${editAddressData.cityName}, ${editAddressData.provinceName}"
+                    prepareEditLayout(editAddressData)
                 }
             }
         })
@@ -1106,8 +1106,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onChooseZipcode(districtAddress: Address, postalCode: String, isPinpoint: Boolean) {
-        val kotaKecamatanText = "${districtAddress.provinceName}, ${districtAddress.cityName}, ${districtAddress.districtName}"
-        formattedAddress = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
+        val kotaKecamatanText = "${districtAddress.districtName}, ${districtAddress.cityName}, ${districtAddress.provinceName}"
+        formattedAddress = kotaKecamatanText
         currentDistrictName = districtAddress.districtName.toString()
         binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.run {
             setText(kotaKecamatanText)

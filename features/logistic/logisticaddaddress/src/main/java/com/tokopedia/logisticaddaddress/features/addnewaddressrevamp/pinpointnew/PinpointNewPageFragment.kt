@@ -157,19 +157,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     currentPlaceId = data?.getStringExtra(EXTRA_PLACE_ID)
                     currentLat = data?.getDoubleExtra(EXTRA_LAT, 0.0) ?: 0.0
                     currentLong = data?.getDoubleExtra(EXTRA_LONG, 0.0) ?: 0.0
-//                    saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
-//                    isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
-//                    currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
-//                    districtId = saveAddressDataModel?.districtId
-//                    if (districtId == null) {
-//                        districtId = it.getLong(EXTRA_DISTRICT_ID)
-//                    }
-//                    isPolygon = it.getBoolean(EXTRA_IS_POLYGON, false)
-//                    zipCodes = saveAddressDataModel?.zipCodes?.toMutableList()
-//                    currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
-//                    currentPostalCode = it.getString(EXTRA_POSTAL_CODE)
-//                    isFromAddressForm = it.getBoolean(EXTRA_FROM_ADDRESS_FORM)
-//                    isEdit = it.getBoolean(EXTRA_IS_EDIT
                     if (!currentPlaceId.isNullOrEmpty()) {
                         currentPlaceId?.let { viewModel.getDistrictLocation(it) }
                     } else if (currentLong != 0.0 && currentLat != 0.0) {
@@ -462,7 +449,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         currentLong = data.longitude.toDouble()
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
-        currentKotaKecamatan = "${data.provinceName}, ${data.cityName}, ${data.districtName}"
+        currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
         val savedModel = saveAddressMapper.map(data, zipCodes)
         viewModel.setAddress(savedModel)
         with(data.errMessage) {
@@ -765,7 +752,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 updateGetDistrictBottomSheet(saveAddress)
             }
         } else {
-            currentKotaKecamatan = "${data.provinceName}, ${data.cityName}, ${data.districtName}"
+            currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
             binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
                 setResultAddressFormNegative()
             }
