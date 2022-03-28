@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/play_engagement_tools_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:layout_width="match_parent">
+
+    <com.tokopedia.play_common.view.RoundedImageView
+        android:id="@+id/iv_engagement_tools"
+        app:rImg_cornerRadius="@dimen/engagement_icon_radius"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_gravity="center"
+        android:background="@color/Unify_N0"
+        android:padding="@dimen/spacing_lvl2"
+        android:translationZ="@dimen/dp_1"
+        tools:background="@color/Unify_Static_Black"
+        tools:src="@drawable/iconunify_24h" />
+
+    <com.tokopedia.play_common.view.RoundedConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-14dp"
+        app:rcl_cornerRadius="@dimen/layout_lvl1"
+        tools:background="@drawable/bg_quiz">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_engagement_question"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/engagement_title_header_top"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:textColor="@color/Unify_N0"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Kapan ulang tahun Rockbros Indonesia?" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_engagement_timer_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="20dp"
+            android:text="Berakhir:"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_engagement_question"
+            app:layout_constraintTop_toBottomOf="@+id/tv_engagement_question"
+            app:typographyType="small" />
+
+    </com.tokopedia.play_common.view.RoundedConstraintLayout>
+
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/timer_engagement_tools"
+        android:layout_gravity="center"
+        android:layout_marginTop="-16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:timer_unify_single_remainingMinutes="10"
+        tools:timer_unify_single_type="minute_digit"
+        tools:timer_unify_single_variant="main"
+        android:translationZ="@dimen/dp_1" />
+</LinearLayout>
