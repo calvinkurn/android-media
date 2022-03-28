@@ -5,15 +5,16 @@ import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.pdp.data.di.scopes.GamificationPdpScope
 import com.tokopedia.gamification.pdp.domain.Mapper
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProductUseCase
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 @Module(includes = [TopAdsWishlistModule::class,ActivityContextModule::class])
 class PdpModule {
@@ -29,14 +30,18 @@ class PdpModule {
 
     @GamificationPdpScope
     @Provides
-    fun provideAddWishListUseCase(context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
+    fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+
+    @GamificationPdpScope
+    @Provides
+    fun provideAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+        return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @GamificationPdpScope
     @Provides
-    fun provideRemoveWishListUseCase(context: Context): RemoveWishListUseCase{
-        return RemoveWishListUseCase(context)
+    fun provideRemoveWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase{
+        return DeleteWishlistV2UseCase(graphqlRepository)
     }
 
     @GamificationPdpScope
@@ -50,6 +55,4 @@ class PdpModule {
     fun provideMapper(): Mapper {
         return Mapper()
     }
-
-
 }

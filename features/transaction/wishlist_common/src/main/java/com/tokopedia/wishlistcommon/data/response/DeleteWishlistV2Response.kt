@@ -4,34 +4,34 @@ import com.google.gson.annotations.SerializedName
 
 data class DeleteWishlistV2Response(
         @SerializedName("data")
-        val data: Data
+        val data: Data = Data()
 ) {
     data class Data(
             @SerializedName("wishlist_remove_v2")
-            val wishlistRemoveV2: WishlistRemoveV2
+            val wishlistRemoveV2: WishlistRemoveV2 = WishlistRemoveV2()
     ) {
         data class WishlistRemoveV2(
                 @SerializedName("button")
-                val button: Button,
+                val button: Button = Button(),
 
                 @SerializedName("success")
-                val success: Boolean,
+                val success: Boolean = false,
 
                 @SerializedName("id")
-                val id: String,
+                val id: String = "",
 
                 @SerializedName("message")
-                val message: String
+                val message: String = ""
         ) {
             data class Button(
                     @SerializedName("action")
-                    val action: String,
+                    val action: String = "",
 
                     @SerializedName("text")
-                    val text: String,
+                    val text: String = "",
 
                     @SerializedName("url")
-                    val url: String
+                    val url: String = ""
             )
         }
     }

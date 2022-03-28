@@ -1,21 +1,37 @@
 package com.tokopedia.wishlistcommon.data.response
 
+import com.google.gson.annotations.SerializedName
+
 data class AddToWishlistV2Response(
-        val data: Data
+        @SerializedName("data")
+        val data: Data = Data()
 ) {
     data class Data(
-            val wishlistAdd: WishlistAdd
+            @SerializedName("wishlist_add")
+            val wishlistAdd: WishlistAdd = WishlistAdd()
     ) {
         data class WishlistAdd(
-                val button: Button,
-                val success: Boolean,
-                val id: String,
-                val message: String
+                @SerializedName("button")
+                val button: Button = Button(),
+
+                @SerializedName("success")
+                val success: Boolean = false,
+
+                @SerializedName("id")
+                val id: String = "",
+
+                @SerializedName("message")
+                val message: String = ""
         ) {
             data class Button(
-                    val action: String,
-                    val text: String,
-                    val url: String
+                    @SerializedName("action")
+                    val action: String = "",
+
+                    @SerializedName("text")
+                    val text: String = "",
+
+                    @SerializedName("url")
+                    val url: String = ""
             )
         }
     }
