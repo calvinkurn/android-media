@@ -59,11 +59,11 @@ class ReviewGalleryFragment :
         const val KEY_REVIEW_GALLERY_ROUTING_DATA = "reviewGalleryData"
         const val IMAGE_PREVIEW_ACTIVITY_CODE = 200
         fun createNewInstance(productId: String): ReviewGalleryFragment {
-            return ReviewGalleryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
-                }
-            }
+            val fragment = ReviewGalleryFragment()
+            val fragmentArguments = Bundle()
+            fragmentArguments.putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
+            fragment.arguments = fragmentArguments
+            return fragment
         }
     }
 
