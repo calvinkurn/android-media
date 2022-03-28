@@ -24,7 +24,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.verify
+import io.mockk.coVerify
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -248,7 +253,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `test success get recommendation first page tokonow should return success`() = runBlocking {
+    fun `given recommendation first page tokonow when get recommendation first page with empty pageName product id then recommendation in view model should not empty`() = runBlocking {
         coEvery { getRecommendationUseCase.getData(any()) } returns listOf(
             RecommendationWidget(recommendationItemList = listOf(recommendation), isTokonow = true)
         )
@@ -260,7 +265,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when atc recom non variant quantity changed with user not logged in should update atcRecomTokonowNonLogin value`() {
+    fun `given atc recom non variant quantity changed when user not logged in then atcRecomTokonowNonLogin in viewmodel should be updated with new recomItem`() {
         every { userSessionInterface.isLoggedIn } returns false
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
@@ -271,7 +276,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when atc recom non variant quantity changed with user logged in and new quantity is zero and recom not equals with item quantity should execute deleteRecomItemFromCart`() {
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is zero and not equal to recom item quantity then deleteRecomItemFromCart should be executed`() {
         every { userSessionInterface.isLoggedIn } returns true
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 1)
         val quantity = 0
@@ -284,7 +289,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when atc recom non variant quantity changed with user logged in and new quantity is not zero and not equals with recom item quantity should execute atcRecomNonVariant`() {
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is not zero and not equal to recom item quantity then atcRecomNonVariant should be executed`() {
         every { userSessionInterface.isLoggedIn } returns true
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 0)
         val quantity = 1
@@ -297,7 +302,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when atc recom non variant quantity changed with user logged in and new quantity is not equals with recom item quantity and both are not zero should execute updateRecomCartNonVariant`() {
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is not equal to recom item quantity and both are not zero then updateRecomCartNonVariant should be executed`() {
         every { userSessionInterface.isLoggedIn } returns true
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 3)
         val quantity = 1
@@ -310,7 +315,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when atc recom non variant quantity changed with user logged in and new quantity is equals with recom item quantity should do nothing`() {
+    fun `given atc recom non variant quantity changed when user logged in with new quantity is equal to recom item quantity then do nothing`() {
         every { userSessionInterface.isLoggedIn } returns true
         val recomItem = RecommendationItem(productId = 12345, shopId = 123, quantity = 1)
         val quantity = 1
@@ -323,7 +328,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when get mini cart data then return response should update mini cart data and widget updater`() = runBlocking {
+    fun `given mini cart data when get mini cart data then miniCartData and minicartWidgetUpdater in viewmodel should be updated`() = runBlocking {
         val shopId = "123"
         val miniCartItems = listOf<MiniCartItem>(MiniCartItem(productId = "1"), MiniCartItem(productId = "2"))
         val miniCartData = MiniCartSimplifiedData(miniCartItems = miniCartItems)
@@ -340,7 +345,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when get mini cart data then throw error should update mini cart error`() = runBlocking {
+    fun `given thrown error when get mini cart data then minicartError should be updated`() = runBlocking {
         val shopId = "123"
         val error = Throwable()
         coEvery {
@@ -355,7 +360,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when get recommendation first page then return empty result should update error recom data with empty first page` () = runBlocking {
+    fun `given empty result when get recommendation first page then errorGetRecomData should be updated with empty first page set to true` () = runBlocking {
         val pageName = "test"
         val productId = "123"
         val queryParam = "test"
@@ -372,7 +377,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when get recommendation first page then throw error should update error recom data with error first page` () = runBlocking {
+    fun `given thrown error when get recommendation first page then errorGetRecomData should be updated with error first page set to true` () = runBlocking {
         val pageName = "test"
         val productId = "123"
         val queryParam = "test"
@@ -391,7 +396,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when get recommendation next page then return empty result should update error recom data with empty next page` () = runBlocking {
+    fun `given empty result when get recommendation next page then errorGetRecomData should be updated with empty next page set to true` () = runBlocking {
         val pageName = "test"
         val productId = "123"
         val pageNumber = 2
@@ -407,7 +412,7 @@ class TestInfiniteRecomViewModel {
     }
 
     @Test
-    fun `when get recommendation next page then throw error should update error recom data with page number` () = runBlocking {
+    fun `given thrown error when get recommendation next page then errorGetRecomData should be updated with page number being set` () = runBlocking {
         val pageName = "test"
         val productId = "123"
         val pageNumber = 2

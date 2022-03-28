@@ -28,7 +28,13 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.coVerify
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -306,7 +312,7 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `test get recommendation list when eligible to show headline CPM`(){
+    fun `given eligible to show headline CPM when get recommendation list then topads headline should be executed`(){
         val queryParam = ""
         val productId = ""
         every { getPrimaryProductUseCase.setParameter(any(), any()) } returns Unit
