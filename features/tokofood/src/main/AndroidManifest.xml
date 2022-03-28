@@ -7,7 +7,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".discovery.presentation.view.TokoFoodDiscoveryActivity"
+            android:name="com.tokopedia.tokofood.feature.discovery.presentation.view.TokoFoodDiscoveryActivity"
             android:exported="false"
             android:label="@string/title_tokofood"
             android:screenOrientation="portrait"
