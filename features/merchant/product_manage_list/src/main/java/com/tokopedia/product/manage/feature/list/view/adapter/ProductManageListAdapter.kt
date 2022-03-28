@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -110,7 +111,7 @@ class ProductManageListAdapter(
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
         if (visitables.getOrNull(lastIndex) !is EmptyModel) {
             visitables.add(emptyModel)
-            notifyItemInserted(lastIndex + 1)
+            notifyItemInserted(lastIndex + Int.ONE)
         }
     }
 

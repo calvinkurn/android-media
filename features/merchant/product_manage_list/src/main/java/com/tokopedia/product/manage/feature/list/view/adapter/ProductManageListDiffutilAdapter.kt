@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -131,7 +132,7 @@ class ProductManageListDiffutilAdapter(
         if (data.getOrNull(lastIndex) !is EmptyModel) {
             val list = data.toMutableList()
             val dataCount = data.filter { it !is EmptyModel }.count().orZero()
-            if (dataCount > 0) {
+            if (dataCount > Int.ZERO) {
                 list.removeAll { it !is EmptyModel }
             }
             list.add(emptyModel)
