@@ -2,18 +2,13 @@ package com.tokopedia.people.utils
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalFeed
-import com.tokopedia.people.model.PlayPostContent
 import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.PostPromoLabel
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelTypeTransition
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
-import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetPartnerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetShareUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalView
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetVideoUiModel
 import com.tokopedia.play.widget.ui.model.getReminderType
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -30,16 +25,16 @@ private const val FEED_SEE_MORE_LIVE_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_D
 private const val FEED_SEE_MORE_UPCOMING_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_UPCOMING}"
 private const val  UPCOMING_WIDGET_TITLE = "Nantikan live seru lainnya!"
 private const val  LIVE_WIDGET_TITLE = "Lagi Live, nih!"
-private const val GIVEAWAY = "GIVEAWAY"
+private const val HADIAH = "Hadiah"
 
 
 object UserProfileVideoMapper {
 
     fun map(
-        playSlotList: PlayPostContent,
+        playSlotList: PlayPostContentItem,
         shopId: String
-    ): PlayWidgetUiModel {
-        return getWidgetUiModel(playSlotList, shopId)
+    ): PlayWidgetChannelUiModel {
+        return getWidgetItemUiModel(playSlotList, shopId)
 
 //        val list = mutableListOf<PlayWidgetUiModel>()
 
@@ -93,40 +88,41 @@ object UserProfileVideoMapper {
 //        return list
     }
 
-    private fun getWidgetUiModel(
-        playSlot: PlayPostContent,
-        shopId: String
-    ): PlayWidgetUiModel {
+//    private fun getWidgetUiModel(
+//        playSlot: PlayPostContent,
+//        shopId: String
+//    ): PlayWidgetUiModel {
+//
+//        val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
+//
+//        //check these values
+//
+//        val autoRefresh = false
+//        val autoRefreshTimer: Long = 0
+//        val autoPlayAmount: Int = 8
+//        val maxAutoPlayWifiDuration: Int = 30
+//        val businessWidgetPosition: Int = 30
+//        //till here
+//
+//
+//        return PlayWidgetUiModel(
+//            title = playSlot.title,
+//            actionTitle = "",
+//            actionAppLink = "",
+//            isActionVisible = false,
+//            config = PlayWidgetConfigUiModel(
+//                autoRefresh, autoRefreshTimer, false, 0,
+//                0, maxAutoPlayWifiDuration, businessWidgetPosition
+//            ),
+//            background = PlayWidgetBackgroundUiModel(
+//                "", item.appLink, item.webLink, emptyList(), ""
+//            ),
+//            getWidgetItemUiModel(item, shopId)
+//        )
+//
+//    }
 
-        val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
-
-        //check these values
-
-        val autoRefresh = false
-        val autoRefreshTimer: Long = 0
-        val autoPlayAmount: Int = 8
-        val maxAutoPlayWifiDuration: Int = 30
-        val businessWidgetPosition: Int = 30
-        //till here
-
-
-        return PlayWidgetUiModel(
-            title = playSlot.title,
-            actionTitle = "",
-            actionAppLink = "",
-            isActionVisible = false,
-            config = PlayWidgetConfigUiModel(
-                autoRefresh, autoRefreshTimer, false, 0,
-                0, maxAutoPlayWifiDuration, businessWidgetPosition
-            ),
-            background = PlayWidgetBackgroundUiModel(
-                "", item.appLink, item.webLink, emptyList(), ""
-            ),
-            getWidgetItemUiModel(playSlot.items, shopId)
-        )
-    }
-
-    private fun getWidgetItemUiModel(items: List<PlayPostContentItem>, shopId: String): List<PlayWidgetItemUiModel> {
+    private fun getWidgetItemUiModel(item: PlayPostContentItem, shopId: String): PlayWidgetChannelUiModel{
 
         //check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
         val performanceSummaryLink = ""
@@ -136,19 +132,19 @@ object UserProfileVideoMapper {
         val channelTypeTransitionPrev = ""
         val channelTypeTransitionNext = ""
         //till here
-
-        val list = mutableListOf<PlayWidgetItemUiModel>()
-
-        items.forEach { item ->
+//
+//        val list = mutableListOf<PlayWidgetItemUiModel>()
+//
+//        items.forEach { item ->
             val channelType = PlayWidgetChannelType.getByValue(item.airTime)
-            list.add(
-                PlayWidgetChannelUiModel(
+//            list.add(
+                return PlayWidgetChannelUiModel(
                     channelId = item.id,
                     title = item.title,
                     appLink = item.appLink,
                     startTime = UserProfileDateTimeFormatter.formatDate(item.startTime),
-                    totalView = PlayWidgetTotalView(item.stats.view.formatted, channelType != PlayWidgetChannelType.Upcoming),
-                    //TODO promo
+                    totalView = PlayWidgetTotalView(item.stats.view.formatted,
+                        false),
                     promoType = PlayWidgetPromoType.getByType(
                         "",
                         ""
@@ -170,18 +166,16 @@ object UserProfileVideoMapper {
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
                     )
                 )
-            )
+//            )
         }
-
-        return list
     }
+
     private fun mapHasGiveaway(promoLabels: List<PostPromoLabel>): Boolean {
         //TODO PostPromoLabel.type missing
-        return promoLabels.firstOrNull { it.text == GIVEAWAY } != null
+        return promoLabels.firstOrNull { it.text == HADIAH } != null
     }
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, shopId: String): Boolean {
         return channelType == PlayWidgetChannelType.Vod &&
                 shopId == partnerId
     }
-}

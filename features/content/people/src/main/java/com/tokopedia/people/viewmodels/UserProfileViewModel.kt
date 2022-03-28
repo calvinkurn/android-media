@@ -65,6 +65,9 @@ class UserProfileViewModel @Inject constructor(
     private var postReminder = MutableLiveData<Resources<VideoPostReimderModel>>()
     val postReminderLiveData : LiveData<Resources<VideoPostReimderModel>> get() = postReminder
 
+    private var postReminderErrorMessage = MutableLiveData<Throwable>()
+    val postReminderErrorMessageLiveData : LiveData<Throwable> get() = postReminderErrorMessage
+
     public fun getUserDetails(userName: String, isRefreshPost: Boolean = false) {
         launchCatchError(block = {
             val data = userDetailsUseCase.getUserProfileDetail(userName, mutableListOf(userName))
@@ -128,6 +131,7 @@ class UserProfileViewModel @Inject constructor(
                 postReminder.value = Success(data)
             } else throw NullPointerException("data is null")
         }, onError = {
+            postReminderErrorMessage.value = it
         })
     }
 

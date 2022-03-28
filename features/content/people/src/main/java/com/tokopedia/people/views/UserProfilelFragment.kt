@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
@@ -55,6 +55,7 @@ import com.tokopedia.people.model.UserProfileIsFollow
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.unifycomponents.*
+import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -95,6 +96,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var isNewlyCreated: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var userProfileTracker: UserProfileTracker? = null
+    private var screenshotDetector: ScreenshotDetector? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -180,7 +182,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
 
     private fun initUserPost(userId: String) {
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
-        recyclerviewPost?.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
         if (recyclerviewPost?.itemDecorationCount == 0) {
             context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
                 ?.let {
@@ -205,6 +207,27 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         addUserPostObserver()
         adduserPostErrorObserver()
         addVideoPostReminderUpdateObserver()
+        addPostReminderErrorObserver()
+
+    }
+
+    private fun addPostReminderErrorObserver() {
+        mPresenter.postReminderErrorMessageLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                when (it) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        view?.let { it1 ->
+                            Toaster.build(
+                                it1,
+                                requireContext().getString(com.tokopedia.people.R.string.up_error_local_error),
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR
+                            ).show()
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun addUserProfileObserver() =
@@ -540,6 +563,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_NORMAL
                             ).show()
+                            mAdapter.notifyDataSetChanged()
                         }
                     }
                     is ErrorMessage -> {
@@ -669,7 +693,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                 context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
             if ((abs(verticalOffset) > offset!!)) {
                 headerProfile?.title = data.profileHeader.profile.name
-                headerProfile?.subtitle = data.profileHeader.profile.username
+                headerProfile?.subtitle = "@${data.profileHeader.profile.username}"
             } else {
                 headerProfile?.title = ""
                 headerProfile?.subtitle = ""
@@ -1006,6 +1030,8 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             })
         )
     }
+
+
 
     override fun onCloseOptionClicked() {
 //        TODO gtm tracking

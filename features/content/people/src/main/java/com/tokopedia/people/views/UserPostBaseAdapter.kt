@@ -3,24 +3,22 @@ package com.tokopedia.people.views
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.device.info.DeviceConnectionInfo
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.library.baseadapter.BaseItem
 import com.tokopedia.people.R
-import com.tokopedia.people.model.PlayPostContent
+import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_FEEDS_PROFILE
 import com.tokopedia.people.views.UserProfileFragment.Companion.VAL_SOURCE_BUYER
-import com.tokopedia.play.widget.ui.PlayWidgetLargeView
-import com.tokopedia.play.widget.ui.listener.PlayWidgetLargeListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 
 open class UserPostBaseAdapter(
     val viewModel: UserProfileViewModel,
@@ -29,14 +27,14 @@ open class UserPostBaseAdapter(
     val userProfileTracker: UserProfileTracker?,
     val profileUserId: String,
     val userId: String
-) : BaseAdapter<PlayPostContent>(callback), PlayWidgetLargeListener {
+) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var activityId = ""
     protected var cList: MutableList<BaseItem>? = null
     public var cursor: String = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
-        internal var playWidgetLargeView: PlayWidgetLargeView =
+        internal var playWidgetLargeView: PlayWidgetCardLargeChannelView =
             view.findViewById(R.id.play_widget_large_view)
 
         //        internal var imgCover: ImageUnify = view.findViewById(R.id.img_banner)
@@ -49,7 +47,7 @@ open class UserPostBaseAdapter(
 //        internal var textSpecialLabel: Label = view.findViewById(R.id.text_special_label)
         var isVisited = false
 
-        override fun bindView(item: PlayPostContent, position: Int) {
+        override fun bindView(item: PlayPostContentItem, position: Int) {
             setData(this, item, position)
         }
     }
@@ -93,46 +91,20 @@ open class UserPostBaseAdapter(
             isLastPage = true
             cursor = ""
         } else {
-            loadCompleted(data?.playGetContentSlot.data, data)
+            data.playGetContentSlot.data.firstOrNull()?.items?.let { loadCompleted(it, data) }
             isLastPage = data?.playGetContentSlot?.playGetContentSlot?.nextCursor?.isEmpty()
             cursor = data?.playGetContentSlot?.playGetContentSlot?.nextCursor;
         }
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val visibleItemCount = recyclerView.layoutManager!!.childCount
-                val totalItemCount = recyclerView.layoutManager!!.itemCount
-                val firstVisibleItemPosition =
-                    (recyclerView.layoutManager as LinearLayoutManager?)!!.findFirstVisibleItemPosition()
-                if (!isLoading && !isLastPage) {
-                    if (visibleItemCount + firstVisibleItemPosition >= totalItemCount
-                        && firstVisibleItemPosition > 0
-                    ) {
-                        startDataLoading(userId)
-                    }
-                }
-            }
-        })
-//        val f = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-//        val l = (recyclerView.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
-//        if (recyclerView.findViewHolderForAdapterPosition(l) != null && recyclerView?.findViewHolderForAdapterPosition(l) is PlayWidgetLargeViewHolder.Channel) {
-//            val vh = recyclerView?.findViewHolderForAdapterPosition(l) as PlayWidgetLargeViewHolder.
-//            val recyclerViewLargeWidget = vh.itemView.findViewById<RecyclerView>(R.id.play_widget_recycler_view)
-//            recyclerViewLargeWidget?.let { p.configureAutoplayForLargeAndJumboWidget(it) }
-//
-//        }
     }
 
     fun onError() {
         loadCompletedWithError()
     }
 
-    private fun setData(holder: ViewHolder, playPostContent: PlayPostContent, position: Int) {
-        holder.playWidgetLargeView.setWidgetListener(this)
-        holder.playWidgetLargeView.setData(UserProfileVideoMapper.map(playPostContent, ""))
+    private fun setData(holder: ViewHolder, playPostContent: PlayPostContentItem, position: Int) {
+        holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, ""))
+        holder.playWidgetLargeView.setListener(this)
+//        holder.playWidgetLargeView.setData(UserProfileVideoMapper.map(playPostContent, ""))
         /*holder.playWidgetLargeView.setWidgetListener(this)
         var live = if (item.isLive) {
             PlayWidgetChannelType.Live
@@ -317,42 +289,42 @@ open class UserPostBaseAdapter(
     }
 
 
-    override fun onToggleReminderClicked(
-        view: PlayWidgetLargeView,
-        channelId: String,
-        reminderType: PlayWidgetReminderType,
-        position: Int
-    ) {
-        try {
-            addVideoPostReminderClickCallBack(
-                channelId,
-                reminderType.reminded,
-                position,
-                view.rootView
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+//    override fun onToggleReminderClicked(
+//        view: PlayWidgetLargeView,
+//        channelId: String,
+//        reminderType: PlayWidgetReminderType,
+//        position: Int
+//    ) {
+//        try {
+//            addVideoPostReminderClickCallBack(
+//                channelId,
+//                reminderType.reminded,
+//                position,
+//                view.rootView
+//            )
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//    }
 
     private fun addVideoPostReminderClickCallBack(
         channelId: String,
-        isActive: Boolean,
-        position: Int,
-        item: View
+        isActive: Boolean
     ) {
-        if (!DeviceConnectionInfo.isInternetAvailable(item.context)) {
-            Toaster.build(
-                item,
-                item.context.getString(com.tokopedia.people.R.string.up_error_local_error),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).show()
-        } else {
-            viewModel.updatePostReminderStatus(channelId, isActive)
-            items.firstOrNull()?.items?.get(position)?.configurations?.reminder?.isSet = isActive
-            notifyDataSetChanged()
+        viewModel.updatePostReminderStatus(channelId, isActive)
+        val pos = getItemPosition(channelId)
+        items[pos].configurations.reminder.isSet = isActive
+//        notifyDataSetChanged()
+        notifyItemChanged(pos)
+    }
+
+    private fun getItemPosition(channelId: String): Int {
+        items.forEachIndexed { index, playPostContentItem ->
+            if(playPostContentItem.id == channelId){
+                return index
+            }
         }
+        return -1
     }
 
 
@@ -380,5 +352,20 @@ open class UserPostBaseAdapter(
         const val DATE_FORMAT_INPUT = "yyyy-MM-dd'T'HH:mm:ss"
         const val DATE_FORMAT_OUTPUT = "dd MMM yyyy - HH:mm"
     }
+
+    override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
+        RouteManager.route(view.context, item.appLink)
+    }
+
+    override fun onToggleReminderChannelClicked(
+        item: PlayWidgetChannelUiModel,
+        reminderType: PlayWidgetReminderType
+    ) {
+        addVideoPostReminderClickCallBack(
+            item.channelId,
+            reminderType.reminded
+        )
+    }
+
 }
 
