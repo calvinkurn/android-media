@@ -1150,7 +1150,7 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun getLayoutComponentData() {
         localCacheModel?.let {
-            viewModelTokoNow.getLayoutComponentData(it.warehouse_id)
+            viewModelTokoNow.getLayoutComponentData(it)
         }
     }
 
