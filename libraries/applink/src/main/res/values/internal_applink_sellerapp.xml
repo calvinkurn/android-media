@@ -38,4 +38,5 @@
     <string name="path_seller_feedback" translatable="false">/seller-feedback</string>
     <string name="path_review_reminder" translatable="false">/review-reminder</string>
     <string name="path_admin_restriction" translatable="false">/admin-restriction</string>
+    <string name="path_shop_discount" translatable="false">/shop-discount</string>
 </resources>

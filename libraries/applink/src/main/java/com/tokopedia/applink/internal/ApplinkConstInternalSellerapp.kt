@@ -89,4 +89,7 @@ object ApplinkConstInternalSellerapp {
 
     //AdminRestrictionActivity
     const val ADMIN_RESTRICTION = "$INTERNAL_SELLERAPP/admin-restriction"
+
+    //ShopDiscount
+    const val SHOP_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount"
 }
