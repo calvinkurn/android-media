@@ -219,6 +219,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun prepareData() {
         if (isEdit) {
+            binding?.loaderAddressForm?.visibility = View.VISIBLE
             viewModel.getAddressDetail(addressId)
         } else {
             viewModel.getDefaultAddress("address")
@@ -277,13 +278,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             when (it) {
                 is Success -> {
                     if (it.data.isSuccess == 1) {
-//                        saveDataModel?.id = it.data.addrId
-//                        saveDataModel?.warehouseId = it.data.tokonow.warehouseId
-//                        saveDataModel?.shopId = it.data.tokonow.shopId
-//                        saveDataModel?.warehouses = AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
-//                        saveDataModel?.serviceType = it.data.tokonow.serviceType
-//                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, SUCCESS)
-//                        else AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, SUCCESS)
                         onSuccessEditAddress()
                     }
                 }
@@ -316,6 +310,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         })
 
         viewModel.addressDetail.observe(viewLifecycleOwner, Observer {
+            binding?.loaderAddressForm?.visibility = View.GONE
             when (it) {
                 is Success -> {
                     saveDataModel = AddAddressMapper.mapAddressDetailToSaveAddressDataModel(it.data)
