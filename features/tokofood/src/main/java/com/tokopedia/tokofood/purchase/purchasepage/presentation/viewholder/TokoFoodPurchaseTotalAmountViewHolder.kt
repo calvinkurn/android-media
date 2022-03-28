@@ -4,19 +4,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseTotalAmountBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchaseTotalAmountBinding,
                                             private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseTotalAmountUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_total_amount
     }
 
-    override fun bind(element: TokoFoodPurchaseTotalAmountUiModel) {
+    override fun bind(element: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isDisabled) {
                 totalAmountPurchase.amountCtaView.isEnabled = false

@@ -40,7 +40,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoo
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseNoteBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbarListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
@@ -382,11 +382,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         viewModel.calculateTotal()
     }
 
-    override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductUiModel) {
+    override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         viewModel.deleteProduct(element.id)
     }
 
-    override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductUiModel) {
+    override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(element.notes,
                 object : TokoFoodPurchaseNoteBottomSheet.Listener {
                     override fun onSaveNotesClicked(notes: String) {

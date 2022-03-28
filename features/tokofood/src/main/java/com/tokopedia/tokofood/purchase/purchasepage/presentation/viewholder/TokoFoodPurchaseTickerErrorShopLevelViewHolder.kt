@@ -4,19 +4,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseTickerErrorShopLevelBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.renderAlpha
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 
 class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: ItemPurchaseTickerErrorShopLevelBinding,
                                                      private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseTickerErrorShopLevelUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_ticker_error_shop_level
     }
 
-    override fun bind(element: TokoFoodPurchaseTickerErrorShopLevelUiModel) {
+    override fun bind(element: TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             tickerErrorShopLevel.setHtmlDescription(element.message)
             tickerErrorShopLevel.setDescriptionClickEvent(object : TickerCallback {

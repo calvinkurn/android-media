@@ -3,7 +3,7 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
-data class TokoFoodPurchaseProductUiModel(
+data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
         var isUnavailable: Boolean = false,
         var id: String = "",
         var name: String = "",
@@ -17,7 +17,7 @@ data class TokoFoodPurchaseProductUiModel(
         var quantity: Int = 0,
         var minQuantity: Int = 0,
         var maxQuantity: Int = 0
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

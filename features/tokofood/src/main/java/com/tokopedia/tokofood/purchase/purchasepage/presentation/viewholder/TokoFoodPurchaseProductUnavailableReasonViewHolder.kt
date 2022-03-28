@@ -6,18 +6,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductUnavailableReasonBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding: ItemPurchaseProductUnavailableReasonBinding,
                                                          private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseProductUnavailableReasonUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_product_unavailable_reason
     }
 
-    override fun bind(element: TokoFoodPurchaseProductUnavailableReasonUiModel) {
+    override fun bind(element: TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             textDisabledTitle.text = element.reason
             if (element.detail.isNotBlank()) {

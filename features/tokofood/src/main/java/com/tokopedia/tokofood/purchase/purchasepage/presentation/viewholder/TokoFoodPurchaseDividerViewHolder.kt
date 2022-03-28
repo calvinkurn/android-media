@@ -4,17 +4,17 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseDividerBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseDividerUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseDividerTokoFoodPurchaseUiModel
 
 class TokoFoodPurchaseDividerViewHolder(private val viewBinding: ItemPurchaseDividerBinding,
                                         private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseDividerUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseDividerTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_divider
     }
 
-    override fun bind(element: TokoFoodPurchaseDividerUiModel) {
+    override fun bind(element: TokoFoodPurchaseDividerTokoFoodPurchaseUiModel) {
         with(viewBinding) {
 
         }

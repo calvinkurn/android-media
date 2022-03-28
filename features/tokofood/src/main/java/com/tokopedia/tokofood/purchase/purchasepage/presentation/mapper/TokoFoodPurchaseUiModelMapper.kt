@@ -6,15 +6,15 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 
 object TokoFoodPurchaseUiModelMapper {
 
-    fun mapGeneralTickerUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseGeneralTickerUiModel {
-        return TokoFoodPurchaseGeneralTickerUiModel().apply {
+    fun mapGeneralTickerUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {
             isErrorTicker = isShippingUnavailable
             message = "Thi will be note relevant to any info and error on checkout"
         }
     }
 
-    fun mapAddressUiModel(): TokoFoodPurchaseAddressUiModel {
-        return TokoFoodPurchaseAddressUiModel().apply {
+    fun mapAddressUiModel(): TokoFoodPurchaseAddressTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseAddressTokoFoodPurchaseUiModel().apply {
             addressName = "Rumah"
             isMainAddress = true
             receiverName = "Adrian"
@@ -25,8 +25,8 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
-    fun mapShippingUiModel(): TokoFoodPurchaseShippingUiModel {
-        return TokoFoodPurchaseShippingUiModel().apply {
+    fun mapShippingUiModel(): TokoFoodPurchaseShippingTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseShippingTokoFoodPurchaseUiModel().apply {
             shippingCourierName = "Gojek Instan (Rp0)"
             shippingEta = "Tiba dalam 30-60 menit"
             shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png"
@@ -37,16 +37,16 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
-    fun mapProductListHeaderUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean): TokoFoodPurchaseProductListHeaderUiModel {
+    fun mapProductListHeaderUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean): TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel {
         return if (mIsUnavailable) {
-            TokoFoodPurchaseProductListHeaderUiModel().apply {
+            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
                 title = "Tidak bisa diproses (3)"
                 action = "Hapus"
                 isUnavailableHeader = mIsUnavailable
                 isDisabled = isShippingUnavailable
             }
         } else {
-            TokoFoodPurchaseProductListHeaderUiModel().apply {
+            TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel().apply {
                 title = "Daftar Pesanan"
                 action = "Tambah Pesanan"
                 isUnavailableHeader = mIsUnavailable
@@ -55,23 +55,23 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
-    fun mapProductUnavailableReasonUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseProductUnavailableReasonUiModel {
-        return TokoFoodPurchaseProductUnavailableReasonUiModel().apply {
+    fun mapProductUnavailableReasonUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel().apply {
             reason = "Stok Habis"
             detail = ""
             isDisabled = isShippingUnavailable
         }
     }
 
-    fun mapTickerErrorShopLevelUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseTickerErrorShopLevelUiModel {
-        return TokoFoodPurchaseTickerErrorShopLevelUiModel().apply {
+    fun mapTickerErrorShopLevelUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel().apply {
             message = "Yah, ada 3 item tidak bisa diproses. Kamu bisa lanjut pesan yang lainnya, ya. <a href=\"\">Lihat</a>"
             isDisabled = isShippingUnavailable
         }
     }
 
-    fun mapProductUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean, id: String): TokoFoodPurchaseProductUiModel {
-        return TokoFoodPurchaseProductUiModel().apply {
+    fun mapProductUiModel(isShippingUnavailable: Boolean, mIsUnavailable: Boolean, id: String): TokoFoodPurchaseProductTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseProductTokoFoodPurchaseUiModel().apply {
             isUnavailable = mIsUnavailable
             this.id = id
             name = "Milo Macchiato $id"
@@ -88,27 +88,27 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
-    fun mapPromoUiModel(): TokoFoodPurchasePromoUiModel {
-        return TokoFoodPurchasePromoUiModel().apply {
+    fun mapPromoUiModel(): TokoFoodPurchasePromoTokoFoodPurchaseUiModel {
+        return TokoFoodPurchasePromoTokoFoodPurchaseUiModel().apply {
             state = ExplorePromo.STATE_DEFAULT
             title = "Makin hemat pakai promo"
             description = ""
         }
     }
 
-    fun mapSummaryTransactionUiModel(): TokoFoodPurchaseSummaryTransactionUiModel {
-        return TokoFoodPurchaseSummaryTransactionUiModel()
+    fun mapSummaryTransactionUiModel(): TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel()
     }
 
-    fun mapTotalAmountUiModel(): TokoFoodPurchaseTotalAmountUiModel {
-        return TokoFoodPurchaseTotalAmountUiModel().apply {
+    fun mapTotalAmountUiModel(): TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel().apply {
             totalAmount = 0
             isDisabled = false
         }
     }
 
-    fun mapAccordionUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseAccordionUiModel {
-        return TokoFoodPurchaseAccordionUiModel().apply {
+    fun mapAccordionUiModel(isShippingUnavailable: Boolean): TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel {
+        return TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel().apply {
             isCollapsed = false
             showMoreWording = "Tampilkan Lebih Banyak"
             showLessWording = "Tampilkan Lebih Sedikit"

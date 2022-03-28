@@ -6,17 +6,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseAddressBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAddressTokoFoodPurchaseUiModel
 
 class TokoFoodPurchaseAddressViewHolder(private val viewBinding: ItemPurchaseAddressBinding,
                                         private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseAddressUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_address
     }
 
-    override fun bind(element: TokoFoodPurchaseAddressUiModel) {
+    override fun bind(element: TokoFoodPurchaseAddressTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             textChangeShippingAddress.setOnClickListener {
                 listener.onTextChangeShippingAddressClicked()

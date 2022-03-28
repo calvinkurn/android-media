@@ -7,29 +7,29 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseSummaryTransactionBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: ItemPurchaseSummaryTransactionBinding,
                                                    private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseSummaryTransactionUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_summary_transaction
     }
 
-    override fun bind(element: TokoFoodPurchaseSummaryTransactionUiModel) {
+    override fun bind(element: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             containerTransactionItem.removeAllViews()
             element.getTransactionList().forEach {
-                if (it.defaultValueForZero != TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_HIDE) {
+                if (it.defaultValueForZero != TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_HIDE) {
                     val summaryTransactionItem = SubItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(itemView.context))
                     summaryTransactionItem.textTransactionTitle.text = it.title
-                    if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO) {
+                    if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO) {
                         summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
                         containerTransactionItem.addView(summaryTransactionItem.root)
-                    } else if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE) {
+                    } else if (it.defaultValueForZero == TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE) {
                         if (it.value > 0) {
                             summaryTransactionItem.textTransactionValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.value, false).removeDecimalSuffix()
                         } else {

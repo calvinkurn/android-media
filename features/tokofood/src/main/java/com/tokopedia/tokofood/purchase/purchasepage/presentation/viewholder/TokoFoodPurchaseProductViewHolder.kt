@@ -17,19 +17,19 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseProductBinding
 import com.tokopedia.tokofood.databinding.SubItemPurchaseAddOnBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseProductTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchaseProductBinding,
                                         private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseProductUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_product
     }
 
-    override fun bind(element: TokoFoodPurchaseProductUiModel) {
+    override fun bind(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         renderProductBasicInformation(viewBinding, element)
         renderProductAddOn(viewBinding, element)
         renderProductPrice(viewBinding, element)
@@ -39,7 +39,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         renderBottomDivider(viewBinding, element)
     }
 
-    private fun View.renderAlphaProductItem(element: TokoFoodPurchaseProductUiModel) {
+    private fun View.renderAlphaProductItem(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         if (element.isUnavailable || element.isDisabled) {
             alpha = 0.5f
         } else {
@@ -47,7 +47,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderBottomDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderBottomDivider(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             val nextItem = listener.getNextItems(adapterPosition, 1).firstOrNull()
             nextItem?.let {
@@ -65,7 +65,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderProductBasicInformation(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderProductBasicInformation(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             imageProduct.setImageUrl(element.imageUrl)
             imageProduct.renderAlphaProductItem(element)
@@ -74,7 +74,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderProductAddOn(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderProductAddOn(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.addOns.isNotEmpty()) {
                 containerAddOn.removeAllViews()
@@ -91,7 +91,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderProductPrice(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderProductPrice(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.originalPrice > 0) {
                 textProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.originalPrice, false).removeDecimalSuffix()
@@ -113,7 +113,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderProductNotes(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderProductNotes(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isUnavailable) {
                 textNotes.gone()
@@ -149,7 +149,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun setNotesConstraint(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun setNotesConstraint(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             val constraintSet = ConstraintSet()
             constraintSet.clone(containerPurchaseProduct)
@@ -164,7 +164,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderProductQuantity(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderProductQuantity(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isUnavailable) {
                 qtyEditorProduct.gone()
@@ -207,7 +207,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         }
     }
 
-    private fun renderDelete(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductUiModel) {
+    private fun renderDelete(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isUnavailable) {
                 buttonDeleteProduct.gone()

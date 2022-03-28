@@ -15,51 +15,51 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.viewholder.*
 class TokoFoodPurchaseAdapterTypeFactory(private val listener: TokoFoodPurchaseActionListener)
     : BaseAdapterTypeFactory(), TokoFoodPurchaseTypeFactory {
 
-    override fun type(uiModel: TokoFoodPurchaseAccordionUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseAccordionViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseAddressUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseAddressTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseAddressViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseDividerUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseDividerTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseDividerViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseGeneralTickerUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseGeneralTickerViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseProductListHeaderUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseProductListHeaderViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseProductUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseProductTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseProductViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseProductUnavailableReasonUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseProductUnavailableReasonViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchasePromoUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchasePromoTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchasePromoViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseShippingUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseShippingViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseSummaryTransactionUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseSummaryTransactionViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseTickerErrorShopLevelUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseTickerErrorShopLevelViewHolder.LAYOUT
     }
 
-    override fun type(uiModel: TokoFoodPurchaseTotalAmountUiModel): Int {
+    override fun type(uiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel): Int {
         return TokoFoodPurchaseTotalAmountViewHolder.LAYOUT
     }
 

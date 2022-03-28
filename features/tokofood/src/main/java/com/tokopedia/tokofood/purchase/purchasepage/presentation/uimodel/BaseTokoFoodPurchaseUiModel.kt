@@ -1,5 +1,5 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel
 
-open class BaseUiModel(
+open class BaseTokoFoodPurchaseUiModel(
         var isDisabled: Boolean = false
 )

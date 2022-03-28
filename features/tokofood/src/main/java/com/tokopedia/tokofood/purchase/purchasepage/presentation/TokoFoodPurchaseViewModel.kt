@@ -21,8 +21,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     val uiEvent: LiveData<UiEvent>
         get() = _uiEvent
 
-    private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
-    val fragmentUiModel: LiveData<FragmentUiModel>
+    private val _fragmentUiModel = MutableLiveData<TokoFoodPurchaseFragmentUiModel>()
+    val fragmentUiModel: LiveData<TokoFoodPurchaseFragmentUiModel>
         get() = _fragmentUiModel
 
     // List of recyclerview items
@@ -37,11 +37,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return visitables.value ?: mutableListOf()
     }
 
-    private fun getAddressUiModel(): Pair<Int, TokoFoodPurchaseAddressUiModel>? {
+    private fun getAddressUiModel(): Pair<Int, TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
             when (data) {
-                is TokoFoodPurchaseAddressUiModel -> {
+                is TokoFoodPurchaseAddressTokoFoodPurchaseUiModel -> {
                     return Pair(index, data)
                 }
             }
@@ -49,14 +49,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
-    private fun getProductByProductId(productId: String): Pair<Int, TokoFoodPurchaseProductUiModel>? {
+    private fun getProductByProductId(productId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductUiModel && data.id == productId -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId -> {
                     return Pair(index, data)
                 }
-                data is TokoFoodPurchaseAccordionUiModel || data is TokoFoodPurchasePromoUiModel -> {
+                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     break@loop
                 }
             }
@@ -64,14 +64,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
-    private fun getAccordionUiModel(): Pair<Int, TokoFoodPurchaseAccordionUiModel>? {
+    private fun getAccordionUiModel(): Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
             when (data) {
-                is TokoFoodPurchaseAccordionUiModel -> {
+                is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel -> {
                     return Pair(index, data)
                 }
-                is TokoFoodPurchasePromoUiModel -> {
+                is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     break@loop
                 }
             }
@@ -79,11 +79,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
-    private fun getSummaryTransactionUiModel(): Pair<Int, TokoFoodPurchaseSummaryTransactionUiModel>? {
+    private fun getSummaryTransactionUiModel(): Pair<Int, TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
             when (data) {
-                is TokoFoodPurchaseSummaryTransactionUiModel -> {
+                is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
                     return Pair(index, data)
                 }
             }
@@ -91,11 +91,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
-    private fun getTotalAmountUiModel(): Pair<Int, TokoFoodPurchaseTotalAmountUiModel>? {
+    private fun getTotalAmountUiModel(): Pair<Int, TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
             when (data) {
-                is TokoFoodPurchaseTotalAmountUiModel -> {
+                is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
                     return Pair(index, data)
                 }
             }
@@ -103,14 +103,14 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
-    private fun getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelUiModel>? {
+    private fun getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
             when (data) {
-                is TokoFoodPurchaseTickerErrorShopLevelUiModel -> {
+                is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel -> {
                     return Pair(index, data)
                 }
-                is TokoFoodPurchaseProductUiModel -> {
+                is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> {
                     break@loop
                 }
             }
@@ -118,27 +118,27 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return null
     }
 
-    private fun getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonUiModel>? {
+    private fun getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel>? {
         val dataList = getVisitablesValue()
         loop@ for ((index, data) in dataList.withIndex()) {
-            if (data is TokoFoodPurchaseProductUnavailableReasonUiModel) {
+            if (data is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel) {
                 return Pair(index, data)
             }
         }
         return null
     }
 
-    private fun getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductUiModel>> {
+    private fun getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> {
         val dataList = getVisitablesValue()
         var firstItemIndex = -1
-        val unavailableProducts = mutableListOf<TokoFoodPurchaseProductUiModel>()
+        val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
         loop@ for ((index, data) in dataList.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductUiModel && data.isUnavailable -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isUnavailable -> {
                     if (firstItemIndex == -1) firstItemIndex = index
                     unavailableProducts.add(data)
                 }
-                data is TokoFoodPurchaseAccordionUiModel || data is TokoFoodPurchasePromoUiModel -> {
+                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     break@loop
                 }
             }
@@ -163,7 +163,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             val isSuccess = true
             if (isSuccess) {
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = FragmentUiModel(shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
                 constructRecycleViewItem()
                 calculateTotal()
             } else {
@@ -177,30 +177,30 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val tmpData = mutableListOf<Visitable<*>>()
         val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel()
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingUnavailable))
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "1"))
+        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapAddressUiModel())
         tmpData.add(shippingData)
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "2"))
+        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingUnavailable, false))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel(shippingData.isShippingUnavailable))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "1"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "2"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "3"))
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "3"))
+        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingUnavailable, true))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel(shippingData.isShippingUnavailable))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "4"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "5"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "6"))
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "4"))
+        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "4"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel(shippingData.isShippingUnavailable))
         if (!shippingData.isShippingUnavailable) {
-            tmpData.add(TokoFoodPurchaseDividerUiModel(id = "5"))
+            tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "5"))
             tmpData.add(TokoFoodPurchaseUiModelMapper.mapPromoUiModel())
-            tmpData.add(TokoFoodPurchaseDividerUiModel(id = "6"))
+            tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "6"))
             tmpData.add(TokoFoodPurchaseUiModelMapper.mapSummaryTransactionUiModel())
         }
-        tmpData.add(TokoFoodPurchaseDividerUiModel(id = "7"))
+        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "7"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapTotalAmountUiModel())
         _visitables.value = tmpData
     }
@@ -247,10 +247,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val dataList = getVisitablesValue()
         loop@ for (data in dataList) {
             when (data) {
-                is TokoFoodPurchaseProductUiModel -> {
+                is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> {
                     return true
                 }
-                is TokoFoodPurchasePromoUiModel -> {
+                is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     return false
                 }
             }
@@ -263,10 +263,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         var count = 0
         loop@ for (data in dataList) {
             when {
-                data is TokoFoodPurchaseProductUiModel && !data.isUnavailable -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isUnavailable -> {
                     count++
                 }
-                (data is TokoFoodPurchaseProductUiModel && data.isUnavailable) || data is TokoFoodPurchasePromoUiModel -> {
+                (data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isUnavailable) || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     break@loop
                 }
             }
@@ -321,9 +321,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         }
     }
 
-    private fun collapseUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionUiModel,
+    private fun collapseUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
                                             dataList: MutableList<Visitable<*>>,
-                                            mAccordionData: Pair<Int, TokoFoodPurchaseAccordionUiModel>) {
+                                            mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
         newAccordionUiModel.isCollapsed = true
         dataList[mAccordionData.first] = newAccordionUiModel
         val unavailableReasonData = getUnavailableReasonUiModel()
@@ -338,9 +338,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         dataList.removeAll(tmpCollapsedUnavailableItems)
     }
 
-    private fun expandUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionUiModel,
+    private fun expandUnavailableProducts(newAccordionUiModel: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel,
                                           dataList: MutableList<Visitable<*>>,
-                                          mAccordionData: Pair<Int, TokoFoodPurchaseAccordionUiModel>) {
+                                          mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
         newAccordionUiModel.isCollapsed = false
         dataList[mAccordionData.first] = newAccordionUiModel
         val index = mAccordionData.first - 1
@@ -351,7 +351,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val dataList = getVisitablesValue()
         var targetIndex = -1
         loop@ for ((index, data) in dataList.withIndex()) {
-            if (data is TokoFoodPurchaseProductListHeaderUiModel && data.isUnavailableHeader) {
+            if (data is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel && data.isUnavailableHeader) {
                 targetIndex = index
                 break@loop
             }
@@ -365,7 +365,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         }
     }
 
-    fun updateNotes(product: TokoFoodPurchaseProductUiModel, notes: String) {
+    fun updateNotes(product: TokoFoodPurchaseProductTokoFoodPurchaseUiModel, notes: String) {
         val productData = getProductByProductId(product.id)
         productData?.let {
             val dataList = getVisitablesValue()
@@ -379,11 +379,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
     fun calculateTotal() {
         val dataList = getVisitablesValue()
-        var summaryTransactionUiModel: TokoFoodPurchaseSummaryTransactionUiModel? = null
+        var summaryTransactionUiModel: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel? = null
         var summaryTransactionUiModelIndex = -1
-        var totalAmountUiModel: TokoFoodPurchaseTotalAmountUiModel? = null
+        var totalAmountUiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel? = null
         var totalAmountUiModelIndex = -1
-        var shippingUiModel: TokoFoodPurchaseShippingUiModel? = null
+        var shippingUiModel: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel? = null
         var totalProduct = 0
         var subTotal = 0L
         var wrappingFee = 0L
@@ -391,7 +391,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         var serviceFee = 0L
         loop@ for ((index, data) in dataList.withIndex()) {
             when {
-                data is TokoFoodPurchaseShippingUiModel -> {
+                data is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel -> {
                     shippingUiModel = data
                     if (!data.isShippingUnavailable) {
                         shippingFee = data.shippingPrice
@@ -399,15 +399,15 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
                         serviceFee = data.serviceFee
                     }
                 }
-                data is TokoFoodPurchaseProductUiModel && !data.isUnavailable && !data.isDisabled -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isUnavailable && !data.isDisabled -> {
                     subTotal += (data.price * data.quantity)
                     totalProduct++
                 }
-                data is TokoFoodPurchaseSummaryTransactionUiModel -> {
+                data is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
                     summaryTransactionUiModel = data
                     summaryTransactionUiModelIndex = index
                 }
-                data is TokoFoodPurchaseTotalAmountUiModel -> {
+                data is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
                     totalAmountUiModel = data
                     totalAmountUiModelIndex = index
                 }
@@ -416,25 +416,25 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
         summaryTransactionUiModel?.let {
             val newSummaryTransactionData = it.copy()
-            newSummaryTransactionData.subTotal = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+            newSummaryTransactionData.subTotal = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
                     title = "Total Harga ($totalProduct item)",
                     value = subTotal,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_ZERO
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO
             )
-            newSummaryTransactionData.wrappingFee = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+            newSummaryTransactionData.wrappingFee = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
                     title = "Biaya Bungkus dari Restoran",
                     value = wrappingFee,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE
             )
-            newSummaryTransactionData.shippingFee = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+            newSummaryTransactionData.shippingFee = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
                     title = "Ongkir",
                     value = shippingFee,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE
             )
-            newSummaryTransactionData.serviceFee = TokoFoodPurchaseSummaryTransactionUiModel.Transaction(
+            newSummaryTransactionData.serviceFee = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
                     title = "Biaya Jasa Aplikasi",
                     value = serviceFee,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionUiModel.Transaction.DEFAULT_FREE
+                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE
             )
             dataList[summaryTransactionUiModelIndex] = newSummaryTransactionData
         }

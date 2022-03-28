@@ -4,18 +4,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseGeneralTickerBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class TokoFoodPurchaseGeneralTickerViewHolder(private val viewBinding: ItemPurchaseGeneralTickerBinding,
                                               private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseGeneralTickerUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_general_ticker
     }
 
-    override fun bind(element: TokoFoodPurchaseGeneralTickerUiModel) {
+    override fun bind(element: TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             tickerGeneral.setHtmlDescription(element.message)
             if (element.isErrorTicker) {

@@ -4,18 +4,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseAccordionBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseAccordionViewHolder(private val viewBinding: ItemPurchaseAccordionBinding,
                                           private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseAccordionUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_accordion
     }
 
-    override fun bind(element: TokoFoodPurchaseAccordionUiModel) {
+    override fun bind(element: TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isCollapsed) {
                 textAccordion.text = element.showMoreWording

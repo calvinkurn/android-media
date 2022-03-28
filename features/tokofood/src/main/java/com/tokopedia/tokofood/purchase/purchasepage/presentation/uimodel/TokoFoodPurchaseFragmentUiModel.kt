@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel
 
-data class FragmentUiModel(
+data class TokoFoodPurchaseFragmentUiModel(
         var shopName: String = "",
         var shopLocation: String = ""
 )

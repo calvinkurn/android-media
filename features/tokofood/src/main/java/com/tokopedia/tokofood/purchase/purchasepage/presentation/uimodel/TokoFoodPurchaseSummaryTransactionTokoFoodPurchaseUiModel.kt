@@ -3,12 +3,12 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
-data class TokoFoodPurchaseSummaryTransactionUiModel(
+data class TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel(
         var subTotal: Transaction = Transaction(),
         var wrappingFee: Transaction = Transaction(),
         var shippingFee: Transaction = Transaction(),
         var serviceFee: Transaction = Transaction()
-) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseUiModel() {
+) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {
         return typeFactory.type(this)

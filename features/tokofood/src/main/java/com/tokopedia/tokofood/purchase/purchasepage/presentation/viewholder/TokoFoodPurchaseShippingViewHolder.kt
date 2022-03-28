@@ -7,18 +7,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchaseShippingBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
-import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoodPurchaseShippingTokoFoodPurchaseUiModel
 import com.tokopedia.tokofood.purchase.renderAlpha
 
 class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseShippingBinding,
                                          private val listener: TokoFoodPurchaseActionListener)
-    : AbstractViewHolder<TokoFoodPurchaseShippingUiModel>(viewBinding.root) {
+    : AbstractViewHolder<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.item_purchase_shipping
     }
 
-    override fun bind(element: TokoFoodPurchaseShippingUiModel) {
+    override fun bind(element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
         if (element.isNeedPinpoint) {
             renderPinpoint(viewBinding, element)
         } else {
@@ -27,7 +27,7 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
         itemView.renderAlpha(element)
     }
 
-    private fun renderPinpoint(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingUiModel) {
+    private fun renderPinpoint(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             containerPinpoint.show()
             containerShipping.gone()
@@ -39,7 +39,7 @@ class TokoFoodPurchaseShippingViewHolder(private val viewBinding: ItemPurchaseSh
         }
     }
 
-    private fun renderShipping(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingUiModel) {
+    private fun renderShipping(viewBinding: ItemPurchaseShippingBinding, element: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             containerShipping.show()
             containerPinpoint.gone()
