@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/Unify_Static_Black">
+    android:background="@color/Unify_Background">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarVideoPicker"
@@ -97,7 +97,7 @@
             android:focusable="true"
             android:clickable="true"
             android:textStyle="bold"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             android:foreground="?selectableItemBackground"
             android:layout_alignParentBottom="true"/>
 
