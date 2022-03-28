@@ -69,7 +69,6 @@ open class CameraFragment : BaseDaggerFragment()
 
     private val medias = mutableListOf<MediaUiModel>()
 
-    private var videoDurationTimer: CountDownTimer? = null
     private var isTakingPictureMode = true
     private var isInitFlashState = false
 
@@ -298,7 +297,6 @@ open class CameraFragment : BaseDaggerFragment()
 
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L
-        private const val COUNTDOWN_INTERVAL = 1000L
     }
 
 }
