@@ -168,7 +168,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:elevation="4dp"
             android:id="@+id/icon"
             android:padding="10dp"
@@ -176,7 +176,8 @@
             android:contentDescription="Circle"
             android:layout_marginStart="6dp"
             android:layout_marginLeft="6dp"
-            android:background="@drawable/lf_squircle"
+            app:unify_image_corner_radius="0"
+            app:unify_image_placeholder="@drawable/lf_squircle"
             android:layout_width="58dp"
             android:layout_height="58dp" />
 </RelativeLayout>
