@@ -55,6 +55,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private var displayMetrix = DisplayMetrics()
 
+    private val kebabMenuSheetHeight: Int
+        get() = (displayMetrix.heightPixels * MIN_PERCENT_HEIGHT).toInt()
+
     private val userReportSheetHeight: Int
         get() = (displayMetrix.heightPixels * MAX_PERCENT_HEIGHT).toInt()
 
@@ -62,6 +65,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         private const val TAG = "PlayMoreActionBottomSheet"
 
         private const val MAX_PERCENT_HEIGHT = 0.9
+        private const val MIN_PERCENT_HEIGHT = 0.1
     }
 
     private var childView: View? = null
@@ -136,7 +140,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.observableKebabMenuSheet.observe(viewLifecycleOwner, DistinctObserver { kebabMenuType ->
             kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
                 if (it is BottomInsetsState.Shown) {
-                    customPeekHeight = it.estimatedInsetsHeight
+                    customPeekHeight = kebabMenuSheetHeight
                     kebabMenuSheetView.showWithHeight(customPeekHeight)
                 }
                 else kebabMenuSheetView.hide()
