@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.databinding.LayoutTitleChipWidgetBinding
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
-import com.tokopedia.utils.view.binding.noreflection.viewBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class InitialStateChipWidgetTitleViewHolder(
     itemView: View,
