@@ -80,7 +80,7 @@ class CouponDetailViewModelTest {
 
 
     @Test
-    fun `When get coupon detail success1, should emit success to observer`() = runBlocking {
+    fun `When get coupon shop and top products data success, should emit success to observer`() = runBlocking {
         //Given
         val shopMetadata = mockk<ShopWithTopProducts>()
         val couponUiModel = mockk<CouponUiModel>()

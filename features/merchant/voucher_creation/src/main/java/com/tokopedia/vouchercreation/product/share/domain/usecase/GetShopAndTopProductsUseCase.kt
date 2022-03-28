@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.product.share.domain.usecase
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.product.create.data.response.GetProductsByProductIdResponse
@@ -8,39 +7,38 @@ import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetMostSoldProductsUseCase
 import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.usecase.ShopBasicDataUseCase
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class GetShopAndTopProductsUseCase @Inject constructor(
     private val getShopBasicDataUseCase: ShopBasicDataUseCase,
     private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
     private val userSession: UserSessionInterface,
-    private val mapper : CouponMapper,
-    private val dispatcher: CoroutineDispatchers
+    private val mapper : CouponMapper
 ) {
 
     companion object {
         private const val EMPTY_STRING = ""
     }
 
-    suspend fun execute(couponUiModel: CouponUiModel) = withContext(dispatcher.io) {
+    suspend fun execute(couponUiModel: CouponUiModel): ShopWithTopProducts {
+        return coroutineScope {
+            val coupon = mapper.map(couponUiModel)
 
-        val coupon = mapper.map(couponUiModel)
+            val shopDeferred = async { getShopBasicDataUseCase.executeOnBackground() }
+            val shop = shopDeferred.await()
 
-        val shopDeferred = async { getShopBasicDataUseCase.executeOnBackground() }
-        val shop = shopDeferred.await()
+            val productIds = coupon.productIds.map { it.parentProductId }
+            val productsDeferred = async { getMostSoldProducts(productIds) }
+            val products = productsDeferred.await()
 
-        val productIds = coupon.productIds.map { it.parentProductId }
-        val productsDeferred = async { getMostSoldProducts(productIds) }
-        val products = productsDeferred.await()
+            val productImageUrls = products.data.map {
+                getImageUrlOrEmpty(it.pictures)
+            }
 
-        val productImageUrls = products.data.map {
-            getImageUrlOrEmpty(it.pictures)
+            return@coroutineScope ShopWithTopProducts(productImageUrls, shop)
         }
-
-        return@withContext ShopWithTopProducts(productImageUrls, shop)
     }
 
     private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {

@@ -39,7 +39,9 @@ class CouponDetailViewModel @Inject constructor(
     fun getCouponDetail(couponId : Long) {
         launchCatchError(
             block = {
-                val result = getCouponDetailFacadeUseCase.execute(couponId)
+                val result = withContext(dispatchers.io) {
+                    getCouponDetailFacadeUseCase.execute(couponId)
+                }
                 _couponDetail.value = Success(result)
             },
             onError = {
@@ -51,7 +53,9 @@ class CouponDetailViewModel @Inject constructor(
     fun getShopAndTopProducts(coupon : CouponUiModel) {
         launchCatchError(
             block = {
-                val result = getShopAndTopProductsUseCase.execute(coupon)
+                val result = withContext(dispatchers.io) {
+                    getShopAndTopProductsUseCase.execute(coupon)
+                }
                 _shopWithTopProducts.value = Success(result)
             },
             onError = {
