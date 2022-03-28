@@ -6,7 +6,11 @@ import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -15,7 +19,6 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
-import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -26,10 +29,18 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
+import io.mockk.verify
+import io.mockk.verifyOrder
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -451,7 +462,26 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         }
     }
 
+    @Test
+    fun `GIVEN load checkout page with last apply WHEN get last apply THEN should return last apply data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val lastApplyUiModel = LastApplyUiModel(
+                codes = listOf("promoCode")
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), lastApplyData = lastApplyUiModel))
+        }
 
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(lastApplyUiModel, presenter.lastApplyData)
+    }
 
     @Test
     fun `WHEN load checkout page get default value address state THEN should render checkout page`() {

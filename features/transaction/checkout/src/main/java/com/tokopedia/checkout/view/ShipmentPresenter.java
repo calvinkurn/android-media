@@ -2154,12 +2154,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    @NotNull
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
-    }
-
     @Override
     public void releaseBooking() {
         // As deals product is using OCS, the shipment should only contain 1 product
