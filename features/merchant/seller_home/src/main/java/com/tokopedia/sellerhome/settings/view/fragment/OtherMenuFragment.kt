@@ -44,6 +44,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -525,10 +526,13 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         viewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
             viewHolder?.setShopStatusData(it)
             if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
+                val throwable = it.throwable
+                showErrorToaster(throwable) {
                     onRefreshShopInfo()
                 }
-                logHeaderError(it.throwable, SHOP_INFO)
+                if (throwable is UserShopInfoException) {
+                    logHeaderError(throwable, "$SHOP_INFO - ${throwable.errorType}")
+                }
             }
         }
     }
