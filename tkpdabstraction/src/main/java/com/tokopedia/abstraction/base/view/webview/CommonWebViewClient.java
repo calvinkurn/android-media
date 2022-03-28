@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.logger.ServerLogger;
+import com.tokopedia.logger.utils.Priority;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +43,7 @@ public class CommonWebViewClient extends WebChromeClient {
         }
 
     }
-
+    // constructor to be used only for TopPayActivity -> refer to onConsoleMessage
     public CommonWebViewClient(Context context, FilePickerInterface filePickerInterface, ProgressBar progressBar) {
         this.context = context;
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
@@ -55,18 +58,17 @@ public class CommonWebViewClient extends WebChromeClient {
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
+        // context is only sent via TopPayActivity using second constructor
         if (context != null)
-        Toast.makeText(context, "onConsoleMessage" + consoleMessage.message() + msgType.name(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, " type:->" + msgType.name() + "\n" + "onConsoleMessage" + consoleMessage.message(), Toast.LENGTH_SHORT).show();
 
-        switch (msgType) {
-            case WARNING:
-            case ERROR:
-                Map<String, String> map = new HashMap<>();
-                map.put("type", msgType.name());
-                map.put("desc", consoleMessage.message());
+        if (msgType == ConsoleMessage.MessageLevel.ERROR) {
+            Map<String, String> map = new HashMap<>();
+            map.put("type", "error");
+            map.put("err", "web_console_error");
+            map.put("desc", consoleMessage.message());
 
-                //ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);
-                break;
+            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);
         }
         return true;
     }
