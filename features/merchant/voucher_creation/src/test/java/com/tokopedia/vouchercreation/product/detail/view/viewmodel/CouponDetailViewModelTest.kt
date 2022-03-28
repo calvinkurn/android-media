@@ -2,7 +2,9 @@ package com.tokopedia.vouchercreation.product.detail.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
@@ -17,6 +19,7 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -77,6 +80,18 @@ class CouponDetailViewModelTest {
         coVerify { couponDetailObserver.onChanged(Success(couponMetadata)) }
     }
 
+    @Test
+    fun `When get coupon detail error, should emit error to observer`() = runBlocking {
+        //Given
+        val error = MessageErrorException()
+        coEvery { getCouponDetailFacadeUseCase.execute(COUPON_ID) } throws error
+
+        //When
+        viewModel.getCouponDetail(COUPON_ID)
+
+        //Then
+        coVerify { couponDetailObserver.onChanged(Fail(error)) }
+    }
 
 
     @Test
@@ -92,6 +107,86 @@ class CouponDetailViewModelTest {
 
         //Then
         coVerify { shopAndTopProductsObserver.onChanged(Success(shopMetadata)) }
+    }
+
+    @Test
+    fun `When get coupon shop and top products data error, should emit error to observer`() = runBlocking {
+        //Given
+        val error = MessageErrorException()
+        val couponUiModel = mockk<CouponUiModel>()
+
+        coEvery { getShopAndTopProductsUseCase.execute(couponUiModel) } throws error
+
+        //When
+        viewModel.getShopAndTopProducts(couponUiModel)
+
+        //Then
+        coVerify { shopAndTopProductsObserver.onChanged(Fail(error)) }
+    }
+
+    @Test
+    fun `When set coupon, should set data correctly`() = runBlocking {
+        //Given
+        val expected = mockk<CouponUiModel>()
+        viewModel.setCoupon(expected)
+
+        //When
+        val actual = viewModel.getCoupon()
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When set max product limit, should set data correctly`() = runBlocking {
+        //Given
+        val expected = 100
+        viewModel.setMaxProductLimit(expected)
+
+        //When
+        val actual = viewModel.getMaxProductLimit()
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `When get coupon setting function is invoked, should call mapper function`() = runBlocking {
+        //Given
+        val coupon = mockk<CouponUiModel>()
+
+        viewModel.getCouponSettings(coupon)
+
+        //Then
+        coVerify { mapper.map(coupon) }
+    }
+
+
+    @Test
+    fun `When coupon status id is 2, should return true`() = runBlocking {
+        //Given
+        val expected = true
+        val ongoingCouponStatusId = 2
+
+        //When
+        val actual = viewModel.isOngoingCoupon(ongoingCouponStatusId)
+
+        //Then
+        assertEquals(expected, actual)
+    }
+
+
+    @Test
+    fun `When coupon status id is not 2, should return as non ongoing coupon`() = runBlocking {
+        //Given
+        val expected = false
+        val endedCouponStatusId = 3
+
+        //When
+        val actual = viewModel.isOngoingCoupon(endedCouponStatusId)
+
+        //Then
+        assertEquals(expected, actual)
     }
 
 }
