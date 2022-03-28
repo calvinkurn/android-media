@@ -37,16 +37,25 @@ class PreviewPagerComponent(
         viewPager.addOnAttachStateChangeListener(attachStateListener())
     }
 
-    fun removeData(media: MediaUiModel) {
+    fun removeData(media: MediaUiModel): Int {
         val element = getData(media)
-        adapter.remove(element)
+        val removedIndex = adapter.remove(element)
+
+        // play video if new selected index mVideoPlayer is ready
+        adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
+
+        return removedIndex
     }
 
-    fun moveToOf(media: MediaUiModel) : Int{
+    fun moveToOf(media: MediaUiModel): Int {
         val element = getData(media)
         val index = medias.indexOf(element)
         viewPager.setCurrentItem(index, false)
         return index
+    }
+
+    fun getSelectedIndex(): Int {
+        return viewPager.currentItem
     }
 
     override fun release() {
@@ -59,12 +68,12 @@ class PreviewPagerComponent(
         override fun onPageSelected(position: Int) {
             val currentItem = medias[position]
             currentItem.mVideoPlayer?.let {
-                if(!it.player().isPlaying){
+                if (!it.player().isPlaying) {
                     currentItem.mVideoPlayer?.start()
                 }
             }
 
-            if(adapter.count > previousViewPagerIndex){
+            if (previousViewPagerIndex in 0 until adapter.count) {
                 val previousItem = medias[previousViewPagerIndex]
                 if (previousItem.data.isVideo()) {
                     previousItem.mVideoPlayer?.stop()
@@ -84,12 +93,11 @@ class PreviewPagerComponent(
         this.medias.addAll(asPreviewUiModel)
     }
 
-    private fun getData(media: MediaUiModel)
-        = medias.firstOrNull {
-            it.data == media
-        }
+    private fun getData(media: MediaUiModel) = medias.firstOrNull {
+        it.data == media
+    }
 
-    private fun attachStateListener() = object: View.OnAttachStateChangeListener{
+    private fun attachStateListener() = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View?) {
             v?.post {
                 adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()

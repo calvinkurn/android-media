@@ -99,11 +99,19 @@ class PickerPreviewActivity : BaseActivity()
     override fun onDataSetChanged(action: DrawerActionType) {
         when (action) {
             is DrawerActionType.Remove -> {
-                pickerPager.removeData(action.mediaToRemove)
+                val removedIndex = pickerPager.removeData(action.mediaToRemove)
                 setUiModelData(action.data)
 
                 if (action.data.isEmpty()) {
                     onBackPickerIntent()
+                }
+
+                if(removedIndex == drawerIndexSelected){
+                    // move selected item on drawer if selected item is removed
+                    drawerIndexSelected = pickerPager.getSelectedIndex()
+                    binding?.drawerSelector?.post {
+                        binding?.drawerSelector?.setThumbnailSelected(nextIndex = drawerIndexSelected)
+                    }
                 }
             }
             is DrawerActionType.Add -> {

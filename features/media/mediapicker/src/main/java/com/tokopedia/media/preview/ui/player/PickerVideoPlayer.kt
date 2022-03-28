@@ -34,6 +34,9 @@ class PickerVideoPlayer constructor(
                     Player.STATE_READY -> {
                         listener?.onPlayStateChanged(true)
                     }
+                    Player.STATE_ENDED -> {
+                        start()
+                    }
                     else -> {
                         listener?.onPlayStateChanged(false)
                     }
