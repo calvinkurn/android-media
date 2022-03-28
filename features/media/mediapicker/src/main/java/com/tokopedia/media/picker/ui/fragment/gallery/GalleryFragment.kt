@@ -223,6 +223,11 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                     return false
                 }
 
+                if(listener?.isMaxVideoDuration(media) == true){
+                    listener?.onShowVideoMaxDurationToast()
+                    return false
+                }
+
                 if (listener?.isMaxVideoSize(media) == true) {
                     listener?.onShowVideoMaxFileSizeToast()
                     return false

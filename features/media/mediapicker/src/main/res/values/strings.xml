@@ -48,7 +48,7 @@
     <string name="picker_selection_limit_message">Kamu hanya bisa upload %1$d media.</string>
     <string name="picker_selection_limit_video">Kamu hanya bisa upload %1$d video.</string>
 
-    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$d menit pas.</string>
+    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$s pas.</string>
     <string name="picker_video_duration_min_limit">Durasi video minimal harus %1$d detik.</string>
     <string name="picker_video_max_size">Ukuran video maksimal %1$d MB.</string>
 
@@ -59,4 +59,7 @@
 <!--    special char-->
     <string name="picker_album_subtitle">%1$d medias</string>
     <string name="separator_recording_duration">/</string>
+
+    <string name="picker_video_duration_max_limit_sec">detik</string>
+    <string name="picker_video_duration_max_limit_min">menit</string>
 </resources>

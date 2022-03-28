@@ -25,6 +25,7 @@ import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
+import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.*
@@ -403,7 +404,7 @@ open class PickerActivity : BaseActivity()
     override fun onShowVideoMaxDurationToast() {
         onShowValidationToaster(
             R.string.picker_video_duration_max_limit,
-            param.get().maxVideoDuration().toSec()
+            param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
         )
     }
 
@@ -442,7 +443,7 @@ open class PickerActivity : BaseActivity()
         )
     }
 
-    private fun onShowValidationToaster(messageId: Int, param: Number) {
+    private fun onShowValidationToaster(messageId: Int, param: Any) {
         val content = getString(messageId, param)
         onShowToaster(content)
     }
