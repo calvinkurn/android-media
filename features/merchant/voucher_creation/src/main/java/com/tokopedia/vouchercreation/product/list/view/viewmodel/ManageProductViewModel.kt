@@ -192,10 +192,10 @@ class ManageProductViewModel @Inject constructor(
             val mutableVariantList = productUiModel?.variants
             mutableVariantList?.run {
                 productId.childProductId.forEach { variantId ->
-                    val variantUiModel = mutableVariantList.first { variantUiModel ->
+                    val variantUiModel = mutableVariantList.firstOrNull { variantUiModel ->
                         variantUiModel.variantId == variantId.toString()
                     }
-                    variantUiModel.isSelected = true
+                    variantUiModel?.isSelected = true
                 }
             }
             val selectedVariants = mutableVariantList?.filter { it.isSelected }
