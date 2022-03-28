@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
@@ -347,16 +348,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     // also when complete draft is true
                     || configUiModel.channelType == ChannelType.CompleteDraft
                     || configUiModel.channelType == ChannelType.Draft) {
-                        val deferredChannel = async { getChannelById(configUiModel.channelId) }
-                        val deferredProductMap = async {
+                        val deferredChannel = asyncCatchError(block = {
+                            getChannelById(configUiModel.channelId)
+                        }) { it }
+                        val deferredProductMap = asyncCatchError(block = {
                             repo.getProductTagSummarySection(channelID = configUiModel.channelId)
-                        }
+                        }) { emptyList() }
 
                         val error = deferredChannel.await()
                         val productMap = deferredProductMap.await()
 
                         if (error != null) throw error
-                        setSelectedProduct(productMap)
+                        setSelectedProduct(productMap.orEmpty())
             }
 
             _observableConfigInfo.value = NetworkResult.Success(configUiModel)

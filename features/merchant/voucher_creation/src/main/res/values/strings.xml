@@ -464,6 +464,12 @@
     <string name="mvc_understand">Oke, Saya mengerti</string>
     <string name="mvc_free_shipping_coming_soon">Gratis Ongkir (Akan Datang)</string>
     <string name="mvc_update">Ubah</string>
+    <string name="mvc_delete_product_confirmation_title">Yakin hapus produk?</string>
+    <string name="mvc_delete_product_confirmation_description">produk akan dihapus dari daftar produk secara permanen.</string>
+    <string name="mvc_delete_confirmation_yes">Ya, hapus</string>
+    <string name="mvc_delete_confirmation_no">Batal</string>
+    <string name="mvc_delete_single_product_message">1 Produk berhasil dihapus</string>
+    <string name="mvc_delete_product_message">%s Produk berhasil dihapus</string>
 
     <!--create coupon-->
     <string name="mvc_coupon_information_title">Informasi Kupon</string>
