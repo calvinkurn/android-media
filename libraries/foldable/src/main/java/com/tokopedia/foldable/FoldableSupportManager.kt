@@ -27,6 +27,7 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     open fun onCreate() {
+//        Todo:: Establish check for user's choice for tablet orientation
         if (DeviceScreenInfo.isTablet(activity)) {
             val isAccelerometerRotationEnabled = Settings.System.getInt(
                 activity.contentResolver,
@@ -56,6 +57,7 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     open fun onResume() {
+        //        Todo:: Establish check for user's choice for tablet orientation
         if (DeviceScreenInfo.isTablet(activity)) {
             accelerometerOrientationListener.register()
         }
@@ -63,6 +65,7 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     open fun onPause() {
+        //        Todo:: Establish check for user's choice for tablet orientation
         if (DeviceScreenInfo.isTablet(activity)) {
             accelerometerOrientationListener.unregister()
         }
