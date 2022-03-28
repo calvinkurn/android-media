@@ -208,7 +208,8 @@ class ShopInfoViewHolder(
 
     private fun setSaldoBalance(saldoBalanceUiModel: BalanceUiModel) {
         binding.layoutSahOtherSaldo.run {
-            balanceTitle.text = context.resources.getString(R.string.setting_balance)
+            balanceTitle.text =
+                context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_balance)
             balanceValue.text = saldoBalanceUiModel.balanceValue
             sendSettingShopInfoImpressionTracking(
                 saldoBalanceUiModel,
@@ -615,7 +616,8 @@ class ShopInfoViewHolder(
                         com.tokopedia.unifyprinciples.R.color.Unify_R600
                     )
                 )
-                powerMerchantProStatusText.text = getString(R.string.setting_not_active)
+                powerMerchantProStatusText.text =
+                    getString(com.tokopedia.seller.menu.common.R.string.setting_not_active)
             }
         }
 
