@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
+import androidx.core.widget.doOnTextChanged
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
@@ -37,7 +38,6 @@ class VariantDetailFieldsViewHolder(
     private var skuField: TextFieldUnify? = null
     private var weightField: TextFieldUnify? = null
 
-    private var isRendered = false
     private var visitablePosition = 0
     private var isPriceFieldEdited = false
 
@@ -73,7 +73,7 @@ class VariantDetailFieldsViewHolder(
             }
 
             override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                if (isRendered && isPriceFieldEdited) {
+                if (count.isMoreThanZero() && isPriceFieldEdited) {
                     // clean any kind of number formatting here
                     val priceInput = charSequence?.toString()?.replace(".", "") ?: ""
                     // remove scientific notation e.g. 20E7
@@ -82,7 +82,7 @@ class VariantDetailFieldsViewHolder(
                     val validatedInputModel = variantDetailFieldsViewHolderListener.onPriceInputTextChanged(priceInput, visitablePosition)
                     priceField?.setError(validatedInputModel.isPriceError)
                     priceField?.setMessage(validatedInputModel.priceFieldErrorMessage)
-                } else if (isRendered && !isPriceFieldEdited) {
+                } else if (count.isMoreThanZero() && !isPriceFieldEdited) {
                     // handle the price input if field is cleared
                     val validatedInputModel = variantDetailFieldsViewHolderListener.onPriceInputTextChanged(charSequence.toString(), visitablePosition)
                     priceField?.setError(validatedInputModel.isPriceError)
@@ -94,9 +94,9 @@ class VariantDetailFieldsViewHolder(
 
     private fun setupStockFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
         stockField?.setModeToNumberInput()
-        stockField?.textFieldInput?.afterTextChanged {
-            if (isRendered) {
-                val stockInput = it.replace(".", "")
+        stockField?.textFieldInput?.doOnTextChanged { text, _, count, _ ->
+            if (count.isMoreThanZero()) {
+                val stockInput = text.toString().replace(".", "")
                 stockInput.format("%f")
                 val validatedInputModel = variantDetailFieldsViewHolderListener
                     .onStockInputTextChanged(stockInput, visitablePosition)
@@ -108,9 +108,9 @@ class VariantDetailFieldsViewHolder(
 
     private fun setupWeightFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
         weightField?.setModeToNumberInput()
-        weightField?.textFieldInput?.afterTextChanged {
-            if (isRendered) {
-                val weightInput = it.replace(".", "")
+        weightField?.textFieldInput?.doOnTextChanged { text, _, count, _ ->
+            if (count.isMoreThanZero()) {
+                val weightInput = text.toString().replace(".", "")
                 weightInput.format("%f")
                 val validatedInputModel = variantDetailFieldsViewHolderListener
                     .onWeightInputTextChanged(weightInput, visitablePosition)
@@ -121,9 +121,9 @@ class VariantDetailFieldsViewHolder(
     }
 
     private fun setupSkuFieldListener(variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener) {
-        skuField?.textFieldInput?.afterTextChanged {
-            if (isRendered) {
-                variantDetailFieldsViewHolderListener.onSkuInputTextChanged(it, visitablePosition)
+        skuField?.textFieldInput?.doOnTextChanged { text, _, count, _ ->
+            if (count.isMoreThanZero()) {
+                variantDetailFieldsViewHolderListener.onSkuInputTextChanged(text.toString(), visitablePosition)
             }
         }
     }
@@ -153,17 +153,15 @@ class VariantDetailFieldsViewHolder(
             priceField?.textFieldInput?.setText(variantDetailInputLayoutModel.price)
             priceField?.setError(variantDetailInputLayoutModel.isPriceError)
             priceField?.setMessage(variantDetailInputLayoutModel.priceFieldErrorMessage)
-            stockField?.textFieldInput?.setText(variantDetailInputLayoutModel.stock)
+            stockField?.textFieldInput?.setText(variantDetailInputLayoutModel.stock?.toString().orEmpty())
             stockField?.setError(variantDetailInputLayoutModel.isStockError)
             stockField?.setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
-            weightField?.textFieldInput?.setText(variantDetailInputLayoutModel.weight.toString())
+            weightField?.textFieldInput?.setText(variantDetailInputLayoutModel.weight?.toString().orEmpty())
             // show / hide sku field
             setSkuFieldVisibility(variantDetailInputLayoutModel.isSkuFieldVisible)
             // enable / disable priceField
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
-            // flag to prevent exception from
-            isRendered = true
         }
     }
 

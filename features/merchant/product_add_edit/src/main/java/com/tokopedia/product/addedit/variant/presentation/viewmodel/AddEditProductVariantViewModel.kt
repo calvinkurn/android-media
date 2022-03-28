@@ -553,7 +553,6 @@ class AddEditProductVariantViewModel @Inject constructor(
             // condition if adding new product variant (product variant combination not listed in products)
             ProductVariantInputModel(
                     price = productInputModel.getValueOrDefault().detailInputModel.price,
-                    stock = MIN_PRODUCT_STOCK_LIMIT,
                     pictures = variantPicture,
                     combination = combination,
                     status = STATUS_ACTIVE_STRING

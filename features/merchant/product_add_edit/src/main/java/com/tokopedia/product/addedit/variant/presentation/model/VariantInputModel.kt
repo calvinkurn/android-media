@@ -20,9 +20,9 @@ data class ProductVariantInputModel(
         var price: BigInteger = 0.toBigInteger(),
         var sku: String = "",
         var status: String = "",
-        var stock: Int = 0,
+        var stock: Int? = null,
         var isPrimary: Boolean = false,
-        var weight: Int = 0,
+        var weight: Int? = null,
         var weightUnit: String = ""
 ) : Parcelable
 

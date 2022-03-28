@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
     val provider: ResourceProvider,
-    val variantResourceProvider: VariantResourceProvider,
+    private val variantResourceProvider: VariantResourceProvider,
     private val userSession: UserSessionInterface,
     coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
@@ -45,7 +45,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     var isMultiLocationShop: Boolean = false
         private set
 
-    private val mInputDataValid = MutableLiveData<Boolean>()
+    private val mInputDataValid = MutableLiveData(true)
     val inputDataValid: LiveData<Boolean> get() = mInputDataValid
 
     val selectedVariantSize = MediatorLiveData<Int>().apply {
@@ -181,7 +181,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun addToVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
         inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
-        refreshInputDataValidStatus()
     }
 
     fun updateVariantDetailInputMap(fieldPosition: Int, variantDetailInputLayoutModel: VariantDetailInputLayoutModel) {
@@ -204,7 +203,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
             products.getOrNull(productPosition)?.apply {
                 price = variantDetailInput.price.replace(".", "").toBigIntegerOrNull().orZero()
                 sku = variantDetailInput.sku
-                stock = variantDetailInput.stock.toIntOrZero()
+                stock = variantDetailInput.stock
                 weight = variantDetailInput.weight
                 status = if (variantDetailInput.isActive) STATUS_ACTIVE_STRING else STATUS_INACTIVE_STRING
                 // the minimum product variant price will replace the main product price
@@ -336,13 +335,13 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         return inputModel
     }
 
-    fun validateProductVariantStockInput(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
+    fun validateProductVariantStockInput(stockInput: Int?, adapterPosition: Int): VariantDetailInputLayoutModel {
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.stock = stockInput
-        if (stockInput.isEmpty()) {
+        if (stockInput == null) {
             inputModel.stockFieldErrorMessage = variantResourceProvider.getEmptyProductStockErrorMessage()
         } else {
-            val productStock = stockInput.toBigIntegerOrNull().orZero()
+            val productStock = stockInput.orZero().toBigInteger()
             inputModel.stockFieldErrorMessage = validateProductVariantStockInput(productStock)
         }
         inputModel.isStockError = inputModel.stockFieldErrorMessage.isNotEmpty()
@@ -395,17 +394,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         }
     }
 
-    fun validateSubmitDetailField(
-            variantDetailInputLayoutModels: List<VariantDetailInputLayoutModel>
-    ): Boolean {
-        return variantDetailInputLayoutModels.any {
-            val productPrice: BigInteger = it.price.replace(".", "").toBigIntegerOrNull().orZero()
-            val productStock: BigInteger = it.stock.replace(".", "").toBigIntegerOrNull().orZero()
-            productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() ||
-                    productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()
-        }
-    }
-
     fun generateVariantDetailInputModel(
             productVariantIndex: Int,
             headerPosition: Int,
@@ -423,7 +411,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
                 price = InputPriceUtil.formatProductPriceInput(priceString),
                 isActive = productVariant.status == STATUS_ACTIVE_STRING,
                 sku = productVariant.sku,
-                stock = productVariant.stock.toString(),
+                stock = productVariant.stock,
                 weight = productVariant.weight,
                 headerPosition = headerPosition,
                 isSkuFieldVisible = isSkuFieldVisible,

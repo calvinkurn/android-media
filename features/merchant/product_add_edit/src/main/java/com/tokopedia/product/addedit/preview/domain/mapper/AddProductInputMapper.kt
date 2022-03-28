@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
@@ -120,7 +121,7 @@ class AddProductInputMapper @Inject constructor() {
                 it.stock,
                 it.isPrimary,
                 mapPictureVariant(it.pictures),
-                it.weight,
+                it.weight.orZero(),
                 it.weightUnit
         )
     }

@@ -17,10 +17,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
@@ -36,6 +33,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailFieldsViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_OFF
@@ -214,7 +212,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel {
-        val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput, adapterPosition)
+        val validatedInputModel = viewModel.validateProductVariantStockInput(stockInput.toIntOrNull(), adapterPosition)
         viewModel.updateVariantDetailInputMap(adapterPosition, validatedInputModel)
         return validatedInputModel
     }
@@ -409,21 +407,34 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitVariantInput() {
-        val detailList = variantDetailFieldsAdapter?.getDetailInputLayoutList().orEmpty()
-        val isError = viewModel.validateSubmitDetailField(detailList)
+        invokeFieldsValidation()
+        if (viewModel.inputDataValid.value == true) {
+            val detailList = variantDetailFieldsAdapter?.getDetailInputLayoutList().orEmpty()
+            val isError = detailList.any {
+                it.isStockError || it.isWeightError || it.isPriceError
+            }
 
-        if (isError) {
-            variantDetailFieldsAdapter?.notifyDataSetChanged()
-        } else {
-            viewModel.updateProductInputModel()
-            viewModel.productInputModel.value?.apply {
-                val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
+            if (!isError) {
+                viewModel.updateProductInputModel()
+                viewModel.productInputModel.value?.apply {
+                    val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
                         ?: ""
-                SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
+                    SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
-                val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-                activity?.setResult(Activity.RESULT_OK, intent)
-                activity?.finish()
+                    val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
+                    activity?.setResult(Activity.RESULT_OK, intent)
+                    activity?.finish()
+                }
+            }
+        }
+    }
+
+    private fun invokeFieldsValidation() {
+        variantDetailFieldsAdapter?.list?.forEachIndexed { index, visitable ->
+            (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let {
+                onPriceInputTextChanged(it.price.replace(".", ""), index)
+                onStockInputTextChanged(it.stock.orZero().toString(), index)
+                onWeightInputTextChanged(it.weight.orZero().toString(), index)
             }
         }
     }
