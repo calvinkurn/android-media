@@ -195,10 +195,10 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getReferralSenderHome(slug: String) {
         launchCatchError(coroutineContext, block = {
             val response = getReferralSenderHomeUseCase.execute(slug)
-            if(response.resultStatus.code == SUCCESS_CODE) {
-                _sharingReferralUrlParam.postValue(Success("$slug/${response.sharingMetaData.sharingUrl}"))
+            if(response.gamiReferralSenderHome.resultStatus.code == SUCCESS_CODE) {
+                _sharingReferralUrlParam.postValue(Success("$slug/${response.gamiReferralSenderHome.sharingMetaData.sharingUrl}"))
             } else {
-                _sharingReferralUrlParam.postValue(Fail(MessageErrorException(response.resultStatus.reason)))
+                _sharingReferralUrlParam.postValue(Fail(MessageErrorException(response.gamiReferralSenderHome.resultStatus.reason)))
             }
         }) {
             _sharingReferralUrlParam.postValue(Fail(it))
@@ -603,7 +603,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = validateReferralUserUseCase.execute(item.slug)
-            if(response.resultStatus.code == SUCCESS_CODE) {
+            if(response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
                 homeLayoutItemList.mapSharingReferralData(item)
             } else {
                 homeLayoutItemList.removeItem(item.id)
