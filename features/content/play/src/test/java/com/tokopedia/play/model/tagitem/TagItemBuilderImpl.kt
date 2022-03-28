@@ -1,9 +1,6 @@
 package com.tokopedia.play.model.tagitem
 
-import com.tokopedia.play.view.type.MerchantVoucherType
-import com.tokopedia.play.view.type.ProductPrice
-import com.tokopedia.play.view.type.ProductSectionType
-import com.tokopedia.play.view.type.ProductStock
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -105,7 +102,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         serverTime: String,
         startTime: String,
         endTime: String,
-        background: ProductSectionUiModel.Section.BackgroundUiModel
+        background: ProductSectionUiModel.Section.BackgroundUiModel,
+        reminderStatus: PlayUpcomingBellStatus
     ) = ProductSectionUiModel.Section.ConfigUiModel (
         type = type,
         title = title,
@@ -113,6 +111,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         serverTime = serverTime,
         startTime = startTime,
         endTime = endTime,
-        background = background
+        background = background,
+        reminder = reminderStatus
     )
 }

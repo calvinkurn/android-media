@@ -1,6 +1,7 @@
 package com.tokopedia.play.analytic.interactive
 
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 /**
  * Created by jegul on 09/07/21

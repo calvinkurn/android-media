@@ -35,7 +35,6 @@ class GetAllShopInfoUseCase constructor(
         return try {
             getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
             getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
-            getUserShopInfoUseCase.params = GetUserShopInfoUseCase.createRequestParams(shopId)
             PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo(
                     getUserShopInfoUseCase.executeOnBackground(),
                     getShopTotalFollowersUseCase.executeOnBackground(),
