@@ -83,7 +83,9 @@ data class ProductVariantAggregatorUiData(
 
     fun getFirstLevelVariantImage(variantOptionId: String): String?{
         if(variantOptionId.isEmpty()) return null
-        return getFirstLevelVariantOptions().firstOrNull { it.id == variantOptionId }?.picture?.original
+        return getFirstLevelVariantOptions().firstOrNull {
+            it.id == variantOptionId
+        }?.picture?.original?.takeIf { it.isNotEmpty() }
     }
 
     fun getVariantGalleryItems(): List<ProductDetailGallery.Item> {
