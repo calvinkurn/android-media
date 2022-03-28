@@ -53,6 +53,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         if (it == 0) {
             holder.dummyView.visibility = View.GONE
             holder.seeMoreIcon.visibility = View.VISIBLE
+            holder.seeMoreIcon.loadImage(R.drawable.fintechwidget_procced_icon)
         } else {
             holder.dummyView.visibility = View.VISIBLE
             holder.seeMoreIcon.visibility = View.GONE
