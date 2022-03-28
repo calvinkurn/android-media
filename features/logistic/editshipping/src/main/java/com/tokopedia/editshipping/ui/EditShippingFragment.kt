@@ -438,10 +438,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                 locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
                 locationPass.generatedAddress = addressLayout?.googleMapAddressString
             } else {
-                if (editShippingPresenter?.shopInformation != null) {
-                    locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
-                    locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
-                }
+                locationPass.districtName = editShippingPresenter?.shopInformation?.getDistrictName()
+                locationPass.cityName = editShippingPresenter?.shopInformation?.getCityName()
             }
             val intent = activity?.let { getGeoLocationActivityIntent(it, locationPass) }
             startActivityForResult(intent, OPEN_MAP_CODE)
