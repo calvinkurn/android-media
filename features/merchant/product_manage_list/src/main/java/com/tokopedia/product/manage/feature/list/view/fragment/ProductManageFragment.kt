@@ -2755,7 +2755,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         private const val VOUCHER_CREATION_PREF = "voucher_creation"
         private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
 
-        private const val PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL = "product_manage_adapter_enable_diffutil"
+        private const val PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL = "android_product_manage_adapter_enable_diffutil"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
