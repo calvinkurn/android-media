@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
@@ -264,19 +266,24 @@ class MiniCartSimplifiedWidget : BaseCustomView {
         if (throwable == null) {
             return
         }
-        fragment.view?.let {
-            Toaster.toasterCustomBottomHeight = TOASTER_BOTTOM_HEIGHT.toPx()
-            Toaster.build(
-                    it,
-                    ErrorHandler.getErrorMessage(
-                            it.context,
-                            throwable,
-                            ErrorHandler.Builder().withErrorCode(false).build()
-                    ),
-                    Toaster.LENGTH_SHORT,
-                    Toaster.TYPE_ERROR,
-                    actionText = context.getString(R.string.mini_cart_cta_ok)
-            ).show()
+        fragment.viewLifecycleOwner.lifecycleScope.launch {
+            delay(TOASTER_ERROR_DELAY)
+            if (fragment.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)) {
+                fragment.view?.let {
+                    Toaster.toasterCustomBottomHeight = TOASTER_BOTTOM_HEIGHT.toPx()
+                    Toaster.build(
+                            it,
+                            ErrorHandler.getErrorMessage(
+                                    it.context,
+                                    throwable,
+                                    ErrorHandler.Builder().withErrorCode(false).build()
+                            ),
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR,
+                            actionText = context.getString(R.string.mini_cart_cta_ok)
+                    ).show()
+                }
+            }
         }
     }
 
@@ -342,5 +349,7 @@ class MiniCartSimplifiedWidget : BaseCustomView {
 
         private const val FAILED_VALIDATE_TIME_LIMIT = 10 * 60 * 1000
         private const val FAILED_VALIDATE_TIME_DEFAULT = -1L
+
+        private const val TOASTER_ERROR_DELAY = 500L
     }
 }
