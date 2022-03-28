@@ -1638,6 +1638,20 @@ class NewShopPageFragment :
                     feedFragment
             ))
         }
+
+        val reviewTabFragment = RouteManager.instantiateFragmentDF(
+                activity as AppCompatActivity,
+                FragmentConst.READ_REVIEW_FRAGMENT,
+                Bundle().apply {
+                    putString("ARGS_SHOP_ID", shopId)
+                }
+        )
+        listShopPageTabModel.add(ShopPageTabModel(
+                getString(R.string.shop_info_title_tab_review),
+                iconTabFeedInactive,
+                iconTabFeedActive,
+                reviewTabFragment
+        ))
         return listShopPageTabModel
     }
 

@@ -61,6 +61,7 @@
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
     <string name="shop_info_title_tab_feed">Feed</string>
+    <string name="shop_info_title_tab_review">Review</string>
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
