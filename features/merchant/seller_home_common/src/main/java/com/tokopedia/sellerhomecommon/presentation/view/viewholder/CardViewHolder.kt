@@ -18,6 +18,7 @@ import com.tokopedia.sellerhomecommon.databinding.ShcCardWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.unifycomponents.NotificationUnify
+import java.util.*
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -82,7 +83,7 @@ class CardViewHolder(
     }
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
-        var shouldLoadAnimation = false
+        var shouldLoadAnimation = true
         with(binding) {
             tvCardTitle.isVisible = isShown
             tvCardValue.isVisible = isShown
@@ -129,7 +130,10 @@ class CardViewHolder(
                 tvCardValue.visible()
                 tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
-            tvCardSubValue.text = element.data?.description?.parseAsHtml()
+            tvCardSubValue.show(
+                primary = element.data?.description.orEmpty(),
+                secondary = element.data?.secondaryDescription.orEmpty()
+            )
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
             }
@@ -183,7 +187,7 @@ class CardViewHolder(
             tvCardTitle.visible()
             tvCardValue.visible()
             tvCardValue.text = root.context.getString(R.string.shc_load_failed)
-            tvCardSubValue.text = ""
+            tvCardSubValue.invisible()
         }
     }
 

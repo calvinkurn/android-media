@@ -116,7 +116,7 @@
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toBottomOf="@+id/tvCardTitle" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.CardSubValueTypographyView
             android:id="@+id/tvCardSubValue"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
@@ -128,10 +128,25 @@
             android:textSize="@dimen/fontSize_lvl2"
             app:layout_constraintEnd_toEndOf="@+id/glShcCardEnd"
             app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
+            app:layout_constraintTop_toBottomOf="@+id/tvCardValue" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvCardSecSubValue"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:visibility="gone"
+            android:minHeight="@dimen/shc_dimen_18dp"
+            android:textColor="@color/Unify_N700_68"
+            android:textSize="@dimen/fontSize_lvl2"
+            app:layout_constraintEnd_toEndOf="@+id/glShcCardEnd"
+            app:layout_constraintStart_toStartOf="@+id/glShcCardStart"
             app:layout_constraintTop_toBottomOf="@+id/tvCardValue"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Potensi +Rp10 jt" />
+            tools:text="Secondary sub value" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:id="@+id/shimmerCardTitle"
