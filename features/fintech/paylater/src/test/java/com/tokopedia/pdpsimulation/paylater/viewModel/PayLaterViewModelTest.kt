@@ -92,19 +92,19 @@ class PayLaterViewModelTest {
         )
     }
 
-//    @Test
-//    fun `productDetail data invalid `()
-//    {
-//        val baseProductDetail = mockk<BaseProductDetailClass>(relaxed = true)
-//        coEvery {
-//            productDetailUseCase.getProductDetail(any(), any(), "")
-//        } coAnswers {
-//            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
-//        }
-//        viewModel.getProductDetail("")
-//        assert(viewModel.productDetailLiveData.value is Fail)
-//    }
-//
+    @Test
+    fun `productDetail data invalid `()
+    {
+        val baseProductDetail = mockk<BaseProductDetailClass>(relaxed = true)
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        assert(viewModel.productDetailLiveData.value is Fail)
+    }
+
 
     @Test
     fun successPayLaterOptions()
