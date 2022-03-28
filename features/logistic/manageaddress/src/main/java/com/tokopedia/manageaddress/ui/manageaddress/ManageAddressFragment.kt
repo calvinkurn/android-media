@@ -28,6 +28,8 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
+import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
@@ -329,25 +331,13 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    val token = viewModel.token
-                    val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
-                        SCREEN_NAME_CART_EXISTING_USER
-                    } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
-                        SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
-                    } else {
-                        SCREEN_NAME_USER_NEW
-                    }
-
-                    if (it.data.eligible) {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
-                        intent.putExtra(KERO_TOKEN, token)
-                        intent.putExtra(EXTRA_REF, screenName)
-                        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
-                    } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
-                        intent.putExtra(KERO_TOKEN, token)
-                        intent.putExtra(EXTRA_REF, screenName)
-                        startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+                    when(it.data.featureId) {
+                        ANA_REVAMP_FEATURE_ID -> {
+                            goToAddAddress(it.data.eligible)
+                        }
+                        EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
+                            it.data.data?.let { recipientAddressModel ->  goToEditAddress(it.data.eligible, recipientAddressModel) }
+                        }
                     }
                 }
 
@@ -361,10 +351,31 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         })
     }
 
+    private fun goToAddAddress(eligible: Boolean) {
+        val token = viewModel.token
+        val screenName = if (isFromCheckoutChangeAddress == true && isLocalization == false) {
+            SCREEN_NAME_CART_EXISTING_USER
+        } else if (isFromCheckoutChangeAddress == false && isLocalization == true) {
+            SCREEN_NAME_CHOOSE_ADDRESS_EXISTING_USER
+        } else {
+            SCREEN_NAME_USER_NEW
+        }
+        if (eligible) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V3)
+            intent.putExtra(KERO_TOKEN, token)
+            intent.putExtra(EXTRA_REF, screenName)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+        } else {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+            intent.putExtra(KERO_TOKEN, token)
+            intent.putExtra(EXTRA_REF, screenName)
+            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE)
+        }
+    }
+
     private fun goToEditAddress(eligibleForEditRevamp: Boolean, data: RecipientAddressModel) {
         if (eligibleForEditRevamp) {
             val intent = RouteManager.getIntent(context, "${ApplinkConstInternalLogistic.EDIT_ADDRESS_REVAMP}${data.id}")
-            val mapper = AddressModelMapper()
             startActivityForResult(intent, REQUEST_CODE_PARAM_EDIT)
         } else {
             val token = viewModel.token
@@ -506,6 +517,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (data == null) {
             viewModel.checkUserEligibilityForAnaRevamp()
         } else {
+//            uncomment when dev is ready
+//            viewModel.checkUserEligibilityForEditAddressRevamp(data)
             goToEditAddress(true, data)
         }
     }
