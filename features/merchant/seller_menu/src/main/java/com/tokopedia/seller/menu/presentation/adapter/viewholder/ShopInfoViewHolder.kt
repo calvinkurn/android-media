@@ -427,7 +427,7 @@ class ShopInfoViewHolder(
     ) {
         eligiblePmIconView.hide()
         regularMerchantStatus.run {
-            text = context.resources.getString(R.string.setting_verified)
+            text = context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verified)
             setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -448,7 +448,7 @@ class ShopInfoViewHolder(
             setImage(pmIcon)
         }
         regularMerchantStatus.run {
-            text = context.resources.getString(R.string.setting_verifikasi)
+            text = context.resources.getString(com.tokopedia.seller.menu.common.R.string.setting_verifikasi)
             setTextColor(
                 ContextCompat.getColor(
                     context,
@@ -541,14 +541,16 @@ class ShopInfoViewHolder(
                 } else if (periodType == Constant.COMMUNICATION_PERIOD_PM_PRO) {
                     upgradePMTextView.hide()
                 }
-                powerMerchantText.text = getString(R.string.power_merchant_upgrade)
+                powerMerchantText.text =
+                    getString(com.tokopedia.seller.menu.common.R.string.power_merchant_upgrade)
 
                 powerMerchantStatusTextView.hide()
             }
             is PowerMerchantStatus.NotActive -> {
                 powerMerchantStatusTextView.show()
                 upgradePMTextView.hide()
-                powerMerchantText.text = getString(R.string.power_merchant_status)
+                powerMerchantText.text =
+                    getString(com.tokopedia.seller.menu.common.R.string.power_merchant_status)
 
                 powerMerchantStatusTextView.setOnClickListener {
                     goToPowerMerchantSubscribe(TAB_PM_PRO)

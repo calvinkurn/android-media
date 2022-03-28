@@ -20,7 +20,7 @@
         android:id="@+id/tv_sah_new_other_shop_followers_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/setting_follower"
+        android:text="@string/sah_new_other_follower"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_sah_new_other_shop_followers_desc"

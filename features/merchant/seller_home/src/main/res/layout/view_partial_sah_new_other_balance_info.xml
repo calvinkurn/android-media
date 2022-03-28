@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
-                android:text="@string/setting_topads_credits"
+                android:text="@string/sah_new_other_topads_credit"
                 android:textColor="@color/Unify_NN600"
                 android:ellipsize="end"
                 android:lines="1"
