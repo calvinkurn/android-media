@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.purchase
 
 import android.view.View
-import com.tokopedia.tokofood.purchase.purchasepage.view.uimodel.BaseUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.BaseUiModel
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 

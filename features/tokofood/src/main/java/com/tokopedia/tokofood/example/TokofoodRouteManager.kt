@@ -2,13 +2,12 @@ package com.tokopedia.tokofood.example
 
 import android.content.Context
 import android.net.Uri
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 
 object TokofoodRouteManager {
 

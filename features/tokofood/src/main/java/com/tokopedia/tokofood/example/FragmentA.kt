@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokofood.databinding.FragmentLivedataInputAndTextaBinding
 import com.tokopedia.tokofood.example.FragmentB.Companion.ARGUMENT_INPUT_KEY
-import com.tokopedia.tokofood.purchase.purchasepage.view.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
