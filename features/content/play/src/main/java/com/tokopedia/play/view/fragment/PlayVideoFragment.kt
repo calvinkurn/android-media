@@ -60,6 +60,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
 import com.tokopedia.play_common.util.PlayConnectionCommon
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -225,6 +226,8 @@ class PlayVideoFragment @Inject constructor(
         if (theActivity is PlayActivity) {
             playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
         }
+
+        Log.d("LOG VIDEO", "inetSpeed: ${PlayLiveRoomMetricsCommon.getInetSpeed(requireContext())}")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

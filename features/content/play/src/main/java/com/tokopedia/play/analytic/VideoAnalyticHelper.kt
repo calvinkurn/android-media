@@ -3,6 +3,7 @@ package com.tokopedia.play.analytic
 import android.content.Context
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlin.math.abs
 
 /**
@@ -54,6 +55,8 @@ class VideoAnalyticHelper(
                     shouldTrackNext = bufferTrackingModel.shouldTrackNext
             )
 
+            PlayLiveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
+
         } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
             if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic()
 
@@ -76,6 +79,7 @@ class VideoAnalyticHelper(
                     cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
             )
         }
+        PlayLiveRoomMetricsCommon.getWatchingDuration(watchDurationModel.cumulationDuration)
     }
 
     /**

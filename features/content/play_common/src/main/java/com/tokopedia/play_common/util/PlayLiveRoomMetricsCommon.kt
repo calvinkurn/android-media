@@ -3,6 +3,7 @@ package com.tokopedia.play_common.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
+import android.util.Log
 import java.lang.Exception
 
 /**
@@ -42,6 +43,9 @@ object PlayLiveRoomMetricsCommon {
         val currentTimeStamp = System.currentTimeMillis()
         val duration = currentTimeStamp - timestamp
 
+        Log.d("LOG VIDEO", "watching buffer duration: $duration")
+        Log.d("LOG VIDEO", "watching buffer count: $bufferCount")
+
         /***
          * Send to logger - data from analytics
          */
@@ -52,6 +56,7 @@ object PlayLiveRoomMetricsCommon {
      */
     @JvmStatic
     fun getWatchingDuration(duration: Long){
+        Log.d("LOG VIDEO", "watching duration: $duration")
         /***
          * Send to logger - data from analytics
          */
@@ -62,6 +67,7 @@ object PlayLiveRoomMetricsCommon {
      */
     @JvmStatic
     fun getTimeToFirstByte(duration: Long){
+        Log.d("LOG VIDEO", "time to first byte: $duration")
         /***
          * Send to logger - data from Video Latency
          */
