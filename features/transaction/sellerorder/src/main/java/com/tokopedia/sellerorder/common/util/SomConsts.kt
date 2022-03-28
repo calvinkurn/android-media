@@ -103,8 +103,6 @@ object SomConsts {
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
-    const val CHIPS_SORT_DESC = "Paling Baru"
-    const val CHIPS_SORT_ASC = "Paling Lama"
 
     const val NOT_YET_PRINTED_LABEL = "Belum Dicetak"
     const val ALREADY_PRINT_LABEL = "Sudah Dicetak"
