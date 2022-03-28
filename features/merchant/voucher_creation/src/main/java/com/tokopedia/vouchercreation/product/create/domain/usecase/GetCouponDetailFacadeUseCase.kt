@@ -1,30 +1,28 @@
 package com.tokopedia.vouchercreation.product.create.domain.usecase
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetCouponDetailFacadeUseCase @Inject constructor(
     private val initiateCouponUseCase: InitiateCouponUseCase,
-    private val getCouponDetailUseCase: GetCouponDetailUseCase
+    private val getCouponDetailUseCase: GetCouponDetailUseCase,
+    private val dispatcher: CoroutineDispatchers
 ) {
 
-    companion object {
-        private const val IS_UPDATE_MODE = false
-    }
-
-    suspend fun execute(scope: CoroutineScope, couponId : Long): CouponDetailWithMetadata {
-        val detailDeferred = scope.async { getCouponDetail(couponId) }
-        val initiateVoucherDeferred = scope.async { initiateVoucher(IS_UPDATE_MODE) }
+    suspend fun execute(couponId : Long) = withContext(dispatcher.io) {
+        val detailDeferred = async { getCouponDetail(couponId) }
+        val initiateVoucherDeferred = async { initiateVoucher(isUpdateMode = false) }
 
         val detail = detailDeferred.await()
         val metadata = initiateVoucherDeferred.await()
 
-        return CouponDetailWithMetadata(detail, metadata.maxProducts)
+        return@withContext CouponDetailWithMetadata(detail, metadata.maxProducts)
     }
 
 

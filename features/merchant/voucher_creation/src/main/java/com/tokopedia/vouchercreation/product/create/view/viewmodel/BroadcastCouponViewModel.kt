@@ -69,10 +69,7 @@ class BroadcastCouponViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getShopAndTopProductsUseCase.execute(
-                        this,
-                        coupon
-                    )
+                    getShopAndTopProductsUseCase.execute(coupon)
                 }
                 _shopWithTopProducts.value = Success(result)
             },
