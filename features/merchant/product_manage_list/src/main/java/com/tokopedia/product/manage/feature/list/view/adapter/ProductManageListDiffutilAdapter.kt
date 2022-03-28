@@ -129,15 +129,7 @@ class ProductManageListDiffutilAdapter(
 
     override fun updateEmptyState(emptyModel: EmptyModel) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
-        if (data.getOrNull(lastIndex) !is EmptyModel) {
-            val list = data.toMutableList()
-            val dataCount = data.filter { it !is EmptyModel }.count().orZero()
-            if (dataCount > Int.ZERO) {
-                list.removeAll { it !is EmptyModel }
-            }
-            list.add(emptyModel)
-            submitList(list)
-        }
+        submitList(listOf(emptyModel))
     }
 
     override fun updatePrice(productId: String, price: String) {

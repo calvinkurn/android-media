@@ -109,10 +109,9 @@ class ProductManageListAdapter(
 
     override fun updateEmptyState(emptyModel: EmptyModel) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
-        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
-            visitables.add(emptyModel)
-            notifyItemInserted(lastIndex + Int.ONE)
-        }
+        visitables.clear()
+        visitables.add(emptyModel)
+        notifyDataSetChanged()
     }
 
     override fun updatePrice(productId: String, price: String) {
