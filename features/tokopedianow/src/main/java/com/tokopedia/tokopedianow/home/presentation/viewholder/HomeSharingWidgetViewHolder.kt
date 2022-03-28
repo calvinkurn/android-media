@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SHARING_WIDGET_RESOURCE_ID
@@ -17,7 +18,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeSharingWidgetViewHolder(
     itemView: View,
-    private val listener: HomeSharingEducationListener? = null
+    private val listener: HomeSharingListener? = null
 ) : AbstractViewHolder<HomeSharingWidgetUiModel>(itemView) {
 
     companion object {
@@ -31,56 +32,75 @@ class HomeSharingWidgetViewHolder(
     private var binding: ItemTokopedianowHomeSharingWidgetBinding? by viewBinding()
 
     override fun bind(element: HomeSharingWidgetUiModel) {
+        if (element.state == HomeLayoutItemState.LOADED) {
+            checkUiModel(element)
+        }
+    }
+
+    private fun checkUiModel(element: HomeSharingWidgetUiModel) {
         binding?.apply {
-            if (element.state == HomeLayoutItemState.LOADED) {
-                cvSharingEducation.show()
-                when(element) {
-                    is HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel -> {
-                        setupUi(
-                            descRes = element.descRes,
-                            btnTextRes = element.btnTextRes
-                        )
-                    }
-                    is HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel -> {
-                        setupUi(
-                            serviceType = element.serviceType,
-                            btnTextRes = element.btnTextRes
-                        )
-                    }
+            cvSharingEducation.show()
+            when(element) {
+                is HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel -> {
+                    setData(
+                        descRes = element.descRes,
+                        btnTextRes = element.btnTextRes
+                    )
+                    setListener(
+                        elementId = element.id,
+                        isSharingReferral = true,
+                        slug = element.slug
+                    )
                 }
-                btnSharingEducation.setOnClickListener {
-                    listener?.onShareBtnSharingEducationClicked()
-                }
-                iCloseSharingEducation.setOnClickListener {
-                    listener?.onCloseBtnSharingEducationClicked(element.id)
+                is HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel -> {
+                    setData(
+                        serviceType = element.serviceType,
+                        btnTextRes = element.btnTextRes
+                    )
+                    setListener(
+                        elementId = element.id,
+                        isSharingReferral = false
+                    )
                 }
             }
         }
     }
 
-    private fun setupUi(serviceType: String = "", descRes: Int = DEFAULT_DESC_RES, btnTextRes: Int) {
+    private fun setListener(elementId: String, isSharingReferral: Boolean, slug: String = "") {
         binding?.apply {
-            tpSharingEducation.text = if (descRes == DEFAULT_DESC_RES) {
-                MethodChecker.fromHtml(
+            btnSharingEducation.setOnClickListener {
+                listener?.onShareBtnSharingClicked(isSharingReferral, slug)
+            }
+
+            iCloseSharingEducation.setOnClickListener {
+                listener?.onCloseBtnSharingClicked(elementId)
+            }
+        }
+    }
+
+    private fun setData(serviceType: String = "", descRes: Int = DEFAULT_DESC_RES, btnTextRes: Int) {
+        binding?.apply {
+            if (serviceType.isBlank()) {
+                iCloseSharingEducation.hide()
+                tpSharingEducation.text = itemView.resources.getString(descRes)
+            } else {
+                iCloseSharingEducation.setImage(IconUnify.CLOSE)
+                iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+                tpSharingEducation.text = MethodChecker.fromHtml(
                     getServiceTypeFormattedCopy(
                         context = root.context,
                         key = SHARING_WIDGET_RESOURCE_ID,
                         serviceType = serviceType
                     )
                 )
-            } else {
-                itemView.resources.getString(descRes)
             }
-
             btnSharingEducation.text = itemView.resources.getString(btnTextRes)
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
-            iCloseSharingEducation.setImage(IconUnify.CLOSE)
-            iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
         }
     }
 
-    interface HomeSharingEducationListener {
-        fun onShareBtnSharingEducationClicked()
-        fun onCloseBtnSharingEducationClicked(id: String)
+    interface HomeSharingListener {
+        fun onShareBtnSharingClicked(isSharingReferral: Boolean, slug: String)
+        fun onCloseBtnSharingClicked(id: String)
     }
 }

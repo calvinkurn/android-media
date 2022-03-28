@@ -139,8 +139,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _openScreenTracker
     val setUserPreference: LiveData<Result<SetUserPreferenceData>>
         get() = _setUserPreference
-    val sharingUrlCode: LiveData<Result<String>>
-        get() = _sharingUrlCode
+    val sharingReferralUrlParam: LiveData<Result<String>>
+        get() = _sharingReferralUrlParam
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -153,7 +153,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
-    private val _sharingUrlCode = MutableLiveData<Result<String>>()
+    private val _sharingReferralUrlParam = MutableLiveData<Result<String>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -196,12 +196,12 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             val response = getReferralSenderHomeUseCase.execute(slug)
             if(response.resultStatus.code == SUCCESS_CODE) {
-                _sharingUrlCode.postValue(Success(response.sharingMetaData.sharingUrl))
+                _sharingReferralUrlParam.postValue(Success("$slug/${response.sharingMetaData.sharingUrl}"))
             } else {
-                _sharingUrlCode.postValue(Fail(MessageErrorException(response.resultStatus.reason)))
+                _sharingReferralUrlParam.postValue(Fail(MessageErrorException(response.resultStatus.reason)))
             }
         }) {
-            _sharingUrlCode.postValue(Fail(it))
+            _sharingReferralUrlParam.postValue(Fail(it))
         }
     }
 
