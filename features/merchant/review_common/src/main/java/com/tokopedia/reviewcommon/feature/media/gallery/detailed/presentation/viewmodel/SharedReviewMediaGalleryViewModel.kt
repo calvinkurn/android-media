@@ -8,20 +8,28 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.extension.getSavedState
+import com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel.ReviewDetailUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewActionMenuBottomSheetUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,6 +47,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         private const val SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT = "savedGetDetailedReviewMediaResult"
         private const val SAVED_ORIENTATION_UI_STATE = "savedOrientationUiState"
         private const val SAVED_OVERLAY_VISIBILITY = "savedOverlayVisibility"
+        private const val SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET = "savedShowDetailedReviewActionMenuBottomSheet"
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
@@ -50,8 +59,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     private val _productID = MutableStateFlow(UNINITIALIZED_PRODUCT_ID_VALUE)
-    val productID: StateFlow<String>
-        get() = _productID
+    private val _showDetailedReviewActionMenuBottomSheet = MutableStateFlow(false)
     private val _mediaNumberToLoad = MutableStateFlow(UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE)
     val mediaNumberToLoad: StateFlow<Int>
         get() = _mediaNumberToLoad
@@ -61,6 +69,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _currentMediaItem = MutableStateFlow<MediaItemUiModel?>(null)
     val currentMediaItem: StateFlow<MediaItemUiModel?>
         get() = _currentMediaItem
+    private val _currentReviewDetail = MutableStateFlow<ReviewDetailUiModel?>(null)
+    val currentReviewDetail: StateFlow<ReviewDetailUiModel?>
+        get() = _currentReviewDetail
     private val _orientationUiState = MutableStateFlow<DetailedReviewMediaGalleryOrientationUiState>(DetailedReviewMediaGalleryOrientationUiState.Portrait)
     val orientationUiState: StateFlow<DetailedReviewMediaGalleryOrientationUiState>
         get() = _orientationUiState
@@ -68,6 +79,43 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     val overlayVisibility: StateFlow<Boolean>
         get() = _overlayVisibility
     private val _toggleLikeRequest = MutableStateFlow<Pair<String, Int>?>(null)
+    private val _detailedReviewActionMenu = _currentReviewDetail.mapLatest {
+        if (it?.isReportable == true) {
+            listOf(DetailedReviewActionMenuUiModel(StringRes(R.string.review_action_menu_report)))
+        } else emptyList()
+    }
+
+    val detailedReviewActionMenuBottomSheetUiState = combine(
+        _showDetailedReviewActionMenuBottomSheet,
+        _detailedReviewActionMenu,
+        _currentReviewDetail
+    ) { showDetailedReviewActionMenuBottomSheet, detailedReviewActionMenu, currentReviewDetail ->
+        if (currentReviewDetail != null) {
+            if (showDetailedReviewActionMenuBottomSheet) {
+                DetailedReviewActionMenuBottomSheetUiState.Showing(
+                    detailedReviewActionMenu,
+                    currentReviewDetail.feedbackID,
+                    currentReviewDetail.shopID
+                )
+            } else {
+                DetailedReviewActionMenuBottomSheetUiState.Hidden(
+                    detailedReviewActionMenu,
+                    currentReviewDetail.feedbackID,
+                    currentReviewDetail.shopID
+                )
+            }
+        } else {
+            DetailedReviewActionMenuBottomSheetUiState.Hidden(
+                detailedReviewActionMenu,
+                currentReviewDetail?.feedbackID.orEmpty(),
+                currentReviewDetail?.shopID.orEmpty()
+            )
+        }
+    }.stateIn(
+        scope = this,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = DetailedReviewActionMenuBottomSheetUiState.Hidden(emptyList(), "", "")
+    )
 
     private var loadMoreDetailedReviewMediaJob: Job? = null
 
@@ -196,6 +244,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         outState.putString(SAVED_STATE_PRODUCT_ID, _productID.value)
         outState.putSerializable(SAVED_ORIENTATION_UI_STATE, _orientationUiState.value)
         outState.putSerializable(SAVED_OVERLAY_VISIBILITY, _overlayVisibility.value)
+        outState.putBoolean(SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
     }
 
     fun restoreState(savedState: Bundle) {
@@ -203,6 +252,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         _productID.value = savedState.getSavedState(SAVED_STATE_PRODUCT_ID, _productID.value) ?: _productID.value
         _orientationUiState.value = savedState.getSavedState(SAVED_ORIENTATION_UI_STATE, _orientationUiState.value) ?: _orientationUiState.value
         _overlayVisibility.value = savedState.getSavedState(SAVED_OVERLAY_VISIBILITY, _overlayVisibility.value) ?: _overlayVisibility.value
+        _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value) ?: _showDetailedReviewActionMenuBottomSheet.value
     }
 
     fun tryGetPreloadedData(cacheManager: CacheManager) {
@@ -228,6 +278,10 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         _currentMediaItem.value = mediaItem
     }
 
+    fun updateReviewDetailItem(reviewDetail: ReviewDetailUiModel?) {
+        _currentReviewDetail.value = reviewDetail
+    }
+
     fun requestToggleLike(feedbackID: String, invertedLikeStatus: Int) {
         _toggleLikeRequest.value = feedbackID to invertedLikeStatus
     }
@@ -246,5 +300,13 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun getProductId(): String {
         return _productID.value
+    }
+
+    fun showDetailedReviewActionMenuBottomSheet() {
+        _showDetailedReviewActionMenuBottomSheet.value = true
+    }
+
+    fun dismissDetailedReviewActionMenuBottomSheet() {
+        _showDetailedReviewActionMenuBottomSheet.value = false
     }
 }

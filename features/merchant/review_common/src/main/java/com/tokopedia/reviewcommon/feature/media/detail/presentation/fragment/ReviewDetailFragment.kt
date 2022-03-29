@@ -70,6 +70,7 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     private var currentMediaItemCollectorJob: Job? = null
     private var orientationCollectorJob: Job? = null
     private var overlayVisibilityCollectorJob: Job? = null
+    private var currentReviewDetailCollectorJob: Job? = null
 
     private val bottomSheetHandler by lazy(LazyThreadSafetyMode.NONE) { BottomSheetHandler() }
     private val reviewDetailBasicInfoListener = ReviewDetailBasicInfoListener()
@@ -187,6 +188,13 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
         } ?: launch {
             sharedReviewMediaGalleryViewModel.overlayVisibility.collectLatest {
                 reviewDetailViewModel.updateCurrentOverlayVisibility(it)
+            }
+        }
+        currentReviewDetailCollectorJob = currentReviewDetailCollectorJob?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            reviewDetailViewModel.currentReviewDetail.collectLatest {
+                sharedReviewMediaGalleryViewModel.updateReviewDetailItem(it)
             }
         }
     }

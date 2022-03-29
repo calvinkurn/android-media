@@ -43,7 +43,7 @@ class ReviewDetailViewModel @Inject constructor(
     private val _orientationUiState = MutableStateFlow<DetailedReviewMediaGalleryOrientationUiState>(DetailedReviewMediaGalleryOrientationUiState.Portrait)
     private val _overlayVisibility = MutableStateFlow(true)
 
-    private val _currentReviewDetail: StateFlow<ReviewDetailUiModel?> = combine(
+    val currentReviewDetail: StateFlow<ReviewDetailUiModel?> = combine(
         _expanded, _currentMediaItem, _getDetailedReviewMediaResult, ::mapCurrentReviewDetail
     ).stateIn(
         scope = this,
@@ -51,14 +51,14 @@ class ReviewDetailViewModel @Inject constructor(
         initialValue = null
     )
     private val _basicInfoUiState = combine(
-        _orientationUiState, _overlayVisibility, _currentMediaItem, _currentReviewDetail, ::mapBasicInfoUiState
+        _orientationUiState, _overlayVisibility, _currentMediaItem, currentReviewDetail, ::mapBasicInfoUiState
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
         initialValue = ReviewDetailBasicInfoUiState.Hidden
     )
     private val _supplementaryInfoUiState = combine(
-        _expanded, _orientationUiState, _overlayVisibility, _currentMediaItem, _currentReviewDetail, ::mapSupplementaryUiState
+        _expanded, _orientationUiState, _overlayVisibility, _currentMediaItem, currentReviewDetail, ::mapSupplementaryUiState
     ).stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
@@ -199,7 +199,10 @@ class ReviewDetailViewModel @Inject constructor(
                     variant = it.variantName,
                     review = it.review,
                     complaint = it.badRatingReasonFmt
-                )
+                ),
+                isReportable = it.isReportable,
+                feedbackID = it.feedbackId,
+                shopID = it.shopId
             )
         }
     }
@@ -235,11 +238,11 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     fun getFeedbackID(): String? {
-        return _currentReviewDetail.value?.basicInfoUiModel?.feedbackId
+        return currentReviewDetail.value?.basicInfoUiModel?.feedbackId
     }
 
     fun getInvertedLikeStatus(): Int? {
-        return _currentReviewDetail.value?.basicInfoUiModel?.isLiked?.let { isLiked ->
+        return currentReviewDetail.value?.basicInfoUiModel?.isLiked?.let { isLiked ->
             if (isLiked) ToggleLikeReviewUseCase.NEUTRAL else ToggleLikeReviewUseCase.LIKED
         }
     }

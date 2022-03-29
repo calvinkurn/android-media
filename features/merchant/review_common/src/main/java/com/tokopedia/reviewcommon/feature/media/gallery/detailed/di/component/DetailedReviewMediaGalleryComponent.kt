@@ -6,6 +6,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.module.Detai
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.scope.DetailedReviewMediaGalleryScope
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.bottomsheet.DetailedReviewActionMenuBottomSheet
 import dagger.Component
 
 @Component(
@@ -15,6 +16,7 @@ import dagger.Component
 @DetailedReviewMediaGalleryScope
 interface DetailedReviewMediaGalleryComponent {
     fun inject(activity: DetailedReviewMediaGalleryActivity)
+    fun inject(bottomSheet: DetailedReviewActionMenuBottomSheet)
 
     @DetailedReviewMediaGalleryViewModelFactory
     fun viewModelFactory(): ViewModelProvider.Factory

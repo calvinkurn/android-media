@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -23,10 +24,11 @@ import com.tokopedia.reviewcommon.feature.media.detail.presentation.fragment.Rev
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.bottomsheet.DetailedReviewActionMenuBottomSheet
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewActionMenuBottomSheetUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -58,6 +60,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private var toolbarUiStateCollectorJob: Job? = null
     private var orientationUiStateCollectorJob: Job? = null
+    private var detailedReviewActionMenuBottomSheetUiStateCollectorJob: Job? = null
     private var gestureDetector: GestureDetectorCompat? = null
 
     private var galleryFragment: ReviewMediaGalleryFragment? = null
@@ -99,6 +102,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private val gestureListener = DetailedReviewMediaGalleryGestureListener()
+    private val bottomSheetHandler = BottomSheetHandler()
 
     override val coroutineContext: CoroutineContext
         get() = dispatchers.main + SupervisorJob()
@@ -263,9 +267,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun ActivityDetailedReviewMediaGalleryBinding.setupToolbar() {
         icReviewMediaGalleryClose.setOnClickListener { finish() }
         icReviewMediaGalleryKebab.setOnClickListener {
-            root.let { view ->
-                Toaster.build(view, "Report", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-            }
+            sharedReviewMediaGalleryViewModel.showDetailedReviewActionMenuBottomSheet()
         }
     }
 
@@ -275,14 +277,16 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         } ?: launch {
             combine(
                 sharedReviewMediaGalleryViewModel.orientationUiState,
-                sharedReviewMediaGalleryViewModel.overlayVisibility
-            ) { orientationUiState, overlayVisibility ->
-                orientationUiState to overlayVisibility
+                sharedReviewMediaGalleryViewModel.overlayVisibility,
+                sharedReviewMediaGalleryViewModel.currentReviewDetail,
+            ) { orientationUiState, overlayVisibility, currentReviewDetail ->
+                Triple(orientationUiState, overlayVisibility, currentReviewDetail)
             }.collectLatest {
                 val showOverlay = it.second
                 val isInPortrait = it.first.isPortrait()
+                val isReportable = it.third?.isReportable.orFalse()
                 binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
-                binding?.icReviewMediaGalleryKebab?.showWithCondition(showOverlay && isInPortrait)
+                binding?.icReviewMediaGalleryKebab?.showWithCondition(showOverlay && isInPortrait && isReportable)
             }
         }
         orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {
@@ -301,11 +305,21 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
         }
+        detailedReviewActionMenuBottomSheetUiStateCollectorJob = detailedReviewActionMenuBottomSheetUiStateCollectorJob?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            sharedReviewMediaGalleryViewModel.detailedReviewActionMenuBottomSheetUiState.collectLatest {
+                if (it is DetailedReviewActionMenuBottomSheetUiState.Showing) {
+                    bottomSheetHandler.showDetailedReviewActionMenuBottomSheet()
+                }
+            }
+        }
     }
 
     private fun cancelUiStateCollector() {
         toolbarUiStateCollectorJob?.cancel()
         orientationUiStateCollectorJob?.cancel()
+        detailedReviewActionMenuBottomSheetUiStateCollectorJob?.cancel()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
@@ -336,6 +350,33 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
             sharedReviewMediaGalleryViewModel.toggleOverlayVisibility()
             return true
+        }
+    }
+
+    private inner class BottomSheetHandler {
+        private var detailedReviewActionMenuBottomSheet: DetailedReviewActionMenuBottomSheet? = null
+
+        private fun createDetailedReviewActionMenuBottomSheet(): DetailedReviewActionMenuBottomSheet {
+            return DetailedReviewActionMenuBottomSheet()
+        }
+
+        private fun getAddedDetailedReviewActionMenuBottomSheet(): DetailedReviewActionMenuBottomSheet? {
+            return supportFragmentManager.findFragmentByTag(
+                DetailedReviewActionMenuBottomSheet.TAG
+            ) as? DetailedReviewActionMenuBottomSheet
+        }
+
+        private fun getDetailedReviewActionMenuBottomSheet(): DetailedReviewActionMenuBottomSheet {
+            return detailedReviewActionMenuBottomSheet ?: getAddedDetailedReviewActionMenuBottomSheet()
+            ?: createDetailedReviewActionMenuBottomSheet()
+        }
+
+        fun showDetailedReviewActionMenuBottomSheet() {
+            getDetailedReviewActionMenuBottomSheet().run {
+                if (!isAdded) {
+                    show(supportFragmentManager, DetailedReviewActionMenuBottomSheet.TAG)
+                }
+            }
         }
     }
 }
