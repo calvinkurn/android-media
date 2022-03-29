@@ -96,7 +96,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
-    private val icGame: IconUnify by detachableView(R.id.ic_game)
 
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
@@ -181,6 +180,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
     private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
             override fun onIconClick() {
                 openSelectInteractiveSheet()
@@ -280,9 +280,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     titleChannel = parentViewModel.channelTitle,
                 )
             }
-        }
-        icGame.setOnClickListener {
-            openSelectInteractiveSheet()
         }
     }
 
