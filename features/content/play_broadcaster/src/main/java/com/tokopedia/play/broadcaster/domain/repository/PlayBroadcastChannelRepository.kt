@@ -20,4 +20,6 @@ interface PlayBroadcastChannelRepository {
         channelId: String,
         selectedDate: Date?
     ): BroadcastScheduleUiModel
+
+    fun canSchedule(): Boolean
 }

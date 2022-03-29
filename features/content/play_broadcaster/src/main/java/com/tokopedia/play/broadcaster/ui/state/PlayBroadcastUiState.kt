@@ -49,6 +49,7 @@ data class ScheduleUiModel(
     val schedule: BroadcastScheduleUiModel,
     val state: NetworkState,
     val config: ScheduleConfigUiModel,
+    val canSchedule: Boolean,
 ) {
     companion object {
         val Empty: ScheduleUiModel
@@ -56,6 +57,7 @@ data class ScheduleUiModel(
                 schedule = BroadcastScheduleUiModel.NoSchedule,
                 state = NetworkState.Success,
                 config = ScheduleConfigUiModel.Empty,
+                canSchedule = false,
             )
     }
 }

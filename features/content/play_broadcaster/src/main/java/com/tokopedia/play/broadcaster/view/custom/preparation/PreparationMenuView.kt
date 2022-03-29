@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationMenuBinding
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 
@@ -54,6 +55,10 @@ class PreparationMenuView : ConstraintLayout {
 
     fun isSetScheduleChecked(isChecked: Boolean) {
         binding.icBroScheduleChecked.visibility = if(isChecked) View.VISIBLE else View.INVISIBLE
+    }
+
+    fun showScheduleMenu(shouldShow: Boolean) {
+        binding.clBroSetSchedule.showWithCondition(shouldShow)
     }
 
     fun setListener(listener: Listener) {

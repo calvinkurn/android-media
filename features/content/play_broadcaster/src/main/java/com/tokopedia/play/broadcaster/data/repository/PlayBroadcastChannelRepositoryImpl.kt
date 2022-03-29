@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -26,6 +27,7 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val userSession: UserSessionInterface,
+    private val remoteConfig: RemoteConfig,
     private val mapper: PlayBroadcastMapper,
     private val dispatchers: CoroutineDispatchers,
 ): PlayBroadcastChannelRepository {
@@ -68,6 +70,10 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         else setSchedule(channelId, selectedDate)
     }
 
+    override fun canSchedule(): Boolean {
+        return remoteConfig.getBoolean(KEY_ENABLE_SCHEDULING, true)
+    }
+
     private suspend fun setSchedule(
         channelId: String,
         selectedDate: Date
@@ -100,5 +106,9 @@ class PlayBroadcastChannelRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         return@withContext BroadcastScheduleUiModel.NoSchedule
+    }
+
+    companion object {
+        private const val KEY_ENABLE_SCHEDULING = "android_main_app_enable_play_scheduling"
     }
 }

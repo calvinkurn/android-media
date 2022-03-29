@@ -841,7 +841,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     maxDate = scheduleConfigModel.maximum,
                     minDate = scheduleConfigModel.minimum,
                     defaultDate = scheduleConfigModel.default,
-                )
+                ),
+                canSchedule = repo.canSchedule()
             )
         }
     }

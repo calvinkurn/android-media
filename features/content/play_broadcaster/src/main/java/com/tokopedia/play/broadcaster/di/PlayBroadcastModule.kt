@@ -34,6 +34,8 @@ import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -60,6 +62,11 @@ class PlayBroadcastModule {
         } else {
             PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
         }
+    }
+
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides

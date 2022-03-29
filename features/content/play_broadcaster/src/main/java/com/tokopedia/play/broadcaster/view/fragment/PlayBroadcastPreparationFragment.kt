@@ -418,6 +418,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun renderScheduleMenu(
         state: ScheduleUiModel
     ) {
+        binding.viewPreparationMenu.showScheduleMenu(state.canSchedule)
+
         binding.viewPreparationMenu.isSetScheduleChecked(
             state.schedule is BroadcastScheduleUiModel.Scheduled
         )
