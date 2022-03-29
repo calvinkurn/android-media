@@ -68,7 +68,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
+open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
     HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
     ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener,
     ReviewReportBottomSheetListener, ReadReviewHighlightedTopicListener,
@@ -734,6 +734,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
 
     override fun onUserNameClicked(userId: String) {
         goToReviewCredibility(userId)
+    }
+
+    protected fun hideRatingView() {
+        reviewHeader?.hideRatingView()
     }
 
     private fun getProductIdFromArguments() {
