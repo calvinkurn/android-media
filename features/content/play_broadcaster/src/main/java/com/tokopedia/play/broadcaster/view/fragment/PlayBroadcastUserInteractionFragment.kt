@@ -53,6 +53,7 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageVie
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
+import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -177,6 +178,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 position: Int
             ) {
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
+            }
+        })
+    }
+    private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
+            override fun onIconClick() {
+                openSelectInteractiveSheet()
             }
         })
     }
@@ -671,7 +678,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     /** TODO: delete this soon */
                     interactiveView.hide()
 
-                    icGame.hide()
+                    gameIconView.hide()
                 }
                 is BroadcastInteractiveState.Allowed -> {
                     handleHasInteractiveState(state)
@@ -842,7 +849,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
 
-        icGame.showWithCondition(state is BroadcastInteractiveState.Allowed.Init)
+        gameIconView.showWithCondition(state is BroadcastInteractiveState.Allowed.Init)
 
         when (state) {
             is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
@@ -863,6 +870,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 /** TODO: gonna delete this */
 //                analytic.onImpressInteractiveTool(parentViewModel.channelId)
 //                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
+                if(state.showOnBoarding && !hasPinnedFormView()) gameIconView.showCoachmark()
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
