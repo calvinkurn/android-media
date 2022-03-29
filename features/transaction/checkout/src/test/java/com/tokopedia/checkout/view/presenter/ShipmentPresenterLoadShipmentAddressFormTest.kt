@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
@@ -17,6 +18,7 @@ import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -564,6 +566,81 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         // Then
         assertEquals(1, presenter.shipmentButtonPaymentModel.quantity)
         assertEquals("Rp1.000", presenter.shipmentButtonPaymentModel.totalPrice)
+    }
+
+    @Test
+    fun `GIVEN null shipment cost data WHEN get shipment cost data THEN should return new shipment cost data`() {
+        // Given
+        presenter.shipmentCostModel = null
+
+        // Then
+        assertEquals(ShipmentCostModel(), presenter.shipmentCostModel)
+    }
+
+    @Test
+    fun `GIVEN not null shipment cost data WHEN get shipment cost data THEN should return shipment cost data`() {
+        // Given
+        val shipmentCostModel = ShipmentCostModel(
+                totalPrice = 1000.0
+        )
+        presenter.shipmentCostModel = shipmentCostModel
+
+        // Then
+        assertEquals(shipmentCostModel, presenter.shipmentCostModel)
+    }
+
+    @Test
+    fun `GIVEN coupon state not changed WHEN get coupon state data THEN should return coupon state not changed`() {
+        assertEquals(false, presenter.couponStateChanged)
+    }
+
+    @Test
+    fun `GIVEN coupon state changed WHEN get coupon state data THEN should return coupon state changed`() {
+        // Given
+        presenter.couponStateChanged = true
+
+        // Then
+        assertEquals(true, presenter.couponStateChanged)
+    }
+
+    @Test
+    fun `GIVEN null campaign timer WHEN get campaign timer data THEN should return null`() {
+        // Then
+        assertEquals(null, presenter.campaignTimer)
+    }
+
+    @Test
+    fun `GIVEN campaign timer not show timer WHEN get campaign timer data THEN should return null`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val campaignTimerUi = CampaignTimerUi(showTimer = false)
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), campaignTimerUi = campaignTimerUi))
+        }
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(null, presenter.campaignTimer)
+    }
+
+    @Test
+    fun `GIVEN campaign timer show timer WHEN get campaign timer data THEN should return campaign timer data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val campaignTimerUi = CampaignTimerUi(showTimer = true)
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), campaignTimerUi = campaignTimerUi))
+        }
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(campaignTimerUi, presenter.campaignTimer)
     }
 
     @Test
