@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.inbox.history.presentation.adapter
 
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -14,8 +13,7 @@ import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistor
 
 class ReviewHistoryAdapterTypeFactory(
     private val imagesClickListener: ReviewAttachedImagesClickListener,
-    private val reviewHistoryItemListener: ReviewHistoryItemListener,
-    private val reviewMediaTemplateRecycledViewPool: RecyclerView.RecycledViewPool
+    private val reviewHistoryItemListener: ReviewHistoryItemListener
 ) : ReviewHistoryTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(reviewHistoryUiModel: ReviewHistoryUiModel): Int {
@@ -28,7 +26,11 @@ class ReviewHistoryAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ReviewHistoryViewHolder.LAYOUT -> ReviewHistoryViewHolder(parent, imagesClickListener, reviewHistoryItemListener, reviewMediaTemplateRecycledViewPool)
+            ReviewHistoryViewHolder.LAYOUT -> ReviewHistoryViewHolder(
+                parent,
+                imagesClickListener,
+                reviewHistoryItemListener
+            )
             ReviewHistoryLoadingViewHolder.LAYOUT -> ReviewHistoryLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }

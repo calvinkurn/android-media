@@ -18,8 +18,8 @@ import com.tokopedia.review.databinding.WidgetReplyFeedbackItemBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyListener
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifyprinciples.Typography
 
 class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
@@ -34,9 +34,12 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val binding = WidgetReplyFeedbackItemBinding.inflate(LayoutInflater.from(context), this, true)
-    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
     private var element: FeedbackUiModel? = null
     private var productReplyUiModel: ProductReplyUiModel? = null
+
+    init {
+        binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
+    }
 
     fun setData(data: FeedbackUiModel, productReplyUiModel: ProductReplyUiModel) {
         this.element = data
@@ -78,7 +81,6 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
     private fun setImageAttachment(element: FeedbackUiModel) {
         binding.reviewMediaThumbnails.apply {
             setData(element.reviewMediaThumbnail)
-            setListener(reviewMediaThumbnailListener)
         }
         if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
             binding.reviewMediaThumbnails.hide()
@@ -136,8 +138,8 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         binding.tvReplyComment.text = comment
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
-        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             val element = element
             val productReplyUiModel = productReplyUiModel
             if (element != null && productReplyUiModel != null) {
@@ -152,7 +154,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         }
 
         override fun onRemoveMediaItemClicked(
-            mediaItem: ReviewMediaThumbnailVisitable,
+            item: ReviewMediaThumbnailVisitable,
             position: Int
         ) {
             // noop

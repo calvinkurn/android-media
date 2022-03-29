@@ -2,7 +2,6 @@ package com.tokopedia.review.feature.reading.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -23,6 +22,7 @@ import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItem
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
@@ -32,8 +32,7 @@ class ReadReviewViewHolder(
     view: View,
     private val readReviewItemListener: ReadReviewItemListener,
     private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
-    private val reviewBasicInfoListener: ReviewBasicInfoListener,
-    private val mediaRecyclerViewPool: RecyclerView.RecycledViewPool
+    private val reviewBasicInfoListener: ReviewBasicInfoListener
 ) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
@@ -62,7 +61,6 @@ class ReadReviewViewHolder(
 
     init {
         bindViews()
-        setupLayout()
         attachedMedia?.setListener(ReviewMediaThumbnailListener())
     }
 
@@ -128,10 +126,6 @@ class ReadReviewViewHolder(
             sellerResponse = findViewById(R.id.read_review_seller_response)
             badRatingReason = findViewById(R.id.read_review_bad_rating_reason)
         }
-    }
-
-    private fun setupLayout() {
-        attachedMedia?.setRecyclerViewPool(mediaRecyclerViewPool)
     }
 
     private fun setProductInfo(
@@ -372,8 +366,8 @@ class ReadReviewViewHolder(
         }
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
-        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 attachedImagesClickListener.onAttachedImagesClicked(
                     productReview = it.reviewData,
@@ -385,7 +379,7 @@ class ReadReviewViewHolder(
         }
 
         override fun onRemoveMediaItemClicked(
-            mediaItem: ReviewMediaThumbnailVisitable,
+            item: ReviewMediaThumbnailVisitable,
             position: Int
         ) {
             // noop

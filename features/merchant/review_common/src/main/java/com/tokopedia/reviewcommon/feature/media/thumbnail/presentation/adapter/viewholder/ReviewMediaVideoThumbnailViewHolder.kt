@@ -11,7 +11,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.Re
 
 class ReviewMediaVideoThumbnailViewHolder(
     view: View,
-    private val listener: ReviewMediaThumbnailTypeFactory.Listener
+    private val listener: ReviewMediaThumbnailTypeFactory.Listener?
 ): AbstractViewHolder<ReviewMediaVideoThumbnailUiModel>(view) {
 
     companion object {
@@ -33,11 +33,11 @@ class ReviewMediaVideoThumbnailViewHolder(
 
     private inner class ReviewMediaVideoThumbnailListener: ReviewMediaVideoThumbnail.Listener {
         override fun onMediaItemClicked() {
-            element?.let { listener.onMediaItemClicked(it, adapterPosition.coerceAtLeast(Int.ZERO)) }
+            element?.let { listener?.onMediaItemClicked(it, adapterPosition.coerceAtLeast(Int.ZERO)) }
         }
 
         override fun onRemoveMediaItemClicked() {
-            element?.let { listener.onRemoveMediaItemClicked(it, adapterPosition.coerceAtLeast(Int.ZERO)) }
+            element?.let { listener?.onRemoveMediaItemClicked(it, adapterPosition.coerceAtLeast(Int.ZERO)) }
         }
     }
 }

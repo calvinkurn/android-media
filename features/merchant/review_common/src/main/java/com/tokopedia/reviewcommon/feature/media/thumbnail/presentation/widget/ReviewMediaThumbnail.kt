@@ -4,13 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.reviewcommon.databinding.WidgetReviewMediaThumbnailBinding
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.ReviewMediaThumbnailAdapter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewMediaThumbnail @JvmOverloads constructor(
@@ -28,25 +26,27 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
         this,
         true
     )
-    private val reviewMediaThumbnailListener = ReviewMediaThumbnailItemListener()
-    private val typeFactory = ReviewMediaThumbnailTypeFactory(reviewMediaThumbnailListener)
-    private val adapter = ReviewMediaThumbnailAdapter(typeFactory)
+    private var reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener? = null
+    private val typeFactory by lazy(LazyThreadSafetyMode.NONE) {
+        ReviewMediaThumbnailTypeFactory(reviewMediaThumbnailListener)
+    }
+    private val adapter by lazy(LazyThreadSafetyMode.NONE) {
+        ReviewMediaThumbnailAdapter(typeFactory)
+    }
 
     init {
         binding.root.layoutManager = ReviewMediaThumbnailLayoutManager(context)
-        binding.root.adapter = adapter
     }
 
     fun setData(data: ReviewMediaThumbnailUiModel) {
+        if (binding.root.adapter == null) {
+            binding.root.adapter = adapter
+        }
         adapter.updateItems(data.mediaThumbnails.take(MAX_MEDIA_COUNT))
     }
 
-    fun setListener(listener: Listener) {
-        reviewMediaThumbnailListener.listener = listener
-    }
-
-    fun setRecyclerViewPool(recycledViewPool: RecyclerView.RecycledViewPool) {
-        binding.root.setRecycledViewPool(recycledViewPool)
+    fun setListener(listener: ReviewMediaThumbnailTypeFactory.Listener) {
+        reviewMediaThumbnailListener = listener
     }
 
     private inner class ReviewMediaThumbnailLayoutManager(
@@ -71,22 +71,5 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
                 return 1
             }
         }
-    }
-
-    private inner class ReviewMediaThumbnailItemListener : ReviewMediaThumbnailTypeFactory.Listener {
-        var listener: Listener? = null
-
-        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            listener?.onMediaItemClicked(item, position)
-        }
-
-        override fun onRemoveMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            listener?.onRemoveMediaItemClicked(item, position)
-        }
-    }
-
-    interface Listener {
-        fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int)
-        fun onRemoveMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int)
     }
 }

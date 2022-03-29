@@ -18,8 +18,8 @@ import com.tokopedia.review.databinding.ItemInboxReviewBinding
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInboxReviewListener
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 
 class InboxReviewFeedbackViewHolder(
     view: View,
@@ -35,7 +35,10 @@ class InboxReviewFeedbackViewHolder(
     private var element: FeedbackInboxUiModel? = null
     private val impressHolder = ImpressHolder()
     private val binding = ItemInboxReviewBinding.bind(view)
-    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
+
+    init {
+        binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
+    }
 
     override fun bind(element: FeedbackInboxUiModel) {
         this.element = element
@@ -131,7 +134,6 @@ class InboxReviewFeedbackViewHolder(
         with(binding) {
             reviewMediaThumbnails.apply {
                 setData(element.reviewMediaThumbnail)
-                setListener(reviewMediaThumbnailListener)
             }
             if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
                 reviewMediaThumbnails.hide()
@@ -192,8 +194,8 @@ class InboxReviewFeedbackViewHolder(
         binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
-        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 feedbackInboxReviewListener.onImageItemClicked(
                     it.productName,
@@ -207,7 +209,7 @@ class InboxReviewFeedbackViewHolder(
         }
 
         override fun onRemoveMediaItemClicked(
-            mediaItem: ReviewMediaThumbnailVisitable,
+            item: ReviewMediaThumbnailVisitable,
             position: Int
         ) {
             // noop

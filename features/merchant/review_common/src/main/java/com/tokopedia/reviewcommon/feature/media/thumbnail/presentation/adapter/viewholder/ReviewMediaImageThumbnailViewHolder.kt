@@ -10,7 +10,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.Re
 
 class ReviewMediaImageThumbnailViewHolder(
     view: View,
-    private val listener: ReviewMediaThumbnailTypeFactory.Listener
+    private val listener: ReviewMediaThumbnailTypeFactory.Listener?
 ): AbstractViewHolder<ReviewMediaImageThumbnailUiModel>(view) {
 
     companion object {
@@ -36,11 +36,15 @@ class ReviewMediaImageThumbnailViewHolder(
 
     private inner class ReviewMediaImageThumbnailListener: ReviewMediaImageThumbnail.Listener {
         override fun onMediaItemClicked() {
-            element?.let { listener.onMediaItemClicked(it, adapterPosition) }
+            element?.let {
+                listener?.onMediaItemClicked(it, adapterPosition)
+            }
         }
 
         override fun onRemoveMediaItemClicked() {
-            element?.let { listener.onRemoveMediaItemClicked(it, adapterPosition) }
+            element?.let {
+                listener?.onRemoveMediaItemClicked(it, adapterPosition)
+            }
         }
     }
 }

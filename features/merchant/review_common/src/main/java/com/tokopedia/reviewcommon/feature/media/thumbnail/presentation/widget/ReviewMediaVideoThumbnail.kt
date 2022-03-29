@@ -44,6 +44,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
 
     init {
         binding.icReviewMediaVideoThumbnailPlayButton.loadImage(R.drawable.ic_review_media_video_thumbnail_play)
+        binding.ivReviewMediaVideoThumbnail.setOnClickListener(listener)
         binding.ivReviewMediaVideoThumbnail.onUrlLoaded = { success ->
             when (uiState) {
                 is ReviewMediaVideoThumbnailUiState.Showing -> {

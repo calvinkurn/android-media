@@ -3,9 +3,14 @@ package com.tokopedia.reviewcommon.feature.media.detail.presentation.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.URLSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -35,6 +40,10 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     private var currentUiState: ReviewDetailSupplementaryUiState? = null
     private var listener: Listener? = null
 
+    init {
+        binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.setOnTouchListener(ReviewDetailSupplementaryInfo())
+    }
+
     private fun reviewOnPreDrawListener(): ViewTreeObserver.OnPreDrawListener {
         return ViewTreeObserver.OnPreDrawListener {
             var continueDraw = true
@@ -49,11 +58,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
                         val seeMoreText = HtmlLinkHelper(
                             context,
                             context.getString(R.string.review_media_common_see_more)
-                        ).apply {
-                            urlList.firstOrNull()?.setOnClickListener {
-                                listener?.onDescriptionSeeMoreClicked()
-                            }
-                        }.spannedString ?: ""
+                        ).spannedString ?: ""
                         val seeMoreTextLength = seeMoreText.length * 15 / 10 // since see more text is a link, it might be wider so we add some error correction
                         val concatenatedNonEllipsizedText = SpannableStringBuilder().apply {
                             append(currentText.take(nonEllipsizedTextLength - ellipsisCount - seeMoreTextLength))
@@ -165,6 +170,38 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
 
     fun setListener(newListener: Listener) {
         listener = newListener
+    }
+
+    private inner class ReviewDetailSupplementaryInfo: OnTouchListener {
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
+            if (v is TextView) {
+                val action = event.action
+                val text = v.text
+                if (text is Spanned) {
+                    if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                        var x = event.x
+                        var y = event.y.toInt()
+
+                        x -= v.totalPaddingLeft
+                        y -= v.totalPaddingTop
+
+                        x += v.scrollX
+                        y += v.scrollY
+
+                        val layout = v.layout
+                        val line = layout.getLineForVertical(y)
+                        val off = layout.getOffsetForHorizontal(line, x)
+
+                        val link = text.getSpans(off, off, URLSpan::class.java)
+                        if (link.isNotEmpty() && action == MotionEvent.ACTION_UP) {
+                            listener?.onDescriptionSeeMoreClicked()
+                        }
+                        return true
+                    }
+                }
+            }
+            return v.onTouchEvent(event)
+        }
     }
 
     interface Listener {

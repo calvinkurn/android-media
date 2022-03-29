@@ -17,8 +17,8 @@ import com.tokopedia.review.databinding.ItemProductFeedbackDetailBinding
 import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.review.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 
 class ProductFeedbackDetailViewHolder(
     private val view: View,
@@ -36,9 +36,12 @@ class ProductFeedbackDetailViewHolder(
 
     private var element: FeedbackUiModel? = null
     private val badRatingReason: ReviewBadRatingReasonWidget = view.findViewById(R.id.badRatingReasonReview)
-    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
 
     private val binding = ItemProductFeedbackDetailBinding.bind(view)
+
+    init {
+        binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
+    }
 
     override fun bind(element: FeedbackUiModel) {
         this.element = element
@@ -122,7 +125,6 @@ class ProductFeedbackDetailViewHolder(
         with(binding) {
             reviewMediaThumbnails.apply {
                 setData(element.reviewMediaThumbnail)
-                setListener(reviewMediaThumbnailListener)
             }
             if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
                 reviewMediaThumbnails.hide()
@@ -168,8 +170,8 @@ class ProductFeedbackDetailViewHolder(
         badRatingReason.showBadRatingReason(reason)
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
-        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 productFeedbackDetailListener.onImageItemClicked(
                     it.attachments.mapNotNull { it.fullSizeURL },
@@ -181,7 +183,7 @@ class ProductFeedbackDetailViewHolder(
         }
 
         override fun onRemoveMediaItemClicked(
-            mediaItem: ReviewMediaThumbnailVisitable,
+            item: ReviewMediaThumbnailVisitable,
             position: Int
         ) {
             // noop

@@ -11,7 +11,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 
 class ReviewMediaThumbnailTypeFactory(
-    private val listener: Listener
+    private val listener: Listener?
 ) : BaseAdapterTypeFactory() {
 
     @Suppress("UNUSED_PARAMETER")

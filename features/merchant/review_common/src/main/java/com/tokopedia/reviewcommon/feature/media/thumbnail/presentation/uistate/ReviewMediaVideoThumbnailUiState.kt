@@ -10,7 +10,7 @@ sealed interface ReviewMediaVideoThumbnailUiState: Parcelable {
 
     @Parcelize
     data class Showing(
-        val playable: Boolean = false,
+        val playable: Boolean = true,
         override val uri: String = "",
         override val removable: Boolean = false,
         override val showDuration: Boolean = false

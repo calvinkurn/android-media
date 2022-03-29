@@ -161,8 +161,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         return ReadReviewAdapterTypeFactory(
             readReviewItemListener = this,
             attachedImagesClickListener = this,
-            reviewBasicInfoListener = this,
-            mediaRecyclerViewPool = RecyclerView.RecycledViewPool()
+            reviewBasicInfoListener = this
         )
     }
 

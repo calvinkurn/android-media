@@ -45,13 +45,13 @@ import com.tokopedia.review.feature.historydetails.di.ReviewDetailComponent
 import com.tokopedia.review.feature.historydetails.presentation.mapper.ReviewDetailDataMapper
 import com.tokopedia.review.feature.historydetails.presentation.viewmodel.ReviewDetailViewModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -358,8 +358,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                             )
                         }
                     }
-                    setData(ReviewMediaThumbnailUiModel(mappedVideoAttachment.plus(mappedImageAttachment)))
                     setListener(reviewMediaThumbnailListener)
+                    setData(ReviewMediaThumbnailUiModel(mappedVideoAttachment.plus(mappedImageAttachment)))
                     show()
                 }
             } else {
@@ -634,8 +634,8 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnail.Listener {
-        override fun onMediaItemClicked(mediaItem: ReviewMediaThumbnailVisitable, position: Int) {
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             viewModel.reviewDetails.value?.let { reviewDetailsResult ->
                 if (reviewDetailsResult is Success) {
                     onAttachedImagesClicked(
@@ -650,7 +650,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         }
 
         override fun onRemoveMediaItemClicked(
-            mediaItem: ReviewMediaThumbnailVisitable,
+            item: ReviewMediaThumbnailVisitable,
             position: Int
         ) {
             // noop

@@ -97,8 +97,7 @@ class ReviewHistoryFragment :
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
         return ReviewHistoryAdapterTypeFactory(
             imagesClickListener = this,
-            reviewHistoryItemListener = this,
-            reviewMediaTemplateRecycledViewPool = RecyclerView.RecycledViewPool()
+            reviewHistoryItemListener = this
         )
     }
 
