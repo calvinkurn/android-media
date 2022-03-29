@@ -23,6 +23,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -145,7 +146,7 @@ class VariantSheetViewComponent(
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock ?: 0),
                         isVariantAvailable = true,
-                        price = if (selectedProduct.campaign?.isActive == true) {
+                        price = if (selectedProduct.campaign?.discountedPercentage != 0f) {
                             DiscountedPrice(
                                     originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                                     discountedPriceNumber = selectedProduct.campaign?.discountedPrice ?: 0.0,
@@ -216,13 +217,14 @@ class VariantSheetViewComponent(
 
         btnAction.setOnClickListener {
             variantSheetUiModel?.product?.let { product ->
-                if (model.action == ProductAction.Buy) listener.onBuyClicked(this, product)
-                else listener.onAddToCartClicked(this, product)
+                if (model.action == ProductAction.Buy) listener.onBuyClicked(this, product, variantSheetUiModel?.section ?: ProductSectionUiModel.Section.Empty)
+                else listener.onAddToCartClicked(this, product, variantSheetUiModel?.section ?: ProductSectionUiModel.Section.Empty)
             }
         }
 
         labelVariant1.gone()
         labelVariant2.gone()
+        tvProductStock.gone()
     }
 
     fun showPlaceholder() {
@@ -314,7 +316,7 @@ class VariantSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
-        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
-        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
+        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product, sectionUiModel: ProductSectionUiModel.Section)
+        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product, sectionUiModel: ProductSectionUiModel.Section)
     }
 }

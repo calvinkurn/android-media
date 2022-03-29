@@ -14,10 +14,7 @@ import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play.widget.R
 import com.tokopedia.play.widget.analytic.medium.PlayWidgetMediumAnalyticListener
@@ -240,8 +237,11 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         val prevModel = mModel
         mModel = data
 
-        topContainer.shouldShowWithAction(data.title.isNotEmpty() && data.isActionVisible) {
+        topContainer.shouldShowWithAction(data.title.isNotEmpty() || (data.isActionVisible && data.actionAppLink.isNotEmpty())) {
             title.text = data.title
+        }
+
+        actionTitle.shouldShowWithAction(data.isActionVisible && data.actionAppLink.isNotEmpty()){
             actionTitle.text = data.actionTitle
             actionTitle.setOnClickListener {
                 mAnalyticListener?.onClickViewAll(this)
