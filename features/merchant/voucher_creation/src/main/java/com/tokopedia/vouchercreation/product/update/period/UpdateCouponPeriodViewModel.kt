@@ -104,7 +104,7 @@ class UpdateCouponPeriodViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.execute(this, couponId, IS_TO_CREATE_NEW_COUPON)
+                    getCouponDetailUseCase.execute(couponId, IS_TO_CREATE_NEW_COUPON)
                 }
                 _couponDetail.value = Success(result)
             },

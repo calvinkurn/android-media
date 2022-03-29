@@ -10,7 +10,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant
-import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponInformation
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponProduct
@@ -173,7 +172,7 @@ class CouponPreviewViewModel @Inject constructor(
             block = {
                 val isToCreateNewCoupon = isCreateMode(pageMode) || isDuplicateMode(pageMode)
                 val result = withContext(dispatchers.io) {
-                    getCouponDetailUseCase.execute(this, couponId, isToCreateNewCoupon)
+                    getCouponDetailUseCase.execute(couponId, isToCreateNewCoupon)
                 }
                 _couponDetail.value = Success(result)
             },

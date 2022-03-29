@@ -15,10 +15,10 @@ import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponFaca
 import com.tokopedia.vouchercreation.product.create.domain.usecase.InitiateCouponUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.create.CreateCouponFacadeUseCase
 import com.tokopedia.vouchercreation.product.create.domain.usecase.update.UpdateCouponFacadeUseCase
+import com.tokopedia.vouchercreation.shop.create.view.uimodel.initiation.InitiateVoucherUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.impl.annotations.MockK
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
@@ -29,16 +29,16 @@ import org.junit.Test
 
 class CouponPreviewViewModelTest {
 
-    @MockK
+    @RelaxedMockK
     lateinit var initiateCouponUseCase: InitiateCouponUseCase
 
-    @MockK
+    @RelaxedMockK
     lateinit var createCouponUseCase: CreateCouponFacadeUseCase
 
-    @MockK
+    @RelaxedMockK
     lateinit var updateCouponUseCase: UpdateCouponFacadeUseCase
 
-    @MockK
+    @RelaxedMockK
     lateinit var getCouponDetailUseCase: GetCouponFacadeUseCase
 
     @RelaxedMockK
@@ -224,5 +224,100 @@ class CouponPreviewViewModelTest {
 
         //Then
         coVerify { updateCouponResultObserver.onChanged(Fail(error)) }
+    }
+
+    @Test
+    fun `When get coupon detail success on create mode, should emit success to observer`() = runBlocking {
+        //Given
+        val expected = mockk<CouponWithMetadata>()
+        val couponId : Long = 29347923
+        val pageMode = CouponPreviewFragment.Mode.CREATE
+        val shouldCreateNewCoupon = true
+
+        coEvery {
+            getCouponDetailUseCase.execute(
+                couponId,
+                shouldCreateNewCoupon
+            )
+        } returns expected
+
+        //When
+        viewModel.getCouponDetail(couponId, pageMode)
+
+        //Then
+        coVerify { couponDetailObserver.onChanged(Success(expected)) }
+    }
+
+    @Test
+    fun `When get coupon detail success on update mode, should emit success to observer`() = runBlocking {
+        //Given
+        val expected = mockk<CouponWithMetadata>()
+        val couponId : Long = 29347923
+        val pageMode = CouponPreviewFragment.Mode.UPDATE
+        val shouldCreateNewCoupon = false
+
+        coEvery {
+            getCouponDetailUseCase.execute(
+                couponId,
+                shouldCreateNewCoupon
+            )
+        } returns expected
+
+        //When
+        viewModel.getCouponDetail(couponId, pageMode)
+
+        //Then
+        coVerify { couponDetailObserver.onChanged(Success(expected)) }
+    }
+
+
+    @Test
+    fun `When get coupon detail error, should emit error to observer`() = runBlocking {
+        //Given
+        val error = MessageErrorException()
+        val couponId : Long = 29347923
+        val pageMode = CouponPreviewFragment.Mode.CREATE
+        val shouldCreateNewCoupon = true
+
+        coEvery {
+            getCouponDetailUseCase.execute(
+                couponId,
+                shouldCreateNewCoupon
+            )
+        } throws error
+
+        //When
+        viewModel.getCouponDetail(couponId, pageMode)
+
+        //Then
+        coVerify { couponDetailObserver.onChanged(Fail(error)) }
+    }
+
+    @Test
+    fun `When check coupon eligibility success, should emit success to observer`() = runBlocking {
+        //Given
+        val response = InitiateVoucherUiModel()
+
+        coEvery { initiateCouponUseCase.executeOnBackground() } returns response
+
+        //When
+        viewModel.checkCouponCreationEligibility()
+
+        //Then
+        assert(viewModel.couponCreationEligibility.value is Success)
+    }
+
+    @Test
+    fun `When check coupon eligibility error, should emit success to observer`() = runBlocking {
+        //Given
+        val error = MessageErrorException()
+
+        coEvery { initiateCouponUseCase.executeOnBackground() } throws error
+
+        //When
+        viewModel.checkCouponCreationEligibility()
+
+        //Then
+        coVerify { couponCreationEligibilityObserver.onChanged(Fail(error)) }
     }
 }
