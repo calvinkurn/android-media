@@ -40,6 +40,7 @@ class PayLaterViewModelTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
+    private val dataInvalidMockThrowalble = IllegalStateException("Data invalid")
 
     @Before
     fun setUp() {
@@ -75,6 +76,31 @@ class PayLaterViewModelTest {
             baseProductDetail.getProductV3
         )
 
+    }
+
+    @Test
+    fun `productDetail fetch success but condition fail`()
+    {
+        val shopDetail = mockk<ShopDetail>(relaxed = true)
+        val campaignDetail = mockk<CampaignDetail>(relaxed = true)
+        val baseProductDetail = BaseProductDetailClass(
+            GetProductV3(
+                "", "url", shopDetail,
+                1000.0, arrayListOf(
+                    Pictures("url")
+                ), null, 0, campaignDetail
+            )
+        )
+        coEvery {
+            productDetailUseCase.getProductDetail(any(), any(), "")
+        } coAnswers {
+            firstArg<(BaseProductDetailClass) -> Unit>().invoke(baseProductDetail)
+        }
+        viewModel.getProductDetail("")
+        Assert.assertEquals(
+            (viewModel.productDetailLiveData.value as Fail).throwable.localizedMessage,
+            "Data invalid"
+        )
     }
 
     @Test
