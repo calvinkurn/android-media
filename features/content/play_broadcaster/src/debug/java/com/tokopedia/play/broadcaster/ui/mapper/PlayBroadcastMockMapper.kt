@@ -17,6 +17,8 @@ import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -26,6 +28,7 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -246,6 +249,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     )
 
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+        tapTapConfig = TapTapConfigUiModel(
             isActive = true,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
@@ -253,6 +257,15 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             timeGuidelineDetail = "Tentukan kapan game dimulai, dan game akan berlangsung selama 10 detik.",
             durationInMs = 10000L,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+        ),
+        quizConfig = QuizConfigUiModel(
+            isActive = true,
+            maxTitleLength = 30,
+            maxChoicesCount = 3,
+            minChoicesCount = 2,
+            maxRewardLength = 30,
+            availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+        )
     )
 
     override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,

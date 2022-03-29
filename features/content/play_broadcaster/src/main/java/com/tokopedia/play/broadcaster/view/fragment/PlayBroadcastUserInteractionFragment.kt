@@ -17,6 +17,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -94,7 +95,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
-    private val icInteractive: IconUnify by detachableView(R.id.ic_interactive)
+    private val icGame: IconUnify by detachableView(R.id.ic_game)
 
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
@@ -114,9 +115,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
                 if (allowSetupInteractive()) {
-                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
-                    interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
-                    interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
+                    /** TODO: gonna delete this */
+//                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
+//                    interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
+//                    interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
                     interactiveSetupView.show()
                     analytic.onClickInteractiveTool(parentViewModel.channelId)
                 } else {
@@ -272,7 +274,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
             }
         }
-        icInteractive.setOnClickListener {
+        icGame.setOnClickListener {
             openSelectInteractiveSheet()
         }
     }
@@ -368,7 +370,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
                 true
             }
-            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
+            /** TODO: gonna delete this */
+//            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
             else -> showDialogWhenActionClose()
         }
     }
@@ -659,7 +662,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeInteractiveConfig() {
         parentViewModel.observableInteractiveConfig.observe(viewLifecycleOwner) { config ->
-            interactiveSetupView.setConfig(config)
+            /** TODO: gonna delete this & setup to new viewcomponent */
+//            interactiveSetupView.setConfig(config)
         }
         parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -667,14 +671,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     /** TODO: delete this soon */
                     interactiveView.hide()
 
-                    icInteractive.hide()
+                    icGame.hide()
                 }
                 is BroadcastInteractiveState.Allowed -> {
-                    /** TODO: delete this soon */
                     handleHasInteractiveState(state)
+                    /** TODO: delete this soon */
                     interactiveView.show()
-
-                    icInteractive.show()
                 }
             }
         }
@@ -683,7 +685,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeCreateInteractiveSession() {
         parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
+                /** TODO: gonna delete this */
+//                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
                     analytic.onStartInteractive(
                         channelId = parentViewModel.channelId,
@@ -691,11 +694,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         interactiveTitle = parentViewModel.activeInteractiveTitle,
                         durationInMs = state.data.durationInMs
                     )
-                    interactiveSetupView.setLoading(false)
-                    interactiveSetupView.reset()
+                    /** TODO: gonna delete this */
+//                    interactiveSetupView.setLoading(false)
+//                    interactiveSetupView.reset()
                 }
                 is NetworkResult.Fail -> {
-                    interactiveSetupView.setLoading(false)
+                    /** TODO: gonna delete this */
+//                    interactiveSetupView.setLoading(false)
                     showErrorToaster(
                         err = state.error,
                         customErrMessage = getString(R.string.play_interactive_broadcast_create_fail),
@@ -837,6 +842,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
 
+        icGame.showWithCondition(state is BroadcastInteractiveState.Allowed.Init)
+
         when (state) {
             is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
             is BroadcastInteractiveState.Allowed.Schedule -> {
@@ -853,11 +860,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
-                analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
+                /** TODO: gonna delete this */
+//                analytic.onImpressInteractiveTool(parentViewModel.channelId)
+//                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
+                /** TODO: show winner badge */
                 analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.activeInteractiveTitle)
                 interactiveView.setFinish(state.coachMark)
             }

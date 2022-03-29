@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.model.interactive
 
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
+
 /**
  * Created by jegul on 07/07/21
  */
@@ -15,7 +17,7 @@ sealed class BroadcastInteractiveState {
 
 sealed class BroadcastInteractiveInitState {
 
-    data class NoPrevious(val showOnBoarding: Boolean) : BroadcastInteractiveInitState()
+    data class NoPrevious(val showOnBoarding: Boolean, val gameTypeList: List<GameType>) : BroadcastInteractiveInitState()
     object Loading : BroadcastInteractiveInitState()
     data class HasPrevious(val coachMark: BroadcastInteractiveCoachMark) : BroadcastInteractiveInitState()
 }

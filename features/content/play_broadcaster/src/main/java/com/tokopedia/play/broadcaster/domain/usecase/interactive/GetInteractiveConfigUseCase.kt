@@ -30,6 +30,14 @@ class GetInteractiveConfigUseCase @Inject constructor(
               interactiveDuration
               countdownPickerTime
             }
+            quizConfig {
+              isActive
+              maxTitleLength
+              maxChoicesCount
+              minChoicesCount
+              maxRewardLength
+              quizDurationsInSecond
+            }
           }
         }
     """

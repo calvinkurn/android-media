@@ -213,17 +213,27 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    private val _interactiveConfig = MutableStateFlow<InteractiveConfigUiModel>(InteractiveConfigUiModel.empty())
+    private val _interactiveConfigUiState = _interactiveConfig.map {
+        InteractiveConfigUiState(
+            tapTapConfig = it.tapTapConfig,
+            quizConfig = it.quizConfig
+        )
+    }
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
-        _isExiting
-    ) { channelState, pinnedMessage, productMap, isExiting ->
+        _isExiting,
+        _interactiveConfigUiState,
+    ) { channelState, pinnedMessage, productMap, isExiting, interactiveConfig ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             isExiting = isExiting,
+            interactiveConfig = interactiveConfig,
         )
     }
 
@@ -582,22 +592,26 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveConfig = repo.getInteractiveConfig()
+            _interactiveConfig.value = interactiveConfig
+
+            /** TODO: should save config on flow instead */
             _observableInteractiveConfig.value = interactiveConfig
+            setInteractiveDurations(interactiveConfig.tapTapConfig.availableStartTimeInMs)
 
-            setInteractiveDurations(interactiveConfig.availableStartTimeInMs)
 
-            if (interactiveConfig.isActive) {
-                handleActiveInteractive()
-            } else {
+            if(interactiveConfig.isNoGameActive()) {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
+            }
+            else {
+                handleActiveInteractive()
             }
         }) { }
     }
 
     private fun updateCurrentInteractiveStatus() {
         viewModelScope.launch {
-            val interactiveConfig = _observableInteractiveConfig.value
-            if (interactiveConfig?.isActive == true) handleActiveInteractive()
+            val interactiveConfig = _observableInteractiveConfig.value ?: return@launch
+            if (interactiveConfig.isNoGameActive()) handleActiveInteractive()
         }
     }
 
@@ -666,7 +680,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
-        return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(sharedPref.isFirstInteractive()))
+        return BroadcastInteractiveState.Allowed.Init(
+            state = BroadcastInteractiveInitState.NoPrevious(
+                showOnBoarding = sharedPref.isFirstInteractive(),
+                gameTypeList = _interactiveConfig.value.generateGameTypeList(),
+            ),
+        )
     }
 
     private fun findSuitableInteractiveDurations(): List<Long> {

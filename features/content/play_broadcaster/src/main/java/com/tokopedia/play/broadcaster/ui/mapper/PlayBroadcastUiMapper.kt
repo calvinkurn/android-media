@@ -18,6 +18,8 @@ import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -309,19 +311,32 @@ class PlayBroadcastUiMapper(
     )
 
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
-        val interactiveDuration = response.interactiveConfig.config.interactiveDuration
+        val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
         return InteractiveConfigUiModel(
-            isActive = response.interactiveConfig.config.isActive,
-            nameGuidelineHeader = response.interactiveConfig.config.interactiveNamingGuidelineHeader,
-            nameGuidelineDetail = response.interactiveConfig.config.interactiveNamingGuidelineDetail,
-            timeGuidelineHeader = response.interactiveConfig.config.interactiveTimeGuidelineHeader,
-            timeGuidelineDetail = response.interactiveConfig.config.interactiveTimeGuidelineDetail
-                .replace(FORMAT_INTERACTIVE_DURATION, interactiveDuration.toString()),
-            durationInMs = TimeUnit.SECONDS.toMillis(interactiveDuration.toLong()),
-            availableStartTimeInMs = response.interactiveConfig.config.countdownPickerTime.map {
-                TimeUnit.SECONDS.toMillis(it.toLong())
-            },
+            tapTapConfig = TapTapConfigUiModel(
+                isActive = response.interactiveConfig.tapTapConfig.isActive,
+                nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
+                nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,
+                timeGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineHeader,
+                timeGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineDetail
+                    .replace(FORMAT_INTERACTIVE_DURATION, interactiveDuration.toString()),
+                durationInMs = TimeUnit.SECONDS.toMillis(interactiveDuration.toLong()),
+                availableStartTimeInMs = response.interactiveConfig.tapTapConfig.countdownPickerTime.map {
+                    TimeUnit.SECONDS.toMillis(it.toLong())
+                },
+            ),
+            quizConfig = QuizConfigUiModel(
+                isActive = response.interactiveConfig.quizConfig.isActive,
+                maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
+                maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
+                minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
+                maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
+                availableStartTimeInMs = response.interactiveConfig.quizConfig.quizDurationsInSecond.map {
+                    TimeUnit.SECONDS.toMillis(it.toLong())
+                }
+            )
+
         )
     }
 
