@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.shopdiscount.bulk.DiscountBulkApplyViewModel
+import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyViewModel
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
 import dagger.Binds
 import dagger.Module
