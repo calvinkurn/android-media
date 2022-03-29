@@ -1,17 +1,8 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
-apply from: "../../../compile-instrument-test.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-parcelize'
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
-}
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
 buildscript {
     repositories {
         google()
@@ -24,6 +15,9 @@ buildscript {
 }
 
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
     defaultConfig {
         multiDexEnabled true
     }

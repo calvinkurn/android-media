@@ -1,0 +1,24 @@
+package com.tokopedia.shopdiscount.di.module
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.shopdiscount.bulk.DiscountBulkApplyViewModel
+import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+
+@Module
+abstract class ShopDiscountViewModelModule {
+
+    @ShopDiscountComponentScope
+    @Binds
+    internal abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DiscountBulkApplyViewModel::class)
+    internal abstract fun provideDiscountBulkApplyViewModel(viewModel: DiscountBulkApplyViewModel): ViewModel
+}
