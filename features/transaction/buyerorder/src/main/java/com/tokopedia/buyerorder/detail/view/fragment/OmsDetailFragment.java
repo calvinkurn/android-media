@@ -1,11 +1,7 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
-import static android.content.Context.CLIPBOARD_SERVICE;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -885,7 +881,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
     }
 
-    private void showRevampQr(ActionButton actionButton){
+    private void showEventQR(ActionButton actionButton){
         View view = ViewExtKt.inflateLayout(mainView, R.layout.layout_scan_qr_code, false);
         BottomSheetUnify bottomSheet = new BottomSheetUnify();
         bottomSheet.setTitle(getString(R.string.text_redeem_voucher));
@@ -949,15 +945,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             }
         });
 
-        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         if (rvVoucher.getOnFlingListener() == null){
+            PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
             pagerSnapHelper.attachToRecyclerView(rvVoucher);
         }
 
         adapter.setOnCopiedListener( voucherCode -> {
-            ClipboardManager myClipboard = (ClipboardManager) requireContext().getSystemService(CLIPBOARD_SERVICE);
-            ClipData myClip = ClipData.newPlainText(KEY_TEXT, voucherCode);
-            myClipboard.setPrimaryClip(myClip);
+            BuyerUtils.copyTextToClipBoard(KEY_TEXT, voucherCode, requireContext());
             Toaster.build(view, getString(R.string.deals_msg_copy), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
             return Unit.INSTANCE;
         });
@@ -1011,7 +1005,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         if (item.getCategory().equalsIgnoreCase(ItemsAdapter.categoryDeals) || item.getCategoryID() == ItemsAdapter.DEALS_CATEGORY_ID) {
             showDealsQR(actionButton);
         } else {
-            showRevampQr(actionButton);
+            showEventQR(actionButton);
         }
     }
 
