@@ -40,7 +40,6 @@ class PayLaterViewModelTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
-    private val dataInvalidMockThrowalble = IllegalStateException("Data invalid")
 
     @Before
     fun setUp() {
