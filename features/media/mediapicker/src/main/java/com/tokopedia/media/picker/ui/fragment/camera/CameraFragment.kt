@@ -25,7 +25,7 @@ import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
-import com.tokopedia.media.picker.ui.fragment.camera.component.CameraPreviewComponent
+import com.tokopedia.media.picker.ui.fragment.camera.component.CameraViewComponent
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
@@ -37,13 +37,12 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
 import com.tokopedia.picker.common.utils.FileCamera
 import com.tokopedia.picker.common.utils.safeFileDelete
-import com.tokopedia.picker.common.utils.videoFormat
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 open class CameraFragment : BaseDaggerFragment()
     , CameraControllerComponent.Listener
-    , CameraPreviewComponent.Listener {
+    , CameraViewComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
@@ -51,14 +50,27 @@ open class CameraFragment : BaseDaggerFragment()
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
 
-    private val preview by uiComponent { CameraPreviewComponent(param.get(), this, it) }
-    private val controller by uiComponent { CameraControllerComponent(param.get(), this, it) }
+    private val cameraView by uiComponent {
+        CameraViewComponent(
+            param = param.get(),
+            listener = this,
+            parent = it
+        )
+    }
+
+    private val controller by uiComponent {
+        CameraControllerComponent(
+            param = param.get(),
+            activityListener = listener,
+            controllerListener = this,
+            parent = it
+        )
+    }
 
     private val medias = mutableListOf<MediaUiModel>()
 
-    private var videoDurationTimer: CountDownTimer? = null
     private var isTakingPictureMode = true
-    private var isFlashOn = false
+    private var isInitFlashState = false
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -93,31 +105,30 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservable()
-        preview.setupView(viewLifecycleOwner)
+        cameraView.setupView(viewLifecycleOwner)
         controller.setupView()
     }
 
     override fun onResume() {
         super.onResume()
-        preview.open()
+        cameraView.open()
     }
 
     override fun onPause() {
         super.onPause()
-        preview.close()
+        cameraView.close()
     }
 
     override fun onCameraModeChanged(mode: Int) {
         isTakingPictureMode = mode == CameraControllerComponent.PHOTO_MODE
     }
 
-    override fun onImageThumbnailClicked() {
-        listener?.onPreviewItemSelected(medias)
+    override fun onCameraThumbnailClicked() {
+        listener?.onCameraThumbnailClicked()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        resetVideoDuration()
         exceptionHandler {
             listener = null
         }
@@ -128,66 +139,46 @@ open class CameraFragment : BaseDaggerFragment()
         listener = (context as PickerActivity)
     }
 
-    override fun isFacingCameraIsFront(): Boolean {
-        return preview.isFacingCameraIsFront()
-    }
-
-    override fun isCameraFlashOn(): Boolean {
-        return isFlashOn
+    override fun isFrontCamera(): Boolean {
+        return cameraView.isFacingCameraIsFront()
     }
 
     override fun onFlashClicked() {
-        if (isFlashOn) {
-            isFlashOn = false
-            controller.setFlashMode(isFlashOn)
-        } else {
-            isFlashOn = true
-            controller.setFlashMode(isFlashOn)
-        }
+        cameraView.setCameraFlashIndex()
+        setCameraFlashState()
     }
 
     override fun onFlipClicked() {
-        if (preview.isTakingPicture() || preview.isTakingVideo()) return
-        preview.toggleFacing()
+        if (cameraView.isTakingPicture() || cameraView.isTakingVideo()) return
+        cameraView.toggleFacing()
     }
 
     override fun onTakeMediaClicked() {
-        if (preview.isVideoMode() && preview.isTakingVideo()) {
-            preview.stopVideo()
+        if (controller.isVideoMode() && cameraView.isTakingVideo()) {
+            cameraView.stopVideo()
             return
         }
 
-        preview.enableFlashTorch()
-
         showShutterEffect {
             if (isTakingPictureMode) {
-                preview.onStartTakePicture()
+                cameraView.onStartTakePicture()
             } else {
-                preview.onStartTakeVideo()
-                onVideoDurationChanged()
+                cameraView.enableFlashTorch()
+                cameraView.onStartTakeVideo()
+                controller.onVideoDurationChanged()
             }
         }
     }
 
-    override fun hasMediaLimitReached(): Boolean {
-        return listener?.hasMediaLimitReached()?: false
-    }
-
-    override fun hasVideoLimitReached(): Boolean {
-        return listener?.hasVideoLimitReached()?: false
-    }
-
-    override fun onShowToastMediaLimit() {
-        listener?.onShowMediaLimitReachedToast()
-    }
-
-    override fun onShowToastVideoLimit() {
-        listener?.onShowVideoLimitReachedToast()
-    }
-
     override fun onCameraOpened(options: CameraOptions) {
-        controller.isFlashSupported(preview.hasFlashFeatureOnCamera())
-        controller.hasFrontCamera(preview.hasFrontCamera())
+        controller.hasFrontCamera(cameraView.hasFrontCamera())
+        cameraView.initCameraFlash()
+
+        // isInitFlashState to make sure we init the flash only once
+        if (!isInitFlashState && cameraView.hasFlashFeatureOnCamera()) {
+            setCameraFlashState()
+            isInitFlashState = true
+        }
     }
 
     override fun onVideoRecordingStart() {
@@ -200,13 +191,13 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onVideoTaken(result: VideoResult) {
         val fileToModel = result.file.cameraToUiModel()
-        if (isMinVideoDuration(fileToModel)) return
+        if (minVideoDurationValidation(fileToModel)) return
 
         onShowMediaThumbnail(fileToModel)
     }
 
     override fun onPictureTaken(result: PictureResult) {
-        FileCamera.createPhoto(preview.pictureSize(), result.data) {
+        FileCamera.createPhoto(cameraView.pictureSize(), result.data) {
             if (it == null) return@createPhoto
             val fileToModel = it.cameraToUiModel()
 
@@ -252,7 +243,6 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     private fun onStopRecordVideo() {
-        resetVideoDuration()
         controller.stopRecording()
         listener?.tabVisibility(true)
     }
@@ -262,7 +252,19 @@ open class CameraFragment : BaseDaggerFragment()
         stateOnCameraCapturePublished(element)
     }
 
-    private fun isMinVideoDuration(model: MediaUiModel): Boolean {
+    private fun setCameraFlashState() {
+        val activeFlash = cameraView.cameraFlash()
+
+        if (!isFrontCamera()) {
+            controller.isFlashSupported(activeFlash != null)
+        }
+
+        if (activeFlash != null) {
+            controller.setFlashMode(activeFlash.ordinal)
+        }
+    }
+
+    private fun minVideoDurationValidation(model: MediaUiModel): Boolean {
         if (listener?.isMinVideoDuration(model) == true) {
             listener?.onShowVideoMinDurationToast()
             safeFileDelete(model.path)
@@ -283,35 +285,6 @@ open class CameraFragment : BaseDaggerFragment()
         }
     }
 
-    private fun onVideoDurationChanged() {
-        resetVideoDuration()
-
-        val maxDuration = param.get().maxVideoDuration()
-
-        videoDurationTimer = object : CountDownTimer(
-            param.get().maxVideoDuration(),
-            COUNTDOWN_INTERVAL
-        ) {
-            override fun onTick(milis: Long) {
-                val time = maxDuration - milis
-                controller.setVideoDuration(time.videoFormat())
-            }
-
-            override fun onFinish() {
-                onStopRecordVideo()
-            }
-        }
-
-        videoDurationTimer?.start()
-    }
-
-    private fun resetVideoDuration() {
-        try {
-            videoDurationTimer?.cancel()
-            videoDurationTimer = null
-        } catch (t: Throwable) {}
-    }
-
     override fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
@@ -324,7 +297,6 @@ open class CameraFragment : BaseDaggerFragment()
 
     companion object {
         private const val OVERLAY_SHUTTER_DELAY = 100L
-        private const val COUNTDOWN_INTERVAL = 1000L
     }
 
 }
