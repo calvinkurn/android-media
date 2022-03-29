@@ -28,11 +28,11 @@ class BottomNavComponent(
         if (tabUnify.tabLayout.tabCount == 0) {
             addTab(R.string.picker_title_camera)
             addTab(R.string.picker_title_gallery)
-        }
 
-        tabUnify.tabLayout.addOnTabSelected(
-            ::onTabSelectionChanged
-        )
+            tabUnify.tabLayout.addOnTabSelected(
+                ::onTabSelectionChanged
+            )
+        }
     }
 
     fun onStartPositionChanged(startPosition: Int) {
