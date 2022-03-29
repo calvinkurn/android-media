@@ -33,7 +33,6 @@
             android:id="@+id/recharge_pdp_paket_data_sv_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingTop="@dimen/layout_lvl6"
             android:clipToPadding="false"
             app:layout_constraintTop_toBottomOf="@+id/recharge_pdp_paket_data_client_number_widget"
             app:layout_constraintBottom_toTopOf="@+id/recharge_pdp_paket_data_buy_widget">
@@ -41,7 +40,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="@dimen/layout_lvl7">
+                    android:paddingBottom="@dimen/layout_lvl7"
+                    >
 
                         <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
                             android:id="@+id/recharge_pdp_paket_data_recommendation_widget"
