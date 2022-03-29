@@ -1065,7 +1065,7 @@ class DigitalPDPDataPlanFragment :
                     binding?.run {
                         val dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
                             resources.displayMetrics) + extraPadding
-                        rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                            rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }
                 }
             })
