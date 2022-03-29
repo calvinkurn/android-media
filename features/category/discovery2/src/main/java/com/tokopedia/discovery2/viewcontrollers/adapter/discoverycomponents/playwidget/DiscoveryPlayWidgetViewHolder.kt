@@ -139,4 +139,36 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
     override fun onClickToggleReminderChannel(view: PlayWidgetMediumView, item: PlayWidgetChannelUiModel, channelPositionInList: Int, isRemindMe: Boolean, verticalWidgetPosition: Int, businessWidgetPosition: Int) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetReminderClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, verticalWidgetPosition, channelPositionInList, item.channelId , isRemindMe)
     }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        super.onLabelPromoClicked(
+            view,
+            item,
+            channelPositionInList,
+            businessWidgetPosition,
+            isAutoPlay
+        )
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        super.onLabelPromoImpressed(
+            view,
+            item,
+            channelPositionInList,
+            businessWidgetPosition,
+            isAutoPlay
+        )
+    }
 }
