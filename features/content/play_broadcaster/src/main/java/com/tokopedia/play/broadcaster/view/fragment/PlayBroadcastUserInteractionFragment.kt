@@ -42,6 +42,7 @@ import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
@@ -270,6 +271,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     titleChannel = parentViewModel.channelTitle,
                 )
             }
+        }
+        icInteractive.setOnClickListener {
+            openSelectInteractiveSheet()
         }
     }
 
@@ -858,6 +862,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveView.setFinish(state.coachMark)
             }
         }
+    }
+
+    private fun openSelectInteractiveSheet() {
+        val fragment = PlayBroSelectGameBottomSheet.getFragment(childFragmentManager, requireContext().classLoader)
+        fragment.show(childFragmentManager)
     }
 
     private fun openInteractiveLeaderboardSheet() {
