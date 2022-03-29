@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeBannerView
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 
@@ -85,10 +86,14 @@ class PlayWidgetLargeViewHolder {
                 }
 
                 override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
+                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
+                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
                     listener.onLabelPromoChannelClicked(item, adapterPosition)
                 }
 
                 override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
+                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
+                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
                     listener.onLabelPromoChannelImpressed(item, adapterPosition)
                 }
             })

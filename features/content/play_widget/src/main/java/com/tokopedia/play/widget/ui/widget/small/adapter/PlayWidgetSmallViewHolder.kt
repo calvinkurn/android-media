@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
 import com.tokopedia.play.widget.ui.widget.small.PlayWidgetCardSmallBannerView
 import com.tokopedia.play.widget.ui.widget.small.PlayWidgetCardSmallChannelView
 
@@ -65,11 +66,15 @@ class PlayWidgetSmallViewHolder {
                 }
 
                 override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-                    listener.onLabelPromoChannelClicked(item, position = adapterPosition)
+                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
+                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
+                        listener.onLabelPromoChannelClicked(item, adapterPosition)
                 }
 
                 override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                    listener.onLabelPromoChannelImpressed(item, position = adapterPosition)
+                    if ((item.promoType is PlayWidgetPromoType.Default && item.promoType.isRilisanSpesial)
+                        || (item.promoType is PlayWidgetPromoType.LiveOnly && item.promoType.isRilisanSpesial))
+                            listener.onLabelPromoChannelImpressed(item, adapterPosition)
                 }
             })
         }
