@@ -1,4 +1,4 @@
-package com.tokopedia.topads.edit.view.sheet
+package com.tokopedia.topads.common.view.sheet
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.topads.edit.R
+import com.tokopedia.topads.common.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 

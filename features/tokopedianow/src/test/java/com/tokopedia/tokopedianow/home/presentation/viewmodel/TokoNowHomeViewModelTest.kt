@@ -63,7 +63,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(createCategoryList(emptyList()))
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val expectedResponse = HomeLayoutListUiModel(
             items = listOf(
@@ -103,7 +103,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         onGetHomeLayoutItemList_returnNull()
 
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         viewModel.homeLayoutList
             .verifyErrorEquals(Fail(NullPointerException()))
@@ -114,10 +114,10 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetHomeLayoutDataUseCaseCalled(times = 2)
     }
@@ -127,7 +127,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutListForBannerOnly())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(createHomeLayoutData()))
 
@@ -223,7 +223,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetTicker_thenReturn(Exception())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -233,7 +233,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(Exception())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetHomeLayoutResponseFail()
     }
@@ -331,7 +331,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
         //set second mock data to replace first mock data category list
         onGetCategoryList_thenReturn(createCategoryGridListSecondFetch())
@@ -417,7 +417,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
@@ -434,7 +434,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         //prepare model for expectedResult
         val expectedResponse = HomeQuestSequenceWidgetUiModel(
@@ -457,7 +457,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         //prepare model for expectedResult
         val expectedResponse = HomeQuestSequenceWidgetUiModel(
@@ -487,7 +487,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         // verify use case called and response
         verifyGetHomeLayoutDataUseCaseCalled()
@@ -504,7 +504,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         //set the code to make it success and get the list
         code = "200"
@@ -542,7 +542,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         //fetch homeLayout
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         //set quest widget list to throw an exception
         onGetQuestWidgetList_thenReturn(Exception())
@@ -597,7 +597,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetCategoryList_thenReturn(Exception())
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
         val data = HomeLayoutListUiModel(
             items = listOf(
@@ -647,7 +647,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         )
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
         val data = HomeLayoutListUiModel(
             items = listOf(
@@ -697,7 +697,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(index, LocalCacheModel(), listOf())
     }
 
@@ -706,7 +706,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.removeTickerWidget("1")
 
         val expectedResult = HomeLayoutListUiModel(
@@ -741,7 +741,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetTicker_thenReturn(NullPointerException())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val expectedResult = HomeLayoutListUiModel(
             items = listOf(
@@ -849,7 +849,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.addProductToCart(productId, quantity, shopId, type)
 
         val chooseAddressWidget = TokoNowChooseAddressWidgetUiModel(id = "0")
@@ -923,7 +923,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, quantity, shopId, type)
 
@@ -998,7 +998,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, 4, shopId, type)
@@ -1033,7 +1033,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetRepurchaseWidget_thenReturn(error)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val homeLayoutItems = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0")
@@ -1075,7 +1075,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetRepurchaseWidget_thenReturn(repurchaseProductResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val homeLayoutItems = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0")
@@ -1172,7 +1172,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetRepurchaseWidget_thenReturn(repurchaseResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
 
         val expected = listOf(
@@ -1197,7 +1197,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val expected = emptyList<TokoNowProductCardUiModel>()
         val actual = viewModel.getRepurchaseProducts()
@@ -1229,7 +1229,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val recomItemList = listOf(RecommendationItem(productId = 2, isRecomProductShowVariantAndCart = true, price = "0"))
         val recomWidget = RecommendationWidget(title = "Lagi Diskon", recommendationItemList = recomItemList)
@@ -1282,7 +1282,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetRepurchaseWidget_thenReturn(repurchaseResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
 
         val repurchaseUiModel = TokoNowRepurchaseUiModel(
@@ -1346,7 +1346,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.addProductToCart(productId, quantity, shopId, type)
 
         val recomItemList = listOf(
@@ -1410,7 +1410,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, 4, shopId, type)
@@ -1477,7 +1477,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, 4, shopId, type)
@@ -1529,7 +1529,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, 0, shopId, type)
@@ -1596,7 +1596,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetIsUserLoggedIn_thenReturn(userLoggedIn = true)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.getMiniCart(listOf(shopId), warehouseId)
         viewModel.addProductToCart(productId, 0, shopId, type)
@@ -1634,7 +1634,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(homeRecomResponse))
 
@@ -1683,7 +1683,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.addProductToCart("3", quantity, shopId, type)
 
@@ -1728,7 +1728,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(homeRecomResponse))
 
@@ -1780,7 +1780,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.addProductToCart("2", 2, "100", TokoNowLayoutType.REPURCHASE_PRODUCT)
 
@@ -1844,7 +1844,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.REPURCHASE_PRODUCT)
 
@@ -1864,7 +1864,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onAddToCart_thenReturn(addToCartResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
         viewModel.onScrollTokoMartHome(2, LocalCacheModel(), listOf())
         viewModel.addProductToCart("4", 2, "100", TokoNowLayoutType.REPURCHASE_PRODUCT)
 
@@ -1931,7 +1931,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         onGetHomeLayoutData_thenReturn(listOf(secondBanner))
 
@@ -1991,7 +1991,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetHomeLayoutDataUseCaseCalled()
 
@@ -2032,7 +2032,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetRepurchaseWidget_thenReturn(repurchaseResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val items = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0"),
@@ -2082,7 +2082,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 HomeRemoveAbleWidget(TokoNowLayoutType.SHARING_EDUCATION, hasSharingEducationBeenRemoved)
             )
         )
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val items = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0")
@@ -2122,7 +2122,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetRepurchaseWidget_thenReturn(repurchaseResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val items = listOf(
             TokoNowChooseAddressWidgetUiModel(id = "0")
@@ -2156,7 +2156,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val loadMoreLayoutResponse = listOf(
             HomeLayoutResponse(
@@ -2211,7 +2211,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(homeLayoutResponse)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val progressBar = HomeLayoutItemUiModel(
             HomeProgressBarUiModel,
@@ -2249,7 +2249,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         addHomeLayoutItem(progressBar)
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetHomeLayoutDataUseCaseCalled()
 
@@ -2307,7 +2307,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         addHomeLayoutItem(unknownHomeLayout)
         addHomeLayoutItem(nullHomeLayout)
 
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         verifyGetCategoryListUseCaseNotCalled()
         verifyGetRepurchaseWidgetUseCaseNotCalled()
@@ -2335,7 +2335,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         onGetHomeLayoutData_thenReturn(createHomeLayoutList())
 
         viewModel.getHomeLayout(localCacheModel = LocalCacheModel(), removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         addHomeLayoutItem(nullLayout)
 
@@ -2553,7 +2553,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ), localCacheModel)
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel("0"),
@@ -2600,7 +2600,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ), localCacheModel)
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel("0"),
@@ -2648,7 +2648,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ), localCacheModel)
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel("0"),
@@ -2695,7 +2695,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ), localCacheModel)
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = localCacheModel)
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel("0"),
@@ -2738,7 +2738,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ), localCacheModel)
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = listOf())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel("0"),
@@ -2788,7 +2788,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
         ), localCacheModel)
 
         viewModel.getHomeLayout(localCacheModel = localCacheModel, removeAbleWidgets = emptyList())
-        viewModel.getLayoutComponentData(warehouseId = "1")
+        viewModel.getLayoutComponentData(localCacheModel = LocalCacheModel())
 
         val layoutList = listOf(
             TokoNowChooseAddressWidgetUiModel("0"),

@@ -19,6 +19,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
+import com.tokopedia.topads.common.data.internal.ParamObject.IS_AUTO_BID_TOGGLE_ENABLED
 import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
@@ -135,6 +136,7 @@ class TopAdsDashGroupFragment : BaseDaggerFragment() {
             intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
             intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
             intent.putExtra(ISWHITELISTEDUSER, arguments?.getBoolean(ISWHITELISTEDUSER)?:false)
+            intent.putExtra(IS_AUTO_BID_TOGGLE_ENABLED, arguments?.getBoolean(IS_AUTO_BID_TOGGLE_ENABLED))
             intent.component = ComponentName(SELLER_PACKAGENAME, TopAdsGroupDetailViewActivity::class.java.name)
             startActivityForResult(intent, GROUP_UPDATED)
         } else {
