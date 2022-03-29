@@ -142,7 +142,7 @@ class PayLaterViewModelTest {
                 false,
                 arrayListOf(SupervisorUiModel)))
         mockMapperResponse(list)
-
+        coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         coEvery {
             payLaterSimulationData.getPayLaterSimulationDetails(any(), any(), 10.0, "0")
         } coAnswers {
