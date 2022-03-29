@@ -412,13 +412,14 @@ class ShopPlayWidgetAnalyticListener(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
         BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = CLICK,
-            eventLabel = "click channel - $shopId - ${item.channelId} - $channelPositionInList - ${getChannelStatusValue(item.channelType)} - $isAutoPlay",
+            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - ${getChannelStatusValue(item.channelType)} - $isAutoPlay",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
@@ -438,13 +439,14 @@ class ShopPlayWidgetAnalyticListener(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
         BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = "impression on play sgc channel",
-            eventLabel = "view channel - $shopId - ${item.channelId} - $channelPositionInList - ${getChannelStatusValue(item.channelType)} - $isAutoPlay",
+            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - ${getChannelStatusValue(item.channelType)} - $isAutoPlay",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
