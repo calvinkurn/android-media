@@ -25,31 +25,24 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
                               denomData: DenomWidgetModel,
                               selectedProductPosition: Int? = null
     ){
-        if (!denomData.listDenomData.isNullOrEmpty()) {
-            with(rechargeDenomGridViewBinding) {
-                root.show()
-                denomGridShimmering.root.hide()
-                tgDenomGridWidgetTitle.run {
-                    show()
-                    text = denomData.mainTitle
-                }
-                rvDenomGridCard.run {
-                    show()
-                    adapterDenomGrid.clearDenomGridData()
-                    adapterDenomGrid.setDenomGridList(denomData.listDenomData)
-                    adapterDenomGrid.listener = denomGridListener
-                    adapterDenomGrid.productTitleList = denomData.mainTitle
-                    adapterDenomGrid.selectedProductIndex = selectedProductPosition
-                    adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
-                    adapter = adapterDenomGrid
-                    layoutManager = GridLayoutManager(context, GRID_SIZE)
-                }
+        with(rechargeDenomGridViewBinding) {
+            denomGridShimmering.root.hide()
+            tgDenomGridWidgetTitle.run {
+                show()
+                text = denomData.mainTitle
             }
-        } else renderFailDenomGrid()
-    }
-
-    fun renderFailDenomGrid(){
-        rechargeDenomGridViewBinding.root.hide()
+            rvDenomGridCard.run {
+                show()
+                adapterDenomGrid.clearDenomGridData()
+                adapterDenomGrid.setDenomGridList(denomData.listDenomData)
+                adapterDenomGrid.listener = denomGridListener
+                adapterDenomGrid.productTitleList = denomData.mainTitle
+                adapterDenomGrid.selectedProductIndex = selectedProductPosition
+                adapterDenomGrid.denomWidgetType = DenomWidgetEnum.GRID_TYPE
+                adapter = adapterDenomGrid
+                layoutManager = GridLayoutManager(context, GRID_SIZE)
+            }
+        }
     }
 
     fun clearSelectedProduct(){
@@ -61,7 +54,6 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
 
     fun renderDenomGridShimmering(){
         with(rechargeDenomGridViewBinding){
-            root.show()
             tgDenomGridWidgetTitle.hide()
             denomGridShimmering.root.show()
             rvDenomGridCard.hide()
