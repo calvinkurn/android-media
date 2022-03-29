@@ -185,4 +185,22 @@ class DefaultPlayWidgetInListAnalyticListener (
     ) {
         analytic.onLabelPromoImpressed(view, item, position, businessWidgetPosition, isAutoPlay)
     }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoClicked(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoImpressed(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
 }

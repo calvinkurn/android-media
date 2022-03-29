@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -133,7 +134,16 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
         setOnClickListener {
             mListener?.onChannelClicked(this, data)
         }
+
+        tvContextualInfo.addOnImpressionListener(data.impressHolder) {
+            mListener?.onLabelPromoImpressed(this, data)
+        }
+
+        tvContextualInfo.setOnClickListener {
+            mListener?.onLabelPromoClicked(this, data)
+        }
     }
+
 
     fun setListener(listener: Listener?) {
         mListener = listener
@@ -180,5 +190,9 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
             view: PlayWidgetCardSmallChannelView,
             model: PlayWidgetChannelUiModel
         )
+
+        fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel)
+
+        fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel)
     }
 }

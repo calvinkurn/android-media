@@ -63,6 +63,14 @@ class PlayWidgetSmallViewHolder {
                 ) {
                     listener.onChannelClicked(view, model, adapterPosition)
                 }
+
+                override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
+                    TODO("Not yet implemented")
+                }
             })
         }
 
@@ -95,6 +103,16 @@ class PlayWidgetSmallViewHolder {
                 view: View,
                 item: PlayWidgetChannelUiModel,
                 position: Int,
+            )
+
+            fun onLabelPromoChannelClicked(
+                item: PlayWidgetChannelUiModel,
+                position: Int
+            )
+
+            fun onLabelPromoChannelImpressed(
+                item: PlayWidgetChannelUiModel,
+                position: Int
             )
         }
     }
