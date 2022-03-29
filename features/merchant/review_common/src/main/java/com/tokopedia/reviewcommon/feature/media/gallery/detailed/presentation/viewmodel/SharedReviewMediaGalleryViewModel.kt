@@ -17,10 +17,14 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Pr
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewActionMenuBottomSheetUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -49,6 +53,8 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         private const val SAVED_OVERLAY_VISIBILITY = "savedOverlayVisibility"
         private const val SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET = "savedShowDetailedReviewActionMenuBottomSheet"
 
+        private const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
+
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
         const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
@@ -60,6 +66,12 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     private val _productID = MutableStateFlow(UNINITIALIZED_PRODUCT_ID_VALUE)
     private val _showDetailedReviewActionMenuBottomSheet = MutableStateFlow(false)
+    private val _toasterQueue = MutableSharedFlow<ToasterUiModel>()
+    val toasterQueue: Flow<ToasterUiModel>
+        get() = _toasterQueue
+    private val _toasterEventActionClickQueue = MutableSharedFlow<String>()
+    val toasterEventActionClickQueue: Flow<String>
+        get() = _toasterEventActionClickQueue
     private val _mediaNumberToLoad = MutableStateFlow(UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE)
     val mediaNumberToLoad: StateFlow<Int>
         get() = _mediaNumberToLoad
@@ -156,6 +168,22 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 }
             }
         }
+        launch {
+            _toasterEventActionClickQueue.collectLatest {
+                val currentMediaItem = _currentMediaItem.value
+                if (it == TOASTER_KEY_ERROR_GET_REVIEW_MEDIA && currentMediaItem is LoadingStateItemUiModel) {
+                    val mediaNumberToLoad = currentMediaItem.mediaNumber
+                    val mediaLoaded = _detailedReviewMediaResult.value?.reviewMedia?.any {
+                        it.mediaNumber == mediaNumberToLoad
+                    }.orFalse()
+                    if (_productID.value.isNotBlank() && mediaNumberToLoad.isMoreThanZero() && !mediaLoaded) {
+                        loadMoreDetailedReviewMediaJob = loadMoreDetailedReviewMediaJob?.takeIf {
+                            !it.isCompleted
+                        } ?: getReviewMedia(_productID.value, ceil(mediaNumberToLoad.toFloat() / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT.toFloat()).toInt())
+                    }
+                }
+            }
+        }
     }
 
     private fun getReviewMedia(productID: String, pageToLoad: Int): Job {
@@ -174,7 +202,17 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                     }
                 }
             }
-        }, onError = {})
+        }, onError = {
+            enqueueToaster(
+                ToasterUiModel(
+                    key = TOASTER_KEY_ERROR_GET_REVIEW_MEDIA,
+                    message = StringRes(R.string.review_media_gallery_failed_load_detailed_review_error_message),
+                    type = Toaster.TYPE_ERROR,
+                    duration = Toaster.LENGTH_INDEFINITE,
+                    actionText = StringRes(R.string.review_media_gallery_failed_load_detailed_review_error_action_text)
+                )
+            )
+        })
     }
 
     private fun launchNewToggleLikeJob(params: Pair<String, Int>) {
@@ -308,5 +346,13 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun dismissDetailedReviewActionMenuBottomSheet() {
         _showDetailedReviewActionMenuBottomSheet.value = false
+    }
+
+    fun enqueueToaster(model: ToasterUiModel) {
+        launch { _toasterQueue.emit(model) }
+    }
+
+    fun toasterEventActionClicked(key: String) {
+        launch { _toasterEventActionClickQueue.emit(key) }
     }
 }

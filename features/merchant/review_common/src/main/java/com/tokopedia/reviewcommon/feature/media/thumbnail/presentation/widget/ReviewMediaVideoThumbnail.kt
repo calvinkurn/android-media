@@ -1,35 +1,26 @@
 package com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget
 
 import android.content.Context
-import android.media.MediaMetadataRetriever
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.WidgetReviewMediaVideoThumbnailBinding
-import com.tokopedia.reviewcommon.extension.isMoreThanZero
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayerListener
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.withContext
-import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCustomView(context, attrs, defStyleAttr), CoroutineScope {
+) : BaseCustomView(context, attrs, defStyleAttr), ReviewVideoPlayerListener {
 
     private val binding = WidgetReviewMediaVideoThumbnailBinding.inflate(
         LayoutInflater.from(context),
@@ -37,75 +28,31 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         true
     )
     private val listener: ViewListeners = ViewListeners()
-    private val job = SupervisorJob()
+    private val reviewVideoPlayer = ReviewVideoPlayer(context)
     private var uiState: ReviewMediaVideoThumbnailUiState? = null
-
-    override val coroutineContext: CoroutineContext = Dispatchers.Main + job
 
     init {
         binding.icReviewMediaVideoThumbnailPlayButton.loadImage(R.drawable.ic_review_media_video_thumbnail_play)
-        binding.ivReviewMediaVideoThumbnail.setOnClickListener(listener)
-        binding.ivReviewMediaVideoThumbnail.onUrlLoaded = { success ->
-            when (uiState) {
-                is ReviewMediaVideoThumbnailUiState.Showing -> {
-                    binding.reviewMediaVideoThumbnailBrokenOverlay.showWithCondition(!success)
-                    binding.icReviewMediaVideoThumbnailBroken.showWithCondition(!success)
-                }
-                else -> {
-                    binding.reviewMediaVideoThumbnailBrokenOverlay.showWithCondition(!success)
-                    binding.icReviewMediaVideoThumbnailBroken.gone()
-                }
-            }
-        }
+        binding.playerViewOverlayClickable.setOnClickListener(listener)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
 
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        job.cancelChildren()
-    }
-
     private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnail(
         uiState: ReviewMediaVideoThumbnailUiState
     ) {
-        ivReviewMediaVideoThumbnail.setImageUrl(uiState.uri)
+        reviewVideoPlayer.initializeVideoPlayer(
+            uiState.uri,
+            binding.playerViewReviewMediaVideoThumbnail,
+            this@ReviewMediaVideoThumbnail,
+            true
+        )
         icReviewMediaVideoThumbnailRemove.showWithCondition(uiState.removable)
         icReviewMediaVideoThumbnailPlayButton.showWithCondition(
             uiState is ReviewMediaVideoThumbnailUiState.Showing && uiState.playable
         )
-        tvReviewMediaVideoThumbnailDuration.showWithCondition(uiState.showDuration)
-        if (uiState.showDuration) {
-            launchCatchError(block = {
-                withContext(Dispatchers.IO) {
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(uiState.uri)
-                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                }.let { durationMillis ->
-                    val minute = TimeUnit.MILLISECONDS.toMinutes(durationMillis.toLongOrZero())
-                    val minuteInMillis = TimeUnit.MINUTES.toMillis(minute)
-                    val second = TimeUnit.MILLISECONDS.toSeconds(
-                        (durationMillis.toLongOrZero() - minuteInMillis).coerceAtLeast(0L)
-                    )
-                    withContext(Dispatchers.Main) {
-                        if (minute.isMoreThanZero() || second.isMoreThanZero()) {
-                            tvReviewMediaVideoThumbnailDuration.run {
-                                text = buildString {
-                                    append(minute)
-                                    append(":")
-                                    append(second)
-                                }
-                                show()
-                            }
-                        } else {
-                            tvReviewMediaVideoThumbnailDuration.gone()
-                        }
-                    }
-                }
-            }, onError = {})
-        }
     }
 
     private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnail(
@@ -158,7 +105,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
 
     fun updateUi(uiState: ReviewMediaVideoThumbnailUiState) {
         this.uiState = uiState
-        job.cancelChildren()
         when (uiState) {
             is ReviewMediaVideoThumbnailUiState.Showing -> {
                 binding.showVideoThumbnail(uiState)
@@ -186,7 +132,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
                 binding.icReviewMediaVideoThumbnailRemove -> {
                     listener?.onRemoveMediaItemClicked()
                 }
-                binding.ivReviewMediaVideoThumbnail -> {
+                binding.playerViewOverlayClickable -> {
                     listener?.onMediaItemClicked()
                 }
             }
@@ -196,5 +142,39 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     interface Listener {
         fun onMediaItemClicked()
         fun onRemoveMediaItemClicked()
+    }
+
+    override fun onReviewVideoPlayerIsPlaying() {
+        binding.reviewMediaVideoThumbnailBrokenOverlay.gone()
+        binding.icReviewMediaVideoThumbnailBroken.gone()
+    }
+
+    override fun onReviewVideoPlayerIsBuffering() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsPaused() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsPreloading() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsEnded() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerError() {
+        when (uiState) {
+            is ReviewMediaVideoThumbnailUiState.Showing -> {
+                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
+                binding.icReviewMediaVideoThumbnailBroken.show()
+            }
+            else -> {
+                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
+                binding.icReviewMediaVideoThumbnailBroken.gone()
+            }
+        }
     }
 }

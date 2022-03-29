@@ -29,6 +29,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.ui
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -61,6 +62,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private var toolbarUiStateCollectorJob: Job? = null
     private var orientationUiStateCollectorJob: Job? = null
     private var detailedReviewActionMenuBottomSheetUiStateCollectorJob: Job? = null
+    private var toasterQueueCollectorJob: Job? = null
     private var gestureDetector: GestureDetectorCompat? = null
 
     private var galleryFragment: ReviewMediaGalleryFragment? = null
@@ -314,12 +316,30 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
         }
+        toasterQueueCollectorJob = toasterQueueCollectorJob?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            sharedReviewMediaGalleryViewModel.toasterQueue.collectLatest {
+                binding?.root?.let { view ->
+                    Toaster.build(
+                        view,
+                        it.message.getStringValue(view.context),
+                        it.duration,
+                        it.type,
+                        it.actionText.getStringValue(view.context)
+                    ) { _ ->
+                        sharedReviewMediaGalleryViewModel.toasterEventActionClicked(it.key)
+                    }.show()
+                }
+            }
+        }
     }
 
     private fun cancelUiStateCollector() {
         toolbarUiStateCollectorJob?.cancel()
         orientationUiStateCollectorJob?.cancel()
         detailedReviewActionMenuBottomSheetUiStateCollectorJob?.cancel()
+        toasterQueueCollectorJob?.cancel()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {

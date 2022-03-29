@@ -12,15 +12,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.FragmentReviewMediaGalleryVideoPlayerBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.player.video.di.component.DaggerReviewVideoPlayerComponent
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlayerUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.viewmodel.ReviewVideoPlayerViewModel
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayerListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -55,6 +59,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     private var binding by viewBinding(FragmentReviewMediaGalleryVideoPlayerBinding::bind)
     private var videoPlayerUiStateCollector: Job? = null
     private var videoPlaybackUiStateCollector: Job? = null
+    private var videoErrorUiStateCollector: Job? = null
     private var videoThumbnailUiStateCollector: Job? = null
 
     private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
@@ -89,6 +94,9 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override fun onPause() {
         super.onPause()
         videoPlayerUiStateCollector?.cancel()
+        videoPlaybackUiStateCollector?.cancel()
+        videoThumbnailUiStateCollector?.cancel()
+        videoErrorUiStateCollector?.cancel()
         if (activity?.isChangingConfigurations != true) {
             updateCurrentFrameBitmap()
             viewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPosition())
@@ -97,12 +105,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         } else {
             viewModel.setVideoPlayerStateToChangingConfiguration()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        videoPlaybackUiStateCollector?.cancel()
-        videoThumbnailUiStateCollector?.cancel()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -142,6 +144,10 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         viewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPosition())
     }
 
+    override fun onReviewVideoPlayerError() {
+        viewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition())
+    }
+
     private fun getVideoUri(): String {
         return arguments?.getString(ARG_VIDEO_URI).orEmpty()
     }
@@ -164,6 +170,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                     }
                     else -> {
                         collectVideoPlaybackUiState()
+                        collectVideoErrorUiState()
                         collectVideoThumbnailUiState()
                     }
                 }
@@ -177,12 +184,42 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                 when (it) {
                     is ReviewVideoPlaybackUiState.Inactive -> {
                         viewModel.showVideoThumbnail()
+                        viewModel.hideVideoError()
+                    }
+                    is ReviewVideoPlaybackUiState.Error -> {
+                        viewModel.showVideoThumbnail()
+                        viewModel.showVideoError()
                     }
                     else -> {
                         viewModel.hideVideoThumbnail()
+                        viewModel.hideVideoError()
                     }
                 }
             }
+        }
+    }
+
+    private fun collectVideoErrorUiState() {
+        videoErrorUiStateCollector = videoErrorUiStateCollector?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            viewModel.videoErrorUiState.collectLatest {
+                binding?.overlayReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
+                binding?.icReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
+                binding?.tvReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
+                if (it is ReviewVideoErrorUiState.Showing) {
+                    showToasterError(
+                        getString(R.string.review_video_player_error_message),
+                        getString(R.string.review_video_player_error_action_text)
+                    )
+                }
+            }
+        }
+    }
+
+    private fun showToasterError(message: String, actionText: String) {
+        binding?.root?.let { view ->
+            Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText).show()
         }
     }
 
@@ -216,7 +253,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         val playerView = binding?.playerViewReviewVideoPlayer ?: return
         initializeVideoPlayer(
             uri = videoUri,
-            newActivity = activity,
             newPlayerView = playerView,
             newListener = this@ReviewVideoPlayerFragment,
             shouldPrepare = shouldPrepare

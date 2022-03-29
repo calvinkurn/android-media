@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlayerUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoThumbnailUiState
@@ -33,9 +34,13 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         MutableStateFlow(ReviewVideoPlayerUiState.Initial())
     private val _videoThumbnailUiState: MutableStateFlow<ReviewVideoThumbnailUiState> =
         MutableStateFlow(ReviewVideoThumbnailUiState.Hidden())
+    private val _videoErrorUiState: MutableStateFlow<ReviewVideoErrorUiState> =
+        MutableStateFlow(ReviewVideoErrorUiState.Hidden)
 
     val videoPlaybackUiState: StateFlow<ReviewVideoPlaybackUiState>
         get() = _videoPlaybackUiState
+    val videoErrorUiState: StateFlow<ReviewVideoErrorUiState>
+        get() = _videoErrorUiState
     val videoPlayerUiState: StateFlow<ReviewVideoPlayerUiState>
         get() = combine(
             _videoPlaybackUiState,
@@ -142,6 +147,14 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         }
     }
 
+    fun setPlaybackStateToError(currentPosition: Long) {
+        _videoPlaybackUiState.update {
+            if (_videoPlayerUiState.value is ReviewVideoPlayerUiState.ReadyToPlay) {
+                ReviewVideoPlaybackUiState.Error(currentPosition)
+            } else it
+        }
+    }
+
     fun setPlaybackStateToInactive(currentPosition: Long) {
         _videoPlaybackUiState.update {
             if (_videoPlayerUiState.value is ReviewVideoPlayerUiState.ReadyToPlay) {
@@ -197,6 +210,14 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         _videoThumbnailUiState.update {
             ReviewVideoThumbnailUiState.Hidden(it.videoThumbnail)
         }
+    }
+
+    fun showVideoError() {
+        _videoErrorUiState.value = ReviewVideoErrorUiState.Showing
+    }
+
+    fun hideVideoError() {
+        _videoErrorUiState.value = ReviewVideoErrorUiState.Hidden
     }
 
     fun saveUiState(outState: Bundle) {

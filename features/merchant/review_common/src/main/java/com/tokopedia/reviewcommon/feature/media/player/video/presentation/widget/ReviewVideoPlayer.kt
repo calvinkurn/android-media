@@ -1,16 +1,10 @@
 package com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.graphics.Rect
 import android.net.Uri
-import android.os.Build
-import android.util.DisplayMetrics
-import android.view.View
-import androidx.annotation.RequiresApi
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.LoadControl
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -25,12 +19,9 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
-import com.google.android.exoplayer2.video.VideoListener
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewcommon.feature.media.player.video.data.cache.MediaPlayerCache
 import java.lang.ref.WeakReference
-import kotlin.math.absoluteValue
 
 class ReviewVideoPlayer(
     private val context: Context
@@ -49,11 +40,8 @@ class ReviewVideoPlayer(
         private const val MIN_PLAYBACK_RESUME_BUFFER = 2000
     }
 
-    private var activityRef: WeakReference<Activity?>? = null
     private var listenerRef: WeakReference<ReviewVideoPlayerListener?>? = null
     private var playerViewRef: WeakReference<PlayerView?>? = null
-    private var videoWidth: Int = Int.ZERO
-    private var videoHeight: Int = Int.ZERO
     private var volume: Float = 0f
         set(value) {
             field = value
@@ -72,7 +60,6 @@ class ReviewVideoPlayer(
     private var exoPlayer: SimpleExoPlayer? = null
         set(value) {
             field = value
-            value.attachVideoListener()
             value.attachVideoPlayerStateListener()
             value.attachControllerView()
             value?.volume = volume
@@ -92,20 +79,6 @@ class ReviewVideoPlayer(
             .setTrackSelector(DefaultTrackSelector(context))
             .setLoadControl(loadControl)
             .build().also { exoPlayer = it }
-    }
-
-    private fun SimpleExoPlayer?.attachVideoListener() {
-        this?.addVideoListener(object: VideoListener {
-            override fun onVideoSizeChanged(
-                width: Int,
-                height: Int,
-                unappliedRotationDegrees: Int,
-                pixelWidthHeightRatio: Float
-            ) {
-                updateAspectRatio(width, height)
-                applyAspectRatio()
-            }
-        })
     }
 
     private fun SimpleExoPlayer?.attachVideoPlayerStateListener() {
@@ -129,6 +102,11 @@ class ReviewVideoPlayer(
                     listenerRef?.get()?.onReviewVideoPlayerIsEnded()
                 }
             }
+
+            override fun onPlayerError(error: ExoPlaybackException) {
+                super.onPlayerError(error)
+                listenerRef?.get()?.onReviewVideoPlayerError()
+            }
         })
     }
 
@@ -151,64 +129,8 @@ class ReviewVideoPlayer(
         return mediaSource.createMediaSource(uri)
     }
 
-    internal fun updateAspectRatio(width: Int, height: Int) {
-        videoWidth = width
-        videoHeight = height
-    }
-
-    internal fun applyAspectRatio() {
-        val videoWidth = videoWidth
-        val videoHeight = videoHeight
-        val screenWidth = getScreenWidth()
-        val screenHeight = getScreenHeight()
-        if (videoWidth != Int.ZERO && videoHeight != Int.ZERO && screenWidth != Int.ZERO && screenHeight != Int.ZERO) {
-            (playerViewRef?.get()?.parent as? View)?.run {
-                val layoutParamsCopy = layoutParams
-                val ratioWidth = screenWidth.toFloat() / videoWidth
-                val ratioHeight = screenHeight.toFloat() / videoHeight
-                val targetRatio = if (ratioWidth < ratioHeight) ratioWidth else ratioHeight
-                val targetWidth = (targetRatio * videoWidth).toInt()
-                val targetHeight = (targetRatio * videoHeight).toInt()
-                layoutParamsCopy.width = targetWidth
-                layoutParamsCopy.height = targetHeight
-                layoutParams = layoutParamsCopy
-            }
-        }
-    }
-
-    @SuppressLint("DeprecatedMethod")
-    private fun getScreenWidth(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getCurrentWindowMetricsBound()?.width().orZero().absoluteValue
-        } else {
-            getDefaultDisplayMetrics()?.widthPixels.orZero()
-        }
-    }
-
-    private fun getScreenHeight(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getCurrentWindowMetricsBound()?.height().orZero().absoluteValue
-        } else {
-            getDefaultDisplayMetrics()?.heightPixels.orZero()
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.R)
-    private fun getCurrentWindowMetricsBound(): Rect? {
-        return activityRef?.get()?.windowManager?.currentWindowMetrics?.bounds
-    }
-
-    private fun getDefaultDisplayMetrics(): DisplayMetrics? {
-        return activityRef?.get()?.windowManager?.defaultDisplay?.run {
-            val displayMetrics = DisplayMetrics()
-            getMetrics(displayMetrics)
-            displayMetrics
-        }
-    }
-
     fun initializeVideoPlayer(
         uri: String,
-        newActivity: Activity?,
         newPlayerView: PlayerView?,
         newListener: ReviewVideoPlayerListener,
         shouldPrepare: Boolean
@@ -216,14 +138,11 @@ class ReviewVideoPlayer(
         if (uri.isBlank() || newPlayerView == null) return
         val oldPlayerView = playerViewRef?.get()
         val exoPlayer = exoPlayer ?: getExoPlayerInstance()
-        activityRef = WeakReference(newActivity)
         playerViewRef = WeakReference(newPlayerView)
         listenerRef = WeakReference(newListener)
         if (shouldPrepare) {
             val mediaSource = getMediaSourceBySource(context, Uri.parse(uri))
             exoPlayer.prepare(mediaSource)
-        } else {
-            applyAspectRatio()
         }
         PlayerView.switchTargetView(exoPlayer, oldPlayerView, newPlayerView)
     }
@@ -238,7 +157,6 @@ class ReviewVideoPlayer(
         playerControlRef?.get()?.player = null
         playerViewRef = null
         listenerRef = null
-        activityRef = null
         exoPlayer?.release()
         exoPlayer = null
     }
@@ -274,4 +192,5 @@ interface ReviewVideoPlayerListener {
     fun onReviewVideoPlayerIsPaused()
     fun onReviewVideoPlayerIsPreloading()
     fun onReviewVideoPlayerIsEnded()
+    fun onReviewVideoPlayerError()
 }

@@ -4,4 +4,8 @@
     <string name="review_media_common_see_more"><![CDATA[… <a href="#">Selengkapnya</a>]]></string>
     <string name="review_action_menu_report">Laporkan Ulasan</string>
     <string name="review_action_success_report">Kamu berhasil melaporkan ulasan ini.</string>
+    <string name="review_video_player_error_message">Video tidak bisa dimainkan. Cek koneksi internetmu atau coba lagi nanti, ya.</string>
+    <string name="review_video_player_error_action_text">Oke</string>
+    <string name="review_media_gallery_failed_load_detailed_review_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="review_media_gallery_failed_load_detailed_review_error_action_text">Refresh</string>
 </resources>
