@@ -39,7 +39,7 @@ class TradeInDetailUseCase @Inject constructor(
                     traceId = laku6DeviceModel.traceId,
                     uniqueCode = tradeInUniqueCode,
                     deviceSignature = laku6DeviceModel.deviceSignature,
-                    modelInfo = laku6DeviceModel.model,
+                    modelInfo = laku6DeviceModel.modelInfoBase64,
                     originalPrice = productPrice,
                     userLocation = GetTradeInDetailInput.UserLocation(
                         districtId = userAddressData.district_id,

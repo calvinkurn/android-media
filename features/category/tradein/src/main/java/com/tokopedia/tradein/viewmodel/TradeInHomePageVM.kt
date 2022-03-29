@@ -28,6 +28,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 
 class TradeInHomePageVM @Inject constructor(
@@ -58,6 +59,7 @@ class TradeInHomePageVM @Inject constructor(
     var tradeInPriceDouble: Double = 0.0
     var finalPriceDouble: Double = 0.0
     var tradeInUniqueCode: String = ""
+    var encodedString: String = ""
     var campaginTagId: String = ""
 
     fun getPDPData(tradeinPDPData: TradeInPDPData?): TradeInPDPData? {
@@ -81,9 +83,11 @@ class TradeInHomePageVM @Inject constructor(
     }
 
     fun getDeviceModel() {
-        laku6DeviceModel.value =
+        val deviceModel =
             Gson().fromJson(laku6TradeIn?.deviceModel.toString(), Laku6DeviceModel::class.java)
-        tradeInUniqueCode = laku6DeviceModel.value?.uniqueCode ?: ""
+        deviceModel.modelInfoBase64 = Base64.getEncoder().encodeToString(laku6TradeIn?.deviceModel.toString().toByteArray())
+        tradeInUniqueCode = deviceModel?.uniqueCode ?: ""
+        laku6DeviceModel.value = deviceModel
     }
 
     fun getDiagnosticData(intent: Intent): DeviceDiagnostics {
