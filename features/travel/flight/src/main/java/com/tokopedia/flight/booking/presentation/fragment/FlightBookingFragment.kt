@@ -432,9 +432,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.build(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(R.string.flight_booking_action_okay),
-                View.OnClickListener { /* do nothing */ }).show()
+            Toaster.build(
+                it,
+                getString(resId),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)
+            ).show()
         }
     }
 
@@ -563,16 +567,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     fun navigateToDetailTrip(departureTrip: FlightDetailModel) {
-        val flightDetailBottomSheet = FlightDetailBottomSheet.getInstance()
-        flightDetailBottomSheet.setDetailModel(departureTrip)
-        flightDetailBottomSheet.setShowSubmitButton(false)
-        flightDetailBottomSheet.setShowListener {
-            flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        FlightDetailBottomSheet.getInstance().apply {
+            setDetailModel(departureTrip)
+            setShowSubmitButton(false)
+            setShowListener {
+                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }.also {
+            it.show(
+                childFragmentManager,
+                FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET
+            )
         }
-        flightDetailBottomSheet.show(
-            requireFragmentManager(),
-            FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET
-        )
     }
 
     private fun renderInsuranceData(insurances: List<FlightCart.Insurance>) {
@@ -1002,141 +1008,144 @@ class FlightBookingFragment : BaseDaggerFragment() {
             if (flightError.id.isNotEmpty()) {
                 val errorCode =
                     FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
-                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
-                    renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
-                else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-                    showErrorFullPage(flightError)
-                } else {
-                    lateinit var dialog: DialogUnify
-                    when (errorCode) {
-                        FlightErrorConstant.INVALID_JSON -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.SINGLE_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_refind_ticket))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                showLoadingDialog()
-                                finishActivityToSearchPage()
-                            }
-                        }
-                        FlightErrorConstant.FAILED_ADD_FACILITY -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.VERTICAL_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_proceed_checkout))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                proceedCheckoutWithoutLuggage()
-                            }
-                            dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_cancel))
-                            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                        }
-                        FlightErrorConstant.ERROR_PROMO_CODE -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.SINGLE_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_promo_code))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                navigateToPromoPage()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.VERTICAL_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_again))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                navigateToFlightOrderList()
-                            }
-                            dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
-                            dialog.setSecondaryCTAClickListener {
-                                dialog.dismiss()
-                                finishActivityToHomepage()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.VERTICAL_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                finishActivityToHomepage()
-                            }
-                            dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_okay))
-                            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                        }
-                        FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.SINGLE_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                refreshCart()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.SINGLE_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                verifyCart()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.SINGLE_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                checkOutCart(totalCartPrice)
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_INVALID_USER -> {
-                            dialog = DialogUnify(
-                                activity as FlightBookingActivity,
-                                DialogUnify.SINGLE_ACTION,
-                                DialogUnify.WITH_ICON
-                            )
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_change_name))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                            }
-                        }
+                when (errorCode) {
+                    FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME -> renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
+                    FlightErrorConstant.FLIGHT_SOLD_OUT -> {
+                        showErrorFullPage(flightError)
                     }
-                    dialog.setCancelable(false)
-                    dialog.setOverlayClose(false)
-                    if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(
-                        getString(R.string.flight_booking_general_error_title)
-                    )
-                    if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(
-                        getString(R.string.flight_booking_general_error_subtitle)
-                    )
-                    dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
-                    dialog.show()
+                    else -> {
+                        lateinit var dialog: DialogUnify
+                        when (errorCode) {
+                            FlightErrorConstant.INVALID_JSON -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_refind_ticket))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    showLoadingDialog()
+                                    finishActivityToSearchPage()
+                                }
+                            }
+                            FlightErrorConstant.FAILED_ADD_FACILITY -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.VERTICAL_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_proceed_checkout))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    proceedCheckoutWithoutLuggage()
+                                }
+                                dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_cancel))
+                                dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                            }
+                            FlightErrorConstant.ERROR_PROMO_CODE -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_promo_code))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    navigateToPromoPage()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.VERTICAL_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_again))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    navigateToFlightOrderList()
+                                }
+                                dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
+                                dialog.setSecondaryCTAClickListener {
+                                    dialog.dismiss()
+                                    finishActivityToHomepage()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.VERTICAL_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    finishActivityToHomepage()
+                                }
+                                dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_okay))
+                                dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                            }
+                            FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    refreshCart()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    verifyCart()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    checkOutCart(totalCartPrice)
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_INVALID_USER -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_change_name))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                }
+                            }
+                            else -> {}
+                        }
+                        dialog.setCancelable(false)
+                        dialog.setOverlayClose(false)
+                        if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(
+                            getString(R.string.flight_booking_general_error_title)
+                        )
+                        if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(
+                            getString(R.string.flight_booking_general_error_subtitle)
+                        )
+                        dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
+                        dialog.show()
+                    }
                 }
             } else {
                 NetworkErrorHelper.showEmptyState(
