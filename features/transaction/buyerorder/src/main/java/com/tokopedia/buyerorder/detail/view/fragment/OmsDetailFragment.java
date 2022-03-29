@@ -4,7 +4,6 @@ import static android.content.Context.CLIPBOARD_SERVICE;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -23,7 +22,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,7 +74,6 @@ import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.adapter.RedeemVoucherAdapter;
-import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.coachmark.CoachMark;
@@ -886,41 +883,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             bottomSheetUnify.setChild(view);
             bottomSheetUnify.show(getActivity().getSupportFragmentManager(), "");
         }
-    }
-
-    //TODO : will be delete
-    private void showEventQR(ActionButton actionButton, Items item) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
-        Dialog dialog = new Dialog(getContext());
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setContentView(view);
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.gravity = Gravity.CENTER;
-        dialog.getWindow().setAttributes(lp);
-        View v = dialog.getWindow().getDecorView();
-        v.setBackgroundResource(com.tokopedia.design.R.color.transparent);
-
-        ImageView qrCode = view.findViewById(R.id.qrCode);
-        LinearLayout voucherCodeLayout = view.findViewById(R.id.booking_code_view);
-        TextView closeButton = view.findViewById(R.id.redeem_ticket);
-        ImageHandler.loadImage(getContext(), qrCode, actionButton.getBody().getAppURL(), com.tokopedia.unifyprinciples.R.color.Unify_N50, com.tokopedia.unifyprinciples.R.color.Unify_N50);
-
-        if (!actionButton.getBody().getBody().isEmpty()) {
-            String[] voucherCodes = actionButton.getBody().getBody().split(",");
-            if (voucherCodes.length > 0) {
-                voucherCodeLayout.setVisibility(View.VISIBLE);
-                for (int i = 0; i < voucherCodes.length; i++) {
-                    BookingCodeView bookingCodeView = new BookingCodeView(getContext(), voucherCodes[i], 0, getContext().getResources().getString(R.string.voucher_code_title), voucherCodes[i].length());
-                    bookingCodeView.setBackground(getContext().getResources().getDrawable(com.tokopedia.design.R.drawable.bg_search_input_text_area));
-                    voucherCodeLayout.addView(bookingCodeView);
-                }
-            }
-        }
-        closeButton.setOnClickListener(v1 -> dialog.dismiss());
-        dialog.show();
     }
 
     private void showRevampQr(ActionButton actionButton){
