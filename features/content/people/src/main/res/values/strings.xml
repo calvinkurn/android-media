@@ -2,7 +2,7 @@
     <string name="app_name">people</string>
     <string name="up_common_failed_desc">Klik ikon di samping untuk coba lagi.</string>
     <string name="up_common_failed_title">Bagian ini gagal ditampilkan</string>
-    <string name="up_link_see_more">Selenkapnya</string>
+    <string name="up_link_see_more">Selengkapnya</string>
     <string name="up_btn_text_follow">Follow</string>
     <string name="up_btn_text_live">LIVE</string>
     <string name="up_btn_text_following">Following</string>

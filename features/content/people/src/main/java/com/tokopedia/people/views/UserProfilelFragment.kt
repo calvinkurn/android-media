@@ -109,7 +109,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             userName,
             userProfileTracker,
             profileUserId,
-            userId
+            userId,
         )
     }
 
@@ -645,6 +645,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         setProfileImg(data.profileHeader.profile)
 
         displayName = data.profileHeader.profile.name
+        mAdapter.displayName = displayName
         userName = data.profileHeader.profile.username
         mAdapter.setUserName(data.profileHeader.profile.username)
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
@@ -997,7 +998,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             channel = shareModel.channel
             campaign = shareModel.campaign
             ogTitle = displayName
-            ogDescription = desc
+            ogDescription = "$desc $totalFollowers Follower $totalFollowings Following"
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }

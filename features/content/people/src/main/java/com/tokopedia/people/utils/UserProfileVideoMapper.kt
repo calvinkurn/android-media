@@ -32,97 +32,14 @@ object UserProfileVideoMapper {
 
     fun map(
         playSlotList: PlayPostContentItem,
-        shopId: String
+        shopId: String,
+        displayName: String
     ): PlayWidgetChannelUiModel {
-        return getWidgetItemUiModel(playSlotList, shopId)
+        return getWidgetItemUiModel(playSlotList, shopId, displayName)
 
-//        val list = mutableListOf<PlayWidgetUiModel>()
-
-
-//        playSlotList.forEach { playSlot ->
-//            when (playSlot.type) {
-//                FEED_TYPE_PINNED_FEEDS -> {
-//                    list.add(
-//                        PlayWidgetJumboUiModel(
-//                            getWidgetUiModel(playSlot, meta, shopId)
-//                        )
-//                    )
-//                }
-//                FEED_TYPE_CHANNEL_BLOCK -> {
-//                    list.add(
-//                        getWidgetUiModel(playSlot, meta, shopId)
-//                    )
-//                }
-//                FEED_TYPE_TAB_MENU -> {
-//                    list.add(
-//                        PlaySlotTabMenuUiModel(
-//                            playSlot.items.mapIndexed { index, playSlotItem ->
-//                                PlaySlotTabMenuUiModel.Item(
-//                                    playSlotItem.id, playSlotItem.label, playSlotItem.icon_url,
-//                                    playSlotItem.group, playSlotItem.source_type,
-//                                    playSlotItem.source_id, playSlotItem.slug_id, index == position
-//                                )
-//                            }
-//                        )
-//                    )
-//                }
-//                FEED_TYPE_CHANNEL_RECOM -> {
-//                    list.add(
-//                        PlayWidgetLargeUiModel(
-//                            getWidgetUiModel(playSlot, meta, shopId)
-//                        )
-//
-//                    )
-//                }
-//                FEED_TYPE_CHANNEL_HIGHLIGHT -> {
-//                    list.add(
-//                        PlayWidgetMediumUiModel(
-//                            getWidgetUiModel(playSlot, meta, shopId)
-//                        )
-//
-//                    )
-//                }
-//            }
-//        }
-
-//        return list
     }
 
-//    private fun getWidgetUiModel(
-//        playSlot: PlayPostContent,
-//        shopId: String
-//    ): PlayWidgetUiModel {
-//
-//        val item = playSlot.items.firstOrNull() ?: return PlayWidgetUiModel.Empty
-//
-//        //check these values
-//
-//        val autoRefresh = false
-//        val autoRefreshTimer: Long = 0
-//        val autoPlayAmount: Int = 8
-//        val maxAutoPlayWifiDuration: Int = 30
-//        val businessWidgetPosition: Int = 30
-//        //till here
-//
-//
-//        return PlayWidgetUiModel(
-//            title = playSlot.title,
-//            actionTitle = "",
-//            actionAppLink = "",
-//            isActionVisible = false,
-//            config = PlayWidgetConfigUiModel(
-//                autoRefresh, autoRefreshTimer, false, 0,
-//                0, maxAutoPlayWifiDuration, businessWidgetPosition
-//            ),
-//            background = PlayWidgetBackgroundUiModel(
-//                "", item.appLink, item.webLink, emptyList(), ""
-//            ),
-//            getWidgetItemUiModel(item, shopId)
-//        )
-//
-//    }
-
-    private fun getWidgetItemUiModel(item: PlayPostContentItem, shopId: String): PlayWidgetChannelUiModel{
+    private fun getWidgetItemUiModel(item: PlayPostContentItem, shopId: String, displayName: String): PlayWidgetChannelUiModel{
 
         //check PlayWidgetShareUiModel(item.share.text -> is it be `item.share.text for "fullShareContent"`
         val performanceSummaryLink = ""
@@ -131,13 +48,7 @@ object UserProfileVideoMapper {
 
         val channelTypeTransitionPrev = ""
         val channelTypeTransitionNext = ""
-        //till here
-//
-//        val list = mutableListOf<PlayWidgetItemUiModel>()
-//
-//        items.forEach { item ->
             val channelType = PlayWidgetChannelType.getByValue(item.airTime)
-//            list.add(
                 return PlayWidgetChannelUiModel(
                     channelId = item.id,
                     title = item.title,
@@ -151,7 +62,7 @@ object UserProfileVideoMapper {
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
                     //TODO partner check later
-                    partner = PlayWidgetPartnerUiModel("", ""),
+                    partner = PlayWidgetPartnerUiModel("", displayName),
                     video = PlayWidgetVideoUiModel(item.id, item.isLive, item.coverUrl, item.webLink),
                     channelType = channelType,
                     hasGiveaway = mapHasGiveaway(item.configurations.promoLabels),
@@ -166,7 +77,6 @@ object UserProfileVideoMapper {
                         PlayWidgetChannelType.getByValue(channelTypeTransitionNext)
                     )
                 )
-//            )
         }
     }
 

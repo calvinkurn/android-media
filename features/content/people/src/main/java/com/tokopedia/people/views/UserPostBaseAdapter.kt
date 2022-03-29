@@ -32,6 +32,7 @@ open class UserPostBaseAdapter(
     var activityId = ""
     protected var cList: MutableList<BaseItem>? = null
     public var cursor: String = ""
+    var displayName = ""
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var playWidgetLargeView: PlayWidgetCardLargeChannelView =
@@ -102,7 +103,7 @@ open class UserPostBaseAdapter(
     }
 
     private fun setData(holder: ViewHolder, playPostContent: PlayPostContentItem, position: Int) {
-        holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, ""))
+        holder.playWidgetLargeView.setModel(UserProfileVideoMapper.map(playPostContent, "", displayName))
         holder.playWidgetLargeView.setListener(this)
 //        holder.playWidgetLargeView.setData(UserProfileVideoMapper.map(playPostContent, ""))
         /*holder.playWidgetLargeView.setWidgetListener(this)
