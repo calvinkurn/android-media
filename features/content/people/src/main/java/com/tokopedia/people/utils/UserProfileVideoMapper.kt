@@ -57,8 +57,8 @@ object UserProfileVideoMapper {
                     totalView = PlayWidgetTotalView(item.stats.view.formatted,
                         false),
                     promoType = PlayWidgetPromoType.getByType(
-                        "",
-                        ""
+                        getPromoType(item.configurations.promoLabels).type,
+                        getPromoType(item.configurations.promoLabels).text
                     ),
                     reminderType = getReminderType(item.configurations.reminder.isSet),
                     //TODO partner check later
@@ -81,8 +81,14 @@ object UserProfileVideoMapper {
     }
 
     private fun mapHasGiveaway(promoLabels: List<PostPromoLabel>): Boolean {
-        //TODO PostPromoLabel.type missing
         return promoLabels.firstOrNull { it.text == HADIAH } != null
+    }
+
+    private fun getPromoType(promoLabels: List<PostPromoLabel>): PostPromoLabel {
+        promoLabels.firstOrNull()?.let {
+            return it
+        }
+        return PostPromoLabel("", "")
     }
 
     private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String, shopId: String): Boolean {

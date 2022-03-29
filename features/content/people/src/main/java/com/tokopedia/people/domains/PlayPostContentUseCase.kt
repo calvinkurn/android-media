@@ -1,9 +1,9 @@
 package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.people.model.UserPostModel
 import javax.inject.Inject
 
 const val PLAY_VIDEO_QUERY = """
@@ -42,6 +42,7 @@ const val PLAY_VIDEO_QUERY = """
                           }
                           promo_labels {
                             text
+                            type
                           }
                         }
                         app_link

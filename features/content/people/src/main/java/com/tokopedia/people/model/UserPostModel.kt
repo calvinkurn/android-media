@@ -111,7 +111,8 @@ data class PostReminder(
 
 data class PostPromoLabel(
     @SerializedName("text")
-    val text: String
+    val text: String,
+    val type: String
 )
 
 
