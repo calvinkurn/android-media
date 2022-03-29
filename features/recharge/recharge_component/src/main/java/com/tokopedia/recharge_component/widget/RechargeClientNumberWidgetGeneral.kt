@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -420,5 +421,10 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             adapter = adapterInquiry
             layoutManager = LinearLayoutManager(context)
         }
+    }
+
+    fun startShakeAnimation() {
+        binding.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
     }
 }

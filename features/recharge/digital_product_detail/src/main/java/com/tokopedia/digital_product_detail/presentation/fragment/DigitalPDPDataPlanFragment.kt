@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -141,6 +142,7 @@ class DigitalPDPDataPlanFragment :
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+    private var productDescBottomSheet: ProductDescBottomSheet? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
@@ -1224,10 +1226,15 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
-        if (userSession.isLoggedIn) {
-            addToCart()
+        if (binding?.rechargePdpPaketDataClientNumberWidget?.isErrorMessageShown() == true) {
+            binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
+            productDescBottomSheet?.dismiss()
         } else {
-            navigateToLoginPage()
+            if (userSession.isLoggedIn) {
+                addToCart()
+            } else {
+                navigateToLoginPage()
+            }
         }
     }
 
@@ -1357,7 +1364,8 @@ class DigitalPDPDataPlanFragment :
         layoutType: DenomWidgetEnum
     ) {
         fragmentManager?.let {
-            ProductDescBottomSheet(denomFull, this).show(it, "")
+            productDescBottomSheet = ProductDescBottomSheet(denomFull, this)
+            productDescBottomSheet?.show(it, "")
         }
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.clickFullDenomChevron(

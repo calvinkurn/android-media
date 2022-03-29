@@ -903,7 +903,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedButton() {
-        showLoadingDialog()
         if (viewModel.isEligibleToBuy) {
             viewModel.updateCheckoutPassData(
                 userSession.userId.generateRechargeCheckoutToken(),
@@ -915,13 +914,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 navigateToLoginPage()
             }
         } else {
-            viewModel.run {
-                cancelValidatorJob()
-                validateClientNumber(
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
-                    true
-                )
-            }
+            binding?.rechargePdpTagihanListrikClientNumberWidget?.startShakeAnimation()
         }
     }
 

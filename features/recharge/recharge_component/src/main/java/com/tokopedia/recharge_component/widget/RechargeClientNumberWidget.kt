@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
 import android.view.animation.AnimationSet
+import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -391,6 +392,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         mInputFieldListener = inputFieldListener
         mAutoCompleteListener = autoCompleteListener
         mFilterChipListener = filterChipListener
+    }
+
+    fun startShakeAnimation() {
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
     }
 
     private fun View.animateFadeInThenShow() {
