@@ -110,6 +110,20 @@
             app:layout_constraintTop_toTopOf="@id/iv_share_link"
             />
 
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_interactive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="GAME"
+            app:layout_constraintBottom_toBottomOf="@id/icon_product"
+            app:layout_constraintStart_toEndOf="@id/icon_product"
+            app:layout_constraintTop_toTopOf="@id/icon_product"
+            tools:visibility="visible" />
+
         <FrameLayout
             android:id="@+id/view_play_interactive"
             android:layout_width="@dimen/layout_lvl0"

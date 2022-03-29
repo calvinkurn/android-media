@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -92,6 +93,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
+    private val icInteractive: IconUnify by detachableView(R.id.ic_interactive)
 
     private val actionBarLiveView by viewComponent {
         ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
@@ -658,11 +660,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is BroadcastInteractiveState.Forbidden -> {
+                    /** TODO: delete this soon */
                     interactiveView.hide()
+
+                    icInteractive.hide()
                 }
                 is BroadcastInteractiveState.Allowed -> {
+                    /** TODO: delete this soon */
                     handleHasInteractiveState(state)
                     interactiveView.show()
+
+                    icInteractive.show()
                 }
             }
         }
