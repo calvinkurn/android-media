@@ -195,6 +195,7 @@ class PayLaterViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         viewModel.getPayLaterAvailableDetail(0.0, "0")
+        coVerify(exactly = 0) { payLaterUiMapperUseCase.mapResponseToUi(any(), any(), any()) }
         Assert.assertEquals((viewModel.payLaterOptionsDetailLiveData.value as Fail).throwable,mockThrowable)
     }
 
