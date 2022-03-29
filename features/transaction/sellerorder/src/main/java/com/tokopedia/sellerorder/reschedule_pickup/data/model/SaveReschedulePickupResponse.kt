@@ -6,20 +6,23 @@ import com.google.gson.annotations.SerializedName
 data class SaveReschedulePickupResponse(
     @Expose
     @SerializedName("data")
-    val data: Data
+    val data: Data = Data()
 ) {
     data class Data(
         @Expose
         @SerializedName("mpLogisticInsertReschedulePickup")
-        val mpLogisticInsertReschedulePickup: MpLogisticInsertReschedulePickup
+        val mpLogisticInsertReschedulePickup: MpLogisticInsertReschedulePickup = MpLogisticInsertReschedulePickup()
     ) {
         data class MpLogisticInsertReschedulePickup(
             @Expose
             @SerializedName("message")
-            val message: String,
+            val message: String = "",
             @Expose
             @SerializedName("status")
-            val status: String
+            val status: String = "",
+            @Expose
+            @SerializedName("errors")
+            val errors: List<String> = emptyList()
         )
     }
 }

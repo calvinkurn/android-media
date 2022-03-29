@@ -13,7 +13,6 @@ class ReschedulePickupActivity : BaseSimpleActivity() {
             bundle = intent.extras ?: Bundle()
         } else {
             bundle.putString(SomConsts.PARAM_ORDER_ID, "")
-            bundle.putString(SomConsts.PARAM_COURIER_NAME, "")
         }
         return ReschedulePickupFragment.newInstance(bundle)
     }

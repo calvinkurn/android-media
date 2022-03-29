@@ -27,16 +27,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.common.presenter.dialogs.SomOrderHasRequestCancellationDialog
 import com.tokopedia.sellerorder.common.util.OrderedListSpan
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.FragmentReschedulePickupBinding
-import com.tokopedia.sellerorder.reschedule_pickup.data.model.GetReschedulePickupResponse
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDayOptionModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDetailModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleReasonOptionModel
@@ -71,9 +66,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private var binding by autoClearedNullable<FragmentReschedulePickupBinding>()
     private var toaster: Snackbar? = null
     private var loadingDialog: ReschedulePickupLoadingDialog? = null
-//    private var failedDialog: ReschedulePickupFailedDialog? = null
     private var orderId: String = ""
-    private var courierName: String = ""
     private var day: RescheduleDayOptionModel? = null
     private var time: RescheduleTimeOptionModel? = null
 
@@ -90,7 +83,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         super.onCreate(savedInstanceState)
         arguments?.let {
             orderId = it.getString(SomConsts.PARAM_ORDER_ID, "")
-            courierName = it.getString(SomConsts.PARAM_COURIER_NAME, "")
         }
     }
 
@@ -133,15 +125,15 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             loadingDialog?.dismiss()
             when (it) {
                 is Success -> {
-                    if (it.data.status == STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER) {
-                        showErrorDialog(
-                            it.data.message,
-                        )
-                    } else {
+                    if (it.data.success) {
                         activity?.setResult(Activity.RESULT_OK, Intent().apply {
                             putExtra(SomConsts.RESULT_CONFIRM_SHIPPING, it.data.message)
                         })
                         activity?.finish()
+                    } else {
+                        showErrorDialog(
+                            it.data.message,
+                        )
                     }
                 }
                 is Fail -> {
@@ -171,7 +163,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private fun bindDataWithView(data: RescheduleDetailModel) {
         binding?.let {
             it.invoiceOrderDetail.text = data.invoice
-            it.courierOrderDetail.text = courierName
+            it.courierOrderDetail.text = data.courierName
             val rescheduleGuide = resources.getStringArray(R.array.reschedule_guide)
             val rescheduleGuideBuilder = SpannableStringBuilder()
             rescheduleGuide.forEachIndexed { index, item ->
@@ -454,10 +446,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {
                     putString(SomConsts.PARAM_ORDER_ID, bundle.getString(SomConsts.PARAM_ORDER_ID))
-                    putString(
-                        SomConsts.PARAM_COURIER_NAME,
-                        bundle.getString(SomConsts.PARAM_COURIER_NAME)
-                    )
                 }
             }
         }

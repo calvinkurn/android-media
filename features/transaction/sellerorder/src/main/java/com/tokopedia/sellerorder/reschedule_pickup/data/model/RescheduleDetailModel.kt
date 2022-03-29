@@ -2,7 +2,7 @@ package com.tokopedia.sellerorder.reschedule_pickup.data.model
 
 data class RescheduleDetailModel(
     val options: RescheduleOptionsModel = RescheduleOptionsModel(),
-    val shipperId: Long = 0,
+    val courierName: String = "",
     val invoice: String = "",
     val errorMessage: String = ""
 )

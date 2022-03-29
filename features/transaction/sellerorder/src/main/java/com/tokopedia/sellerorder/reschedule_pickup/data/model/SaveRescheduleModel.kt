@@ -1,6 +1,8 @@
 package com.tokopedia.sellerorder.reschedule_pickup.data.model
 
 data class SaveRescheduleModel(
+    val success: Boolean = false,
     val message : String = "",
-    val status: String = ""
+    val status: String = "",
+    val errors: List<String> = emptyList()
 )

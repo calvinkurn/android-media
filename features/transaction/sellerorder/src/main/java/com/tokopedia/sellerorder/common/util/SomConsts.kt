@@ -14,7 +14,6 @@ object SomConsts {
     const val PARAM_ORDER_CODE = "order_code"
     const val PARAM_INVOICE = "invoice"
     const val PARAM_PASS_INVOICE = "pass_invoice"
-    const val PARAM_COURIER_NAME = "courier"
 
     const val VAR_PARAM_ORDERID = "orderID"
     const val VAR_PARAM_LANG = "lang"

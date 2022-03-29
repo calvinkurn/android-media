@@ -30,7 +30,12 @@ data class GetReschedulePickupResponse(
                 @SuppressLint("Invalid Data Type")
                 @Expose
                 @SerializedName("shipper_id")
-                val shipperId: Long = 0
+                val shipperId: Long = 0,
+
+                @SuppressLint("Invalid Data Type")
+                @Expose
+                @SerializedName("shipper_name")
+                val shipperName: String = ""
 
             ) {
                 data class OrderData(
@@ -38,6 +43,10 @@ data class GetReschedulePickupResponse(
                     @Expose
                     @SerializedName("error_message")
                     val errorMessage: String = "",
+
+                    @Expose
+                    @SerializedName("shipper_product_name")
+                    val shipperProductName: String = "",
 
                     @SuppressLint("Invalid Data Type")
                     @Expose

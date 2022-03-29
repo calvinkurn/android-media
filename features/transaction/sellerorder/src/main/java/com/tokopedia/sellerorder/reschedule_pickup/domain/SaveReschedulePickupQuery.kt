@@ -13,6 +13,7 @@ object SaveReschedulePickupQuery : GqlQueryInterface {
                 mpLogisticInsertReschedulePickup(input:${'$'}input){
                     status
                     message
+                    errors
                 }
             }
         """.trimIndent()

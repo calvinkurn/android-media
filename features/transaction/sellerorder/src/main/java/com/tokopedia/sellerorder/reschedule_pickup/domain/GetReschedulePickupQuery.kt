@@ -13,10 +13,12 @@ object GetReschedulePickupQuery : GqlQueryInterface {
                 mpLogisticGetReschedulePickup(input:${'$'}input) {
                     data{
                         shipper_id
+                        shipper_name
       	                order_data{
                             order_id
         	                invoice
         	                shipper_product_id
+                            shipper_product_name
         	                order_item{
                                 name
                                 qty

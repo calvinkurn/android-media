@@ -21,8 +21,8 @@ object ReschedulePickupMapper {
 
     fun mapToRescheduleDetailModel(data: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem): RescheduleDetailModel {
         return RescheduleDetailModel(
-            options = mapOrderDataToOptionModel(data.orderData.first()),
-            shipperId = data.shipperId,
+            options = mapOrderDataToOptionModel(data.orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
+            courierName = "${data.orderData.firstOrNull()?.shipperProductName ?: ""} - ${data.shipperName}",
             invoice = data.orderData.first().invoice,
             errorMessage = data.orderData.first().errorMessage
         )
@@ -69,8 +69,10 @@ object ReschedulePickupMapper {
 
     fun mapToSaveRescheduleModel(data: SaveReschedulePickupResponse.Data): SaveRescheduleModel {
         return SaveRescheduleModel(
+            success = data.mpLogisticInsertReschedulePickup.status == "200" && data.mpLogisticInsertReschedulePickup.errors.isEmpty(),
             message = data.mpLogisticInsertReschedulePickup.message,
-            status = data.mpLogisticInsertReschedulePickup.status
+            status = data.mpLogisticInsertReschedulePickup.status,
+            errors = data.mpLogisticInsertReschedulePickup.errors
         )
     }
 }
