@@ -59,7 +59,6 @@ class TradeInHomePageVM @Inject constructor(
     var tradeInPriceDouble: Double = 0.0
     var finalPriceDouble: Double = 0.0
     var tradeInUniqueCode: String = ""
-    var encodedString: String = ""
     var campaginTagId: String = ""
 
     fun getPDPData(tradeinPDPData: TradeInPDPData?): TradeInPDPData? {
