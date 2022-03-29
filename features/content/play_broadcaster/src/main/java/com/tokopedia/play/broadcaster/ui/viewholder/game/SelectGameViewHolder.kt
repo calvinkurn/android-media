@@ -15,11 +15,11 @@ class SelectGameViewHolder private constructor(
     private val listener: Listener,
 ) : BaseViewHolder(binding.root) {
 
-    fun bind(gameType: GameType) {
+    fun bind(item: SelectGameAdapter.Model.Item) {
         binding.root.apply {
-            setGameType(gameType)
+            setGameType(item.gameType)
             setListener {
-                listener.onGameOptionClick(gameType)
+                listener.onGameOptionClick(item.gameType)
             }
         }
     }

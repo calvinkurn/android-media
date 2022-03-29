@@ -217,7 +217,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _interactiveConfigUiState = _interactiveConfig.map {
         InteractiveConfigUiState(
             tapTapConfig = it.tapTapConfig,
-            quizConfig = it.quizConfig
+            quizConfig = it.quizConfig,
+            gameTypeList = it.generateGameTypeList(),
         )
     }
 
@@ -597,7 +598,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** TODO: should save config on flow instead */
             _observableInteractiveConfig.value = interactiveConfig
             setInteractiveDurations(interactiveConfig.tapTapConfig.availableStartTimeInMs)
-
 
             if(interactiveConfig.isNoGameActive()) {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden

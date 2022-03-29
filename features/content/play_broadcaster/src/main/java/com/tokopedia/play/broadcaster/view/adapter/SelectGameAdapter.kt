@@ -10,18 +10,24 @@ import com.tokopedia.play.broadcaster.view.adapter.delegate.GameAdapterDelegate
  */
 class SelectGameAdapter(
     listener: SelectGameViewHolder.Listener,
-) : BaseDiffUtilAdapter<GameType>(){
+) : BaseDiffUtilAdapter<SelectGameAdapter.Model>(){
 
     init {
         delegatesManager
             .addDelegate(GameAdapterDelegate(listener))
     }
 
-    override fun areItemsTheSame(oldItem: GameType, newItem: GameType): Boolean {
-        return oldItem.name == newItem.name
+    override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
+        if(oldItem is Model.Item && newItem is Model.Item)
+            return oldItem.gameType == newItem.gameType
+        return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: GameType, newItem: GameType): Boolean {
+    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
         return oldItem == newItem
+    }
+
+    sealed class Model {
+        data class Item(val gameType: GameType): Model()
     }
 }

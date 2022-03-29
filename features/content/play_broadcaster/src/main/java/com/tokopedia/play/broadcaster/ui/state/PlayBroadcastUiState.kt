@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.ui.state
 
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -30,4 +31,5 @@ data class PinnedMessageUiState(
 data class InteractiveConfigUiState(
     val tapTapConfig: TapTapConfigUiModel,
     val quizConfig: QuizConfigUiModel,
+    val gameTypeList: List<GameType>,
 )

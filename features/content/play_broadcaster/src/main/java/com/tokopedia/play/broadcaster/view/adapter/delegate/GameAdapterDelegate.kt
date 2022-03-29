@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.viewholder.game.SelectGameViewHolder
+import com.tokopedia.play.broadcaster.view.adapter.SelectGameAdapter
 import com.tokopedia.play_common.R as commonR
 
 /**
@@ -12,10 +13,10 @@ import com.tokopedia.play_common.R as commonR
  */
 class GameAdapterDelegate(
     private val listener: SelectGameViewHolder.Listener,
-) : TypedAdapterDelegate<GameType, GameType, SelectGameViewHolder>(commonR.layout.view_play_empty) {
+) : TypedAdapterDelegate<SelectGameAdapter.Model.Item, SelectGameAdapter.Model, SelectGameViewHolder>(commonR.layout.view_play_empty) {
 
     override fun onBindViewHolder(
-        item: GameType,
+        item: SelectGameAdapter.Model.Item,
         holder: SelectGameViewHolder
     ) {
         holder.bind(item)
