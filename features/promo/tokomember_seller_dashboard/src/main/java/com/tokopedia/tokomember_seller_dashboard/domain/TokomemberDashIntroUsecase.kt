@@ -3,19 +3,21 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
 import com.tokopedia.tokomember_seller_dashboard.model.TmOnboardingResponse
 import javax.inject.Inject
 
 class TokomemberDashIntroUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<TmOnboardingResponse>(graphqlRepository) {
+    GraphqlUseCase<MembershipData>(graphqlRepository) {
 
     @GqlQuery("TmSellerOnboard", TM_SELLER_ONBOARD)
     fun getMemberOnboardingInfo(
-        success: (TmOnboardingResponse) -> Unit,
+        success: (MembershipData) -> Unit,
         onFail: (Throwable) -> Unit,
-        shopID: String
+        shopID: Int
     ) {
-        this.setTypeClass(TmOnboardingResponse::class.java)
+        this.setTypeClass(MembershipData::class.java)
         this.setRequestParams(getRequestParams(shopID))
         this.setGraphqlQuery(TmSellerOnboard.GQL_QUERY)
         execute({
@@ -25,7 +27,7 @@ class TokomemberDashIntroUsecase @Inject constructor(graphqlRepository: GraphqlR
         })
     }
 
-    private fun getRequestParams(cardId: String): Map<String, Any> {
+    private fun getRequestParams(cardId: Int): Map<String, Any> {
         return mapOf(SHOP_ID to cardId)
     }
 
@@ -35,8 +37,7 @@ class TokomemberDashIntroUsecase @Inject constructor(graphqlRepository: GraphqlR
 }
 
 const val TM_SELLER_ONBOARD = """
-    {
-    query membershipGetSellerOnboarding(${'$'}shopID: String!) {
+    query membershipGetSellerOnboarding(${'$'}shopID: Int!) {
     membershipGetSellerOnboarding(shopID: ${'$'}shopID) {
     resultStatus {
       code
@@ -70,7 +71,6 @@ const val TM_SELLER_ONBOARD = """
       }
       isShowContent
     }
-  }
   }
 }
 """

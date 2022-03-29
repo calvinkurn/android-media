@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.model.CardData
 import com.tokopedia.tokomember_seller_dashboard.model.TmMembershipCardResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,17 +18,17 @@ class TokomemberDashCreateCardViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
 ) : BaseViewModel(dispatcher) {
 
-    private val _tokomemberCardResultLiveData = MutableLiveData<Result<TmMembershipCardResponse>>()
-    val tokomemberCardResultLiveData: LiveData<Result<TmMembershipCardResponse>> =
+    private val _tokomemberCardResultLiveData = MutableLiveData<Result<CardData>>()
+    val tokomemberCardResultLiveData: LiveData<Result<CardData>> =
         _tokomemberCardResultLiveData
 
-    fun getCardInfo(cardID: String) {
+    fun getCardInfo(cardID: Int) {
         tokomemberDashCardUsecase.cancelJobs()
         tokomemberDashCardUsecase.getMembershipCardInfo({
             _tokomemberCardResultLiveData.postValue(Success(it))
         }, {
             _tokomemberCardResultLiveData.postValue(Fail(it))
-        }, cardID)
+        }, 3684)
     }
 
     override fun onCleared() {

@@ -33,7 +33,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/tm_intro_bg" />
 
-                <com.tokopedia.unifycomponents.CardUnify
+                <FrameLayout
                     android:id="@+id/frame_video"
                     android:layout_width="match_parent"
                     android:layout_height="184dp"
@@ -47,12 +47,12 @@
                     app:layout_constraintTop_toBottomOf="@+id/ivBg">
 
                     <com.tokopedia.videoplayer.view.widget.VideoPlayerView
-                        android:id="@+id/layout_video"
+                        android:id="@+id/layoutVideo"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         app:autoSize="true" />
-                </com.tokopedia.unifycomponents.CardUnify>
+                </FrameLayout>
 
             </RelativeLayout>
 
@@ -249,5 +249,6 @@
             app:unifyButtonVariant="ghost" />
 
     </LinearLayout>
+
 
 </RelativeLayout>

@@ -2,7 +2,9 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,11 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.RelativeLayout
+import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,6 +28,7 @@ import javax.inject.Inject
 class TokomemberDashIntroFragment : BaseDaggerFragment() {
 
     private var rootView: RelativeLayout? = null
+    private var viewFlipperIntro : ViewFlipper?=null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -37,11 +42,12 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.tm_dash_intro, container, false)
+        return inflater.inflate(R.layout.tm_dash_intro_container, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewFlipperIntro = view.findViewById(R.id.viewFlipperIntro)
         rootView = view.findViewById(R.id.rootView)
         hideStatusBar()
         observeViewModel()
@@ -59,7 +65,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     tokomemberIntroViewmodel.getIntroInfo(
-                        it.data.sellerData?.userShopInfo?.info?.shopId ?: ""
+                        it.data.userShopInfo?.info?.shopId?.toInt()?:0
                     )
                 }
                 is Fail -> {
@@ -70,10 +76,11 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
         tokomemberIntroViewmodel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    populateUI(it.data.boardingData?.membershipGetSellerOnboarding)
+                    viewFlipperIntro?.displayedChild = 1
+                    populateUI(it.data.membershipGetSellerOnboarding )
                 }
                 is Fail -> {
-
+                    viewFlipperIntro?.displayedChild = 0
                 }
             }
         })
@@ -106,6 +113,18 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
                 3
             )?.benefit
                 ?: ""
+
+        if (!layoutVideo.isPlaying) {
+            layoutVideo.setVideoURI(Uri.parse("https://vod.tokopedia.com/view/adaptive.m3u8?id=bb4a5fb8790f4d8a95e75ca9c5bcf53"))
+            layoutVideo.setOnPreparedListener { mp ->
+               //  mp.isLooping =  true
+            }
+            layoutVideo.start()
+        }
+
+        btnContinue.setOnClickListener {
+            startActivity(Intent(requireActivity() , TokomemberDashCreateCardActivity::class.java))
+        }
     }
 
     @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")

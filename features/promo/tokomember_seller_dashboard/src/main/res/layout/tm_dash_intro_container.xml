@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/viewFlipperIntro"
+    android:measureAllChildren="false"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:id="@+id/loaderUnify"
+        android:layout_gravity="center"
+        app:loader_corner_radius="8dp"
+        app:loader_type="circular"  />
+
+    <include layout="@layout/tm_dash_intro"/>
+
+</ViewFlipper>

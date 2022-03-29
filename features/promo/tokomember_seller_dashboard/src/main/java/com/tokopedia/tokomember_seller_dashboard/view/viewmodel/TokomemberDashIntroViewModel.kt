@@ -6,8 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.tokomember_seller_dashboard.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberAuthenticatedUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashIntroUsecase
-import com.tokopedia.tokomember_seller_dashboard.model.TmOnboardingResponse
-import com.tokopedia.tokomember_seller_dashboard.model.TmSellerInfoResponse
+import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,16 +20,16 @@ class TokomemberDashIntroViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val _sellerInfoResultLiveData =
-        MutableLiveData<Result<TmSellerInfoResponse>>()
-    val sellerInfoResultLiveData: LiveData<Result<TmSellerInfoResponse>> =
+        MutableLiveData<Result<SellerData>>()
+    val sellerInfoResultLiveData: LiveData<Result<SellerData>> =
         _sellerInfoResultLiveData
 
     private val _tokomemberOnboardingResultLiveData =
-        MutableLiveData<Result<TmOnboardingResponse>>()
-    val tokomemberOnboardingResultLiveData: LiveData<Result<TmOnboardingResponse>> =
+        MutableLiveData<Result<MembershipData>>()
+    val tokomemberOnboardingResultLiveData: LiveData<Result<MembershipData>> =
         _tokomemberOnboardingResultLiveData
 
-    fun getIntroInfo(shopID: String) {
+    fun getIntroInfo(shopID: Int) {
         tokomemberDashIntroUsecase.cancelJobs()
         tokomemberDashIntroUsecase.getMemberOnboardingInfo({
             _tokomemberOnboardingResultLiveData.postValue(Success(it))

@@ -3,19 +3,20 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.tokomember_seller_dashboard.model.CardData
 import com.tokopedia.tokomember_seller_dashboard.model.TmMembershipCardResponse
 import javax.inject.Inject
 
 class TokomemberDashCardUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<TmMembershipCardResponse>(graphqlRepository) {
+    GraphqlUseCase<CardData>(graphqlRepository) {
 
     @GqlQuery("tmCardForm", TM_CARD_FORM)
     fun getMembershipCardInfo(
-        success: (TmMembershipCardResponse) -> Unit,
+        success: (CardData) -> Unit,
         onFail: (Throwable) -> Unit,
-        cardId: String
+        cardId: Int
     ) {
-        this.setTypeClass(TmMembershipCardResponse::class.java)
+        this.setTypeClass(CardData::class.java)
         this.setRequestParams(getRequestParams(cardId))
         this.setGraphqlQuery(TmCardForm.GQL_QUERY)
         execute({
@@ -25,7 +26,7 @@ class TokomemberDashCardUsecase @Inject constructor(graphqlRepository: GraphqlRe
         })
     }
 
-    private fun getRequestParams(cardId: String): Map<String, Any> {
+    private fun getRequestParams(cardId: Int): Map<String, Any> {
         return mapOf(CARD_ID to cardId)
     }
 
@@ -35,8 +36,7 @@ class TokomemberDashCardUsecase @Inject constructor(graphqlRepository: GraphqlRe
 }
 
 const val TM_CARD_FORM = """
-    {
-     query membershipGetCardForm(${'$'}cardID: String!) {
+     query membershipGetCardForm(${'$'}cardID: Int!) {
     membershipGetCardForm(cardID: ${'$'}cardID) {
     resultStatus {
       code
@@ -69,7 +69,6 @@ const val TM_CARD_FORM = """
       colorCode
     }
     shopAvatar
-  }
   }
 }
 """
