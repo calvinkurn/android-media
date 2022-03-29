@@ -10,7 +10,8 @@ object TradeinConstants {
     const val TRADEIN_EXCHANGE = "exchange"
     const val TRADE_IN_HOST_SOURCE = "trade-in"
     const val TRADE_IN_HOST_TRACKING_SOURCE = "trade in start page"
-    const val CAMPAIGN_TAG_SELECTION = "exchange::fastlane"
+    const val CAMPAIGN_TAG_SELECTION1PL = "exchange::1pl"
+    const val CAMPAIGN_TAG_SELECTION3PL = "exchange::3pl"
 
 
 

@@ -118,7 +118,7 @@ class TradeInHomePageVM @Inject constructor(
                     )
                 )
                 try {
-                    laku6TradeIn?.setTestData(json, TradeinConstants.CAMPAIGN_TAG_SELECTION)
+                    laku6TradeIn?.setTestData(json, if(is3PLSelected.value == true) TradeinConstants.CAMPAIGN_TAG_SELECTION3PL else TradeinConstants.CAMPAIGN_TAG_SELECTION1PL)
                 } catch (exception: Exception) {
                     errorMessage.value = exception
                 }
