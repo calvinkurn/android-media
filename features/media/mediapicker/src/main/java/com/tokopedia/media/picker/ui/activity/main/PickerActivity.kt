@@ -380,16 +380,30 @@ open class PickerActivity : BaseActivity()
         return viewModel.isDeviceStorageFull()
     }
 
-    override fun onShowMediaLimitReachedToast() {
+    override fun onShowMediaLimitReachedGalleryToast() {
         onShowValidationToaster(
             R.string.picker_selection_limit_message,
             param.get().maxMediaTotal()
         )
     }
 
-    override fun onShowVideoLimitReachedToast() {
+    override fun onShowVideoLimitReachedGalleryToast() {
         onShowValidationToaster(
             R.string.picker_selection_limit_video,
+            param.get().maxVideoCount()
+        )
+    }
+
+    override fun onShowMediaLimitReachedCameraToast() {
+        onShowValidationToaster(
+            R.string.picker_capture_limit_photo,
+            param.get().maxMediaTotal()
+        )
+    }
+
+    override fun onShowVideoLimitReachedCameraToast() {
+        onShowValidationToaster(
+            R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
     }
