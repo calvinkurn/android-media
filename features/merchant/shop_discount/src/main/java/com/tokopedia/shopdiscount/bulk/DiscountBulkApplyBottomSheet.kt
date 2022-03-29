@@ -49,7 +49,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     private val viewModel by lazy { viewModelProvider.get(DiscountBulkApplyViewModel::class.java) }
 
     private var onApplyClickListener: () -> Unit = {}
-    private var onUpdatePeriodError: (String) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +94,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
 
-    private fun setupView() { ng?.run {
+    private fun setupView() {
+        binding.run {
 
         }
     }
