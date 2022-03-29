@@ -147,13 +147,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
-        super.onLabelPromoClicked(
-            view,
-            item,
-            channelPositionInList,
-            businessWidgetPosition,
-            isAutoPlay
-        )
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
     }
 
     override fun onLabelPromoImpressed(
@@ -163,12 +157,26 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
-        super.onLabelPromoImpressed(
-            view,
-            item,
-            channelPositionInList,
-            businessWidgetPosition,
-            isAutoPlay
-        )
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelImpress(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
+    }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        businessWidgetPosition: Int,
+        isAutoPlay: Boolean
+    ) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelImpress(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
     }
 }
