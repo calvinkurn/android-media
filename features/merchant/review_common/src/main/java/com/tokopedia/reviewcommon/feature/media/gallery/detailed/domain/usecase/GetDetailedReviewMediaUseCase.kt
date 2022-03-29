@@ -22,6 +22,7 @@ class GetDetailedReviewMediaUseCase @Inject constructor(
               productrevGetReviewImage(productID: ${'$'}productID, page: ${'$'}page, limit: ${'$'}limit) {
                 list {
                   imageID
+                  videoID
                   feedbackID
                   imageSiblings
                   imageNumber
@@ -56,6 +57,11 @@ class GetDetailedReviewMediaUseCase @Inject constructor(
                     thumbnailURL
                     fullsizeURL
                     description
+                    feedbackID
+                  }
+                  video {
+                    attachmentID
+                    url
                     feedbackID
                   }
                   imageCountFmt
