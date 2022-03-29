@@ -34,20 +34,4 @@ interface PlayWidgetInListJumboAnalyticListener {
         verticalWidgetPosition: Int,
     ) {
     }
-
-    fun onLabelPromoClicked(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
-    ) {}
-
-    fun onLabelPromoImpressed(
-        view: PlayWidgetJumboView,
-        item: PlayWidgetChannelUiModel,
-        channelPositionInList: Int,
-        businessWidgetPosition: Int,
-        isAutoPlay: Boolean,
-    ) {}
 }

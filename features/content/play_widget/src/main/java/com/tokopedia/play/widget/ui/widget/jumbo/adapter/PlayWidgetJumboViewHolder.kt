@@ -32,14 +32,6 @@ class PlayWidgetJumboViewHolder {
                 ) {
                     listener.onToggleReminderChannelClicked(item, reminderType, adapterPosition)
                 }
-
-                override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-                    listener.onLabelPromoChannelClicked(item, adapterPosition)
-                }
-
-                override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-                    listener.onLabelPromoChannelImpressed(item, adapterPosition)
-                }
             })
         }
 
@@ -77,16 +69,6 @@ class PlayWidgetJumboViewHolder {
             fun onToggleReminderChannelClicked(
                 item: PlayWidgetChannelUiModel,
                 reminderType: PlayWidgetReminderType,
-                position: Int
-            )
-
-            fun onLabelPromoChannelClicked(
-                item: PlayWidgetChannelUiModel,
-                position: Int
-            )
-
-            fun onLabelPromoChannelImpressed(
-                item: PlayWidgetChannelUiModel,
                 position: Int
             )
         }
