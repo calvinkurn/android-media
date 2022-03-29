@@ -238,12 +238,12 @@ class CameraControllerComponent(
         }
 
         if (isVideoMode() && activityListener?.hasVideoLimitReached() == true) {
-            activityListener.onShowVideoLimitReachedToast()
+            activityListener.onShowVideoLimitReachedCameraToast()
             return
         }
 
         if (activityListener?.hasMediaLimitReached() == true) {
-            activityListener.onShowMediaLimitReachedToast()
+            activityListener.onShowMediaLimitReachedCameraToast()
             return
         }
 
