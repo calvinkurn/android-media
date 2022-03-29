@@ -1,28 +1,16 @@
 <resources>
-    <string name="app_name">profilecompletion</string>
 
     <!--ADD CHANGE NAME-->
     <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
     <string name="title_name_full">Nama Lengkap</string>
-    <string name="title_add_name_empty"> </string>
     <string name="title_change_name">Ubah Nama Lengkap</string>
-    <string name="title_complete_name">Nama Lengkap</string>
-    <string name="email_name_top">Masukkan nama lengkap Anda dengan benar.\nNama lengkap hanya dapat diubah satu kali.</string>
     <string name="button_name_finish">Selesai</string>
-    <string name="button_name_continue">Ubah Nama Lengkap</string>
-    <string name="name_confirmation">Apakah nama lengkap Anda sudah benar?</string>
-    <string name="name_confirmation_content">Nama lengkap hanya dapat diubah satu kali</string>
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
     <string name="error_name_too_long">Nama lengkap terlalu panjang, maksimal 35 karakter</string>
     <string name="error_name_min_3">Minimum 3 karakter</string>
     <string name="error_name_max_35">Maksimal 35 karakter</string>
-    <string name="error_name_same_with_previous">Nama tidak boleh sama</string>
-    <string name="name_confirmation_yes">Ya, benar</string>
-    <string name="name_confirmation_no">Tidak</string>
-    <string name="error_minimal_name">Minimum 3 karakter</string>
     <string name="change_name_note">Kamu hanya dapat mengubah nama %1$s kali. Pastikan nama sudah benar.</string>
     <string name="change_name_fullname">Nama Lengkap</string>
-    <string name="change_name_visible_on_public_note">Nama akan terlihat oleh publik</string>
     <string name="change_name_visible_on_another_user">Nama dapat dilihat oleh pengguna lainnya</string>
     <string name="change_name_change_success">Nama lengkap berhasil diubah</string>
     <string name="change_email_change_success">Email berhasil diubah</string>
@@ -33,7 +21,6 @@
 
     <!-- SETTING PROFILE -->
     <string name="title_setting_profile">Data Diri</string>
-    <string name="add_setting_profile">Tambah</string>
     <string name="change_setting_profile">Ubah</string>
     <string name="subtitle_name_setting_profile">Nama</string>
     <string name="subtitle_bod_setting_profile">Tanggal Lahir</string>
@@ -84,8 +71,6 @@
     <string name="title_phone">Nomor HP</string>
     <string name="sample_phone">Contoh: 08xxxxxxxxxx</string>
     <string name="wrong_phone_format">Format nomor HP salah</string>
-    <string name="tokocash_after_activation">Setelah terverifikasi, TokoCash akan aktif dan bisa digunakan sebagai salah satu metode pembayaran Anda.</string>
-    <string name="phone_number_already_exist">Akun lain telah menggunakan nomor HP ini</string>
     <string name="success_add_phone">Nomor telepon berhasil ditambah</string>
     <string name="button_next">Selanjutnya</string>
     <string name="success_verify_phone_number">Verifikasi nomor ponsel sudah berhasil.</string>
@@ -97,15 +82,11 @@
     <string name="title_change_pin">Ubah PIN Tokopedia</string>
 
     <!-- CHANGE EMAIL -->
-    <string name="cannot_change_email">Untuk saat ini, kamu hanya bisa mengubah email akun Tokopedia dari komputer</string>
-    <string name="title_change_email_dialog">Pengubahan email</string>
 
     <!-- UPLOAD AVATAR -->
     <string name="failed_to_get_picture">Gagal mengambil gambar. Mohon coba kembali</string>
-    <string name="failed_to_upload_picture">Gagal mengunggah gambar. Mohon coba kembali</string>
     <string name="success_change_profile_picture">Foto profil berhasil diubah</string>
     <string name="ticker_phone_verification">Jaga akun kamu tetap aman dengan &lt;font color=\'#42b549\'&gt;&lt;a href=\'tokopedia-android-internal://global/setting-profile-phone-verification\'&gt;Verifikasi Nomor HP&lt;/a&gt;&lt;/font&gt;.</string>
-    <string name="error_oversize_avatar_image">Ukuran gambar maksimal 2Mb</string>
 
     <!-- ADD BOD -->
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
@@ -113,27 +94,12 @@
     <string name="page_description">Kamu hanya dapat mengatur tanggal lahirmu satu kali. Pastikan tanggal lahir sudah benar</string>
     <string name="success_add_bod">Tanggal lahir berhasil ditambah</string>
     <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
-    <string name="failed_add_bod">Tanggal lahir gagal ditambah</string>
-    <string name="failed_change_bod">Tanggal lahir gagal diubah</string>
 
     <!--ADD PIN-->
-    <string name="title_onboard_pin">Tambahkan keamanan ekstra dengan PIN Tokopedia</string>
-    <string name="subtitle_onboard_pin">Supaya login selanjutnya lebih mudah, yuk gunakan PIN Tokopedia!</string>
-    <string name="subtitle_onboard_pin_2">PIN juga dapat digunakan ketika transaksi Saldo Tokopedia, lho.</string>
     <string name="create_pin">Buat PIN Tokopedia</string>
-    <string name="ignore_pin">Nanti Saja</string>
-    <string name="title_dialog_add_phone">Tambah Nomor HP</string>
-    <string name="subtitle_dialog_add_phone">Tambah &amp; verifikasi nomor HP terlebih dahulu sebelum membuat PIN</string>
-    <string name="cancel_dialog_add_phone">Batal</string>
-    <string name="subtitle_create_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi</string>
-    <string name="info_create_pin">Hindari menggunakan kombinasi angka yang mudah ditebak, seperti tanggal lahir atau nomor telepon.</string>
     <string name="confirm_create_pin">Konfirmasi PIN Tokopedia</string>
     <string name="subtitle_confirm_create_pin">Ketik ulang PIN Tokopedia kamu.</string>
     <string name="error_wrong_pin">PIN tokopedia tidak sesuai</string>
-    <string name="complete_add_pin">Selesai</string>
-    <string name="title_complete_add_pin">PIN Tokopedia Kamu Berhasil Disimpan</string>
-    <string name="subtitle_complete_add_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi kamu</string>
-    <string name="ticker_complete_add_pin">Jangan bagikan PIN Tokopedia kamu kepada pihak mana pun</string>
     <string name="title_create_pin">PIN Baru Tokopedia</string>
     <string name="desc_create_pin">Masukkan 6 digit PIN Tokopedia untuk verifikasi saat login dan transaksi.</string>
     <string name="message_create_pin">Hindari penggunaan angka yang mudah ditebak seperti tanggal lahir atau nomor telepon.</string>
@@ -143,7 +109,6 @@
 
     <!--CHANGE PIN-->
     <string name="change_pin_success">PIN Tokopedia kamu berhasil diubah</string>
-    <string name="change_pin_input_old_pin">Masukkan PIN Lama Tokopedia kamu</string>
     <string name="change_pin_title_old_pin">PIN Lama Tokopedia</string>
     <string name="change_pin_desc_old_pin">Masukkan 6 digit PIN Tokopedia kamu.</string>
     <string name="change_pin_forgot_btn">Lupa PIN Tokopedia</string>
@@ -154,8 +119,6 @@
 
     <string name="your_profile_completion">Kelengkapan profil</string>
     <string name="date_title_prof_comp">Tanggal Lahir Anda</string>
-    <string name="title_verif_phone_prof_comp">Verifikasi Nomor Handphone</string>
-    <string name="please_fill_phone_number">Harap isi Nomor Ponsel</string>
 
     <string name="profile_completion_title">Data Diri</string>
 
