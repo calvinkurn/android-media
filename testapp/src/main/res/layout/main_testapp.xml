@@ -1,104 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.tokopedia.tkpd.pullrefresh.LottiePullToRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/testapp_environment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#e67e22"
-        android:paddingLeft="8dp"
-        android:paddingTop="2dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="2dp"
-        android:text="STAGING"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:max_offset_top="250dp"
+    app:pull_to_refresh_lottieFile="@raw/pull_to_refresh"
+    app:trigger_offset_top="125dp"
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
         android:orientation="vertical"
-        android:padding="22dp">
+        app:layout_type="content"
+        >
 
         <TextView
-            android:id="@+id/title_testapp"
+            android:id="@+id/testapp_environment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foregroundGravity="center"
-            android:gravity="center|center_horizontal"
-            android:text="Tokopedia Test App"
+            android:background="#e67e22"
+            android:paddingLeft="8dp"
+            android:paddingTop="2dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="2dp"
+            android:text="STAGING"
             android:textAlignment="center"
-            android:textColor="#31353B"
-            android:textSize="22sp" />
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/loginButton"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/testapp_button_style"
-            android:text="Login"
-            android:textColor="#FFFFFF" />
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:orientation="vertical"
+            android:padding="22dp">
 
-        <Button
-            android:id="@+id/logoutButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/testapp_button_style"
-            android:text="Logout"
-            android:textColor="#FFFFFF" />
+            <TextView
+                android:id="@+id/title_testapp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center"
+                android:gravity="center|center_horizontal"
+                android:text="Tokopedia Test App"
+                android:textAlignment="center"
+                android:textColor="#31353B"
+                android:textSize="22sp" />
 
-        <Button
-            android:id="@+id/testGqlButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/testapp_button_style"
-            android:text="Test GQL"
-            android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/testapp_button_style"
+                android:text="Login"
+                android:textColor="#FFFFFF" />
 
-        <Button
-            android:id="@+id/devOptButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/testapp_button_style"
-            android:text="Developer Options"
-            android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/logoutButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/testapp_button_style"
+                android:text="Logout"
+                android:textColor="#FFFFFF" />
 
-        <EditText
-            android:id="@+id/etAppLink"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:hint="Input your applink here..."
-            />
+            <Button
+                android:id="@+id/testGqlButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/testapp_button_style"
+                android:text="Test GQL"
+                android:textColor="#FFFFFF" />
 
-        <Button
-            android:id="@+id/goToButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="@drawable/testapp_button_style"
-            android:text="open"
-            android:textColor="#FFFFFF" />
+            <Button
+                android:id="@+id/devOptButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/testapp_button_style"
+                android:text="Developer Options"
+                android:textColor="#FFFFFF" />
 
-        <CheckBox
-            android:id="@+id/toggle_dark_mode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_small"
-            android:padding="@dimen/margin_small"
-            android:text="Force Dark Mode" />
+            <EditText
+                android:id="@+id/etAppLink"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:hint="Input your applink here..." />
+
+            <Button
+                android:id="@+id/goToButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/testapp_button_style"
+                android:text="open"
+                android:textColor="#FFFFFF" />
+
+            <CheckBox
+                android:id="@+id/toggle_dark_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_small"
+                android:padding="@dimen/margin_small"
+                android:text="Force Dark Mode" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+</com.tokopedia.tkpd.pullrefresh.LottiePullToRefreshLayout>

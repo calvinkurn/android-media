@@ -87,6 +87,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
+import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh.LottiePullToRefreshLayout
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -96,7 +97,7 @@ import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
 import com.tokopedia.home.util.HomeServerLogger
-import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
+//import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -306,7 +307,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
-    private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
+    private lateinit var refreshLayout: LottiePullToRefreshLayout
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -1174,7 +1175,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
              */
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
-        refreshLayout.setOnRefreshListener(this)
+//        refreshLayout.setOnRefreshListener(this)
     }
 
     private fun subscribeHome() {
@@ -1964,11 +1965,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        refreshLayout.isRefreshing = true
+//        refreshLayout.isRefreshing = true
     }
 
     private fun hideLoading() {
-        refreshLayout.isRefreshing = false
+//        refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
 
