@@ -41,13 +41,6 @@ class GameOptionView : ConstraintLayout {
         }
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        binding.flQuizImage.layoutParams = binding.flQuizImage.layoutParams.apply {
-            height = measuredWidth
-        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-    }
-
     fun setGameType(gameType: GameType) {
         binding.tvGameName.text = gameType.name
     }
