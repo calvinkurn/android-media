@@ -44,6 +44,9 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                     imageThumbnailUrl
                     imageUrl
                   }
+                  videoAttachments {
+                    videoUrl
+                  }
                   likeDislike {
                     totalLike
                     likeStatus
