@@ -116,4 +116,8 @@
     <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/android/recharge_order_details/sbm.png</string>
     <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/android/recharge_order_details/langganan.png</string>
 
+    <string name="deals_voucher_label_count">%d dari %d voucher</string>
+    <string name="deals_label_copy">Salin</string>
+    <string name="deals_label_copied">Tersalin</string>
+    <string name="deals_msg_copy">Kode voucher telah disalin</string>
 </resources>
