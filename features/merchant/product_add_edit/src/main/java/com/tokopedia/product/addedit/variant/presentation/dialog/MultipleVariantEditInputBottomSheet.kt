@@ -156,7 +156,9 @@ class MultipleVariantEditInputBottomSheet(
 
     private fun validatePrice() {
         val inputText = tfuPrice.getTextBigIntegerOrZero()
-        val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
+        val errorMessage = if (tfuPrice.getText().isNotEmpty()) {
+            multipleVariantEditInputListener?.onMultipleEditInputValidatePrice(inputText).orEmpty()
+        } else { "" }
         val isErrorValidating = errorMessage.isNotEmpty()
 
         tfuPrice?.setMessage(errorMessage)
@@ -166,7 +168,9 @@ class MultipleVariantEditInputBottomSheet(
 
     private fun validateStock() {
         val inputText = tfuStock.getTextBigIntegerOrZero()
-        val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
+        val errorMessage = if (tfuStock.getText().isNotEmpty()) {
+            multipleVariantEditInputListener?.onMultipleEditInputValidateStock(inputText).orEmpty()
+        } else { "" }
         val isErrorValidating = errorMessage.isNotEmpty()
 
         tfuStock?.setMessage(errorMessage)
@@ -176,7 +180,9 @@ class MultipleVariantEditInputBottomSheet(
 
     private fun validateWeight() {
         val inputText = tfuWeight.getTextBigIntegerOrZero()
-        val errorMessage = multipleVariantEditInputListener?.onMultipleEditInputValidateWeight(inputText).orEmpty()
+        val errorMessage = if (tfuWeight.getText().isNotEmpty()) {
+            multipleVariantEditInputListener?.onMultipleEditInputValidateWeight(inputText).orEmpty()
+        } else { "" }
         val isErrorValidating = errorMessage.isNotEmpty()
 
         tfuWeight?.setMessage(errorMessage)
