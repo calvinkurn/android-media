@@ -591,7 +591,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             } else {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
             }
-        }) {}
+        }) { }
     }
 
     private fun updateCurrentInteractiveStatus() {
