@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,9 +37,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.sort_filter_bottom_sheet.view.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class SortFilterBottomSheet: BottomSheetUnify() {
 
@@ -68,6 +71,19 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             else
                 onSeeAllFilterGeneralClick(filterViewModel)
         }
+    }
+
+    private val buttonApplySortFilter: UnifyButton? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.buttonApplySortFilter)
+    }
+    private val recyclerViewSortFilterBottomSheet: RecyclerView? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.recyclerViewSortFilterBottomSheet)
+    }
+    private val buttonApplyContainer: LinearLayout? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.buttonApplyContainer)
+    }
+    private val progressBarSortFilterBottomSheet: LoaderUnify? by lazy(NONE) {
+        sortFilterBottomSheetView?.findViewById(R.id.progressBarSortFilterBottomSheet)
     }
 
     private fun onSeeAllFilterCategoryClick(filterViewModel: FilterViewModel) {
@@ -112,10 +128,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private val keywordFilterListener = object: KeywordFilterListener {
         override fun scrollToPosition(position: Int) {
-            val layoutManager =
-                sortFilterBottomSheetView
-                    ?.recyclerViewSortFilterBottomSheet
-                    ?.layoutManager
+            val layoutManager = recyclerViewSortFilterBottomSheet?.layoutManager
 
             if (layoutManager is LinearLayoutManager)
                 layoutManager.scrollToPositionWithOffset(position, 0)
@@ -151,9 +164,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     fun setResultCountText(buttonApplySortFilterText: String) {
-        sortFilterBottomSheetView?.let {
-            it.buttonApplySortFilter.isLoading = buttonApplySortFilterText.isEmpty()
-            it.buttonApplySortFilter.text = buttonApplySortFilterText
+        buttonApplySortFilter?.let {
+            it.isLoading = buttonApplySortFilterText.isEmpty()
+            it.text = buttonApplySortFilterText
         }
     }
 
@@ -202,10 +215,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initRecyclerView() {
-        sortFilterBottomSheetView?.let {
-            it.recyclerViewSortFilterBottomSheet?.adapter = sortFilterBottomSheetAdapter
-            it.recyclerViewSortFilterBottomSheet?.layoutManager = LinearLayoutManager(activity, VERTICAL, false)
-            it.recyclerViewSortFilterBottomSheet?.addOnScrollListener(createRecyclerViewOnScrollListener())
+        recyclerViewSortFilterBottomSheet?.let {
+            it.adapter = sortFilterBottomSheetAdapter
+            it.layoutManager = LinearLayoutManager(activity, VERTICAL, false)
+            it.addOnScrollListener(createRecyclerViewOnScrollListener())
         }
     }
 
@@ -222,7 +235,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun initButtonApplySortFilter() {
-        sortFilterBottomSheetView?.buttonApplySortFilter?.setOnClickListener(this::onButtonApplySortFilterClicked)
+        buttonApplySortFilter?.setOnClickListener(this::onButtonApplySortFilterClicked)
     }
 
     private fun onButtonApplySortFilterClicked(view: View) {
@@ -285,7 +298,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     private fun processSortFilterList(sortFilterList: List<Visitable<SortFilterBottomSheetTypeFactory>>) {
         sortFilterBottomSheetAdapter.setSortFilterList(sortFilterList)
-        sortFilterBottomSheetView?.recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
+        recyclerViewSortFilterBottomSheet?.scrollToPosition(0)
     }
 
     private fun processUpdateViewInPosition(position: Int) {
@@ -300,9 +313,9 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun showButtonApplyFilter() {
-        sortFilterBottomSheetView?.let {
-            it.buttonApplyContainer?.background = getButtonApplyContainerBackground()
-            it.buttonApplyContainer?.visibility = View.VISIBLE
+        buttonApplyContainer?.let {
+            it.background = getButtonApplyContainerBackground()
+            it.visibility = View.VISIBLE
         }
 
         setButtonApplyFilterText()
@@ -328,7 +341,7 @@ class SortFilterBottomSheet: BottomSheetUnify() {
             context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
     private fun hideButtonApplyFilter() {
-        sortFilterBottomSheetView?.buttonApplyContainer?.visibility = View.GONE
+        buttonApplyContainer?.visibility = View.GONE
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
@@ -352,18 +365,14 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     }
 
     private fun showLoadingForDynamicFilter() {
-        sortFilterBottomSheetView?.let {
-            it.progressBarSortFilterBottomSheet?.show()
-            it.recyclerViewSortFilterBottomSheet?.hide()
-            it.buttonApplyContainer?.hide()
-        }
+        progressBarSortFilterBottomSheet?.show()
+        recyclerViewSortFilterBottomSheet?.hide()
+        buttonApplyContainer?.hide()
     }
 
     private fun finishLoadingForDynamicFilter() {
-        sortFilterBottomSheetView?.let {
-            it.progressBarSortFilterBottomSheet?.hide()
-            it.recyclerViewSortFilterBottomSheet?.show()
-        }
+        progressBarSortFilterBottomSheet?.hide()
+        recyclerViewSortFilterBottomSheet?.show()
     }
 
     override fun onDestroyView() {
