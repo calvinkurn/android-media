@@ -429,6 +429,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         prevState: ScheduleUiModel?,
         state: ScheduleUiModel,
     ) {
+        if (prevState == state) return
+
         schedulePicker.updateState {
             it.copy(
                 isLoading = state.state == NetworkState.Loading,
@@ -509,11 +511,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             maxDate = GregorianCalendar().apply {
                 time = schedule.config.maxDate
             },
-            selectedDate = GregorianCalendar().apply {
+            defaultDate = GregorianCalendar().apply {
                 time = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
                     schedule.schedule.time
                 } else schedule.config.defaultDate
             },
+            selectedDate = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
+                GregorianCalendar().apply {
+                    time = schedule.schedule.time
+                }
+            } else null,
             listener = schedulePickerListener,
         )
     }

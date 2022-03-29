@@ -1,15 +1,12 @@
 package com.tokopedia.play.broadcaster.setup.schedule.util
 
-import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play_common.util.extension.globalVisibleRect
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 import java.util.*
@@ -38,10 +35,22 @@ class SchedulePicker(fragment: Fragment) {
         getDatePicker()?.dismiss()
     }
 
+    /**
+     * @param minDate - The minimum date in the date picker
+     *
+     * @param maxDate - The maximum date in the date picker
+     *
+     * @param defaultDate - The default date in the date picker,
+     * used for picker default position when first opened
+     *
+     * @param selectedDate - The selected date that is used to compare whether current picker position
+     * has the same date as the selected date. When it's same, the save button will be disabled.
+     */
     fun show(
         minDate: Calendar,
         maxDate: Calendar,
-        selectedDate: Calendar,
+        defaultDate: Calendar,
+        selectedDate: Calendar?,
         listener: Listener,
     ) {
         val context = weakFragment.get()?.context ?: return
@@ -51,7 +60,7 @@ class SchedulePicker(fragment: Fragment) {
             context = context,
             minDate = minDate,
             maxDate = maxDate,
-            defaultDate = selectedDate,
+            defaultDate = defaultDate,
             type = DateTimePickerUnify.TYPE_DATETIMEPICKER,
         ).apply {
             setInfoVisible(true)
@@ -75,10 +84,19 @@ class SchedulePicker(fragment: Fragment) {
                 if (!mState.isLoading) dismiss()
             }
 
+            val onDateChanged = {
+                datePickerButton.isEnabled = selectedDate?.time != getDate().time
+            }
+            datePickerChangeListener = onDateChanged
+            hourPickerChangeListener = onDateChanged
+            minutePickerChangeListener = onDateChanged
+
             setShowListener {
                 datePickerButton.text = context.getString(
                     R.string.play_label_save
                 )
+
+                onDateChangedListener
 
                 datePickerButton.setOnClickListener {
                     listener.onSaveSchedule(this@SchedulePicker, getDate().time)
