@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Order Tracking -->
+    <string name="order_tracking_invoice_number_label">No. Invoice</string>
+    <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
+    <string name="order_tracking_detail_payment_label">Detail Pembayaran</string>
+    <string name="order_tracking_order_number_label">Order Number</string>
+    <string name="order_tracking_estimation_time"><![CDATA[%1s <font color=\"%2$s\">%23$s</font>]]></string>
+    <string name="order_detail_shipping_header_label">Detail Pengiriman</string>
+    <string name="order_detail_shipping_resto_label">Restoran</string>
+    <string name="order_detail_shipping_destination_label">Dikirim ke</string>
+</resources>
