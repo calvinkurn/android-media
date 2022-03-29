@@ -815,14 +815,17 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     fun `variant image clicked will post gallery data value`(){
         val imageUrl = "url1234"
         val productId = "2147818570"
+        val userId = "123"
         val mainImageTag = "some tag"
+        val type = ProductDetailGallery.Item.Type.Image
 
         decideSuccessValueHitGqlAggregator("2147818569", true)
 
         val defaultItem = ProductDetailGallery.Item(
             id = "",
             url = imageUrl,
-            tag = mainImageTag
+            tag = mainImageTag,
+            type = type
         )
 
         val optionIds = listOf("254079", "254080","254081", "254082" ,"254083")
@@ -833,12 +836,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
             ProductDetailGallery.Item(
                 id = optionId,
                 url = expectedUrl,
-                tag = tags.getOrNull(index)
+                tag = tags.getOrNull(index),
+                type = ProductDetailGallery.Item.Type.Image
             )
         }
         val selectedId = "254079"
 
-        viewModel.onVariantImageClicked(imageUrl, productId, mainImageTag)
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
 
         val data = viewModel.variantImagesData.value
 
@@ -851,17 +855,19 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     fun `variant image clicked fallback test with almost everything null`(){
         val imageUrl = "url1234"
         val productId = "2147818570"
+        val userId = "123"
         val mainImageTag = "some tag"
 
         val defaultItem = ProductDetailGallery.Item(
             id = "",
             url = imageUrl,
-            tag = mainImageTag
+            tag = mainImageTag,
+            type = ProductDetailGallery.Item.Type.Image
         )
         val items = emptyList<ProductDetailGallery.Item>()
         val selectedId = null
 
-        viewModel.onVariantImageClicked(imageUrl, productId, mainImageTag)
+        viewModel.onVariantImageClicked(imageUrl, productId, userId, mainImageTag)
 
         val data = viewModel.variantImagesData.value
 
