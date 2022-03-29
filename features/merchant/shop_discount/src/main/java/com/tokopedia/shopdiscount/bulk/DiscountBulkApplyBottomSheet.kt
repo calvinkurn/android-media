@@ -11,6 +11,8 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.BottomsheetDiscountBulkApplyBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -86,10 +88,20 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeCouponDetail()
+        viewModel.getSlashPriceBenefit()
     }
 
     private fun observeCouponDetail() {
+        viewModel.benefit.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
 
+                }
+                is Fail -> {
+
+                }
+            }
+        }
     }
 
 
