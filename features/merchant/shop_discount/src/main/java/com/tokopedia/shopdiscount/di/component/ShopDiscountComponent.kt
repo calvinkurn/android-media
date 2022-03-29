@@ -5,6 +5,8 @@ import com.tokopedia.shopdiscount.bulk.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
+import com.tokopedia.shopdiscount.manage.presentation.ProductManageActivity
+import com.tokopedia.shopdiscount.manage.presentation.ProductManageFragment
 import dagger.Component
 
 @ShopDiscountComponentScope
@@ -16,6 +18,7 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface ShopDiscountComponent {
-    //fun inject(activity : ProductManageActivity)
+    fun inject(activity : ProductManageActivity)
     fun inject(bottomSheet: DiscountBulkApplyBottomSheet)
+    fun inject(fragment: ProductManageFragment)
 }
