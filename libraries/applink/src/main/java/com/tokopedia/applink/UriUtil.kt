@@ -19,19 +19,17 @@ object UriUtil {
      * @return "tokopedia-android-internal://merchant/product/213/edit/
      */
     @JvmStatic
-    fun buildUri(uriPattern: String,
-                 vararg parameter: String?): String {
+    fun buildUri(
+        uriPattern: String,
+        vararg parameter: String?
+    ): String {
         var result = uriPattern
         if (parameter.isNotEmpty()) {
             val p = Pattern.compile("""\{(.*?)\}""")
             val m = p.matcher(uriPattern)
             var i = 0
             while (m.find()) {
-                result = try {
-                    result.replace(m.group(), parameter[i]!!)
-                } catch (e: Exception) {
-                    result.replace(m.group(), "")
-                }
+                result = result.replace(m.group(), parameter[i] ?: "")
                 i++
             }
         }
@@ -46,8 +44,10 @@ object UriUtil {
      * @return "tokopedia-android-internal://merchant/product/213/edit/
      */
     @JvmStatic
-    fun buildUri(uriPattern: String,
-                 map: Map<String, String>?): String {
+    fun buildUri(
+        uriPattern: String,
+        map: Map<String, String>?
+    ): String {
         var result = uriPattern
         if (map.isNullOrEmpty()) {
             return uriPattern
@@ -93,8 +93,14 @@ object UriUtil {
             var i = 0
             while (i < size) {
                 if (uriPattern.pathSegments[i].startsWith("{") &&
-                        uriPattern.pathSegments[i].endsWith("}")) {
-                    bundleOutput?.putString(uriPattern.pathSegments[i].substring(1, uriPattern.pathSegments[i].length - 1), uri.pathSegments[i])
+                    uriPattern.pathSegments[i].endsWith("}")
+                ) {
+                    bundleOutput?.putString(
+                        uriPattern.pathSegments[i].substring(
+                            1,
+                            uriPattern.pathSegments[i].length - 1
+                        ), uri.pathSegments[i]
+                    )
                 }
                 i++
             }
@@ -114,7 +120,11 @@ object UriUtil {
      */
     @JvmStatic
     @JvmOverloads
-    fun destructureUri(uriPatternString: String, uri: Uri, checkScheme: Boolean = true): List<String> {
+    fun destructureUri(
+        uriPatternString: String,
+        uri: Uri,
+        checkScheme: Boolean = true
+    ): List<String> {
         val result = matchWithPattern(uriPatternString, uri, checkScheme)
         return result ?: ArrayList()
     }
@@ -128,7 +138,11 @@ object UriUtil {
      * @return list of ids listOf (123, 345), if not match, will return null
      */
     @JvmOverloads
-    fun matchWithPattern(pattern: String, inputUri: Uri, checkScheme: Boolean = true): List<String>? {
+    fun matchWithPattern(
+        pattern: String,
+        inputUri: Uri,
+        checkScheme: Boolean = true
+    ): List<String>? {
         return try {
             val uriPattern = Uri.parse(pattern)
             val scheme = uriPattern.scheme
@@ -178,7 +192,10 @@ object UriUtil {
      * @param inputUri example: "shop/123/etalase/345"
      * @return map of ids mapOf ({id_1} to 123, {id_2} to 345), if not match, will return null
      */
-    fun matchPathsWithPatternToMap(patternPaths: List<String>, inputPaths: List<String>): Map<String, String>? {
+    fun matchPathsWithPatternToMap(
+        patternPaths: List<String>,
+        inputPaths: List<String>
+    ): Map<String, String>? {
         try {
             val resultMap: MutableMap<String, String> = mutableMapOf()
             val uriPatternSize = patternPaths.size
@@ -211,7 +228,10 @@ object UriUtil {
      * @param inputUri example: aff=123 b=345
      * @return map of ids mapOf ({aff_id} to 123, {b} to 345), if not match, will return null
      */
-    fun matchQueryWithPatternToMap(patternQuery: Map<String, String>, inputQueries: Map<String, String>): Map<String, String>? {
+    fun matchQueryWithPatternToMap(
+        patternQuery: Map<String, String>,
+        inputQueries: Map<String, String>
+    ): Map<String, String>? {
         return try {
             val resultMap: MutableMap<String, String> = mutableMapOf()
             for (pattern in patternQuery) {
@@ -229,7 +249,11 @@ object UriUtil {
         }
     }
 
-    fun destructureUriToMap(uriPatternString: String, uri: Uri, checkScheme: Boolean): MutableMap<String, Any> {
+    fun destructureUriToMap(
+        uriPatternString: String,
+        uri: Uri,
+        checkScheme: Boolean
+    ): MutableMap<String, Any> {
         val result: MutableMap<String, Any> = HashMap()
         try {
             val uriPattern = Uri.parse(uriPatternString) ?: return result
@@ -257,8 +281,10 @@ object UriUtil {
                 while (itr.hasNext()) {
                     val segmentName = itr.next().toString()
                     if (segmentName.startsWith("{") &&
-                            segmentName.endsWith("}")) {
-                        result[segmentName.substring(1, segmentName.length - 1)] = uri.pathSegments[i]
+                        segmentName.endsWith("}")
+                    ) {
+                        result[segmentName.substring(1, segmentName.length - 1)] =
+                            uri.pathSegments[i]
                     }
                     i++
                 }
@@ -276,8 +302,10 @@ object UriUtil {
      * @param queryParameters example: mapOf ("userId" to "222")
      * @return "tokopedia-android-internal://merchant/product/edit/?userId=222"
      */
-    fun buildUriAppendParam(uri: String,
-                            queryParameters: Map<String, String?>?): String {
+    fun buildUriAppendParam(
+        uri: String,
+        queryParameters: Map<String, String?>?
+    ): String {
         val stringBuilder = StringBuilder(uri)
         if (queryParameters != null && queryParameters.isNotEmpty()) {
             stringBuilder.append("?")
@@ -293,8 +321,10 @@ object UriUtil {
         return stringBuilder.toString()
     }
 
-    fun buildUriAppendParams(uri: String,
-                             queryParameters: Map<String, Any>?): String {
+    fun buildUriAppendParams(
+        uri: String,
+        queryParameters: Map<String, Any>?
+    ): String {
         val stringBuilder = StringBuilder(uri)
         if (queryParameters != null && queryParameters.isNotEmpty()) {
             stringBuilder.append("?")
@@ -331,7 +361,8 @@ object UriUtil {
                 val pairs = query.split(QUERY_PARAM_SEPRATOR)
                 for (pair in pairs) {
                     val idx = pair.indexOf("=")
-                    map[URLDecoder.decode(pair.substring(0, idx), ENCODING)] = URLDecoder.decode(pair.substring(idx + 1), ENCODING)
+                    map[URLDecoder.decode(pair.substring(0, idx), ENCODING)] =
+                        URLDecoder.decode(pair.substring(idx + 1), ENCODING)
                 }
             }
             return map
