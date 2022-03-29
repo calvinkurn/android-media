@@ -763,6 +763,7 @@ const val CART_REVAMP_V3_QUERY =
                         type
                         amount_str
                         amount
+                        currency_details_str
                       }
                       sp_ids
                       poml_auto_applied

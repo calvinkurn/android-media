@@ -153,6 +153,8 @@ import timber.log.Timber;
 
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
 /**
  * @author Irfan Khoirul on 24/04/18.
@@ -955,10 +957,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                                validateBBO(validateUsePromoRevampUiModel);
                                                updateTickerAnnouncementData(validateUsePromoRevampUiModel);
-                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
+                                               if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR") && !validateUsePromoRevampUiModel.getPromoUiModel().getGlobalSuccess()) {
                                                    String message = "";
                                                    if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                        message = validateUsePromoRevampUiModel.getMessage().get(0);
+                                                   } else {
+                                                       message = DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
                                                    }
                                                    getView().renderErrorCheckPromoShipmentData(message);
                                                    getView().resetPromoBenefit();
@@ -1273,7 +1277,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBO(validateUsePromoRevampUiModel);
-                                    if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getPromoUiModel().getGlobalSuccess();
+                                    if (isValidatePromoRevampSuccess) {
                                         getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
                                     } else {
                                         if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
@@ -1281,6 +1286,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
                                             PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoMessage(errMessage);
                                             getView().showToastError(errMessage);
+                                            getView().resetCourier(cartPosition);
+                                        } else {
+                                            getView().showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO);
                                             getView().resetCourier(cartPosition);
                                         }
                                     }
@@ -1372,12 +1380,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                     showErrorValidateUseIfAny(validateUsePromoRevampUiModel);
                                     validateBBO(validateUsePromoRevampUiModel);
-                                    if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
+                                    boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getPromoUiModel().getGlobalSuccess();
+                                    if (isValidatePromoRevampSuccess) {
                                         getView().renderPromoCheckoutFromCourierSuccess(validateUsePromoRevampUiModel, itemPosition, noToast);
                                     } else {
                                         if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                             String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
                                             getView().renderErrorCheckPromoShipmentData(errMessage);
+                                        } else {
+                                            getView().renderErrorCheckPromoShipmentData(DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO);
                                         }
                                     }
                                 }

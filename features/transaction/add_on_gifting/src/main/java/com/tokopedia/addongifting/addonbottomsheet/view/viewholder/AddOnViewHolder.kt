@@ -61,11 +61,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 labelAddOnDescription.gone()
             }
 
-            var addOnQuantityAndPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
-            if (!element.isTokoCabang && element.mainProductQuantity > 1) {
-                addOnQuantityAndPrice = "${element.addOnQty} x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()}"
-            }
-            labelAddOnQuantityAndPrice.text = addOnQuantityAndPrice
+            labelAddOnQuantityAndPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
             labelAddOnName.setOnClickListener(getCheckboxClickListener())
             labelAddOnDescription.setOnClickListener(getCheckboxClickListener())
             labelAddOnQuantityAndPrice.setOnClickListener(getCheckboxClickListener())

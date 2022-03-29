@@ -1978,6 +1978,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel()!= null) {
+                            // remove previous logistic promo code
+                            ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
                         ordersItem.getCodes().add(promoCode);
                         break;
                     }
@@ -2685,11 +2689,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void resetCourier(int position) {
-        shipmentAdapter.resetCourier(position);
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-        if (shipmentCartItemModel != null) {
-            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
-        }
+        resetCourier(shipmentCartItemModel);
     }
 
     @Override
