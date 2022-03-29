@@ -186,4 +186,78 @@ class HomePlayWidgetAnalyticListener(
                 )
         )
     }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        val finalChannelPositionInList = channelPositionInList + 1
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
+            event = Event.PROMO_CLICK,
+            eventCategory = "homepage-cmp",
+            eventAction = Event.CLICK,
+            eventLabel = "${item.partner.id} - " +
+                    "${item.channelId} - " +
+                    "$finalChannelPositionInList - " +
+                    "$mBusinessWidgetPosition - " +
+                    "$isAutoPlay - " +
+                    "${item.poolType} - " +
+                    item.recommendationType,
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = widgetId,
+                    name = "/ - p$finalChannelPositionInList - play sgc channel - ${item.title} - ${item.recommendationType}",
+                    creative = item.video.coverUrl,
+                    position = finalChannelPositionInList.toString()
+                )
+            )
+        )
+            .appendChannelId(item.channelId)
+            .appendUserId(userId)
+            .appendBusinessUnit("play")
+            .appendCurrentSite("tokopediamarketplace")
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        val finalChannelPositionInList = channelPositionInList + 1
+        val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
+        val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
+            event = Event.PROMO_VIEW,
+            eventCategory = "homepage-cmp",
+            eventAction = "impression on play sgc channel",
+            eventLabel = "${item.partner.id} - " +
+                    "${item.channelId} - " +
+                    "$finalChannelPositionInList - " +
+                    "$mBusinessWidgetPosition - " +
+                    "$isAutoPlay - " +
+                    "${item.poolType} - " +
+                    "$promoText - " +
+                    item.recommendationType,
+            promotions = listOf(
+                BaseTrackerConst.Promotion(
+                    id = widgetId,
+                    name = "/ - p$finalChannelPositionInList - play sgc channel - ${item.title} - ${item.recommendationType}",
+                    creative = item.video.coverUrl,
+                    position = finalChannelPositionInList.toString()
+                )
+            )
+        )
+            .appendUserId(userId)
+            .appendChannelId(item.channelId)
+            .appendBusinessUnit("play")
+            .appendCurrentSite("tokopediamarketplace")
+            .build()
+
+        if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
+    }
 }
