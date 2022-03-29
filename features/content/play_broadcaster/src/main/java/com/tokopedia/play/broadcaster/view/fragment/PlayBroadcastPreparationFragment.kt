@@ -377,7 +377,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                             toasterContainer,
                             event.error,
                             bottomMargin = resources.getDimensionPixelOffset(
-                                unifyR.dimen.spacing_lvl8
+                                unifyR.dimen.spacing_lvl3
                             )
                         )
                     }

@@ -1,10 +1,15 @@
 package com.tokopedia.play.broadcaster.setup.schedule.util
 
+import android.graphics.Color
+import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.marginBottom
 import androidx.fragment.app.Fragment
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.util.extension.globalVisibleRect
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.ref.WeakReference
 import java.util.*
@@ -87,11 +92,25 @@ class SchedulePicker(fragment: Fragment) {
                  *
                  * TODO("Use a different class for date & time picker")
                  */
-                dateTimePicker.addView(
-                    CoordinatorLayout(dateTimePicker.context).apply {
-                        id = toasterViewId
-                    }
-                )
+                if (dateTimePicker.findViewById<View>(toasterViewId) == null) {
+                    dateTimePicker.addView(
+                        CoordinatorLayout(dateTimePicker.context).apply {
+                            id = toasterViewId
+                            val lParams = FrameLayout.LayoutParams(
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                                FrameLayout.LayoutParams.MATCH_PARENT,
+                            )
+                            lParams.setMargins(
+                                0,
+                                0,
+                                0,
+                                datePickerButton.height
+                            )
+                            lParams.gravity = Gravity.BOTTOM
+                            layoutParams = lParams
+                        }
+                    )
+                }
 
                 invalidate()
             }
@@ -99,7 +118,7 @@ class SchedulePicker(fragment: Fragment) {
     }
 
     fun getToasterContainer(): View? {
-        return getDatePicker()?.dateTimePicker
+        return getDatePicker()?.dateTimePicker?.findViewById(toasterViewId)
     }
 
     private fun DateTimePickerUnify.invalidate() {
