@@ -50,6 +50,9 @@ class GetShopReviewListUseCase @Inject constructor(
                       thumbnailURL
                       fullsizeURL
                     }
+                    videoAttachments {
+                      videoUrl
+                    }
                     state {
                       isReportable 
                       isAutoReply
