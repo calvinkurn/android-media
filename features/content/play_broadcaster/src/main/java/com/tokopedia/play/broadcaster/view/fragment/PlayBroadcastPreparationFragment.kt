@@ -257,15 +257,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
                 }
 
-                if(viewModel.isCoverAvailable()) startCountDown()
-                else {
-                    val errorMessage = getString(R.string.play_bro_cover_empty_error)
-                    toaster.showError(
-                        err = MessageErrorException(errorMessage),
-                        customErrMessage = errorMessage,
-                    )
-                    showCoverForm(true)
-                }
+                validateAndStartLive()
             }
 
             icBroPreparationSwitchCamera.setOnClickListener {
@@ -273,6 +265,18 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                 parentViewModel.switchCamera()
             }
+        }
+    }
+
+    private fun validateAndStartLive() {
+        if(viewModel.isCoverAvailable()) startCountDown()
+        else {
+            val errorMessage = getString(R.string.play_bro_cover_empty_error)
+            toaster.showError(
+                err = MessageErrorException(errorMessage),
+                customErrMessage = errorMessage,
+            )
+            showCoverForm(true)
         }
     }
 
@@ -636,7 +640,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
                 setPrimaryCTAClickListener {
                     analytic.clickStartLiveBeforeScheduleTime()
-                    startCountDown()
+                    validateAndStartLive()
                     dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.play_broadcast_cancel_streaming_action))
