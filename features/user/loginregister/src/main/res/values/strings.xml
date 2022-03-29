@@ -2,11 +2,8 @@
     <string name="app_name">loginregister</string>
 
     <string name="register_now">Daftar sekarang dengan:</string>
-    <string name="profile_completion_title">Data Diri</string>
     <string name="error_login_fp_error">Verifikasi gagal, silakan coba lagi.</string>
-    <string name="title_add_name_empty"> </string>
     <string name="please_fill_phone_number">Harap isi Nomor Ponsel</string>
-    <string name="title_add_email">Tambah Email</string>
 
     <string name="error_register_webview">Terjadi kesalahan. Mohon coba kembali.</string>
     <string name="title_activity_register_2">Daftar dengan Email</string>
