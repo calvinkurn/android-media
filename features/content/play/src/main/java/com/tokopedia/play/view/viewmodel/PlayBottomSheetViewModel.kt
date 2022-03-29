@@ -48,7 +48,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>> = _observableUserReportSubmission
 
-    fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
+    fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction, sectionInfo: ProductSectionUiModel.Section) {
         _observableProductVariant.value = PlayResult.Loading(true)
 
         viewModelScope.launchCatchError(block = {
@@ -63,13 +63,14 @@ class PlayBottomSheetViewModel @Inject constructor(
                         action = action,
                         parentVariant = response.data,
                         mapOfSelectedVariants = mapOfSelectedVariants,
-                        listOfVariantCategory = categoryVariants.orEmpty()
+                        listOfVariantCategory = categoryVariants.orEmpty(),
+                        section = sectionInfo
                 )
             }
             _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
         }){
             _observableProductVariant.value = PlayResult.Failure(it) {
-                getProductVariant(product, action)
+                getProductVariant(product, action, sectionInfo)
             }
         }
     }

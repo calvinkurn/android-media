@@ -79,11 +79,12 @@ class PlayBottomSheetViewModelTest {
                 parentVariant = mockProductVariantResponse.data,
                 mapOfSelectedVariants = selectedVariants,
                 listOfVariantCategory = categoryVariants.orEmpty(),
-                stockWording = null
+                stockWording = null,
+                sectionUiModel = sectionMockData
         )
         val expectedResult = PlayResult.Success(expectedModel)
 
-        playBottomSheetViewModel.getProductVariant(product, action)
+        playBottomSheetViewModel.getProductVariant(product, action, sectionMockData)
 
         Assertions
                 .assertThat(playBottomSheetViewModel.observableProductVariant.getOrAwaitValue())

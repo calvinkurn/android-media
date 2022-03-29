@@ -23,6 +23,7 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -216,8 +217,8 @@ class VariantSheetViewComponent(
 
         btnAction.setOnClickListener {
             variantSheetUiModel?.product?.let { product ->
-                if (model.action == ProductAction.Buy) listener.onBuyClicked(this, product)
-                else listener.onAddToCartClicked(this, product)
+                if (model.action == ProductAction.Buy) listener.onBuyClicked(this, product, variantSheetUiModel?.section ?: ProductSectionUiModel.Section.Empty)
+                else listener.onAddToCartClicked(this, product, variantSheetUiModel?.section ?: ProductSectionUiModel.Section.Empty)
             }
         }
 
@@ -315,7 +316,7 @@ class VariantSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetViewComponent)
-        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
-        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product)
+        fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product, sectionUiModel: ProductSectionUiModel.Section)
+        fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product, sectionUiModel: ProductSectionUiModel.Section)
     }
 }
