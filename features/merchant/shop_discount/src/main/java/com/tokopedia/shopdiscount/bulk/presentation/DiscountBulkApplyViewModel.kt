@@ -38,6 +38,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 1
+    private var mode : DiscountBulkApplyBottomSheet.Mode = DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
 
     private val _benefit = MutableLiveData<Result<GetSlashPriceBenefitResponse>>()
     val benefit: LiveData<Result<GetSlashPriceBenefitResponse>>
@@ -55,15 +56,15 @@ class DiscountBulkApplyViewModel @Inject constructor(
         })
     }
 
-    fun validateInput(mode: DiscountBulkApplyBottomSheet.Mode, discountSettings: DiscountSettings) {
+    fun validateInput() {
         if (mode == DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS) {
-            val isValid = isValidDiscount(discountSettings)
+            val isValid = isValidDiscount(getCurrentSelection())
             _areInputValid.value = isValid
             return
         }
 
         if (mode == DiscountBulkApplyBottomSheet.Mode.HIDE_PERIOD_FIELDS) {
-            val isValid = isValidNonPeriodDiscount(discountSettings)
+            val isValid = isValidNonPeriodDiscount(getCurrentSelection())
             _areInputValid.value = isValid
             return
         }
@@ -156,6 +157,10 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
     fun onMaxPurchaseQuantityChanged(quantity: Int) {
         this.selectedMaxQuantity = quantity
+    }
+
+    fun setMode(mode: DiscountBulkApplyBottomSheet.Mode) {
+        this.mode = mode
     }
 
     fun setCurrentlySelectedStartDate(currentlySelectedStartDate: Date) {

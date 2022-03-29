@@ -66,7 +66,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupDependencyInjection()
-
     }
 
     private fun setupDependencyInjection() {
@@ -139,6 +138,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
 
     private fun setupView() {
+        viewModel.setMode(mode ?: return)
         setupChipsClickListener()
         setupDiscountAmountListener()
 
@@ -148,10 +148,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 val discountType = if (isChecked) DiscountType.PERCENTAGE else DiscountType.RUPIAH
                 viewModel.onDiscountTypeChanged(discountType)
             }
-            quantityEditor.setValueChangedListener { newValue, oldValue, isOver ->
+            quantityEditor.setValueChangedListener { newValue, _, _ ->
                 viewModel.onMaxPurchaseQuantityChanged(newValue)
-                val discountSettings = viewModel.getCurrentSelection()
-                viewModel.validateInput(mode ?: return@setValueChangedListener, discountSettings)
+                viewModel.validateInput()
             }
             btnApply.setOnClickListener {
                 val currentSelection = viewModel.getCurrentSelection()
@@ -177,11 +176,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                     tfuDiscountAmount.textInputLayout.editText?.text?.length.orZero()
                 )
 
-                val discountSettings = viewModel.getCurrentSelection()
-                viewModel.validateInput(
-                    mode ?: return@NumberThousandSeparatorTextWatcher,
-                    discountSettings
-                )
+                viewModel.validateInput()
             }
             binding?.tfuDiscountAmount?.textInputLayout?.editText?.addTextChangedListener(watcher)
         }
@@ -209,8 +204,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
 
-                val discountSettings = viewModel.getCurrentSelection()
-                viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
+                viewModel.validateInput()
             }
         }
 
@@ -230,8 +224,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
 
-                val discountSettings = viewModel.getCurrentSelection()
-                viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
+                viewModel.validateInput()
             }
         }
 
@@ -251,8 +244,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_SELECTED
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
 
-                val discountSettings = viewModel.getCurrentSelection()
-                viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
+                viewModel.validateInput()
             }
         }
 
@@ -272,8 +264,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_SELECTED
 
-                val discountSettings = viewModel.getCurrentSelection()
-                viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
+                viewModel.validateInput()
             }
         }
 

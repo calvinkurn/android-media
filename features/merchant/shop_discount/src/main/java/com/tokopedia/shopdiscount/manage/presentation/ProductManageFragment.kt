@@ -54,6 +54,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private fun displayBulkApplyBottomSheet() {
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
+        bottomSheet.setOnApplyClickListener { discountSettings ->
+
+        }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
