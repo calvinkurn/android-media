@@ -110,9 +110,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
             }
         }
 
-    private var nullableBinding by autoClearedNullable<FragmentCouponDetailBinding>()
-    private val binding: FragmentCouponDetailBinding
-        get() = requireNotNull(nullableBinding)
+    private var binding by autoClearedNullable<FragmentCouponDetailBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -158,9 +156,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        nullableBinding = FragmentCouponDetailBinding.inflate(inflater, container, false)
-        return binding.root
+    ): View? {
+        binding = FragmentCouponDetailBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -173,14 +171,14 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        with(binding) {
+        binding?.run {
             imgExpenseEstimationDescription.setOnClickListener { displayExpenseEstimationDescription() }
             imgCopyToClipboard.setOnClickListener {
-                val content = binding.tpgCouponCode.text.toString().trim()
+                val content = tpgCouponCode.text.toString().trim()
                 copyToClipboard(content)
             }
             btnDownload.setOnClickListener {
-                val couponStatus = binding.labelVoucherStatus.text.toString().trim()
+                val couponStatus = labelVoucherStatus.text.toString().trim()
                 tracker.sendDownloadCouponImageClickEvent(couponStatus)
                 downloadCoupon(
                     bannerImageUrl,
@@ -189,7 +187,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 )
             }
             tpgViewProducts.setOnClickListener {
-                val couponStatus = binding.labelVoucherStatus.text.toString().trim()
+                val couponStatus = labelVoucherStatus.text.toString().trim()
                 tracker.sendViewAllProductsClickEvent(couponStatus)
                 viewModel.getCoupon()?.run {
                     val maxProductLimit = viewModel.getMaxProductLimit()
@@ -244,7 +242,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun displayCouponDetail(coupon: CouponUiModel, maxProduct: Int) {
-        binding.header.headerView?.text = coupon.name
+        binding?.header?.headerView?.text = coupon.name
         displayCouponImage(coupon.imageSquare)
         displayCountdown(coupon.status, coupon.finishTime)
         displayCouponStatus(coupon)
@@ -264,7 +262,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun displayCouponImage(imageUrl: String) {
-        binding.imgCoupon.loadImageRounded(
+        binding?.imgCoupon?.loadImageRounded(
             url = imageUrl,
             resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
                 .toFloat()
@@ -273,7 +271,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun displayCountdown(couponStatus: Int, finishTime: String) {
         if (couponStatus == VoucherStatusConst.ONGOING) {
-            binding.groupCountdown.isVisible = couponStatus == VoucherStatusConst.ONGOING
+            binding?.groupCountdown?.isVisible = couponStatus == VoucherStatusConst.ONGOING
             startTimer(finishTime)
         }
     }
@@ -288,9 +286,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
     ) {
         val target =
             if (isPublic) getString(R.string.mvc_public) else getString(R.string.mvc_special)
-        binding.tpgCouponTarget.text = target
+        binding?.tpgCouponTarget?.text = target
 
-        binding.tpgCouponName.text = couponName
+        binding?.tpgCouponName?.text = couponName
         handleCouponCodeVisibility(couponCode, isPublic)
 
         val startDate = unformattedStartDate.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
@@ -302,8 +300,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
         val endHour = unformattedSEndDate.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
             .parseTo(DateTimeUtils.HOUR_FORMAT)
 
-        binding.startEndVoucher.setStartTime(StartEndVoucher.Model(startDate, startHour))
-        binding.startEndVoucher.setEndTime(StartEndVoucher.Model(endDate, endHour))
+        binding?.startEndVoucher?.setStartTime(StartEndVoucher.Model(startDate, startHour))
+        binding?.startEndVoucher?.setEndTime(StartEndVoucher.Model(endDate, endHour))
 
         val period = String.format(
             getString(R.string.placeholder_coupon_period),
@@ -313,12 +311,12 @@ class CouponDetailFragment : BaseDaggerFragment() {
             endHour
         )
 
-        binding.tpgCouponPeriod.text = period
+        binding?.tpgCouponPeriod?.text = period
     }
 
     private fun displayCouponSettingsSection(coupon: CouponUiModel) {
-        binding.tpgCouponType.text = coupon.typeFormatted
-        binding.tpgCouponQouta.text = coupon.quota.splitByThousand()
+        binding?.tpgCouponType?.text = coupon.typeFormatted
+        binding?.tpgCouponQouta?.text = coupon.quota.splitByThousand()
 
         val couponType =
             if (coupon.type == VoucherTypeConst.FREE_ONGKIR) CouponType.FREE_SHIPPING else CouponType.CASHBACK
@@ -326,7 +324,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
         val discountType =
             if (coupon.discountTypeFormatted == DISCOUNT_TYPE_NOMINAL) DiscountType.NOMINAL else DiscountType.PERCENTAGE
-        binding.tpgDiscountType.text = discountType.label
+        binding?.tpgDiscountType?.text = discountType.label
 
         handleDiscountType(couponType)
         handleDiscountAmount(
@@ -345,19 +343,19 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun handleDiscountType(couponType: CouponType) {
         if (couponType == CouponType.FREE_SHIPPING) {
-            binding.groupDiscountType.gone()
+            binding?.groupDiscountType?.gone()
         } else {
-            binding.groupDiscountType.visible()
+            binding?.groupDiscountType?.visible()
         }
     }
 
     private fun refreshProductsSection(productCount: Int, maxProduct: Int) {
         if (productCount > ZERO) {
-            binding.tpgProductCount.text =
+            binding?.tpgProductCount?.text =
                 String.format(getString(R.string.placeholder_registered_product), productCount, maxProduct)
         } else {
 
-            binding.tpgProductCount.text = getString(R.string.no_products)
+            binding?.tpgProductCount?.text = getString(R.string.no_products)
         }
     }
 
@@ -368,9 +366,9 @@ class CouponDetailFragment : BaseDaggerFragment() {
         discountPercentage: Int
     ) {
         if (discountAmount > ZERO) {
-            binding.groupDiscountAmount.visible()
+            binding?.groupDiscountAmount?.visible()
         } else {
-            binding.groupDiscountAmount.gone()
+            binding?.groupDiscountAmount?.gone()
         }
 
         val formattedDiscountAmount = when {
@@ -396,8 +394,8 @@ class CouponDetailFragment : BaseDaggerFragment() {
             CouponType.FREE_SHIPPING -> getString(R.string.discount_amount_free_shipping)
         }
 
-        binding.tpgDiscountAmountLabel.text = discountAmountLabel
-        binding.tpgDiscountAmount.text = formattedDiscountAmount
+        binding?.tpgDiscountAmountLabel?.text = discountAmountLabel
+        binding?.tpgDiscountAmount?.text = formattedDiscountAmount
     }
 
     private fun handleMaximumDiscount(
@@ -406,19 +404,19 @@ class CouponDetailFragment : BaseDaggerFragment() {
         maxDiscount: Int
     ) {
         if (couponType == CouponType.CASHBACK && discountType == DiscountType.PERCENTAGE) {
-            binding.groupMaxDiscount.visible()
-            binding.tpgMaxDiscount.text =
+            binding?.groupMaxDiscount?.visible()
+            binding?.tpgMaxDiscount?.text =
                 String.format(getString(R.string.placeholder_rupiah), maxDiscount.splitByThousand())
         } else {
-            binding.groupMaxDiscount.gone()
+            binding?.groupMaxDiscount?.gone()
         }
     }
 
     private fun handleEstimatedMaxExpense(estimatedMaxExpense: Long) {
         if (estimatedMaxExpense == ZERO) {
-            binding.tpgExpenseAmount.text = getString(R.string.hyphen)
+            binding?.tpgExpenseAmount?.text = getString(R.string.hyphen)
         } else {
-            binding.tpgExpenseAmount.text = String.format(
+            binding?.tpgExpenseAmount?.text = String.format(
                 getString(R.string.placeholder_rupiah),
                 estimatedMaxExpense.splitByThousand()
             )
@@ -431,24 +429,24 @@ class CouponDetailFragment : BaseDaggerFragment() {
     ) {
 
         if (couponType == CouponType.FREE_SHIPPING) {
-            binding.groupMinimumPurchaseType.gone()
+            binding?.groupMinimumPurchaseType?.gone()
         } else {
-            binding.groupMinimumPurchaseType.gone()
-            binding.tpgMinimumPurchaseType.text = minimumPurchaseType.label
+            binding?.groupMinimumPurchaseType?.gone()
+            binding?.tpgMinimumPurchaseType?.text = minimumPurchaseType.label
         }
 
     }
 
     private fun handleCouponCodeVisibility(couponCode: String, isPublic: Boolean) {
         if (isPublic) {
-            binding.imgCopyToClipboard.gone()
-            binding.groupCouponCode.gone()
+            binding?.imgCopyToClipboard?.gone()
+            binding?.groupCouponCode?.gone()
         } else {
-            binding.imgCopyToClipboard.visible()
-            binding.groupCouponCode.visible()
+            binding?.imgCopyToClipboard?.visible()
+            binding?.groupCouponCode?.visible()
         }
 
-        binding.tpgCouponCode.text = couponCode
+        binding?.tpgCouponCode?.text = couponCode
     }
 
     private fun handleMinimumPurchase(
@@ -457,7 +455,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
         minimumPurchase: Int
     ) {
         if (minimumPurchase > ZERO) {
-            binding.groupMinimumPurchase.visible()
+            binding?.groupMinimumPurchase?.visible()
             val text = when {
                 couponType == CouponType.FREE_SHIPPING -> String.format(
                     getString(R.string.placeholder_rupiah),
@@ -478,10 +476,10 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 else -> EMPTY_STRING
             }
 
-            binding.tpgMinimumPurchase.text = text
+            binding?.tpgMinimumPurchase?.text = text
 
         } else {
-            binding.groupMinimumPurchase.gone()
+            binding?.groupMinimumPurchase?.gone()
         }
 
     }
@@ -489,13 +487,13 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun displayCouponStatus(coupon: CouponUiModel) {
         when (coupon.status) {
             VoucherStatusConst.ONGOING -> {
-                binding.tpgLabelMaxExpense.text = getString(R.string.mvc_spending_so_far)
-                binding.card.visible()
-                binding.labelCountdown.visible()
-                binding.labelVoucherStatus.setLabel(getString(R.string.mvc_ongoing))
-                binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
-                binding.button.text = getString(R.string.mvc_share)
-                binding.button.setOnClickListener {
+                binding?.tpgLabelMaxExpense?.text = getString(R.string.mvc_spending_so_far)
+                binding?.card?.visible()
+                binding?.labelCountdown?.visible()
+                binding?.labelVoucherStatus?.setLabel(getString(R.string.mvc_ongoing))
+                binding?.labelVoucherStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+                binding?.button?.text = getString(R.string.mvc_share)
+                binding?.button?.setOnClickListener {
                     sharingComponentTracker.sendShareClickEvent(
                         ShareComponentConstant.ENTRY_POINT_DETAIL,
                         coupon.id.toString()
@@ -504,37 +502,37 @@ class CouponDetailFragment : BaseDaggerFragment() {
                 }
             }
             VoucherStatusConst.NOT_STARTED -> {
-                binding.labelCountdown.gone()
-                binding.labelVoucherStatus.setLabel(getString(R.string.mvc_future))
-                binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+                binding?.labelCountdown?.gone()
+                binding?.labelVoucherStatus?.setLabel(getString(R.string.mvc_future))
+                binding?.labelVoucherStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
             VoucherStatusConst.STOPPED -> {
-                binding.tpgCancelledAt.visible()
+                binding?.tpgCancelledAt?.visible()
                 val cancelledDate = coupon.updatedTime.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
                     .parseTo(DateTimeUtils.DATE_FORMAT)
                 val formattedCancelledDate =
                     String.format(getString(R.string.mvc_placeholder_cancelled_at), cancelledDate)
                         .parseAsHtml()
-                binding.tpgCancelledAt.text = formattedCancelledDate
+                binding?.tpgCancelledAt?.text = formattedCancelledDate
 
-                binding.labelCountdown.gone()
-                binding.labelVoucherStatus.setLabel(getString(R.string.mvc_stopped))
-                binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
+                binding?.labelCountdown?.gone()
+                binding?.labelVoucherStatus?.setLabel(getString(R.string.mvc_stopped))
+                binding?.labelVoucherStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_RED)
 
             }
             VoucherStatusConst.DELETED -> {
-                binding.labelCountdown.gone()
-                binding.labelVoucherStatus.setLabel(getString(R.string.mvc_deleted))
-                binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+                binding?.labelCountdown?.gone()
+                binding?.labelVoucherStatus?.setLabel(getString(R.string.mvc_deleted))
+                binding?.labelVoucherStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
             }
             VoucherStatusConst.ENDED -> {
-                binding.card.visible()
-                binding.tpgLabelMaxExpense.text = getString(R.string.mvc_total_expense)
-                binding.labelCountdown.gone()
-                binding.labelVoucherStatus.setLabel(getString(R.string.mvc_ended))
-                binding.labelVoucherStatus.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
-                binding.button.text = getString(R.string.mvc_duplicate)
-                binding.button.setOnClickListener {
+                binding?.card?.visible()
+                binding?.tpgLabelMaxExpense?.text = getString(R.string.mvc_total_expense)
+                binding?.labelCountdown?.gone()
+                binding?.labelVoucherStatus?.setLabel(getString(R.string.mvc_ended))
+                binding?.labelVoucherStatus?.setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+                binding?.button?.text = getString(R.string.mvc_duplicate)
+                binding?.button?.setOnClickListener {
                     tracker.sendDuplicateCouponClickEvent()
                     val couponId = viewModel.getCoupon()?.id.orZero().toLong()
                     DuplicateCouponActivity.start(requireActivity(), couponId)
@@ -546,11 +544,11 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun startTimer(unformattedEndDate: String) {
-        binding.labelCountdown.visible()
+        binding?.labelCountdown?.visible()
         val endDate = unformattedEndDate.toDate(DateTimeUtils.TIME_STAMP_FORMAT)
         timer = Timer(endDate)
         timer?.setOnTickListener { remainingTime ->
-            binding.labelCountdown.text = remainingTime
+            binding?.labelCountdown?.text = remainingTime
         }
         timer?.startCountdown()
     }
@@ -559,29 +557,29 @@ class CouponDetailFragment : BaseDaggerFragment() {
         if (viewModel.isOngoingCoupon(coupon.status)) {
 
             val progressBarValue = (coupon.confirmedQuota / coupon.quota) * PERCENT
-            binding.progressBarQuotaUsage.setValue(progressBarValue, true)
-            binding.progressBarQuotaUsage.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
+            binding?.progressBarQuotaUsage?.setValue(progressBarValue, true)
+            binding?.progressBarQuotaUsage?.progressBarHeight = requireActivity().pxToDp(PROGRESS_BAR_HEIGHT).toInt()
 
-            binding.progressBarQuotaUsage.visible()
-            binding.tpgTickerUsage.visible()
-            binding.tpgTickerUsage.text = String.format(
+            binding?.progressBarQuotaUsage?.visible()
+            binding?.tpgTickerUsage?.visible()
+            binding?.tpgTickerUsage?.text = String.format(
                 getString(R.string.placeholder_quota_usage),
                 coupon.bookedQuota.toString()
             ).parseAsHtml()
             anchorQuotaCounterToQuotaProgressBar()
         } else {
-            binding.progressBarQuotaUsage.gone()
-            binding.tpgTickerUsage.gone()
+            binding?.progressBarQuotaUsage?.gone()
+            binding?.tpgTickerUsage?.gone()
             anchorQuotaCounterToQuotaLabel()
         }
 
-        binding.tpgUsedQuota.text = coupon.confirmedQuota.toString()
-        binding.tpgTotalQuota.text = String.format(
+        binding?.tpgUsedQuota?.text = coupon.confirmedQuota.toString()
+        binding?.tpgTotalQuota?.text = String.format(
             getString(R.string.mvc_detail_total_quota).toBlankOrString(),
             coupon.quota.toString()
         )
 
-        binding.tpgTickerUsage.setOnClickListener { displayExpenseEstimationDescription() }
+        binding?.tpgTickerUsage?.setOnClickListener { displayExpenseEstimationDescription() }
     }
 
     private fun displayExpenseEstimationDescription() {
@@ -591,21 +589,21 @@ class CouponDetailFragment : BaseDaggerFragment() {
     }
 
     private fun hideLoading() {
-        binding.loader.gone()
+        binding?.loader?.gone()
     }
 
     private fun showContent() {
-        binding.content.visible()
+        binding?.content?.visible()
     }
 
     private fun hideContent() {
-        binding.card.gone()
-        binding.content.gone()
+        binding?.card?.gone()
+        binding?.content?.gone()
     }
 
     private fun showError() {
         Toaster.build(
-            binding.root,
+            binding?.root ?: return,
             getString(R.string.error_message_failed_get_coupon_detail),
             Snackbar.LENGTH_SHORT,
             Toaster.TYPE_ERROR
@@ -615,7 +613,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun copyToClipboard(content: String) {
         ClipboardHandler().copyToClipboard(requireActivity(), content)
         Toaster.build(
-            binding.root,
+            binding?.root ?: return,
             getString(R.string.coupon_code_copied_to_clipboard)
         ).show()
     }
@@ -647,7 +645,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
             override fun onPermissionDenied(permissionText: String) {
                 permissionCheckerHelper.onPermissionDenied(requireActivity(), permissionText)
                 Toaster.build(
-                    view = binding.root,
+                    view = binding?.root ?: return,
                     text = getString(R.string.mvc_storage_permission_enabled_needed),
                     duration = Toast.LENGTH_LONG
                 ).show()
@@ -746,7 +744,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
     private fun longToaster(text: String, toasterType: Int) {
         if (text.isEmpty()) return
         Toaster.build(
-            binding.root,
+            binding?.root ?: return,
             text,
             Toaster.LENGTH_LONG,
             toasterType,
@@ -793,7 +791,7 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun showError(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(requireActivity(), throwable)
-        Toaster.build(binding.root, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+        Toaster.build(binding?.root ?: return, errorMessage, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun handleShareOptionSelection(
@@ -839,37 +837,37 @@ class CouponDetailFragment : BaseDaggerFragment() {
 
     private fun anchorQuotaCounterToQuotaLabel() {
         val set = ConstraintSet()
-        set.clone(binding.layout)
+        set.clone(binding?.layout)
         set.connect(
-            binding.tpgUsedQuota.id,
+            binding?.tpgUsedQuota?.id?: return,
             ConstraintSet.TOP,
-            binding.typographyQuota.id,
+            binding?.typographyQuota?.id?: return,
             ConstraintSet.TOP
         )
         set.connect(
-            binding.tpgUsedQuota.id,
+            binding?.tpgUsedQuota?.id ?: return,
             ConstraintSet.BOTTOM,
-            binding.typographyQuota.id,
+            binding?.typographyQuota?.id?: return,
             ConstraintSet.BOTTOM
         )
-        set.applyTo(binding.layout)
+        set.applyTo(binding?.layout)
     }
 
     private fun anchorQuotaCounterToQuotaProgressBar() {
         val set = ConstraintSet()
-        set.clone(binding.layout)
+        set.clone(binding?.layout)
         set.connect(
-            binding.tpgUsedQuota.id,
+            binding?.tpgUsedQuota?.id ?: return,
             ConstraintSet.TOP,
-            binding.progressBarQuotaUsage.id,
+            binding?.progressBarQuotaUsage?.id ?: return,
             ConstraintSet.TOP
         )
         set.connect(
-            binding.tpgUsedQuota.id,
+            binding?.tpgUsedQuota?.id ?: return,
             ConstraintSet.BOTTOM,
-            binding.progressBarQuotaUsage.id,
+            binding?.progressBarQuotaUsage?.id ?: return,
             ConstraintSet.BOTTOM
         )
-        set.applyTo(binding.layout)
+        set.applyTo(binding?.layout)
     }
 }

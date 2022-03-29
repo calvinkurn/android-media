@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.action
 
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -65,3 +66,5 @@ data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : 
 data class OpenKebabAction (val height: Int): PlayViewerNewAction()
 object OpenUserReport: PlayViewerNewAction()
 data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
+
+data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): PlayViewerNewAction()

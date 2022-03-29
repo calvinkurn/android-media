@@ -1,6 +1,5 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
-import android.text.Spanned
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -39,19 +38,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvTitle.text = formattedTitle
         tvTitle.visibility = View.VISIBLE
         tvTitleExtra.visibility = View.GONE
-        if (!data.isBebasOngkirExtra) {
-            if (data.etaData.errorCode == 0 && data.etaData.textEta.isNotEmpty()) {
-                tvEta.visibility = View.VISIBLE
-                tvEta.text = data.etaData.textEta
-            } else if (data.etaData.errorCode == 0 && data.etaData.textEta.isEmpty()) {
-                tvEta.visibility = View.VISIBLE
-                tvEta.text = ESTIMASI_TIDAK_TERSEDIA
-            } else {
-                tvEta.visibility = View.GONE
-            }
-        } else {
-            tvEta.visibility = View.GONE
-        }
+        tvEta.visibility = View.GONE
 
         if (data.codData.isCodAvailable == 1) {
             lblCodAvailableEta.apply {
@@ -65,8 +52,12 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
         if (data.bottomSheetDescription.isEmpty()) tvInfo.visibility = View.GONE
 
-        imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
-        ImageHandler.LoadImage(imgLogo, data.imageUrl)
+        if (data.imageUrl.isNotEmpty()) {
+            imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)
+            ImageHandler.LoadImage(imgLogo, data.imageUrl)
+        } else {
+            imgLogo.visibility = View.GONE
+        }
 
         val fontColor = if (data.disabled) {
             ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)

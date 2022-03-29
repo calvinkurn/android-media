@@ -28,10 +28,7 @@ import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -52,6 +49,10 @@ import com.tokopedia.play_common.ui.leaderboard.PlayInteractiveLeaderboardViewCo
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -200,6 +201,13 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.showCouponSheet(variantSheetMaxHeight)
     }
 
+    override fun onReminderImpressed(
+        view: ProductSheetViewComponent,
+        section: ProductSectionUiModel.Section
+    ) {
+        playViewModel.sendUpcomingReminderImpression(section)
+    }
+
     /**
      * VariantSheet View Component Listener
      */
@@ -207,12 +215,12 @@ class PlayBottomSheetFragment @Inject constructor(
         closeVariantSheet()
     }
 
-    override fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product) {
-        shouldDoActionProduct(product = productModel, action = ProductAction.AddToCart, type = BottomInsetsType.VariantSheet)
+    override fun onAddToCartClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product, sectionUiModel: ProductSectionUiModel.Section) {
+        shouldDoActionProduct(product = productModel, action = ProductAction.AddToCart, type = BottomInsetsType.VariantSheet, sectionInfo = sectionUiModel)
     }
 
-    override fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product) {
-        shouldDoActionProduct(product = productModel, action = ProductAction.Buy, type = BottomInsetsType.VariantSheet)
+    override fun onBuyClicked(view: VariantSheetViewComponent, productModel: PlayProductUiModel.Product, sectionUiModel: ProductSectionUiModel.Section) {
+        shouldDoActionProduct(product = productModel, action = ProductAction.Buy, type = BottomInsetsType.VariantSheet, sectionInfo = sectionUiModel)
     }
 
     /**
@@ -269,6 +277,7 @@ class PlayBottomSheetFragment @Inject constructor(
         observeBuyEvent()
 
         observeUiState()
+        observeUiEvent()
     }
 
     private fun initAnalytic() {
@@ -285,16 +294,16 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun shouldCheckProductVariant(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         if (product.isVariantAvailable) {
-            openVariantSheet(product, action)
+            openVariantSheet(product, action, sectionInfo)
             analytic.clickActionProductWithVariant(product.id, action)
         } else {
             shouldDoActionProduct(product, sectionInfo,action,BottomInsetsType.ProductSheet)
         }
     }
 
-    private fun openVariantSheet(product: PlayProductUiModel.Product, action: ProductAction) {
+    private fun openVariantSheet(product: PlayProductUiModel.Product, action: ProductAction, sectionInfo: ProductSectionUiModel.Section) {
         playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
-        viewModel.getProductVariant(product, action)
+        viewModel.getProductVariant(product, action, sectionInfo)
     }
 
     private fun closeVariantSheet() {
@@ -312,7 +321,7 @@ class PlayBottomSheetFragment @Inject constructor(
         if (::loadingDialog.isInitialized) loadingDialog.dismiss()
     }
 
-    private fun shouldDoActionProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty, action: ProductAction, type: BottomInsetsType) {
+    private fun shouldDoActionProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction, type: BottomInsetsType) {
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, sectionInfo, action, type))
     }
 
@@ -543,8 +552,45 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
+    private fun observeUiEvent(){
+            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                playViewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is ShowInfoEvent -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = getTextFromUiString(event.message)
+                            )
+                        }
+                        is ShowErrorEvent -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = ErrorHandler.getErrorMessage(requireContext(), event.error)
+                            )
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun getTextFromUiString(uiString: UiString): String {
+        return when (uiString) {
+            is UiString.Text -> uiString.text
+            is UiString.Resource -> getString(uiString.resource)
+        }
+    }
+
     private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products, sectionInfo)
+    }
+
+    override fun onReminderClicked(
+        view: ProductSheetViewComponent,
+        productSectionUiModel: ProductSectionUiModel.Section
+    ) {
+        playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
     private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
