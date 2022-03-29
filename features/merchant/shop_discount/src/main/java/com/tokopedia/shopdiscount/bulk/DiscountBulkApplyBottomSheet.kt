@@ -21,7 +21,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         private const val BUNDLE_KEY_MODE = "mode"
 
         @JvmStatic
-        fun newInstance(mode: Mode): DiscountBulkApplyBottomSheet {
+        fun newInstance(mode: Mode = Mode.SHOW_ALL_FIELDS): DiscountBulkApplyBottomSheet {
             val args = Bundle()
             args.putSerializable(BUNDLE_KEY_MODE, mode)
 
@@ -75,7 +75,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
         binding = BottomsheetDiscountBulkApplyBinding.inflate(inflater, container, false)
-
         isKeyboardOverlap = false
         clearContentPadding = true
         setChild(binding?.root)

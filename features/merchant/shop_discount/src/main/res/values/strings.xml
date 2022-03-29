@@ -2,4 +2,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sd_bulk_manage">Atur Sekaligus</string>
+    <string name="sd_discount_period">Periode diskon</string>
+    <string name="sd_one_year_ahead">1 Tahun ke Depan</string>
+    <string name="sd_six_month_ahead">6 Bulan ke Depan</string>
+    <string name="sd_one_month_ahead">1 Bulan ke Depan</string>
+    <string name="sd_custom_selection">Pilih sendiri</string>
+    <string name="sd_start_date">Tanggal mulai</string>
+    <string name="sd_end_date">Tanggal berakhir</string>
+
+    <string name="sd_product_discount">Diskon produk</string>
+    <string name="sd_discount_amount">Harga diskon</string>
+    <string name="sd_max_purchase">Maks. pembelian</string>
+    <string name="sd_optional">(Opsional)</string>
+    <string name="sd_max_purchase_description">Atur batas maks. pembelian produk untuk pembeli.</string>
+    <string name="sd_apply">Terapkan</string>
+    <string name="sd_rupiah">Rp</string>
+    <string name="sd_percent">%</string>
 </resources>
