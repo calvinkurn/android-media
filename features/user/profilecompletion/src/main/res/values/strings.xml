@@ -3,6 +3,7 @@
     <!--ADD CHANGE NAME-->
     <string name="title_add_name">Masukkan \nNama Lengkap Anda</string>
     <string name="title_name_full">Nama Lengkap</string>
+    <string name="title_add_name_empty"> </string>
     <string name="title_change_name">Ubah Nama Lengkap</string>
     <string name="button_name_finish">Selesai</string>
     <string name="error_name_too_short">Nama lengkap terlalu pendek, minimum 3 karakter</string>
