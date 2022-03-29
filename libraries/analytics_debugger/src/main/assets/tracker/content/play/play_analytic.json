@@ -628,6 +628,86 @@
       "currentSite": "tokopediamarketplace",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "eventAction": "click - atc in varian page in ongoing section",
+      "event": "add_to_cart",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "items": [
+        {
+          "shop_id": ".*",
+          "quantity": "\\d+(.\\d+)?",
+          "category_id": ".*",
+          "item_id": "\\d+",
+          "price": "\\d+\\..*",
+          "shop_type": ".*",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "click - buy in varian page in ongoing section",
+      "event": "add_to_cart",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+",
+      "items": [
+        {
+          "shop_id": ".*",
+          "quantity": "\\d+(.\\d+)?",
+          "category_id": ".*",
+          "item_id": "\\d+",
+          "price": "\\d+\\..*",
+          "shop_type": ".*",
+          "item_name": ".*",
+          "shop_name": ".*",
+          "item_brand": ".*",
+          "item_variant": ".*",
+          "item_category": ".*"
+        }
+      ],
+      "sessionIris": ".*",
+      "currentSite": "tokopediamarketplace",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "event": "viewTopAdsIris",
+      "eventAction": "impression - remind me in upcoming section",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - remind me in upcoming section",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickTopAds",
+      "eventAction": "click - remove remind me in upcoming section",
+      "eventCategory": "groupchat room",
+      "eventLabel": "\\d+ - \\d+ - \\d+",
+      "businessUnit": "play",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }

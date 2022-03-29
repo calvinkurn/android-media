@@ -8,4 +8,9 @@
     <color name="shc_static_r500_dms">#EF144A</color>
     <color name="shc_static_g100_dms">#EBFFEF</color>
     <color name="shc_static_g400_dms">#4FD15A</color>
+    <color name="shc_static_gr00_dms">#00CCCCCC</color>
+    <color name="shc_static_gr10_dms">#10CCCCCC</color>
+    <color name="shc_static_gr20_dms">#20CCCCCC</color>
+    <color name="shc_static_gr30_dms">#30CCCCCC</color>
+    <color name="shc_static_gr50_dms">#50CCCCCC</color>
 </resources>

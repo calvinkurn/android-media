@@ -3,9 +3,9 @@ package com.tokopedia.kyc_centralized.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.util.CipherProvider
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
@@ -14,6 +14,7 @@ import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -94,7 +95,8 @@ class KycUploadViewModel @Inject constructor(
                                 encryptionTimeFileKtp = encryptionTimeKtp,
                                 encryptionTimeFileFace = encryptionTimeFace,
                                 fileKtp = finalKtp,
-                                fileFace = finalFace
+                                fileFace = finalFace,
+                                message = FILE_PATH_KTP_EMPTY
                         )
                     }
                     finalFace.isEmpty() -> {
@@ -105,7 +107,8 @@ class KycUploadViewModel @Inject constructor(
                                 encryptionTimeFileKtp = encryptionTimeKtp,
                                 encryptionTimeFileFace = encryptionTimeFace,
                                 fileKtp = finalKtp,
-                                fileFace = finalFace
+                                fileFace = finalFace,
+                                message = FILE_PATH_FACE_EMPTY
                         )
                     }
                     else -> {
@@ -113,7 +116,7 @@ class KycUploadViewModel @Inject constructor(
                         if (result.header.message.isNotEmpty() || result.header.errorCode.isNotEmpty()) {
 
                             // set with empty throwable message so it can trigger general error
-                            _kycResponse.postValue(Fail(Throwable()))
+                            _kycResponse.postValue(Fail(MessageErrorException(result.header.message[0])))
                             sendLoadTimeUploadLog(
                                     isSuccess = false,
                                     uploadTime = System.currentTimeMillis() - startTimeLog,
@@ -129,14 +132,26 @@ class KycUploadViewModel @Inject constructor(
                             )
                         } else {
                             _kycResponse.postValue(Success(result.data))
-                            sendLoadTimeUploadLog(
-                                    isSuccess = result.data.isSuccessRegister,
+                            if (result.data.isSuccessRegister) {
+                                sendLoadTimeUploadLog(
+                                    isSuccess = true,
                                     uploadTime = System.currentTimeMillis() - startTimeLog,
                                     encryptionTimeFileKtp = encryptionTimeKtp,
                                     encryptionTimeFileFace = encryptionTimeFace,
                                     fileKtp = finalKtp,
                                     fileFace = finalFace
-                            )
+                                )
+                            } else {
+                                sendLoadTimeUploadLog(
+                                    isSuccess = false,
+                                    uploadTime = System.currentTimeMillis() - startTimeLog,
+                                    encryptionTimeFileKtp = encryptionTimeKtp,
+                                    encryptionTimeFileFace = encryptionTimeFace,
+                                    fileKtp = finalKtp,
+                                    fileFace = finalFace,
+                                    message = result.data.listMessage.toString()
+                                )
+                            }
                         }
                     }
                 }
@@ -147,7 +162,8 @@ class KycUploadViewModel @Inject constructor(
                 isSuccess = false,
                 uploadTime = System.currentTimeMillis() - startTimeLog,
                 encryptionTimeFileKtp = encryptionTimeKtp,
-                encryptionTimeFileFace = encryptionTimeFace
+                encryptionTimeFileFace = encryptionTimeFace,
+                message = it.message.toString()
             )
         }
     }
