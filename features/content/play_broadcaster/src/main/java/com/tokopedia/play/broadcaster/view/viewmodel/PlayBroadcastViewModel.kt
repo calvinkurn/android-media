@@ -925,12 +925,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             it.copy(state = NetworkState.Loading)
         }
         viewModelScope.launchCatchError(dispatcher.io, block = {
+            val isEdit = _schedule.value.schedule != BroadcastScheduleUiModel.NoSchedule
             _schedule.update {
                 it.copy(
                     schedule = repo.updateSchedule(channelId, selectedDate),
                     state = NetworkState.Success,
                 )
             }
+            _uiEvent.emit(
+                PlayBroadcastEvent.SetScheduleSuccess(isEdit = isEdit)
+            )
         }) { err ->
             _schedule.update {
                 it.copy(state = NetworkState.Failed)
@@ -950,6 +954,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     state = NetworkState.Success,
                 )
             }
+            _uiEvent.emit(PlayBroadcastEvent.DeleteScheduleSuccess)
         }) { err ->
             _schedule.update {
                 it.copy(state = NetworkState.Failed)

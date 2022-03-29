@@ -381,6 +381,19 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                             )
                         )
                     }
+                    is PlayBroadcastEvent.SetScheduleSuccess -> {
+                        toaster.showToaster(
+                            message = getString(
+                                if (!event.isEdit) R.string.play_broadcast_schedule_set_success
+                                else R.string.play_broadcast_schedule_edit_success
+                            )
+                        )
+                    }
+                    PlayBroadcastEvent.DeleteScheduleSuccess -> {
+                        toaster.showToaster(
+                            message = getString(R.string.play_broadcast_schedule_deleted)
+                        )
+                    }
                     else -> {}
                 }
             }
