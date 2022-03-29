@@ -16,7 +16,9 @@ class TokoFoodPurchasePromoViewHolder(private val viewBinding: ItemPurchasePromo
 
     override fun bind(element: TokoFoodPurchasePromoTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-
+            itemView.setOnClickListener {
+                listener.onPromoWidgetClicked()
+            }
         }
     }
 

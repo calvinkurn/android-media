@@ -158,17 +158,24 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
     fun loadData() {
         // Todo : Load from API, if success then map to UiModel, if error show global error
-        launch {
-            delay(3000) // Simulate hit API
-            val isSuccess = true
-            if (isSuccess) {
-                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
-                constructRecycleViewItem()
-                calculateTotal()
-            } else {
-                // Todo : Set throwable from network
-                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+        if (fragmentUiModel.value != null) {
+            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+            _fragmentUiModel.value = fragmentUiModel.value
+            _visitables.value = visitables.value
+            calculateTotal()
+        } else {
+            launch {
+                delay(3000) // Simulate hit API
+                val isSuccess = true
+                if (isSuccess) {
+                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
+                    constructRecycleViewItem()
+                    calculateTotal()
+                } else {
+                    // Todo : Set throwable from network
+                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+                }
             }
         }
     }
