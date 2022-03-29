@@ -32,12 +32,12 @@ class GameOptionView : ConstraintLayout {
         true
     )
 
-    private var mListener: Listener? = null
+    private var mListener: (() -> Unit)? = null
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         binding.root.setOnClickListener {
-            mListener?.onGameOptionClick()
+            mListener?.invoke()
         }
     }
 
@@ -52,11 +52,7 @@ class GameOptionView : ConstraintLayout {
         binding.tvGameName.text = gameType.name
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: () -> Unit) {
         mListener = listener
-    }
-
-    interface Listener {
-        fun onGameOptionClick()
     }
 }

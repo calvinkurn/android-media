@@ -1,25 +1,27 @@
 package com.tokopedia.play.broadcaster.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.viewholder.game.SelectGameViewHolder
+import com.tokopedia.play.broadcaster.view.adapter.delegate.GameAdapterDelegate
 
 /**
  * Created By : Jonathan Darwin on March 29, 2022
  */
 class SelectGameAdapter(
+    listener: SelectGameViewHolder.Listener,
+) : BaseDiffUtilAdapter<GameType>(){
 
-) : BaseDiffUtilAdapter<SelectGameAdapter.Model>(){
-
-    override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
-        if(oldItem is Model.Game && newItem is Model.Game)
-            return oldItem.type == newItem.type
-        return oldItem == newItem
+    init {
+        delegatesManager
+            .addDelegate(GameAdapterDelegate(listener))
     }
 
-    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
-        return oldItem == newItem
+    override fun areItemsTheSame(oldItem: GameType, newItem: GameType): Boolean {
+        return oldItem.name == newItem.name
     }
 
-    sealed class Model {
-        data class Game(val type: String): Model()
+    override fun areContentsTheSame(oldItem: GameType, newItem: GameType): Boolean {
+        return oldItem == newItem
     }
 }
