@@ -16,8 +16,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastPreparationBinding
+import com.tokopedia.play.broadcaster.setup.product.analytic.ProductChooserAnalyticManager
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
 import com.tokopedia.play.broadcaster.setup.schedule.util.SchedulePicker
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -25,8 +27,11 @@ import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
+import com.tokopedia.play.broadcaster.ui.model.sort.SortUiModel
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
+import com.tokopedia.play.broadcaster.view.analyticmanager.PreparationAnalyticManager
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayTimerLiveCountDown
 import com.tokopedia.play.broadcaster.view.custom.actionbar.ActionBarView
@@ -64,6 +69,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val viewModelFactory: ViewModelFactory,
     private val analytic: PlayBroadcastAnalytic,
+    private val analyticManager: PreparationAnalyticManager,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
     ActionBarView.Listener,
     PreparationMenuView.Listener,
@@ -88,6 +94,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
+    private val eventBus by viewLifecycleBound(
+        creator = { EventBus<Event>() },
+    )
+
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
     )
@@ -98,13 +108,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     private val schedulePickerListener = object : SchedulePicker.Listener {
         override fun onDeleteSchedule(wrapper: SchedulePicker) {
-            parentViewModel.submitAction(PlayBroadcastAction.DeleteSchedule)
+            eventBus.emit(Event.DeleteSchedule)
         }
 
         override fun onSaveSchedule(wrapper: SchedulePicker, date: Date) {
-            parentViewModel.submitAction(
-                PlayBroadcastAction.SetSchedule(date)
-            )
+            eventBus.emit(Event.SaveSchedule(date))
+        }
+
+        override fun onCancelSetupSchedule(wrapper: SchedulePicker) {
+            eventBus.emit(Event.CloseSetupSchedule)
         }
     }
 
@@ -288,6 +300,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
         observeUiState()
         observeUiEvent()
+        observeViewEvent()
     }
 
     private fun observeTitle() {
@@ -404,6 +417,32 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
+    private fun observeViewEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            eventBus.subscribe().collect { event ->
+                when (event) {
+                    Event.ClickSetSchedule -> {
+                        showScheduleBottomSheet()
+                    }
+                    is Event.SaveSchedule -> {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetSchedule(event.date)
+                        )
+                    }
+                    Event.DeleteSchedule -> {
+                        parentViewModel.submitAction(PlayBroadcastAction.DeleteSchedule)
+                    }
+                    else -> {}
+                }
+            }
+        }
+
+        analyticManager.observe(
+            viewLifecycleOwner.lifecycleScope,
+            eventBus,
+        )
+    }
+
     private fun renderProductMenu(
         prevState: List<ProductTagSectionUiModel>?,
         state: List<ProductTagSectionUiModel>
@@ -474,6 +513,29 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
+    private fun showScheduleBottomSheet() {
+        val schedule = parentViewModel.uiState.value.schedule
+        schedulePicker.show(
+            minDate = GregorianCalendar().apply {
+                time = schedule.config.minDate
+            },
+            maxDate = GregorianCalendar().apply {
+                time = schedule.config.maxDate
+            },
+            defaultDate = GregorianCalendar().apply {
+                time = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
+                    schedule.schedule.time
+                } else schedule.config.defaultDate
+            },
+            selectedDate = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
+                GregorianCalendar().apply {
+                    time = schedule.schedule.time
+                }
+            } else null,
+            listener = schedulePickerListener,
+        )
+    }
+
     /** Callback Action Bar */
     override fun onClickClosePreparation() {
         analytic.clickCloseOnPreparation()
@@ -503,26 +565,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     override fun onClickSetSchedule() {
-        val schedule = parentViewModel.uiState.value.schedule
-        schedulePicker.show(
-            minDate = GregorianCalendar().apply {
-                time = schedule.config.minDate
-            },
-            maxDate = GregorianCalendar().apply {
-                time = schedule.config.maxDate
-            },
-            defaultDate = GregorianCalendar().apply {
-                time = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
-                    schedule.schedule.time
-                } else schedule.config.defaultDate
-            },
-            selectedDate = if (schedule.schedule is BroadcastScheduleUiModel.Scheduled) {
-                GregorianCalendar().apply {
-                    time = schedule.schedule.time
-                }
-            } else null,
-            listener = schedulePickerListener,
-        )
+        eventBus.emit(Event.ClickSetSchedule)
     }
 
     /** Callback Title Form */
@@ -663,5 +706,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     companion object {
         private const val TIMER_TEXT_COUNTDOWN_INTERVAL = 1000L
+    }
+
+    sealed interface Event {
+
+        object ClickSetSchedule : Event
+        data class SaveSchedule(val date: Date) : Event
+        object DeleteSchedule : Event
+        object CloseSetupSchedule : Event
     }
 }

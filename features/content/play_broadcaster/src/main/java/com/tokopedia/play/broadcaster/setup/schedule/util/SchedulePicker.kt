@@ -84,6 +84,10 @@ class SchedulePicker(fragment: Fragment) {
                 if (!mState.isLoading) dismiss()
             }
 
+            setOnDismissListener {
+                listener.onCancelSetupSchedule(this@SchedulePicker)
+            }
+
             val onDateChanged = {
                 datePickerButton.isEnabled = selectedDate?.time != getDate().time
             }
@@ -171,5 +175,6 @@ class SchedulePicker(fragment: Fragment) {
     interface Listener {
         fun onDeleteSchedule(wrapper: SchedulePicker)
         fun onSaveSchedule(wrapper: SchedulePicker, date: Date)
+        fun onCancelSetupSchedule(wrapper: SchedulePicker)
     }
 }

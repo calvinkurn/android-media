@@ -25,6 +25,9 @@ class PlayBroScheduleAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface
 ): PlayBroScheduleAnalytic {
 
+    private val shopId: String
+        get() = userSession.shopId
+
     override fun viewDialogConfirmDeleteSchedule() {
         sendEvent(
             event = KEY_TRACK_VIEW_EVENT,
@@ -38,6 +41,41 @@ class PlayBroScheduleAnalyticImpl @Inject constructor(
             event = KEY_TRACK_CLICK_EVENT,
             eventAction = "$KEY_TRACK_CLICK mulai live streaming",
             eventLabel = "",
+        )
+    }
+
+    /**
+     * {"event":"clickPG","eventAction":"click - atur jadwal","eventCategory":"seller broadcast","eventLabel":"{shop_id}","businessUnit":"play","currentSite":"tokopediamarketplace","sessionIris":"{session_iris}","userId":"{user_id}"}
+     */
+    override fun clickSetSchedule() {
+        sendEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            eventAction = "$KEY_TRACK_CLICK - atur jadwal",
+            eventLabel = shopId,
+        )
+    }
+
+    override fun clickSaveSchedule() {
+        sendEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            eventAction = "$KEY_TRACK_CLICK save content scheduling",
+            eventLabel = shopId,
+        )
+    }
+
+    override fun clickDeleteSchedule() {
+        sendEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            eventAction = "$KEY_TRACK_CLICK - delete content scheduled",
+            eventLabel = shopId,
+        )
+    }
+
+    override fun clickCloseSetupSchedule() {
+        sendEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            eventAction = "$KEY_TRACK_CLICK - x content scheduling",
+            eventLabel = shopId,
         )
     }
 

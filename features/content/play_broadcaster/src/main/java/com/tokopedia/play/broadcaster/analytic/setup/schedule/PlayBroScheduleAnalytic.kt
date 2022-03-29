@@ -5,7 +5,21 @@ package com.tokopedia.play.broadcaster.analytic.setup.schedule
  */
 interface PlayBroScheduleAnalytic {
 
+    /**
+     * Old analytic
+     */
     fun viewDialogConfirmDeleteSchedule()
 
     fun clickStartLiveBeforeScheduleTime()
+
+    /**
+     * New Analytic
+     */
+    fun clickSetSchedule()
+
+    fun clickSaveSchedule()
+
+    fun clickDeleteSchedule()
+
+    fun clickCloseSetupSchedule()
 }
