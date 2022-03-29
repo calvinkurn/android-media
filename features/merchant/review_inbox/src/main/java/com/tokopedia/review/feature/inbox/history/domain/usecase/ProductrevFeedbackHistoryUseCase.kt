@@ -42,6 +42,9 @@ class ProductrevFeedbackHistoryUseCase @Inject constructor(graphqlRepository: Gr
                             fullSize
                             thumbnail
                           }
+                          video {
+                            url
+                          }
                           badRatingReasonFmt
                         }
                       }
