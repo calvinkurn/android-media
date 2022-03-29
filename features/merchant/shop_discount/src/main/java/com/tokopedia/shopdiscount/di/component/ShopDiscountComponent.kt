@@ -4,11 +4,10 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.shopdiscount.bulk.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
-import com.tokopedia.shopdiscount.di.scope.ShopComponentScope
-import com.tokopedia.shopdiscount.manage.presentation.ProductManageActivity
+import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
 import dagger.Component
 
-@ShopComponentScope
+@ShopDiscountComponentScope
 @Component(
     modules = [
         ShopDiscountModule::class,
