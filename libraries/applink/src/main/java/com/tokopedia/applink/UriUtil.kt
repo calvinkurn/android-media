@@ -27,7 +27,11 @@ object UriUtil {
             val m = p.matcher(uriPattern)
             var i = 0
             while (m.find()) {
-                result = result.replace(m.group(), parameter[i]!!)
+                result = try {
+                    result.replace(m.group(), parameter[i]!!)
+                } catch (e: Exception) {
+                    result.replace(m.group(), "")
+                }
                 i++
             }
         }
