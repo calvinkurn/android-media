@@ -1,8 +1,12 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -884,6 +888,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         }
     }
 
+    //TODO : will be delete
     private void showEventQR(ActionButton actionButton, Items item) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.scan_qr_code_layout, mainView, false);
         Dialog dialog = new Dialog(getContext());
@@ -987,8 +992,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
             pagerSnapHelper.attachToRecyclerView(rvVoucher);
         }
 
-        adapter.setOnCopiedListener(() -> {
-            Toaster.build(layoutIndicator, getString(R.string.deals_msg_copy), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
+        adapter.setOnCopiedListener( voucherCode -> {
+            ClipboardManager myClipboard = (ClipboardManager) requireContext().getSystemService(CLIPBOARD_SERVICE);
+            ClipData myClip = ClipData.newPlainText(KEY_TEXT, voucherCode);
+            myClipboard.setPrimaryClip(myClip);
+            Toaster.build(view, getString(R.string.deals_msg_copy), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show();
             return Unit.INSTANCE;
         });
 
@@ -1006,7 +1014,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 actionButton.getHeaderObject().getPowered_by(),
                 actionButton.getBody().getAppURL(),
                 voucherCode,
-                !actionButton.getHeaderObject().getStatusLabel().isEmpty()
+                actionButton.getHeaderObject().getStatusLabel()
         );
     }
 

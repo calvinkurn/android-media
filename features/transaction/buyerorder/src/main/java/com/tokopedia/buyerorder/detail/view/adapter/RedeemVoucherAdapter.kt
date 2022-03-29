@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.detail.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.databinding.LayoutScanQrCodeItemBinding
@@ -15,9 +16,9 @@ import com.tokopedia.media.loader.loadImage
 
 class RedeemVoucherAdapter( private val items:List<RedeemVoucherModel>): RecyclerView.Adapter<RedeemVoucherAdapter.ViewHolder>() {
 
-    private var onCopiedListener: (() -> Unit)? = null
+    private var onCopiedListener: ((String) -> Unit)? = null
 
-    fun setOnCopiedListener(onCopiedListener: () -> Unit){
+    fun setOnCopiedListener(onCopiedListener: (String) -> Unit){
         this.onCopiedListener = onCopiedListener
     }
 
@@ -40,12 +41,13 @@ class RedeemVoucherAdapter( private val items:List<RedeemVoucherModel>): Recycle
                 tvVoucherCode.text = data.voucherCode
                 tvPoweredBy.text = data.poweredBy
                 ivQrCode.loadImage(data.qrCodeUrl)
-                tvIsRedeem.showWithCondition(data.isRedeem)
-                //tvCopyCode.showWithCondition(data.isRedeem)
+                tvIsRedeem.showWithCondition(data.statusLabel.isNotEmpty())
+                tvCopyCode.showWithCondition(data.statusLabel.isEmpty())
 
                 tvCopyCode.setOnClickListener {
-                    onCopiedListener?.invoke()
+                    onCopiedListener?.invoke(data.voucherCode)
                     tvCopyCode.text = itemView.context.getString(R.string.deals_label_copied)
+                    tvCopyCode.setTextColor(ResourcesCompat.getColor(itemView.resources, com.tokopedia.unifyprinciples.R.color.Unify_N0_68, null))
                 }
             }
         }

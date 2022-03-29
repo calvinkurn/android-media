@@ -8,5 +8,5 @@ data class RedeemVoucherModel(
     val poweredBy: String,
     val qrCodeUrl: String,
     val voucherCode: String,
-    val isRedeem: Boolean
+    val statusLabel: String
 )
