@@ -122,4 +122,7 @@
     <!-- Summary Report -->
     <dimen name="play_bro_summary_metric_divider_height">1dp</dimen>
     <dimen name="play_bro_summary_divider_height">2dp</dimen>
+
+    <!-- Game -->
+    <dimen name="play_bro_knob_height">4dp</dimen>
 </resources>
