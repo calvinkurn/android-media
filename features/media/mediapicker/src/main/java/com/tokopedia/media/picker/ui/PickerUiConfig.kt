@@ -10,7 +10,12 @@ object PickerUiConfig {
 
     fun getStartPageIndex(data: Uri) {
         val value = data.getQueryParameter(MediaPicker.PARAM_LANDING_PAGE)?: "0"
-        startPageIndex = value.toInt()
+
+        startPageIndex = try {
+            value.toInt()
+        } catch (t: Throwable) {
+            0 // in case the user put non-number as param
+        }
     }
 
 }

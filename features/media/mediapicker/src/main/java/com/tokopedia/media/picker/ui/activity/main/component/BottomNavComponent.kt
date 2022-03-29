@@ -16,30 +16,36 @@ class BottomNavComponent(
 
     private val tabUnify = findViewById<TabsUnify>(R.id.tab_page)
 
-    private val tabCount by lazy {
-        tabUnify.tabLayout.tabCount
-    }
-
     fun setupView() {
         container().show()
+
+        /**
+         * because we set the first page is Camera, we have to set
+         * the tabLayout as [Color.TRANSPARENT] background
+         */
         transparentBackground()
 
-        if (tabCount.isMoreThanZero()) return
+        if (tabUnify.tabLayout.tabCount == 0) {
+            addTab(R.string.picker_title_camera)
+            addTab(R.string.picker_title_gallery)
+        }
 
-        addTab(R.string.picker_title_camera)
-        addTab(R.string.picker_title_gallery)
-
-        tabUnify.tabLayout.addOnTabSelected(::onTabSelectionChanged)
+        tabUnify.tabLayout.addOnTabSelected(
+            ::onTabSelectionChanged
+        )
     }
 
     fun onStartPositionChanged(startPosition: Int) {
         var position = startPosition
+        val tabCount = tabUnify.tabLayout.tabCount
 
+        // force the position to zero if the value more than tab count
         if (startPosition > tabCount) {
             position = 0
         }
 
         tabUnify.tabLayout.getTabAt(position)?.select()
+
         onTabSelectionChanged(position)
     }
 
