@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
+import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -34,10 +35,14 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
     private var currentlySelectedStartDate = Date()
     private var currentlySelectedEndDate = Date()
+    private var selectedDiscountType = DiscountType.RUPIAH
+    private var selectedDiscountAmount = 0
+    private var selectedMaxQuantity = 1
 
     private val _benefit = MutableLiveData<Result<GetSlashPriceBenefitResponse>>()
     val benefit: LiveData<Result<GetSlashPriceBenefitResponse>>
         get() = _benefit
+
 
     fun getSlashPriceBenefit() {
         launchCatchError(block = {
@@ -50,21 +55,21 @@ class DiscountBulkApplyViewModel @Inject constructor(
         })
     }
 
-    fun validateInput(mode : DiscountBulkApplyBottomSheet.Mode, discountSettings: DiscountSettings) {
+    fun validateInput(mode: DiscountBulkApplyBottomSheet.Mode, discountSettings: DiscountSettings) {
         if (mode == DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS) {
-            val isValid =  isValidDiscount(discountSettings)
+            val isValid = isValidDiscount(discountSettings)
             _areInputValid.value = isValid
             return
         }
 
         if (mode == DiscountBulkApplyBottomSheet.Mode.HIDE_PERIOD_FIELDS) {
-            val isValid =  isValidNonPeriodDiscount(discountSettings)
+            val isValid = isValidNonPeriodDiscount(discountSettings)
             _areInputValid.value = isValid
             return
         }
     }
 
-    private fun isValidDiscount(discountSettings: DiscountSettings) : Boolean {
+    private fun isValidDiscount(discountSettings: DiscountSettings): Boolean {
         if (discountSettings.startDate == null) {
             return false
         }
@@ -85,7 +90,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
         return true
     }
 
-    private fun isValidNonPeriodDiscount(discountSettings: DiscountSettings) : Boolean {
+    private fun isValidNonPeriodDiscount(discountSettings: DiscountSettings): Boolean {
         if (discountSettings.discountAmount == 0) {
             return false
         }
@@ -133,7 +138,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
         _endDate.value = endDate.time
     }
 
-    fun onCustomSelectionPeriodSelected(startDate : Date, endDate : Date) {
+    fun onCustomSelectionPeriodSelected(startDate: Date, endDate: Date) {
         this.currentlySelectedStartDate = startDate
         this.currentlySelectedEndDate = endDate
 
@@ -141,11 +146,35 @@ class DiscountBulkApplyViewModel @Inject constructor(
         _endDate.value = endDate
     }
 
-    fun setCurrentlySelectedStartDate(currentlySelectedStartDate : Date) {
+    fun onDiscountTypeChanged(discountType: DiscountType) {
+        this.selectedDiscountType = discountType
+    }
+
+    fun onDiscountAmountChanged(discountAmount: Int) {
+        this.selectedDiscountAmount = discountAmount
+    }
+
+    fun onMaxPurchaseQuantityChanged(quantity: Int) {
+        this.selectedMaxQuantity = quantity
+    }
+
+    fun setCurrentlySelectedStartDate(currentlySelectedStartDate: Date) {
         this.currentlySelectedStartDate = currentlySelectedStartDate
     }
 
-    fun setCurrentlySelectedEndDate(currentlySelectedEndDate : Date) {
+    fun setCurrentlySelectedEndDate(currentlySelectedEndDate: Date) {
         this.currentlySelectedEndDate = currentlySelectedEndDate
     }
+
+
+    fun getCurrentSelection(): DiscountSettings {
+        return DiscountSettings(
+            currentlySelectedStartDate,
+            currentlySelectedEndDate,
+            selectedDiscountType,
+            selectedDiscountAmount,
+            selectedMaxQuantity
+        )
+    }
+
 }

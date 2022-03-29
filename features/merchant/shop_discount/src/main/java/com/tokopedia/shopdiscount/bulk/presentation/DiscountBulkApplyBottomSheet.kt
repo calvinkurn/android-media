@@ -10,16 +10,20 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
+import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.databinding.BottomsheetDiscountBulkApplyBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
-import com.tokopedia.shopdiscount.utils.extension.digitsOnly
+import com.tokopedia.shopdiscount.utils.constant.LocaleConstant
 import com.tokopedia.shopdiscount.utils.extension.parseTo
+import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -57,7 +61,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(DiscountBulkApplyViewModel::class.java) }
 
-    private var onApplyClickListener: () -> Unit = {}
+    private var onApplyClickListener: (DiscountSettings) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,10 +140,52 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         setupChipsClickListener()
+        setupDiscountAmountListener()
+
         binding?.run {
             chipOneYearPeriod.chipType = ChipsUnify.TYPE_SELECTED
-            btnApply.setOnClickListener {  }
+            contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
+                val discountType = if (isChecked) DiscountType.PERCENTAGE else DiscountType.RUPIAH
+                viewModel.onDiscountTypeChanged(discountType)
+            }
+            quantityEditor.setValueChangedListener { newValue, oldValue, isOver ->
+                viewModel.onMaxPurchaseQuantityChanged(newValue)
+                val discountSettings = viewModel.getCurrentSelection()
+                viewModel.validateInput(mode ?: return@setValueChangedListener, discountSettings)
+            }
+            btnApply.setOnClickListener {
+                val currentSelection = viewModel.getCurrentSelection()
+                onApplyClickListener(currentSelection)
+                dismiss()
+            }
         }
+    }
+
+    private fun setupDiscountAmountListener() {
+        val pattern = "#,###,###"
+        val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
+        numberFormatter.applyPattern(pattern)
+
+        binding?.run {
+            val watcher = NumberThousandSeparatorTextWatcher(
+                tfuDiscountAmount.textInputLayout.editText ?: return, numberFormatter
+            ) { number, formattedNumber ->
+                viewModel.onDiscountAmountChanged(number)
+
+                tfuDiscountAmount.textInputLayout.editText?.setText(formattedNumber)
+                tfuDiscountAmount.textInputLayout.editText?.setSelection(
+                    tfuDiscountAmount.textInputLayout.editText?.text?.length.orZero()
+                )
+
+                val discountSettings = viewModel.getCurrentSelection()
+                viewModel.validateInput(
+                    mode ?: return@NumberThousandSeparatorTextWatcher,
+                    discountSettings
+                )
+            }
+            binding?.tfuDiscountAmount?.textInputLayout?.editText?.addTextChangedListener(watcher)
+        }
+
     }
 
     private fun setupChipsClickListener() {
@@ -163,7 +209,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
 
-                val discountSettings = getCurrentSelection()
+                val discountSettings = viewModel.getCurrentSelection()
                 viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
             }
         }
@@ -184,7 +230,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
 
-                val discountSettings = getCurrentSelection()
+                val discountSettings = viewModel.getCurrentSelection()
                 viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
             }
         }
@@ -205,7 +251,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_SELECTED
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
 
-                val discountSettings = getCurrentSelection()
+                val discountSettings = viewModel.getCurrentSelection()
                 viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
             }
         }
@@ -226,21 +272,14 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_SELECTED
 
-                val discountSettings = getCurrentSelection()
+                val discountSettings = viewModel.getCurrentSelection()
                 viewModel.validateInput(mode ?: return@setOnClickListener, discountSettings)
             }
         }
 
     }
 
-    private fun getCurrentSelection() : DiscountSettings {
-        val discountAmount = binding?.tfuDiscountAmount?.textInputLayout?.editText?.text.toString().trim().digitsOnly()
-        val maxPurchaseQuantity = binding?.quantityEditor?.getValue().orZero()
-        return DiscountSettings(Date(), Date(), discountAmount, maxPurchaseQuantity)
-    }
-
-
-    fun setOnApplyClickListener(onApplyClickListener: () -> Unit) {
+    fun setOnApplyClickListener(onApplyClickListener: (DiscountSettings) -> Unit) {
         this.onApplyClickListener = onApplyClickListener
     }
 }
