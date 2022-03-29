@@ -149,4 +149,58 @@ class DefaultPlayWidgetInListAnalyticListener (
     ) {
         analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition)
     }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoClicked(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetMediumView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoImpressed(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        position: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoClicked(view, item, position, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        position: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoImpressed(view, item, position, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onLabelPromoClicked(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoClicked(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
+
+    override fun onLabelPromoImpressed(
+        view: PlayWidgetJumboView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+        analytic.onLabelPromoImpressed(view, item, channelPositionInList, businessWidgetPosition, isAutoPlay)
+    }
 }

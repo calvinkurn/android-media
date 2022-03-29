@@ -96,6 +96,7 @@ interface PlayWidgetInListMediumAnalyticListener {
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
     ) {}
 
@@ -103,6 +104,7 @@ interface PlayWidgetInListMediumAnalyticListener {
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
     ) {}
 }

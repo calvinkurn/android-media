@@ -39,6 +39,7 @@ interface PlayWidgetInListJumboAnalyticListener {
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
     ) {}
 
@@ -46,6 +47,7 @@ interface PlayWidgetInListJumboAnalyticListener {
         view: PlayWidgetJumboView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
     ) {}
 }

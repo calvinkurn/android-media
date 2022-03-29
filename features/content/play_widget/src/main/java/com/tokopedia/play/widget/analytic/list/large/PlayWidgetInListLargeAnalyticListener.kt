@@ -55,6 +55,7 @@ interface PlayWidgetInListLargeAnalyticListener {
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
     ) {}
 
@@ -62,6 +63,7 @@ interface PlayWidgetInListLargeAnalyticListener {
         view: PlayWidgetLargeView,
         item: PlayWidgetChannelUiModel,
         channelPositionInList: Int,
+        businessWidgetPosition: Int,
         isAutoPlay: Boolean,
     ) {}
 }
