@@ -8,9 +8,11 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.data.mycoupon.MyCouponsRequest
+import com.tokopedia.discovery2.usecase.HideSectionUseCase
 import com.tokopedia.discovery2.usecase.MyCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,9 +33,14 @@ private const val CLIENT_ID = "disco"
 class MyCouponViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
+    private val _hideSection = SingleLiveEvent<String>()
+    val hideSectionLD: LiveData<String> = _hideSection
 
     @Inject
     lateinit var myCouponUseCase: MyCouponUseCase
+
+    @Inject
+    lateinit var hideSectionUseCase: HideSectionUseCase
 
 
     fun getComponentList(): LiveData<ArrayList<ComponentsItem>> {
@@ -59,12 +66,25 @@ class MyCouponViewModel(val application: Application, val components: Components
                         if (!myCouponRes.coupons.isNullOrEmpty()) {
                             componentList.value = mapCouponListToComponentList(myCouponRes.coupons!!,
                                     ComponentNames.MyCouponItem.componentName,components.id)
+                        } else {
+                            hideIfPresentInSection()
                         }
+                    } ?: kotlin.run {
+                        hideIfPresentInSection()
                     }
                 }, onError = {
-                    it.printStackTrace()
+                    hideIfPresentInSection()
                 })
             }
+        }
+    }
+
+    private fun hideIfPresentInSection() {
+        val response = hideSectionUseCase.checkForHideSectionHandling(components)
+        if(response.shouldHideSection){
+            if(response.sectionId.isNotEmpty())
+                _hideSection.value = response.sectionId
+            syncData.value = true
         }
     }
 
