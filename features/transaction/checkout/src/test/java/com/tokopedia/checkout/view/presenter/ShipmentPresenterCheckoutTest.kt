@@ -36,9 +36,11 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnBottomSheetResult
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.AddOnResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.ProductResult
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -782,6 +784,60 @@ class ShipmentPresenterCheckoutTest {
             addOnsBottomSheetModel = AddOnBottomSheetModel().apply {
                 products = productList
             }
+        }
+
+        // Then
+        verify {
+            view.updateAddOnsData(addOnsDataModel, 1)
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn order level data bottomsheet with AddOnData`() {
+        // Given
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartString = "239594-0-301643"
+                    addOnsOrderLevelModel = AddOnsDataModel()
+                }
+        )
+
+        val productResultList = arrayListOf<ProductResult>()
+        productResultList.add(ProductResult().apply {
+            productImageUrl = "https://images.tokopedia.net/img/android/product_icon.jpeg"
+            productName = "testProductName"
+        })
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+                AddOnResult().apply {
+                    addOnKey = "239594-0-301643-0"
+                    addOnBottomSheet = AddOnBottomSheetResult().apply {
+                        products = productResultList
+                    }
+                    addOnData = listOf(
+                            AddOnData()
+                    )
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        val productList = arrayListOf<AddOnProductItemModel>()
+        productList.add(AddOnProductItemModel().apply {
+            productImageUrl = "https://images.tokopedia.net/img/android/product_icon.jpeg"
+            productName = "testProductName"
+        })
+        val addOnsDataModel = AddOnsDataModel().apply {
+            addOnsBottomSheetModel = AddOnBottomSheetModel().apply {
+                products = productList
+            }
+            addOnsDataItemModelList = listOf(
+                    AddOnDataItemModel()
+            )
         }
 
         // Then
