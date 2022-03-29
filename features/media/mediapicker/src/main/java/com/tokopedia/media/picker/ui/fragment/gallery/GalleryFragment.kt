@@ -214,7 +214,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             if (!isSelected && media.isVideo()) {
                 // video validation
                 if (listener?.hasVideoLimitReached() == true) {
-                    listener?.onShowVideoLimitReachedToast()
+                    listener?.onShowVideoLimitReachedGalleryToast()
                     return false
                 }
 
@@ -251,7 +251,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             }
 
             if (!isSelected && listener?.hasMediaLimitReached() == true) {
-                listener?.onShowMediaLimitReachedToast()
+                listener?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
         } else if (!param.get().isMultipleSelectionType()) {
