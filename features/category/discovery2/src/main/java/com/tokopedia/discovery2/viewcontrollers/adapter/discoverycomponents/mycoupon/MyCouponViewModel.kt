@@ -58,6 +58,8 @@ class MyCouponViewModel(val application: Application, val components: Components
                     components.noOfPagesLoaded = 1
                     it.printStackTrace()
                 })
+            }else{
+                componentList.value = null
             }
         }
     }
@@ -73,6 +75,8 @@ class MyCouponViewModel(val application: Application, val components: Components
         getCouponsList()?.let {
             if (it.isNotEmpty()) {
                 componentList.value = it
+            }else{
+                componentList.value = null
             }
         }
     }
