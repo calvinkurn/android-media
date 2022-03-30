@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
@@ -1176,6 +1177,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
 //        refreshLayout.setOnRefreshListener(this)
+        refreshLayout.onProgressListener {
+            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun subscribeHome() {
@@ -1907,6 +1911,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData(isPageRefresh)
+        refreshLayout.stopRefreshing()
     }
 
     override fun onChooseAddressUpdated() {
