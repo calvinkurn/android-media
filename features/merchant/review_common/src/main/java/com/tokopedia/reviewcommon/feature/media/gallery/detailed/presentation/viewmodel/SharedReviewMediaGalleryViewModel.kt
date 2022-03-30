@@ -46,6 +46,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
+        private const val FLOW_TIMEOUT_MILLIS = 5000L
 
         private const val SAVED_STATE_PRODUCT_ID = "savedStateProductId"
         private const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
@@ -130,7 +131,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         }
     }.stateIn(
         scope = this,
-        started = SharingStarted.WhileSubscribed(5000L),
+        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
         initialValue = ActionMenuBottomSheetUiState.Hidden(emptyList(), "", "")
     )
 

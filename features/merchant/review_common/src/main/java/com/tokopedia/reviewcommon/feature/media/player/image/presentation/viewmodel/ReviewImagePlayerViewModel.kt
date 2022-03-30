@@ -19,6 +19,8 @@ class ReviewImagePlayerViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
+        private const val FLOW_TIMEOUT_MILLIS = 5000L
+
         private const val SAVED_STATE_IMAGE_URI = "savedStateImageUri"
         private const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
         private const val SAVED_STATE_TOTAL_MEDIA_COUNT = "savedStateTotalMediaCount"
@@ -37,7 +39,7 @@ class ReviewImagePlayerViewModel @Inject constructor(
         }
     }.stateIn(
         scope = this,
-        started = SharingStarted.WhileSubscribed(5000L),
+        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
         initialValue = ReviewImagePlayerUiState.Showing(_imageUri.value)
     )
 
@@ -61,9 +63,15 @@ class ReviewImagePlayerViewModel @Inject constructor(
 
     fun restoreSavedState(savedState: Bundle?) {
         savedState?.run {
-            _imageUri.value = savedState.getSavedState(SAVED_STATE_IMAGE_URI, _imageUri.value) ?: _imageUri.value
-            _showSeeMore.value = savedState.getSavedState(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value) ?: _showSeeMore.value
-            _totalMediaCount.value = savedState.getSavedState(SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value) ?: _totalMediaCount.value
+            _imageUri.value = savedState.getSavedState(
+                SAVED_STATE_IMAGE_URI, _imageUri.value
+            ) ?: _imageUri.value
+            _showSeeMore.value = savedState.getSavedState(
+                SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value
+            ) ?: _showSeeMore.value
+            _totalMediaCount.value = savedState.getSavedState(
+                SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value
+            ) ?: _totalMediaCount.value
         }
     }
 }
