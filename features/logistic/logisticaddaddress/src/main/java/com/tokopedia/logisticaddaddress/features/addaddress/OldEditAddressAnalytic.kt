@@ -4,7 +4,7 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object OldEditAddressAnalytics : BaseTrackerConst() {
-    private const val BUSINESS_UNIT_LOGISTIC = "logistics"
+    private const val BUSINESS_UNIT_LOGISTIC = "logistic"
     private const val EVENT_LOGISTIC_IRIS = "viewLogisticIris"
     private const val EVENT_CLICK_LOGISTIC = "clickLogistic"
     private const val CATEGORY_EDIT_ADDRESS_OLD = "edit address page old"
