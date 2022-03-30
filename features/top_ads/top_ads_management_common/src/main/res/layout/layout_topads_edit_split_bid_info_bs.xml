@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:text="@string/topads_edit_iklan_dasar_description"/>
+        android:text="@string/topads_common_iklan_dasar_description"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
@@ -17,13 +17,13 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:typographyType="heading_5"
-        android:text="@string/topads_edit_iklan_pencarian_title"/>
+        android:text="@string/topads_common_iklan_pencarian_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:text="@string/topads_edit_iklan_pencarian_description"/>
+        android:text="@string/topads_common_iklan_pencarian_description"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
@@ -31,17 +31,16 @@
         android:layout_marginTop="@dimen/unify_space_12"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:typographyType="heading_5"
-        android:text="@string/topads_edit_iklan_recommendasi_title"/>
+        android:text="@string/topads_common_iklan_recommendasi_title"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
-        android:text="@string/topads_edit_iklan_recommendasi_description"/>
+        android:text="@string/topads_common_iklan_recommendasi_description"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image"
-        android:src="@drawable/topads_create_tips2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
