@@ -678,8 +678,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             if (rechargePdpTokenListrikEmptyStateWidget.isVisible) {
                 rechargePdpTokenListrikEmptyStateWidget.hide()
                 rechargePdpTickerWidgetProductDesc.show()
-                renderGreenBox()
             }
+            renderGreenBox()
         }
     }
 
@@ -824,8 +824,11 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             userSession.userId,
             title
         )
-        fragmentManager?.let {
-            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
+        childFragmentManager?.let {
+            val moreInfoPDPBottomsheet = MoreInfoPDPBottomsheet.getInstance()
+            moreInfoPDPBottomsheet.setListInfo(listInfo)
+            moreInfoPDPBottomsheet.setTitleBottomSheet(title)
+            moreInfoPDPBottomsheet.show(it, "")
         }
     }
 
