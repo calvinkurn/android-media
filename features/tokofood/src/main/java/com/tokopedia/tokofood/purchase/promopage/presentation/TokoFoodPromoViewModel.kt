@@ -64,6 +64,7 @@ class TokoFoodPromoViewModel @Inject constructor(val dispatcher: CoroutineDispat
         val tmpData = mutableListOf<Visitable<*>>()
         // Todo : map data
         tmpData.add(TokoFoodPromoUiModelMapper.mapHeaderUiModel(false))
+        tmpData.add(TokoFoodPromoUiModelMapper.mapTickerUiModel())
         tmpData.add(TokoFoodPromoUiModelMapper.mapPromoItemUiModel(false))
         tmpData.add(TokoFoodPromoUiModelMapper.mapEligibilityUiModel())
         tmpData.add(TokoFoodPromoUiModelMapper.mapHeaderUiModel(true))

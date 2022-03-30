@@ -4,6 +4,12 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.*
 
 object TokoFoodPromoUiModelMapper {
 
+    fun mapTickerUiModel(): TokoFoodPromoTickerUiModel {
+        return TokoFoodPromoTickerUiModel(
+                message = "Kupon dengan keuntungan terbaik otomatis terpasang dan tidak bisa diubah."
+        )
+    }
+
     fun mapHeaderUiModel(isUnavailable: Boolean): TokoFoodPromoHeaderUiModel {
         return TokoFoodPromoHeaderUiModel(
                 title = "Kupon Otomatis",

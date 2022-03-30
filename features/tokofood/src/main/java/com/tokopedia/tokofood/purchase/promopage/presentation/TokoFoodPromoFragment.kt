@@ -57,7 +57,10 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = LayoutFragmentPurchasePromoBinding.inflate(inflater, container, false)
         val view = viewBinding?.root
-        (getRecyclerView(view)?.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        getRecyclerView(view)?.let {
+            it.addItemDecoration(TokoFoodPromoDecoration())
+            (it.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        }
         return view
     }
 

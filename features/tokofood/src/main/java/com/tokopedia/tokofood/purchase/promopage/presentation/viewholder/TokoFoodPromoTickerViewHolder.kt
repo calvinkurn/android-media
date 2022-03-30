@@ -15,7 +15,7 @@ class TokoFoodPromoTickerViewHolder(private val viewBinding: ItemTokofoodPromoTi
     }
 
     override fun bind(element: TokoFoodPromoTickerUiModel) {
-
+        viewBinding.tickerPromoTokofood.setHtmlDescription(element.message)
     }
 
 }
