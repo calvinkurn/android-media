@@ -1,7 +1,7 @@
 package com.tokopedia.shopdiscount.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.shopdiscount.bulk.DiscountBulkApplyBottomSheet
+import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope

@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.shopdiscount.bulk.DiscountBulkApplyBottomSheet
+import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -54,6 +54,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private fun displayBulkApplyBottomSheet() {
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
+        bottomSheet.setOnApplyClickListener { discountSettings ->
+
+        }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
