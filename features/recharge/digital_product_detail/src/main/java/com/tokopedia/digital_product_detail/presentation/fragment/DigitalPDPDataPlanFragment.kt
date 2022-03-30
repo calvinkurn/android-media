@@ -400,7 +400,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
-                    productDescBottomSheet.dismiss()
+                    if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     onLoadingBuyWidget(false)
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
@@ -1229,8 +1229,11 @@ class DigitalPDPDataPlanFragment :
             denom.slashPrice,
             userSession.userId
         )
-        fragmentManager?.let {
-            SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
+        childFragmentManager?.let {
+            val summaryTelcoBottomSheet = SummaryTelcoBottomSheet.getInstance()
+            summaryTelcoBottomSheet.setDenomData(denom)
+            summaryTelcoBottomSheet.setTitleBottomSheet(getString(R.string.summary_transaction))
+            summaryTelcoBottomSheet.show(it, "")
         }
     }
     //endregion
