@@ -4,32 +4,24 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
+import com.tokopedia.digital.digital_recommendation.presentation.widget.DigitalRecommendationWidget
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorator.ProductCardDefaultDecorator
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
-import com.tokopedia.thankyou_native.recommendationdigital.model.RechargeRecommendationDigiPersoItem
 import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
-import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.DigitalRecommendationAdapter
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
-import com.tokopedia.thankyou_native.recommendationdigital.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
+import kotlinx.android.synthetic.main.thank_pdp_digital_recommendation.view.*
 import javax.inject.Inject
 
 class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
@@ -49,18 +41,9 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
     @Inject
     lateinit var userSession: dagger.Lazy<UserSessionInterface>
 
-    var isObserverAttached = false
-
-    private val viewModel: DigitalRecommendationViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        val viewModelProvider = ViewModelProviders.of(fragment, viewModelFactory.get())
-        viewModelProvider[DigitalRecommendationViewModel::class.java]
-    }
-
-    private lateinit var adapter: DigitalRecommendationAdapter
-
     var listener: DigitalRecommendationViewListener? = null
 
-    fun getLayout() = R.layout.thank_pdp_recommendation
+    fun getLayout() = R.layout.thank_pdp_digital_recommendation
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         injectComponents()
@@ -98,71 +81,30 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         this.paymentId = thanksPageData.paymentID
         this.fragment = fragment
         this.trackingQueue = trackingQueue
-        startViewModelObserver()
-        viewModel.getDigitalRecommendationData(
-                userSession.get().phoneNumber,
-                pgCategoryIds,
-                pageType
-        )
-    }
 
-    private fun startViewModelObserver() {
-        if (!isObserverAttached)
-            viewModel.digitalRecommendationLiveData.observe(fragment,
-                    Observer {
-                        when (it) {
-                            is Success -> addResultToUI(it.data)
-                            is Fail -> hide()
-                        }
-                    }
-            )
-        isObserverAttached = true
-    }
+        with(view_digital_recommendation){
+            setViewModelFactory(viewModelFactory.get())
+            setLifecycleOwner(fragment)
+            setAdditionalData(DigitalRecommendationAdditionalTrackingData())
+            setPage(DigitalRecommendationPage.DIGITAL_GOODS)
+            listener = object : DigitalRecommendationWidget.Listener{
+                override fun onFetchFailed(throwable: Throwable) {
+                    hide()
+                }
 
-    private fun addResultToUI(result: RechargeRecommendationDigiPersoItem) {
-        if(result.recommendationItems.isNullOrEmpty()){
-            hide()
-        }else {
-            visible()
-            tvTitle.text = result.title
-            tvTitle.visible()
-            setupRecyclerView(result.recommendationItems, result.title)
-            adapter.notifyDataSetChanged()
+                override fun onEmptyResult() {
+                    hide()
+                }
+            }
+            build()
         }
     }
 
-    private fun setupRecyclerView(recommendationItemList: List<RecommendationItem>,
-                                  title: String?) {
-        listener = getRecommendationListener()
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
-                false)
-        adapter = DigitalRecommendationAdapter(recommendationItemList, listener!!)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(ProductCardDefaultDecorator())
-    }
-
-
-    private fun getRecommendationListener(): DigitalRecommendationViewListener {
-        return object : DigitalRecommendationViewListener {
-            override fun onDigitalProductClick(item: RecommendationItem, position: Int) {
-                onRecomProductClick(item, position)
-            }
-
-            override fun onDigitalProductImpression(item: RecommendationItem, position: Int) {
-                analytics.get().sendDigitalRecommendationItemDisplayed(trackingQueue, item,
-                        position, paymentId, thanksPageData.profileCode)
-            }
-        }
-
-    }
-
-
+    //TODO : will be delete
     private fun onRecomProductClick(item: RecommendationItem, position: Int) {
         RouteManager.route(context, item.appLink)
         analytics.get().sendDigitalRecommendationItemClick(item, position, paymentId, thanksPageData.profileCode)
     }
-
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
