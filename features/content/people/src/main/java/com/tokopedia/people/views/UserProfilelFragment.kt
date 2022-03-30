@@ -817,6 +817,7 @@ class UserProfileFragment : BaseDaggerFragment(),
                 showUniversalShareBottomSheet()
                 userProfileTracker?.clickShare(userId, self = profileUserId == userId)
                 userProfileTracker?.clickShareButton(userId, self = profileUserId == userId)
+                userProfileTracker?.viewShareChannel(userId, profileUserId == userId)
             }
 
             val imgMenu = addRightIcon(0)
@@ -1031,10 +1032,17 @@ class UserProfileFragment : BaseDaggerFragment(),
                             shareString
                         )
                         // send gtm trackers if you want to
-                        shareModel.channel?.let { it1 ->
-                            userProfileTracker?.clickShareChannel(userId, profileUserId == userId, it1)
+
+                        when(UniversalShareBottomSheet.getShareBottomSheetType()){
+                            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
+                                userProfileTracker?.clickChannelScreenshotShareBottomsheet(userId, profileUserId == userId)
+                            }
+                            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
+                                shareModel.channel?.let { it1 ->
+                                    userProfileTracker?.clickShareChannel(userId, profileUserId == userId, it1)
+                                }
+                            }
                         }
-                        userProfileTracker?.viewShareChannel(userId, profileUserId == userId)
                         universalShareBottomSheet?.dismiss()
                     }
                 }
@@ -1048,11 +1056,13 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     override fun screenShotTaken() {
         showUniversalShareBottomSheet()
+        userProfileTracker?.viewScreenshotShareBottomsheet(userId, profileUserId == userId)
         //add tracking for the screenshot bottom sheet
     }
 
     override fun permissionAction(action: String, label: String) {
         //add tracking for the permission dialog for screenshot sharing
+        userProfileTracker?.clickAccessMedia(userId, profileUserId == userId, label)
     }
 
     override fun onRequestPermissionsResult(
@@ -1068,9 +1078,13 @@ class UserProfileFragment : BaseDaggerFragment(),
 //        TODO gtm tracking
         //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
         //this will give you the bottomsheet type : if it's screenshot or general
-        UniversalShareBottomSheet.getShareBottomSheetType()
-        userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
+        when(UniversalShareBottomSheet.getShareBottomSheetType()){
+            UniversalShareBottomSheet.SCREENSHOT_SHARE_SHEET ->{
+                userSession?.userId?.let { UserProfileTracker().clickCloseScreenshotShareBottomsheet(it, profileUserId == it) }
+            }
+            UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
+                userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
+            }
+        }
     }
-
 }
-
