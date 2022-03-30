@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFoodItemName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        tools:text="Milo Macchiato"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFoodItemQtyPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_NN950"
+        tools:text="1 x Rp24.000"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvVariantAddon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        tools:itemCount="3"
+        tools:listitem="@layout/item_order_detail_variant_add_on"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFoodItemName"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFoodItemNote"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="body_3"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/Unify_NN600"
+        android:textStyle="italic"
+        app:typographyWeight="reguler"
+        tools:text="Pastiin pesanannya sesuai ya mas"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvFoodItemName"
+        app:layout_constraintTop_toBottomOf="@id/rvVariantAddon"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
