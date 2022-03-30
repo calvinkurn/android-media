@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class WishlistV2Response(
-	@SerializedName("data")
-	val data: Data = Data()
+		@SerializedName("data")
+		val data: Data = Data()
 ) {
 	data class Data(
-		@SerializedName("wishlist_v2")
-		val wishlistV2: WishlistV2 = WishlistV2()
+			@SerializedName("wishlist_v2")
+			val wishlistV2: WishlistV2 = WishlistV2()
 	) {
 		data class WishlistV2(
 				@SerializedName("error_message")

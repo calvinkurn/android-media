@@ -154,8 +154,8 @@ import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
-import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -220,10 +220,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private var wishLists: List<CartWishlistItemHolderData>? = null
     private var recentViewList: List<CartRecentViewItemHolderData>? = null
-    private var recommendationWishlistActionListener: WishListActionListener? = null
-    private var cartUnavailableWishlistActionListener: WishListActionListener? = null
-    private var lastSeenWishlistActionListener: WishListActionListener? = null
-    private var wishlistsWishlistActionListener: WishListActionListener? = null
+    private var recommendationWishlistActionListener: WishlistV2ActionListener? = null
+    private var cartUnavailableWishlistActionListener: WishlistV2ActionListener? = null
+    private var lastSeenWishlistActionListener: WishlistV2ActionListener? = null
+    private var wishlistsWishlistActionListener: WishlistV2ActionListener? = null
 
     private var hasTriedToLoadWishList: Boolean = false
     private var hasTriedToLoadRecentViewList: Boolean = false
@@ -898,9 +898,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val statusBarBackground = binding?.statusBarBg
 
             val args = arguments?.getString(CartFragment::class.java.simpleName)
-            if (args?.is
-
-                            mpty() == true) {
+            if (args?.isNotEmpty() == true) {
                 isToolbarWithBackButton = false
             }
 
@@ -1302,11 +1300,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.notifyRecentView(productId, false)
     }
 
-    private fun getRecommendationWishlistActionListener(): WishListActionListener {
+    private fun getRecommendationWishlistActionListener(): WishlistV2ActionListener {
         if (recommendationWishlistActionListener == null) {
-            recommendationWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+            recommendationWishlistActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1318,8 +1316,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1332,14 +1330,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
         }
-        return recommendationWishlistActionListener as WishListActionListener
+        return recommendationWishlistActionListener as WishlistV2ActionListener
     }
 
-    private fun getCartUnavailableWishlistActionListener(): WishListActionListener {
+    private fun getCartUnavailableWishlistActionListener(): WishlistV2ActionListener {
         if (cartUnavailableWishlistActionListener == null) {
-            cartUnavailableWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+            cartUnavailableWishlistActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1347,8 +1345,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartPageAnalytics.eventAddWishlistUnavailableSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1357,14 +1355,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
         }
-        return cartUnavailableWishlistActionListener as WishListActionListener
+        return cartUnavailableWishlistActionListener as WishlistV2ActionListener
     }
 
-    private fun getLastSeenWishlistActionListener(): WishListActionListener {
+    private fun getLastSeenWishlistActionListener(): WishlistV2ActionListener {
         if (lastSeenWishlistActionListener == null) {
-            lastSeenWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+            lastSeenWishlistActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1372,8 +1370,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartPageAnalytics.eventAddWishlistLastSeenSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1382,14 +1380,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
         }
-        return lastSeenWishlistActionListener as WishListActionListener
+        return lastSeenWishlistActionListener as WishlistV2ActionListener
     }
 
-    private fun getWishlistsWishlistActionListener(): WishListActionListener {
+    private fun getWishlistsWishlistActionListener(): WishlistV2ActionListener {
         if (wishlistsWishlistActionListener == null) {
-            wishlistsWishlistActionListener = object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorAddWishList(errorMessage, productId)
+            wishlistsWishlistActionListener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorAddWishList(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessAddWishlist(productId: String) {
@@ -1397,8 +1395,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     cartPageAnalytics.eventAddWishlistWishlistsSection(FLAG_IS_CART_EMPTY, productId)
                 }
 
-                override fun onErrorRemoveWishlist(errorMessage: String, productId: String) {
-                    this@CartFragment.onErrorRemoveWishlist(errorMessage, productId)
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
+                    this@CartFragment.onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, throwable), productId)
                 }
 
                 override fun onSuccessRemoveWishlist(productId: String) {
@@ -1407,7 +1405,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
         }
-        return wishlistsWishlistActionListener as WishListActionListener
+        return wishlistsWishlistActionListener as WishlistV2ActionListener
     }
 
     override fun onAddLastSeenToWishlist(productId: String) {
@@ -3096,7 +3094,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         shouldReloadRecentViewList = false
     }
 
-    override fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean) {
+    override fun renderWishlist(wishlists: List<GetWishlistV2Response.WishlistV2.Item>?, forceReload: Boolean) {
         var cartWishlistItemHolderDataList: MutableList<CartWishlistItemHolderData> = ArrayList()
         if (this.wishLists != null) {
             if (forceReload && wishlists != null) {

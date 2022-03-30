@@ -68,10 +68,11 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductV
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.wishlist.data.model.WishlistV2Params
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -89,14 +90,14 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
                                             private val compositeSubscription: CompositeSubscription,
-                                            private val addWishListUseCase: AddWishListUseCase,
+                                            private val addWishListUseCase: AddToWishlistV2UseCase,
                                             private val addCartToWishlistUseCase: AddCartToWishlistUseCase,
-                                            private val removeWishListUseCase: RemoveWishListUseCase,
+                                            private val removeWishListUseCase: DeleteWishlistV2UseCase,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                             private val getRecentViewUseCase: GetRecommendationUseCase,
-                                            private val getWishlistUseCase: GetWishlistUseCase,
+                                            private val getWishlistUseCase: GetWishlistV2UseCase,
                                             private val getRecommendationUseCase: GetRecommendationUseCase,
                                             private val addToCartUseCase: AddToCartUseCase,
                                             private val addToCartExternalUseCase: AddToCartExternalUseCase,
@@ -155,6 +156,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
         private const val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
+        private val SOURCE_CART = "cart"
     }
 
     override fun attachView(view: ICartListView) {
@@ -163,8 +165,8 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun detachView() {
         compositeSubscription.unsubscribe()
-        addWishListUseCase.unsubscribe()
-        removeWishListUseCase.unsubscribe()
+        addWishListUseCase.cancelJobs()
+        removeWishListUseCase.cancelJobs()
         boAffordabilityJob?.cancel()
         coroutineContext.cancelChildren()
         view = null
@@ -748,12 +750,21 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         return Triple(totalItemQty, pricePair, subtotalCashback)
     }
 
-    override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
+        addWishListUseCase.setParams(productId, userId)
+        addWishListUseCase.execute(
+                onSuccess = {
+                    wishListActionListener.onSuccessAddWishlist(productId)},
+                onError = {
+                    wishListActionListener.onErrorAddWishList(it, productId)
+                })
     }
 
-    override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
+        removeWishListUseCase.setParams(productId, userId)
+        removeWishListUseCase.execute(
+                onSuccess = { wishListActionListener.onSuccessRemoveWishlist(productId) },
+                onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
     }
 
     override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
@@ -1312,19 +1323,23 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     }
 
     override fun processGetWishlistData() {
-        val variables = HashMap<String, Any>()
+        val requestParams = WishlistV2Params().apply {
+            source = SOURCE_CART
+        }
 
-        variables[GetWishlistUseCase.PAGE] = GetWishlistUseCase.DEFAULT_PAGE
-        variables[GetWishlistUseCase.COUNT] = GetWishlistUseCase.DEFAULT_COUNT
-        variables[GetWishlistUseCase.FILTER] = mapOf(GetWishlistUseCase.SOURCE to GetWishlistUseCase.SOURCE_CART)
-
-        val requestParams = RequestParams.create()
-        requestParams.putAll(variables)
-
-        compositeSubscription.add(
-                getWishlistUseCase.createObservable(requestParams)
-                        .subscribe(GetWishlistSubscriber(view))
-        )
+        getWishlistUseCase.loadWishlistV2(requestParams, onSuccess = { result ->
+            view?.let {
+                if (result.wishlistV2.items.isNotEmpty()) {
+                    it.renderWishlist(result.wishlistV2.items, true)
+                }
+                it.setHasTriedToLoadWishList()
+                it.stopAllCartPerformanceTrace()
+            }
+        }, onError = {
+            it.printStackTrace()
+            view?.setHasTriedToLoadWishList()
+            view?.stopAllCartPerformanceTrace()
+        })
     }
 
     override fun processGetRecommendationData(page: Int, allProductIds: List<String>) {
