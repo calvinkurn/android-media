@@ -24,7 +24,6 @@
             android:background="@null"
             android:gravity="center"
             android:hint="@string/play_game_header_title_hint"
-            android:maxLength="40"
             android:inputType="textCapWords|textMultiLine"
             android:textColor="@color/Unify_Static_White"
             android:textColorHint="@color/play_bro_quiz_header_title_hint"
