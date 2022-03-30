@@ -31,7 +31,7 @@
         android:layout_height="0dp"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bg_sob_ramadhan_pattern"/>
+        tools:srcCompat="@drawable/bg_sob_ramadhan_pattern"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/sobViewPager"
