@@ -8,7 +8,7 @@ import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidation
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class ValidateUsernameUseCase @Inject constructor(private val repository: GraphqlRepository, dispatcher: CoroutineDispatchers)
+class ValidateUsernameUseCase @Inject constructor(private val repository: GraphqlRepository)
     : CoroutineUseCase<String, UsernameValidationResponse>(Dispatchers.IO) {
 
     private val usernameParam = "username"

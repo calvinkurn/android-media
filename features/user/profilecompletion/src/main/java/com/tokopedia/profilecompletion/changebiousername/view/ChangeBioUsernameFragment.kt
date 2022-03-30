@@ -317,10 +317,12 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
     private fun initViewsUsername(data: ProfileFeed) {
         setToolbarUsername(data)
-        binding?.stubField?.etUsername?.editText?.setText(data.username)
-        binding?.stubField?.etUsername?.setCounter(maxChar)
-        binding?.stubField?.etUsername?.icon1?.hide()
-        binding?.stubField?.etUsername?.visibility = View.VISIBLE
+        binding?.stubField?.etUsername?.run {
+            editText.setText(data.username)
+            setCounter(maxChar)
+            icon1.hide()
+            visibility = View.VISIBLE
+        }
         if (data.username.isNotBlank()) {
             binding?.stubField?.etUsername?.setMessage(getString(R.string.description_textfield_username))
         }
@@ -439,9 +441,11 @@ class ChangeBioUsernameFragment : BaseDaggerFragment() {
 
     private fun setInvalidInputUsername(error: String) {
         binding?.btnSubmit?.isEnabled = false
-        binding?.stubField?.etUsername?.icon1?.hide()
-        binding?.stubField?.etUsername?.setMessage(error)
-        binding?.stubField?.etUsername?.isInputError = true
+        binding?.stubField?.etUsername?.run {
+            icon1.hide()
+            setMessage(error)
+            isInputError = true
+        }
     }
 
     private fun setInvalidInputBio(error: String) {

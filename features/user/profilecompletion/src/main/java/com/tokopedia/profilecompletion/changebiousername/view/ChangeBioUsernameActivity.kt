@@ -49,8 +49,4 @@ class ChangeBioUsernameActivity : BaseSimpleActivity(), HasComponent<ProfileComp
             .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
             .build()
     }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 }

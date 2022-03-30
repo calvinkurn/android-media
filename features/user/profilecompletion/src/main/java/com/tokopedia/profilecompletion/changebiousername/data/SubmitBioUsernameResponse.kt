@@ -5,12 +5,10 @@ import com.google.gson.annotations.SerializedName
 
 data class SubmitBioUsernameResponse(
     @SerializedName("feedXProfileSubmit")
-    @Expose
     val response: SubmitBioUsername = SubmitBioUsername()
 )
 
 data class SubmitBioUsername(
     @SerializedName("status")
-    @Expose
     val status: Boolean = false
 )
