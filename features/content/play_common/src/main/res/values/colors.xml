@@ -37,4 +37,15 @@
     <color name="play_dms_discount_badge">#FFEAEF</color>
     <color name="play_dms_product_tag_stock_bg">#B331353B</color>
     <color name="play_dms_product_tag_empty_stock_bg">#6631353B</color>
+
+    <!-- Game -->
+    <color name="play_bro_quiz_header_title_hint">#80ffffff</color>
+
+    <color name="play_bro_taptap_icon_color">#F36819</color>
+    <color name="play_bro_taptap_header_gradient_start">#E02954</color>
+    <color name="play_bro_taptap_header_gradient_end">#F36819</color>
+
+    <color name="play_bro_quiz_icon_color">#9342ED</color>
+    <color name="play_bro_quiz_header_gradient_start">#9B40DE</color>
+    <color name="play_bro_quiz_header_gradient_end">#D72C65</color>
 </resources>
