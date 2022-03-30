@@ -191,4 +191,11 @@
         tools:visibility="visible"
         />
 
+    <com.tokopedia.play.broadcaster.view.custom.game.QuizFormView
+        android:id="@+id/view_quiz_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
 </FrameLayout>

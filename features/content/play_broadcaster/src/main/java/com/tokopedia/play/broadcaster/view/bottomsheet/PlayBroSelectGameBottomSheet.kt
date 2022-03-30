@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSelectGameBinding
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.SelectGameItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.state.InteractiveConfigUiState
@@ -94,7 +95,7 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
     }
 
     override fun onGameOptionClick(gameType: GameType) {
-
+        viewModel.submitAction(PlayBroadcastAction.ClickGameOption(gameType))
     }
 
     fun show(fragmentManager: FragmentManager) {

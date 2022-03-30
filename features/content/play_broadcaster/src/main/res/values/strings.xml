@@ -38,6 +38,7 @@
     <string name="play_broadcast_exit">Keluar</string>
     <string name="play_broadcast_end">Akhiri</string>
     <string name="play_batal">Batal</string>
+    <string name="play_bro_next_action">Lanjut</string>
 
     <string name="play_selected_products">Produk Dipilih (%d)</string>
 
@@ -263,4 +264,5 @@
 
     <!-- Game -->
     <string name="play_bro_select_game_title">Pilih game</string>
+    <string name="play_bro_quiz_form_title">Buat Quiz</string>
 </resources>

@@ -48,6 +48,7 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoar
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
+import com.tokopedia.play.broadcaster.view.custom.game.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -181,12 +182,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
 
+    /** Game */
     private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
             override fun onIconClick() {
                 openSelectInteractiveSheet()
             }
         })
     }
+    private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -665,22 +668,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeInteractiveConfig() {
-        parentViewModel.observableInteractiveConfig.observe(viewLifecycleOwner) { config ->
-            /** TODO: gonna delete this & setup to new viewcomponent */
-//            interactiveSetupView.setConfig(config)
-        }
         parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is BroadcastInteractiveState.Forbidden -> {
-                    /** TODO: delete this soon */
-                    interactiveView.hide()
-
                     gameIconView.hide()
                 }
                 is BroadcastInteractiveState.Allowed -> {
                     handleHasInteractiveState(state)
-                    /** TODO: delete this soon */
-                    interactiveView.show()
                 }
             }
         }
@@ -864,9 +858,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun handleInitInteractiveState(state: BroadcastInteractiveInitState) {
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
-                /** TODO: gonna delete this */
-//                analytic.onImpressInteractiveTool(parentViewModel.channelId)
-//                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
+                analytic.onImpressInteractiveTool(parentViewModel.channelId)
                 if(state.showOnBoarding && !hasPinnedFormView()) gameIconView.showCoachmark()
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()

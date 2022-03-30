@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_N700_68">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_close_quiz_form"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="ARROW_BACK"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/play_dp_12"
+        android:text="@string/play_bro_quiz_form_title"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_close_quiz_form"
+        app:layout_constraintStart_toEndOf="@id/ic_close_quiz_form"
+        app:layout_constraintTop_toTopOf="@id/ic_close_quiz_form"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bro_quiz_form_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:text="@string/play_bro_next_action"
+        android:enabled="false"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_close_quiz_form"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ic_close_quiz_form"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

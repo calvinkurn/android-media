@@ -29,6 +29,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
@@ -130,8 +131,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
     val observableBroadcastSchedule = getCurrentSetupDataStore().getObservableSchedule()
-    val observableInteractiveConfig: LiveData<InteractiveConfigUiModel>
-        get() = _observableInteractiveConfig
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
@@ -183,7 +182,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLiveViewState = MutableLiveData<PlayLiveViewState>()
     private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo = MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<InteractiveSessionUiModel>>()
@@ -334,6 +332,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.CancelEditPinnedMessage -> handleCancelEditPinnedMessage()
             is PlayBroadcastAction.SetCover -> handleSetCover(event.cover)
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
+
+            /** Game */
+            is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
         }
     }
 
@@ -596,7 +597,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _interactiveConfig.value = interactiveConfig
 
             /** TODO: should save config on flow instead */
-            _observableInteractiveConfig.value = interactiveConfig
             setInteractiveDurations(interactiveConfig.tapTapConfig.availableStartTimeInMs)
 
             if(interactiveConfig.isNoGameActive()) {
@@ -610,7 +610,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateCurrentInteractiveStatus() {
         viewModelScope.launch {
-            val interactiveConfig = _observableInteractiveConfig.value ?: return@launch
+            val interactiveConfig = _interactiveConfig.value
             if (interactiveConfig.isNoGameActive()) handleActiveInteractive()
         }
     }
@@ -912,6 +912,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleSetProduct(productSectionList: List<ProductTagSectionUiModel>) {
         setSelectedProduct(productSectionList)
+    }
+
+    private fun handleClickGameOption(gameType: GameType) {
+
     }
 
     /**
