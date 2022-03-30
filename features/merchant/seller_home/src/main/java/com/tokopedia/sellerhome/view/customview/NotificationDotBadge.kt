@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.view.widget.toolbar
+package com.tokopedia.sellerhome.view.customview
 
 import android.content.Context
 import android.graphics.Canvas
@@ -19,6 +19,13 @@ import kotlin.math.max
 
 class NotificationDotBadge(private val context: Context) : Drawable() {
 
+    companion object {
+        private const val DIMEN_16 = 16
+        private const val RADIUS = 2
+        private const val CENTER_X = 12f
+        private const val CENTER_Y = 10
+    }
+
     private val mBadgePaint: Paint = Paint()
     private var willDraw = false
 
@@ -31,13 +38,13 @@ class NotificationDotBadge(private val context: Context) : Drawable() {
     override fun draw(canvas: Canvas) {
         if (!willDraw) return
 
-        val dp16 = context.dpToPx(16)
+        val dp16 = context.dpToPx(DIMEN_16)
         val width: Float = dp16
         val height: Float = dp16
 
-        val radius = max(width, height) / 2 / 2
-        val centerX = (bounds.right - bounds.left).minus(12f)
-        val centerY = radius.plus(10)
+        val radius = max(width, height) / RADIUS / RADIUS
+        val centerX = (bounds.right - bounds.left).minus(CENTER_X)
+        val centerY = radius.plus(CENTER_Y)
         canvas.drawCircle(centerX, centerY, radius, mBadgePaint)
     }
 
@@ -59,8 +66,7 @@ class NotificationDotBadge(private val context: Context) : Drawable() {
 
     private fun getIcon(menuItem: MenuItem): LayerDrawable? {
         val menuIcon = menuItem.icon
-        val icon: LayerDrawable? = if (menuIcon is LayerDrawable) menuIcon else null
-        return icon
+        return menuIcon as? LayerDrawable
     }
 
     private fun showBadge() {

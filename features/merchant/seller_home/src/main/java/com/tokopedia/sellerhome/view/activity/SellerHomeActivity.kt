@@ -47,8 +47,8 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
+import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
 import com.tokopedia.sellerhome.di.component.DaggerHomeDashboardComponent
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
@@ -97,17 +97,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
-
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
-
-    private val sellerHomeRouter: SellerHomeRouter? by lazy {
-        val applicationContext = applicationContext
-        return@lazy if (applicationContext is SellerHomeRouter)
-            applicationContext
-        else
-            null
-    }
+    private val sellerHomeRouter by lazy { applicationContext as? SellerHomeRouter }
 
     private val menu = mutableListOf<BottomMenu>()
 
@@ -124,13 +116,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var statusBarCallback: StatusBarCallback? = null
     private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
+    private var binding: ActivitySahSellerHomeBinding? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
-    override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
-    private var binding: ActivitySahSellerHomeBinding? = null
+    override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()

@@ -1,7 +1,6 @@
-package com.tokopedia.sellerhome.config
+package com.tokopedia.sellerhome.common.config
 
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 class SellerHomeRemoteConfig @Inject constructor(
@@ -20,5 +19,4 @@ class SellerHomeRemoteConfig @Inject constructor(
     fun isSellerHomeDashboardNewLazyLoad(): Boolean {
         return remoteConfig.getBoolean(SELLER_HOME_DASHBOARD_NEW_LAZY_LOAD, false)
     }
-
 }
