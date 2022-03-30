@@ -408,6 +408,9 @@ class ShopPlayWidgetAnalyticListener(
         )
     }
 
+    /***
+     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
+     */
     override fun onLabelPromoClicked(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -419,7 +422,7 @@ class ShopPlayWidgetAnalyticListener(
             event = PROMO_CLICK,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = CLICK,
-            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - ${getChannelStatusValue(item.channelType)} - $isAutoPlay",
+            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - $isAutoPlay - true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
@@ -446,7 +449,7 @@ class ShopPlayWidgetAnalyticListener(
             event = PROMO_VIEW,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = "impression on play sgc channel",
-            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - ${getChannelStatusValue(item.channelType)} - $isAutoPlay",
+            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - $isAutoPlay - true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,

@@ -147,7 +147,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, item.appLink, isAutoPlay)
     }
 
     override fun onLabelPromoImpressed(
@@ -167,7 +167,7 @@ class DiscoveryPlayWidgetViewHolder(itemView: View, private val fragment: Fragme
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
-        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, isAutoPlay)
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackPlayWidgetLabelClick(discoveryPlayWidgetViewModel.components, UserSession(fragment.context).userId, businessWidgetPosition, channelPositionInList, item.partner.id, item.channelId, item.appLink, isAutoPlay)
     }
 
     override fun onLabelPromoImpressed(

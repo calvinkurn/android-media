@@ -187,6 +187,9 @@ class HomePlayWidgetAnalyticListener(
         )
     }
 
+    /***
+     * isRilisanSpesial is always true bcz the tracker sent only for Rilisan Spesial channel
+     */
     override fun onLabelPromoClicked(
         view: PlayWidgetMediumView,
         item: PlayWidgetChannelUiModel,
@@ -198,17 +201,17 @@ class HomePlayWidgetAnalyticListener(
             event = Event.PROMO_CLICK,
             eventCategory = "homepage-cmp",
             eventAction = Event.CLICK,
-            eventLabel = "${item.partner.id} - " +
+            eventLabel = "click channel - " +
+                    "${item.partner.id} - " +
                     "${item.channelId} - " +
                     "$finalChannelPositionInList - " +
                     "$mBusinessWidgetPosition - " +
                     "$isAutoPlay - " +
-                    "${item.poolType} - " +
-                    item.recommendationType,
+                    "true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = widgetId,
-                    name = "/ - p$finalChannelPositionInList - play sgc channel - ${item.title} - ${item.recommendationType}",
+                    name = item.title,
                     creative = item.video.coverUrl,
                     position = finalChannelPositionInList.toString()
                 )
@@ -230,7 +233,6 @@ class HomePlayWidgetAnalyticListener(
         isAutoPlay: Boolean
     ) {
         val finalChannelPositionInList = channelPositionInList + 1
-        val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
             event = Event.PROMO_VIEW,
             eventCategory = "homepage-cmp",
@@ -240,9 +242,8 @@ class HomePlayWidgetAnalyticListener(
                     "$finalChannelPositionInList - " +
                     "$mBusinessWidgetPosition - " +
                     "$isAutoPlay - " +
-                    "${item.poolType} - " +
-                    "$promoText - " +
-                    item.recommendationType,
+                    "${item.recommendationType} - " +
+                    "true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = widgetId,
