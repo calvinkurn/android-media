@@ -132,7 +132,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -148,6 +147,7 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 
 /**
  * @author : Steven 29/11/18
@@ -1913,33 +1913,26 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
-        viewModel.addToWishList(productId, session.userId, object : WishListActionListener {
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {}
-            override fun onSuccessAddWishlist(productId: String?) {
-                success()
-                showSuccessToastWishList(R.string.title_topchat_success_atw)
-            }
-
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                if (errorMessage == null) return
-                view?.let {
-                    Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        viewModel.addToWishList(productId, session.userId, object : WishlistV2ActionListener {
+            override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                view?.let { v ->
+                    Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
                 }
             }
-        })
-    }
 
-    private fun showSuccessToastWishList(@StringRes successMessageRes: Int) {
-        view?.let {
-            val successMessage = it.context.getString(successMessageRes)
-            Toaster.build(
-                it,
-                successMessage,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL
-            ).show()
-        }
+            override fun onSuccessAddWishlist(productId: String) {
+                success()
+                val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                view?.let {
+                    Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishList() }.show()
+                }
+            }
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+
+            override fun onSuccessRemoveWishlist(productId: String) {}
+        })
     }
 
     private fun goToWishList() {
@@ -1949,31 +1942,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
         analytics.eventClickRemoveFromWishList(productId)
-        viewModel.removeFromWishList(productId, session.userId, object : WishListActionListener {
-            override fun onSuccessAddWishlist(productId: String?) {}
-            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
-            override fun onSuccessRemoveWishlist(productId: String?) {
-                success()
+        viewModel.removeFromWishList(productId, session.userId, object : WishlistV2ActionListener {
+            override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
+            override fun onSuccessAddWishlist(productId: String) {}
+
+            override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {
                 view?.let {
-                    val successMessage = it.context.getString(R.string.title_topchat_success_rfw)
-                    Toaster.make(
-                        it,
-                        successMessage,
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_NORMAL
-                    )
+                    Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
                 }
             }
 
-            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                if (errorMessage == null) return
+            override fun onSuccessRemoveWishlist(productId: String) {
+                val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+                val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
                 view?.let {
-                    Toaster.make(
-                        it,
-                        errorMessage,
-                        Toaster.LENGTH_SHORT,
-                        Toaster.TYPE_ERROR
-                    )
+                    Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
                 }
             }
         })
