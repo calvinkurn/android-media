@@ -140,12 +140,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         setupDefaultPage(savedInstanceState)
 
-        // if redirected from any seller migration entry point, no need to show the update dialog
-        val isRedirectedFromSellerMigrationEntryPoint =
-            !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)
-                .isNullOrBlank()
-
-        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
+        checkAppUpdate()
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeIsRoleEligible()
@@ -698,5 +693,14 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 SellerHomeOnApplyInsetsListener(sahContainer, sahBottomNav)
             )
         }
+    }
+
+    private fun checkAppUpdate() {
+        // if redirected from any seller migration entry point, no need to show the update dialog
+        val isRedirectedFromSellerMigrationEntryPoint =
+            !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)
+                .isNullOrBlank()
+
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
     }
 }
