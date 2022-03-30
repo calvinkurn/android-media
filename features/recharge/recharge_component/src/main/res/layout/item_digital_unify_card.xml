@@ -48,19 +48,16 @@
             tools:src="@color/Unify_G500"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/dgu_label_on_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_4"
             android:layout_marginBottom="@dimen/unify_space_4"
-            android:background="@drawable/bg_dgu_label_on_image"
             android:elevation="@dimen/unify_space_8"
-            android:textColor="#FFFFFF"
+            app:labelType="highlight_dark_image_label"
             app:layout_constraintBottom_toBottomOf="@id/dgu_media_image"
             app:layout_constraintLeft_toLeftOf="@id/dgu_media_image"
-            app:typographyType="small"
-            app:typographyWeight="bold"
             tools:text="Label on Image" />
 
         <androidx.cardview.widget.CardView
@@ -123,10 +120,8 @@
             android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_8"
             android:ellipsize="end"
-            android:singleLine="true"
             android:gravity="center_vertical"
             android:maxLines="1"
-            android:lines="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/dgu_campaign_image_background"
             app:typographyType="small"
@@ -199,7 +194,7 @@
             android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginTop="@dimen/unify_space_4"
             android:background="@drawable/bg_dgu_blue_square_rating"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dgu_review_star_rating_value"
             app:typographyType="small"
@@ -275,11 +270,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/unify_space_2"
+            android:layout_marginRight="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="@id/dgu_price_value"
             app:layout_constraintLeft_toRightOf="@id/dgu_price_value"
+            app:layout_constraintRight_toRightOf="parent"
             app:typographyType="body_3"
             tools:text="/qty"
             tools:visibility="visible" />
@@ -299,15 +296,14 @@
             android:id="@+id/dgu_discount_slash_price"
             android:layout_width="0dp"
             android:layout_height="@dimen/product_card_label_discount_height"
-            android:layout_marginLeft="@dimen/unify_space_4"
+            android:layout_marginLeft="@dimen/unify_space_8"
             android:layout_marginRight="@dimen/unify_space_8"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/Unify_NN400"
-            app:layout_constraintBottom_toBottomOf="@id/dgu_discount_label"
             app:layout_constraintLeft_toRightOf="@id/dgu_discount_label"
-            app:layout_constraintTop_toTopOf="@id/dgu_discount_label"
+            app:layout_constraintTop_toBottomOf="@id/dgu_price_value"
             app:typographyType="small"
             tools:text="Rp8.499.000"
             tools:visibility="visible" />

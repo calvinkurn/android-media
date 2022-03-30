@@ -63,14 +63,28 @@
             app:unify_image_type="circle" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/shop_sub_logo"
+            android:id="@+id/shop_sub_logo_bg"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
             android:gravity="center"
+            android:src="@drawable/bg_button_white"
             app:unify_image_corner_radius="0"
             app:layout_constraintBottom_toBottomOf="@id/shop_logo"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="@id/shop_logo"
+            app:unify_image_type="circle" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/shop_sub_logo"
+            android:layout_width="@dimen/dp_14"
+            android:layout_height="@dimen/dp_14"
+            android:gravity="center"
+            app:unify_image_corner_radius="0"
+            app:layout_constraintTop_toTopOf="@+id/shop_sub_logo_bg"
+            app:layout_constraintBottom_toBottomOf="@id/shop_sub_logo_bg"
+            app:layout_constraintStart_toStartOf="@+id/shop_sub_logo_bg"
+            app:layout_constraintEnd_toEndOf="@id/shop_sub_logo_bg"
+            app:layout_constraintDimensionRatio="H,1:1"
             app:unify_image_type="circle" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -143,7 +157,7 @@
                 android:id="@+id/benefit_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/unify_space_2"
+                android:layout_marginStart="@dimen/unify_space_2"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLines="1"
@@ -154,12 +168,12 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/benefit_symbol_image"
-                android:layout_width="@dimen/unify_space_12"
-                android:layout_height="@dimen/unify_space_12"
-                android:layout_gravity="center"
-                android:scaleType="center"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintHorizontal_bias="0.0" />
+                android:padding="@dimen/unify_space_2"
+                android:layout_width="@dimen/dp_17"
+                android:layout_height="@dimen/dp_16"
+                android:adjustViewBounds="true"
+                app:unify_image_type="rect"
+                android:scaleType="fitXY" />
 
         </LinearLayout>
 

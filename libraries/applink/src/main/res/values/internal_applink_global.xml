@@ -112,5 +112,6 @@
     <string name="path_ovo_regis_init">/ovo-reg-init</string>
 
     <string name="path_image_picker_insta">/image-picker/v2/</string>
+    <string name="path_data_explorer">/data-explorer</string>
 
 </resources>

@@ -115,6 +115,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupProductCardCarouselView(productCarouselView: RecyclerView?) {
         itemView.context?.run {
+            productCarouselView?.isNestedScrollingEnabled = false
             productCarouselView?.adapter = productCarouselAdapter
             productCarouselView?.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         }

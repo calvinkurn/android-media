@@ -134,11 +134,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private var existingStartDate = Date()
     private var existingEndDate = Date()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        checkAbTestRollenceVariant()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(FRAGMENT_LAYOUT, container, false).apply {
             initView(this)
@@ -148,6 +143,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkAbTestRollenceVariant()
         setupToolbar()
         setBackgroundColor()
         initListener()
@@ -207,36 +203,38 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     }
 
     private fun checkAbTestRollenceVariant() {
-        shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
-            requestParams = ShopAbTestPlatform.createRequestParam(
-                    listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
-                    shopId = userSession.shopId
-            )
-            fetch(object : RemoteConfig.Listener {
-                override fun onComplete(remoteConfig: RemoteConfig?) {
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
-                        if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
-                            // no experiment / successfully deleted, by default render new page
-                            getInitialData()
-                        }
-                        else {
-                            if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
-                                // user not get the experiment yet,
-                                // redirect to old shop ops hour settings
-                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
-                                activity?.finish()
+        context?.let { ctx ->
+            shopAbTestPlatform = ShopAbTestPlatform(ctx).apply {
+                requestParams = ShopAbTestPlatform.createRequestParam(
+                        listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
+                        shopId = userSession.shopId
+                )
+                fetch(object : RemoteConfig.Listener {
+                    override fun onComplete(remoteConfig: RemoteConfig?) {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
+                            if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
+                                // no experiment / successfully deleted, by default render new page
+                                getInitialData()
                             }
                             else {
-                                // user get new experiment
-                                getInitialData()
+                                if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
+                                    // user not get the experiment yet,
+                                    // redirect to old shop ops hour settings
+                                    RouteManager.route(ctx, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+                                    activity?.finish()
+                                }
+                                else {
+                                    // user get new experiment
+                                    getInitialData()
+                                }
                             }
                         }
                     }
-                }
 
-                override fun onError(e: Exception?) {}
-            })
+                    override fun onError(e: Exception?) {}
+                })
+            }
         }
     }
 
@@ -488,7 +486,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 getInitialData()
             }
             if (result is Fail) {
-                setShopHolidayScheduleStatusMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_hour_create_holiday_schedule_fail)
                 setShopHolidayScheduleStatusType = Toaster.TYPE_ERROR
                 hideLoader()
                 showToaster(setShopHolidayScheduleStatusMessage, setShopHolidayScheduleStatusType)
