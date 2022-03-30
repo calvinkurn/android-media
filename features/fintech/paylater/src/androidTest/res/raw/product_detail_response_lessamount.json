@@ -1,0 +1,28 @@
+[
+  {
+    "data": {
+      "getProductV3": {
+        "productName": "iphone",
+        "url": "https://staging.tokopedia.com/jowtest1/iphone",
+        "stock": 99,
+        "shop": {
+          "id": "480339"
+        },
+        "price": 500000,
+        "campaign": {
+          "originalPrice": 0,
+          "discountedPrice": 0
+        },
+        "variant": {
+          "selections": [],
+          "products": []
+        },
+        "pictures": [
+          {
+            "urlThumbnail": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2017/12/21/5515416/5515416_18be4cbf-a4b7-4708-a54c-1174037780bb_403_421.png"
+          }
+        ]
+      }
+    }
+  }
+]
