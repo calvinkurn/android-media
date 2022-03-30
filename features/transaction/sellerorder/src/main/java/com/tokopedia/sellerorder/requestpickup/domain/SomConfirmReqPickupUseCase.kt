@@ -24,4 +24,51 @@ class SomConfirmReqPickupUseCase @Inject constructor(private val useCase: Graphq
     private fun generateParam(param: SomConfirmReqPickupParam): Map<String, Any?> {
         return mapOf(SomConsts.PARAM_INPUT to param)
     }
+
+    companion object {
+        val QUERY = """
+            mutation MpLogisticPreShipInfo(${'$'}input : MpLogisticPreShipInfoInputs!) {
+              mpLogisticPreShipInfo(input: ${'$'}input) {
+                status
+                message_error
+                data{
+                  pickup_location{
+                    title
+                    address
+                    phone
+                  }
+                  detail{
+                    title
+                    shippers{
+                      name
+                      service
+                      note
+                      courier_image
+                      count_text
+                      count
+                    }
+                    orchestra_partner
+                  }
+                  notes{
+                    title
+                    list
+                  }
+                  schedule_time_day {
+                      today {
+                        key
+                        start
+                        end
+                      }
+                      tomorrow {
+                        key
+                        start
+                        end
+                      }
+                    }
+                }
+
+              }
+            }
+        """.trimIndent()
+    }
 }

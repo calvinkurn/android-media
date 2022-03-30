@@ -825,7 +825,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRejectOrder() {
-        somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
+        somDetailViewModel.getRejectReasons()
     }
 
     private fun doEditAwb(shippingRef: String) {

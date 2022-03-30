@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.detail.domain
+package com.tokopedia.sellerorder.detail.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts

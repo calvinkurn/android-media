@@ -24,4 +24,10 @@ class SomProcessReqPickupUseCase @Inject constructor(private val useCase: Graphq
     private fun generateParam(param: SomProcessReqPickupParam): Map<String, Any?> {
         return mapOf(SomConsts.PARAM_INPUT to param)
     }
+
+    companion object {
+        val QUERY = """
+            
+        """.trimIndent()
+    }
 }
