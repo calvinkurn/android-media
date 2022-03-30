@@ -167,9 +167,9 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
             combine(
                 sharedReviewMediaGalleryViewModel.detailedReviewMediaResult,
                 sharedReviewMediaGalleryViewModel.mediaNumberToLoad,
-                sharedReviewMediaGalleryViewModel.showLoadMore,
-            ) { detailedReviewMediaResult, mediaNumberToLoad, showLoadMore ->
-                Triple(detailedReviewMediaResult, mediaNumberToLoad, showLoadMore)
+                sharedReviewMediaGalleryViewModel.showSeeMore,
+            ) { detailedReviewMediaResult, mediaNumberToLoad, showSeeMore ->
+                Triple(detailedReviewMediaResult, mediaNumberToLoad, showSeeMore)
             }.collectLatest {
                 reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(it.first, it.second, it.third, it.first?.detail?.mediaCount.orZero().toInt())
             }

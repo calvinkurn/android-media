@@ -35,12 +35,12 @@ class ReviewMediaGalleryAdapter(
         return mediaItems[position].let { mediaItem ->
             when (mediaItem) {
                 is ImageMediaItemUiModel -> {
-                    ReviewImagePlayerFragment.createInstance(mediaItem.uri, mediaItem.showLoadMore, mediaItem.totalMediaCount).apply {
+                    ReviewImagePlayerFragment.createInstance(mediaItem.uri, mediaItem.showSeeMore, mediaItem.totalMediaCount).apply {
                         setListener(reviewImagePlayerListener)
                     }
                 }
                 is VideoMediaItemUiModel -> {
-                    ReviewVideoPlayerFragment.createInstance(mediaItem.uri, mediaItem.showLoadMore)
+                    ReviewVideoPlayerFragment.createInstance(mediaItem.uri)
                 }
                 is LoadingStateItemUiModel -> {
                     ReviewMediaGalleryLoadStateFragment()

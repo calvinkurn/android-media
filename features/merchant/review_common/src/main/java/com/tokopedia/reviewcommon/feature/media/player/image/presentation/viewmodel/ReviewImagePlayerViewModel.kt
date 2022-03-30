@@ -20,17 +20,17 @@ class ReviewImagePlayerViewModel @Inject constructor(
 
     companion object {
         private const val SAVED_STATE_IMAGE_URI = "savedStateImageUri"
-        private const val SAVED_STATE_SHOW_LOAD_MORE = "savedStateShowLoadMore"
+        private const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
         private const val SAVED_STATE_TOTAL_MEDIA_COUNT = "savedStateTotalMediaCount"
     }
 
     private val _imageUri = MutableStateFlow("")
-    private val _showLoadMore = MutableStateFlow(false)
+    private val _showSeeMore = MutableStateFlow(false)
     private val _totalMediaCount = MutableStateFlow(Int.ZERO)
     val uiState: StateFlow<ReviewImagePlayerUiState> = combine(
-        _imageUri, _showLoadMore, _totalMediaCount
-    ) { imageUri, showLoadMore, totalMediaCount ->
-        if (showLoadMore && totalMediaCount.isMoreThanZero()) {
+        _imageUri, _showSeeMore, _totalMediaCount
+    ) { imageUri, showSeeMore, totalMediaCount ->
+        if (showSeeMore && totalMediaCount.isMoreThanZero()) {
             ReviewImagePlayerUiState.ShowingSeeMore(imageUri, totalMediaCount)
         } else {
             ReviewImagePlayerUiState.Showing(imageUri)
@@ -45,8 +45,8 @@ class ReviewImagePlayerViewModel @Inject constructor(
         _imageUri.value = imageUri
     }
 
-    fun setShowLoadMore(showLoadMore: Boolean) {
-        _showLoadMore.value = showLoadMore
+    fun setShowSeeMore(showSeeMore: Boolean) {
+        _showSeeMore.value = showSeeMore
     }
 
     fun setTotalMediaCount(totalMediaCount: Int) {
@@ -55,14 +55,14 @@ class ReviewImagePlayerViewModel @Inject constructor(
 
     fun saveState(outState: Bundle) {
         outState.putString(SAVED_STATE_IMAGE_URI, _imageUri.value)
-        outState.putBoolean(SAVED_STATE_SHOW_LOAD_MORE, _showLoadMore.value)
+        outState.putBoolean(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)
         outState.putInt(SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value)
     }
 
     fun restoreSavedState(savedState: Bundle?) {
         savedState?.run {
             _imageUri.value = savedState.getSavedState(SAVED_STATE_IMAGE_URI, _imageUri.value) ?: _imageUri.value
-            _showLoadMore.value = savedState.getSavedState(SAVED_STATE_SHOW_LOAD_MORE, _showLoadMore.value) ?: _showLoadMore.value
+            _showSeeMore.value = savedState.getSavedState(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value) ?: _showSeeMore.value
             _totalMediaCount.value = savedState.getSavedState(SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value) ?: _totalMediaCount.value
         }
     }

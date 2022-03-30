@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class LoadingStateItemUiModel(
     override val uri: String = "",
     override val mediaNumber: Int,
-    override val showLoadMore: Boolean = false,
+    override val showSeeMore: Boolean = false,
     override val totalMediaCount: Int = Int.ZERO
 ) : MediaItemUiModel {
     override fun areItemTheSame(other: MediaItemUiModel?): Boolean = other is LoadingStateItemUiModel && mediaNumber == other.mediaNumber

@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class VideoMediaItemUiModel(
     override val uri: String = "",
     override val mediaNumber: Int,
-    override val showLoadMore: Boolean,
+    override val showSeeMore: Boolean,
     override val totalMediaCount: Int
 ) : MediaItemUiModel {
     override fun areItemTheSame(other: MediaItemUiModel?): Boolean = uri == other?.uri

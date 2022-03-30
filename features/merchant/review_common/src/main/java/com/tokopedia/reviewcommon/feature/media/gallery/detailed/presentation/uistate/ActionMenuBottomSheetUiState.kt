@@ -3,16 +3,16 @@ package com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.u
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
 import java.io.Serializable
 
-sealed interface DetailedReviewActionMenuBottomSheetUiState: Serializable {
+sealed interface ActionMenuBottomSheetUiState: Serializable {
     data class Hidden(
         val items: List<DetailedReviewActionMenuUiModel>,
         val feedbackID: String,
         val shopID: String
-    ) : DetailedReviewActionMenuBottomSheetUiState
+    ) : ActionMenuBottomSheetUiState
 
     data class Showing(
         val items: List<DetailedReviewActionMenuUiModel>,
         val feedbackID: String,
         val shopID: String
-    ) : DetailedReviewActionMenuBottomSheetUiState
+    ) : ActionMenuBottomSheetUiState
 }

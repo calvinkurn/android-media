@@ -24,8 +24,8 @@ import com.tokopedia.reviewcommon.feature.media.detail.presentation.fragment.Rev
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.fragment.ReviewMediaGalleryFragment
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.bottomsheet.DetailedReviewActionMenuBottomSheet
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewActionMenuBottomSheetUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
@@ -61,7 +61,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private var toolbarUiStateCollectorJob: Job? = null
     private var orientationUiStateCollectorJob: Job? = null
-    private var detailedReviewActionMenuBottomSheetUiStateCollectorJob: Job? = null
+    private var actionMenuBottomSheetUiStateCollectorJob: Job? = null
     private var toasterQueueCollectorJob: Job? = null
     private var gestureDetector: GestureDetectorCompat? = null
 
@@ -269,7 +269,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun ActivityDetailedReviewMediaGalleryBinding.setupToolbar() {
         icReviewMediaGalleryClose.setOnClickListener { finish() }
         icReviewMediaGalleryKebab.setOnClickListener {
-            sharedReviewMediaGalleryViewModel.showDetailedReviewActionMenuBottomSheet()
+            sharedReviewMediaGalleryViewModel.showActionMenuBottomSheet()
         }
     }
 
@@ -288,7 +288,9 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 val isInPortrait = it.first.isPortrait()
                 val isReportable = it.third?.isReportable.orFalse()
                 binding?.icReviewMediaGalleryClose?.showWithCondition(showOverlay)
-                binding?.icReviewMediaGalleryKebab?.showWithCondition(showOverlay && isInPortrait && isReportable)
+                binding?.icReviewMediaGalleryKebab?.showWithCondition(
+                    showOverlay && isInPortrait && isReportable
+                )
             }
         }
         orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {
@@ -307,12 +309,12 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
         }
-        detailedReviewActionMenuBottomSheetUiStateCollectorJob = detailedReviewActionMenuBottomSheetUiStateCollectorJob?.takeIf {
+        actionMenuBottomSheetUiStateCollectorJob = actionMenuBottomSheetUiStateCollectorJob?.takeIf {
             !it.isCompleted
         } ?: launch {
-            sharedReviewMediaGalleryViewModel.detailedReviewActionMenuBottomSheetUiState.collectLatest {
-                if (it is DetailedReviewActionMenuBottomSheetUiState.Showing) {
-                    bottomSheetHandler.showDetailedReviewActionMenuBottomSheet()
+            sharedReviewMediaGalleryViewModel.actionMenuBottomSheetUiState.collectLatest {
+                if (it is ActionMenuBottomSheetUiState.Showing) {
+                    bottomSheetHandler.showActionMenuBottomSheet()
                 }
             }
         }
@@ -338,7 +340,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private fun cancelUiStateCollector() {
         toolbarUiStateCollectorJob?.cancel()
         orientationUiStateCollectorJob?.cancel()
-        detailedReviewActionMenuBottomSheetUiStateCollectorJob?.cancel()
+        actionMenuBottomSheetUiStateCollectorJob?.cancel()
         toasterQueueCollectorJob?.cancel()
     }
 
@@ -374,27 +376,27 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private inner class BottomSheetHandler {
-        private var detailedReviewActionMenuBottomSheet: DetailedReviewActionMenuBottomSheet? = null
+        private var actionMenuBottomSheet: ActionMenuBottomSheet? = null
 
-        private fun createDetailedReviewActionMenuBottomSheet(): DetailedReviewActionMenuBottomSheet {
-            return DetailedReviewActionMenuBottomSheet()
+        private fun createActionMenuBottomSheet(): ActionMenuBottomSheet {
+            return ActionMenuBottomSheet()
         }
 
-        private fun getAddedDetailedReviewActionMenuBottomSheet(): DetailedReviewActionMenuBottomSheet? {
+        private fun getAddedActionMenuBottomSheet(): ActionMenuBottomSheet? {
             return supportFragmentManager.findFragmentByTag(
-                DetailedReviewActionMenuBottomSheet.TAG
-            ) as? DetailedReviewActionMenuBottomSheet
+                ActionMenuBottomSheet.TAG
+            ) as? ActionMenuBottomSheet
         }
 
-        private fun getDetailedReviewActionMenuBottomSheet(): DetailedReviewActionMenuBottomSheet {
-            return detailedReviewActionMenuBottomSheet ?: getAddedDetailedReviewActionMenuBottomSheet()
-            ?: createDetailedReviewActionMenuBottomSheet()
+        private fun getActionMenuBottomSheet(): ActionMenuBottomSheet {
+            return actionMenuBottomSheet ?: getAddedActionMenuBottomSheet()
+            ?: createActionMenuBottomSheet()
         }
 
-        fun showDetailedReviewActionMenuBottomSheet() {
-            getDetailedReviewActionMenuBottomSheet().run {
+        fun showActionMenuBottomSheet() {
+            getActionMenuBottomSheet().run {
                 if (!isAdded) {
-                    show(supportFragmentManager, DetailedReviewActionMenuBottomSheet.TAG)
+                    show(supportFragmentManager, ActionMenuBottomSheet.TAG)
                 }
             }
         }

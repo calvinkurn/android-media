@@ -16,7 +16,7 @@ import com.tokopedia.reviewcommon.databinding.BottomsheetReviewActionMenuBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.adapter.typefactory.DetailedReviewActionAdapterTypeFactory
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewActionMenuBottomSheetUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -29,10 +29,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class DetailedReviewActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
+class ActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
 
     companion object {
-        const val TAG = "DetailedReviewActionMenuBottomSheet"
+        const val TAG = "ActionMenuBottomSheet"
         const val REPORT_REVIEW_ACTIVITY_CODE = 200
     }
 
@@ -54,7 +54,7 @@ class DetailedReviewActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
 
     private var supervisorJob = SupervisorJob()
     private var uiStateCollectorJob: Job? = null
-    private var uiState: DetailedReviewActionMenuBottomSheetUiState? = null
+    private var uiState: ActionMenuBottomSheetUiState? = null
 
     private var binding by viewBinding(BottomsheetReviewActionMenuBinding::bind)
 
@@ -63,7 +63,7 @@ class DetailedReviewActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
 
     init {
         setOnDismissListener {
-            sharedReviewMediaGalleryViewModel.dismissDetailedReviewActionMenuBottomSheet()
+            sharedReviewMediaGalleryViewModel.dismissActionMenuBottomSheet()
         }
     }
 
@@ -118,17 +118,17 @@ class DetailedReviewActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
 
     private fun collectUiState() {
         uiStateCollectorJob = uiStateCollectorJob?.takeIf { !it.isCompleted } ?: launch {
-            sharedReviewMediaGalleryViewModel.detailedReviewActionMenuBottomSheetUiState.collectLatest {
+            sharedReviewMediaGalleryViewModel.actionMenuBottomSheetUiState.collectLatest {
                 uiState = it
                 updateUi(it)
             }
         }
     }
 
-    private fun updateUi(uiState: DetailedReviewActionMenuBottomSheetUiState) {
+    private fun updateUi(uiState: ActionMenuBottomSheetUiState) {
         when(uiState) {
-            is DetailedReviewActionMenuBottomSheetUiState.Hidden -> dismiss()
-            is DetailedReviewActionMenuBottomSheetUiState.Showing -> {
+            is ActionMenuBottomSheetUiState.Hidden -> dismiss()
+            is ActionMenuBottomSheetUiState.Showing -> {
                 adapter.setElements(uiState.items)
             }
         }
@@ -152,7 +152,7 @@ class DetailedReviewActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
         fun initInjector() {
             DetailedReviewMediaGalleryComponentInstance
                 .getInstance(requireContext())
-                .inject(this@DetailedReviewActionMenuBottomSheet)
+                .inject(this@ActionMenuBottomSheet)
         }
     }
 
@@ -161,7 +161,7 @@ class DetailedReviewActionMenuBottomSheet: BottomSheetUnify(), CoroutineScope {
             when(id) {
                 R.string.review_action_menu_report -> {
                     val currentUiState = uiState
-                    if (currentUiState is DetailedReviewActionMenuBottomSheetUiState.Showing) {
+                    if (currentUiState is ActionMenuBottomSheetUiState.Showing) {
                         goToReportReview(currentUiState.feedbackID, currentUiState.shopID)
                     }
                 }

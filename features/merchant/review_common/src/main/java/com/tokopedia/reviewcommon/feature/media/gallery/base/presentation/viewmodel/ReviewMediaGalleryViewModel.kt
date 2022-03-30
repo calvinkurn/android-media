@@ -95,26 +95,26 @@ class ReviewMediaGalleryViewModel @Inject constructor(
     private fun ProductrevGetReviewMedia.getReviewImageByID(
         imageId: String,
         imageNumber: Int,
-        showLoadMore: Boolean,
+        showSeeMore: Boolean,
         totalMediaCount: Int
     ): ImageMediaItemUiModel? {
         return detail.reviewGalleryImages.find {
             it.attachmentId == imageId
         }?.let {
-            ImageMediaItemUiModel(it.fullsizeURL, imageNumber, showLoadMore, totalMediaCount)
+            ImageMediaItemUiModel(it.fullsizeURL, imageNumber, showSeeMore, totalMediaCount)
         }
     }
 
     private fun ProductrevGetReviewMedia.getReviewVideoByID(
         videoId: String,
         videoNumber: Int,
-        showLoadMore: Boolean,
+        showSeeMore: Boolean,
         totalMediaCount: Int
     ): VideoMediaItemUiModel? {
         return detail.reviewGalleryVideos.find {
             it.attachmentId == videoId
         }?.let {
-            VideoMediaItemUiModel(it.url, videoNumber, showLoadMore, totalMediaCount)
+            VideoMediaItemUiModel(it.url, videoNumber, showSeeMore, totalMediaCount)
         }
     }
 
@@ -142,7 +142,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
     suspend fun updateDetailedReviewMediaResult(
         response: ProductrevGetReviewMedia?,
         mediaNumberToLoad: Int,
-        showLoadMore: Boolean,
+        showSeeMore: Boolean,
         totalMediaCount: Int
     ) {
         withContext(dispatchers.computation) {
@@ -152,14 +152,14 @@ class ReviewMediaGalleryViewModel @Inject constructor(
                         responseData.getReviewImageByID(
                             reviewMedia.imageId,
                             reviewMedia.mediaNumber,
-                            showLoadMore && index == responseData.reviewMedia.size - 1,
+                            showSeeMore && index == responseData.reviewMedia.size - 1,
                             totalMediaCount
                         )
                     } else if (reviewMedia.videoId.isNotBlank()) {
                         responseData.getReviewVideoByID(
                             reviewMedia.videoId,
                             reviewMedia.mediaNumber,
-                            showLoadMore && index == responseData.reviewMedia.size - 1,
+                            showSeeMore && index == responseData.reviewMedia.size - 1,
                             totalMediaCount
                         )
                     } else {
@@ -184,7 +184,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
                             LoadingStateItemUiModel(mediaNumber = mediaItems.first().mediaNumber - 1)
                         )
                     }
-                    if (response?.hasNext == true && !showLoadMore) {
+                    if (response?.hasNext == true && !showSeeMore) {
                         mediaItems.add(LoadingStateItemUiModel(mediaNumber = mediaItems.last().mediaNumber + 1))
                     }
                 }

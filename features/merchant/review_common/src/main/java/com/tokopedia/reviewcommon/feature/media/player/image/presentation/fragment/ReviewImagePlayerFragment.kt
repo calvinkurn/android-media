@@ -37,16 +37,20 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
         private const val ARG_IMAGE_URI = "argImageUri"
-        private const val ARG_SHOW_LOAD_MORE = "argShowLoadMore"
+        private const val ARG_SHOW_SEE_MORE = "argShowSeeMore"
         private const val ARG_TOTAL_MEDIA_COUNT = "argTotalMediaCount"
         private const val ZOOM_SCALE_FACTOR = 2f
         private const val UNZOOM_SCALE_FACTOR = 1f
 
-        fun createInstance(imageUri: String, showLoadMore: Boolean, totalMediaCount: Int): ReviewImagePlayerFragment {
+        fun createInstance(
+            imageUri: String,
+            showSeeMore: Boolean,
+            totalMediaCount: Int
+        ): ReviewImagePlayerFragment {
             return ReviewImagePlayerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_IMAGE_URI, imageUri)
-                    putBoolean(ARG_SHOW_LOAD_MORE, showLoadMore)
+                    putBoolean(ARG_SHOW_SEE_MORE, showSeeMore)
                     putInt(ARG_TOTAL_MEDIA_COUNT, totalMediaCount)
                 }
             }
@@ -128,8 +132,8 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         return arguments?.getString(ARG_IMAGE_URI).orEmpty()
     }
 
-    private fun getShowLoadMore(): Boolean {
-        return arguments?.getBoolean(ARG_SHOW_LOAD_MORE).orFalse()
+    private fun getShowSeeMore(): Boolean {
+        return arguments?.getBoolean(ARG_SHOW_SEE_MORE).orFalse()
     }
 
     private fun getTotalMediaCount(): Int {
@@ -139,7 +143,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             reviewImagePlayerViewModel.setImageUri(getImageUri())
-            reviewImagePlayerViewModel.setShowLoadMore(getShowLoadMore())
+            reviewImagePlayerViewModel.setShowSeeMore(getShowSeeMore())
             reviewImagePlayerViewModel.setTotalMediaCount(getTotalMediaCount())
         } else {
             reviewImagePlayerViewModel.restoreSavedState(savedInstanceState)

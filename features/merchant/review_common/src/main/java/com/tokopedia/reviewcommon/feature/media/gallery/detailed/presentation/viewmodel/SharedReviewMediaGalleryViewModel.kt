@@ -18,7 +18,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewActionMenuBottomSheetUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
@@ -48,17 +48,17 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     companion object {
 
         private const val SAVED_STATE_PRODUCT_ID = "savedStateProductId"
-        private const val SAVED_SHOW_LOAD_MORE = "savedShowLoadMore"
-        private const val SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT = "savedGetDetailedReviewMediaResult"
-        private const val SAVED_ORIENTATION_UI_STATE = "savedOrientationUiState"
-        private const val SAVED_OVERLAY_VISIBILITY = "savedOverlayVisibility"
-        private const val SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET = "savedShowDetailedReviewActionMenuBottomSheet"
+        private const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
+        private const val SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT = "savedStateGetDetailedReviewMediaResult"
+        private const val SAVED_STATE_ORIENTATION_UI_STATE = "savedStateOrientationUiState"
+        private const val SAVED_STATE_OVERLAY_VISIBILITY = "savedStateOverlayVisibility"
+        private const val SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET = "savedStateShowActionMenuBottomSheet"
 
         private const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
-        const val EXTRAS_SHOW_LOAD_MORE = "extrasShowLoadMore"
+        const val EXTRAS_SHOW_SEE_MORE = "extrasShowSeeMore"
         const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
 
         const val UNINITIALIZED_PRODUCT_ID_VALUE = ""
@@ -77,9 +77,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _mediaNumberToLoad = MutableStateFlow(UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE)
     val mediaNumberToLoad: StateFlow<Int>
         get() = _mediaNumberToLoad
-    private val _showLoadMore = MutableStateFlow(false)
-    val showLoadMore: StateFlow<Boolean>
-        get() = _showLoadMore
+    private val _showSeeMore = MutableStateFlow(false)
+    val showSeeMore: StateFlow<Boolean>
+        get() = _showSeeMore
     private val _detailedReviewMediaResult = MutableStateFlow<ProductrevGetReviewMedia?>(null)
     val detailedReviewMediaResult: StateFlow<ProductrevGetReviewMedia?>
         get() = _detailedReviewMediaResult
@@ -102,27 +102,27 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         } else emptyList()
     }
 
-    val detailedReviewActionMenuBottomSheetUiState = combine(
+    val actionMenuBottomSheetUiState = combine(
         _showDetailedReviewActionMenuBottomSheet,
         _detailedReviewActionMenu,
         _currentReviewDetail
     ) { showDetailedReviewActionMenuBottomSheet, detailedReviewActionMenu, currentReviewDetail ->
         if (currentReviewDetail != null) {
             if (showDetailedReviewActionMenuBottomSheet) {
-                DetailedReviewActionMenuBottomSheetUiState.Showing(
+                ActionMenuBottomSheetUiState.Showing(
                     detailedReviewActionMenu,
                     currentReviewDetail.feedbackID,
                     currentReviewDetail.shopID
                 )
             } else {
-                DetailedReviewActionMenuBottomSheetUiState.Hidden(
+                ActionMenuBottomSheetUiState.Hidden(
                     detailedReviewActionMenu,
                     currentReviewDetail.feedbackID,
                     currentReviewDetail.shopID
                 )
             }
         } else {
-            DetailedReviewActionMenuBottomSheetUiState.Hidden(
+            ActionMenuBottomSheetUiState.Hidden(
                 detailedReviewActionMenu,
                 currentReviewDetail?.feedbackID.orEmpty(),
                 currentReviewDetail?.shopID.orEmpty()
@@ -131,7 +131,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }.stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = DetailedReviewActionMenuBottomSheetUiState.Hidden(emptyList(), "", "")
+        initialValue = ActionMenuBottomSheetUiState.Hidden(emptyList(), "", "")
     )
 
     private var loadMoreDetailedReviewMediaJob: Job? = null
@@ -283,21 +283,21 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun saveState(outState: Bundle) {
-        outState.putSerializable(SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
+        outState.putSerializable(SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
         outState.putString(SAVED_STATE_PRODUCT_ID, _productID.value)
-        outState.putBoolean(SAVED_SHOW_LOAD_MORE, _showLoadMore.value)
-        outState.putSerializable(SAVED_ORIENTATION_UI_STATE, _orientationUiState.value)
-        outState.putSerializable(SAVED_OVERLAY_VISIBILITY, _overlayVisibility.value)
-        outState.putBoolean(SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
+        outState.putBoolean(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)
+        outState.putSerializable(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)
+        outState.putSerializable(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)
+        outState.putBoolean(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
     }
 
     fun restoreState(savedState: Bundle) {
-        _detailedReviewMediaResult.value = savedState.getSavedState(SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
+        _detailedReviewMediaResult.value = savedState.getSavedState(SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
         _productID.value = savedState.getSavedState(SAVED_STATE_PRODUCT_ID, _productID.value) ?: _productID.value
-        _showLoadMore.value = savedState.getSavedState(SAVED_SHOW_LOAD_MORE, _showLoadMore.value) ?: _showLoadMore.value
-        _orientationUiState.value = savedState.getSavedState(SAVED_ORIENTATION_UI_STATE, _orientationUiState.value) ?: _orientationUiState.value
-        _overlayVisibility.value = savedState.getSavedState(SAVED_OVERLAY_VISIBILITY, _overlayVisibility.value) ?: _overlayVisibility.value
-        _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value) ?: _showDetailedReviewActionMenuBottomSheet.value
+        _showSeeMore.value = savedState.getSavedState(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value) ?: _showSeeMore.value
+        _orientationUiState.value = savedState.getSavedState(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value) ?: _orientationUiState.value
+        _overlayVisibility.value = savedState.getSavedState(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value) ?: _overlayVisibility.value
+        _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value) ?: _showDetailedReviewActionMenuBottomSheet.value
     }
 
     fun tryGetPreloadedData(cacheManager: CacheManager) {
@@ -307,11 +307,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 Int::class.java,
                 INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
             ) ?: INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
-            _showLoadMore.value = cacheManager.get(
-                EXTRAS_SHOW_LOAD_MORE,
+            _showSeeMore.value = cacheManager.get(
+                EXTRAS_SHOW_SEE_MORE,
                 Boolean::class.java,
-                _showLoadMore.value
-            ) ?: _showLoadMore.value
+                _showSeeMore.value
+            ) ?: _showSeeMore.value
             _detailedReviewMediaResult.value = cacheManager.get(
                 EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT,
                 ProductrevGetReviewMedia::class.java,
@@ -352,11 +352,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         return _productID.value
     }
 
-    fun showDetailedReviewActionMenuBottomSheet() {
+    fun showActionMenuBottomSheet() {
         _showDetailedReviewActionMenuBottomSheet.value = true
     }
 
-    fun dismissDetailedReviewActionMenuBottomSheet() {
+    fun dismissActionMenuBottomSheet() {
         _showDetailedReviewActionMenuBottomSheet.value = false
     }
 
