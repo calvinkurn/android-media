@@ -1,0 +1,3 @@
+package com.tokopedia.shopdiscount.utils.constant
+
+internal const val EMPTY_STRING = ""

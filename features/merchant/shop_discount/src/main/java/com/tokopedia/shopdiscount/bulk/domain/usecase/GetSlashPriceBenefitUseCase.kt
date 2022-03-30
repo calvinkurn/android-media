@@ -6,12 +6,17 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shopdiscount.bulk.data.request.GetSlashPriceBenefitRequest
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetSlashPriceBenefitUseCase @Inject constructor(
     private val repository: GraphqlRepository
 ) : UseCase<GetSlashPriceBenefitResponse>(), GqlQueryInterface {
+
+    companion object {
+        private const val REQUEST_PARAM_KEY = "params"
+    }
 
     override fun getOperationNameList(): List<String> {
         return emptyList()
@@ -45,22 +50,20 @@ class GetSlashPriceBenefitUseCase @Inject constructor(
     }
 
     override fun getTopOperationName(): String {
-        return ""
+        return EMPTY_STRING
     }
 
     private var params = emptyMap<String, Any>()
 
     suspend fun execute(source: String = "campaign", ip: String = "", useCase: String = ""): GetSlashPriceBenefitResponse {
         val request = GetSlashPriceBenefitRequest(source, ip, useCase)
-        params = mapOf("params" to request)
+        params = mapOf(REQUEST_PARAM_KEY to request)
         return executeOnBackground()
     }
 
     override suspend fun executeOnBackground(): GetSlashPriceBenefitResponse {
         val request = GraphqlRequest(this, GetSlashPriceBenefitResponse::class.java, params, true)
-        val response =
-            repository.response(listOf(request)).getSuccessData<GetSlashPriceBenefitResponse>()
-        return response
+        return repository.response(listOf(request)).getSuccessData()
     }
 
 
