@@ -48,6 +48,8 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        remoteConfigInstance = RemoteConfigInstance.getInstance()
+
         context?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 registerIncomingPhoneCall(it)
@@ -329,9 +331,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     private fun getAbTestPlatform(): AbTestPlatform? {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
         return remoteConfigInstance?.abTestPlatform
     }
 

@@ -480,8 +480,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             catalogId,
             adapterPosition,
             userSession.userId,
-            "${model.item.id}",
-            model.item.name ?: ""
+            "${model.item?.id}",
+            model.item?.name ?: ""
         )
     }
 

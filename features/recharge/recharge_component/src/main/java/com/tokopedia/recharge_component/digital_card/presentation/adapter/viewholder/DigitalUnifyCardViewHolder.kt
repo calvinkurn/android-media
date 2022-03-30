@@ -2,11 +2,14 @@ package com.tokopedia.recharge_component.digital_card.presentation.adapter.viewh
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -199,6 +202,22 @@ class DigitalUnifyCardViewHolder(
         with(binding.dguSubtitle) {
             if (element.subtitle.isNotEmpty()) {
                 text = MethodChecker.fromHtml(element.subtitle)
+
+                val mLayoutParams = layoutParams as ConstraintLayout.LayoutParams
+                when {
+                    binding.dguDiscountLabel.visibility == View.VISIBLE -> {
+                        mLayoutParams.topToBottom = binding.dguDiscountLabel.id
+                    }
+                    binding.dguDiscountSlashPrice.visibility == View.VISIBLE -> {
+                        mLayoutParams.topToBottom = binding.dguDiscountSlashPrice.id
+                    }
+                    else -> {
+                        mLayoutParams.topToBottom = binding.dguPriceValue.id
+                    }
+                }
+                layoutParams = mLayoutParams
+                requestLayout()
+
                 show()
             } else {
                 hide()
@@ -348,7 +367,15 @@ class DigitalUnifyCardViewHolder(
         with(binding) {
             // render rating
             if (rating.rating > 0) {
-                dguReviewSquareRatingValue.text = rating.rating.toString()
+                val ratingStr = rating.rating.toString()
+                val spannable = SpannableStringBuilder(ratingStr)
+                spannable.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    0,
+                    ratingStr.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                dguReviewSquareRatingValue.text = spannable
                 dguReviewSquareRatingValue.show()
             } else {
                 dguReviewSquareRatingValue.hide()
@@ -413,7 +440,6 @@ class DigitalUnifyCardViewHolder(
 
     private fun renderSlashedPrice(discountType: String, slashedPrice: String) {
         with(binding.dguDiscountSlashPrice) {
-
             val mLayoutParams = layoutParams as ConstraintLayout.LayoutParams
             if (binding.dguDiscountLabel.visibility == View.VISIBLE) {
                 mLayoutParams.topToTop = binding.dguDiscountLabel.id
