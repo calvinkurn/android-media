@@ -941,12 +941,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun getErrorHandlerBuilder(): ErrorHandler.Builder {
+        return ErrorHandler.Builder().apply {
+            className = this.javaClass.name
+        }.build()
+    }
+
     override fun onErrorDiscoverLogin(throwable: Throwable) {
         stopTrace()
         dismissLoadingDiscover()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable, getErrorHandlerBuilder())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
@@ -1230,7 +1236,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 val errorMessage = ErrorHandler.getErrorMessage(context, it,
                     ErrorHandler.Builder().apply {
                         sendToScalyr = false
-                    })
+                    }.build())
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
@@ -1791,7 +1797,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             ErrorHandler.Builder().apply {
                 withErrorCode(withErrorCode)
                 className = mClassName
-            })
+            }.build())
         return message
     }
 
