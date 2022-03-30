@@ -6,6 +6,8 @@ data class UiEvent(
         var throwable: Throwable? = null
 ) {
     companion object {
+        const val EVENT_SUCCESS_LOAD_PROMO_PAGE = 11
+        const val EVENT_FAILED_LOAD_PROMO_PAGE = 22
 
     }
 }

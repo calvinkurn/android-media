@@ -39,8 +39,10 @@ class TokoFoodPromoViewModel @Inject constructor(val dispatcher: CoroutineDispat
             delay(3000) // Simulate hit API
             val isSuccess = true
             if (isSuccess) {
-//                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE)
                 _fragmentUiModel.value = TokoFoodPromoFragmentUiModel(
+                        promoAmount = 100000,
+                        promoCount = 1,
                         tabs = listOf(
                                 TabUiModel(
                                         id = "0",
@@ -55,7 +57,7 @@ class TokoFoodPromoViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 constructRecycleViewItem()
             } else {
                 // Todo : Set throwable from network
-//                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE)
             }
         }
     }

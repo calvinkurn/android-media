@@ -20,13 +20,17 @@ import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
 import com.tokopedia.tokofood.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
+import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
+import com.tokopedia.tokofood.purchase.removeDecimalSuffix
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -168,26 +172,49 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun observeFragmentUiModel() {
         viewModel.fragmentUiModel.observe(viewLifecycleOwner, {
-            if (viewBinding?.tabsPromoTokofood?.tabLayout?.tabCount == 0) {
+            if (it.tabs.isNotEmpty() && viewBinding?.tabsPromoTokofood?.tabLayout?.tabCount == 0) {
                 it.tabs.forEach {
                     viewBinding?.tabsPromoTokofood?.addNewTab(it.title)
                 }
+                viewBinding?.tabsPromoTokofood?.show()
+            } else {
+                viewBinding?.tabsPromoTokofood?.gone()
             }
+            renderTotalAmount(it)
         })
     }
 
     private fun observeUiEvent() {
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
-
+                UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> {
+                    renderPromoPage()
+                }
+                UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE -> {
+                    renderGlobalError(it.throwable ?: ResponseErrorException())
+                }
             }
         })
     }
 
-    private fun renderRecyclerView() {
+    private fun renderPromoPage() {
         viewBinding?.let {
             it.layoutGlobalErrorPurchasePromo.gone()
             it.recyclerViewPurchasePromo.show()
+            it.totalAmountPurchasePromo.show()
+        }
+    }
+
+    private fun renderTotalAmount(fragmentUiModel: TokoFoodPromoFragmentUiModel) {
+        viewBinding?.let {
+            it.totalAmountPurchasePromo.amountCtaView.isEnabled = true
+            it.totalAmountPurchasePromo.setCtaText("Pakai Promo (${fragmentUiModel.promoCount})")
+            it.totalAmountPurchasePromo.setLabelTitle("Kamu bisa hemat")
+            val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.promoAmount, false).removeDecimalSuffix()
+            it.totalAmountPurchasePromo.setAmount(totalAmountString)
+            it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {
+
+            }
         }
     }
 
