@@ -15,20 +15,6 @@ fun UserSessionProto.toUserData(): UserData {
     )
 }
 
-//fun Flow<UserSessionProto>.toUserDataFlow(): Flow<UserData> {
-//    return runBlocking {
-//	this@toUserDataFlow.map { proto ->
-//            UserData(
-//                name = proto.name,
-//                email = proto.email,
-//                phoneNumber = proto.phoneNumber,
-//                accessToken = proto.accessToken,
-//                refreshToken = proto.refreshToken
-//            )
-//        }
-//    }
-//}
-
 fun Flow<UserSessionProto>.toBlocking(): UserData {
     return runBlocking {
 	this@toBlocking.first().toUserData()

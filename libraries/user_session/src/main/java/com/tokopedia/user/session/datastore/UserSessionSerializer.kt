@@ -31,6 +31,5 @@ class UserSessionSerializer(private val aead: Aead): Serializer<UserSessionProto
         val byteArray = t.toByteArray()
         val encryptedBytes = aead.encrypt(byteArray, null)
         output.write(encryptedBytes)
-//        t.writeTo(output)
     }
 }

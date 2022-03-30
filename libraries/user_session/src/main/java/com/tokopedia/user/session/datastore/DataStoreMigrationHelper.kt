@@ -50,7 +50,6 @@ class DataStoreMigrationHelper {
 		    userSessionDataStore.setAndroidId(userSessionInterface.androidId.trim())
 		} catch (e: Exception) {
 		    e.printStackTrace()
-		    // Log here
 		}
 	    }
 	}

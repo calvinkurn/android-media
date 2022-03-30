@@ -25,10 +25,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.javaxInject
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
-    implementation "androidx.datastore:datastore:1.0.0"
-    implementation "com.google.protobuf:protobuf-javalite:3.19.1"
-    implementation 'com.google.crypto.tink:tink-android:1.6.1'
     implementation rootProject.ext.miscDependencies.workManager
+    implementation rootProject.ext.miscDependencies.dataStore
+    implementation rootProject.ext.miscDependencies.googleTink
+    implementation rootProject.ext.miscDependencies.protobufLite
+
 }
 
 protobuf {
