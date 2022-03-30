@@ -54,13 +54,11 @@ class TopAdsInsightViewModelTest {
             TopAdsManageHeadlineInput2.Operation(group = TopAdsManageHeadlineInput2.Operation.Group(
                 keywordOperations = listOf(TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation())
             )))
-        val responseMockObject =
-            TopadsManageHeadlineAdResponse.Data(TopadsManageHeadlineAdResponse.Data.TopadsManageHeadlineAd(
-                TopadsManageHeadlineAdResponse.Data.TopadsManageHeadlineAd.Success("1", ""),
-                emptyList()))
+        val responseMockObject : TopadsManageHeadlineAdResponse.Data = mockk()
 
         every { createHeadlineAdsUseCase.setParams(mockObject) } returns Unit
         coEvery { createHeadlineAdsUseCase.executeOnBackground() } returns responseMockObject
+        every { responseMockObject.topadsManageHeadlineAd.success.id } returns "12"
 
         viewModel.applyRecommendedKeywords(mockObject)
         assertEquals(viewModel.applyKeyword.value,
