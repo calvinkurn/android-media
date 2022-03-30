@@ -220,7 +220,7 @@ class PlayBroadcastPostVideoFragment @Inject constructor(
      * Listener
      */
     override fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel) {
-        analytic.clickContentTag(tag.tag)
+        analytic.clickContentTag(tag.tag, !tag.isChosen)
         viewModel.submitAction(PlayBroadcastSummaryAction.ToggleTag(tag))
     }
 

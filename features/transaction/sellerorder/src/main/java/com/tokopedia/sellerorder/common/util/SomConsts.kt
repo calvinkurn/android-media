@@ -137,9 +137,9 @@ object SomConsts {
     const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
 
     // Order list sort by value
-    const val SORT_BY_PAYMENT_DATE_ASCENDING = 0
-    const val SORT_BY_TOTAL_OPEN_DESCENDING = 1
-    const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
+    const val SORT_BY_PAYMENT_DATE_ASCENDING = 0L
+    const val SORT_BY_TOTAL_OPEN_DESCENDING = 1L
+    const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
 
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
