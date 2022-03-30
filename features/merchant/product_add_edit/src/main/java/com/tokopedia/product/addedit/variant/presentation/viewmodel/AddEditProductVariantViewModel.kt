@@ -27,7 +27,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_CHAR_VARIANT_TYPE_NAME
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
@@ -420,9 +419,9 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selections = productInputModel.getValueOrDefault().variantInputModel.selections.filter{
             it.variantId != CUSTOM_VARIANT_TYPE_ID.toString()
         }
+        val primaryVariantData = productInputModel.getValueOrDefault()
+            .variantInputModel.getPrimaryVariantData()
 
-        productInputModel.value?.variantInputModel = VariantInputModel(
-                isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
         mSelectedVariantUnitValuesLevel1.value = mutableListOf()
         mSelectedVariantUnitValuesLevel2.value = mutableListOf()
@@ -431,10 +430,15 @@ class AddEditProductVariantViewModel @Inject constructor(
         selectedVariantUnitMap = HashMap()
         mIsVariantPhotosVisible.value = false
 
-        productInputModel.getValueOrDefault().detailInputModel.categoryId.let {
-            val categoryId = it.toIntOrNull()
+        productInputModel.getValueOrDefault().variantInputModel = VariantInputModel(
+                isRemoteDataHasVariant = isRemoteDataHasVariant)
+        productInputModel.getValueOrDefault().detailInputModel.let {
+            val categoryId = it.categoryId.toIntOrNull()
             categoryId?.run { getVariantCategoryCombination(this, selections) }
+            it.price = primaryVariantData.price
         }
+        productInputModel.getValueOrDefault().shipmentInputModel.weight =
+            primaryVariantData.weight.orZero()
     }
 
     private fun mapSelections(

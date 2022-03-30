@@ -10,7 +10,11 @@ data class VariantInputModel(
         var selections: List<SelectionInputModel> = listOf(),
         var sizecharts: PictureVariantInputModel = PictureVariantInputModel(),
         var isRemoteDataHasVariant: Boolean = false // used for removing variant
-) : Parcelable
+) : Parcelable {
+        fun getPrimaryVariantData(
+                defaultIfNotfound: ProductVariantInputModel = ProductVariantInputModel()
+        ) = products.find { it.isPrimary } ?: defaultIfNotfound
+}
 
 @Parcelize
 data class ProductVariantInputModel(
