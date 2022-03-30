@@ -58,6 +58,8 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSession
@@ -67,8 +69,12 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.math.abs
 
-class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterCallback,
-    ShareBottomsheetListener {
+class UserProfileFragment : BaseDaggerFragment(),
+    View.OnClickListener,
+    AdapterCallback,
+    ShareBottomsheetListener,
+    ScreenShotListener,
+    PermissionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -96,7 +102,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
     private var isNewlyCreated: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var userProfileTracker: UserProfileTracker? = null
-    private var screenshotDetector: ScreenshotDetector? = null
+    private var screenShotDetector: ScreenshotDetector? = null
 
     private val mPresenter: UserProfileViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(UserProfileViewModel::class.java)
@@ -160,6 +166,14 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
                     return false
                 }
             })
+        context?.let {
+            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                it,
+                this,
+                this,
+                permissionListener = this
+            )
+        }
     }
 
     private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
@@ -946,7 +960,7 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
             )
             setOgImageUrl(profileImage ?: "")
         }
-        universalShareBottomSheet?.show(fragmentManager, this)
+        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
     }
 
     companion object {
@@ -1032,11 +1046,29 @@ class UserProfileFragment : BaseDaggerFragment(), View.OnClickListener, AdapterC
         )
     }
 
+    override fun screenShotTaken() {
+        showUniversalShareBottomSheet()
+        //add tracking for the screenshot bottom sheet
+    }
 
+    override fun permissionAction(action: String, label: String) {
+        //add tracking for the permission dialog for screenshot sharing
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
+    }
 
     override fun onCloseOptionClicked() {
 //        TODO gtm tracking
         //This method will be mostly used for GTM Tracking stuff. So add the tracking accordingly
+        //this will give you the bottomsheet type : if it's screenshot or general
+        UniversalShareBottomSheet.getShareBottomSheetType()
         userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
     }
 
