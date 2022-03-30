@@ -60,6 +60,7 @@ class PdpSimulationFragmentTest {
         actionTest {
             waitForData()
             clickTenure()
+            clickInstallmentBottomSheet()
         } assertTest {
             hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()

@@ -17,6 +17,15 @@
       "eventLabel": ".*",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "viewFintechIris",
+      "eventAction": "open simulation bottom sheet - impression",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
+
   ]
 }

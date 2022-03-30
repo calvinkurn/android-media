@@ -25,22 +25,24 @@ class PdpSimulationRobot {
 
 
 
-    fun closeBottomSheet() {
+
+    fun clickTenure() {
+        onView(withId(R.id.rvPayLaterSimulation)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickRecyclerViewChild(R.id.clSimulationCard)))
+    }
+
+
+    fun clickInstallmentBottomSheet()
+    {
         onView(
             CommonMatcher.firstView(
                 AllOf.allOf(
-                    withId(R.id.bottom_sheet_close),
+                    withId(R.id.partnerTenureInfo),
                     isDisplayed()
                 )
             )
         ).perform(
             click()
         )
-    }
-
-
-    fun clickTenure() {
-        onView(withId(R.id.rvPayLaterSimulation)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, clickRecyclerViewChild(R.id.clSimulationCard)))
     }
 
     private fun clickRecyclerViewChild(viewId: Int) = object : ViewAction {
