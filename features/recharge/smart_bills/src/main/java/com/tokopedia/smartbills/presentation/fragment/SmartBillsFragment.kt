@@ -146,8 +146,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                                         it.month,
                                         it.year,
                                         SOURCE
-                                ),
-                                swipeToRefresh?.isRefreshing ?: false
+                                )
                         )
                     }
                     if (ongoingMonth == null) {

@@ -2,12 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:viewBindingIgnore="true"
     android:id="@+id/topAdsDashboardRight"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivCalendarTopAdsActionBar"
@@ -24,4 +24,13 @@
         android:padding="@dimen/top_ads_common_dp_1"
         android:src="@drawable/education_icon" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtBuatIklan"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:text="@string/topads_dash_buat_iklan"
+        android:textColor="@color/Unify_G500"
+        android:textSize="@dimen/unify_space_12" />
 </LinearLayout>
