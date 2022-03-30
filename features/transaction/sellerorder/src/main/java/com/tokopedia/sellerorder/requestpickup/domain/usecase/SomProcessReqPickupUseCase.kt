@@ -1,9 +1,10 @@
-package com.tokopedia.sellerorder.requestpickup.domain
+package com.tokopedia.sellerorder.requestpickup.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickupParam
+import com.tokopedia.sellerorder.requestpickup.domain.query.SomProcessReqPickupQuery
 import javax.inject.Inject
 
 /**
@@ -15,19 +16,13 @@ class SomProcessReqPickupUseCase @Inject constructor(private val useCase: Graphq
         useCase.setTypeClass(SomProcessReqPickup.Data::class.java)
     }
 
-    suspend fun execute(query: String, param: SomProcessReqPickupParam): SomProcessReqPickup.Data {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(param: SomProcessReqPickupParam): SomProcessReqPickup.Data {
+        useCase.setGraphqlQuery(SomProcessReqPickupQuery)
         useCase.setRequestParams(generateParam(param))
         return useCase.executeOnBackground()
     }
 
     private fun generateParam(param: SomProcessReqPickupParam): Map<String, Any?> {
         return mapOf(SomConsts.PARAM_INPUT to param)
-    }
-
-    companion object {
-        val QUERY = """
-            
-        """.trimIndent()
     }
 }

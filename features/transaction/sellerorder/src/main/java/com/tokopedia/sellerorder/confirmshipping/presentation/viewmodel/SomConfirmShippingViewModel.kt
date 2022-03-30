@@ -8,9 +8,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
-import com.tokopedia.sellerorder.confirmshipping.domain.SomChangeCourierUseCase
-import com.tokopedia.sellerorder.confirmshipping.domain.SomGetConfirmShippingResultUseCase
-import com.tokopedia.sellerorder.confirmshipping.domain.SomGetCourierListUseCase
+import com.tokopedia.sellerorder.confirmshipping.domain.usecase.SomChangeCourierUseCase
+import com.tokopedia.sellerorder.confirmshipping.domain.usecase.SomGetConfirmShippingResultUseCase
+import com.tokopedia.sellerorder.confirmshipping.domain.usecase.SomGetCourierListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -22,7 +22,8 @@ import javax.inject.Inject
 class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                                       private val somGetConfirmShippingResultUseCase: SomGetConfirmShippingResultUseCase,
                                                       private val somGetCourierListUseCase: SomGetCourierListUseCase,
-                                                      private val somChangeCourierUseCase: SomChangeCourierUseCase) : BaseViewModel(dispatcher.io) {
+                                                      private val somChangeCourierUseCase: SomChangeCourierUseCase
+) : BaseViewModel(dispatcher.io) {
 
     private val _confirmShippingResult = MutableLiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>()
     val confirmShippingResult: LiveData<Result<SomConfirmShipping.Data.MpLogisticConfirmShipping>>
@@ -36,25 +37,25 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
     val changeCourierResult: LiveData<Result<SomChangeCourier.Data>>
         get() = _changeCourierResult
 
-    fun confirmShipping(queryString: String) {
+    fun confirmShipping(orderId: String, shippingRef: String) {
         launchCatchError(block = {
-            _confirmShippingResult.postValue(Success(somGetConfirmShippingResultUseCase.execute(queryString)))
+            _confirmShippingResult.postValue(Success(somGetConfirmShippingResultUseCase.execute(orderId, shippingRef)))
         }, onError = {
             _confirmShippingResult.postValue(Fail(it))
         })
     }
 
-    fun getCourierList(rawQuery: String) {
+    fun getCourierList() {
         launchCatchError(block = {
-            _courierListResult.postValue(Success(somGetCourierListUseCase.execute(rawQuery)))
+            _courierListResult.postValue(Success(somGetCourierListUseCase.execute()))
         }, onError = {
             _courierListResult.postValue(Fail(it))
         })
     }
 
-    fun changeCourier(queryString: String) {
+    fun changeCourier(orderId: String, shippingRef: String, agencyId: String, spId: String) {
         launchCatchError(block = {
-            _changeCourierResult.postValue(Success(somChangeCourierUseCase.execute(queryString)))
+            _changeCourierResult.postValue(Success(somChangeCourierUseCase.execute(orderId, shippingRef, agencyId, spId)))
         }, onError = {
             _changeCourierResult.postValue(Fail(it))
         })

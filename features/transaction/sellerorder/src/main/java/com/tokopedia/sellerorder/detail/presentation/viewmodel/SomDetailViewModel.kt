@@ -83,9 +83,9 @@ class SomDetailViewModel @Inject constructor(
         })
     }
 
-    fun setDelivered(rawQuery: String, orderId: String, receivedBy: String) {
+    fun setDelivered(orderId: String, receivedBy: String) {
         launchCatchError(block = {
-            _setDelivered.postValue(somSetDeliveredUseCase.execute(rawQuery, orderId, receivedBy))
+            _setDelivered.postValue(somSetDeliveredUseCase.execute(orderId, receivedBy))
         }, onError = {
             _setDelivered.postValue(Fail(it))
         })

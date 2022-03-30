@@ -220,11 +220,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_shouldReturnSuccess() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(success = 1)))
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Success)
@@ -235,11 +235,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Fail)
@@ -249,11 +249,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_ifThrowableThrown_shouldReturnFail() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } throws Throwable()
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Fail)
@@ -263,11 +263,11 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     fun setDelivered_msgShouldNotReturnEmpty() = coroutineTestRule.runBlockingTest {
         //given
         coEvery {
-            somSetDeliveredUseCase.execute(any(), any(), any())
+            somSetDeliveredUseCase.execute(any(), any())
         } returns Success(SetDeliveredResponse(SetDelivered(message = listMsg)))
 
         //when
-        viewModel.setDelivered("", "", "")
+        viewModel.setDelivered("", "")
 
         //then
         assert(viewModel.setDelivered.value is Success)

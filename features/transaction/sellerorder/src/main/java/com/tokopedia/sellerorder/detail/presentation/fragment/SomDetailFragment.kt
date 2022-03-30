@@ -305,9 +305,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun doSetDelivered(receiverName: String) {
-        val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
         setLoadingIndicator(true)
-        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverName)
+        somDetailViewModel.setDelivered(orderId, receiverName)
     }
 
     override fun onEditAwbButtonClicked(cancelNotes: String) {
