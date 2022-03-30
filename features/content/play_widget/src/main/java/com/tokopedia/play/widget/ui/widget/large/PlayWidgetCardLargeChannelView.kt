@@ -127,13 +127,13 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
             mListener?.onChannelClicked(it, model)
         }
 
-        ivPromoLabel.setOnClickListener {
+        llPromoDetail.setOnClickListener {
             mListener?.onLabelPromoClicked(this, model)
         }
 
-        ivPromoLabel.addOnImpressionListener(model.impressHolder){
+        llPromoDetail.isVisibleOnTheScreen(onViewVisible = {
             mListener?.onLabelPromoImpressed(this, model)
-        }
+        }, onViewNotVisible = {})
     }
 
     private fun setActiveModel(model: PlayWidgetChannelUiModel) {
