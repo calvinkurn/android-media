@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,7 +15,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -26,7 +29,7 @@ class LottieBottomNav : LinearLayout {
         private const val DEFAULT_TEXT_SIZE = 10f
     }
 
-    private val badgeTextViewList: MutableList<TextView>? = mutableListOf()
+    private val badgeTextViewList: MutableList<TextView> = mutableListOf()
     private var emptyBadgeLayoutParam: FrameLayout.LayoutParams? = null
     private var badgeLayoutParam: FrameLayout.LayoutParams? = null
     private var menu: MutableList<BottomMenu> = ArrayList()
@@ -36,12 +39,12 @@ class LottieBottomNav : LinearLayout {
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
-    private var buttonContainerBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+    private var buttonContainerBackgroundColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
-    private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
+    private var buttonColor: Int = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
@@ -75,20 +78,20 @@ class LottieBottomNav : LinearLayout {
         if (badgeValue == 0) {
             badgeText?.layoutParams = emptyBadgeLayoutParam
             badgeText?.setPadding(
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_1),
-                    resources.getDimensionPixelOffset(R.dimen.dp_2),
-                    resources.getDimensionPixelOffset(R.dimen.dp_1)
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_5dp),
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_2dp),
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
             )
             badgeText?.text = ""
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circle)
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_2),
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_2)
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_5dp),
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_2dp),
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_5dp),
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_2dp)
             )
 
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
@@ -107,24 +110,24 @@ class LottieBottomNav : LinearLayout {
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                0,
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
                 badgeRightMargin,
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(R.dimen.dp_12),
-                resources.getDimensionPixelOffset(R.dimen.dp_12))
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp),
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                0,
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
                 badgeRightMargin,
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
         )
 
-        badgeTextViewList?.forEach {
+        badgeTextViewList.forEach {
             if (it.text == "") {
                 it.layoutParams = emptyBadgeLayoutParam
             } else {
@@ -153,7 +156,7 @@ class LottieBottomNav : LinearLayout {
         buttonsHeight = a.getDimension(R.styleable.LottieBottomNav_buttonsHeight, defaultButtonHeight)
 
         buttonColor = a.getColor(R.styleable.LottieBottomNav_buttonColor, context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N200))
-        activeButtonColor = a.getColor(R.styleable.LottieBottomNav_activeButtonColor, context.getResColor(R.color.transparent))
+        activeButtonColor = a.getColor(R.styleable.LottieBottomNav_activeButtonColor, Color.TRANSPARENT)
         a.recycle()
 
         weightSum = 1f
@@ -174,21 +177,21 @@ class LottieBottomNav : LinearLayout {
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
-                resources.getDimensionPixelOffset(R.dimen.dp_20),
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                0,
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_20dp),
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(R.dimen.dp_12),
-                resources.getDimensionPixelOffset(R.dimen.dp_12))
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp),
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
-                resources.getDimensionPixelOffset(R.dimen.dp_25),
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                0,
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_25dp),
+                resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
         )
 
         val txtLayoutParam = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -237,7 +240,7 @@ class LottieBottomNav : LinearLayout {
 
             val imageContainer = FrameLayout(context)
             val fLayoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
-                    resources.getDimensionPixelOffset(R.dimen.dp_32))
+                    resources.getDimensionPixelOffset(R.dimen.sah_dimen_32dp))
             imageContainer.layoutParams = fLayoutParams
 
             val iconPlaceholder = ImageView(context)
@@ -302,7 +305,7 @@ class LottieBottomNav : LinearLayout {
                         .inflate(R.layout.badge_layout, imageContainer, false)
                 badge.layoutParams = badgeLayoutParam
                 val badgeTextView = badge.findViewById<TextView>(R.id.notification_badge)
-                badgeTextViewList?.add(badgeTextView)
+                badgeTextViewList.add(badgeTextView)
                 badgeTextView.tag = context.getString(R.string.tag_badge_textview) + bottomMenu.id.toString()
                 badgeTextView.visibility = View.INVISIBLE
                 imageContainer.addView(badge)
@@ -340,14 +343,14 @@ class LottieBottomNav : LinearLayout {
 
     private fun layoutContent() {
         when {
-            (indexOfChild(navbarContainer) >= 0) -> removeView(navbarContainer)
+            (indexOfChild(navbarContainer) >= Int.ZERO) -> removeView(navbarContainer)
         }
         addView(navbarContainer)
     }
 
     private fun handleItemClicked(index: Int, bottomMenu: BottomMenu) {
         // invoke listener
-        Handler().post {
+        Handler(Looper.getMainLooper()).post {
             if (listener?.menuClicked(index, bottomMenu.id) == true) {
                 changeColor(index)
                 selectedItem = index
@@ -361,15 +364,15 @@ class LottieBottomNav : LinearLayout {
             return
         }
 
-        if (iconList[selectedItem ?: 0].second) {
-            val pair = iconList[selectedItem ?: 0]
+        if (iconList[selectedItem.orZero()].second) {
+            val pair = iconList[selectedItem.orZero()]
             pair.first.cancelAnimation()
-            menu[selectedItem ?: 0].animToEnabledName?.let {
+            menu[selectedItem.orZero()].animToEnabledName?.let {
                 pair.first.setAnimation(it)
-                pair.first.speed = menu[selectedItem ?: 0].animToEnabledSpeed
+                pair.first.speed = menu[selectedItem.orZero()].animToEnabledSpeed
             }
 
-            iconList[selectedItem ?: 0] = Pair(pair.first, false)
+            iconList[selectedItem.orZero()] = Pair(pair.first, false)
         }
 
         selectedItem?.let {
@@ -422,10 +425,5 @@ class LottieBottomNav : LinearLayout {
 
     fun setMenuClickListener(listener: IBottomClickListener) {
         this.listener = listener
-    }
-
-    fun setNavbarPositionTop() {
-        layoutContent()
-        invalidate()
     }
 }

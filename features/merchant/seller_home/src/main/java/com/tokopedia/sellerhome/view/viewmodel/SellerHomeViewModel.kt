@@ -63,7 +63,6 @@ class SellerHomeViewModel @Inject constructor(
     companion object {
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
         private const val TICKER_PAGE_NAME = "seller"
-        const val DATE_FORMAT = "dd-MM-yyyy"
     }
 
     private val shopId: String by lazy { userSession.get().shopId }
@@ -71,8 +70,8 @@ class SellerHomeViewModel @Inject constructor(
         val startDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
         val endDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 1)
         return@lazy DynamicParameterModel(
-            startDate = DateTimeUtil.format(startDateMillis, DATE_FORMAT),
-            endDate = DateTimeUtil.format(endDateMillis, DATE_FORMAT),
+            startDate = DateTimeUtil.format(startDateMillis, DateTimeUtil.FORMAT_DD_MM_YYYY),
+            endDate = DateTimeUtil.format(endDateMillis, DateTimeUtil.FORMAT_DD_MM_YYYY),
             pageSource = SELLER_HOME_PAGE_NAME,
             dateType = DateFilterType.DATE_TYPE_DAY
         )
@@ -209,7 +208,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getProgressWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val today = DateTimeUtil.format(Date().time, DATE_FORMAT)
+            val today = DateTimeUtil.format(Date().time, DateTimeUtil.FORMAT_DD_MM_YYYY)
             val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
             val useCase = getProgressDataUseCase.get()
             useCase.params = params

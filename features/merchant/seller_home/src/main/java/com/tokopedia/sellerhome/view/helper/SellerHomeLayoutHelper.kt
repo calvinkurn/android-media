@@ -398,7 +398,7 @@ class SellerHomeLayoutHelper @Inject constructor(
 
     private suspend fun getProgressData(widgets: List<BaseWidgetUiModel<*>>): List<ProgressDataUiModel> {
         widgets.setLoading()
-        val today = DateTimeUtil.format(Date().time, SellerHomeViewModel.DATE_FORMAT)
+        val today = DateTimeUtil.format(Date().time, DateTimeUtil.FORMAT_DD_MM_YYYY)
         val dataKeys = Utils.getWidgetDataKeys<ProgressWidgetUiModel>(widgets)
         val params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
         val useCase = getProgressDataUseCase.get()
