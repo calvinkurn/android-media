@@ -22,7 +22,6 @@ import org.junit.Assert.*
 
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.lang.Exception
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
