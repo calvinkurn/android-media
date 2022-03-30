@@ -40,7 +40,7 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
 
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
         viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
-            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice * cartItemHolderData.bundleQuantity, false)
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
         } else {
             CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
         }
@@ -58,9 +58,9 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
 
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
         viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
-            "${cartItemHolderData.bundleQuantity} paket"
+            itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
         } else {
-            "${cartItemHolderData.quantity} barang"
+            itemView.resources.getString(R.string.label_collapsed_product_quantity, cartItemHolderData.quantity)
         }
     }
 
