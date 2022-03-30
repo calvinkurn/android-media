@@ -9,7 +9,10 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.databinding.*
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoActionListener
-import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.*
+import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoEligibilityHeaderUiModel
+import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoHeaderUiModel
+import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoItemUiModel
+import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoTickerUiModel
 import com.tokopedia.tokofood.purchase.promopage.presentation.viewholder.*
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.viewholder.TokoFoodPurchaseLoadingViewHolder
 
@@ -26,10 +29,6 @@ class TokoFoodPromoAdapterTypeFactory(private val listener: TokoFoodPromoActionL
 
     override fun type(uiModel: TokoFoodPromoItemUiModel): Int {
         return TokoFoodPromoItemViewHolder.LAYOUT
-    }
-
-    override fun type(uiModel: TokoFoodPromoTabUiModel): Int {
-        return TokoFoodPromoTabViewHolder.LAYOUT
     }
 
     override fun type(uiModel: TokoFoodPromoTickerUiModel): Int {
@@ -54,17 +53,13 @@ class TokoFoodPromoAdapterTypeFactory(private val listener: TokoFoodPromoActionL
                 val viewBinding = ItemTokofoodPromoCardBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPromoItemViewHolder(viewBinding, listener)
             }
-            TokoFoodPromoTabViewHolder.LAYOUT -> {
-                val viewBinding = ItemTokofoodPromoTabBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPromoTabViewHolder(viewBinding, listener)
-            }
             TokoFoodPromoTickerViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoTickerBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
                 TokoFoodPromoTickerViewHolder(viewBinding, listener)
             }
             TokoFoodPurchaseLoadingViewHolder.LAYOUT -> {
                 val viewBinding = ItemTokofoodPromoLoadingBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
-                TokoFoodPurchaseLoadingViewHolder(viewBinding)
+                TokoFoodPromoLoadingViewHolder(viewBinding)
             }
             else -> super.createViewHolder(parent, viewType)
         }

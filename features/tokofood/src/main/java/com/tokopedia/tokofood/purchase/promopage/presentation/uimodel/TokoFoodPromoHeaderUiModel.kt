@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPr
 
 data class TokoFoodPromoHeaderUiModel(
         var title: String = "",
-        var icon: String = ""
+        var tabId: String = ""
 ) : Visitable<TokoFoodPromoAdapterTypeFactory> {
 
     override fun type(typeFactory: TokoFoodPromoAdapterTypeFactory): Int {

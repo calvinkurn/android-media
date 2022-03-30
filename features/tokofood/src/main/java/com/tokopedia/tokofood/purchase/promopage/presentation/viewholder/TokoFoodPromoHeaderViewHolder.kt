@@ -15,7 +15,9 @@ class TokoFoodPromoHeaderViewHolder(private val viewBinding: ItemTokofoodPromoLi
     }
 
     override fun bind(element: TokoFoodPromoHeaderUiModel) {
-
+        with(viewBinding) {
+            labelPromoListHeaderTitleTokofood.text = element.title
+        }
     }
 
 }

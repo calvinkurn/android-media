@@ -35,7 +35,6 @@ class TokoFoodPromoDiffUtilCallback(private val oldList: List<Any>,
             oldItem is TokoFoodPromoEligibilityHeaderUiModel && newItem is TokoFoodPromoEligibilityHeaderUiModel -> oldItem == newItem
             oldItem is TokoFoodPromoHeaderUiModel && newItem is TokoFoodPromoHeaderUiModel -> oldItem == newItem
             oldItem is TokoFoodPromoItemUiModel && newItem is TokoFoodPromoItemUiModel -> oldItem == newItem
-            oldItem is TokoFoodPromoTabUiModel && newItem is TokoFoodPromoTabUiModel -> oldItem == newItem
             oldItem is TokoFoodPromoTickerUiModel && newItem is TokoFoodPromoTickerUiModel -> oldItem == newItem
             else -> false
         }

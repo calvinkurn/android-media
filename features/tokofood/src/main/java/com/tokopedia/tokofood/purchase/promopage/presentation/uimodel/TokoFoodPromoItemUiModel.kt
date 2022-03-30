@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 
 data class TokoFoodPromoItemUiModel(
+        var highlightWording: String = "",
         var title: String = "",
+        var timeValidityWording: String = "",
         var isUnavailable: Boolean = false,
         var unavailableInformation: String = ""
 ) : Visitable<TokoFoodPromoAdapterTypeFactory> {
