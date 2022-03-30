@@ -1,22 +1,18 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.LayoutTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 18/02/21
