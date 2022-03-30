@@ -34,6 +34,7 @@ import com.tokopedia.product.addedit.variant.di.AddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailFieldsAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantDetailInputTypeFactoryImpl
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
+import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailHeaderUiModel
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailFieldsViewHolder
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantDetailHeaderViewHolder
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_TRACKER_OFF
@@ -183,14 +184,12 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val isCollapsed = viewModel.isVariantDetailHeaderCollapsed(headerPosition)
         if (!isCollapsed) {
             variantDetailFieldsAdapter?.collapseUnitValueHeader(currentHeaderPosition, viewModel.getInputFieldSize())
-            viewModel.increaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, true)
             viewModel.collapseHeader(headerPosition, currentHeaderPosition)
         } else {
             variantDetailFieldsAdapter?.expandDetailFields(currentHeaderPosition, viewModel.getVariantDetailHeaderData(headerPosition))
             val layoutManager: LinearLayoutManager = recyclerViewVariantDetailFields?.layoutManager as LinearLayoutManager
             layoutManager.scrollToPositionWithOffset(currentHeaderPosition, 0)
-            viewModel.decreaseCollapsedFields(viewModel.getInputFieldSize())
             viewModel.updateVariantDetailHeaderMap(headerPosition, false)
             viewModel.expandHeader(headerPosition, currentHeaderPosition)
         }
@@ -302,8 +301,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         viewModel.selectedVariantSize.observe(viewLifecycleOwner, { size ->
             // clear old elements before rendering new elements
             variantDetailFieldsAdapter?.clearAllElements()
-            // reset the collapsed fields counter
-            viewModel.resetCollapsedFields()
             // have 2 selected variant detail
             val hasVariantCombination = viewModel.hasVariantCombination(size)
             // with collapsible header
@@ -409,33 +406,36 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun submitVariantInput() {
         invokeFieldsValidation()
         if (viewModel.inputDataValid.value == true) {
-            val detailList = variantDetailFieldsAdapter?.getDetailInputLayoutList().orEmpty()
-            val isError = detailList.any {
-                it.isStockError || it.isWeightError || it.isPriceError
-            }
+            viewModel.updateProductInputModel()
+            viewModel.productInputModel.value?.apply {
+                val cacheManagerId = arguments?.getString(
+                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                SaveInstanceCacheManager(requireContext(), cacheManagerId)
+                    .put(EXTRA_PRODUCT_INPUT_MODEL, this)
 
-            if (!isError) {
-                viewModel.updateProductInputModel()
-                viewModel.productInputModel.value?.apply {
-                    val cacheManagerId = arguments?.getString(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID)
-                        ?: ""
-                    SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, this)
-
-                    val intent = Intent().putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
-                    activity?.setResult(Activity.RESULT_OK, intent)
-                    activity?.finish()
-                }
+                val intent = Intent().putExtra(
+                    AddEditProductConstants.EXTRA_CACHE_MANAGER_ID,
+                    cacheManagerId
+                )
+                activity?.setResult(Activity.RESULT_OK, intent)
+                activity?.finish()
             }
         }
     }
 
     private fun invokeFieldsValidation() {
+        val headerList = variantDetailFieldsAdapter?.list?.filterIsInstance<VariantDetailHeaderUiModel>()
+        headerList?.forEach {
+            if (it.isCollapsed) onHeaderClicked(it.position)
+        }
+
         variantDetailFieldsAdapter?.list?.forEachIndexed { index, visitable ->
             (visitable as? VariantDetailFieldsUiModel)?.variantDetailInputLayoutModel?.let {
                 onPriceInputTextChanged(it.price.replace(".", ""), index)
-                onStockInputTextChanged(it.stock.orZero().toString(), index)
-                onWeightInputTextChanged(it.weight.orZero().toString(), index)
+                onStockInputTextChanged(it.stock?.toString().orEmpty(), index)
+                onWeightInputTextChanged(it.weight?.toString().orEmpty(), index)
             }
+            variantDetailFieldsAdapter?.notifyItemChanged(index)
         }
     }
 

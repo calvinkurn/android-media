@@ -158,6 +158,8 @@ class VariantDetailFieldsViewHolder(
             stockField?.setMessage(variantDetailInputLayoutModel.stockFieldErrorMessage)
             skuField?.textFieldInput?.setText(variantDetailInputLayoutModel.sku)
             weightField?.textFieldInput?.setText(variantDetailInputLayoutModel.weight?.toString().orEmpty())
+            weightField?.setError(variantDetailInputLayoutModel.isWeightError)
+            weightField?.setMessage(variantDetailInputLayoutModel.weightFieldErrorMessage)
             // show / hide sku field
             setSkuFieldVisibility(variantDetailInputLayoutModel.isSkuFieldVisible)
             // enable / disable priceField

@@ -63,7 +63,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     val isEditMode: Boolean get() = productInputModel.getValueOrDefault().productId.orZero() > 0
 
     private var inputFieldSize = 0
-    private var collapsedFields = 0
     private val headerStatusMap: HashMap<Int, Boolean> = hashMapOf()
     private val currentHeaderPositionMap: HashMap<Int, Int> = hashMapOf()
     private val inputLayoutModelMap: HashMap<Int, VariantDetailInputLayoutModel> = hashMapOf()
@@ -76,8 +75,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     private fun refreshCollapsedVariantDetailField() {
         updateProductInputModel() // save the last input
-        // reset collapsed variables
-        collapsedFields = 0
         headerStatusMap.forEach {
             headerStatusMap[it.key] = false
         }
@@ -103,22 +100,6 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun setInputFieldSize(inputFieldSize: Int) {
         this.inputFieldSize = inputFieldSize
-    }
-
-    fun getCollapsedFields(): Int {
-        return collapsedFields
-    }
-
-    fun resetCollapsedFields() {
-        this.collapsedFields = 0
-    }
-
-    fun increaseCollapsedFields(inputFieldSize: Int) {
-        collapsedFields += inputFieldSize
-    }
-
-    fun decreaseCollapsedFields(inputFieldSize: Int) {
-        collapsedFields -= inputFieldSize
     }
 
     fun hasVariantCombination(selectedVariantSize: Int): Boolean {
@@ -341,7 +322,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (stockInput == null) {
             inputModel.stockFieldErrorMessage = variantResourceProvider.getEmptyProductStockErrorMessage()
         } else {
-            val productStock = stockInput.orZero().toBigInteger()
+            val productStock = stockInput.toBigInteger()
             inputModel.stockFieldErrorMessage = validateProductVariantStockInput(productStock)
         }
         inputModel.isStockError = inputModel.stockFieldErrorMessage.isNotEmpty()
@@ -350,12 +331,11 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
 
     fun validateProductVariantWeightInput(weightInput: Int?, adapterPosition: Int): VariantDetailInputLayoutModel {
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
+        inputModel.weight = weightInput
         if (weightInput == null) {
             inputModel.weightFieldErrorMessage = variantResourceProvider.getEmptyProductWeightErrorMessage()
-            inputModel.weight = Int.ZERO
         } else {
             inputModel.weightFieldErrorMessage = validateProductVariantWeightInput(weightInput)
-            inputModel.weight = weightInput
         }
         inputModel.isWeightError = inputModel.weightFieldErrorMessage.isNotEmpty()
         return inputModel
