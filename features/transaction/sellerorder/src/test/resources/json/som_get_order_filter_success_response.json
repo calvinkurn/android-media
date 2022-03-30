@@ -403,6 +403,16 @@
           "status": 0,
           "img_logo": ""
         }
+      ],
+      "sort_by": [
+        {
+          "text": "Paling Baru",
+          "value": 2
+        },
+        {
+          "text": "Paling Lama",
+          "value": 0
+        }
       ]
     },
     "orderTypeList": [
