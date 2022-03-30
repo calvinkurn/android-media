@@ -4,6 +4,7 @@ import android.app.Activity
 import com.google.gson.Gson
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.data.model.request.checkout.FEATURE_TYPE_TOKONOW_PRODUCT
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
 import com.tokopedia.checkout.domain.model.checkout.MessageData
@@ -894,6 +895,23 @@ class ShipmentPresenterCheckoutTest {
         // Then
         assert(checkoutRequest.promos?.isNotEmpty() == true)
         assert(checkoutRequest.promoCodes?.isNotEmpty() == true)
+    }
+
+    @Test
+    fun `GIVEN checkout with tokonow product WHEN generate checkout request THEN should set feature type tokonow`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.isTokoNow = true
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, arrayListOf(), "")
+
+        // Then
+        assert(checkoutRequest.featureType == FEATURE_TYPE_TOKONOW_PRODUCT)
     }
 
 }
