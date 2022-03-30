@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * Created by Lukas on 07/09/20.
@@ -71,7 +73,9 @@ class CarouselFeaturedShopViewHolder (
                         element.grid.imageUrl,
                         element.componentName)
             }
-            element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
+            GlobalScope.launch {
+                element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
+            }
         }
     }
 
