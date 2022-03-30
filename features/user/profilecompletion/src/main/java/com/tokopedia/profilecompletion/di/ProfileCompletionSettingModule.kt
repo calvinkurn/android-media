@@ -45,7 +45,4 @@ class ProfileCompletionSettingModule(private val context: Context) {
 
     @Provides
     fun provideLoadingDialog(): LoadingDialog = LoadingDialog(context)
-
-    @Provides
-    fun provideProfileInfoTracker() = ProfileInfoTracker()
 }

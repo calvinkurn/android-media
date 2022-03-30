@@ -2,8 +2,9 @@ package com.tokopedia.profilecompletion.profileinfo.tracker
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
-class ProfileInfoTracker {
+class ProfileInfoTracker @Inject constructor() {
     private val tracker = TrackApp.getInstance().gtm
 
     // tracker ID: 28680 - done

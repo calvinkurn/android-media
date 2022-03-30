@@ -64,6 +64,11 @@ class ChangeBioUsernameViewModel @Inject constructor(
         })
     }
 
+
+    /*
+        add delay 2s after user typing then hit gql. if current process is running,
+        cancel that job and create new job.
+     */
     fun validateUsername(username: String) {
         cancelValidation()
         validationUsernameJob = launchCatchError(block = {
