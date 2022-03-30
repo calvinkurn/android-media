@@ -9,9 +9,14 @@ import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.get
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDashboardBerandaUtils.mapToSummary
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
+@ExperimentalCoroutinesApi
+@RunWith(JUnit4::class)
 class TopAdsDashboardBerandaUtilsTest {
 
     @Test
@@ -23,8 +28,8 @@ class TopAdsDashboardBerandaUtilsTest {
     @Test
     fun `mapImageModel greater than 5 items should not have overlapping text`() {
         val expected = "+3"
-        //todo ankit confirmation
         val actual = TopAdsDashboardBerandaUtils.mapImageModel(List(7) { ImageModel("") })
+
         assertEquals(actual[actual.size - 1].overLappingText, expected)
     }
 

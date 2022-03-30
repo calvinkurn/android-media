@@ -112,21 +112,19 @@ class TopAdsDashboardViewModelTest {
 
     @Test
     fun `fetchSummaryStatistics success check`() {
-        val expected =
-            TopadsWidgetSummaryStatisticsModel(
-                TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics(
-                    TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics(
-                        mockk(), mockk()), mockk()))
+
+        val expectedData =
+            TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics(
+                listOf(), mockk())
+        val fakeResponse: TopadsWidgetSummaryStatisticsModel = mockk()
 
         coEvery {
             summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
-        } returns expected
+        } returns fakeResponse
+        every { fakeResponse.topadsWidgetSummaryStatistics.widgetSummaryStatistics } returns expectedData
 
         viewModel.fetchSummaryStatistics("", "", "")
-        assertEquals(
-            (viewModel.summaryStatisticsLiveData.value as Success).data,
-            expected.topadsWidgetSummaryStatistics.widgetSummaryStatistics
-        )
+        assertEquals((viewModel.summaryStatisticsLiveData.value as Success).data, expectedData)
     }
 
     @Test
