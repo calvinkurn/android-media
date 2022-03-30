@@ -3,12 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingBottom="@dimen/unify_space_16">
 
     <ScrollView
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/btnApply"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:fillViewport="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -222,7 +226,17 @@
         app:unifyButtonRightLoader="false"
         app:unifyButtonSize="large"
         android:enabled="false"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_gravity="center"
+        android:layout_centerInParent="true"
+        app:loader_type="circular" />
 
 </RelativeLayout>

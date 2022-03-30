@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
-import com.tokopedia.shopdiscount.databinding.FragmentProductManageBinding
+import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -21,7 +21,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private var binding by autoClearedNullable<FragmentProductManageBinding>()
+    private var binding by autoClearedNullable<FragmentDiscountProductManageBinding>()
     override fun getScreenName() : String = ProductManageFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
@@ -35,7 +35,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentProductManageBinding.inflate(inflater, container, false)
+        binding = FragmentDiscountProductManageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 

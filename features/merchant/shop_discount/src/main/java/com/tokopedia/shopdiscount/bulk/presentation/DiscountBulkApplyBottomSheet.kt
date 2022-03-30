@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
@@ -15,6 +17,7 @@ import com.tokopedia.shopdiscount.databinding.BottomsheetDiscountBulkApplyBindin
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.LocaleConstant
+import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -32,6 +35,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_MODE = "mode"
+        private const val NUMBER_PATTERN = "#,###,###"
 
         @JvmStatic
         fun newInstance(mode: Mode = Mode.SHOW_ALL_FIELDS): DiscountBulkApplyBottomSheet {
@@ -108,10 +112,15 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         viewModel.benefit.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-
+                    binding?.loader?.gone()
+                    binding?.content?.visible()
+                    binding?.btnApply?.visible()
                 }
                 is Fail -> {
-
+                    binding?.loader?.gone()
+                    binding?.content?.gone()
+                    binding?.btnApply?.gone()
+                    binding?.root showError it.throwable
                 }
             }
         }
@@ -161,9 +170,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupDiscountAmountListener() {
-        val pattern = "#,###,###"
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-        numberFormatter.applyPattern(pattern)
+        numberFormatter.applyPattern(NUMBER_PATTERN)
 
         binding?.run {
             val watcher = NumberThousandSeparatorTextWatcher(
