@@ -22,18 +22,6 @@ import org.hamcrest.core.AllOf
 class PdpSimulationRobot {
 
 
-    fun clickPartnerButton() {
-//        onView(
-//            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnHowToUse), isDisplayed()))
-//        ).perform(ViewActions.click())
-    }
-
-    fun clickPartnerButtonBottomSheet() {
-//        onView(
-//            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnRegister), isDisplayed()))
-//        ).perform(ViewActions.click())
-    }
-
 
     fun closeBottomSheet() {
         onView(
@@ -46,34 +34,6 @@ class PdpSimulationRobot {
         ).perform(
             click()
         )
-    }
-
-
-    fun clickPartnerFaq() {
-//        onView(
-//            CommonMatcher.firstView(AllOf.allOf(withId(R.id.faqList), isDisplayed()))
-//        ).perform(ViewActions.click())
-    }
-
-
-    fun swipeUpCoordinateLayout() {
-//        onView(
-//            CommonMatcher.firstView(
-//                AllOf.allOf(
-//                    withId(R.id.parent_scroll_view),
-//                    isDisplayed()
-//                )
-//            )
-//        ).perform(
-//            swipeUp()
-//        )
-    }
-
-
-    fun clickPartnerFaqBottomSheet() {
-//        onView(
-//            CommonMatcher.firstView(AllOf.allOf(withId(R.id.btnSeeMore), isDisplayed()))
-//        ).perform(ViewActions.click())
     }
 
 

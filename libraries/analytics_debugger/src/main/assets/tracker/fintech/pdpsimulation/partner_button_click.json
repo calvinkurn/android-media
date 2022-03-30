@@ -3,72 +3,8 @@
   "mode": "subset",
   "query": [
     {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - impression pdp paylater simulation page",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - click paylater tenure option",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - impression paylater option",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - click card button",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - impression popup cara pakai",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - click cari tahu lebih lanjut",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - click lihat selengkapnya",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - impression popup lihat selengkapnya",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintechMicrosite",
-      "eventAction": "sim vcc - click lihat lebih banyak",
+      "event": "viewFintechIris",
+      "eventAction": "sim bnpl - impression status buyers",
       "eventCategory": "fin - info page",
       "eventLabel": ".*",
       "sessionIris": ".*",
