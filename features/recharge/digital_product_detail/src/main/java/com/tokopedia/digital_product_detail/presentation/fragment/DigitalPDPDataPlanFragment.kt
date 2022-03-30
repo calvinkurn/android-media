@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -140,6 +141,7 @@ class DigitalPDPDataPlanFragment :
     private var actionTypeTrackingJob: Job? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
+    private lateinit var productDescBottomSheet: ProductDescBottomSheet
 
     override fun getScreenName(): String = ""
 
@@ -398,6 +400,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
+                    productDescBottomSheet.dismiss()
                     onLoadingBuyWidget(false)
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
@@ -1342,9 +1345,13 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         layoutType: DenomWidgetEnum
     ) {
-        fragmentManager?.let {
-            ProductDescBottomSheet(denomFull, this).show(it, "")
+        childFragmentManager?.let {
+            productDescBottomSheet = ProductDescBottomSheet.getInstance()
+            productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setListener(this)
+            productDescBottomSheet.show(it, "")
         }
+
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.clickFullDenomChevron(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
