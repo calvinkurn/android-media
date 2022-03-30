@@ -6,6 +6,9 @@ import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationI
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.DigitalRecommendationWidget
 
+@Deprecated(
+    message = "use digital recommendation widget instead"
+)
 class DigitalRecommendationAdapter(val items: List<RecommendationItem>,
                                    private val onItemBindListener: DigitalRecommendationViewListener)
     : RecyclerView.Adapter<DigitalRecommendationAdapter.DigitalRecommendationViewHolder>() {
