@@ -96,6 +96,7 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
 
     override fun onGameOptionClick(gameType: GameType) {
         viewModel.submitAction(PlayBroadcastAction.ClickGameOption(gameType))
+        dismiss()
     }
 
     fun show(fragmentManager: FragmentManager) {

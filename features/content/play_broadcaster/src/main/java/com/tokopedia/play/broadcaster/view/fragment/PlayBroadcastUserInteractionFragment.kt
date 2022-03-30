@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -284,6 +285,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
             }
         }
+
+        quizForm.setOnCloseListener {
+            showQuizForm(false)
+        }
     }
 
     private fun setupInsets() {
@@ -375,6 +380,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         return when {
             isPinnedFormVisible() -> {
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
+                true
+            }
+            isQuizFormVisible() -> {
+                showQuizForm(false)
                 true
             }
             /** TODO: gonna delete this */
@@ -730,6 +739,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.OpenGameForm -> {
+                        gameIconView.cancelCoachMark()
+
+                        when(event.gameType) {
+                            is GameType.Taptap -> {
+                                /** TODO: will handle it soon */
+                            }
+                            is GameType.Quiz -> {
+                                showQuizForm(true)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -868,6 +889,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveView.setFinish(state.coachMark)
             }
         }
+    }
+
+    /** Game Region */
+    private fun showQuizForm(isShow: Boolean) {
+        if(isShow) gameIconView.cancelCoachMark()
+
+        quizForm.showWithCondition(isShow)
+        clInteraction.showWithCondition(!isShow)
+    }
+
+    private fun isQuizFormVisible(): Boolean {
+        return quizForm.visibility == View.VISIBLE
     }
 
     private fun openSelectInteractiveSheet() {

@@ -915,7 +915,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleClickGameOption(gameType: GameType) {
-
+        viewModelScope.launchCatchError(block = {
+            _uiEvent.emit(
+                PlayBroadcastEvent.OpenGameForm(gameType)
+            )
+        }) { }
     }
 
     /**
