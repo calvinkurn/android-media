@@ -426,7 +426,6 @@ class PlayViewModel @AssistedInject constructor(
     }
     private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
     private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
-    private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
 
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")

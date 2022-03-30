@@ -61,13 +61,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private val userReportSheetHeight: Int
         get() = (displayMetrix.heightPixels * MAX_PERCENT_HEIGHT).toInt()
 
-    companion object {
-        private const val TAG = "PlayMoreActionBottomSheet"
-
-        private const val MAX_PERCENT_HEIGHT = 0.9
-        private const val MIN_PERCENT_HEIGHT = 0.1
-    }
-
     private var childView: View? = null
 
     private val kebabMenuSheetView by viewComponent { KebabMenuSheetViewComponent(it, this) }
@@ -390,5 +383,12 @@ class PlayMoreActionBottomSheet @Inject constructor(
     interface Listener {
         fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
         fun onNoAction(bottomSheet: PlayMoreActionBottomSheet)
+    }
+
+    companion object {
+        private const val TAG = "PlayMoreActionBottomSheet"
+
+        private const val MAX_PERCENT_HEIGHT = 0.9
+        private const val MIN_PERCENT_HEIGHT = 0.1
     }
 }
