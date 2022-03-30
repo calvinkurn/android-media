@@ -22,6 +22,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.isRefreshTokonowRollenceActive
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -124,7 +125,7 @@ class ChooseAddressWidget : ConstraintLayout,
                             chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                         }
                         // trigger home to refresh data
-                        if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true) {
+                        if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && isRefreshTokonowRollenceActive()) {
                             chooseAddressWidgetListener?.onTokonowDataRefreshed()
                         }
                     }
@@ -197,9 +198,11 @@ class ChooseAddressWidget : ConstraintLayout,
                 initObservers()
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
-            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true) {
+            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && isRefreshTokonowRollenceActive()) {
                 initObservers()
                 viewModel.getTokonowData(localData)
+            } else {
+                viewModel.isFirstLoad = false
             }
         }
     }
