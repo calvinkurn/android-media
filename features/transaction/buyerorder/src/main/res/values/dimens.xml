@@ -14,8 +14,6 @@
 
     <dimen name="deals_voucher_right_line_width">6dp</dimen>
     <dimen name="deals_voucher_divider_size">3dp</dimen>
-    <dimen name="deals_voucher_corner_ticket_view">4dp</dimen>
-    <dimen name="deals_voucher_elevation_ticket_view">4dp</dimen>
     <dimen name="deals_voucher_border_width_ticket_view">1dp</dimen>
     <dimen name="deals_voucher_qr_code_size">200dp</dimen>
 </resources>
