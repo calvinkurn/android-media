@@ -13,6 +13,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/image_bundle_icon"
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:srcCompat="@drawable/iconunify_chevron_right"
+        android:alpha="0.68"
+        android:background="#31353B"
+        app:layout_constraintBottom_toBottomOf="@+id/image_product"
+        app:layout_constraintEnd_toEndOf="@+id/image_product"
+        app:shapeAppearanceOverlay="@style/roundedImageDisplay" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_variant_name"
         android:layout_width="wrap_content"

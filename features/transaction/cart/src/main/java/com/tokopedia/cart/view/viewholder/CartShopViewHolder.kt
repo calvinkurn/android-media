@@ -14,6 +14,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.view.adapter.collapsedproduct.CartCollapsedProductAdapter
 import com.tokopedia.cart.view.decorator.CartHorizontalItemDecoration
+import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartShopBoAffordabilityState
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
@@ -144,15 +145,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     private fun renderCollapsedCartItems(cartShopHolderData: CartShopHolderData) {
-        // TODO: BUNDLING NOW COLLAPSED
-        val maxIndex = min(10, cartShopHolderData.productUiModelList.size)
+        // remove item with the same bundleGroupId or productId value
+        val cartItemDataList = cartShopHolderData.productUiModelList.distinctBy {
+            if (it.isBundlingItem) it.bundleGroupId else it.productId
+        }
+        val maxIndex = min(10, cartItemDataList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
-        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartShopHolderData.productUiModelList.subList(0, maxIndex)
+        cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartItemDataList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         binding.rvCartItem.layoutManager = layoutManager
         binding.rvCartItem.adapter = cartCartCollapsedProductAdapter
 
-        setCollapsedRecyclerViewHeight(cartShopHolderData)
+        setCollapsedRecyclerViewHeight(cartItemDataList)
 
         val itemDecorationCount = binding.rvCartItem.itemDecorationCount
         if (itemDecorationCount > 0) {
@@ -163,9 +167,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         binding.rvCartItem.addItemDecoration(CartHorizontalItemDecoration(paddingLeft, paddingRight))
     }
 
-    private fun setCollapsedRecyclerViewHeight(cartShopHolderData: CartShopHolderData) {
+    private fun setCollapsedRecyclerViewHeight(cartItemDataList: List<CartItemHolderData>) {
         var hasProductWithVariant = false
-        val cartItemDataList = cartShopHolderData.productUiModelList
         if (cartItemDataList.isNotEmpty()) {
             val maxIndex = min(cartItemDataList.size, COLLAPSED_PRODUCTS_LIMIT)
             loop@ for (cartItemData in cartItemDataList.subList(0, maxIndex)) {

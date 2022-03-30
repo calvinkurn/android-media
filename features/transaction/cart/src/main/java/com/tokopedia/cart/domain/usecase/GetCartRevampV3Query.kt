@@ -779,3 +779,5 @@ fun getQueryCartRevampV3(): String {
         }
     """.trimIndent()
 }
+
+//need to add "bundle_grayscale_icon_url"
