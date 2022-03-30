@@ -585,6 +585,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
                 context,
                 viewModel.getProductId(),
                 positionClicked.plus(1),
+                false,
                 ReadReviewDataMapper.mapReadReviewDataToReviewMediaPreviewData(productReview, shopId)
             ).let {
                 startActivityForResult(it, GALLERY_ACTIVITY_CODE)

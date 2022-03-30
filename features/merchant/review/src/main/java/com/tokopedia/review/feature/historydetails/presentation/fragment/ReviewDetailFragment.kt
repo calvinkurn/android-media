@@ -571,6 +571,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 context,
                 productID,
                 position + 1,
+                false,
                 ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
                     feedbackID, images, videos
                 )

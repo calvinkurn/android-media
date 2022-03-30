@@ -48,6 +48,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     companion object {
 
         private const val SAVED_STATE_PRODUCT_ID = "savedStateProductId"
+        private const val SAVED_SHOW_LOAD_MORE = "savedShowLoadMore"
         private const val SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT = "savedGetDetailedReviewMediaResult"
         private const val SAVED_ORIENTATION_UI_STATE = "savedOrientationUiState"
         private const val SAVED_OVERLAY_VISIBILITY = "savedOverlayVisibility"
@@ -57,6 +58,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
+        const val EXTRAS_SHOW_LOAD_MORE = "extrasShowLoadMore"
         const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
 
         const val UNINITIALIZED_PRODUCT_ID_VALUE = ""
@@ -75,6 +77,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _mediaNumberToLoad = MutableStateFlow(UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE)
     val mediaNumberToLoad: StateFlow<Int>
         get() = _mediaNumberToLoad
+    private val _showLoadMore = MutableStateFlow(false)
+    val showLoadMore: StateFlow<Boolean>
+        get() = _showLoadMore
     private val _detailedReviewMediaResult = MutableStateFlow<ProductrevGetReviewMedia?>(null)
     val detailedReviewMediaResult: StateFlow<ProductrevGetReviewMedia?>
         get() = _detailedReviewMediaResult
@@ -280,6 +285,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     fun saveState(outState: Bundle) {
         outState.putSerializable(SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
         outState.putString(SAVED_STATE_PRODUCT_ID, _productID.value)
+        outState.putBoolean(SAVED_SHOW_LOAD_MORE, _showLoadMore.value)
         outState.putSerializable(SAVED_ORIENTATION_UI_STATE, _orientationUiState.value)
         outState.putSerializable(SAVED_OVERLAY_VISIBILITY, _overlayVisibility.value)
         outState.putBoolean(SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
@@ -288,6 +294,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     fun restoreState(savedState: Bundle) {
         _detailedReviewMediaResult.value = savedState.getSavedState(SAVED_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
         _productID.value = savedState.getSavedState(SAVED_STATE_PRODUCT_ID, _productID.value) ?: _productID.value
+        _showLoadMore.value = savedState.getSavedState(SAVED_SHOW_LOAD_MORE, _showLoadMore.value) ?: _showLoadMore.value
         _orientationUiState.value = savedState.getSavedState(SAVED_ORIENTATION_UI_STATE, _orientationUiState.value) ?: _orientationUiState.value
         _overlayVisibility.value = savedState.getSavedState(SAVED_OVERLAY_VISIBILITY, _overlayVisibility.value) ?: _overlayVisibility.value
         _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_SHOW_DETAILED_REVIEW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value) ?: _showDetailedReviewActionMenuBottomSheet.value
@@ -300,6 +307,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 Int::class.java,
                 INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
             ) ?: INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
+            _showLoadMore.value = cacheManager.get(
+                EXTRAS_SHOW_LOAD_MORE,
+                Boolean::class.java,
+                _showLoadMore.value
+            ) ?: _showLoadMore.value
             _detailedReviewMediaResult.value = cacheManager.get(
                 EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT,
                 ProductrevGetReviewMedia::class.java,

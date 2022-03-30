@@ -458,6 +458,7 @@ class ReviewGalleryFragment :
             requireContext(),
             viewModel.getProductId(),
             reviewGalleryMediaThumbnailUiModel.mediaNumber,
+            false,
             viewModel.concatenatedReviewImages.value
         ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
     }

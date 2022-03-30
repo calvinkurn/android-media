@@ -8,4 +8,6 @@
     <string name="review_video_player_error_action_text">Oke</string>
     <string name="review_media_gallery_failed_load_detailed_review_error_message">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
     <string name="review_media_gallery_failed_load_detailed_review_error_action_text">Refresh</string>
+    <string name="review_media_image_player_see_more_button_text">Lihat Semua</string>
+    <string name="review_image_player_see_more">Tersedia %1$d foto &amp; video dari pembeli</string>
 </resources>

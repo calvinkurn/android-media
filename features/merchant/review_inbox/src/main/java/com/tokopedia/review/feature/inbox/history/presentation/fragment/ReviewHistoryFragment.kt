@@ -286,6 +286,7 @@ class ReviewHistoryFragment :
                 context,
                 productID,
                 position + 1,
+                false,
                 ReviewHistoryDataMapper.mapReviewHistoryDataToReviewMediaPreviewData(
                     feedbackID,
                     images,

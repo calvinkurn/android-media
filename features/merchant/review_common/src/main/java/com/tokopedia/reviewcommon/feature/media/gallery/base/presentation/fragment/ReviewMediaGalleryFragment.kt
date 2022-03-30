@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewcommon.databinding.FragmentReviewMediaGalleryBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
@@ -19,6 +22,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistat
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.viewmodel.ReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
+import com.tokopedia.reviewcommon.feature.media.player.image.presentation.fragment.ReviewImagePlayerFragment
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +34,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope {
+class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
+    ReviewImagePlayerFragment.Listener {
 
     companion object {
         const val TAG = "ReviewMediaGalleryFragment"
@@ -67,7 +72,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope {
         ).get(SharedReviewMediaGalleryViewModel::class.java)
     }
     private val galleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ReviewMediaGalleryAdapter(this)
+        ReviewMediaGalleryAdapter(this, this)
     }
     private val pageChangeListener = PagerListener()
 
@@ -114,6 +119,14 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope {
         ReviewMediaGalleryComponentInstance.getInstance(requireContext()).inject(this)
     }
 
+    override fun onSeeMoreClicked() {
+        RouteManager.route(
+            context,
+            ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
+            sharedReviewMediaGalleryViewModel.getProductId()
+        )
+    }
+
     private fun setupLayout() {
         binding?.run {
             setupViewPager()
@@ -153,11 +166,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope {
         } ?: launch {
             combine(
                 sharedReviewMediaGalleryViewModel.detailedReviewMediaResult,
-                sharedReviewMediaGalleryViewModel.mediaNumberToLoad
-            ) { detailedReviewMediaResult, mediaNumberToLoad ->
-                detailedReviewMediaResult to mediaNumberToLoad
+                sharedReviewMediaGalleryViewModel.mediaNumberToLoad,
+                sharedReviewMediaGalleryViewModel.showLoadMore,
+            ) { detailedReviewMediaResult, mediaNumberToLoad, showLoadMore ->
+                Triple(detailedReviewMediaResult, mediaNumberToLoad, showLoadMore)
             }.collectLatest {
-                reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(it.first, it.second)
+                reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(it.first, it.second, it.third, it.first?.detail?.mediaCount.orZero().toInt())
             }
         }
         orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {

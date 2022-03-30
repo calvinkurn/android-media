@@ -13,7 +13,8 @@ import com.tokopedia.reviewcommon.feature.media.player.video.presentation.fragme
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.model.VideoMediaItemUiModel
 
 class ReviewMediaGalleryAdapter(
-    fragment: Fragment
+    fragment: Fragment,
+    private val reviewImagePlayerListener: ReviewImagePlayerFragment.Listener
 ) : FragmentStateAdapter(fragment) {
 
     private val mediaItems = arrayListOf<MediaItemUiModel>()
@@ -34,10 +35,12 @@ class ReviewMediaGalleryAdapter(
         return mediaItems[position].let { mediaItem ->
             when (mediaItem) {
                 is ImageMediaItemUiModel -> {
-                    ReviewImagePlayerFragment.createInstance(mediaItem.uri)
+                    ReviewImagePlayerFragment.createInstance(mediaItem.uri, mediaItem.showLoadMore, mediaItem.totalMediaCount).apply {
+                        setListener(reviewImagePlayerListener)
+                    }
                 }
                 is VideoMediaItemUiModel -> {
-                    ReviewVideoPlayerFragment.createInstance(mediaItem.uri)
+                    ReviewVideoPlayerFragment.createInstance(mediaItem.uri, mediaItem.showLoadMore)
                 }
                 is LoadingStateItemUiModel -> {
                     ReviewMediaGalleryLoadStateFragment()

@@ -9,9 +9,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.image_gallery.ImagePreview
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.FragmentReviewMediaImagePlayerBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
@@ -32,15 +36,18 @@ import kotlin.coroutines.CoroutineContext
 class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
-        private const val SAVED_STATE_IMAGE_URI = "savedStateImageUri"
         private const val ARG_IMAGE_URI = "argImageUri"
+        private const val ARG_SHOW_LOAD_MORE = "argShowLoadMore"
+        private const val ARG_TOTAL_MEDIA_COUNT = "argTotalMediaCount"
         private const val ZOOM_SCALE_FACTOR = 2f
         private const val UNZOOM_SCALE_FACTOR = 1f
 
-        fun createInstance(imageUri: String): ReviewImagePlayerFragment {
+        fun createInstance(imageUri: String, showLoadMore: Boolean, totalMediaCount: Int): ReviewImagePlayerFragment {
             return ReviewImagePlayerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_IMAGE_URI, imageUri)
+                    putBoolean(ARG_SHOW_LOAD_MORE, showLoadMore)
+                    putInt(ARG_TOTAL_MEDIA_COUNT, totalMediaCount)
                 }
             }
         }
@@ -58,6 +65,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
     lateinit var dispatchers: CoroutineDispatchers
 
     private var binding by viewBinding(FragmentReviewMediaImagePlayerBinding::bind)
+    private var listener: Listener? = null
     private var uiStateCollectorJob: Job? = null
 
     private val reviewImagePlayerViewModel by lazy(LazyThreadSafetyMode.NONE) {
@@ -101,7 +109,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        saveUiState(outState)
+        reviewImagePlayerViewModel.saveState(outState)
     }
 
     override fun getScreenName(): String {
@@ -120,22 +128,26 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         return arguments?.getString(ARG_IMAGE_URI).orEmpty()
     }
 
+    private fun getShowLoadMore(): Boolean {
+        return arguments?.getBoolean(ARG_SHOW_LOAD_MORE).orFalse()
+    }
+
+    private fun getTotalMediaCount(): Int {
+        return arguments?.getInt(ARG_TOTAL_MEDIA_COUNT).orZero()
+    }
+
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             reviewImagePlayerViewModel.setImageUri(getImageUri())
+            reviewImagePlayerViewModel.setShowLoadMore(getShowLoadMore())
+            reviewImagePlayerViewModel.setTotalMediaCount(getTotalMediaCount())
         } else {
-            savedInstanceState.getParcelable<ReviewImagePlayerUiState>(
-                SAVED_STATE_IMAGE_URI
-            ).let { savedUiState -> reviewImagePlayerViewModel.restoreSavedState(savedUiState) }
+            reviewImagePlayerViewModel.restoreSavedState(savedInstanceState)
         }
     }
 
-    private fun saveUiState(outState: Bundle) {
-        outState.putParcelable(SAVED_STATE_IMAGE_URI, reviewImagePlayerViewModel.uiState.value)
-    }
-
     private fun setupLayout() {
-        binding?.root?.imagePreviewUnifyListener = object: ImagePreview.ImagePreviewUnifyListener {
+        binding?.imagePreviewReviewMediaImagePlayer?.imagePreviewUnifyListener = object: ImagePreview.ImagePreviewUnifyListener {
             override fun onZoom(scaleFactor: Float) {}
 
             override fun onZoomEnd(scaleFactor: Float) {
@@ -146,12 +158,15 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
                 reviewMediaGalleryViewModel.requestToggleViewPagerSwipe(scaleFactor == UNZOOM_SCALE_FACTOR)
             }
         }
-        binding?.root?.onImageDoubleClickListener = {
-            if (binding?.root?.mScaleFactor == UNZOOM_SCALE_FACTOR) {
-                binding?.root?.setScaleFactor(ZOOM_SCALE_FACTOR)
+        binding?.imagePreviewReviewMediaImagePlayer?.onImageDoubleClickListener = {
+            if (binding?.imagePreviewReviewMediaImagePlayer?.mScaleFactor == UNZOOM_SCALE_FACTOR) {
+                binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(ZOOM_SCALE_FACTOR)
             } else {
-                binding?.root?.setScaleFactor(UNZOOM_SCALE_FACTOR)
+                binding?.imagePreviewReviewMediaImagePlayer?.setScaleFactor(UNZOOM_SCALE_FACTOR)
             }
+        }
+        binding?.btnReviewMediaImagePlayerSeeMore?.setOnClickListener {
+            listener?.onSeeMoreClicked()
         }
     }
 
@@ -162,12 +177,31 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun updateUi(uiState: ReviewImagePlayerUiState) {
+        binding?.imagePreviewReviewMediaImagePlayer?.mLoaderView?.hide()
+        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.loadImage(uiState.imageUri)
+        binding?.imagePreviewReviewMediaImagePlayer?.show()
         when (uiState) {
             is ReviewImagePlayerUiState.Showing -> {
-                binding?.root?.mLoaderView?.hide()
-                binding?.root?.mImageView?.loadImage(uiState.imageUri)
-                binding?.root?.show()
+                binding?.btnReviewMediaImagePlayerSeeMore?.gone()
+                binding?.tvReviewMediaImagePlayerSeeMore?.gone()
+                binding?.overlayReviewMediaImagePlayerSeeMore?.gone()
+            }
+            is ReviewImagePlayerUiState.ShowingSeeMore -> {
+                binding?.btnReviewMediaImagePlayerSeeMore?.show()
+                binding?.overlayReviewMediaImagePlayerSeeMore?.show()
+                binding?.tvReviewMediaImagePlayerSeeMore?.apply {
+                    text = context.getString(R.string.review_image_player_see_more, uiState.totalImageCount)
+                    show()
+                }
             }
         }
+    }
+
+    fun setListener(newListener: Listener) {
+        listener = newListener
+    }
+
+    interface Listener {
+        fun onSeeMoreClicked()
     }
 }

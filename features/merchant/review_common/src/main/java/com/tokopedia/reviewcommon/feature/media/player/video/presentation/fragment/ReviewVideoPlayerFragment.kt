@@ -38,7 +38,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     companion object {
         private const val ARG_VIDEO_URI = "argVideoUri"
 
-        fun createInstance(videoUri: String): ReviewVideoPlayerFragment {
+        fun createInstance(videoUri: String, showLoadMore: Boolean): ReviewVideoPlayerFragment {
             return ReviewVideoPlayerFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_VIDEO_URI, videoUri)

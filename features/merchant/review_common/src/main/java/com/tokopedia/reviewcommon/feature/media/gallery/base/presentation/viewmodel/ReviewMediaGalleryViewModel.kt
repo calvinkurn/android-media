@@ -94,23 +94,27 @@ class ReviewMediaGalleryViewModel @Inject constructor(
 
     private fun ProductrevGetReviewMedia.getReviewImageByID(
         imageId: String,
-        imageNumber: Int
+        imageNumber: Int,
+        showLoadMore: Boolean,
+        totalMediaCount: Int
     ): ImageMediaItemUiModel? {
         return detail.reviewGalleryImages.find {
             it.attachmentId == imageId
         }?.let {
-            ImageMediaItemUiModel(it.fullsizeURL, imageNumber)
+            ImageMediaItemUiModel(it.fullsizeURL, imageNumber, showLoadMore, totalMediaCount)
         }
     }
 
     private fun ProductrevGetReviewMedia.getReviewVideoByID(
         videoId: String,
-        videoNumber: Int
+        videoNumber: Int,
+        showLoadMore: Boolean,
+        totalMediaCount: Int
     ): VideoMediaItemUiModel? {
         return detail.reviewGalleryVideos.find {
             it.attachmentId == videoId
         }?.let {
-            VideoMediaItemUiModel(it.url, videoNumber)
+            VideoMediaItemUiModel(it.url, videoNumber, showLoadMore, totalMediaCount)
         }
     }
 
@@ -137,14 +141,30 @@ class ReviewMediaGalleryViewModel @Inject constructor(
 
     suspend fun updateDetailedReviewMediaResult(
         response: ProductrevGetReviewMedia?,
-        mediaNumberToLoad: Int
+        mediaNumberToLoad: Int,
+        showLoadMore: Boolean,
+        totalMediaCount: Int
     ) {
         withContext(dispatchers.computation) {
             val mediaItems: MutableList<MediaItemUiModel> = response?.let { responseData ->
-                responseData.reviewMedia.mapNotNull {
-                    if (it.imageId.isNotBlank()) responseData.getReviewImageByID(it.imageId, it.mediaNumber)
-                    else if (it.videoId.isNotBlank()) responseData.getReviewVideoByID(it.videoId, it.mediaNumber)
-                    else null
+                responseData.reviewMedia.mapIndexedNotNull { index, reviewMedia ->
+                    if (reviewMedia.imageId.isNotBlank()) {
+                        responseData.getReviewImageByID(
+                            reviewMedia.imageId,
+                            reviewMedia.mediaNumber,
+                            showLoadMore && index == responseData.reviewMedia.size - 1,
+                            totalMediaCount
+                        )
+                    } else if (reviewMedia.videoId.isNotBlank()) {
+                        responseData.getReviewVideoByID(
+                            reviewMedia.videoId,
+                            reviewMedia.mediaNumber,
+                            showLoadMore && index == responseData.reviewMedia.size - 1,
+                            totalMediaCount
+                        )
+                    } else {
+                        null
+                    }
                 }
             }.orEmpty().toMutableList()
             // if current media items is empty but our newest response is not empty then let the ui show
@@ -164,7 +184,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
                             LoadingStateItemUiModel(mediaNumber = mediaItems.first().mediaNumber - 1)
                         )
                     }
-                    if (response?.hasNext == true) {
+                    if (response?.hasNext == true && !showLoadMore) {
                         mediaItems.add(LoadingStateItemUiModel(mediaNumber = mediaItems.last().mediaNumber + 1))
                     }
                 }

@@ -13,7 +13,6 @@ import android.util.SparseIntArray
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
@@ -59,7 +58,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
@@ -83,7 +81,6 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
@@ -203,6 +200,12 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1156,15 +1159,55 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    override fun onMediaReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String) {
+    override fun onMediaReviewClick(
+        listOfImage: List<ImageReviewItem>,
+        position: Int,
+        componentTrackDataModel: ComponentTrackDataModel?,
+        imageCount: String
+    ) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                     ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
-            val listOfImageReview: List<String> = listOfImage.map {
-                it.imageUrlLarge ?: ""
+
+            // don't know what to do
+            val mappedReviewMediaVideoData = emptyList<ReviewMedia>()
+            val mappedReviewMediaImageData = listOfImage
+                .mapIndexed { index, image ->
+                    ReviewMedia(
+                        imageId = image.imageUrlLarge.orEmpty(),
+                        feedbackId = image.reviewId.orEmpty(),
+                        mediaNumber = index.plus(1)
+                    )
+                }
+            val mappedReviewMediaData = mappedReviewMediaVideoData.plus(mappedReviewMediaImageData)
+            // don't know what to do
+            val mappedReviewVideoData = emptyList<ReviewGalleryVideo>()
+            val mappedReviewImageData = mappedReviewMediaImageData.mapIndexed { index, image ->
+                ReviewGalleryImage(
+                    attachmentId = image.imageId,
+                    thumbnailURL = image.imageId,
+                    fullsizeURL = image.imageId,
+                    description = "",
+                    feedbackId = listOfImage.getOrNull(index)?.reviewId.orEmpty()
+                )
             }
-            ImageReviewGalleryActivity.moveTo(context, ArrayList(listOfImageReview), position, viewModel.getDynamicProductInfoP1?.basic?.productID
-                    ?: "", imageCount)
+            val mappedProductRevGetReviewMedia = ProductrevGetReviewMedia(
+                reviewMedia = mappedReviewMediaData,
+                detail = Detail(
+                    reviewDetail = emptyList(),
+                    reviewGalleryImages = mappedReviewImageData,
+                    reviewGalleryVideos = mappedReviewVideoData,
+                    mediaCountFmt = listOfImage.firstOrNull()?.rawImageCount.toIntOrZero().toString(),
+                    mediaCount = listOfImage.firstOrNull()?.rawImageCount.toLongOrZero()
+                )
+            )
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                it,
+                viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+                position + 1,
+                true,
+                mappedProductRevGetReviewMedia
+            ).let { startActivity(it) }
         }
     }
 
