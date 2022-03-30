@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation;
+package com.tokopedia;
 
 import static org.junit.Assert.assertEquals;
 

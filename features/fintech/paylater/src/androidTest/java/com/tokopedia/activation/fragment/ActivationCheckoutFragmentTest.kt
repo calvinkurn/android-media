@@ -1,4 +1,4 @@
-package com.tokopedia.pdpsimulation.paylater.presentation.fragment
+package com.tokopedia.activation.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,15 +7,17 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.activation.ActivationCheckoutMockResponseConfig
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.pdpsimulation.PdpSimulationMockResponseConfig
 import com.tokopedia.pdpsimulation.TkpdIdlingResource
 import com.tokopedia.pdpsimulation.TkpdIdlingResourceProvider
+import com.tokopedia.pdpsimulation.activateCheckout.presentation.activity.OptimizedCheckoutActivity
 import com.tokopedia.pdpsimulation.analytics.actionTest
+import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_CODE
+import com.tokopedia.pdpsimulation.common.constants.PARAM_GATEWAY_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
-import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_URL
-import com.tokopedia.pdpsimulation.paylater.presentation.activity.PdpSimulationActivity
+import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -26,10 +28,10 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class PdpSimulationFragmentTest {
+class ActivationCheckoutFragmentTest {
 
     @get:Rule
-    val activityRule = ActivityTestRule(PdpSimulationActivity::class.java, false, false)
+    val activityRule = ActivityTestRule(OptimizedCheckoutActivity::class.java, false, false)
 
 
     @get:Rule
@@ -43,7 +45,7 @@ class PdpSimulationFragmentTest {
     fun setUp() {
         clearData()
         login()
-        setupGraphqlMockResponse(PdpSimulationMockResponseConfig())
+        setupGraphqlMockResponse(ActivationCheckoutMockResponseConfig())
         launchActivity()
         setupIdlingResource()
     }
@@ -58,9 +60,7 @@ class PdpSimulationFragmentTest {
     @Test
     fun check_simulation_test() {
         actionTest {
-            waitForData()
-            clickTenure()
-            clickInstallmentBottomSheet()
+
         } assertTest {
             hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
@@ -78,10 +78,11 @@ class PdpSimulationFragmentTest {
 
     private fun launchActivity() {
         val bundle = Bundle()
-        bundle.putString("price", "1000000")
-        bundle.putString(PARAM_PRODUCT_URL, "https://dummyurl.com")
-        bundle.putString(PARAM_PRODUCT_ID, "2147828387")
-        val intent = Intent(context, PdpSimulationActivity::class.java)
+        bundle.putString(PARAM_GATEWAY_ID, "1000000")
+        bundle.putString(PARAM_PRODUCT_ID, "2147954780")
+        bundle.putString(PARAM_PRODUCT_TENURE,"3")
+        bundle.putString(PARAM_GATEWAY_CODE,"GOCICIL")
+        val intent = Intent(context, OptimizedCheckoutActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
     }
