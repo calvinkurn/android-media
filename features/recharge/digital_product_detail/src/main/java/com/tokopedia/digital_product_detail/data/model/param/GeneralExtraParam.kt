@@ -1,13 +1,7 @@
 package com.tokopedia.digital_product_detail.data.model.param
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 
-@Parcelize
 data class GeneralExtraParam (
-    var operatorId: String = "",
-    var categoryId: String = "",
-    var productId: String = "",
-    var clientNumber: String = "",
-    var menuId: String = ""
-): Parcelable
+    var operatorId: String = ""
+): TopupBillsExtraParam()

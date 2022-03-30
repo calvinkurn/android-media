@@ -412,11 +412,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             userSession.userId,
             title
         )
-        childFragmentManager?.let {
-            val moreInfoPDPBottomsheet = MoreInfoPDPBottomsheet.getInstance()
-            moreInfoPDPBottomsheet.setListInfo(listInfo)
-            moreInfoPDPBottomsheet.setTitleBottomSheet(title)
-            moreInfoPDPBottomsheet.show(it, "")
+        fragmentManager?.let {
+            MoreInfoPDPBottomsheet(listInfo, title).show(it, "")
         }
     }
 
@@ -587,8 +584,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         binding?.run {
             if (rechargePdpTagihanListrikEmptyStateWidget.isVisible) {
                 rechargePdpTagihanListrikEmptyStateWidget.hide()
+                renderGreenBox()
             }
-            renderGreenBox()
         }
     }
 
