@@ -56,15 +56,25 @@ class PdpSimulationFragmentTest {
 
 
     @Test
-    fun check_pay_later_partner_button_click() {
+    fun check_simulation_test() {
         actionTest {
-
+            waitForData()
+            clickTenure()
         } assertTest {
             hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
         }
     }
 
+
+
+
+
+
+
+    private fun waitForData() {
+        Thread.sleep(5000)
+    }
 
     private fun clearData() {
         gtmLogDBSource.deleteAll().toBlocking()

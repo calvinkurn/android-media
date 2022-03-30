@@ -9,6 +9,14 @@
       "eventLabel": ".*",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "clickFintech",
+      "eventAction": "sim bnpl - tenure option click",
+      "eventCategory": "fin - info page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
