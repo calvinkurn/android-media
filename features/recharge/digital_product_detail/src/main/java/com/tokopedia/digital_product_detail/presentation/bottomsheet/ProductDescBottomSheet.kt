@@ -51,10 +51,6 @@ class ProductDescBottomSheet: BottomSheetUnify() {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 

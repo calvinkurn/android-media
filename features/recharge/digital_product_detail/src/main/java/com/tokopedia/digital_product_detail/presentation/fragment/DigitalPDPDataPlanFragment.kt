@@ -636,12 +636,13 @@ class DigitalPDPDataPlanFragment :
                             getString(R.string.bottom_sheet_filter_title),
                             userSession.userId,
                         )
-                        fragmentManager?.let {
-                            FilterPDPBottomsheet(
-                                getString(R.string.bottom_sheet_filter_title),
-                                getString(R.string.bottom_sheet_filter_reset),
-                                filterData, this@DigitalPDPDataPlanFragment
-                            ).show(it, "")
+                        childFragmentManager?.let {
+                            val filterPDPBottomsheet = FilterPDPBottomsheet.getInstance()
+                            filterPDPBottomsheet.setTitleAndAction(getString(R.string.bottom_sheet_filter_title),
+                                getString(R.string.bottom_sheet_filter_reset))
+                            filterPDPBottomsheet.setFilterTagData(filterData)
+                            filterPDPBottomsheet.setListener(this@DigitalPDPDataPlanFragment)
+                            filterPDPBottomsheet.show(it, "")
                         }
                     }
 
