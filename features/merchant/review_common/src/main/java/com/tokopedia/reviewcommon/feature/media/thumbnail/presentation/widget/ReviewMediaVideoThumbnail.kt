@@ -43,6 +43,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnail(
         uiState: ReviewMediaVideoThumbnailUiState
     ) {
+        binding.loaderReviewMediaVideoThumbnail.show()
         reviewVideoPlayer.initializeVideoPlayer(
             uiState.uri,
             binding.playerViewReviewMediaVideoThumbnail,
@@ -145,8 +146,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     }
 
     override fun onReviewVideoPlayerIsPlaying() {
-        binding.reviewMediaVideoThumbnailBrokenOverlay.gone()
-        binding.icReviewMediaVideoThumbnailBroken.gone()
+        // noop
     }
 
     override fun onReviewVideoPlayerIsBuffering() {
@@ -154,7 +154,9 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     }
 
     override fun onReviewVideoPlayerIsPaused() {
-        // noop
+        binding.reviewMediaVideoThumbnailBrokenOverlay.gone()
+        binding.icReviewMediaVideoThumbnailBroken.gone()
+        binding.loaderReviewMediaVideoThumbnail.gone()
     }
 
     override fun onReviewVideoPlayerIsPreloading() {
@@ -166,6 +168,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     }
 
     override fun onReviewVideoPlayerError() {
+        binding.loaderReviewMediaVideoThumbnail.gone()
         when (uiState) {
             is ReviewMediaVideoThumbnailUiState.Showing -> {
                 binding.reviewMediaVideoThumbnailBrokenOverlay.show()

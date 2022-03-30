@@ -25,6 +25,12 @@
                 app:surface_type="texture_view"
                 app:use_controller="false" />
 
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_review_media_video_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:loader_type="rect" />
+
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ic_review_media_video_thumbnail_play_button"
                 android:layout_width="24dp"
