@@ -12,23 +12,13 @@ import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRe
 import com.tokopedia.digital.digital_recommendation.presentation.widget.DigitalRecommendationWidget
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.data.mapper.ThankPageType
-import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
-import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_digital_recommendation.view.*
 import javax.inject.Inject
 
 class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
-
-
-    private lateinit var fragment: BaseDaggerFragment
-    private var trackingQueue: TrackingQueue? = null
-    private lateinit var paymentId: String
-    private lateinit var thanksPageData: ThanksPageData
 
     @Inject
     lateinit var analytics: dagger.Lazy<DigitalRecommendationAnalytics>
@@ -38,8 +28,6 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
 
     @Inject
     lateinit var userSession: dagger.Lazy<UserSessionInterface>
-
-    var listener: DigitalRecommendationViewListener? = null
 
     fun getLayout() = R.layout.thank_pdp_digital_recommendation
 
@@ -69,22 +57,16 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
     }
 
-    override fun loadRecommendation(thanksPageData: ThanksPageData,
-                                    fragment: BaseDaggerFragment,
-                                    trackingQueue: TrackingQueue?,
-                                    pgCategoryIds: List<Int>,
-                                    pageType: ThankPageType
+    override fun loadRecommendation(
+        fragment: BaseDaggerFragment,
+        pgCategoryIds: List<Int>,
+        pageType: DigitalRecommendationPage
     ) {
-        this.thanksPageData =  thanksPageData
-        this.paymentId = thanksPageData.paymentID
-        this.fragment = fragment
-        this.trackingQueue = trackingQueue
-
         with(view_digital_recommendation){
             setViewModelFactory(viewModelFactory.get())
             setLifecycleOwner(fragment)
             setAdditionalData(DigitalRecommendationAdditionalTrackingData())
-            setPage(DigitalRecommendationPage.DG_THANK_YOU_PAGE)
+            setPage(pageType)
             listener = object : DigitalRecommendationWidget.Listener{
                 override fun onFetchFailed(throwable: Throwable) {
                     hide()
@@ -96,11 +78,6 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             }
             build()
         }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        listener = null
     }
 
 }

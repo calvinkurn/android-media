@@ -14,24 +14,33 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
-import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
-import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
-import com.tokopedia.thankyou_native.data.mapper.*
+import com.tokopedia.thankyou_native.data.mapper.DigitalThankPage
+import com.tokopedia.thankyou_native.data.mapper.MarketPlaceThankPage
+import com.tokopedia.thankyou_native.data.mapper.PaymentExpired
+import com.tokopedia.thankyou_native.data.mapper.PaymentPageMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentStatus
+import com.tokopedia.thankyou_native.data.mapper.PaymentStatusMapper
+import com.tokopedia.thankyou_native.data.mapper.PaymentVerified
+import com.tokopedia.thankyou_native.data.mapper.ThankPageTypeMapper
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.*
+import com.tokopedia.thankyou_native.helper.ThanksPageHelper
+import com.tokopedia.thankyou_native.helper.addContainer
+import com.tokopedia.thankyou_native.helper.attachTopAdsHeadlinesView
+import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -49,12 +58,14 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDi
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
@@ -163,10 +174,10 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     }
                 }
                 addMarketPlaceRecommendation()
-                addDigitalRecommendation(pgCategoryIds, MarketPlaceThankPage)
+                addDigitalRecommendation(pgCategoryIds, DigitalRecommendationPage.PG_THANK_YOU_PAGE)
             }
             is DigitalThankPage -> {
-                addDigitalRecommendation(pgCategoryIds, DigitalThankPage)
+                addDigitalRecommendation(pgCategoryIds, DigitalRecommendationPage.DG_THANK_YOU_PAGE)
                 addMarketPlaceRecommendation()
             }
         }
@@ -195,7 +206,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
     }
 
-    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
+    private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: DigitalRecommendationPage) {
         if (::thanksPageData.isInitialized) {
 
             if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
@@ -208,8 +219,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             }
 
             iDigitalRecommendationView?.loadRecommendation(
-                thanksPageData,
-                this, digitalRecomTrackingQueue, pgCategoryIds, pageType
+                this, pgCategoryIds, pageType
             )
         }
     }
