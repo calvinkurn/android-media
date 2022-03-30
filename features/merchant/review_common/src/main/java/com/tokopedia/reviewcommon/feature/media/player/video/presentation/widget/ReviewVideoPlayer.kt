@@ -24,7 +24,11 @@ import com.tokopedia.reviewcommon.feature.media.player.video.data.cache.MediaPla
 import java.lang.ref.WeakReference
 
 class ReviewVideoPlayer(
-    private val context: Context
+    private val context: Context,
+    minBufferDuration: Int = MIN_BUFFER_DURATION,
+    maxBufferDuration: Int = MAX_BUFFER_DURATION,
+    minPlaybackStartBuffer: Int = MIN_PLAYBACK_START_BUFFER,
+    minPlaybackResumeBuffer: Int = MIN_PLAYBACK_RESUME_BUFFER
 ) {
     companion object {
         //Minimum Video you want to buffer while Playing
@@ -50,10 +54,10 @@ class ReviewVideoPlayer(
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
         .setBufferDurationsMs(
-            MIN_BUFFER_DURATION,
-            MAX_BUFFER_DURATION,
-            MIN_PLAYBACK_START_BUFFER,
-            MIN_PLAYBACK_RESUME_BUFFER
+            minBufferDuration,
+            maxBufferDuration,
+            minPlaybackStartBuffer,
+            minPlaybackResumeBuffer
         )
         .createDefaultLoadControl()
 
@@ -115,10 +119,14 @@ class ReviewVideoPlayer(
     }
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val defaultDataSourceFactory =
-            DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
-        val dataSourceFactory =
-            CacheDataSourceFactory(MediaPlayerCache.getInstance(context), defaultDataSourceFactory)
+        val defaultDataSourceFactory = DefaultDataSourceFactory(
+            context,
+            Util.getUserAgent(context, "Tokopedia Android")
+        )
+        val dataSourceFactory = CacheDataSourceFactory(
+            MediaPlayerCache.getInstance(context),
+            defaultDataSourceFactory
+        )
         val mediaSource = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
             C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)

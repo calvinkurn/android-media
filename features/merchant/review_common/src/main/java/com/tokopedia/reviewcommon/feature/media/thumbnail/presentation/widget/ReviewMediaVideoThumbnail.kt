@@ -28,7 +28,13 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         true
     )
     private val listener: ViewListeners = ViewListeners()
-    private val reviewVideoPlayer = ReviewVideoPlayer(context)
+    private val reviewVideoPlayer = ReviewVideoPlayer(
+        context = context,
+        minBufferDuration = 50,
+        maxBufferDuration = 50,
+        minPlaybackStartBuffer = 50,
+        minPlaybackResumeBuffer = 50
+    )
     private var uiState: ReviewMediaVideoThumbnailUiState? = null
 
     init {
