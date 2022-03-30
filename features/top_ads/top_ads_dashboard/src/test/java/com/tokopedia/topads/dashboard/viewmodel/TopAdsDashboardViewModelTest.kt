@@ -17,12 +17,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
 import org.junit.Assert.*
 
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.Exception
 
 @ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
@@ -55,67 +55,6 @@ class TopAdsDashboardViewModelTest {
     }
 
     @Test
-    fun `getLatestReadings should parse topAdsHomepageLatestReadingJson and invoke 0th article as success`() {
-        val expected = Gson().fromJson(topAdsHomepageLatestReadingJson, TopAdsLatestReading::class.java)
-        viewModel.getLatestReadings()
-
-        assertEquals(expected[0].articles , (viewModel.latestReadingLiveData.value as Success).data)
-    }
-
-    @Test
-    fun `fetchSummaryStatistics failure check`() {
-        val expected : TopadsWidgetSummaryStatisticsModel? = null
-
-        coEvery {
-            summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
-        } returns expected
-
-        viewModel.fetchSummaryStatistics("", "", "")
-        assert(viewModel.summaryStatisticsLiveData.value is Fail)
-    }
-
-    @Test
-    fun `fetchSummaryStatistics success check`() {
-        val expected =
-            TopadsWidgetSummaryStatisticsModel(
-                TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics(
-                    TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics(
-                        emptyList(), mockk()), mockk()))
-
-        coEvery {
-            summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
-        } returns expected
-
-        viewModel.fetchSummaryStatistics("", "", "")
-        assertEquals(
-            (viewModel.summaryStatisticsLiveData.value as Success).data,
-            expected.topadsWidgetSummaryStatistics.widgetSummaryStatistics
-        )
-    }
-
-    @Test
-    fun `fetchRecommendationStatistics failure check if data is null after fetching`() {
-
-        coEvery { recommendationStatisticsUseCase.fetchRecommendationStatistics() } returns null
-
-        viewModel.fetchRecommendationStatistics()
-        assert(viewModel.recommendationStatsLiveData.value is Fail)
-    }
-
-    @Test
-    fun `fetchRecommendationStatistics success check`() {
-        val expected =
-            RecommendationStatistics(RecommendationStatistics.Statistics(
-                mockk(), listOf(), mockk()))
-
-        coEvery { recommendationStatisticsUseCase.fetchRecommendationStatistics() } returns expected
-
-        viewModel.fetchRecommendationStatistics()
-        assertEquals((viewModel.recommendationStatsLiveData.value as Success).data,
-            expected.statistics.data)
-    }
-
-    @Test
     fun `getShopDeposit() success check`() {
         val expected = 10
 
@@ -139,5 +78,118 @@ class TopAdsDashboardViewModelTest {
 
         viewModel.fetchShopDeposit()
         assertEquals(mockThrowable, (viewModel.shopDepositLiveData.value as Fail).throwable)
+    }
+
+    @Test
+    fun `fetchRecommendationStatistics success check`() {
+        val expected =
+            RecommendationStatistics(RecommendationStatistics.Statistics(
+                mockk(relaxed = true), mockk(), mockk()))
+
+        coEvery { recommendationStatisticsUseCase.fetchRecommendationStatistics() } returns expected
+
+        viewModel.fetchRecommendationStatistics()
+        assertEquals((viewModel.recommendationStatsLiveData.value as Success).data,
+            expected.statistics.data)
+    }
+
+    @Test
+    fun `fetchRecommendationStatistics failure check `() {
+
+        coEvery { recommendationStatisticsUseCase.fetchRecommendationStatistics() } returns null
+
+        viewModel.fetchRecommendationStatistics()
+        assert(viewModel.recommendationStatsLiveData.value is Fail)
+    }
+
+    @Test
+    fun `fetchRecommendationStatistics onError block test`() {
+
+        coEvery { recommendationStatisticsUseCase.fetchRecommendationStatistics() } returns mockk()
+
+        viewModel.fetchRecommendationStatistics()
+        assert(viewModel.recommendationStatsLiveData.value is Fail)
+    }
+
+    @Test
+    fun `fetchSummaryStatistics success check`() {
+        val expected =
+            TopadsWidgetSummaryStatisticsModel(
+                TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics(
+                    TopadsWidgetSummaryStatisticsModel.TopadsWidgetSummaryStatistics.WidgetSummaryStatistics(
+                        mockk(), mockk()), mockk()))
+
+        coEvery {
+            summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
+        } returns expected
+
+        viewModel.fetchSummaryStatistics("", "", "")
+        assertEquals(
+            (viewModel.summaryStatisticsLiveData.value as Success).data,
+            expected.topadsWidgetSummaryStatistics.widgetSummaryStatistics
+        )
+    }
+
+    @Test
+    fun `fetchSummaryStatistics failure check`() {
+        val expected: TopadsWidgetSummaryStatisticsModel? = null
+
+        coEvery {
+            summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
+        } returns expected
+
+        viewModel.fetchSummaryStatistics("", "", "")
+        assert(viewModel.summaryStatisticsLiveData.value is Fail)
+    }
+
+    @Test
+    fun `fetchSummaryStatistics onError block test`() {
+
+        coEvery {
+            summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
+        } returns mockk()
+
+        viewModel.fetchSummaryStatistics("", "", "")
+        assert(viewModel.summaryStatisticsLiveData.value is Fail)
+    }
+
+    @Test
+    fun `getLatestReadings success test`() {
+        val expected: TopAdsLatestReading = TopAdsLatestReading().apply {
+            add(TopAdsLatestReading.TopAdsLatestReadingItem(listOf(), "", "", ""))
+        }
+
+        mockkConstructor(Gson::class)
+        every {
+            anyConstructed<Gson>().fromJson(topAdsHomepageLatestReadingJson,
+                TopAdsLatestReading::class.java)
+        } returns expected
+
+        viewModel.getLatestReadings()
+        assertEquals(expected[0].articles, (viewModel.latestReadingLiveData.value as Success).data)
+    }
+
+    @Test
+    fun `getLatestReadings failure test`() {
+        mockkConstructor(Gson::class)
+        every {
+            anyConstructed<Gson>().fromJson(topAdsHomepageLatestReadingJson,
+                TopAdsLatestReading::class.java)
+        } returns TopAdsLatestReading()
+
+        viewModel.getLatestReadings()
+        assert(viewModel.latestReadingLiveData.value is Fail)
+    }
+
+    @Test
+    fun `getLatestReadings onError block test`() {
+        mockkConstructor(Gson::class)
+        every {
+            anyConstructed<Gson>().fromJson(topAdsHomepageLatestReadingJson,
+                TopAdsLatestReading::class.java)
+        } returns mockk()
+
+        viewModel.getLatestReadings()
+        assert(viewModel.latestReadingLiveData.value is Fail)
     }
 }
