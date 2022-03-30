@@ -1942,8 +1942,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             val isInvoked = widget.impressHolder.isInvoke
             when (widget) {
                 !is SectionWidgetUiModel,
-                !is TickerWidgetUiModel,
-                !is WhiteSpaceUiModel -> {
+                !is TickerWidgetUiModel -> {
                     if (isInvoked) {
                         widget.copyWidget().apply { impressHolder = ImpressHolder() }
                     } else {
@@ -2019,7 +2018,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-                this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
+                this !is DescriptionWidgetUiModel
     }
 
     private fun setRecommendationCoachMarkEligibility() {
