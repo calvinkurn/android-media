@@ -11,7 +11,10 @@ data class GetCurrentInteractiveResponse(
 ) {
     data class Data(
             @SerializedName("interactive")
-            val interactive: ChannelInteractive = ChannelInteractive()
+            val interactive: ChannelInteractive = ChannelInteractive(),
+
+            @SerializedName("quiz")
+            val quiz: ChannelQuiz = ChannelQuiz()
     )
 }
 

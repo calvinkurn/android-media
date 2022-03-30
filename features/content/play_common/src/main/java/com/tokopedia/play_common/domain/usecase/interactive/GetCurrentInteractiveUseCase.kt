@@ -33,6 +33,18 @@ class GetCurrentInteractiveUseCase @Inject constructor(
               countdown_end_delay: countdownEndDelay
               waiting_duration: waitingDuration
             }
+            quiz {
+              interactive_id: interactiveID
+              status
+              question
+              prize
+              countdownEnd
+              choices {
+                id
+                text
+              }
+              user_choice: userChoice
+            }
           }
         }
     """.trimIndent()
