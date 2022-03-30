@@ -541,7 +541,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `given getting cached data from use case with transform flow first time failed, should still execute use case`() =
+    fun `get widget layout on first load with height provided should failed`() =
         runBlocking {
             val throwable = MessageErrorException("error message")
             val shopId = "123456"
@@ -553,9 +553,6 @@ class SellerHomeViewModelTest {
                 userSession.shopId
             } returns shopId
 
-            coEvery {
-                getLayoutUseCase.setUseCache(true)
-            } throws throwable
             coEvery {
                 getLayoutUseCase.executeOnBackground()
             } throws throwable
@@ -885,6 +882,49 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get line graph from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf("x", "y", "z")
+
+        getLineGraphDataUseCase.params =
+            GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getLineGraphDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getLineGraphWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getLineGraphDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getLineGraphDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getLineGraphDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.lineGraphWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `get calendar widget data then returns success result`() = runBlocking {
         val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
 
@@ -924,6 +964,48 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.calendarWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get calendar from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(CalendarFilterDataKeyUiModel("x"))
+
+        getCalendarDataUseCase.params = GetCalendarDataUseCase.createParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getCalendarDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getCalendarWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getCalendarDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getCalendarDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getCalendarDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.calendarWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -976,6 +1058,49 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get progress from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf("x", "y", "z")
+        val dateStr = "02-02-2020"
+
+        getProgressDataUseCase.params = GetProgressDataUseCase.getRequestParams(dateStr, dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getProgressDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getProgressWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getProgressDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getProgressDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getProgressDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.progressWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `get post widget data then returns success result`() =
         runBlocking {
             val dataKeys = listOf(
@@ -1025,6 +1150,51 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.postListWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get post list from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getPostDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getPostWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getPostDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getPostDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getPostDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.postListWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1089,6 +1259,53 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get carousel from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(
+            anyString(),
+            anyString(),
+            anyString(),
+            anyString()
+        )
+
+        getCarouselDataUseCase.params = GetCarouselDataUseCase.getRequestParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getCarouselDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getCarouselWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getCarouselDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getCarouselDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getCarouselDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.carouselWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `should success when get table widget data on caching disabled`() = runBlocking {
         val dataKeys = listOf(
             TableAndPostDataKey("x", "x", 6, 3),
@@ -1140,6 +1357,52 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get table data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(
+            TableAndPostDataKey("x", "x", 6, 3),
+            TableAndPostDataKey("y", "y", 6, 3)
+        )
+
+        getTableDataUseCase.params =
+            GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getTableDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getTableWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getTableDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getTableDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getTableDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.tableWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `should success when get pie chart widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(PieChartDataUiModel(), PieChartDataUiModel())
@@ -1187,6 +1450,49 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get pie chart data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getPieChartDataUseCase.params =
+            GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getPieChartDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getPieChartWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getPieChartDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getPieChartDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getPieChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.pieChartWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `should success when get bar chart widget data`() = runBlocking {
         val dataKeys = listOf(anyString(), anyString())
         val result = listOf(BarChartDataUiModel(), BarChartDataUiModel())
@@ -1231,6 +1537,49 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.barChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get bar chart data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getBarChartDataUseCase.params =
+            GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getBarChartDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getBarChartWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getBarChartDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getBarChartDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getBarChartDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.barChartWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1284,6 +1633,49 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `when get multi line graph data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getMultiLineGraphUseCase.params =
+            GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getMultiLineGraphUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getMultiLineGraphUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.multiLineGraphWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `should success when get announcement widget data`() = runBlocking {
         val dataKeys = listOf(anyString())
         val result = listOf(AnnouncementDataUiModel())
@@ -1329,6 +1721,48 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.announcementWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `when get announcement data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getAnnouncementDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getAnnouncementDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.announcementWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
@@ -1380,6 +1814,48 @@ class SellerHomeViewModelTest {
 
         val expected = Fail(throwable)
         viewModel.recommendationWidgetData.verifyErrorEquals(expected)
+    }
+
+    @Test
+    fun `when get recommendation data from network and cache are failed, will return throwable from network`() {
+        val dataKeys = listOf(anyString())
+
+        getRecommendationDataUseCase.params = GetRecommendationDataUseCase.createParams(dataKeys)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getRecommendationDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getRecommendationWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getRecommendationDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getRecommendationDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getRecommendationDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.recommendationWidgetData.verifyErrorEquals(expectedResult)
     }
 
     // example using get card widget data, any usecase is fine
@@ -1465,7 +1941,7 @@ class SellerHomeViewModelTest {
     }
 
     @Test
-    fun `should not get data from cache if not first load`() {
+    fun `when get card widget data should not get from cache if not first load`() {
         val dataKeys = listOf("a", "b", "c")
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
@@ -1500,6 +1976,48 @@ class SellerHomeViewModelTest {
         val expectedResult = Success(cardDataResult)
         Assertions.assertTrue(dataKeys.size == expectedResult.data.size)
         Assertions.assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    @Test
+    fun `when get card data from network and cache failed, return throwable from network result`() {
+        val dataKeys = listOf("a", "b", "c")
+
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify(exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.cardWidgetData.verifyErrorEquals(expectedResult)
     }
 
     @Test
