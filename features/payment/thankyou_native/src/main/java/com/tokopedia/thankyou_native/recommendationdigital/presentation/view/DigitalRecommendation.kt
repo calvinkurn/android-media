@@ -66,7 +66,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             setViewModelFactory(viewModelFactory.get())
             setLifecycleOwner(fragment)
             setAdditionalData(DigitalRecommendationAdditionalTrackingData())
-            setPage(pageType)
+            setPage(getDummyChannelName(pageType))
             listener = object : DigitalRecommendationWidget.Listener{
                 override fun onFetchFailed(throwable: Throwable) {
                     hide()
@@ -80,4 +80,12 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
         }
     }
 
+    //TODO : will be delete if real channel name is already done
+    private fun getDummyChannelName(pageType: DigitalRecommendationPage): DigitalRecommendationPage{
+        return if (pageType == DigitalRecommendationPage.DG_THANK_YOU_PAGE) {
+            DigitalRecommendationPage.DIGITAL_GOODS
+        } else{
+            DigitalRecommendationPage.PHYSICAL_GOODS
+        }
+    }
 }
