@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="img_search_product_empty">https://images.tokopedia.net/img/android/content/play/play_search_product_empty.png</string>
+    <string name="ic_play_cover_circle_dash">https://images.tokopedia.net/img/android/content/play_broadcaster/dpi/play_cover_circle_dash.png</string>
+    <string name="img_play_tag_not_found">https://images.tokopedia.net/img/android/content/play_broadcaster/play_icon_not_found.png</string>
 </resources>

@@ -265,4 +265,6 @@
     <!-- Tag Recommendation -->
     <string name="play_bro_tag_recommendation_error_title">Tag ini gagal ditampilkan</string>
     <string name="play_bro_tag_recommendation_error_desc">Klik ikon di samping untuk coba lagi</string>
+    <string name="play_bro_tag_recommendation_empty_title">Oops, belum ada tag yang cocok untuk videomu</string>
+    <string name="play_bro_tag_recommendation_empty_desc">Tenang, kamu tetap bisa posting videomu.</string>
 </resources>

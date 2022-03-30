@@ -32,6 +32,48 @@
         app:layout_constraintTop_toTopOf="@id/rv_tags_recommendation"
         app:unify_local_load_description="@string/play_bro_tag_recommendation_error_desc"
         app:unify_local_load_title="@string/play_bro_tag_recommendation_error_title"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_empty_state_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/img_no_tag"
+            android:layout_width="@dimen/layout_lvl7"
+            android:layout_height="@dimen/layout_lvl7"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_url_src="@string/img_play_tag_not_found" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_no_tag_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:text="@string/play_bro_tag_recommendation_empty_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_no_tag"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_no_tag_desc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:text="@string/play_bro_tag_recommendation_empty_desc"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/tv_no_tag_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_no_tag_title"
+            app:typographyType="body_3" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

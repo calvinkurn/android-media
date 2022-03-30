@@ -1,18 +1,22 @@
 package com.tokopedia.play.broadcaster.view.partial
 
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.LayoutTagRecommendationBinding
 import com.tokopedia.play.broadcaster.ui.itemdecoration.TagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.TagViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.TagRecommendationListAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import kotlinx.coroutines.*
 
 /**
  * Created by jegul on 18/02/21
@@ -45,6 +49,7 @@ class TagListViewComponent(
     fun setTags(tags: List<PlayTagUiModel>) {
         binding.localLoadTagError.hide()
         binding.tvBroSelectTagTitle.showWithCondition(tags.isNotEmpty())
+        binding.clEmptyStateTag.showWithCondition(tags.isEmpty())
 
         adapter.setItemsAndAnimateChanges(tags)
     }
@@ -52,6 +57,7 @@ class TagListViewComponent(
     fun setPlaceholder() {
         binding.localLoadTagError.hide()
         binding.tvBroSelectTagTitle.show()
+        binding.clEmptyStateTag.hide()
 
         adapter.setItemsAndAnimateChanges(List(1) { })
     }
@@ -61,6 +67,7 @@ class TagListViewComponent(
 
         binding.localLoadTagError.show()
         binding.tvBroSelectTagTitle.show()
+        binding.clEmptyStateTag.hide()
     }
 
     interface Listener {
