@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.domain.gqlquery.GqlSellerAdmin
 import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.data.admin.AdminTypeResponse
 import com.tokopedia.usecase.RequestParams
@@ -13,25 +14,6 @@ class SellerAdminUseCase @Inject constructor(private val gqlRepository: GraphqlR
     companion object {
         private const val DEFAULT_SOURCE = "android"
         private const val PARAM_SOURCE = "source"
-        private const val SOURCE = "\$source"
-
-        val QUERY = """
-            query getAdminType($SOURCE: String!) {
-              getAdminType(source: $SOURCE) {
-                shopID
-                isMultiLocation
-                admin_data {
-                  detail_information {
-                    admin_role_type {
-                      is_shop_admin
-                      is_location_admin
-                      is_shop_owner            
-                    }
-                  }
-                }
-              }
-            }
-        """.trimIndent()
 
         @JvmStatic
         fun createRequestParams(source: String = DEFAULT_SOURCE): RequestParams =
@@ -43,7 +25,7 @@ class SellerAdminUseCase @Inject constructor(private val gqlRepository: GraphqlR
     var requestParams: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): AdminDataResponse {
-        GraphqlRequest(QUERY, AdminTypeResponse::class.java, requestParams.parameters).let { request ->
+        GraphqlRequest(GqlSellerAdmin, AdminTypeResponse::class.java, requestParams.parameters).let { request ->
             gqlRepository.response(listOf(request)).let { response ->
                 response.getError(AdminTypeResponse::class.java).let { errors ->
                     if (errors.isNullOrEmpty()) {
