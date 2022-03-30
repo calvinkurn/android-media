@@ -4,5 +4,4 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true"
-    android:layout_marginRight="@dimen/dp_4"
     xmlns:android="http://schemas.android.com/apk/res/android"/>
