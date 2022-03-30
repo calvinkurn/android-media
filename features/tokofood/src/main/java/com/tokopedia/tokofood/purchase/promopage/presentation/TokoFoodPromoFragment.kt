@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
+import com.tokopedia.tokofood.example.ExampleTokofoodActivity
 import com.tokopedia.tokofood.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
@@ -30,6 +31,7 @@ import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPr
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
@@ -213,7 +215,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.promoAmount, false).removeDecimalSuffix()
             it.totalAmountPurchasePromo.setAmount(totalAmountString)
             it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {
-
+                (activity as ExampleTokofoodActivity).onBackPressed()
             }
         }
     }
@@ -244,6 +246,12 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             REQUEST_CODE_KYC -> {
 
             }
+        }
+    }
+
+    override fun onClickUnavailablePromoItem() {
+        view?.let {
+            Toaster.build(it, "Kupon yang terpasang otomatis tidak bisa diubah.").show()
         }
     }
 

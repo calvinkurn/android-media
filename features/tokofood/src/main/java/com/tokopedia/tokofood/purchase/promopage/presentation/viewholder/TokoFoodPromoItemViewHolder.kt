@@ -42,12 +42,16 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
                     containerErrorInfoTokofood.gone()
                 }
                 imageSelectPromoTokofood.gone()
+                itemView.setOnClickListener {
+                    listener.onClickUnavailablePromoItem()
+                }
             } else {
                 textPromoHighlightIdentifierTokofood.text = element.highlightWording
                 textPromoHighlightIdentifierTokofood.show()
                 promoHighlightIdentifierTokofood.show()
                 containerErrorInfoTokofood.gone()
                 imageSelectPromoTokofood.show()
+                itemView.setOnClickListener {  }
             }
 
             textPromoItemTitleTokofood.text = element.title
