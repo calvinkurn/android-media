@@ -154,7 +154,7 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
             event = "promoClick",
             eventCategory = "feed updates - cmp",
             eventAction = "click",
-            eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - true",
+            eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - is rilisan spesial true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
@@ -182,7 +182,7 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
             event = "promoView",
             eventCategory = "feed updates - cmp",
             eventAction = "impression on play sgc channel",
-            eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType} - true",
+            eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $businessWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType} - is rilisan spesial true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,

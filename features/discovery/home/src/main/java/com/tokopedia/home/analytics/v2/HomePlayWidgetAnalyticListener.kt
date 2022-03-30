@@ -206,8 +206,8 @@ class HomePlayWidgetAnalyticListener(
                     "${item.channelId} - " +
                     "$finalChannelPositionInList - " +
                     "$mBusinessWidgetPosition - " +
-                    "$isAutoPlay - " +
-                    "true",
+                    "is autoplay $isAutoPlay - " +
+                    "is rilisan spesial true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = widgetId,
@@ -241,9 +241,9 @@ class HomePlayWidgetAnalyticListener(
                     "${item.channelId} - " +
                     "$finalChannelPositionInList - " +
                     "$mBusinessWidgetPosition - " +
-                    "$isAutoPlay - " +
+                    "is autoplay $isAutoPlay - " +
                     "${item.recommendationType} - " +
-                    "true",
+                    "is rilisan spesial true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = widgetId,

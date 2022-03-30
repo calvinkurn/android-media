@@ -422,7 +422,7 @@ class ShopPlayWidgetAnalyticListener(
             event = PROMO_CLICK,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = CLICK,
-            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - $isAutoPlay - true",
+            eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,
@@ -449,7 +449,7 @@ class ShopPlayWidgetAnalyticListener(
             event = PROMO_VIEW,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = "impression on play sgc channel",
-            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - $isAutoPlay - true",
+            eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
             promotions = listOf(
                 BaseTrackerConst.Promotion(
                     id = item.channelId,

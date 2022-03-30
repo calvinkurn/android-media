@@ -1915,11 +1915,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         isAutoPlay: Boolean
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val autoplayText = if(isAutoPlay) "success" else "failed"
         val creativeName = componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING
         list.add(mapOf(
             KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
             KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$CHANNEL",
-            KEY_CREATIVE to " - $creativeName - $isAutoPlay",
+            KEY_CREATIVE to " - $creativeName - is autoplay $autoplayText",
             KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
@@ -1927,7 +1928,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 KEY_PROMOTIONS to list))
         val map = createGeneralEvent(
             eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER,
-            "${componentsItem.name ?: EMPTY_STRING} - $creativeName  $destinationURL - true"
+            "${componentsItem.name ?: EMPTY_STRING} - $creativeName  $destinationURL - is rilisan spesial true"
         )
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -1957,7 +1958,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             EVENT_PROMO_VIEW to mapOf(
                 KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW, eventAction = IMPRESSION_DYNAMIC_BANNER,
-            "${componentsItem.name ?: EMPTY_STRING} - true")
+            "${componentsItem.name ?: EMPTY_STRING} - is rilisan spesial true")
         map[KEY_EVENT_CATEGORY] = "$VALUE_DISCOVERY_PAGE-$PLAY"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = "play"
