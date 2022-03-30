@@ -68,6 +68,7 @@ class AnchorTabsViewModel(
                 )
                 if(selectedSectionId.isEmpty() && compList.isNotEmpty()){
                     selectedSectionId = compList.first().data?.firstOrNull()?.targetSectionID?:""
+                    selectedSectionPos = 0
                 }
                 if(anchorTabsUseCase.selectedId.isEmpty()){
                     anchorTabsUseCase.selectedId = selectedSectionId

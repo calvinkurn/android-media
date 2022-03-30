@@ -1235,9 +1235,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 setPrimaryCTAClickListener {
                     dismiss()
                 }
-                setOnDismissListener {
-                    refresh()
-                }
                 show()
             }
         }
@@ -1286,12 +1283,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
-                    AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
-            )
-            intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
-            startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+            // No need to open add on bottom sheet if action = 0
+            if (addOn.addOnsButtonModel.action != 0) {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ADD_ON_GIFTING)
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA,
+                        AddOnMapper.mapAddOnBottomSheetParam(addOnButtonType, addOn, product, shop, viewModel.orderCart, viewModel.addressState.value.address, userSession.get().name)
+                )
+                intent.putExtra(AddOnConstant.EXTRA_ADD_ON_SOURCE, AddOnConstant.ADD_ON_SOURCE_OCC)
+                startActivityForResult(intent, REQUEST_CODE_ADD_ON)
+            }
         }
     }
 
