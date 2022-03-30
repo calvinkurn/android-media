@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -32,6 +34,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoo
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
@@ -77,6 +80,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         observeList()
         observeFragmentUiModel()
         observeUiEvent()
+        loadData()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -116,13 +120,9 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     private fun loadData() {
-
-    }
-
-    override fun loadInitialData() {
-        super.loadInitialData()
         viewBinding?.layoutGlobalErrorPurchasePromo?.gone()
         viewBinding?.recyclerViewPurchasePromo?.show()
+        adapter.clearAllElements()
         showLoading()
         viewModel.loadData()
     }
@@ -140,7 +140,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun onBackPressed() {
-        activity?.finish()
+        (activity as ExampleTokofoodActivity).onBackPressed()
     }
 
     private fun initializeToolbar(view: View) {
@@ -189,12 +189,11 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     private fun observeUiEvent() {
         viewModel.uiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
-                UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> {
-                    renderPromoPage()
-                }
-                UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE -> {
-                    renderGlobalError(it.throwable ?: ResponseErrorException())
-                }
+                UiEvent.EVENT_SUCCESS_LOAD_PROMO_PAGE -> renderPromoPage()
+                UiEvent.EVENT_FAILED_LOAD_PROMO_PAGE -> renderGlobalError(it.throwable
+                        ?: ResponseErrorException())
+                UiEvent.EVENT_RENDER_GLOBAL_ERROR_KYC -> renderKycError()
+                UiEvent.EVENT_RENDER_GLOBAL_ERROR_PROMO_INELIGIBLE -> renderIneligiblePromoError()
             }
         })
     }
@@ -227,7 +226,38 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             val errorType = getGlobalErrorType(throwable)
             it.layoutGlobalErrorPurchasePromo.setType(errorType)
             it.layoutGlobalErrorPurchasePromo.setActionClickListener {
+                loadData()
+            }
+        }
+    }
 
+    private fun renderKycError() {
+        viewBinding?.let {
+            it.layoutGlobalErrorPurchasePromo.show()
+            it.recyclerViewPurchasePromo.gone()
+            it.layoutGlobalErrorPurchasePromo.setType(GlobalError.SERVER_ERROR)
+            // Todo : set data from API
+            it.layoutGlobalErrorPurchasePromo.errorTitle.text = ""
+            it.layoutGlobalErrorPurchasePromo.errorDescription.text = ""
+            it.layoutGlobalErrorPurchasePromo.errorIllustration.setImage("", 0f)
+            it.layoutGlobalErrorPurchasePromo.setActionClickListener {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+                startActivityForResult(intent, REQUEST_CODE_KYC)
+            }
+        }
+    }
+
+    private fun renderIneligiblePromoError() {
+        viewBinding?.let {
+            it.layoutGlobalErrorPurchasePromo.show()
+            it.recyclerViewPurchasePromo.gone()
+            it.layoutGlobalErrorPurchasePromo.setType(GlobalError.SERVER_ERROR)
+            // Todo : set data from API
+            it.layoutGlobalErrorPurchasePromo.errorTitle.text = ""
+            it.layoutGlobalErrorPurchasePromo.errorDescription.text = ""
+            it.layoutGlobalErrorPurchasePromo.errorIllustration.setImage("", 0f)
+            it.layoutGlobalErrorPurchasePromo.setActionClickListener {
+                (activity as ExampleTokofoodActivity).onBackPressed()
             }
         }
     }

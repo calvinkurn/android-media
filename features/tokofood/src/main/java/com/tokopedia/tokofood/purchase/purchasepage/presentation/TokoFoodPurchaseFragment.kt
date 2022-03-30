@@ -10,7 +10,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -34,11 +33,11 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
-import com.tokopedia.tokofood.example.Result
+import com.tokopedia.tokofood.example.ExampleTokofoodActivity
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
+import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
-import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseGlobalErrorBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.subview.TokoFoodPurchaseNoteBottomSheet
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPurchaseToolbar
@@ -47,8 +46,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.isActive
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -161,7 +158,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onBackPressed() {
-        activity?.finish()
+        (activity as ExampleTokofoodActivity).onBackPressed()
     }
 
     private fun initializeToolbar() {
@@ -314,7 +311,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun navigateToMerchantPage() {
         // Todo : navigate to merchant page
-        activity?.finish()
     }
 
     private fun scrollToIndex(index: Int) {
