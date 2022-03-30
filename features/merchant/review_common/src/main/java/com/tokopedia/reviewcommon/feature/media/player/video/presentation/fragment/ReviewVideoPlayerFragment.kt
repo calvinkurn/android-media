@@ -94,9 +94,6 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override fun onPause() {
         super.onPause()
         videoPlayerUiStateCollector?.cancel()
-        videoPlaybackUiStateCollector?.cancel()
-        videoThumbnailUiStateCollector?.cancel()
-        videoErrorUiStateCollector?.cancel()
         if (activity?.isChangingConfigurations != true) {
             updateCurrentFrameBitmap()
             viewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPosition())
@@ -105,6 +102,13 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         } else {
             viewModel.setVideoPlayerStateToChangingConfiguration()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        videoPlaybackUiStateCollector?.cancel()
+        videoThumbnailUiStateCollector?.cancel()
+        videoErrorUiStateCollector?.cancel()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -170,7 +170,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         overlayVisibilityCollectorJob?.cancel()
     }
 
-    private fun setupVideoPlayerController() {
+    private fun FragmentReviewMediaPlayerControllerBinding.setupVideoPlayerController() {
         view?.findViewById<IconUnify>(R.id.review_media_gallery_maximize_control)?.setOnClickListener {
             sharedReviewMediaGalleryViewModel.requestLandscapeMode()
         }
@@ -183,6 +183,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
         view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_unmuted_control)?.setOnClickListener {
             reviewMediaPlayerControllerViewModel.mute()
         }
+        playerControlViewReviewMediaGallery.hide()
     }
 
     private fun FragmentReviewMediaPlayerControllerBinding.setupCounter() {
@@ -210,9 +211,7 @@ class ReviewMediaPlayerControllerFragment : BaseDaggerFragment(), CoroutineScope
             if (uiState.shouldShowMediaCounter) show() else hide()
         }
         loaderReviewMediaGalleryItemCounter.showWithCondition(uiState.shouldShowMediaCounterLoader)
-        layoutReviewMediaGalleryItemCounter.showWithCondition(
-            uiState.shouldShowMediaCounter || uiState.shouldShowMediaCounterLoader
-        )
+        layoutReviewMediaGalleryItemCounter.showWithCondition(uiState.shouldShowMediaCounter || uiState.shouldShowMediaCounterLoader)
         view?.findViewById<IconUnify>(R.id.review_media_gallery_maximize_control)?.showWithCondition(uiState.orientationUiState.isPortrait())
         view?.findViewById<IconUnify>(R.id.review_media_gallery_minimize_control)?.showWithCondition(uiState.orientationUiState.isLandscape())
         view?.findViewById<IconUnify>(R.id.review_media_gallery_volume_muted_control)?.showWithCondition(uiState.muted)

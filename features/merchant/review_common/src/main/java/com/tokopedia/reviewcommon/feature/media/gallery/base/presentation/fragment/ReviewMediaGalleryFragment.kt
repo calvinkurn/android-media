@@ -128,9 +128,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     private fun setupLayout() {
-        binding?.run {
-            setupViewPager()
-        }
+        binding?.setupViewPager()
     }
 
     private fun FragmentReviewMediaGalleryBinding.setupViewPager() {
@@ -148,10 +146,10 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
                 updateAdapter(it.adapterUiState)
                 // only update when there's any media item, since updating viewpager while there's no
                 // media item is unnecessary
-                val needUpdate = it.adapterUiState.mediaItemUiModels.any { it !is LoadingStateItemUiModel }
-                if (needUpdate) {
-                    binding?.updateViewPager(it.viewPagerUiState)
+                val needUpdate = it.adapterUiState.mediaItemUiModels.any {
+                    it !is LoadingStateItemUiModel
                 }
+                if (needUpdate) binding?.updateViewPager(it.viewPagerUiState)
             }
         }
         currentMediaItemCollectorJob = currentMediaItemCollectorJob?.takeIf {
@@ -171,7 +169,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
             ) { detailedReviewMediaResult, mediaNumberToLoad, showSeeMore ->
                 Triple(detailedReviewMediaResult, mediaNumberToLoad, showSeeMore)
             }.collectLatest {
-                reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(it.first, it.second, it.third, it.first?.detail?.mediaCount.orZero().toInt())
+                reviewMediaGalleryViewModel.updateDetailedReviewMediaResult(
+                    it.first,
+                    it.second,
+                    it.third,
+                    it.first?.detail?.mediaCount.orZero().toInt()
+                )
             }
         }
         orientationUiStateCollectorJob = orientationUiStateCollectorJob?.takeIf {
@@ -206,15 +209,10 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     private fun FragmentReviewMediaGalleryBinding.updateViewPager(
         uiState: ReviewMediaGalleryViewPagerUiState
     ) {
-        if (
-            uiState.currentPagerPosition != RecyclerView.NO_POSITION &&
-            viewPagerReviewMediaGallery.currentItem != uiState.currentPagerPosition &&
-            galleryAdapter.itemCount > uiState.currentPagerPosition
-        ) {
-            viewPagerReviewMediaGallery.setCurrentItem(
-                uiState.currentPagerPosition,
-                false
-            )
+        val pointToValidPosition = uiState.currentPagerPosition != RecyclerView.NO_POSITION && galleryAdapter.itemCount > uiState.currentPagerPosition
+        val pointToDifferentPosition = viewPagerReviewMediaGallery.currentItem != uiState.currentPagerPosition
+        if (pointToValidPosition && pointToDifferentPosition) {
+            viewPagerReviewMediaGallery.setCurrentItem(uiState.currentPagerPosition, false)
         }
         pageChangeListener.attachListener()
         binding?.viewPagerReviewMediaGallery?.isUserInputEnabled = uiState.enableUserInput
