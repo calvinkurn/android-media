@@ -54,8 +54,8 @@ android {
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
-        versionCode 391100000
-        versionName "3.150"
+        versionCode 320400100
+        versionName "4.01-test"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
