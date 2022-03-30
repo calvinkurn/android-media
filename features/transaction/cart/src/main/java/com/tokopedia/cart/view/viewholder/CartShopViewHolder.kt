@@ -188,16 +188,8 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderAccordion(cartShopHolderData: CartShopHolderData) {
         if (!cartShopHolderData.isError && cartShopHolderData.isCollapsible) {
-            val showMoreWording: String
+            val showMoreWording = itemView.context.getString(R.string.label_tokonow_show_more)
             val showLessWording = itemView.context.getString(R.string.label_tokonow_show_less)
-            val itemCount = cartShopHolderData.productUiModelList.size
-            showMoreWording = if (itemCount > COLLAPSED_PRODUCTS_LIMIT) {
-                val exceedItemCount = itemCount - COLLAPSED_PRODUCTS_LIMIT
-                itemView.context.getString(R.string.label_tokonow_show_other, exceedItemCount)
-            } else {
-                itemView.context.getString(R.string.label_tokonow_show_more)
-            }
-
             if (cartShopHolderData.isCollapsed) {
                 binding.imageChevron.rotation = 0f
                 binding.textAccordion.text = showMoreWording
