@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.detail.data.model.SetDeliveredRequest
 import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
-import com.tokopedia.sellerorder.confirmshipping.domain.query.SomGetConfirmShippingQuery
+import com.tokopedia.sellerorder.detail.domain.query.SomSetDeliveredQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SomSetDeliveredUseCase @Inject constructor(private val useCase: GraphqlUseCase<SetDeliveredResponse>) {
 
     suspend fun execute(orderId: String, receivedBy: String): Result<SetDeliveredResponse> {
-        useCase.setGraphqlQuery(SomGetConfirmShippingQuery)
+        useCase.setGraphqlQuery(SomSetDeliveredQuery)
         useCase.setTypeClass(SetDeliveredResponse::class.java)
         useCase.setRequestParams(generateParam(orderId, receivedBy))
 

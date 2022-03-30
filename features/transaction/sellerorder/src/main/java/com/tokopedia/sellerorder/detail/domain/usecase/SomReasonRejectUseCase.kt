@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_INPUT
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectParam
-import com.tokopedia.sellerorder.confirmshipping.domain.query.SomChangeCourierQuery
+import com.tokopedia.sellerorder.detail.domain.query.SomReasonRejectQuery
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SomReasonRejectUseCase @Inject constructor(private val useCase: GraphqlUseCase<SomReasonRejectData.Data>) {
 
     suspend fun execute(reasonRejectParam: SomReasonRejectParam): Result<SomReasonRejectData.Data> {
-        useCase.setGraphqlQuery(SomChangeCourierQuery)
+        useCase.setGraphqlQuery(SomReasonRejectQuery)
         useCase.setTypeClass(SomReasonRejectData.Data::class.java)
         useCase.setRequestParams(generateParam(reasonRejectParam))
 
