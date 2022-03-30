@@ -29,11 +29,7 @@ class DigitalRecommendationUseCase @Inject constructor(
             : Result<DigitalRecommendationModel> {
         val params = mapOf(
                 PARAM_INPUT to mapOf(
-                        PARAM_CHANNEL_NAME to when (page) {
-                            DigitalRecommendationPage.DIGITAL_GOODS -> DG_PERSO_CHANNEL_NAME
-                            DigitalRecommendationPage.PHYSICAL_GOODS -> PG_PERSO_CHANNEL_NAME
-                            DigitalRecommendationPage.RECOMMENDATION_SKELETON -> OD_SKELETON_CHANNEL_NAME
-                        },
+                        PARAM_CHANNEL_NAME to getPageParams(page),
                         PARAM_CLIENT_NUMBERS to arrayListOf(userSession.phoneNumber),
                         PARAM_DG_CATEGORY_IDS to dgCategories,
                         PARAM_PG_CATEGORY_IDS to pgCategories
@@ -75,11 +71,7 @@ class DigitalRecommendationUseCase @Inject constructor(
     ): Result<List<String>>{
         val params = mapOf(
             PARAM_INPUT to mapOf(
-                PARAM_CHANNEL_NAME to when (page) {
-                    DigitalRecommendationPage.DIGITAL_GOODS -> DG_PERSO_CHANNEL_NAME
-                    DigitalRecommendationPage.PHYSICAL_GOODS -> PG_PERSO_CHANNEL_NAME
-                    DigitalRecommendationPage.RECOMMENDATION_SKELETON -> OD_SKELETON_CHANNEL_NAME
-                },
+                PARAM_CHANNEL_NAME to getPageParams(page),
                 PARAM_CLIENT_NUMBERS to arrayListOf(userSession.phoneNumber),
                 PARAM_DG_CATEGORY_IDS to dgCategories,
                 PARAM_PG_CATEGORY_IDS to pgCategories
@@ -113,10 +105,22 @@ class DigitalRecommendationUseCase @Inject constructor(
         }
     }
 
+    private fun getPageParams(page: DigitalRecommendationPage): String{
+        return when(page){
+            DigitalRecommendationPage.DIGITAL_GOODS -> DG_PERSO_CHANNEL_NAME
+            DigitalRecommendationPage.PHYSICAL_GOODS -> PG_PERSO_CHANNEL_NAME
+            DigitalRecommendationPage.DG_THANK_YOU_PAGE -> DG_THANK_YOU_PAGE_RECOMMENDATION
+            DigitalRecommendationPage.PG_THANK_YOU_PAGE -> PG_THANK_YOU_PAGE_RECOMMENDATION
+            DigitalRecommendationPage.RECOMMENDATION_SKELETON -> OD_SKELETON_CHANNEL_NAME
+        }
+    }
+
     companion object {
         const val DG_RECOM_NAME = "dg_order_detail"
         const val PG_RECOM_NAME = "pg_top_ads"
 
+        const val DG_THANK_YOU_PAGE_RECOMMENDATION = "dg_thank_you_page_recommendation"
+        const val PG_THANK_YOU_PAGE_RECOMMENDATION = "pg_thank_you_page_recommendation"
         const val DG_PERSO_CHANNEL_NAME = "dg_order_detail_dgu"
         const val PG_PERSO_CHANNEL_NAME = "pg_order_detail_dgu"
         const val OD_SKELETON_CHANNEL_NAME = "dg_od_skeleton"

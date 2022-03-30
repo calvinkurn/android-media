@@ -7,7 +7,6 @@ import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.presentation.widget.DigitalRecommendationWidget
@@ -17,7 +16,6 @@ import com.tokopedia.thankyou_native.data.mapper.ThankPageType
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.recommendationdigital.analytics.DigitalRecommendationAnalytics
 import com.tokopedia.thankyou_native.recommendationdigital.di.component.DaggerDigitalRecommendationComponent
-import com.tokopedia.thankyou_native.recommendationdigital.model.RecommendationItem
 import com.tokopedia.thankyou_native.recommendationdigital.presentation.adapter.listener.DigitalRecommendationViewListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -86,7 +84,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             setViewModelFactory(viewModelFactory.get())
             setLifecycleOwner(fragment)
             setAdditionalData(DigitalRecommendationAdditionalTrackingData())
-            setPage(DigitalRecommendationPage.DIGITAL_GOODS)
+            setPage(DigitalRecommendationPage.DG_THANK_YOU_PAGE)
             listener = object : DigitalRecommendationWidget.Listener{
                 override fun onFetchFailed(throwable: Throwable) {
                     hide()
@@ -98,12 +96,6 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             }
             build()
         }
-    }
-
-    //TODO : will be delete
-    private fun onRecomProductClick(item: RecommendationItem, position: Int) {
-        RouteManager.route(context, item.appLink)
-        analytics.get().sendDigitalRecommendationItemClick(item, position, paymentId, thanksPageData.profileCode)
     }
 
     override fun onDetachedFromWindow() {
