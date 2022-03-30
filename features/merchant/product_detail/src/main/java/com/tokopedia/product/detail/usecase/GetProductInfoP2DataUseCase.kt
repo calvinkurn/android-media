@@ -574,6 +574,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
             p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.reviewMediaThumbnails = DynamicProductDetailMapper.generateReviewMediaThumbnails(reviewImage)
+            p2UiData.detailedMediaResult = DynamicProductDetailMapper.generateDetailedMediaResult(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.bundleInfoMap = bundleInfoList.associateBy { it.productId }
             p2UiData.rating = rating

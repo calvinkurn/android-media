@@ -485,6 +485,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     listOfReviews = it.helpfulReviews
                     imageReviews = it.imageReviews?.imageReviewItems
                     mediaThumbnails = it.reviewMediaThumbnails
+                    detailedMediaResult = it.detailedMediaResult
                     formattedRating = it.rating.ratingScore
                     totalRatingCount = it.rating.totalRating
                     totalReviewCount = it.rating.totalReviewTextAndImage

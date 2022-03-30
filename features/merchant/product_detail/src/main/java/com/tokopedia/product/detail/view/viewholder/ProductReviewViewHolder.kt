@@ -232,7 +232,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                         listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
                     } else {
                         it.imageReviews?.let { imageReviews ->
-                            listener.onMediaReviewClick(imageReviews, position, getComponentTrackData(it), imageReviews.count().toString())
+                            it.detailedMediaResult?.let { detailedMediaResult ->
+                                listener.onMediaReviewClick(imageReviews, position, getComponentTrackData(it), imageReviews.count().toString(), detailedMediaResult)
+                            }
                         }
                     }
                 } else if (item is ReviewMediaVideoThumbnailUiModel) {
@@ -240,7 +242,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                         listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
                     } else {
                         it.imageReviews?.let { imageReviews ->
-                            listener.onMediaReviewClick(imageReviews, position, getComponentTrackData(it), imageReviews.count().toString())
+                            it.detailedMediaResult?.let { detailedMediaResult ->
+                                listener.onMediaReviewClick(imageReviews, position, getComponentTrackData(it), imageReviews.count().toString(), detailedMediaResult)
+                            }
                         }
                     }
                 }

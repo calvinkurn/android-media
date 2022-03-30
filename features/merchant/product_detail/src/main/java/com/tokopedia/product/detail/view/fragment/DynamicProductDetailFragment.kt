@@ -200,11 +200,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -1163,50 +1159,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         listOfImage: List<ImageReviewItem>,
         position: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        imageCount: String
+        imageCount: String,
+        detailedMediaResult: ProductrevGetReviewMedia
     ) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                     ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
-
-            // don't know what to do
-            val mappedReviewMediaVideoData = emptyList<ReviewMedia>()
-            val mappedReviewMediaImageData = listOfImage
-                .mapIndexed { index, image ->
-                    ReviewMedia(
-                        imageId = image.imageUrlLarge.orEmpty(),
-                        feedbackId = image.reviewId.orEmpty(),
-                        mediaNumber = index.plus(1)
-                    )
-                }
-            val mappedReviewMediaData = mappedReviewMediaVideoData.plus(mappedReviewMediaImageData)
-            // don't know what to do
-            val mappedReviewVideoData = emptyList<ReviewGalleryVideo>()
-            val mappedReviewImageData = mappedReviewMediaImageData.mapIndexed { index, image ->
-                ReviewGalleryImage(
-                    attachmentId = image.imageId,
-                    thumbnailURL = image.imageId,
-                    fullsizeURL = image.imageId,
-                    description = "",
-                    feedbackId = listOfImage.getOrNull(index)?.reviewId.orEmpty()
-                )
-            }
-            val mappedProductRevGetReviewMedia = ProductrevGetReviewMedia(
-                reviewMedia = mappedReviewMediaData,
-                detail = Detail(
-                    reviewDetail = emptyList(),
-                    reviewGalleryImages = mappedReviewImageData,
-                    reviewGalleryVideos = mappedReviewVideoData,
-                    mediaCountFmt = listOfImage.firstOrNull()?.rawImageCount.toIntOrZero().toString(),
-                    mediaCount = listOfImage.firstOrNull()?.rawImageCount.toLongOrZero()
-                )
-            )
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 it,
                 viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
                 position + 1,
                 true,
-                mappedProductRevGetReviewMedia
+                detailedMediaResult
             ).let { startActivity(it) }
         }
     }
