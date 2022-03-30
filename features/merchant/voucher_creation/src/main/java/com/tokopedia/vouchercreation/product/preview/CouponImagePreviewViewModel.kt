@@ -29,10 +29,7 @@ class CouponImagePreviewViewModel @Inject constructor(
         isCreateMode: Boolean,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        productCount: Int,
-        firstProductImageUrl: String,
-        secondProductImageUrl: String,
-        thirdProductImageUrl: String,
+        parentProductIds : List<Long>,
         imageRatio: ImageRatio
     ) {
         launchCatchError(
@@ -43,10 +40,7 @@ class CouponImagePreviewViewModel @Inject constructor(
                         this,
                         couponInformation,
                         couponSettings,
-                        productCount,
-                        firstProductImageUrl,
-                        secondProductImageUrl,
-                        thirdProductImageUrl,
+                        parentProductIds,
                         imageRatio
                     )
                 }

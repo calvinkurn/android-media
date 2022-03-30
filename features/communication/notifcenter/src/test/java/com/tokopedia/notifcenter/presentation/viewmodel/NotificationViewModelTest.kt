@@ -21,6 +21,8 @@ import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.*
+import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.CLEAR_ALL_NOTIF_TYPE
+import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.DEFAULT_SHOP_ID
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -896,6 +898,25 @@ class NotificationViewModelTest {
         val expectedValue = Resource.success(clearNotifCounterResponse)
         val flow = flow { emit(expectedValue) }
         every { clearNotifUseCase.clearNotifCounter(role) } returns flow
+
+        // when
+        viewModel.clearNotifCounter(role)
+        viewModel.clearNotif.observeForever(clearNotifObserver)
+
+        // then
+        verify {
+            clearNotifObserver.onChanged(expectedValue)
+        }
+    }
+
+    @Test
+    fun clearNotifCounter_reset_type_zero_when_user_does_not_have_shop() {
+        // Given
+        val role = RoleType.BUYER
+        val expectedValue = Resource.success(clearNotifCounterResponse)
+        val flow = flow { emit(expectedValue) }
+        every { clearNotifUseCase.clearNotifCounter(CLEAR_ALL_NOTIF_TYPE) } returns flow
+        every { userSessionInterface.shopId } returns DEFAULT_SHOP_ID
 
         // when
         viewModel.clearNotifCounter(role)

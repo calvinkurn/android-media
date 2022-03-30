@@ -61,6 +61,10 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
 
+        if (kycType.isEmpty()) {
+            kycType = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+        }
+
         analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         stepperModel = if (savedInstanceState != null) {
             savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA)

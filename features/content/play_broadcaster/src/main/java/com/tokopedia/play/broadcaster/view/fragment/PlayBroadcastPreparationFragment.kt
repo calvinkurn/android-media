@@ -171,6 +171,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     override fun getProductList(): List<ProductUiModel> {
                         return parentViewModel.productSectionList.flatMap { it.products }
                     }
+
+                    override fun getChannelId(): String {
+                        return parentViewModel.channelId
+                    }
                 })
             }
         }

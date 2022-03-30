@@ -40,6 +40,7 @@ import com.tokopedia.play.broadcaster.view.custom.ProductIconView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
+import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.pusher.revamp.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -551,7 +552,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun navigateToSummary() {
         broadcastCoordinator.navigateToFragment(PlayBroadcastSummaryFragment::class.java)
-        analytic.openReportScreen(parentViewModel.channelId)
+        analytic.impressReportPage(parentViewModel.channelId)
     }
 
 //    private fun handleLivePushInfo(state: PlayLiveViewState) {
@@ -901,6 +902,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         val leaderBoardBottomSheet = fragmentFactory.instantiate(
             requireContext().classLoader,
             PlayInteractiveLeaderBoardBottomSheet::class.java.name) as PlayInteractiveLeaderBoardBottomSheet
+        leaderBoardBottomSheet.arguments = Bundle().apply {
+            putString(PlayInteractiveLeaderBoardBottomSheet.ARG_CHANNEL_ID, parentViewModel.channelId)
+        }
         leaderBoardBottomSheet.show(childFragmentManager)
     }
 

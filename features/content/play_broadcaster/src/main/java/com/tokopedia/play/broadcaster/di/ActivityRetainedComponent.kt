@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
-import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.data.config.ChannelConfigStore
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
@@ -48,8 +47,6 @@ abstract class ActivityRetainedComponent : ViewModel() {
     abstract fun graphqlRepository(): GraphqlRepository
 
     abstract fun permissionPrefs(): PermissionSharedPreferences
-
-    abstract fun contentTaggingAnalytic(): PlayBroadcastContentTaggingAnalytic
 
     abstract fun mapper(): PlayBroadcastMapper
 
