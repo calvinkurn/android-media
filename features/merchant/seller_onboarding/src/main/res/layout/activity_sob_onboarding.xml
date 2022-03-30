@@ -23,7 +23,7 @@
         android:id="@+id/bgSobRamadhan"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:srcCompat="@drawable/bg_sob_ramadhan"/>
+        tools:srcCompat="@drawable/bg_sob_ramadhan"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/bgSobRamadhanPattern"
