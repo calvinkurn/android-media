@@ -68,11 +68,6 @@ class PdpSimulationFragmentTest {
     }
 
 
-
-
-
-
-
     private fun waitForData() {
         Thread.sleep(5000)
     }
