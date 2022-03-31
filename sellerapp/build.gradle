@@ -293,6 +293,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.filter)
 
     implementation projectOrAar(rootProject.ext.features.additional_check)
+    implementation projectOrAar(rootProject.ext.features.reviewCommon)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
