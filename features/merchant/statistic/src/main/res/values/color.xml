@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="stc_star_yellow_border_dms">#EE9D00</color>
-    <color name="stc_star_yellow_fill_dms">#FFC400</color>
-    <color name="stc_calendar_icon_dms">#525A67</color>
+    <color name="stc_dms_star_yellow_border">#EE9D00</color>
+    <color name="stc_dms_star_yellow_fill">#FFC400</color>
+    <color name="stc_dms_calendar_icon">#525A67</color>
 </resources>
