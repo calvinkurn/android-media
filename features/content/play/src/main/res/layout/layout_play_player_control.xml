@@ -18,7 +18,7 @@
         >
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/exo_play"
+            android:id="@id/exo_play"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
             app:icon_name="PLAY"
@@ -27,7 +27,7 @@
             />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/exo_pause"
+            android:id="@id/exo_pause"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
             app:icon_name="PAUSE"
