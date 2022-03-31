@@ -701,17 +701,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             }
         }
         headerProfile?.title = data.profileHeader.profile.name
-        headerProfile?.subtitle = data.profileHeader.profile.username
 
-//        appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
-//            val offset =
-//                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-//            if ((abs(verticalOffset) > offset!!)) {
-//                headerProfile?.subtitle = ""
-//            } else {
-//                headerProfile?.subtitle = ""
-//            }
-//        })
     }
 
     private fun isProfileButtonVisible() : Boolean{
