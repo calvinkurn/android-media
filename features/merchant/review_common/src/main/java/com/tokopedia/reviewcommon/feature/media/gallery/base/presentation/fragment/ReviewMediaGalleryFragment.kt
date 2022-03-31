@@ -13,6 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewcommon.databinding.FragmentReviewMediaGalleryBinding
+import com.tokopedia.reviewcommon.feature.media.gallery.base.analytic.ReviewMediaGalleryTracker
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.adapter.ReviewMediaGalleryAdapter
@@ -23,7 +24,10 @@ import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.viewmo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.image.presentation.fragment.ReviewImagePlayerFragment
+import com.tokopedia.reviewcommon.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.model.VideoMediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -42,18 +46,21 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var videoPlayer: ReviewVideoPlayer
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     @ReviewMediaGalleryViewModelFactory
     lateinit var reviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     @Inject
     @DetailedReviewMediaGalleryViewModelFactory
     lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatchers
-
-    @Inject
-    lateinit var videoPlayer: ReviewVideoPlayer
 
     private var binding by viewBinding(FragmentReviewMediaGalleryBinding::bind)
     private var uiStateCollectorJob: Job? = null
@@ -127,6 +134,18 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         )
     }
 
+    override fun onImageImpressed(imageUri: String) {
+        galleryAdapter.getItemByUri(imageUri)?.let { (index, media) ->
+            ReviewMediaGalleryTracker.trackImpressImage(
+                sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
+                sharedReviewMediaGalleryViewModel.getProductId(),
+                media.id,
+                index,
+                userSession.userId
+            )
+        }
+    }
+
     private fun setupLayout() {
         binding?.setupViewPager()
     }
@@ -156,6 +175,25 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
             !it.isCompleted
         } ?: launch {
             reviewMediaGalleryViewModel.currentMediaItem.collectLatest {
+                if (it is ImageMediaItemUiModel || it is VideoMediaItemUiModel) {
+                    if (sharedReviewMediaGalleryViewModel.isProductReview()) {
+                        ReviewMediaGalleryTracker.trackSwipeImage(
+                            it.feedbackId,
+                            reviewMediaGalleryViewModel.viewPagerUiState.value.previousPagerPosition,
+                            reviewMediaGalleryViewModel.viewPagerUiState.value.currentPagerPosition,
+                            sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
+                            userSession.userId
+                        )
+                    } else {
+                        ReviewMediaGalleryTracker.trackShopReviewSwipeImage(
+                            it.feedbackId,
+                            reviewMediaGalleryViewModel.viewPagerUiState.value.previousPagerPosition,
+                            reviewMediaGalleryViewModel.viewPagerUiState.value.currentPagerPosition,
+                            sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
+                            sharedReviewMediaGalleryViewModel.getShopId()
+                        )
+                    }
+                }
                 sharedReviewMediaGalleryViewModel.updateCurrentMediaItem(it)
             }
         }

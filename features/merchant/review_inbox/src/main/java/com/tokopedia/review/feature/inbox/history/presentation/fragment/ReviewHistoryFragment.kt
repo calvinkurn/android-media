@@ -283,11 +283,14 @@ class ReviewHistoryFragment :
     ) {
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context,
-                productID,
-                position + 1,
-                false,
-                ReviewHistoryDataMapper.mapReviewHistoryDataToReviewMediaPreviewData(
+                context = context,
+                productID = productID,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position + 1,
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = ReviewHistoryDataMapper.mapReviewHistoryDataToReviewMediaPreviewData(
                     feedbackID,
                     images,
                     videos

@@ -11,11 +11,18 @@ object ReviewMediaGalleryRouter {
     fun routeToReviewMediaGallery(
         context: Context,
         productID: String,
+        shopID: String,
+        isProductReview: Boolean,
+        isFromGallery: Boolean,
         mediaPosition: Int = 1,
         showSeeMore: Boolean = false,
         preloadedDetailedReviewMediaResult: ProductrevGetReviewMedia? = null
     ): Intent {
         val cacheManager = SaveInstanceCacheManager(context, true)
+        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_PRODUCT_ID, productID)
+        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_SHOP_ID, shopID)
+        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_IS_PRODUCT_REVIEW, isProductReview)
+        cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_IS_FROM_GALLERY, isFromGallery)
         cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_PRODUCT_ID, productID)
         cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_TARGET_MEDIA_NUMBER, mediaPosition)
         cacheManager.put(SharedReviewMediaGalleryViewModel.EXTRAS_SHOW_SEE_MORE, showSeeMore)

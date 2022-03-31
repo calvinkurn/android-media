@@ -1166,11 +1166,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
                     ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                it,
-                viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
-                position + 1,
-                true,
-                detailedMediaResult
+                context = it,
+                productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),
+                shopID = viewModel.getDynamicProductInfoP1?.basic?.shopID.orEmpty(),
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position + 1,
+                showSeeMore = true,
+                preloadedDetailedReviewMediaResult = detailedMediaResult
             ).let { startActivity(it) }
         }
     }

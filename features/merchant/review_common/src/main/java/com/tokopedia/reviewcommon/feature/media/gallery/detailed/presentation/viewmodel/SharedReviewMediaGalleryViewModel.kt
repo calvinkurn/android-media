@@ -58,16 +58,23 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         private const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
+        const val EXTRAS_SHOP_ID = "extrasShopId"
+        const val EXTRAS_IS_PRODUCT_REVIEW = "extrasIsProductReview"
+        const val EXTRAS_IS_FROM_GALLERY = "extrasIsFromGallery"
         const val EXTRAS_TARGET_MEDIA_NUMBER = "extrasTargetMediaNumber"
         const val EXTRAS_SHOW_SEE_MORE = "extrasShowSeeMore"
         const val EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT = "extrasPreloadedReviewMediaResult"
 
         const val UNINITIALIZED_PRODUCT_ID_VALUE = ""
+        const val UNINITIALIZED_SHOP_ID_VALUE = ""
         const val UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE = -1
         const val INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE = 1
     }
 
     private val _productID = MutableStateFlow(UNINITIALIZED_PRODUCT_ID_VALUE)
+    private val _shopID = MutableStateFlow(UNINITIALIZED_SHOP_ID_VALUE)
+    private val _isProductReview = MutableStateFlow(false)
+    private val _isFromGallery = MutableStateFlow(false)
     private val _showDetailedReviewActionMenuBottomSheet = MutableStateFlow(false)
     private val _toasterQueue = MutableSharedFlow<ToasterUiModel>()
     val toasterQueue: Flow<ToasterUiModel>
@@ -322,6 +329,20 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 EXTRAS_PRODUCT_ID,
                 _productID.value
             ) ?: _productID.value
+            _shopID.value = cacheManager.getString(
+                EXTRAS_SHOP_ID,
+                _shopID.value
+            ) ?: _shopID.value
+            _isProductReview.value = cacheManager.get(
+                EXTRAS_IS_PRODUCT_REVIEW,
+                Boolean::class.java,
+                _isProductReview.value
+            ) ?: _isProductReview.value
+            _isFromGallery.value = cacheManager.get(
+                EXTRAS_IS_FROM_GALLERY,
+                Boolean::class.java,
+                _isFromGallery.value
+            ) ?: _isFromGallery.value
         }, onError = {})
     }
 
@@ -353,6 +374,18 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         return _productID.value
     }
 
+    fun getShopId(): String {
+        return _shopID.value
+    }
+
+    fun isProductReview(): Boolean {
+        return _isProductReview.value
+    }
+
+    fun isFromGallery(): Boolean {
+        return _isFromGallery.value
+    }
+
     fun showActionMenuBottomSheet() {
         _showDetailedReviewActionMenuBottomSheet.value = true
     }
@@ -367,5 +400,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun toasterEventActionClicked(key: String) {
         launch { _toasterEventActionClickQueue.emit(key) }
+    }
+
+    fun getTotalMediaCount(): Long {
+        return _detailedReviewMediaResult.value?.detail?.mediaCount.orZero()
     }
 }

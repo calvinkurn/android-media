@@ -455,11 +455,14 @@ class ReviewGalleryFragment :
 
     private fun goToMediaPreview(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
         ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-            requireContext(),
-            viewModel.getProductId(),
-            reviewGalleryMediaThumbnailUiModel.mediaNumber,
-            false,
-            viewModel.concatenatedReviewImages.value
+            context = requireContext(),
+            productID = viewModel.getProductId(),
+            shopID = viewModel.getShopId(),
+            isProductReview = true,
+            isFromGallery = true,
+            mediaPosition = reviewGalleryMediaThumbnailUiModel.mediaNumber,
+            showSeeMore = false,
+            preloadedDetailedReviewMediaResult = viewModel.concatenatedReviewImages.value
         ).also { startActivityForResult(it, IMAGE_PREVIEW_ACTIVITY_CODE) }
     }
 

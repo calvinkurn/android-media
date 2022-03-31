@@ -11,24 +11,34 @@
         android:layout_height="wrap_content"
         android:paddingBottom="12dp">
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_review_gallery_video_thumbnail"
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/player_view_review_gallery_video_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:scaleType="centerCrop"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius="0" />
+            app:resize_mode="zoom"
+            app:shutter_background_color="@color/transparent"
+            app:surface_type="texture_view"
+            app:use_controller="false" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_review_gallery_video_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_review_gallery_video_thumbnail_play_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/iv_review_gallery_video_thumbnail"
-            app:layout_constraintEnd_toEndOf="@id/iv_review_gallery_video_thumbnail"
-            app:layout_constraintStart_toStartOf="@id/iv_review_gallery_video_thumbnail"
-            app:layout_constraintTop_toTopOf="@id/iv_review_gallery_video_thumbnail"
+            app:layout_constraintBottom_toBottomOf="@id/player_view_review_gallery_video_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/player_view_review_gallery_video_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/player_view_review_gallery_video_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/player_view_review_gallery_video_thumbnail"
             app:unify_image_corner_radius="0"
             tools:src="@drawable/ic_review_media_video_thumbnail_play"
             tools:visibility="visible" />
@@ -66,7 +76,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_review_gallery_video_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/player_view_review_gallery_video_thumbnail"
             app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifyprinciples.Typography

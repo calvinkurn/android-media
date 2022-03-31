@@ -1,9 +1,10 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 
-import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
@@ -11,17 +12,26 @@ import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.databinding.ItemReviewGalleryVideoThumbnailBinding
 import com.tokopedia.review.feature.gallery.presentation.adapter.uimodel.ReviewGalleryVideoThumbnailUiModel
 import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryMediaThumbnailListener
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayerListener
 
 class ReviewGalleryVideoThumbnailViewHolder(
     view: View,
     reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener
-) : AbstractViewHolder<ReviewGalleryVideoThumbnailUiModel>(view) {
+) : AbstractViewHolder<ReviewGalleryVideoThumbnailUiModel>(view), ReviewVideoPlayerListener {
 
     companion object {
         val LAYOUT = R.layout.item_review_gallery_video_thumbnail
     }
 
     private val binding = ItemReviewGalleryVideoThumbnailBinding.bind(view)
+    private val reviewVideoPlayer = ReviewVideoPlayer(
+        context = binding.root.context,
+        minBufferDuration = 50,
+        maxBufferDuration = 50,
+        minPlaybackStartBuffer = 50,
+        minPlaybackResumeBuffer = 50
+    )
     private var element: ReviewGalleryVideoThumbnailUiModel? = null
 
     init {
@@ -43,14 +53,7 @@ class ReviewGalleryVideoThumbnailViewHolder(
     }
 
     private fun setupLayout() {
-        with(binding) {
-            ivReviewGalleryVideoThumbnailPlayButton.loadImage(com.tokopedia.reviewcommon.R.drawable.ic_review_media_video_thumbnail_play)
-            ivReviewGalleryVideoThumbnail.onUrlLoaded = { success ->
-                ivReviewGalleryVideoThumbnailPlayButton.showWithCondition(success)
-                reviewMediaGalleryVideoThumbnailBrokenOverlay.showWithCondition(!success)
-                icReviewGalleryVideoThumbnailBroken.showWithCondition(!success)
-            }
-        }
+        binding.ivReviewGalleryVideoThumbnailPlayButton.loadImage(com.tokopedia.reviewcommon.R.drawable.ic_review_media_video_thumbnail_play)
     }
 
     private fun ItemReviewGalleryVideoThumbnailBinding.setupBrokenOverlay() {
@@ -63,7 +66,13 @@ class ReviewGalleryVideoThumbnailViewHolder(
     }
 
     private fun ItemReviewGalleryVideoThumbnailBinding.setupThumbnail(videoUrl: String) {
-        ivReviewGalleryVideoThumbnail.urlSrc = videoUrl
+        loaderReviewGalleryVideoThumbnail.show()
+        reviewVideoPlayer.initializeVideoPlayer(
+            videoUrl,
+            playerViewReviewGalleryVideoThumbnail,
+            this@ReviewGalleryVideoThumbnailViewHolder,
+            true
+        )
     }
 
     private fun ItemReviewGalleryVideoThumbnailBinding.setupRating(rating: Int) {
@@ -74,6 +83,40 @@ class ReviewGalleryVideoThumbnailViewHolder(
         tvReviewGalleryVideoThumbnailProductVariantName.run {
             text = getString(R.string.review_gallery_variant, variantName)
             showWithCondition(variantName.isNotBlank())
+        }
+    }
+
+    override fun onReviewVideoPlayerIsPlaying() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsBuffering() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsPaused() {
+        with(binding) {
+            ivReviewGalleryVideoThumbnailPlayButton.show()
+            reviewMediaGalleryVideoThumbnailBrokenOverlay.gone()
+            icReviewGalleryVideoThumbnailBroken.gone()
+            loaderReviewGalleryVideoThumbnail.gone()
+        }
+    }
+
+    override fun onReviewVideoPlayerIsPreloading() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsEnded() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerError() {
+        with(binding) {
+            reviewMediaGalleryVideoThumbnailBrokenOverlay.show()
+            icReviewGalleryVideoThumbnailBroken.show()
+            ivReviewGalleryVideoThumbnailPlayButton.gone()
+            loaderReviewGalleryVideoThumbnail.gone()
         }
     }
 }

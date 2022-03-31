@@ -46,6 +46,42 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
 
+    override fun onReviewVideoPlayerIsPlaying() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsBuffering() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsPaused() {
+        binding.reviewMediaVideoThumbnailBrokenOverlay.gone()
+        binding.icReviewMediaVideoThumbnailBroken.gone()
+        binding.loaderReviewMediaVideoThumbnail.gone()
+    }
+
+    override fun onReviewVideoPlayerIsPreloading() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerIsEnded() {
+        // noop
+    }
+
+    override fun onReviewVideoPlayerError() {
+        binding.loaderReviewMediaVideoThumbnail.gone()
+        when (uiState) {
+            is ReviewMediaVideoThumbnailUiState.Showing -> {
+                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
+                binding.icReviewMediaVideoThumbnailBroken.show()
+            }
+            else -> {
+                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
+                binding.icReviewMediaVideoThumbnailBroken.gone()
+            }
+        }
+    }
+
     private fun WidgetReviewMediaVideoThumbnailBinding.setupVideoThumbnail(
         uiState: ReviewMediaVideoThumbnailUiState
     ) {
@@ -149,41 +185,5 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     interface Listener {
         fun onMediaItemClicked()
         fun onRemoveMediaItemClicked()
-    }
-
-    override fun onReviewVideoPlayerIsPlaying() {
-        // noop
-    }
-
-    override fun onReviewVideoPlayerIsBuffering() {
-        // noop
-    }
-
-    override fun onReviewVideoPlayerIsPaused() {
-        binding.reviewMediaVideoThumbnailBrokenOverlay.gone()
-        binding.icReviewMediaVideoThumbnailBroken.gone()
-        binding.loaderReviewMediaVideoThumbnail.gone()
-    }
-
-    override fun onReviewVideoPlayerIsPreloading() {
-        // noop
-    }
-
-    override fun onReviewVideoPlayerIsEnded() {
-        // noop
-    }
-
-    override fun onReviewVideoPlayerError() {
-        binding.loaderReviewMediaVideoThumbnail.gone()
-        when (uiState) {
-            is ReviewMediaVideoThumbnailUiState.Showing -> {
-                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
-                binding.icReviewMediaVideoThumbnailBroken.show()
-            }
-            else -> {
-                binding.reviewMediaVideoThumbnailBrokenOverlay.show()
-                binding.icReviewMediaVideoThumbnailBroken.gone()
-            }
-        }
     }
 }

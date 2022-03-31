@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewcommon.databinding.FragmentReviewDetailCommonBinding
+import com.tokopedia.reviewcommon.feature.media.detail.analytic.ReviewDetailTracker
 import com.tokopedia.reviewcommon.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.reviewcommon.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.bottomsheet.ExpandedReviewDetailBottomSheet
@@ -24,9 +24,11 @@ import com.tokopedia.reviewcommon.feature.media.detail.presentation.viewmodel.Re
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.widget.ReviewDetailBasicInfo
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.widget.ReviewDetailSupplementaryInfo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity.Companion.GALLERY_SOURCE_CREDIBILITY_SOURCE
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity.Companion.READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -54,6 +56,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     @ReviewDetailViewModelFactory
@@ -228,12 +233,11 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun getCredibilitySource(): String {
-        return if (isFromGallery()) GALLERY_SOURCE_CREDIBILITY_SOURCE
-        else READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
-    }
-
-    private fun isFromGallery(): Boolean {
-        return arguments?.getBoolean(ARG_IS_FROM_GALLERY).orFalse()
+        return if (sharedReviewMediaGalleryViewModel.isFromGallery()) {
+            GALLERY_SOURCE_CREDIBILITY_SOURCE
+        } else {
+            READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
+        }
     }
 
     private inner class BottomSheetHandler {
@@ -273,12 +277,26 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
             val feedbackID = reviewDetailViewModel.getFeedbackID()
             val invertedLikeStatus = reviewDetailViewModel.getInvertedLikeStatus()
             if (feedbackID != null && invertedLikeStatus != null) {
+                if (sharedReviewMediaGalleryViewModel.isProductReview()) {
+                    ReviewDetailTracker.trackOnLikeReviewClicked(
+                        feedbackId = feedbackID,
+                        isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
+                        productId = sharedReviewMediaGalleryViewModel.getProductId(),
+                        isFromGallery = sharedReviewMediaGalleryViewModel.isFromGallery()
+                    )
+                } else {
+                    ReviewDetailTracker.trackOnShopReviewLikeReviewClicked(
+                        feedbackId = feedbackID,
+                        isLiked = invertedLikeStatus == ToggleLikeReviewUseCase.LIKED,
+                        shopId = sharedReviewMediaGalleryViewModel.getShopId()
+                    )
+                }
                 sharedReviewMediaGalleryViewModel.requestToggleLike(feedbackID, invertedLikeStatus)
             }
         }
 
-        override fun onGoToCredibilityClicked(userId: String) {
-            RouteManager.route(
+        override fun onGoToCredibilityClicked(userId: String, reviewerStatsSummary: String) {
+            val routed = RouteManager.route(
                 context,
                 Uri.parse(
                     UriUtil.buildUri(
@@ -292,6 +310,16 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                     ).build()
                     .toString()
             )
+            if (routed) {
+                ReviewDetailTracker.trackClickReviewerName(
+                    sharedReviewMediaGalleryViewModel.isFromGallery(),
+                    reviewDetailViewModel.getFeedbackID().orEmpty(),
+                    userId,
+                    reviewerStatsSummary,
+                    sharedReviewMediaGalleryViewModel.getProductId(),
+                    userSession.userId
+                )
+            }
         }
 
         fun attachListener() {
@@ -301,6 +329,18 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     private inner class ReviewDetailSupplementaryInfoListener: ReviewDetailSupplementaryInfo.Listener {
         override fun onDescriptionSeeMoreClicked() {
+            if (sharedReviewMediaGalleryViewModel.isProductReview()) {
+                ReviewDetailTracker.trackOnSeeAllClicked(
+                    reviewDetailViewModel.getFeedbackID().orEmpty(),
+                    sharedReviewMediaGalleryViewModel.getProductId(),
+                    sharedReviewMediaGalleryViewModel.isFromGallery()
+                )
+            } else {
+                ReviewDetailTracker.trackOnShopReviewSeeAllClicked(
+                    reviewDetailViewModel.getFeedbackID().orEmpty(),
+                    sharedReviewMediaGalleryViewModel.getShopId()
+                )
+            }
             reviewDetailViewModel.showExpandedReviewDetailBottomSheet()
         }
 

@@ -38,6 +38,8 @@ class ReviewMediaGalleryViewModel @Inject constructor(
 
     private val _orientationUiState = MutableStateFlow<DetailedReviewMediaGalleryOrientationUiState>(DetailedReviewMediaGalleryOrientationUiState.Portrait)
     private val _viewPagerUiState = MutableStateFlow(ReviewMediaGalleryViewPagerUiState())
+    val viewPagerUiState: StateFlow<ReviewMediaGalleryViewPagerUiState>
+        get() = _viewPagerUiState
     private val _mediaItems = MutableStateFlow<List<MediaItemUiModel>>(emptyList())
     private val adapterUiState = _mediaItems.mapLatest {
         ReviewMediaGalleryAdapterUiState(it)
@@ -101,7 +103,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         return detail.reviewGalleryImages.find {
             it.attachmentId == imageId
         }?.let {
-            ImageMediaItemUiModel(it.fullsizeURL, imageNumber, showSeeMore, totalMediaCount)
+            ImageMediaItemUiModel(it.attachmentId, it.fullsizeURL, imageNumber, showSeeMore, totalMediaCount, it.feedbackId)
         }
     }
 
@@ -114,14 +116,17 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         return detail.reviewGalleryVideos.find {
             it.attachmentId == videoId
         }?.let {
-            VideoMediaItemUiModel(it.url, videoNumber, showSeeMore, totalMediaCount)
+            VideoMediaItemUiModel(it.attachmentId, it.url, videoNumber, showSeeMore, totalMediaCount, it.feedbackId)
         }
     }
 
     fun onPageSelected(position: Int) {
         if (!changingConfiguration) {
             _viewPagerUiState.update {
-                it.copy(currentPagerPosition = position)
+                it.copy(
+                    previousPagerPosition = it.currentPagerPosition,
+                    currentPagerPosition = position
+                )
             }
         }
     }

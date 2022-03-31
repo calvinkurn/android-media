@@ -41,7 +41,7 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
         binding.layoutReviewDetailBasicInfo.root.setOnClickListener {
             uiState?.let {
                 if (it is ReviewDetailBasicInfoUiState.Showing && !it.data.anonymous) {
-                    listener?.onGoToCredibilityClicked(it.data.userId)
+                    listener?.onGoToCredibilityClicked(it.data.userId, it.data.reviewerStatsSummary)
                 }
             }
         }
@@ -171,7 +171,7 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
     interface Listener {
         fun onToggleExpandClicked()
         fun onToggleLikeClicked()
-        fun onGoToCredibilityClicked(userId: String)
+        fun onGoToCredibilityClicked(userId: String, reviewerStatsSummary: String)
     }
 
     enum class Source {

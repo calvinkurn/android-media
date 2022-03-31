@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.player.image.presentation.uistate.ReviewImagePlayerUiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,7 @@ class ReviewImagePlayerViewModel @Inject constructor(
     private val _imageUri = MutableStateFlow("")
     private val _showSeeMore = MutableStateFlow(false)
     private val _totalMediaCount = MutableStateFlow(Int.ZERO)
+    private val _impressHolder = ImpressHolder()
     val uiState: StateFlow<ReviewImagePlayerUiState> = combine(
         _imageUri, _showSeeMore, _totalMediaCount
     ) { imageUri, showSeeMore, totalMediaCount ->
@@ -73,5 +75,9 @@ class ReviewImagePlayerViewModel @Inject constructor(
                 SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value
             ) ?: _totalMediaCount.value
         }
+    }
+
+    fun getImpressHolder(): ImpressHolder {
+        return _impressHolder
     }
 }

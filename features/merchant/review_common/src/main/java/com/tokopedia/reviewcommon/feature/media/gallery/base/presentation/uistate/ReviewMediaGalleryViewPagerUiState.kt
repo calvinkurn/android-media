@@ -6,5 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ReviewMediaGalleryViewPagerUiState(
-    val currentPagerPosition: Int = Int.ZERO, val enableUserInput: Boolean = true
+    val currentPagerPosition: Int = Int.ZERO,
+    val previousPagerPosition: Int = Int.ZERO,
+    val enableUserInput: Boolean = true
 ) : Parcelable

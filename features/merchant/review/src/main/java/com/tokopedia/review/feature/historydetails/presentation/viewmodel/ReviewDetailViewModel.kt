@@ -6,7 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.LoadingView
+import com.tokopedia.review.common.data.ProductrevGetReviewDetail
+import com.tokopedia.review.common.data.ReviewViewState
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -65,6 +69,14 @@ class ReviewDetailViewModel @Inject constructor(private val coroutineDispatcherP
 
     fun getUserId(): String {
         return userSession.userId
+    }
+
+    fun getShopId(): String {
+        return reviewDetails.value.let {
+            if (it is Success) {
+                it.data.response.shopId
+            } else ""
+        }
     }
 
     fun submitReputation(reputationId: String, reputationScore: Int) {

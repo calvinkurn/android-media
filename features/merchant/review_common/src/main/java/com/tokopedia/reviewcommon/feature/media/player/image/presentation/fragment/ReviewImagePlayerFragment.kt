@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.FragmentReviewMediaImagePlayerBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
@@ -172,6 +171,12 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
         binding?.btnReviewMediaImagePlayerSeeMore?.setOnClickListener {
             listener?.onSeeMoreClicked()
         }
+        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.onUrlLoaded = { success ->
+            if (success && !reviewImagePlayerViewModel.getImpressHolder().isInvoke) {
+                reviewImagePlayerViewModel.getImpressHolder().invoke()
+                listener?.onImageImpressed(getImageUri())
+            }
+        }
     }
 
     private fun collectUiState() {
@@ -182,7 +187,7 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun updateUi(uiState: ReviewImagePlayerUiState) {
         binding?.imagePreviewReviewMediaImagePlayer?.mLoaderView?.hide()
-        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.loadImage(uiState.imageUri)
+        binding?.imagePreviewReviewMediaImagePlayer?.mImageView?.setImageUrl(uiState.imageUri)
         binding?.imagePreviewReviewMediaImagePlayer?.show()
         when (uiState) {
             is ReviewImagePlayerUiState.Showing -> {
@@ -207,5 +212,6 @@ class ReviewImagePlayerFragment : BaseDaggerFragment(), CoroutineScope {
 
     interface Listener {
         fun onSeeMoreClicked()
+        fun onImageImpressed(imageUri: String)
     }
 }

@@ -568,11 +568,14 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         videos: List<String>) {
         context?.let { context ->
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
-                context,
-                productID,
-                position + 1,
-                false,
-                ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
+                context = context,
+                productID = productID,
+                shopID = viewModel.getShopId(),
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position + 1,
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = ReviewDetailDataMapper.mapReviewDetailDataToReviewMediaPreviewData(
                     feedbackID, images, videos
                 )
             ).let { startActivity(it) }
