@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -10,7 +10,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
  */
 interface PlayBroadcastInteractiveRepository {
 
-    suspend fun getInteractiveConfig(): InteractiveConfigUiModel
+    suspend fun getInteractiveConfig(): GameConfigUiModel
 
     suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel
 

@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
+import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 
@@ -53,6 +54,10 @@ class QuizFormView : ConstraintLayout {
 
     fun setOnCloseListener(listener: () -> Unit) {
         mCloseListener = listener
+    }
+
+    fun setQuizConfig(quizConfig: QuizConfigUiModel) {
+
     }
 
     private fun setupInsets() {

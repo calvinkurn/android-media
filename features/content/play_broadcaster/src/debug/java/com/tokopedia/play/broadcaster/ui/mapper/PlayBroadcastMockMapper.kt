@@ -15,10 +15,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -28,7 +25,6 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 /**
@@ -248,7 +244,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = GameConfigUiModel(
         tapTapConfig = TapTapConfigUiModel(
             isActive = true,
             nameGuidelineHeader = "Mau kasih hadiah apa?",

@@ -8,7 +8,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCr
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -73,7 +73,7 @@ interface PlayBroadcastMapper {
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 
-    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel
 
     fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
                               title: String,

@@ -17,7 +17,7 @@ data class PlayBroadcastUiState(
     val pinnedMessage: PinnedMessageUiState,
     val selectedProduct: List<ProductTagSectionUiModel>,
     val isExiting: Boolean,
-    val interactiveConfig: InteractiveConfigUiState,
+    val gameConfig: GameConfigUiState,
     val quizForm: QuizFormUiState,
 )
 
@@ -31,7 +31,7 @@ data class PinnedMessageUiState(
 	val editStatus: PinnedMessageEditStatus,
 )
 
-data class InteractiveConfigUiState(
+data class GameConfigUiState(
     val tapTapConfig: TapTapConfigUiModel,
     val quizConfig: QuizConfigUiModel,
     val gameTypeList: List<GameType>,

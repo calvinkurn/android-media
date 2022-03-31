@@ -11,10 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -31,14 +29,16 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.ui.state.GameConfigUiState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
@@ -287,7 +287,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
 
         quizForm.setOnCloseListener {
-            showQuizForm(false)
+            parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
         }
     }
 
@@ -723,6 +723,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
+                renderQuizForm(prevState?.quizForm, state.quizForm, state.gameConfig)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -739,18 +740,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
-                    is PlayBroadcastEvent.OpenGameForm -> {
-                        gameIconView.cancelCoachMark()
-
-                        when(event.gameType) {
-                            is GameType.Taptap -> {
-                                /** TODO: will handle it soon */
-                            }
-                            is GameType.Quiz -> {
-                                showQuizForm(true)
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -810,6 +799,25 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             state.filterNot { it.campaignStatus.isUpcoming() }
                 .flatMap { it.products }
         )
+    }
+
+    private fun renderQuizForm(
+        prevState: QuizFormUiState?,
+        state: QuizFormUiState,
+        gameConfig: GameConfigUiState,
+    ) {
+        if(prevState == state) return
+
+        when(state.quizFormState) {
+            QuizFormStateUiModel.Nothing -> showQuizForm(false)
+            QuizFormStateUiModel.Preparation -> {
+                quizForm.setQuizConfig(gameConfig.quizConfig)
+                showQuizForm(true)
+            }
+            QuizFormStateUiModel.SetDuration -> {
+                /** TODO: handle set duration */
+            }
+        }
     }
 
     private fun isPinnedFormVisible(): Boolean {

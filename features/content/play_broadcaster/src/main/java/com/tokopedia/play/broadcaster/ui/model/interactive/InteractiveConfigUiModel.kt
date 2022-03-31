@@ -5,7 +5,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
 /**
  * Created by jegul on 07/07/21
  */
-data class InteractiveConfigUiModel(
+data class GameConfigUiModel(
         val tapTapConfig: TapTapConfigUiModel,
         val quizConfig: QuizConfigUiModel,
 ) {
@@ -24,7 +24,7 @@ data class InteractiveConfigUiModel(
         }
 
         companion object {
-                fun empty() = InteractiveConfigUiModel(
+                fun empty() = GameConfigUiModel(
                         tapTapConfig = TapTapConfigUiModel(
                                 isActive = false,
                                 nameGuidelineHeader = "",

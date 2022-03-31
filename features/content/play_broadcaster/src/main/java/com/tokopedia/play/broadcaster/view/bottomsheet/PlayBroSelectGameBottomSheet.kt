@@ -3,19 +3,16 @@ package com.tokopedia.play.broadcaster.view.bottomsheet
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayBroSelectGameBinding
-import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSummaryBottomSheet
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.itemdecoration.SelectGameItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
-import com.tokopedia.play.broadcaster.ui.state.InteractiveConfigUiState
+import com.tokopedia.play.broadcaster.ui.state.GameConfigUiState
 import com.tokopedia.play.broadcaster.ui.viewholder.game.SelectGameViewHolder
 import com.tokopedia.play.broadcaster.view.adapter.SelectGameAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -81,12 +78,12 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
-                renderGameOption(it.prevValue?.interactiveConfig, it.value.interactiveConfig)
+                renderGameOption(it.prevValue?.gameConfig, it.value.gameConfig)
             }
         }
     }
 
-    private fun renderGameOption(prevValue: InteractiveConfigUiState?, value: InteractiveConfigUiState) {
+    private fun renderGameOption(prevValue: GameConfigUiState?, value: GameConfigUiState) {
         if(value == prevValue) return
 
         adapter.setItemsAndAnimateChanges(value.gameTypeList.map {

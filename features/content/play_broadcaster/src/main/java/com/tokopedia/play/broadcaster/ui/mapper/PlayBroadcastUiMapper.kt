@@ -5,7 +5,6 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
@@ -16,10 +15,7 @@ import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessag
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -310,10 +306,10 @@ class PlayBroadcastUiMapper(
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
-        return InteractiveConfigUiModel(
+        return GameConfigUiModel(
             tapTapConfig = TapTapConfigUiModel(
                 isActive = response.interactiveConfig.tapTapConfig.isActive,
                 nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,

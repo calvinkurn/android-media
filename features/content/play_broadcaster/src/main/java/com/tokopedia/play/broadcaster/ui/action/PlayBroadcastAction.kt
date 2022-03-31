@@ -20,4 +20,7 @@ sealed class PlayBroadcastAction {
 
     /** Game */
     data class ClickGameOption(val gameType: GameType): PlayBroadcastAction()
+
+    /** Quiz */
+    object ClickBackOnQuiz: PlayBroadcastAction()
 }

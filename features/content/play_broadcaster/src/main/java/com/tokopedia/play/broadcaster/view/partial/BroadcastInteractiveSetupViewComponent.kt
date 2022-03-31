@@ -16,7 +16,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText

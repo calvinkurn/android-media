@@ -213,9 +213,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
-    private val _interactiveConfig = MutableStateFlow<InteractiveConfigUiModel>(InteractiveConfigUiModel.empty())
-    private val _interactiveConfigUiState = _interactiveConfig.map {
-        InteractiveConfigUiState(
+    private val _gameConfig = MutableStateFlow(GameConfigUiModel.empty())
+    private val _gameConfigUiState = _gameConfig.map {
+        GameConfigUiState(
             tapTapConfig = it.tapTapConfig,
             quizConfig = it.quizConfig,
             gameTypeList = it.generateGameTypeList(),
@@ -236,15 +236,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
         _isExiting,
-        _interactiveConfigUiState,
+        _gameConfigUiState,
         _quizFormUiState,
-    ) { channelState, pinnedMessage, productMap, isExiting, interactiveConfig, quizForm ->
+    ) { channelState, pinnedMessage, productMap, isExiting, gameConfig, quizForm ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             isExiting = isExiting,
-            interactiveConfig = interactiveConfig,
+            gameConfig = gameConfig,
             quizForm = quizForm,
         )
     }
@@ -348,6 +348,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
+
+            /** Quiz */
+            PlayBroadcastAction.ClickBackOnQuiz -> handleClickBackOnQuiz()
         }
     }
 
@@ -607,7 +610,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val interactiveConfig = repo.getInteractiveConfig()
-            _interactiveConfig.value = interactiveConfig
+            _gameConfig.value = interactiveConfig
 
             /** TODO: should save config on flow instead */
             setInteractiveDurations(interactiveConfig.tapTapConfig.availableStartTimeInMs)
@@ -623,7 +626,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateCurrentInteractiveStatus() {
         viewModelScope.launch {
-            val interactiveConfig = _interactiveConfig.value
+            val interactiveConfig = _gameConfig.value
             if (interactiveConfig.isNoGameActive()) handleActiveInteractive()
         }
     }
@@ -696,7 +699,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return BroadcastInteractiveState.Allowed.Init(
             state = BroadcastInteractiveInitState.NoPrevious(
                 showOnBoarding = sharedPref.isFirstInteractive(),
-                gameTypeList = _interactiveConfig.value.generateGameTypeList(),
+                gameTypeList = _gameConfig.value.generateGameTypeList(),
             ),
         )
     }
@@ -928,11 +931,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleClickGameOption(gameType: GameType) {
-        viewModelScope.launchCatchError(block = {
-            _uiEvent.emit(
-                PlayBroadcastEvent.OpenGameForm(gameType)
-            )
-        }) { }
+        when(gameType) {
+            GameType.Taptap -> { /** TODO: will handle it soon */ }
+            GameType.Quiz -> _quizFormState.value = QuizFormStateUiModel.Preparation
+        }
+    }
+
+    private fun handleClickBackOnQuiz() {
+        _quizFormState.value = when(_quizFormState.value) {
+            QuizFormStateUiModel.Preparation -> QuizFormStateUiModel.Nothing
+            QuizFormStateUiModel.SetDuration -> QuizFormStateUiModel.Preparation
+            else -> QuizFormStateUiModel.Nothing
+        }
     }
 
     /**
