@@ -33,7 +33,7 @@ class AddToWishlistV2UseCase @Inject constructor(@ApplicationContext private val
     companion object {
         val MUTATION = """
         mutation WishlistAddV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger) {
-          wishlist_add_v2(productID:${'$'}productID, userID:${'$'}userID, wishlistType: "wishlist_v2") {
+          wishlist_add_v2(productID:${'$'}productID, userID:${'$'}userID) {
             id
             success
             message
