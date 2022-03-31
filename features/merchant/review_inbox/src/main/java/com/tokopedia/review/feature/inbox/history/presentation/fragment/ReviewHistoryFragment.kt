@@ -146,7 +146,7 @@ class ReviewHistoryFragment :
         return binding?.reviewHistorySwipeRefresh
     }
 
-    override fun onAttachedImagesClicked(
+    override fun onAttachedMediaClicked(
         productID: String,
         feedbackID: String,
         position: Int,

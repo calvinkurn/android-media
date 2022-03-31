@@ -198,9 +198,8 @@ class InboxReviewFeedbackViewHolder(
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 feedbackInboxReviewListener.onMediaItemClicked(
-                    it.productName,
-                    it.imageAttachments.map { it.fullSizeURL },
                     it.videoAttachments.map { it.videoUrl },
+                    it.imageAttachments.map { it.fullSizeURL },
                     it.feedbackId,
                     it.productID,
                     position

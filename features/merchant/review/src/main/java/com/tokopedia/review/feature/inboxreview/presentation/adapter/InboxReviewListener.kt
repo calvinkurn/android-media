@@ -5,7 +5,7 @@ import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInbox
 
 interface FeedbackInboxReviewListener {
     fun onItemReplyOrEditClicked(data: FeedbackInboxUiModel, isEmptyReply: Boolean, adapterPosition: Int)
-    fun onMediaItemClicked(titleProduct: String, videoUrls: List<String>, imageUrls: List<String>, feedbackId: String, productId: String, position: Int)
+    fun onMediaItemClicked(videoUrls: List<String>, imageUrls: List<String>, feedbackId: String, productId: String, position: Int)
     fun onBackgroundMarginIsReplied(isNotReplied: Boolean)
     fun onInFullReviewClicked(feedbackId: String, productId: String)
     fun showCoachMark(view: View?)

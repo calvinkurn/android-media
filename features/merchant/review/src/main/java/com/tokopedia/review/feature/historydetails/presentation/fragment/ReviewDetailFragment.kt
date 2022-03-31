@@ -182,7 +182,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         removeObservers(viewModel.submitReputationResult)
     }
 
-    override fun onAttachedImagesClicked(
+    override fun onAttachedMediaClicked(
         productID: String,
         feedbackID: String,
         position: Int,
@@ -642,7 +642,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             viewModel.reviewDetails.value?.let { reviewDetailsResult ->
                 if (reviewDetailsResult is Success) {
-                    onAttachedImagesClicked(
+                    onAttachedMediaClicked(
                         reviewDetailsResult.data.product.productId,
                         reviewDetailsResult.data.review.feedbackId,
                         position,

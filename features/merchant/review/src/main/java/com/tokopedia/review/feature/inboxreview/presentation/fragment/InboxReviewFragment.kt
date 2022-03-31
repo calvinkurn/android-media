@@ -276,7 +276,6 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     override fun onMediaItemClicked(
-        titleProduct: String,
         videoUrls: List<String>,
         imageUrls: List<String>,
         feedbackId: String,
@@ -284,10 +283,10 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         position: Int
     ) {
         InboxReviewTracking.eventClickSpecificImageReview(
-                feedbackId,
-                getQuickFilter(),
-                inboxReviewViewModel.userSession.shopId.orEmpty(),
-                productId
+            feedbackId,
+            getQuickFilter(),
+            inboxReviewViewModel.userSession.shopId.orEmpty(),
+            productId
         )
         context?.run {
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(

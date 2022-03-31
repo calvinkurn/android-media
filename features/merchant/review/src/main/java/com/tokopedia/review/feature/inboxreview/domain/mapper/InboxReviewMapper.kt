@@ -52,47 +52,44 @@ object InboxReviewMapper {
     ): List<FeedbackInboxUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackInboxUiModel>()
         inboxReviewResponse.list.map {
-            val mappedImageAttachments = it.imageAttachments.mapNotNull { attachment ->
-                if (attachment.thumbnailURL.isNullOrBlank() || attachment.fullSizeURL.isNullOrBlank()) {
-                    null
-                } else {
-                    FeedbackInboxUiModel.ImageAttachment(
-                        thumbnailURL = attachment.thumbnailURL,
-                        fullSizeURL = attachment.fullSizeURL
-                    )
-                }
-            }
-            val mappedVideoAttachments = it.videoAttachments.mapNotNull { attachment ->
-                if (attachment.videoUrl.isNullOrBlank()) {
-                    null
-                } else {
-                    FeedbackInboxUiModel.VideoAttachment(
-                        videoUrl = attachment.videoUrl
-                    )
-                }
-            }
-            val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-                mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
-                    videoAttachment.videoUrl?.let { url ->
-                        ReviewMediaVideoThumbnailUiModel(
-                            uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = url)
-                        )
-                    }
-                }.plus(
-                    it.imageAttachments.mapNotNull { attachment ->
-                        attachment.thumbnailURL?.let { url ->
-                            ReviewMediaImageThumbnailUiModel(
-                                uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
-                            )
-                        }
-                    }
-                )
-            )
             feedbackListUiModel.add(
                 FeedbackInboxUiModel(
-                    imageAttachments = mappedImageAttachments,
-                    videoAttachments = mappedVideoAttachments,
-                    reviewMediaThumbnail = mappedReviewMediaThumbnail,
+                    imageAttachments = it.imageAttachments.mapNotNull { attachment ->
+                        if (attachment.thumbnailURL.isNullOrBlank() || attachment.fullSizeURL.isNullOrBlank()) {
+                            null
+                        } else {
+                            FeedbackInboxUiModel.ImageAttachment(
+                                thumbnailURL = attachment.thumbnailURL,
+                                fullSizeURL = attachment.fullSizeURL
+                            )
+                        }
+                    },
+                    videoAttachments = it.videoAttachments.mapNotNull { attachment ->
+                        if (attachment.videoUrl.isNullOrBlank()) {
+                            null
+                        } else {
+                            FeedbackInboxUiModel.VideoAttachment(
+                                videoUrl = attachment.videoUrl
+                            )
+                        }
+                    },
+                    reviewMediaThumbnail = ReviewMediaThumbnailUiModel(
+                        mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
+                            videoAttachment.videoUrl?.let { url ->
+                                ReviewMediaVideoThumbnailUiModel(
+                                    uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = url)
+                                )
+                            }
+                        }.plus(
+                            it.imageAttachments.mapNotNull { attachment ->
+                                attachment.thumbnailURL?.let { url ->
+                                    ReviewMediaImageThumbnailUiModel(
+                                        uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
+                                    )
+                                }
+                            }
+                        )
+                    ),
                     isAutoReply = it.isAutoReply ?: false,
                     feedbackId = it.feedbackID,
                     rating = it.rating.orZero(),
