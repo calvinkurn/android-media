@@ -735,7 +735,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
-                renderQuizForm(prevState?.quizForm, state.quizForm, state.gameConfig)
+                renderQuizForm(prevState?.quizForm, state.quizForm, prevState?.gameConfig, state.gameConfig)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -816,8 +816,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun renderQuizForm(
         prevState: QuizFormUiState?,
         state: QuizFormUiState,
-        gameConfig: GameConfigUiState,
+        prevConfigState: GameConfigUiState?,
+        configState: GameConfigUiState,
     ) {
+        if(prevConfigState != configState)
+            quizForm.setQuizConfig(configState.quizConfig)
+
         if(prevState?.quizFormState != state.quizFormState) {
             when(state.quizFormState) {
                 QuizFormStateUiModel.Nothing -> {
@@ -825,7 +829,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showQuizForm(false)
                 }
                 QuizFormStateUiModel.Preparation -> {
-                    quizForm.setQuizConfig(gameConfig.quizConfig)
                     showQuizForm(true)
                 }
                 QuizFormStateUiModel.SetDuration -> {

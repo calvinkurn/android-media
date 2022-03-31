@@ -62,6 +62,7 @@ class QuizFormView : ConstraintLayout {
 
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
+        timePickerBinding.puTimer.infiniteMode = false
         bottomSheetHeaderBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
         bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
@@ -115,6 +116,12 @@ class QuizFormView : ConstraintLayout {
         }
     }
 
+    fun setQuizConfig(quizConfig: QuizConfigUiModel) {
+        /** TODO: set config here */
+        binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
+        timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
+    }
+
     fun setOnCloseListener(listener: () -> Unit) {
         mCloseListener = listener
     }
@@ -129,11 +136,6 @@ class QuizFormView : ConstraintLayout {
 
     fun setOnGiftChangedListener(listener: (String) -> Unit) {
         onGiftChangedListener = listener
-    }
-
-    fun setQuizConfig(quizConfig: QuizConfigUiModel) {
-        /** TODO: set config here */
-        binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
     }
 
     private fun setupInsets() {
