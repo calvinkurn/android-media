@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -96,12 +94,8 @@ class SellerOnboardingActivity : BaseActivity() {
     private fun setPageBackground() {
         try {
             binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full)
-            val sobRamadhanDrawable =
-                VectorDrawableCompat.create(resources, R.drawable.bg_sob_ramadhan, theme)
-            binding?.bgSobRamadhan?.setImageDrawable(sobRamadhanDrawable)
-            val sobRamadhanPatternDrawable =
-                VectorDrawableCompat.create(resources, R.drawable.bg_sob_ramadhan_pattern, theme)
-            binding?.bgSobRamadhanPattern?.setImageDrawable(sobRamadhanPatternDrawable)
+            binding?.bgSobRamadhan?.setImageResource(R.drawable.bg_sob_ramadhan)
+            binding?.bgSobRamadhanPattern?.setImageResource(R.drawable.bg_sob_ramadhan_pattern)
         } catch (e: Resources.NotFoundException) {
             Timber.e(e)
         }
