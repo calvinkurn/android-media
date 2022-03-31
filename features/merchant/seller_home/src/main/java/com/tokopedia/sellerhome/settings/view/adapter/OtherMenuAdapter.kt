@@ -17,6 +17,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.settings.view.activity.SellerEduWebviewActivity
+import com.tokopedia.sellerhomecommon.common.const.ShcConst
 import java.util.*
 
 class OtherMenuAdapter(
@@ -29,6 +30,7 @@ class OtherMenuAdapter(
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
+        private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
     }
 
     private val settingList = listOf(
@@ -36,13 +38,15 @@ class OtherMenuAdapter(
         StatisticMenuItemUiModel(
             title = context?.getString(R.string.setting_menu_statistic).orEmpty(),
             clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-            iconUnify = IconUnify.GRAPH
+            iconUnify = IconUnify.GRAPH,
+            tag = getStatisticNewTag()
         ),
         MenuItemUiModel(
             title = context?.getString(R.string.setting_menu_ads_and_shop_promotion).orEmpty(),
             clickApplink = ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
             eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
-            iconUnify = IconUnify.PROMO_ADS
+            iconUnify = IconUnify.PROMO_ADS,
+            tag = getCentralizedPromoTag()
         ),
         MenuItemUiModel(
             title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_performance)
@@ -132,10 +136,31 @@ class OtherMenuAdapter(
         }
     )
 
+    private fun getStatisticNewTag(): String {
+        val expiredDateMillis = ShcConst.TRAFFIC_INSIGHT_TAG_EXPIRED
+        val todayMillis = Date().time
+        return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
+        }
+    }
+
     private fun getSettingsTag(): String {
         val expiredDateMillis = FEEDBACK_EXPIRED_DATE
         val todayMillis = Date().time
         return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
+        }
+    }
+
+    private fun getCentralizedPromoTag(): String {
+        val expiredDateMillis = PRODUCT_COUPON_END_DATE
+        val todayMillis = Date().time
+        val shouldShow = listener.getIsMVCProductEnabled() && todayMillis < expiredDateMillis
+        return if (shouldShow) {
             context?.getString(R.string.setting_new_tag).orEmpty()
         } else {
             SellerHomeConst.EMPTY_STRING
@@ -150,6 +175,7 @@ class OtherMenuAdapter(
     interface Listener {
         fun goToPrintingPage()
         fun goToSettings()
+        fun getIsMVCProductEnabled(): Boolean
     }
 
 }

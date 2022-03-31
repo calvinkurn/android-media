@@ -1,7 +1,11 @@
 package com.tokopedia.product.util.processor
 
 
-import com.tokopedia.analytic.annotation.*
+import com.tokopedia.analytic.annotation.CustomChecker
+import com.tokopedia.analytic.annotation.ErrorHandler
+import com.tokopedia.analytic.annotation.Key
+import com.tokopedia.analytic.annotation.Level
+import com.tokopedia.analytic.annotation.Logger
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.annotation.AnalyticEvent
 import com.tokopedia.annotation.defaultvalues.DefaultValueString
@@ -106,8 +110,10 @@ data class ProductDetailViews(
         val stockAmount: String?,
         @DefaultValueString("")
         @Key("attribution")
-        val attribution: String?
-
+        val attribution: String?,
+        @DefaultValueString("")
+        @Key("warehouseId")
+        val warehouseId: String?
 )
 
 object ProductDetailViewsChecker {

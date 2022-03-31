@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.helper
 
 import android.widget.Toast
 import com.tokopedia.application.MyApplication
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo

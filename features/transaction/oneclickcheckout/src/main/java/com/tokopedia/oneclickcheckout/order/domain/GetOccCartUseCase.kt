@@ -1,6 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -11,25 +12,26 @@ import com.tokopedia.oneclickcheckout.common.STATUS_OK
 import com.tokopedia.oneclickcheckout.order.data.get.GetOccCartGqlResponse
 import com.tokopedia.oneclickcheckout.order.domain.mapper.GetOccCartMapper
 import com.tokopedia.oneclickcheckout.order.view.model.OrderData
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                             private val mapper: GetOccCartMapper,
                                             private val chosenAddressRequestHelper: ChosenAddressRequestHelper) {
 
-    fun createRequestParams(source: String): RequestParams {
-        val params = RequestParams.create().apply {
-            putString(PARAM_SOURCE, source)
-        }
-        chosenAddressRequestHelper.addChosenAddressParam(params)
-
-        return params
+    fun createRequestParams(source: String, gatewayCode: String, tenor: Int): Map<String, Any?> {
+        return mapOf(
+                PARAM_SOURCE to source,
+                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to chosenAddressRequestHelper.getChosenAddress(),
+                PARAM_ADDITIONAL_PARAMS to mapOf(
+                        PARAM_GATEWAY_CODE to gatewayCode,
+                        PARAM_TENOR to tenor
+                )
+        )
     }
 
-    suspend fun executeSuspend(params: RequestParams): OrderData {
-        val graphqlRequest = GET_OCC_CART_PAGE_QUERY
-        val request = GraphqlRequest(graphqlRequest, GetOccCartGqlResponse::class.java, params.parameters)
+    @GqlQuery(GetOccMultiQuery, GET_OCC_CART_PAGE_QUERY)
+    suspend fun executeSuspend(params: Map<String, Any?>): OrderData {
+        val request = GraphqlRequest(GetOccMultiQuery(), GetOccCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<GetOccCartGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true)) {
             val errorMessage = response.response.data.errors.firstOrNull()
@@ -47,9 +49,14 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
 
     companion object {
         private const val PARAM_SOURCE = "source"
+        private const val PARAM_GATEWAY_CODE = "gateway_code"
+        private const val PARAM_TENOR = "tenure_type"
+        private const val PARAM_ADDITIONAL_PARAMS = "additional_params"
 
-        private const val GET_OCC_CART_PAGE_QUERY = """query get_occ_multi(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam) {
-  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address) {
+        private const val GetOccMultiQuery = "GetOccMultiQuery"
+
+        private const val GET_OCC_CART_PAGE_QUERY = """query getOccMulti(${"$"}source: String, ${"$"}chosen_address: ChosenAddressParam, ${"$"}additional_params: OCCAdditionalParams) {
+  get_occ_multi(source: ${"$"}source, chosen_address: ${"$"}chosen_address, additional_params: ${"$"}additional_params) {
     error_message
     status
     data {
@@ -60,7 +67,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
       kero_token
       kero_unix_time
       kero_discom_token
-      error_ticker
       tickers {
         id
         message
@@ -244,7 +250,41 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               protection_checkbox_disabled
               unit
               source
-            }
+            }            
+            add_ons {
+              status
+              add_on_data {
+            	add_on_id
+            	add_on_qty
+              	add_on_price
+              	add_on_metadata {
+              	  add_on_note {
+					is_custom_note
+					to
+					from
+					notes
+				  }
+              	}
+              }
+              add_on_button {
+                title
+                description
+                left_icon_url
+                right_icon_url
+                action
+              }
+              add_on_bottomsheet {
+                header_title
+                description
+                products {
+			      product_name
+			      product_image_url
+			    }
+			    ticker {
+				  text
+			    }
+              }
+            }            
           }
         }
         toko_cabang {
@@ -254,7 +294,41 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
         warehouse {
           warehouse_id
           is_fulfillment
-        }
+        }        
+        add_ons {
+          status
+          add_on_data {
+            add_on_id
+            add_on_qty
+            add_on_price
+            add_on_metadata {
+              add_on_note {
+			    is_custom_note
+				to
+				from
+				notes
+			  }
+            }
+          }
+          add_on_button {
+            title
+            description
+            left_icon_url
+            right_icon_url
+            action
+          }
+          add_on_bottomsheet {
+          	header_title
+            description
+            products {
+			  product_name
+			  product_image_url
+			}
+			ticker {
+			  text
+			}
+          }
+        }        
       }
       profile {
         address {
@@ -276,8 +350,14 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           state_detail
           status
           tokonow {
+            is_modified
             shop_id
             warehouse_id
+            warehouses {
+              warehouse_id
+              service_type
+            }
+            service_type
           }
         }
         payment {
@@ -387,6 +467,13 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
                 is_hide_digital
                 header_title
                 url_link
+            }
+            go_cicil {
+                error_message_invalid_tenure
+                error_message_top_limit
+                error_message_bottom_limit
+                error_message_unavailable_tenure
+                selected_tenure
             }
           }
         }
@@ -579,6 +666,18 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
           action
           color
         }
+      }
+      pop_up {
+        title
+        description
+        button {
+          text
+        }
+      }
+      add_on_wording {
+        packaging_and_greeting_card
+        only_greeting_card
+        invoice_not_sent_to_recipient
       }
       total_product_price
     }

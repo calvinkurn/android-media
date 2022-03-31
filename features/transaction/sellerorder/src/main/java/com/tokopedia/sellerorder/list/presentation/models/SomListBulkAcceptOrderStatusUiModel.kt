@@ -12,7 +12,7 @@ data class SomListBulkAcceptOrderStatusUiModel(
             var shouldRecheck: Boolean = false
     ) {
         data class MultiOriginInvalidOrder(
-                val orderId: Int = 0,
+                val orderId: Long = 0,
                 val invoiceRefNum: String = ""
         )
     }

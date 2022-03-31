@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/home_navToolbar"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        tools:text="6 Produk" />
+        tools:text="0 Produk" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:layout_width="match_parent"

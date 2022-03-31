@@ -33,34 +33,36 @@
       "shop_type": 2,
       "badge_url": "https://ecs7.tokopedia.net/img/official_store/badge_official.png"
     },
-    "products": [
-      {
-        "product_id": 15122393,
-        "order_detail_id": 20530101,
-        "product_name": "alphabet",
-        "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/7/14/5512090/5512090_fc6b0895-a7fd-46fd-a148-1f90fb5bbaf8_1058_595.png",
-        "price": 22000,
-        "price_text": "Rp22.000",
-        "quantity": 1,
-        "total_price": 22000,
-        "total_price_text": "Rp22.000",
-        "notes": "",
-        "category": "Gaming",
-        "category_id": 2099,
-        "button": {
-          "key": "",
-          "display_name": "",
-          "type": "",
-          "variant": "",
-          "url": "",
-          "popup": {
-            "title": "",
-            "body": "",
-            "action_button": []
+    "details": {
+      "non_bundles": [
+        {
+          "product_id": 15122393,
+          "order_detail_id": 20530101,
+          "product_name": "alphabet",
+          "thumbnail": "https://ecs7.tokopedia.net/img/cache/100-square/product-1/2017/7/14/5512090/5512090_fc6b0895-a7fd-46fd-a148-1f90fb5bbaf8_1058_595.png",
+          "price": 22000,
+          "price_text": "Rp22.000",
+          "quantity": 1,
+          "total_price": 22000,
+          "total_price_text": "Rp22.000",
+          "notes": "",
+          "category": "Gaming",
+          "category_id": 2099,
+          "button": {
+            "key": "",
+            "display_name": "",
+            "type": "",
+            "variant": "",
+            "url": "",
+            "popup": {
+              "title": "",
+              "body": "",
+              "action_button": []
+            }
           }
         }
-      }
-    ],
+      ]
+    },
     "shipment": {
       "shipping_name": "GoSend",
       "shipping_product_name": "Instant Courier",

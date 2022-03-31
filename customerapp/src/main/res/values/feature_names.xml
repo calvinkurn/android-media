@@ -32,6 +32,8 @@
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
     <string name="hotel_pay_at_hotel_promo_header_title">Pakai Promo</string>
+    <string name="travel_contact_data_activity_title">Data Pemesan</string>
+    <string name="activity_label_travel_country_code">Kode Telepon Negara</string>
 
     <!--Travel Slice -->
     <string name="travel_slice_host_name">travelslice</string>
@@ -306,6 +308,9 @@
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_redeem_title">Redeem Your Ticket</string>
 
+    <!-- Dynamic feature for common-->
+    <string name = "df_title_alpha_testing">Feedback Form</string>
+
     <!--Play-->
     <string name="title_play_df">Play</string>
     <string name="title_play_broadcaster_df">Play Broadcaster</string>
@@ -401,4 +406,9 @@
     <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
     <string name="gallery_top_bar_title">Foto dari Pembeli</string>
     <string name="cu_surey_layana">Survey Layana</string>
+    <string name="title_dynamic_libraries">Libraries</string>
+
+    <!-- Feedback Form -->
+    <string name="create_report_title">Create Report</string>
+    <string name="draw_on_picture_label">Edit Images</string>
 </resources>

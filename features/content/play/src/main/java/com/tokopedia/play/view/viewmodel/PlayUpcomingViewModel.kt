@@ -76,38 +76,24 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _upcomingInfo = MutableStateFlow(PlayUpcomingUiModel())
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
 
-    private val _partnerUiState = _partnerInfo.map {
-        PlayUpcomingPartnerUiState(it.name, it.status)
-    }.flowOn(dispatchers.computation)
-
     private val _upcomingInfoUiState = combine(
         _upcomingInfo, _upcomingState
     ) { info, state ->
         PlayUpcomingInfoUiState(
-            generalInfo = PlayUpcomingGeneralInfo(
-                title = info.title,
-                coverUrl = info.coverUrl,
-                startTime = info.startTime,
-                waitingDuration = info.refreshWaitingDuration,
-            ),
+            info = info,
             state = state
         )
     }.flowOn(dispatchers.computation)
 
-    private val _shareUiState = _channelDetail.map {
-        PlayUpcomingShareUiState(shouldShow = it.shareInfo.shouldShow)
-    }.flowOn(dispatchers.computation)
-
-
     val uiState: Flow<PlayUpcomingUiState> = combine(
-        _partnerUiState.distinctUntilChanged(),
+        _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _shareUiState.distinctUntilChanged(),
-    ) { partner, upcomingInfo, share ->
+        _channelDetail,
+    ) { partner, upcomingInfo, channelDetail ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
-            share = share
+            channel = channelDetail,
         )
     }.flowOn(dispatchers.computation)
 
@@ -339,14 +325,20 @@ class PlayUpcomingViewModel @Inject constructor(
         val shouldFollow = if (shouldForceFollow) true else !followStatus.isFollowing
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
-        _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(shouldFollow)) }
+        _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
-            repo.postFollowStatus(
+            val isFollowing = repo.postFollowStatus(
                 shopId = shopId.toString(),
                 followAction = followAction,
             )
-        }) {}
+            _partnerInfo.setValue {
+                copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(isFollowing))
+            }
+        }) {
+            _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
+            _uiEvent.emit(PlayUpcomingUiEvent.ShowError(it))
+        }
 
         return followAction
     }
@@ -383,11 +375,9 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleOpenSharingOption(isScreenshot: Boolean) {
         viewModelScope.launch {
-            if(isScreenshot)
-                playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
-
             if(playShareExperience.isCustomSharingAllow()) {
-                playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
+                if(isScreenshot) playAnalytic.takeScreenshotForSharing(mChannelId, partnerId, channelType.value)
+                else playAnalytic.impressShareBottomSheet(mChannelId, partnerId, channelType.value)
 
                 _uiEvent.emit(PlayUpcomingUiEvent.OpenSharingOptionEvent(
                     title = _channelDetail.value.channelInfo.title,
@@ -408,7 +398,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleSharingOption(shareModel: ShareModel) {
         viewModelScope.launch {
-            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.socialMediaName, playShareExperience.isScreenshotBottomSheet())
+            playAnalytic.clickSharingOption(mChannelId, partnerId, channelType.value, shareModel.channel, playShareExperience.isScreenshotBottomSheet())
 
             val playShareExperienceData = getPlayShareExperienceData()
 

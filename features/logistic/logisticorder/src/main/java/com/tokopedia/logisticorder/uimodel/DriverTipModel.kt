@@ -1,8 +1,5 @@
 package com.tokopedia.logisticorder.uimodel
 
-import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticorder.domain.response.LastDriver
-
 data class DriverTipModel(
     var response: LogisticDriverModel = LogisticDriverModel()
 )
@@ -10,7 +7,7 @@ data class DriverTipModel(
 data class LogisticDriverModel(
     var messageError: String = "",
     var status: Int = 0,
-    var lastDriver: LastDriverModel = LastDriverModel(),
+    var tippingLastDriver: TippingLastDriverModel = TippingLastDriverModel(),
     var prepayment: PrepaymentModel = PrepaymentModel(),
     var payment: PaymentModel = PaymentModel()
 )

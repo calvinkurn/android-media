@@ -37,19 +37,18 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             PlayChannelData(
                 id = it.id,
                 channelDetail = PlayChannelDetailUiModel(
-                    channelInfo = mapChannelInfo(it.id, it.isLive, it.config, it.title, it.coverUrl, it.startTime),
+                    channelInfo = mapChannelInfo(it),
                     shareInfo = mapShareInfo(it.share),
                     rtnConfigInfo = mapRealTimeNotificationConfig(
                         it.config.welcomeFormat,
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
-                    bottomSheetTitle = it.config.pinnedProductConfig.bottomSheetTitle,
                 ),
                 partnerInfo = mapPartnerInfo(it.partner),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                 channelReportInfo = mapChannelReportInfo(it.id, extraParams),
-                pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner),
+                pinnedInfo = mapPinnedInfo(it.pinnedMessage),
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
                 leaderboardInfo = mapLeaderboardInfo(),
@@ -60,21 +59,20 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         }
     }
 
-    private fun mapChannelInfo(
-            channelId: String,
-            isLive: Boolean,
-            configResponse: ChannelDetailsWithRecomResponse.Config,
-            title: String,
-            coverUrl: String,
-            startTime: String
-    ) = PlayChannelInfoUiModel(
-            id = channelId,
-            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            backgroundUrl = configResponse.roomBackground.imageUrl,
-            title = title,
-            coverUrl = coverUrl,
-            startTime = startTime
+    private fun mapChannelInfo(data: ChannelDetailsWithRecomResponse.Data) = PlayChannelInfoUiModel(
+            id = data.id,
+            channelType = getChannelType(data.isLive, data.airTime),
+            backgroundUrl = data.config.roomBackground.imageUrl,
+            title = data.title,
+            coverUrl = data.coverUrl,
+            startTime = data.startTime
     )
+
+    private fun getChannelType(isLive: Boolean, airTime: String): PlayChannelType {
+        return if (isLive) PlayChannelType.Live
+        else if(airTime == PlayUpcomingUiModel.COMING_SOON) PlayChannelType.Upcoming
+        else PlayChannelType.VOD
+    }
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
         id = partnerResponse.id.toLongOrZero(),
@@ -148,23 +146,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapPinnedInfo(
             pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,
-            partnerResponse: ChannelDetailsWithRecomResponse.Partner,
     ) = PlayPinnedInfoUiModel(
-            pinnedMessage = mapPinnedMessage(pinnedMessageResponse, partnerResponse),
+            pinnedMessage = mapPinnedMessage(pinnedMessageResponse),
     )
 
-    private fun mapProductTagsInfo(
-            partnerResponse: ChannelDetailsWithRecomResponse.Partner,
-            configResponse: ChannelDetailsWithRecomResponse.Config,
-    ) = PlayProductTagsUiModel.Incomplete(
-            basicInfo = PlayProductTagsBasicInfoUiModel(
-                    bottomSheetTitle = configResponse.pinnedProductConfig.bottomSheetTitle,
-                    partnerId = partnerResponse.id.toLongOrZero(),
-                    maxFeaturedProducts = DEFAULT_MAX_FEATURED_PRODUCT
-            )
-    )
-
-    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
+    private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
             appLink = pinnedMessageResponse.redirectUrl,
             title = pinnedMessageResponse.title,
@@ -175,19 +161,11 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         voucher = VoucherUiModel.Empty,
         maxFeatured = 0,
         resultState = ResultState.Loading,
+        bottomSheetTitle = ""
     )
 
-    private fun mapProduct(configResponse: ChannelDetailsWithRecomResponse.Config) = ProductUiModel(
-        productList = emptyList(),
-        canShow = configResponse.showPinnedProduct,
-    )
-
-    private fun mapPinnedProduct(configResponse: ChannelDetailsWithRecomResponse.Config, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedProductUiModel(
-            partnerName = htmlTextTransformer.transform(partnerResponse.name),
-            title = configResponse.pinnedProductConfig.pinTitle,
-            hasPromo = configResponse.hasPromo,
-            shouldShow = configResponse.showPinnedProduct,
-            productTags = mapProductTagsInfo(partnerResponse, configResponse)
+    private fun mapProduct(configResponse: ChannelDetailsWithRecomResponse.Config) = ProductUiModel.Empty.copy(
+        canShow = configResponse.showPinnedProduct
     )
 
     private fun mapQuickReply(quickRepliesResponse: List<String>) = PlayQuickReplyInfoUiModel(

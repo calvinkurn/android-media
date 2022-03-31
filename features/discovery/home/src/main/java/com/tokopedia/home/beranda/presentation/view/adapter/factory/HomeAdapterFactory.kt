@@ -20,6 +20,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
+import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.HomeComponentTypeFactory
@@ -65,8 +67,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener,
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
-                         private val questWidgetCallbacks: QuestWidgetCallbacks
-) :
+                         private val questWidgetCallbacks: QuestWidgetCallbacks,
+                         private val cmHomeWidgetCallback: CMHomeWidgetCallback,
+                         private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
+                         private val specialReleaseComponentListener: SpecialReleaseComponentListener,
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
         RechargeComponentTypeFactory {
@@ -279,6 +285,22 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return CampaignWidgetViewHolder.LAYOUT
     }
 
+    override fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int {
+        return MerchantVoucherViewHolder.LAYOUT
+    }
+
+    override fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int {
+        return SpecialReleaseViewHolder.LAYOUT
+    }
+
+    override fun type(cmHomeWidgetDataModel: CMHomeWidgetDataModel): Int {
+        return CMHomeWidgetViewHolder.LAYOUT
+    }
+
+    override fun type(homePayLaterWidgetDataModel: HomePayLaterWidgetDataModel): Int {
+        return HomePayLaterWidgetViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -449,6 +471,19 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                 campaignWidgetComponentListener,
                 parentRecycledViewPool
             )
+            MerchantVoucherViewHolder.LAYOUT -> viewHolder =
+                MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
+            SpecialReleaseViewHolder.LAYOUT -> viewHolder = SpecialReleaseViewHolder(
+                view,
+                homeComponentListener,
+                specialReleaseComponentListener
+            )
+            CMHomeWidgetViewHolder.LAYOUT-> viewHolder = CMHomeWidgetViewHolder(
+                view,
+                cmHomeWidgetCallback
+            )
+            HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
+                view, homePayLaterWidgetListener)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }

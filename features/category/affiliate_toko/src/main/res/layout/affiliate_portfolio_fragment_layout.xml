@@ -16,7 +16,19 @@
         app:unify_header_title="@string/daftar_affiliate"
 
         />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/vertical_guide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="@dimen/spacing_lvl2"
+        android:background="@color/Unify_G500"
+        app:layout_constraintEnd_toEndOf="@id/vertical_guide"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar" />
 
     <ScrollView
         android:layout_width="0dp"
@@ -30,20 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/vertical_guide"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spacing_lvl2"
-                android:background="@color/Unify_G500"
-                app:layout_constraintEnd_toEndOf="@id/vertical_guide"
-                app:layout_constraintTop_toBottomOf="@id/affiliate_portfolio_toolbar" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/social_link_rv"

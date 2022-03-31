@@ -28,17 +28,24 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.common.*
+import com.tokopedia.sellerhome.common.DeepLinkHandler
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
@@ -154,6 +161,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         setupSellerHomeInsetListener()
     }
 
+    override fun checkAppUpdateAndInApp() {
+        // no op, this activity already uses UpdateCheckerHelper
+    }
+
     override fun getComponent(): HomeDashboardComponent {
         return DaggerHomeDashboardComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
@@ -226,28 +237,28 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun menuClicked(position: Int, id: Int): Boolean {
         when (position) {
             FragmentType.HOME -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 showToolbarNotificationBadge()
                 checkForSellerAppReview(FragmentType.HOME)
             }
             FragmentType.PRODUCT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
             }
             FragmentType.CHAT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
                 if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
                     initSomListLoadTimeMonitoring()
                 }
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
             FragmentType.OTHER -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 showOtherSettingsFragment()
             }
         }
@@ -569,10 +580,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home,
-                R.raw.anim_bottom_nav_home_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_active,
-                R.drawable.ic_sah_bottom_nav_home_inactive,
+                R.raw.anim_bottom_nav_home_mosque,
+                R.raw.anim_bottom_nav_home_mosque_to_enabled,
+                R.drawable.ic_sah_bottom_nav_home_mosque_active,
+                R.drawable.ic_sah_bottom_nav_home_mosque_inactive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,

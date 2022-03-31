@@ -51,6 +51,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
 import com.tokopedia.network.exception.MessageErrorException
@@ -86,7 +87,6 @@ import com.tokopedia.shop.common.domain.interactor.UpdateFollowStatusUseCase
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.getShopPageWidgetUserAddressLocalData
-import com.tokopedia.shop.common.util.ShopUtil.isExceptionIgnored
 import com.tokopedia.shop.common.view.ShopPageCountDrawable
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -107,6 +107,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SHARE_BOTTOM_SHEET_PAGE_NAME
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_HEADER_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
+import com.tokopedia.shop.common.util.ShopLogger
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewShareBottomSheet
 import com.tokopedia.shop.common.util.ShopUtil.joinStringWithDelimiter
 import com.tokopedia.shop.common.view.listener.InterfaceShopPageFab
@@ -189,7 +191,7 @@ class NewShopPageFragment :
         private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
         private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-
+        private const val QUERY_PARAM_EXT_PARAM = "extParam"
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
@@ -284,6 +286,7 @@ class NewShopPageFragment :
     private val intentData: Intent = Intent()
     private var shouldOverrideTabToHome: Boolean = false
     private var isRefresh: Boolean = false
+    private var extParam: String = ""
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
     private var shouldOpenShopNoteBottomSheet: Boolean = false
@@ -342,6 +345,11 @@ class NewShopPageFragment :
 
     override fun initInjector() {
         component?.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        setDataFromAppLinkQueryParam()
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -507,7 +515,29 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!isExceptionIgnored(throwable)) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                    if(throwable is ShopAsyncErrorException){
+                        val actionName  = when(throwable.asyncQueryType){
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_P1 -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_P1
+                            }
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_HEADER_WIDGET -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_SHOP_HEADER_WIDGET
+                            }
+                            ShopAsyncErrorException.AsyncQueryType.SHOP_INITIAL_PRODUCT_LIST -> {
+                                ShopLogger.SHOP_EMBRACE_BREADCRUMB_ACTION_FAIL_GET_INITIAL_PRODUCT_LIST
+                            }
+                            else -> {
+                                ""
+                            }
+                        }
+                        sendEmbraceBreadCrumbLogger(
+                            actionName,
+                            shopId,
+                            throwable.stackTraceToString()
+                        )
+                    }
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
@@ -515,7 +545,7 @@ class NewShopPageFragment :
                                 userId = userId,
                                 shopId = shopId,
                                 shopName = shopName,
-                                errorMessage = ErrorHandler.getErrorMessage(context, throwable),
+                                errorMessage = errorMessage,
                                 stackTrace = Log.getStackTraceString(throwable),
                                 errType = SHOP_PAGE_HEADER_BUYER_FLOW_TAG
                         )
@@ -568,7 +598,7 @@ class NewShopPageFragment :
                 }
                 is Fail -> {
                     val throwable = result.throwable
-                    if (!isExceptionIgnored(throwable)) {
+                    if (!ShopUtil.isExceptionIgnored(throwable)) {
                         ShopUtil.logShopPageP2BuyerFlowAlerting(
                                 tag = SHOP_PAGE_BUYER_FLOW_TAG,
                                 functionName = this::observeLiveData.name,
@@ -649,12 +679,7 @@ class NewShopPageFragment :
 
         shopViewModel?.shopPageTickerData?.observe(owner, Observer { result ->
             if (result is Success) {
-                shopPageHeaderDataModel?.let {
-                    it.statusTitle = result.data.statusTitle
-                    it.statusMessage = result.data.statusMessage
-                    it.shopStatus = result.data.shopStatus
-                    shopPageFragmentHeaderViewHolder?.updateShopTicker(it, isMyShop)
-                }
+                shopPageFragmentHeaderViewHolder?.updateShopTicker(result.data, isMyShop)
             }
         })
 
@@ -680,6 +705,20 @@ class NewShopPageFragment :
             }
         })
 
+    }
+
+    private fun sendEmbraceBreadCrumbLogger(
+        actionName: String,
+        shopId: String,
+        stackTraceString: String
+    ) {
+        ShopLogger.logBreadCrumbShopPageHomeTabJourney(
+            actionName,
+            ShopLogger.mapToShopPageHomeTabJourneyEmbraceBreadCrumbJsonData(
+                shopId,
+                stackTraceString
+            )
+        )
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
@@ -795,13 +834,13 @@ class NewShopPageFragment :
     }
 
     private fun getShopPageP2Data() {
-        getShopInfoData()
+        getShopShareAndOperationalHourStatusData()
         getFollowStatus()
         getSellerPlayWidget()
     }
 
-    private fun getShopInfoData() {
-        shopViewModel?.getShopInfoData(shopId, shopDomain ?: "", isRefresh)
+    private fun getShopShareAndOperationalHourStatusData() {
+        shopViewModel?.getShopShareAndOperationalHourStatusData(shopId, shopDomain ?: "", isRefresh)
     }
 
     private fun getSellerPlayWidget() {
@@ -1002,8 +1041,19 @@ class NewShopPageFragment :
                 "",
                 "",
                 isRefresh,
-                localCacheModel ?: LocalCacheModel()
+                localCacheModel ?: LocalCacheModel(),
+                extParam
         )
+    }
+
+    private fun setDataFromAppLinkQueryParam() {
+        activity?.intent?.data?.run {
+            val uri = toString()
+            val params = UriUtil.uriQueryParamsToMap(uri)
+            if (params.isNotEmpty()) {
+                extParam = params[QUERY_PARAM_EXT_PARAM].orEmpty().encodeToUtf8()
+            }
+        }
     }
 
     private fun initToolbar() {

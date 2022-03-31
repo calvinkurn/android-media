@@ -39,7 +39,8 @@ class VideoViewHolder(private val listener: VideoViewListener) :
                         element.redirectLink,
                         "",
                         "",
-                        true
+                        true,
+                            0L
                     )
                 }
             }
@@ -112,7 +113,8 @@ class VideoViewHolder(private val listener: VideoViewListener) :
             redirectUrl: String,
             authorId: String,
             authorType: String,
-            isFollowed: Boolean
+            isFollowed: Boolean,
+            startTime: Long
         )
 
         fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)

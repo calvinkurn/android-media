@@ -6,16 +6,18 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.model.checkout.ErrorReporter
 import com.tokopedia.checkout.domain.model.checkout.MessageData
 import com.tokopedia.checkout.domain.model.checkout.PriceValidationData
+import com.tokopedia.checkout.domain.model.checkout.Prompt
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.utils.CheckoutFingerprintUtil
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel
 import com.tokopedia.fingerprint.util.FingerPrintUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -29,6 +31,11 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
@@ -659,6 +666,166 @@ class ShipmentPresenterCheckoutTest {
             analyticsPurchaseProtection.eventClickOnBuy(any(), any())
             view.renderCheckoutCartSuccess(any())
         }
+    }
+
+    @Test
+    fun `WHEN checkout error with prompt THEN should show prompt`(){
+        // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.listShipmentCrossSellModel = arrayListOf()
+
+        val prompt = Prompt().apply {
+            eligible = true
+            title = "Title"
+            description = "Description"
+        }
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.isError = true
+            this.prompt = prompt
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.renderPrompt(prompt)
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn product level data bottomsheet`() {
+        // Given
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = arrayListOf(
+                            CartItemModel().apply {
+                                cartId = 88
+                                cartString = "239594-0-301643"
+                            }
+                    )
+                }
+        )
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+                AddOnResult().apply {
+                    addOnKey = "239594-0-301643-88"
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.updateAddOnProductLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        // Then
+        verify {
+            view.updateAddOnsData(AddOnsDataModel(), 0)
+        }
+    }
+
+    @Test
+    fun `WHEN update addOn order level data bottomsheet`() {
+        // Given
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartString = "239594-0-301643"
+                    addOnsOrderLevelModel = AddOnsDataModel()
+                }
+        )
+
+        val productResultList = arrayListOf<ProductResult>()
+        productResultList.add(ProductResult().apply {
+            productImageUrl = "https://images.tokopedia.net/img/android/product_icon.jpeg"
+            productName = "testProductName"
+        })
+
+        val addOnResultList = arrayListOf<AddOnResult>()
+        addOnResultList.add(
+                AddOnResult().apply {
+                    addOnKey = "239594-0-301643-0"
+                    addOnBottomSheet = AddOnBottomSheetResult().apply {
+                        products = productResultList
+                    }
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+
+        // When
+        presenter.updateAddOnOrderLevelDataBottomSheet(SaveAddOnStateResult(addOnResultList))
+
+        val productList = arrayListOf<AddOnProductItemModel>()
+        productList.add(AddOnProductItemModel().apply {
+            productImageUrl = "https://images.tokopedia.net/img/android/product_icon.jpeg"
+            productName = "testProductName"
+        })
+        val addOnsDataModel = AddOnsDataModel().apply {
+            addOnsBottomSheetModel = AddOnBottomSheetModel().apply {
+                products = productList
+            }
+        }
+
+        // Then
+        verify {
+            view.updateAddOnsData(addOnsDataModel, 1)
+        }
+    }
+
+    @Test
+    fun checkoutSuccess_CrossSellModelChecked() {
+        // Given
+        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
+            cartItemModels = listOf(CartItemModel())
+        })
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
+        presenter.listShipmentCrossSellModel = arrayListOf(ShipmentCrossSellModel().apply {
+            isChecked = true
+            crossSellModel = CrossSellModel()
+        })
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
+
+        // When
+        presenter.processCheckout(false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, "", 0, "")
+            view.renderCheckoutCartSuccess(any())
+        }
+    }
+
+    @Test
+    fun `WHEN generate checkout request when cross sell model is not empty`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts?.firstOrNull()?.cartString = "239594-0-301643"
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+
+        val listCrossSellModel = arrayListOf(ShipmentCrossSellModel(
+                isChecked = true
+        ))
+        presenter.listShipmentCrossSellModel = listCrossSellModel
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, 0, listCrossSellModel, "")
+
+        // Then
+        assert(checkoutRequest.promos?.isNotEmpty() == true)
+        assert(checkoutRequest.promoCodes?.isNotEmpty() == true)
     }
 
 }

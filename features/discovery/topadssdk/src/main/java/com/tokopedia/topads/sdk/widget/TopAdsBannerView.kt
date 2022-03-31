@@ -141,7 +141,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
         if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 ) {
             if (isEligible(cpmData)) {
-                if (cpmData != null && cpmData.cpm.layout == LAYOUT_2) {
+                if (cpmData != null && (cpmData.cpm.layout == LAYOUT_2)) {
                     list?.gone()
                     shopDetail?.gone()
                     topAdsCarousel.hide()
@@ -267,7 +267,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun setShopAdsProduct(cpmModel: CpmModel, shopAdsProductView: ShopAdsWithOneProductView) {
         shopAdsProductView.setShopProductModel(
                 ShopProductModel(
-                        title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_and_5_title),
+                        title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_5_title),
                         items = getShopProductItem(cpmModel)
                 ), object : ShopAdsProductListener{
             override fun onItemImpressed(position: Int) {
@@ -303,16 +303,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val list = arrayListOf<ShopProductModel.ShopProductModelItem>()
         cpmModel.data?.forEachIndexed { index, it ->
             val item = ShopProductModel.ShopProductModelItem(
-                    imageUrl = it.cpm.cpmShop.products.getOrNull(0)?.imageProduct?.imageUrl ?: "",
-                    shopIcon = it.cpm.cpmImage.fullEcs,
-                    shopName = it.cpm.cpmShop.name,
-                    ratingCount = it.cpm.cpmShop.products.getOrNull(0)?.countReviewFormat?:"",
-                    ratingAverage = it.cpm.cpmShop.products.getOrNull(0)?.headlineProductRatingAverage?:"",
-                    isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
-                    isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
-                    goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
-                    impressHolder = it.cpm?.cpmShop?.imageShop,
-                    position = index
+                imageUrl = it.cpm.cpmShop.products.firstOrNull()?.imageProduct?.imageUrl ?: "",
+                shopIcon = it.cpm.cpmImage.fullEcs,
+                shopName = it.cpm.cpmShop.name,
+                ratingCount = it.cpm.cpmShop.products.firstOrNull()?.countReviewFormat ?: "",
+                ratingAverage = it.cpm.cpmShop.products.firstOrNull()?.headlineProductRatingAverage
+                    ?: "",
+                isOfficial = it.cpm?.cpmShop?.isOfficial ?: false,
+                isPMPro = it.cpm?.cpmShop?.isPMPro ?: false,
+                goldShop = if (it.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
+                impressHolder = it.cpm?.cpmShop?.imageShop,
+                location = it.cpm.cpmShop.location,
+                position = index
             )
             list.add(item)
         }
@@ -321,36 +323,61 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
         topAdsCarousel?.setTopAdsCarouselModel(
-                TopAdsCarouselModel(
-                        title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_and_5_title),
-                        items = getTopAdsItem(cpmModel)
-                ), object : TopAdsCarouselListener {
-            override fun onItemImpressed(position: Int) {
-                val cpmData = cpmModel?.data?.getOrNull(position)
-                impressionCount = position + 1
-                impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
-                topAdsUrlHitter.hitImpressionUrl(
+            TopAdsCarouselModel(
+                title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_title),
+                items = getTopAdsItem(cpmModel)
+            ), object : TopAdsCarouselListener {
+                override fun onItemImpressed(position: Int) {
+                    val cpmData = cpmModel?.data?.getOrNull(position)
+                    impressionCount = position + 1
+                    impressionListener?.onImpressionHeadlineAdsItem(position, cpmData)
+                    topAdsUrlHitter.hitImpressionUrl(
                         className,
                         cpmData?.cpm?.cpmImage?.fullUrl,
                         cpmData?.cpm?.cpmShop?.id,
                         cpmData?.cpm?.uri,
                         cpmData?.cpm?.cpmImage?.fullEcs
-                )
-            }
+                    )
+                }
 
-            override fun onItemClicked(position: Int) {
-                val cpmData = cpmModel?.data?.getOrNull(position)
-                topAdsBannerClickListener?.onBannerAdsClicked(position, cpmData?.applinks, cpmData)
-                topAdsUrlHitter.hitClickUrl(
+                override fun onItemClicked(position: Int) {
+                    val cpmData = cpmModel?.data?.getOrNull(position)
+                    topAdsBannerClickListener?.onBannerAdsClicked(
+                        position,
+                        cpmData?.applinks,
+                        cpmData
+                    )
+                    topAdsUrlHitter.hitClickUrl(
                         className,
                         cpmData?.adClickUrl,
                         cpmData?.cpm?.cpmShop?.id,
                         cpmData?.cpm?.uri,
                         cpmData?.cpm?.cpmImage?.fullEcs
-                )
-            }
+                    )
+                }
 
-        }
+                override fun onProductItemClicked(productIndex: Int, shopIndex: Int) {
+                    val cpmData = cpmModel?.data?.getOrNull(shopIndex) ?: return
+                    val cpmDataProducts = cpmData.cpm?.cpmShop?.products
+
+                    if (!cpmDataProducts.isNullOrEmpty()) {
+                        val product = cpmDataProducts[productIndex]
+                        topAdsBannerClickListener?.onBannerAdsClicked(
+                            productIndex,
+                            product.applinks,
+                            cpmData
+                        )
+                        topAdsUrlHitter.hitClickUrl(
+                            className,
+                            product.imageProduct.imageClickUrl,
+                            product.id,
+                            product.uri,
+                            product.imageProduct.imageUrl
+                        )
+                    }
+
+                }
+            }
         )
     }
 

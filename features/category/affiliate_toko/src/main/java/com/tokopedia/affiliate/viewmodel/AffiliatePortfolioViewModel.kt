@@ -44,27 +44,29 @@ class AffiliatePortfolioViewModel@Inject constructor(
             isError.value = !isValidUrl(text,(affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel))
         }else {
             (affiliatePortfolioData.value?.get(position) as? AffiliatePortfolioUrlModel)?.portfolioItm?.isError = false
-            isError.value = !checkDataForAtLeastOne()
+            isError.value = !checkDataForAtLeastOne(false)
         }
     }
 
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
         return if(element?.portfolioItm?.regex != null){
-            val regex = Regex(element.portfolioItm.regex!!)
+            val regex = Regex(element.portfolioItm.regex!!,setOf(RegexOption.IGNORE_CASE))
             regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
         } else{
             Patterns.WEB_URL.matcher(text).matches()
         }
     }
 
-    fun checkDataForAtLeastOne()  : Boolean{
+    fun checkDataForAtLeastOne(isUpdateList: Boolean = true)  : Boolean{
         var firstFound = false
         affiliatePortfolioData.value?.forEachIndexed {i,item->
             if(item is AffiliatePortfolioUrlModel)
             {
                 if(!item.portfolioItm.text.isNullOrEmpty() && !isValidUrl(item.portfolioItm.text!!,item)){
+                    if(isUpdateList){
                     item.portfolioItm.isError = true
                     updateListItem.value = i
+                    }
                     return false
                 }else if(!item.portfolioItm.text.isNullOrEmpty() && isValidUrl(item.portfolioItm.text!!,item)){
                     firstFound = true

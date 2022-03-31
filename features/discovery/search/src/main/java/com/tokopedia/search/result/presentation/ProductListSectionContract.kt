@@ -15,14 +15,10 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.ArrayList
-import java.util.HashMap
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -32,13 +28,11 @@ interface ProductListSectionContract {
         fun showNetworkError(startRow: Int, throwable: Throwable?)
         val filterParamString: String
         val queryKey: String
-        fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
         fun addLoading()
         fun removeLoading()
-        fun stopTracePerformanceMonitoring()
         fun setAutocompleteApplink(autocompleteApplink: String?)
         fun sendTrackingEventAppsFlyerViewListingSearch(afProdIds: JSONArray?, query: String?, prodIdArray: ArrayList<String?>?, allProdIdArray: ArrayList<String?>? = null)
         fun sendTrackingEventMoEngageSearchAttempt(query: String?, hasProductList: Boolean, category: HashMap<String?, String?>?)
@@ -73,10 +67,6 @@ interface ProductListSectionContract {
         fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView)
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
-        fun stopPreparePagePerformanceMonitoring()
-        fun startNetworkRequestPerformanceMonitoring()
-        fun stopNetworkRequestPerformanceMonitoring()
-        fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
         fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)

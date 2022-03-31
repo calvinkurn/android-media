@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topAdsDashboardRight"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    tools:viewBindingIgnore="true">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivCalendarTopAdsActionBar"
+        android:layout_width="@dimen/spacing_lvl5"
+        android:layout_height="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/unify_space_12"
+        android:src="@drawable/iconunify_calendar"
+        android:tint="@color/Unify_NN900" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivEducationTopAdsActionBar"
+        android:layout_width="@dimen/topads_dashboard_dp_25"
+        android:layout_height="@dimen/topads_dashboard_dp_25"
+        android:padding="@dimen/top_ads_common_dp_1"
+        android:src="@drawable/education_icon" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtBuatIklan"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_5"
+        android:text="@string/topads_dash_buat_iklan"
+        android:textColor="@color/Unify_G500"
+        android:textSize="@dimen/unify_space_12" />
+</LinearLayout>

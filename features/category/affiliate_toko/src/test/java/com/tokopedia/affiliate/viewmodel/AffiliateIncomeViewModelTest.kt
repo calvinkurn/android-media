@@ -85,7 +85,7 @@ class AffiliateIncomeViewModelTest{
     /**************************** getSelectedDate() *******************************************/
     @Test
     fun getSelectedDataTest(){
-        val selectedDate = AffiliateBottomDatePicker.SEVEN_DAYS
+        val selectedDate = AffiliateBottomDatePicker.THIRTY_DAYS
         assertEquals(affiliateIncomeViewModel.getSelectedDate(),selectedDate)
     }
 
@@ -120,5 +120,13 @@ class AffiliateIncomeViewModelTest{
 
         assertEquals(affiliateIncomeViewModel.getShimmerVisibility().value, false)
         assertEquals(affiliateIncomeViewModel.getErrorMessage().value , throwable)
+    }
+
+    /**************************** testAffiliateUserBlackListed() *******************************************/
+    @Test
+    fun testAffiliateUserBlackListed() {
+        affiliateIncomeViewModel.setBlacklisted(false)
+        assertEquals(affiliateIncomeViewModel.getIsBlackListed(), false)
+
     }
 }

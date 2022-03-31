@@ -6,6 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
+import com.tokopedia.gopayhomewidget.domain.usecase.ClosePayLaterWidgetUseCase
+import com.tokopedia.gopayhomewidget.domain.usecase.GetPayLaterWidgetUseCase
 import com.tokopedia.home.beranda.common.BaseCoRoutineScope
 import com.tokopedia.home.beranda.data.model.HomeChooseAddressData
 import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUseCase
@@ -46,21 +50,25 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 @ExperimentalCoroutinesApi
 open class HomeRevampViewModel @Inject constructor(
-        private val homeBalanceWidgetUseCase: Lazy<HomeBalanceWidgetUseCase>,
-        private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
-        private val homeSuggestedReviewUseCase: Lazy<HomeSuggestedReviewUseCase>,
-        private val homeRecommendationUseCase: Lazy<HomeRecommendationUseCase>,
-        private val homePlayUseCase: Lazy<HomePlayUseCase>,
-        private val homePopularKeywordUseCase: Lazy<HomePopularKeywordUseCase>,
-        private val homeListCarouselUseCase: Lazy<HomeListCarouselUseCase>,
-        private val homeRechargeBuWidgetUseCase: Lazy<HomeRechargeBuWidgetUseCase>,
-        private val homeSearchUseCase: Lazy<HomeSearchUseCase>,
-        private val homeRechargeRecommendationUseCase: Lazy<HomeRechargeRecommendationUseCase>,
-        private val homeSalamRecommendationUseCase: Lazy<HomeSalamRecommendationUseCase>,
-        private val userSession: Lazy<UserSessionInterface>,
-        private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
-        private val homeDispatcher: Lazy<CoroutineDispatchers>,
-        private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
+    private val homeBalanceWidgetUseCase: Lazy<HomeBalanceWidgetUseCase>,
+    private val homeUseCase: Lazy<HomeDynamicChannelUseCase>,
+    private val homeSuggestedReviewUseCase: Lazy<HomeSuggestedReviewUseCase>,
+    private val homeRecommendationUseCase: Lazy<HomeRecommendationUseCase>,
+    private val homePlayUseCase: Lazy<HomePlayUseCase>,
+    private val homePopularKeywordUseCase: Lazy<HomePopularKeywordUseCase>,
+    private val homeListCarouselUseCase: Lazy<HomeListCarouselUseCase>,
+    private val homeRechargeBuWidgetUseCase: Lazy<HomeRechargeBuWidgetUseCase>,
+    private val homeSearchUseCase: Lazy<HomeSearchUseCase>,
+    private val homeRechargeRecommendationUseCase: Lazy<HomeRechargeRecommendationUseCase>,
+    private val homeSalamRecommendationUseCase: Lazy<HomeSalamRecommendationUseCase>,
+    private val userSession: Lazy<UserSessionInterface>,
+    private val homeBusinessUnitUseCase: Lazy<HomeBusinessUnitUseCase>,
+    private val homeDispatcher: Lazy<CoroutineDispatchers>,
+    private val homeBeautyFestUseCase: Lazy<HomeBeautyFestUseCase>,
+    private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
+    private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>,
+    private val deletePayLaterWidgetUseCase: Lazy<ClosePayLaterWidgetUseCase>,
+    private val getPayLaterWidgetUseCase: Lazy<GetPayLaterWidgetUseCase>) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
         const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
@@ -123,7 +131,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var popularKeywordRefreshCount = 1
 
     var homeDataModel = HomeDynamicChannelModel()
-    var currentTopAdsBannerToken: String = ""
+    var currentTopAdsBannerPage: String = "1"
     var isFirstLoad = true
 
     @FlowPreview
@@ -234,7 +242,7 @@ open class HomeRevampViewModel @Inject constructor(
             homeFlowDynamicChannel.collect { homeNewDataModel ->
                 if (homeNewDataModel?.isCache == false) {
                     _isRequestNetworkLiveData.postValue(Event(false))
-                    currentTopAdsBannerToken = homeNewDataModel.topadsNextPageToken
+                    currentTopAdsBannerPage = homeNewDataModel.topadsPage
                     onRefreshState = false
                     if (homeNewDataModel.list.isEmpty()) {
                         HomeServerLogger.warning_empty_channel_update(homeNewDataModel)
@@ -488,7 +496,7 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPlayWidgetWhenShouldRefresh() {
         findWidget<CarouselPlayWidgetDataModel> { playWidget, index ->
             launchCatchError(block = {
-                updateWidget(playWidget.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
+                updateWidget(playWidget.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetWhenShouldRefresh()), index)
             }) {
                 deleteWidget(playWidget, index)
             }
@@ -511,8 +519,8 @@ open class HomeRevampViewModel @Inject constructor(
         if (!userSession.get().isLoggedIn) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
         else {
             updateCarouselPlayWidget {
-                it.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                        it.widgetUiModel, channelId, reminderType
+                it.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
+                        it.widgetState, channelId, reminderType
                 ))
             }
             launch {
@@ -522,8 +530,8 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     else -> {
                         updateCarouselPlayWidget {
-                            it.copy(widgetUiModel = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                                    it.widgetUiModel, channelId, reminderType
+                            it.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
+                                    it.widgetState, channelId, reminderType
                             ))
                         }
                         _playWidgetReminderObservable.postValue(Result.error(error = Throwable()))
@@ -553,15 +561,97 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getBeautyFest(data: List<Visitable<*>>) {
-        launch{
-            _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(data))
-        }
+    fun getBeautyFest(homeDynamicChannelModel: HomeDynamicChannelModel) {
+        _beautyFestLiveData.postValue(homeBeautyFestUseCase.get().getBeautyFest(homeDynamicChannelModel))
     }
 
     fun deleteQuestWidget() {
         findWidget<QuestWidgetModel> { questWidgetModel, index ->
             deleteWidget(questWidgetModel, index)
+        }
+    }
+
+    fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            launchCatchError(coroutineContext, {
+                getCMHomeWidgetDataUseCase.get().getCMHomeWidgetData(
+                    {
+                        val newCMHomeWidgetDataModel =
+                            cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)
+                        updateWidget(newCMHomeWidgetDataModel, index)
+                    }, {
+                        deleteWidget(cmHomeWidgetDataModel, index)
+                    },
+                    isForceRefresh
+                )
+            }){
+                deleteWidget(cmHomeWidgetDataModel, index)
+            }
+        }
+    }
+
+    fun deleteCMHomeWidget() {
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            launchCatchError(coroutineContext, {
+                cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
+                    deleteCMHomeWidgetUseCase.get().deleteCMHomeWidgetData(
+                        {
+                            deleteWidget(cmHomeWidgetDataModel, index)
+                        }, {
+                            updateWidget(cmHomeWidgetDataModel.copy(), index)
+                        }, it.parentId, it.campaignId
+                    )
+                }
+            }) {
+                updateWidget(cmHomeWidgetDataModel.copy(), index)
+            }
+        }
+    }
+
+    fun deleteCMHomeWidgetLocally(){
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            deleteWidget(cmHomeWidgetDataModel, index)
+        }
+    }
+
+    /**
+     * Calling fintech api to get detail for the fintech widget
+     * @author minion-yoda
+     */
+
+    fun getPayLaterWidgetData() {
+        findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
+            launchCatchError(coroutineContext, {
+                getPayLaterWidgetUseCase.get().getPayLaterWidgetData(
+                    {
+                        val newPaylaterHomeWidgetDataModel =
+                            homePayLaterWidgetDataModel.copy(payLaterWidgetData = it)
+                        updateWidget(newPaylaterHomeWidgetDataModel, index)
+                    }, {
+                        deleteWidget(homePayLaterWidgetDataModel, index)
+                    }
+                )
+            }){
+                deleteWidget(homePayLaterWidgetDataModel, index)
+            }
+        }
+    }
+
+    /**
+     * Calling fintech api delete the widget
+     * @author minion-yoda
+     */
+    fun deletePayLaterWidget() {
+        findWidget<HomePayLaterWidgetDataModel> { homePayLaterWidgetDataModel, index ->
+            deleteWidget(homePayLaterWidgetDataModel, index)
+            launchCatchError(coroutineContext, {
+                deletePayLaterWidgetUseCase.get().getPayLaterWidgetCloseData({
+                    deleteWidget(homePayLaterWidgetDataModel, index)
+                },{ deleteWidget(homePayLaterWidgetDataModel, index)})
+            }){
+                deleteWidget(homePayLaterWidgetDataModel, index)
+            }
+
         }
     }
 }

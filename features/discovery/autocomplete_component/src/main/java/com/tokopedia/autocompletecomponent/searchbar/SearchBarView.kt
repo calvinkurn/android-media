@@ -29,6 +29,8 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.android.synthetic.main.autocomplete_search_bar_view.view.*
@@ -46,6 +48,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         private val TAG = SearchBarView::class.java.simpleName
         private const val LOCALE_INDONESIA = "in_ID"
         const val SEARCH_BAR_DELAY_MS: Long = 200
+        private const val AUTO_COMPLETE_ERROR = "AUTO_COMPLETE_ERROR"
     }
 
     private var mClearingFocus: Boolean = false
@@ -371,10 +374,19 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun textViewRequestFocus() {
-        searchTextView?.setText(lastQuery)
-        onTextChanged(lastQuery)
+        try {
+            if (lastQuery == null) return
+            searchTextView?.setText(lastQuery)
+            onTextChanged(lastQuery)
 
-        searchTextViewShowKeyboard()
+            searchTextViewShowKeyboard()
+        } catch (throwable: Throwable) {
+            ServerLogger.log(
+                Priority.P2,
+                AUTO_COMPLETE_ERROR,
+                mapOf("type" to throwable.stackTraceToString()),
+            )
+        }
     }
 
     private fun searchTextViewShowKeyboard() {

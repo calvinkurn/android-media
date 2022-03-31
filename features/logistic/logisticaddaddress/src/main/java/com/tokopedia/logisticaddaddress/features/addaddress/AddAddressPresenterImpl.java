@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticCommon.data.entity.address.Destination;
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;

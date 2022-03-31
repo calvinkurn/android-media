@@ -4,6 +4,7 @@ import android.util.TypedValue
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -58,11 +59,7 @@ class CardViewHolder(
     private fun observeState(element: CardWidgetUiModel) {
         val data = element.data
         when {
-            null == data -> {
-                showViewComponent(element, false)
-                showOnError(false)
-                showShimmer(true)
-            }
+            null == data || element.showLoadingState -> showLoadingState(element)
             data.error.isNotBlank() -> {
                 showShimmer(false)
                 showOnError(true)
@@ -76,6 +73,12 @@ class CardViewHolder(
                 setupTag(element)
             }
         }
+    }
+
+    private fun showLoadingState(element: CardWidgetUiModel) {
+        showViewComponent(element, false)
+        showOnError(false)
+        showShimmer(true)
     }
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
@@ -102,6 +105,7 @@ class CardViewHolder(
                     shcCardValueCountdownView.invisible()
                     tvCardValue.text = shownValue.parseAsHtml()
                 }
+                setupRefreshButton(element)
             }
         }
 
@@ -142,6 +146,25 @@ class CardViewHolder(
         }
     }
 
+    private fun setupRefreshButton(element: CardWidgetUiModel) {
+        with(binding) {
+            containerCard.viewTreeObserver.addOnPreDrawListener {
+                element.data?.lastUpdated?.let {
+                    val shouldShowRefreshButton = it.needToUpdated.orFalse() && !element.showLoadingState
+                    icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
+                    icShcRefreshCard.setOnClickListener {
+                        refreshWidget(element)
+                    }
+                }
+                return@addOnPreDrawListener true
+            }
+        }
+    }
+
+    private fun refreshWidget(element: CardWidgetUiModel) {
+        listener.onReloadWidget(element)
+    }
+
     private fun showCardState(data: CardDataUiModel?) {
         with(binding.imgShcCardState) {
             when (data?.state) {
@@ -169,6 +192,9 @@ class CardViewHolder(
             val visibility = if (isLoading) View.VISIBLE else View.GONE
             shimmerCardTitle.visibility = visibility
             shimmerCardValue.visibility = visibility
+            if (isLoading) {
+                icShcRefreshCard.gone()
+            }
         }
     }
 

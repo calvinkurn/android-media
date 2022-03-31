@@ -6,12 +6,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_PRODUCTION_URL
+import com.tokopedia.tokopedianow.common.constant.ConstantUrl.QUEST_DETAIL_STAGING_URL
+import com.tokopedia.tokopedianow.common.util.ImageUtil.setBackgroundImage
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestTitleWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestTitleViewHolder(
@@ -20,6 +27,7 @@ class HomeQuestTitleViewHolder(
 ): AbstractViewHolder<HomeQuestTitleUiModel>(itemView) {
 
     companion object {
+        private const val BG_QUEST_TITLE = "https://images.tokopedia.net/img/android/tokonow/bg_quest_title.png"
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_title_widget
     }
@@ -36,7 +44,9 @@ class HomeQuestTitleViewHolder(
     }
 
     private fun hideShimmering() {
-        binding?.container?.setBackgroundResource(R.drawable.tokopedianow_bg_quest_title)
+        binding?.container?.apply {
+            setBackgroundImage(context, BG_QUEST_TITLE, binding?.container)
+        }
         binding?.questTitleWidgetShimmering?.root?.hide()
     }
 
@@ -56,6 +66,10 @@ class HomeQuestTitleViewHolder(
             iuGift.setImage(newIconId = IconUnify.GIFT)
             iuGift.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White), BlendModeCompat.SRC_ATOP)
             tpCounter.text = String.format("${element.currentQuestFinished}/${element.totalQuestTarget}")
+            root.setOnClickListener {
+                listener?.onClickQuestWidgetTitle()
+                goToQuestDetailWebView()
+            }
         }
     }
 
@@ -70,5 +84,13 @@ class HomeQuestTitleViewHolder(
                 }
             }
         }
+    }
+    private fun goToQuestDetailWebView() {
+        val url = if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
+            QUEST_DETAIL_STAGING_URL
+        } else {
+            QUEST_DETAIL_PRODUCTION_URL
+        }
+        RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW, url)
     }
 }

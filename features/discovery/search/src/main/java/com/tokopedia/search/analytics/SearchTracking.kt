@@ -35,7 +35,6 @@ object SearchTracking {
     private const val ORGANIC_ADS = "organic ads"
     private const val ECOMMERCE = "ecommerce"
     private const val EVENT_CATEGORY_EMPTY_SEARCH = "empty search"
-    private const val EVENT_CATEGORY_SEARCH_RESULT = "search result"
     private const val PROMOTIONS = "promotions"
     const val EVENT_CLICK_SEARCH_RESULT = "clickSearchResult"
     private const val EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru"
@@ -274,16 +273,6 @@ object SearchTracking {
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH, String.format(Locale.getDefault(),"tab: %s", screenName))
-    }
-
-    @JvmStatic
-    fun eventUserClickNewSearchOnEmptySearchProduct(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENT_CATEGORY_SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_CHANGE_KEYWORD,
-                keyword
-        )
     }
 
     @JvmStatic

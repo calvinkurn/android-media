@@ -7,6 +7,7 @@ import com.tokopedia.home.beranda.domain.model.HomeFlag
 import com.tokopedia.home.beranda.helper.copy
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
@@ -18,8 +19,9 @@ data class HomeDynamicChannelModel(
         var isCache: Boolean = false,
         val isFirstPage: Boolean = false,
         var homeChooseAddressData: HomeChooseAddressData = HomeChooseAddressData(),
-        var topadsNextPageToken: String = "",
-        var flowCompleted: Boolean = true
+        var topadsPage: String = "0",
+        var flowCompleted: Boolean = true,
+        val isBeautyFest: Int = HomeRevampFragment.BEAUTY_FEST_NOT_SET
 ) {
     private var _list: MutableList<Visitable<*>> = list.toMutableList()
 

@@ -6,10 +6,10 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,13 +66,13 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     @Test
     fun `on error get recommendation`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         } throws Throwable()
 
         viewModel.getRecommendationProduct("123")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertTrue(viewModel.recommendationProduct.value is Fail)
@@ -84,13 +84,13 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         val listOfRecom = arrayListOf(recomWidget)
 
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+            getRecommendationUseCase.getData(any())
         } returns listOfRecom
 
         viewModel.getRecommendationProduct("123")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any())
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.isNotEmpty())
@@ -99,13 +99,13 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     @Test
     fun `on success get recommendation return empty list`() {
         coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns null
+            getRecommendationUseCase.getData(any())
+        } returns listOf()
 
         viewModel.getRecommendationProduct("123")
 
         coVerify {
-            getRecommendationUseCase.createObservable(any())
+            getRecommendationUseCase.getData(any())
         }
 
         Assert.assertTrue((viewModel.recommendationProduct.value as Success).data.isEmpty())

@@ -1,35 +1,21 @@
 package com.tokopedia.play.view.uimodel.state
 
-import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
+import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 
 /**
  * Created By : Jonathan Darwin on November 15, 2021
  */
 data class PlayUpcomingUiState(
-    val partner: PlayUpcomingPartnerUiState,
+    val partner: PlayPartnerInfo,
     val upcomingInfo: PlayUpcomingInfoUiState,
-    val share: PlayUpcomingShareUiState,
-)
-
-data class PlayUpcomingPartnerUiState(
-    val name: String,
-    val followStatus: PlayPartnerFollowStatus,
-)
-
-data class PlayUpcomingShareUiState(
-    val shouldShow: Boolean
+    val channel: PlayChannelDetailUiModel,
 )
 
 data class PlayUpcomingInfoUiState(
-    val generalInfo: PlayUpcomingGeneralInfo,
+    val info: PlayUpcomingUiModel,
     val state: PlayUpcomingState
-)
-
-data class PlayUpcomingGeneralInfo(
-    val title: String,
-    val coverUrl: String,
-    val startTime: String,
-    val waitingDuration: Int,
 )
 
 sealed class PlayUpcomingState {
