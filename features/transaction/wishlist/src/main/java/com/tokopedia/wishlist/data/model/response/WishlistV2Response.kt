@@ -33,6 +33,9 @@ data class WishlistV2Response(
 				@SerializedName("total_data")
 				val totalData: Int = -1,
 
+				@SerializedName("count_removable_items")
+				val countRemovableItems: Int = -1,
+
 				@SerializedName("next_page_url")
 				val nextPageUrl: String = "",
 

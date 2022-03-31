@@ -229,7 +229,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun observingWishlistV2() {
         showLoader()
-        wishlistViewModel.wishlistV2.observe(viewLifecycleOwner, { result ->
+        wishlistViewModel.wishlistV2.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     finishRefresh()
@@ -283,7 +283,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     logToCrashlytics(labelError, result.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun showRvWishlist() {
@@ -345,7 +345,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun observingWishlistData() {
-        wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner, { result ->
+        wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     finishRefresh()
@@ -376,7 +376,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     logToCrashlytics(labelError, result.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
@@ -585,7 +585,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun observingDeleteWishlistV2() {
-        wishlistViewModel.deleteWishlistV2Result.observe(viewLifecycleOwner, { result ->
+        wishlistViewModel.deleteWishlistV2Result.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     result.data.let { wishlistRemoveV2 ->
@@ -603,8 +603,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                             doRefresh()
                         } else {
-                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let {
-                                errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
+                            context?.getString(Rv2.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
                     }
                 }
@@ -623,16 +622,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     logToCrashlytics(labelError, result.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observingBulkDeleteWishlistV2() {
-        wishlistViewModel.bulkDeleteWishlistV2Result.observe(viewLifecycleOwner, { result ->
+        wishlistViewModel.bulkDeleteWishlistV2Result.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     result.data.let { bulkDeleteWishlistV2 ->
                         if (bulkDeleteWishlistV2.success) {
-                            val listId = bulkDeleteWishlistV2.id.replace("[","").replace("]","").split(",").toList()
+                            val listId = bulkDeleteWishlistV2.id.replace("[", "").replace("]", "").split(",").toList()
                             var msg = getString(Rv2.string.wishlist_v2_bulk_delete_msg_toaster, listId.size)
                             if (bulkDeleteWishlistV2.message.isNotEmpty()) {
                                 msg = bulkDeleteWishlistV2.message
@@ -667,11 +666,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     logToCrashlytics(labelError, result.throwable)
                 }
             }
-        })
+        }
     }
 
     private fun observingAtc() {
-        wishlistViewModel.atcResult.observe(viewLifecycleOwner, {
+        wishlistViewModel.atcResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     hideLoadingDialog()
@@ -714,7 +713,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     }
                 }
             }
-        })
+        }
     }
 
     private fun updateTotalLabel(totalData: Int) {

@@ -21,7 +21,10 @@ data class AddToWishlistV2Response(
                 val id: String = "",
 
                 @SerializedName("message")
-                val message: String = ""
+                val message: String = "",
+
+                @SerializedName("toaster_color")
+                val toasterColor: String = ""
         ) {
             data class Button(
                     @SerializedName("action")

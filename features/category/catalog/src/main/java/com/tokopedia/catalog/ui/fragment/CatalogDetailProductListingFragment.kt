@@ -63,6 +63,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
 import java.util.*
 import javax.inject.Inject
@@ -491,9 +492,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         if (userSession.isLoggedIn) {
             disableWishListButton(productItem.id)
             if (productItem.wishlist) {
-                removeWishList(productItem.id, userSession.userId, position)
+                removeWishList(productItem.id, userSession.userId)
             } else {
-                addWishList(productItem.id, userSession.userId, position)
+                addWishList(productItem.id, userSession.userId)
             }
         } else {
             launchLoginActivity(productItem.id)
@@ -512,7 +513,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         productNavListAdapter?.setWishlistButtonEnabled(productId, false)
     }
 
-    private fun removeWishList(productId: String, userId: String, adapterPosition: Int) {
+    private fun removeWishList(productId: String, userId: String) {
         CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
@@ -524,7 +525,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 onError = { onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, it), productId) })
     }
 
-    private fun addWishList(productId: String, userId: String, adapterPosition: Int) {
+    private fun addWishList(productId: String, userId: String) {
         CatalogDetailAnalytics.sendEvent(
                 CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
                 CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
@@ -532,8 +533,20 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
         addWishlistActionUseCase.setParams(productId, userId)
         addWishlistActionUseCase.execute(
-                onSuccess = {
-                    onSuccessAddWishlist(productId)},
+                onSuccess = { result ->
+                    when (result) {
+                        is Success -> {
+                            if (result.data.toasterColor == TOASTER_RED) {
+                                onErrorAddWishList(result.data.message, productId)
+                            } else {
+                                onSuccessAddWishlist(productId)
+                            }
+                        }
+                        is Fail -> {
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            onErrorAddWishList(errorMessage, productId)
+                        }
+                    } },
                 onError = {
                     onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
                 })

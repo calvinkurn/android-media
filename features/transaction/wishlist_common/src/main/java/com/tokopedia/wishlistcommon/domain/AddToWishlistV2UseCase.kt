@@ -37,6 +37,7 @@ class AddToWishlistV2UseCase @Inject constructor(@ApplicationContext private val
             id
             success
             message
+            toaster_color
             button{
                 text
                 action
