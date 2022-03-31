@@ -204,6 +204,12 @@ class OfficialHomeMapper (
                             officialStore
                         )
                     )
+                    DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING -> SpecialReleaseDataModel(
+                        OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                            officialStore.channel,
+                            position
+                        )
+                    )
                 }
             }
             _listOfficialStore.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }
