@@ -116,6 +116,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.QuestWidgetCallback
@@ -512,7 +513,8 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    override fun onShareBtnSharingReferralClicked(slug: String) {
+    override fun onShareBtnSharingReferralClicked(slug: String, isSender: Boolean) {
+        updateSharingReferral(true)
         viewModelTokoNow.getReferralSenderHome(slug)
     }
 
@@ -999,8 +1001,21 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.sharingReferralUrlParam) {
             when(it) {
                 is Success -> onSuccessSharingReferralUrlParam(it.data)
-                is Fail -> onFailedSharingUrlCode()
+                is Fail -> {
+                    showToaster(
+                        message = getString(R.string.tokopedianow_home_referral_toaster),
+                        type = TYPE_ERROR
+                    )
+                }
             }
+            updateSharingReferral(false)
+        }
+    }
+
+    private fun updateSharingReferral(isButtonLoading: Boolean) {
+        val item = adapter.getItem(HomeSharingReferralWidgetUiModel::class.java)
+        if (item is HomeSharingReferralWidgetUiModel) {
+            viewModelTokoNow.updateSharingReferral(item, isButtonLoading)
         }
     }
 
@@ -1075,10 +1090,6 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         showUniversalShareBottomSheet(shareHomeTokonow)
-    }
-
-    private fun onFailedSharingUrlCode() {
-
     }
 
     private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {

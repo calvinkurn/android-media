@@ -206,6 +206,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
+    fun updateSharingReferral(item: HomeSharingReferralWidgetUiModel, isButtonLoading: Boolean) {
+        launchCatchError(block = {
+            homeLayoutItemList.mapSharingReferralData(item, item.isSender, isButtonLoading)
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.LOADED
+            )
+            _homeLayoutList.postValue(Success(data))
+        }) { /* nothing to do */ }
+    }
+
     fun getProductRecomOoc() {
         launchCatchError(block = {
             val recommendationWidgets = getRecommendationUseCase.getData(

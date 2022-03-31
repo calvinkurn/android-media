@@ -143,4 +143,5 @@
     <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan <b>kupon cashback Rp20rb</b>!]]></string>
     <string name="tokopedianow_home_referral_widget_button_text_sender">Bagikan ke Temanmu</string>
     <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
+    <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
 </resources>

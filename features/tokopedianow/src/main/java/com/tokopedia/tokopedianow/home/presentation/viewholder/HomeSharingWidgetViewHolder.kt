@@ -19,6 +19,8 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSharingWidgetB
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.REFERRAL_PAGE_URL
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -47,68 +49,46 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             cvSharingEducation.show()
             when(element) {
-                is HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel -> {
-                    setReferralData(
-                        isSender = element.isSender,
-                        slug = element.slug
-                    )
-                    setReferralListener(
-                        slug = element.slug,
-                        isSender = element.isSender
-                    )
+                is HomeSharingReferralWidgetUiModel -> {
+                    setReferralData(element)
+                    setReferralListener(element)
                 }
-                is HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel -> {
-                    setEducationalInfoData(
-                        serviceType = element.serviceType,
-                        btnTextRes = element.btnTextRes
-                    )
-                    setEducationalInfoListener(
-                        elementId = element.id
-                    )
+                is HomeSharingEducationWidgetUiModel -> {
+                    setEducationalInfoData(element)
+                    setEducationalInfoListener(element)
                 }
             }
         }
     }
 
-    private fun setReferralListener(slug: String, isSender: Boolean) {
-        binding?.apply {
-            btnSharingEducation.setOnClickListener {
-                if (isSender) {
-                    listener?.onShareBtnSharingReferralClicked(slug)
-                } else {
-                    goToInformationPage(REFERRAL_PAGE_URL+slug)
-                }
-            }
-        }
-    }
-
-    private fun setEducationalInfoListener(elementId: String) {
-        binding?.apply {
-            btnSharingEducation.setOnClickListener {
-                listener?.onShareBtnSharingEducationalInfoClicked()
-            }
-
-            iCloseSharingEducation.setOnClickListener {
-                listener?.onCloseBtnSharingEducationalInfoClicked(elementId)
-            }
-        }
-    }
-
-    private fun setReferralData(isSender: Boolean, slug: String) {
+    private fun setReferralData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
             iCloseSharingEducation.hide()
-            if (isSender) {
-                convertStringToLink(tpSharingEducation, itemView.context, R.string.tokopedianow_home_referral_widget_desc_sender, slug)
+            if (element.isSender) {
+                convertStringToLink(tpSharingEducation, itemView.context, R.string.tokopedianow_home_referral_widget_desc_sender, element.slug)
                 btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
             } else {
                 tpSharingEducation.text = MethodChecker.fromHtml(itemView.resources.getString(R.string.tokopedianow_home_referral_widget_desc_receiver))
                 btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
             }
+            btnSharingEducation.isLoading = element.isButtonLoading
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
         }
     }
 
-    private fun setEducationalInfoData(serviceType: String, btnTextRes: Int) {
+    private fun setReferralListener(element: HomeSharingReferralWidgetUiModel) {
+        binding?.apply {
+            btnSharingEducation.setOnClickListener {
+                if (element.isSender) {
+                    listener?.onShareBtnSharingReferralClicked(element.slug, element.isSender)
+                } else {
+                    goToInformationPage(REFERRAL_PAGE_URL+element.slug)
+                }
+            }
+        }
+    }
+
+    private fun setEducationalInfoData(element: HomeSharingEducationWidgetUiModel) {
         binding?.apply {
             iCloseSharingEducation.setImage(IconUnify.CLOSE)
             iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
@@ -116,11 +96,23 @@ class HomeSharingWidgetViewHolder(
                 getServiceTypeFormattedCopy(
                     context = root.context,
                     key = SHARING_WIDGET_RESOURCE_ID,
-                    serviceType = serviceType
+                    serviceType = element.serviceType
                 )
             )
-            btnSharingEducation.text = itemView.resources.getString(btnTextRes)
+            btnSharingEducation.text = itemView.resources.getString(element.btnTextRes)
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
+        }
+    }
+
+    private fun setEducationalInfoListener(element: HomeSharingEducationWidgetUiModel) {
+        binding?.apply {
+            btnSharingEducation.setOnClickListener {
+                listener?.onShareBtnSharingEducationalInfoClicked()
+            }
+
+            iCloseSharingEducation.setOnClickListener {
+                listener?.onCloseBtnSharingEducationalInfoClicked(element.id)
+            }
         }
     }
 
@@ -141,7 +133,7 @@ class HomeSharingWidgetViewHolder(
     }
 
     interface HomeSharingListener {
-        fun onShareBtnSharingReferralClicked(slug: String)
+        fun onShareBtnSharingReferralClicked(slug: String, isSender: Boolean)
         fun onShareBtnSharingEducationalInfoClicked()
         fun onCloseBtnSharingEducationalInfoClicked(id: String)
     }

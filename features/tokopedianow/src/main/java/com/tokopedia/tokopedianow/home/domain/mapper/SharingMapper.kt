@@ -31,7 +31,8 @@ object SharingMapper {
             id = response.id,
             state = state,
             slug = response.widgetParam,
-            isSender = isSender
+            isSender = isSender,
+            isButtonLoading = false
         )
         return HomeLayoutItemUiModel(layout, state)
     }
