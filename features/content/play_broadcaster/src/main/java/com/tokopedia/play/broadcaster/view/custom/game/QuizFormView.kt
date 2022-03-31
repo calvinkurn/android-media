@@ -5,7 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play_common.util.extension.doOnLayout
+import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updatePadding
 
@@ -35,10 +38,11 @@ class QuizFormView : ConstraintLayout {
     )
 
     private var mCloseListener: (() -> Unit)? = null
+    private var mNextListener: (() -> Unit)? = null
 
     init {
         binding.tvBroQuizFormNext.setOnClickListener {
-
+            mNextListener?.invoke()
         }
 
         binding.icCloseQuizForm.setOnClickListener { 
@@ -52,12 +56,27 @@ class QuizFormView : ConstraintLayout {
         super.onAttachedToWindow()
     }
 
+    fun setFormState(quizFormState: QuizFormStateUiModel) {
+        when(quizFormState) {
+            QuizFormStateUiModel.Preparation -> {
+                showInputMethod()
+            }
+            QuizFormStateUiModel.SetDuration -> {
+                /** TODO: show bottomsheet */
+            }
+        }
+    }
+
     fun setOnCloseListener(listener: () -> Unit) {
         mCloseListener = listener
     }
 
-    fun setQuizConfig(quizConfig: QuizConfigUiModel) {
+    fun setOnNextListener(listener: () -> Unit) {
+        mNextListener = listener
+    }
 
+    fun setQuizConfig(quizConfig: QuizConfigUiModel) {
+        /** TODO: set config here */
     }
 
     private fun setupInsets() {
@@ -67,5 +86,12 @@ class QuizFormView : ConstraintLayout {
                 bottom = insets.systemWindowInsetBottom + padding.bottom
             )
         }
+    }
+
+    private fun showInputMethod() {
+//        binding..editText.doOnLayout {
+//            binding.textFieldPinnedMsg.editText.requestFocus()
+//            binding.textFieldPinnedMsg.editText.showKeyboard()
+//        }
     }
 }

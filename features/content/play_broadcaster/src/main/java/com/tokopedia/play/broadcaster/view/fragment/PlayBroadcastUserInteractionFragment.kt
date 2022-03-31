@@ -286,8 +286,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
 
-        quizForm.setOnCloseListener {
-            parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
+        quizForm.apply {
+            setOnCloseListener {
+                parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
+            }
+            setOnNextListener {
+                parentViewModel.submitAction(PlayBroadcastAction.ClickNextOnQuiz)
+            }
         }
     }
 
@@ -807,6 +812,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         gameConfig: GameConfigUiState,
     ) {
         if(prevState == state) return
+
+        quizForm.setFormState(state.quizFormState)
 
         when(state.quizFormState) {
             QuizFormStateUiModel.Nothing -> showQuizForm(false)

@@ -5,7 +5,21 @@ package com.tokopedia.play.broadcaster.ui.model.game.quiz
  */
 sealed class QuizFormStateUiModel {
 
-    object Nothing: QuizFormStateUiModel()
-    object Preparation: QuizFormStateUiModel()
-    object SetDuration: QuizFormStateUiModel()
+    abstract fun prev(): QuizFormStateUiModel
+    abstract fun next(): QuizFormStateUiModel
+
+    object Nothing: QuizFormStateUiModel() {
+        override fun prev() = Nothing
+        override fun next() = Preparation
+    }
+
+    object Preparation: QuizFormStateUiModel() {
+        override fun prev() = Nothing
+        override fun next() = SetDuration
+    }
+
+    object SetDuration: QuizFormStateUiModel() {
+        override fun prev() = Preparation
+        override fun next() = Nothing
+    }
 }

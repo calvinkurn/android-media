@@ -351,6 +351,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             /** Quiz */
             PlayBroadcastAction.ClickBackOnQuiz -> handleClickBackOnQuiz()
+            PlayBroadcastAction.ClickNextOnQuiz -> handleClickNextOnQuiz()
         }
     }
 
@@ -938,11 +939,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleClickBackOnQuiz() {
-        _quizFormState.value = when(_quizFormState.value) {
-            QuizFormStateUiModel.Preparation -> QuizFormStateUiModel.Nothing
-            QuizFormStateUiModel.SetDuration -> QuizFormStateUiModel.Preparation
-            else -> QuizFormStateUiModel.Nothing
-        }
+        _quizFormState.setValue { prev() }
+    }
+
+    private fun handleClickNextOnQuiz() {
+        _quizFormState.setValue { next() }
     }
 
     /**
