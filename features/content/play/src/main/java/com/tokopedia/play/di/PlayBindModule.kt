@@ -14,6 +14,8 @@ import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
 import com.tokopedia.play.data.repository.*
 import com.tokopedia.play.domain.repository.*
+import com.tokopedia.play.util.logger.PlayLog
+import com.tokopedia.play.util.logger.PlayLogImpl
 import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.util.share.PlayShareExperienceImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
@@ -102,4 +104,8 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindTimerFactory(timerFactory: PlayTimerFactory): TimerFactory
+
+    @Binds
+    @PlayScope
+    abstract fun bindPlayLog(log: PlayLogImpl): PlayLog
 }
