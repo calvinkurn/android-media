@@ -420,7 +420,7 @@ class ShopPlayWidgetAnalyticListener(
     ) {
         val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
-            eventCategory = SHOP_PAGE_SELLER,
+            eventCategory = SHOP_PAGE_BUYER,
             eventAction = CLICK,
             eventLabel = "click channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
             promotions = listOf(
@@ -449,7 +449,7 @@ class ShopPlayWidgetAnalyticListener(
     ) {
         val tracker = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
-            eventCategory = SHOP_PAGE_SELLER,
+            eventCategory = SHOP_PAGE_BUYER,
             eventAction = "impression on play sgc channel",
             eventLabel = "view channel - $shopId - ${item.channelId} - $businessWidgetPosition - $channelPositionInList - is autoplay $isAutoPlay - is rilisan spesial true",
             promotions = listOf(
