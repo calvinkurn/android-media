@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.recentview.R
 import com.tokopedia.recentview.analytics.RecentViewTracking
 import com.tokopedia.recentview.di.DaggerRecentViewComponent
@@ -201,7 +203,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
         val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishList() }.show()
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText, View.OnClickListener { goToWishList() }).show()
         }
     }
 
