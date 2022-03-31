@@ -37,7 +37,10 @@ data class InboxReviewResponse(
         data class InboxReviewList (
                 @Expose
                 @SerializedName("attachments")
-                val attachments: List<Attachment> = listOf(),
+                val imageAttachments: List<ImageAttachment> = listOf(),
+                @Expose
+                @SerializedName("videoAttachments")
+                val videoAttachments: List<VideoAttachment> = listOf(),
                 @Expose
                 @SerializedName("feedbackIDStr")
                 val feedbackID: String = "",
@@ -78,13 +81,18 @@ data class InboxReviewResponse(
                 @Expose
                 val ratingDisclaimer: String = ""
         ) {
-            data class Attachment(
+            data class ImageAttachment(
                     @Expose
                     @SerializedName("fullsizeURL")
                     val fullSizeURL: String? = "",
                     @Expose
                     @SerializedName("thumbnailURL")
                     val thumbnailURL: String? = ""
+            )
+            data class VideoAttachment(
+                    @Expose
+                    @SerializedName("videoUrl")
+                    val videoUrl: String? = ""
             )
             data class Product(
                     @Expose

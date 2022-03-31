@@ -5,35 +5,40 @@ import com.tokopedia.review.feature.inboxreview.presentation.adapter.InboxReview
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 
 data class FeedbackInboxUiModel(
-        var feedbackId: String = "",
-        var rating: Int = 0,
-        var userID: String = "",
-        var username: String = "",
-        var productID: String = "",
-        var productName: String = "",
-        var productImageUrl: String = "",
-        var productVariant: String = "",
-        var attachments: List<Attachment> = mutableListOf(),
-        var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
-        var variantID: String = "",
-        var variantName: String = "",
-        var invoiceID: String = "",
-        var reviewText: String = "",
-        var reviewTime: String = "",
-        var replyText: String = "",
-        var replyTime: String = "",
-        var isAutoReply: Boolean = false,
-        var sellerUser: String = "",
-        var isMoreReply: Boolean = false,
-        var isReplied: Boolean = false,
-        var isKejarUlasan: Boolean = false,
-        var ratingDisclaimer: String = "",
-        var badRatingReason: String = ""
-): BaseInboxReview {
+    var feedbackId: String = "",
+    var rating: Int = 0,
+    var userID: String = "",
+    var username: String = "",
+    var productID: String = "",
+    var productName: String = "",
+    var productImageUrl: String = "",
+    var productVariant: String = "",
+    var imageAttachments: List<ImageAttachment> = mutableListOf(),
+    var videoAttachments: List<VideoAttachment> = mutableListOf(),
+    var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
+    var variantID: String = "",
+    var variantName: String = "",
+    var invoiceID: String = "",
+    var reviewText: String = "",
+    var reviewTime: String = "",
+    var replyText: String = "",
+    var replyTime: String = "",
+    var isAutoReply: Boolean = false,
+    var sellerUser: String = "",
+    var isMoreReply: Boolean = false,
+    var isReplied: Boolean = false,
+    var isKejarUlasan: Boolean = false,
+    var ratingDisclaimer: String = "",
+    var badRatingReason: String = ""
+) : BaseInboxReview {
 
-    data class Attachment(
-            var thumbnailURL: String = "",
-            var fullSizeURL: String = ""
+    data class ImageAttachment(
+        var thumbnailURL: String = "",
+        var fullSizeURL: String = ""
+    )
+
+    data class VideoAttachment(
+        var videoUrl: String = ""
     )
 
     override fun type(typeFactory: InboxReviewAdapterTypeFactory): Int {

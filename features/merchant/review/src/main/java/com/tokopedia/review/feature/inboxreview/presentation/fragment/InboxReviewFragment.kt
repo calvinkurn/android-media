@@ -61,6 +61,7 @@ import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.sortfilter.SortFilter
@@ -274,11 +275,14 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         }
     }
 
-    override fun onImageItemClicked(titleProduct: String, imageUrls: List<String>, thumbnailsUrl: List<String>,
-                                    feedbackId: String,
-                                    productId: String,
-                                    position: Int) {
-
+    override fun onMediaItemClicked(
+        titleProduct: String,
+        videoUrls: List<String>,
+        imageUrls: List<String>,
+        feedbackId: String,
+        productId: String,
+        position: Int
+    ) {
         InboxReviewTracking.eventClickSpecificImageReview(
                 feedbackId,
                 getQuickFilter(),
@@ -295,7 +299,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 mediaPosition = position + 1,
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = mapReviewMediaData(
-                    imageUrls, feedbackId
+                    videoUrls, imageUrls, feedbackId
                 )
             ).run { startActivity(this) }
         }
@@ -730,11 +734,17 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun mapReviewMediaData(
+        videoUrls: List<String>,
         imageUrls: List<String>,
         feedbackId: String
     ): ProductrevGetReviewMedia {
-        //TODO: map video data
-        val mappedReviewMediaVideos = listOf<ReviewMedia>()
+        val mappedReviewMediaVideos = videoUrls.mapIndexed { index, url ->
+            ReviewMedia(
+                videoId = url,
+                feedbackId = feedbackId,
+                mediaNumber = index.plus(1)
+            )
+        }
         val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
             ReviewMedia(
                 imageId = url,
@@ -743,6 +753,13 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             )
         }
         val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
+        val mappedReviewGalleryVideos = videoUrls.map { url ->
+            ReviewGalleryVideo(
+                attachmentId = url,
+                url = url,
+                feedbackId = feedbackId
+            )
+        }
         val mappedReviewGalleryImages = imageUrls.map { url ->
             ReviewGalleryImage(
                 attachmentId = url,
@@ -755,7 +772,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
             detail = Detail(
                 reviewDetail = listOf(),
                 reviewGalleryImages = mappedReviewGalleryImages,
-                reviewGalleryVideos = listOf(),
+                reviewGalleryVideos = mappedReviewGalleryVideos,
                 mediaCount = mappedReviewMedia.size.toLong()
             )
         )

@@ -174,8 +174,8 @@ class ProductFeedbackDetailViewHolder(
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 productFeedbackDetailListener.onImageItemClicked(
-                    it.attachments.mapNotNull { it.fullSizeURL },
-                    it.attachments.mapNotNull { it.thumbnailURL },
+                    it.imageAttachments.mapNotNull { it.fullSizeURL },
+                    it.videoAttachments.mapNotNull { it.videoUrl },
                     it.feedbackID,
                     it.productID,
                     position

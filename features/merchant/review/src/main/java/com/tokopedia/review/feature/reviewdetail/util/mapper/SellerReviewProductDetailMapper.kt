@@ -18,7 +18,9 @@ import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -89,27 +91,35 @@ object SellerReviewProductDetailMapper {
     ): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
         productFeedbackDataPerProduct?.list?.map {
-            val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
-            it.attachments.map { attachment ->
-                mapAttachment.add(
-                    FeedbackUiModel.Attachment(
+            val mapImageAttachment = mutableListOf<FeedbackUiModel.ImageAttachment>()
+            it.imageAttachments.map { attachment ->
+                mapImageAttachment.add(
+                    FeedbackUiModel.ImageAttachment(
                         thumbnailURL = attachment.thumbnailURL,
                         fullSizeURL = attachment.fullSizeURL
                     )
                 )
             }
             val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-                mediaThumbnails = it.attachments.mapNotNull { attachment ->
-                    attachment.thumbnailURL?.let { url ->
-                        ReviewMediaImageThumbnailUiModel(
-                            uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
+                mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
+                    videoAttachment.videoUrl?.let { url ->
+                        ReviewMediaVideoThumbnailUiModel(
+                            uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = url)
                         )
                     }
-                }
+                }.plus(
+                    it.imageAttachments.mapNotNull { imageAttachment ->
+                        imageAttachment.thumbnailURL?.let { url ->
+                            ReviewMediaImageThumbnailUiModel(
+                                uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
+                            )
+                        }
+                    }
+                )
             )
             feedbackListUiModel.add(
                 FeedbackUiModel(
-                    attachments = mapAttachment,
+                    imageAttachments = mapImageAttachment,
                     reviewMediaThumbnail = mappedReviewMediaThumbnail,
                     autoReply = it.autoReply,
                     feedbackID = it.feedbackID,
@@ -247,11 +257,11 @@ object SellerReviewProductDetailMapper {
         return updatedData
     }
 
-    fun mapToItemImageSlider(attachmentList: List<FeedbackUiModel.Attachment>?): Pair<List<String>, List<String>> {
+    fun mapToItemImageSlider(imageAttachmentList: List<FeedbackUiModel.ImageAttachment>?): Pair<List<String>, List<String>> {
         val imageSlider = arrayListOf<String>()
         val thumbnailSlider = arrayListOf<String>()
 
-        attachmentList?.map {
+        imageAttachmentList?.map {
             thumbnailSlider.add(it.thumbnailURL.orEmpty())
             imageSlider.add(it.fullSizeURL.orEmpty())
         }

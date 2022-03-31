@@ -194,13 +194,13 @@ class InboxReviewFeedbackViewHolder(
         binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
     }
 
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
-                feedbackInboxReviewListener.onImageItemClicked(
+                feedbackInboxReviewListener.onMediaItemClicked(
                     it.productName,
-                    it.attachments.map { it.fullSizeURL },
-                    it.attachments.map { it.thumbnailURL },
+                    it.imageAttachments.map { it.fullSizeURL },
+                    it.videoAttachments.map { it.videoUrl },
                     it.feedbackId,
                     it.productID,
                     position

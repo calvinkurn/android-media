@@ -68,6 +68,7 @@ import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -699,7 +700,7 @@ class SellerReviewDetailFragment :
 
     override fun onImageItemClicked(
         imageUrls: List<String>,
-        thumbnailsUrl: List<String>,
+        videoUrls: List<String>,
         feedbackId: String,
         productID: String,
         position: Int
@@ -707,7 +708,7 @@ class SellerReviewDetailFragment :
         context?.run {
             tracking.eventClickImagePreviewSlider(
                 feedbackId,
-                thumbnailsUrl.getOrNull(position).orEmpty(),
+                videoUrls.plus(imageUrls).getOrNull(position).orEmpty(),
                 position.toString()
             )
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
@@ -719,7 +720,7 @@ class SellerReviewDetailFragment :
                 mediaPosition = position + 1,
                 showSeeMore = false,
                 preloadedDetailedReviewMediaResult = mapReviewMediaData(
-                    imageUrls, feedbackId
+                    videoUrls, imageUrls, feedbackId
                 )
             ).run { startActivity(this) }
         }
@@ -828,11 +829,17 @@ class SellerReviewDetailFragment :
     }
 
     private fun mapReviewMediaData(
+        videoUrls: List<String>,
         imageUrls: List<String>,
         feedbackId: String
     ): ProductrevGetReviewMedia {
-        //TODO: map video data
-        val mappedReviewMediaVideos = listOf<ReviewMedia>()
+        val mappedReviewMediaVideos = videoUrls.mapIndexed { index, url ->
+            ReviewMedia(
+                videoId = url,
+                feedbackId = feedbackId,
+                mediaNumber = index.plus(1)
+            )
+        }
         val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
             ReviewMedia(
                 imageId = url,
@@ -841,6 +848,13 @@ class SellerReviewDetailFragment :
             )
         }
         val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
+        val mappedReviewGalleryVideos = videoUrls.map { url ->
+            ReviewGalleryVideo(
+                attachmentId = url,
+                url = url,
+                feedbackId = feedbackId
+            )
+        }
         val mappedReviewGalleryImages = imageUrls.map { url ->
             ReviewGalleryImage(
                 attachmentId = url,
@@ -853,7 +867,7 @@ class SellerReviewDetailFragment :
             detail = Detail(
                 reviewDetail = listOf(),
                 reviewGalleryImages = mappedReviewGalleryImages,
-                reviewGalleryVideos = listOf(),
+                reviewGalleryVideos = mappedReviewGalleryVideos,
                 mediaCount = mappedReviewMedia.size.toLong()
             )
         )

@@ -19,7 +19,9 @@ import com.tokopedia.review.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.SortFilterItemWrapper
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -50,29 +52,46 @@ object InboxReviewMapper {
     ): List<FeedbackInboxUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackInboxUiModel>()
         inboxReviewResponse.list.map {
-            val mapAttachment = mutableListOf<FeedbackInboxUiModel.Attachment>()
-            it.attachments.map { attachment ->
-                mapAttachment.add(
-                    FeedbackInboxUiModel.Attachment(
-                        thumbnailURL = attachment.thumbnailURL.orEmpty(),
-                        fullSizeURL = attachment.fullSizeURL.orEmpty()
+            val mappedImageAttachments = it.imageAttachments.mapNotNull { attachment ->
+                if (attachment.thumbnailURL.isNullOrBlank() || attachment.fullSizeURL.isNullOrBlank()) {
+                    null
+                } else {
+                    FeedbackInboxUiModel.ImageAttachment(
+                        thumbnailURL = attachment.thumbnailURL,
+                        fullSizeURL = attachment.fullSizeURL
                     )
-                )
+                }
+            }
+            val mappedVideoAttachments = it.videoAttachments.mapNotNull { attachment ->
+                if (attachment.videoUrl.isNullOrBlank()) {
+                    null
+                } else {
+                    FeedbackInboxUiModel.VideoAttachment(
+                        videoUrl = attachment.videoUrl
+                    )
+                }
             }
             val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-                mediaThumbnails = it.attachments.mapNotNull { attachment ->
-                    attachment.thumbnailURL?.let { url ->
-                        ReviewMediaImageThumbnailUiModel(
-                            uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = attachment.thumbnailURL
-                            )
+                mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
+                    videoAttachment.videoUrl?.let { url ->
+                        ReviewMediaVideoThumbnailUiModel(
+                            uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = url)
                         )
                     }
-                }
+                }.plus(
+                    it.imageAttachments.mapNotNull { attachment ->
+                        attachment.thumbnailURL?.let { url ->
+                            ReviewMediaImageThumbnailUiModel(
+                                uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
+                            )
+                        }
+                    }
+                )
             )
             feedbackListUiModel.add(
                 FeedbackInboxUiModel(
-                    attachments = mapAttachment,
+                    imageAttachments = mappedImageAttachments,
+                    videoAttachments = mappedVideoAttachments,
                     reviewMediaThumbnail = mappedReviewMediaThumbnail,
                     isAutoReply = it.isAutoReply ?: false,
                     feedbackId = it.feedbackID,
@@ -161,26 +180,30 @@ object InboxReviewMapper {
     }
 
     fun mapFeedbackInboxToFeedbackUiModel(data: FeedbackInboxUiModel): FeedbackUiModel {
-        val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
-        data.attachments.map { attachment ->
-            mapAttachment.add(
-                FeedbackUiModel.Attachment(
-                    thumbnailURL = attachment.thumbnailURL,
-                    fullSizeURL = attachment.fullSizeURL
-                )
-            )
+        val mappedImageAttachments = data.imageAttachments.map { attachment ->
+            FeedbackUiModel.ImageAttachment(attachment.thumbnailURL, attachment.fullSizeURL)
+        }
+        val mappedVideoAttachments = data.videoAttachments.map { attachment ->
+            FeedbackUiModel.VideoAttachment(attachment.videoUrl)
         }
         val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
-            mediaThumbnails = data.attachments.map { attachment ->
-                ReviewMediaImageThumbnailUiModel(
-                    uiState = ReviewMediaImageThumbnailUiState.Showing(
-                        uri = attachment.thumbnailURL
-                    )
+            mediaThumbnails = data.videoAttachments.map { attachment ->
+                ReviewMediaVideoThumbnailUiModel(
+                    ReviewMediaVideoThumbnailUiState.Showing(uri = attachment.videoUrl)
                 )
-            }
+            }.plus(
+                data.imageAttachments.map { attachment ->
+                    ReviewMediaImageThumbnailUiModel(
+                        uiState = ReviewMediaImageThumbnailUiState.Showing(
+                            uri = attachment.thumbnailURL
+                        )
+                    )
+                }
+            )
         )
         return FeedbackUiModel(
-            attachments = mapAttachment,
+            imageAttachments = mappedImageAttachments,
+            videoAttachments = mappedVideoAttachments,
             reviewMediaThumbnail = mappedReviewMediaThumbnail,
             autoReply = data.isAutoReply,
             feedbackID = data.feedbackId,

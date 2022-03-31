@@ -15,16 +15,16 @@ class ReviewReplyFeedbackImageViewHolder(
 
     private val ivItemFeedback: ImageUnify = itemView.findViewById(R.id.ivAttachmentFeedback)
 
-    private var attachmentUiModel: List<FeedbackUiModel.Attachment>? = null
+    private var imageAttachmentUiModel: List<FeedbackUiModel.ImageAttachment>? = null
     private var feedbackId = ""
     private var productTitle = ""
 
-    fun bind(data: FeedbackUiModel.Attachment) {
+    fun bind(data: FeedbackUiModel.ImageAttachment) {
         ivItemFeedback.loadImage(data.thumbnailURL.orEmpty())
     }
 
-    fun setAttachmentUiData(attachmentUiModel: List<FeedbackUiModel.Attachment>?) {
-        this.attachmentUiModel = attachmentUiModel
+    fun setAttachmentUiData(imageAttachmentUiModel: List<FeedbackUiModel.ImageAttachment>?) {
+        this.imageAttachmentUiModel = imageAttachmentUiModel
     }
 
     fun setFeedbackId(feedbackId: String) {

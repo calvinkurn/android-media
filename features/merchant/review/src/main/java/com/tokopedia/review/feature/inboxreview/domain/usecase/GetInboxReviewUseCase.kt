@@ -43,6 +43,9 @@ class GetInboxReviewUseCase @Inject constructor(
                       thumbnailURL
                       fullsizeURL
                     }
+                    videoAttachments {
+                      videoUrl
+                    }
                     invoiceID
                     reviewText
                     reviewTime
