@@ -483,7 +483,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
                 }
                 formAddressNegative.etLabel.textFieldInput.setText(data.addrName)
-                formAddressNegative.etAlamat.textFieldInput.setText(data.address1)
+                formAddressNegative.etAlamat.textFieldInput.setText(data.addressDetailStreet)
+                formAddressNegative.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddressNegative.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etLabel.textFieldWrapper, null))
                 formAddressNegative.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etAlamat.textFieldWrapper, null))
                 currentAlamat = formAddressNegative.etAlamat.textFieldInput.text.toString()
@@ -501,8 +502,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
 
                 cardAddress.addressDistrict.text = formattedAddress
-                formAddress.etAlamatNew.textFieldInput.setText(data.address1)
-
+                formAddress.etAlamatNew.textFieldInput.setText(data.addressDetailStreet)
+                formAddress.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddress.etLabel.textFieldInput.setText(data.addrName)
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
                 formAddress.etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamatNew.textFieldWrapper, null))

@@ -319,6 +319,8 @@ object KeroLogisticQuery {
                   is_primary
                   is_active
                   is_whitelist
+                  address_detail_street
+                  address_detail_notes
                 }
                 status
                 server_process_time

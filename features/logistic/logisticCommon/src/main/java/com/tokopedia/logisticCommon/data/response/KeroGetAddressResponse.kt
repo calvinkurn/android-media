@@ -148,7 +148,15 @@ data class KeroGetAddressResponse(
 
                 @Expose
                 @SerializedName("longitude")
-                val longitude: String = ""
+                val longitude: String = "",
+
+                @Expose
+                @SerializedName("address_detail_street")
+                val addressDetailStreet: String = "",
+
+                @Expose
+                @SerializedName("address_detail_notes")
+                val addressDetailNotes: String = ""
             )
         }
     }
