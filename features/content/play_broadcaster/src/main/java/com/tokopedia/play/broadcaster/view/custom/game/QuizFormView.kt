@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isNotEmpty
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -59,6 +60,17 @@ class QuizFormView : ConstraintLayout {
     private var mNextListener: (() -> Unit)? = null
     private var onTitleChangedListener: ((String) -> Unit)? = null
     private var onGiftChangedListener: ((String) -> Unit)? = null
+    private var onSelectDurationListener: ((Long) -> Unit)? = null
+    private var onSubmitListener: (() -> Unit)? = null
+
+    private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
+        set(value) {
+            field = value
+
+            /** TODO: set config here */
+            binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
+            timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
+        }
 
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
@@ -82,19 +94,36 @@ class QuizFormView : ConstraintLayout {
             mCloseListener?.invoke()
         }
 
-        timePickerBinding.btnApply.setOnClickListener {
+        timePickerBinding.puTimer.onValueChanged = { _, index ->
+            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+            onSelectDurationListener?.invoke(selectedDuration)
+        }
 
+        timePickerBinding.btnApply.setOnClickListener {
+            onSubmitListener?.invoke()
         }
 
         setupInsets()
     }
 
     fun setFormData(quizFormData: QuizFormDataUiModel) {
+        /** Set Quiz Title */
         binding.viewGameHeader.title = quizFormData.title
+
         /** TODO: set options */
 
         /** TODO: set gift */
 
+        /** Set Quiz Duration */
+        val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
+        if(timePickerBinding.puTimer.activeIndex != idx) {
+            timePickerBinding.puTimer.apply {
+                if(idx != -1) goToPosition(idx)
+                else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+            }
+        }
+
+        /** Validate Form */
         binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
     }
 
@@ -110,16 +139,13 @@ class QuizFormView : ConstraintLayout {
                 binding.groupActionBar.visibility = View.GONE
                 binding.viewGameHeader.isEditable = false
 
-
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
     }
 
-    fun setQuizConfig(quizConfig: QuizConfigUiModel) {
-        /** TODO: set config here */
-        binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
-        timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
+    fun applyQuizConfig(quizConfig: QuizConfigUiModel) {
+        this.quizConfig = quizConfig
     }
 
     fun setOnCloseListener(listener: () -> Unit) {
@@ -136,6 +162,14 @@ class QuizFormView : ConstraintLayout {
 
     fun setOnGiftChangedListener(listener: (String) -> Unit) {
         onGiftChangedListener = listener
+    }
+
+    fun setOnSelectDurationListener(listener: (Long) -> Unit) {
+        onSelectDurationListener = listener
+    }
+
+    fun setOnSubmitListener(listener: () -> Unit) {
+        onSubmitListener = listener
     }
 
     private fun setupInsets() {

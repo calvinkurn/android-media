@@ -7,6 +7,7 @@ data class QuizFormDataUiModel(
     val title: String = "",
     val gift: String = "",
     val options: List<Option> = emptyList(),
+    val duration: Long = 0,
 ) {
     data class Option(
         val text: String = "",

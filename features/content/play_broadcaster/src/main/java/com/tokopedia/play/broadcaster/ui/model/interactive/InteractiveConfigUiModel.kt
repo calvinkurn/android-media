@@ -21,24 +21,8 @@ data class GameConfigUiModel(
 
         companion object {
                 fun empty() = GameConfigUiModel(
-                        tapTapConfig = TapTapConfigUiModel(
-                                isActive = false,
-                                nameGuidelineHeader = "",
-                                nameGuidelineDetail = "",
-                                timeGuidelineHeader = "",
-                                timeGuidelineDetail = "",
-                                durationInMs = 0,
-                                availableStartTimeInMs = emptyList(),
-                        ),
-                        quizConfig = QuizConfigUiModel(
-                                isActive = false,
-                                maxTitleLength = 0,
-                                maxChoicesCount = 0,
-                                minChoicesCount = 0,
-                                maxRewardLength = 0,
-                                availableStartTimeInMs = emptyList(),
-                                eligibleStartTimeInMs =  emptyList(),
-                        )
+                        tapTapConfig = TapTapConfigUiModel.empty(),
+                        quizConfig = QuizConfigUiModel.empty()
                 )
         }
 }
@@ -51,7 +35,19 @@ data class TapTapConfigUiModel(
         val timeGuidelineDetail: String,
         val durationInMs: Long,
         val availableStartTimeInMs: List<Long>,
-)
+) {
+        companion object {
+                fun empty() = TapTapConfigUiModel(
+                        isActive = false,
+                        nameGuidelineHeader = "",
+                        nameGuidelineDetail = "",
+                        timeGuidelineHeader = "",
+                        timeGuidelineDetail = "",
+                        durationInMs = 0,
+                        availableStartTimeInMs = emptyList(),
+                )
+        }
+}
 
 data class QuizConfigUiModel(
         val isActive: Boolean,
@@ -61,4 +57,16 @@ data class QuizConfigUiModel(
         val maxRewardLength: Int,
         val availableStartTimeInMs: List<Long>,
         val eligibleStartTimeInMs: List<Long>,
-)
+) {
+        companion object {
+                fun empty() = QuizConfigUiModel(
+                        isActive = false,
+                        maxTitleLength = 0,
+                        maxChoicesCount = 0,
+                        minChoicesCount = 0,
+                        maxRewardLength = 0,
+                        availableStartTimeInMs = emptyList(),
+                        eligibleStartTimeInMs =  emptyList(),
+                )
+        }
+}

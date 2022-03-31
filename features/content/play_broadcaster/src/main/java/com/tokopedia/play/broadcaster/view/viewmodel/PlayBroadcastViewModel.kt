@@ -354,6 +354,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickNextOnQuiz -> handleClickNextOnQuiz()
             is PlayBroadcastAction.InputQuizTitle -> handleInputQuizTitle(event.title)
             is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
+            is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
+            PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
         }
     }
 
@@ -935,7 +937,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleClickGameOption(gameType: GameType) {
         when(gameType) {
             GameType.Taptap -> { /** TODO: will handle it soon */ }
-            GameType.Quiz -> _quizFormState.value = QuizFormStateUiModel.Preparation
+            GameType.Quiz -> _quizFormState.setValue { next() }
         }
     }
 
@@ -947,22 +949,40 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         if(_quizFormState.value.next() == QuizFormStateUiModel.SetDuration) {
             val remainingDuration = livePusherMediator.remainingDurationInMillis
             val quizConfig = _gameConfig.value.quizConfig
-            _gameConfig.value = _gameConfig.value.copy(
-                quizConfig = quizConfig.copy(
-                    eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
+
+            _gameConfig.setValue {
+                copy(
+                    quizConfig = quizConfig.copy(
+                        eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
+                    )
                 )
-            )
+            }
         }
 
         _quizFormState.setValue { next() }
     }
 
     private fun handleInputQuizTitle(title: String) {
-        _quizFormData.value = _quizFormData.value.copy(title = title)
+        _quizFormData.setValue {
+            copy(title = title)
+        }
     }
 
     private fun handleInputQuizGift(text: String) {
-        _quizFormData.value = _quizFormData.value.copy(gift = text)
+        _quizFormData.setValue {
+            copy(gift = text)
+        }
+    }
+
+    private fun handleSelectQuizDuration(duration: Long) {
+        _quizFormData.setValue {
+            copy(duration = duration)
+        }
+    }
+
+    private fun handleSubmitQuizForm() {
+        /** TODO: submit data */
+        _quizFormState.setValue { next() }
     }
 
     /**

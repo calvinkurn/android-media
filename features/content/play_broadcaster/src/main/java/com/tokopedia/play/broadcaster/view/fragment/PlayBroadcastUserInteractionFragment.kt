@@ -300,6 +300,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             setOnGiftChangedListener {
                 parentViewModel.submitAction(PlayBroadcastAction.InputQuizGift(it))
             }
+            setOnSelectDurationListener {
+                parentViewModel.submitAction(PlayBroadcastAction.SelectQuizDuration(it))
+            }
+            setOnSubmitListener {
+                parentViewModel.submitAction(PlayBroadcastAction.SubmitQuizForm)
+            }
         }
     }
 
@@ -820,7 +826,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         configState: GameConfigUiState,
     ) {
         if(prevConfigState != configState)
-            quizForm.setQuizConfig(configState.quizConfig)
+            quizForm.applyQuizConfig(configState.quizConfig)
 
         if(prevState?.quizFormState != state.quizFormState) {
             when(state.quizFormState) {

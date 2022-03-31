@@ -26,4 +26,6 @@ sealed class PlayBroadcastAction {
     object ClickNextOnQuiz: PlayBroadcastAction()
     data class InputQuizTitle(val title: String): PlayBroadcastAction()
     data class InputQuizGift(val text: String): PlayBroadcastAction()
+    data class SelectQuizDuration(val duration: Long): PlayBroadcastAction()
+    object SubmitQuizForm: PlayBroadcastAction()
 }
