@@ -74,6 +74,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -825,12 +826,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showQuizForm(true)
                 }
                 QuizFormStateUiModel.SetDuration -> {
-                    hideKeyboard()
                     /** TODO: handle set duration */
                 }
-            }.also {
-                quizForm.setFormState(state.quizFormState)
             }
+
+            quizForm.setFormState(state.quizFormState)
         }
 
         if(prevState?.quizFormData != state.quizFormData)
