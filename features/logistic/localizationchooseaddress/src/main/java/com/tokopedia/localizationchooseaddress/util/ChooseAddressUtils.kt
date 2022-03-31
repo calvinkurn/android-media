@@ -101,7 +101,7 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.postal_code != localizingAddressStateData.postal_code) validate = true
             if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
             if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
-            if (!latestChooseAddressData.warehouses.containsAll(localizingAddressStateData.warehouses)) validate = true
+            if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
             if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
             if (latestChooseAddressData.tokonow_last_update != localizingAddressStateData.tokonow_last_update) validate = true
@@ -115,7 +115,7 @@ object ChooseAddressUtils {
         if (latestChooseAddressData != null) {
             if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
             if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
-            if (!latestChooseAddressData.warehouses.containsAll(localizingAddressStateData.warehouses)) validate = true
+            if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
         }
         return validate
