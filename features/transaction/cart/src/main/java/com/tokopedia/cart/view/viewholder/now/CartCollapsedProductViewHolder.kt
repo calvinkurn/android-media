@@ -8,8 +8,10 @@ import com.tokopedia.cart.databinding.ItemCartCollapsedProductBinding
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 
@@ -20,16 +22,28 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     fun bind(cartItemHolderData: CartItemHolderData) {
-        // TODO: BUNDLING NOW COLLAPSE
+        renderBundlingIcon(cartItemHolderData)
         renderImage(cartItemHolderData)
         renderVariant(cartItemHolderData)
         renderPrice(cartItemHolderData)
         renderQuantity(cartItemHolderData)
     }
 
+    private fun renderBundlingIcon(cartItemHolderData: CartItemHolderData) {
+        if (cartItemHolderData.isBundlingItem) {
+            viewBinding.imageBundleIcon.show()
+            viewBinding.imageBundleIcon.loadImage(cartItemHolderData.bundleGrayscaleIconUrl)
+        } else {
+            viewBinding.imageBundleIcon.hide()
+        }
+    }
+
     private fun renderPrice(cartItemHolderData: CartItemHolderData) {
-        val productPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
-        viewBinding.textProductPrice.text = productPrice
+        viewBinding.textProductPrice.text = if (cartItemHolderData.isBundlingItem) {
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.bundlePrice, false)
+        } else {
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItemHolderData.productPrice, false)
+        }
     }
 
     private fun renderImage(cartItemHolderData: CartItemHolderData) {
@@ -43,8 +57,11 @@ class CartCollapsedProductViewHolder(val viewBinding: ItemCartCollapsedProductBi
     }
 
     private fun renderQuantity(cartItemHolderData: CartItemHolderData) {
-        val textQuantity = "${cartItemHolderData.quantity} barang"
-        viewBinding.textProductQuantity.text = textQuantity
+        viewBinding.textProductQuantity.text = if (cartItemHolderData.isBundlingItem) {
+            itemView.resources.getString(R.string.label_collapsed_product_bundle_quantity, cartItemHolderData.bundleQuantity)
+        } else {
+            itemView.resources.getString(R.string.label_collapsed_product_quantity, cartItemHolderData.quantity)
+        }
     }
 
     private fun renderVariant(cartItemHolderData: CartItemHolderData) {
