@@ -820,7 +820,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if(prevState?.quizFormState != state.quizFormState) {
             when(state.quizFormState) {
-                QuizFormStateUiModel.Nothing -> showQuizForm(false)
+                QuizFormStateUiModel.Nothing -> {
+                    hideKeyboard()
+                    showQuizForm(false)
+                }
                 QuizFormStateUiModel.Preparation -> {
                     quizForm.setQuizConfig(gameConfig.quizConfig)
                     showQuizForm(true)
