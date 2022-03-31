@@ -18,6 +18,7 @@ import com.tokopedia.unifyprinciples.Typography
 class BidSwitchManualBudgetBottomSheet(
     private val maxBid: String, private val minBid: String, private val suggestedBid: String,
     private val isWhiteListUser: Boolean, private val onSaveClicked: (String, String) -> Unit,
+    private val trackerListener: TrackerListener? = null,
 ) : BottomSheetUnify() {
 
     private val infoBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
@@ -47,8 +48,11 @@ class BidSwitchManualBudgetBottomSheet(
                 tfPencarian?.textFieldInput?.text.toString().removeCommaRawString(),
                 tfRecommendasi?.textFieldInput?.text.toString().removeCommaRawString()
             )
+            trackerListener?.manualBidBottomSheetLanjuktanClicked()
             dismiss()
         }
+
+        setOnDismissListener { trackerListener?.manualBidBottomSheetDismissed() }
 
         tfPencarian?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
             btnSave?.isEnabled = !isError
@@ -87,6 +91,11 @@ class BidSwitchManualBudgetBottomSheet(
         setAction(drawableRight) {
             infoBottomSheet.show(childFragmentManager)
         }
+    }
+
+    interface TrackerListener {
+        fun manualBidBottomSheetLanjuktanClicked()
+        fun manualBidBottomSheetDismissed()
     }
 
 }
