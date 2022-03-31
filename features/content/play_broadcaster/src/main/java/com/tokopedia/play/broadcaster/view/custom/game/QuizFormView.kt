@@ -5,11 +5,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.updatePadding
 
 /**
@@ -41,6 +43,8 @@ class QuizFormView : ConstraintLayout {
     private var mNextListener: (() -> Unit)? = null
 
     init {
+        binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
+
         binding.tvBroQuizFormNext.setOnClickListener {
             mNextListener?.invoke()
         }
@@ -52,16 +56,25 @@ class QuizFormView : ConstraintLayout {
         setupInsets()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
+    fun setFormData(quizFormData: QuizFormDataUiModel) {
+        binding.viewGameHeader.title = quizFormData.title
+        /** TODO: set options */
+
+        /** TODO: set gift */
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
         when(quizFormState) {
             QuizFormStateUiModel.Preparation -> {
-                showInputMethod()
+                binding.viewGameHeader.apply {
+                    isEditable = true
+                    focus()
+                }
             }
             QuizFormStateUiModel.SetDuration -> {
+                binding.viewGameHeader.isEditable = false
+                /** TODO: hide actionbar */
+
                 /** TODO: show bottomsheet */
             }
         }
@@ -77,6 +90,7 @@ class QuizFormView : ConstraintLayout {
 
     fun setQuizConfig(quizConfig: QuizConfigUiModel) {
         /** TODO: set config here */
+        binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
     }
 
     private fun setupInsets() {
@@ -86,12 +100,5 @@ class QuizFormView : ConstraintLayout {
                 bottom = insets.systemWindowInsetBottom + padding.bottom
             )
         }
-    }
-
-    private fun showInputMethod() {
-//        binding..editText.doOnLayout {
-//            binding.textFieldPinnedMsg.editText.requestFocus()
-//            binding.textFieldPinnedMsg.editText.showKeyboard()
-//        }
     }
 }

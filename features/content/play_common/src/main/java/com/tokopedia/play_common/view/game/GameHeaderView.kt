@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGameHeaderBinding
+import com.tokopedia.play_common.util.extension.doOnLayout
+import com.tokopedia.play_common.util.extension.showKeyboard
 
 /**
  * Created By : Jonathan Darwin on March 30, 2022
@@ -62,6 +64,13 @@ class GameHeaderView : ConstraintLayout {
             setIcon()
             setBackground()
         }
+
+    fun focus() {
+        binding.etPlayGameHeaderTitle.doOnLayout {
+            binding.etPlayGameHeaderTitle.requestFocus()
+            binding.etPlayGameHeaderTitle.showKeyboard()
+        }
+    }
 
     private fun setIcon() {
         val (icon, color) = when(type) {
