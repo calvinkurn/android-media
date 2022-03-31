@@ -250,6 +250,7 @@ ext {
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0@aar",
             hansel                : "io.hansel.preprocessor:preprocessor:9.1.5",
+            protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
             ucrop                 : "com.github.yalantis:ucrop:2.2.2",
