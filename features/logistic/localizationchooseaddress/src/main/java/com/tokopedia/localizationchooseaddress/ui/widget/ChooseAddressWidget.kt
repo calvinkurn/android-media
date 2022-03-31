@@ -22,6 +22,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.isLocalizingTokonowHasUpdated
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.isRefreshTokonowRollenceActive
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -103,8 +104,15 @@ class ChooseAddressWidget : ConstraintLayout,
                                 serviceType = data.tokonowModel.serviceType,
                                 lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            chooseAddressPref?.setLocalCache(localData)
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && isRefreshTokonowRollenceActive() && isLocalizingTokonowHasUpdated(context, localData)) {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                                // trigger home to refresh data
+                                chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                            } else {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            }
                         } else {
                             val data = it.data
                             val localData = ChooseAddressUtils.setLocalizingAddressData(
@@ -121,12 +129,15 @@ class ChooseAddressWidget : ConstraintLayout,
                                 serviceType = data.tokonowModel.serviceType,
                                 lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            chooseAddressPref?.setLocalCache(localData)
-                            chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
-                        }
-                        // trigger home to refresh data
-                        if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && isRefreshTokonowRollenceActive()) {
-                            chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && isRefreshTokonowRollenceActive() && isLocalizingTokonowHasUpdated(context, localData)) {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                                // trigger home to refresh data
+                                chooseAddressWidgetListener?.onTokonowDataRefreshed()
+                            } else {
+                                chooseAddressPref?.setLocalCache(localData)
+                                chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
+                            }
                         }
                     }
                     is Fail -> {
@@ -139,7 +150,7 @@ class ChooseAddressWidget : ConstraintLayout,
                 when (it) {
                     is Success -> {
                         val data = it.data
-                        ChooseAddressUtils.refreshTokonowData(
+                        val shouldRefresh = ChooseAddressUtils.refreshTokonowData(
                                 context = context,
                                 warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
                                 warehouseId = data.warehouseId,
@@ -148,7 +159,7 @@ class ChooseAddressWidget : ConstraintLayout,
                                 shopId = data.shopId
                             )
                         // trigger home to refresh data
-                        if (viewModel.isFirstLoad) {
+                        if (viewModel.isFirstLoad && shouldRefresh) {
                             chooseAddressWidgetListener?.onTokonowDataRefreshed()
                         }
                     }
