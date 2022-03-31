@@ -309,6 +309,10 @@ class PlayBroadcastUiMapper(
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
+        val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSecond.map {
+            TimeUnit.SECONDS.toMillis(it.toLong())
+        }
+
         return GameConfigUiModel(
             tapTapConfig = TapTapConfigUiModel(
                 isActive = response.interactiveConfig.tapTapConfig.isActive,
@@ -328,11 +332,9 @@ class PlayBroadcastUiMapper(
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
                 maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
-                availableStartTimeInMs = response.interactiveConfig.quizConfig.quizDurationsInSecond.map {
-                    TimeUnit.SECONDS.toMillis(it.toLong())
-                }
+                availableStartTimeInMs = quizDurationInMs,
+                eligibleStartTimeInMs = quizDurationInMs,
             )
-
         )
     }
 

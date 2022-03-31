@@ -813,6 +813,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     ) {
         if(prevState == state) return
 
+        interactiveSetupView.show()
+        interactiveSetupView.setConfig(gameConfig.tapTapConfig)
         quizForm.setFormState(state.quizFormState)
 
         when(state.quizFormState) {

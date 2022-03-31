@@ -17,7 +17,7 @@ sealed class BroadcastInteractiveState {
 
 sealed class BroadcastInteractiveInitState {
 
-    data class NoPrevious(val showOnBoarding: Boolean, val gameTypeList: List<GameType>) : BroadcastInteractiveInitState()
+    data class NoPrevious(val showOnBoarding: Boolean) : BroadcastInteractiveInitState()
     object Loading : BroadcastInteractiveInitState()
     data class HasPrevious(val coachMark: BroadcastInteractiveCoachMark) : BroadcastInteractiveInitState()
 }

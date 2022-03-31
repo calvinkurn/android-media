@@ -700,7 +700,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return BroadcastInteractiveState.Allowed.Init(
             state = BroadcastInteractiveInitState.NoPrevious(
                 showOnBoarding = sharedPref.isFirstInteractive(),
-                gameTypeList = _gameConfig.value.generateGameTypeList(),
             ),
         )
     }
@@ -943,6 +942,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleClickNextOnQuiz() {
+        if(_quizFormState.value.next() == QuizFormStateUiModel.SetDuration) {
+            val remainingDuration = livePusherMediator.remainingDurationInMillis
+            val quizConfig = _gameConfig.value.quizConfig
+            _gameConfig.value = _gameConfig.value.copy(
+                quizConfig = quizConfig.copy(
+                    eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
+                )
+            )
+        }
+
         _quizFormState.setValue { next() }
     }
 
