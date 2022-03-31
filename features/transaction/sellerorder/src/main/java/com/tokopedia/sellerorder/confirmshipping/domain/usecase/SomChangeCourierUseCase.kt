@@ -14,9 +14,9 @@ class SomChangeCourierUseCase @Inject constructor(private val useCase: GraphqlUs
         useCase.setTypeClass(SomChangeCourier.Data::class.java)
     }
 
-    suspend fun execute(orderId: String, shippingRef: String, agencyId: String, spId: String): SomChangeCourier.Data {
-        useCase.setGraphqlQuery(SomChangeCourierQuery)
+    suspend fun execute(orderId: String, shippingRef: String, agencyId: Long, spId: Long): SomChangeCourier.Data {
         useCase.setRequestParams(SomChangeCourierQuery.createParamChangeCourier(orderId, shippingRef, agencyId, spId))
+        useCase.setGraphqlQuery(SomChangeCourierQuery)
         return  useCase.executeOnBackground()
     }
 }

@@ -15,8 +15,8 @@ class SomGetConfirmShippingResultUseCase @Inject constructor(private val useCase
     }
 
     suspend fun execute(orderId: String, shippingRef: String): SomConfirmShipping.Data.MpLogisticConfirmShipping {
-        useCase.setGraphqlQuery(SomGetConfirmShippingQuery)
         useCase.setRequestParams(SomGetConfirmShippingQuery.createParamGetConfirmShipping(orderId, shippingRef))
+        useCase.setGraphqlQuery(SomGetConfirmShippingQuery)
         return useCase.executeOnBackground().mpLogisticConfirmShipping
     }
 }

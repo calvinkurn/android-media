@@ -8,7 +8,10 @@ object SomGetConfirmShippingQuery: GqlQueryInterface {
     private const val OPERATION_NAME = "mpLogisticConfirmShipping"
     private val GET_CONFIRM_SHIPPING_QUERY = """
             mutation ${OPERATION_NAME}(${'$'}orderId: String!, ${'$'}shippingRef: String!){
-                ${OPERATION_NAME}(input: {order_id: ${'$'}orderId, shipping_ref: ${'$'}shippingRef, is_active_saldo_prioritas:false}) {
+                ${OPERATION_NAME}(input: {
+                                  order_id: ${'$'}orderId,
+                                  shipping_ref: ${'$'}shippingRef,
+                                  is_active_saldo_prioritas:false}) {
                     message
                 }
             }

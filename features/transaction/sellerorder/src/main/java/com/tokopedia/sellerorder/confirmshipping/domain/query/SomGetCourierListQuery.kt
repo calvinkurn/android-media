@@ -6,7 +6,7 @@ object SomGetCourierListQuery: GqlQueryInterface {
 
     private const val OPERATION_NAME = "mpLogisticGetEditShippingForm"
     private val GET_COURIER_LIST_QUERY = """
-            {
+            query ${OPERATION_NAME}{
               ${OPERATION_NAME}{
                 data{
                   shipment{

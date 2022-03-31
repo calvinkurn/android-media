@@ -53,7 +53,7 @@ class SomConfirmShippingViewModel @Inject constructor(dispatcher: CoroutineDispa
         })
     }
 
-    fun changeCourier(orderId: String, shippingRef: String, agencyId: String, spId: String) {
+    fun changeCourier(orderId: String, shippingRef: String, agencyId: Long, spId: Long) {
         launchCatchError(block = {
             _changeCourierResult.postValue(Success(somChangeCourierUseCase.execute(orderId, shippingRef, agencyId, spId)))
         }, onError = {
