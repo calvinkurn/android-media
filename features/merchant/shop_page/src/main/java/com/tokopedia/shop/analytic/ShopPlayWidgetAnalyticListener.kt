@@ -418,7 +418,7 @@ class ShopPlayWidgetAnalyticListener(
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
-        BaseTrackerBuilder().constructBasicPromotionClick(
+        val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
             event = PROMO_CLICK,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = CLICK,
@@ -436,7 +436,9 @@ class ShopPlayWidgetAnalyticListener(
             .appendBusinessUnit("play")
             .appendCurrentSite(currentSite)
             .appendShopId(shopId)
-            .build()    }
+            .build()
+        if (tracker is HashMap<String, Any>) trackingQueue.putEETracking(tracker)
+    }
 
     override fun onLabelPromoImpressed(
         view: PlayWidgetMediumView,
@@ -445,7 +447,7 @@ class ShopPlayWidgetAnalyticListener(
         businessWidgetPosition: Int,
         isAutoPlay: Boolean
     ) {
-        BaseTrackerBuilder().constructBasicPromotionView(
+        val tracker = BaseTrackerBuilder().constructBasicPromotionView(
             event = PROMO_VIEW,
             eventCategory = SHOP_PAGE_SELLER,
             eventAction = "impression on play sgc channel",
@@ -464,6 +466,7 @@ class ShopPlayWidgetAnalyticListener(
             .appendCurrentSite(currentSite)
             .appendShopId(shopId)
             .build()
+        if (tracker is HashMap<String, Any>) trackingQueue.putEETracking(tracker)
     }
 
     private fun getChannelStatusValue(channelType: PlayWidgetChannelType): String {
