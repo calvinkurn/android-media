@@ -15,7 +15,6 @@ import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_C
 import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.inApp.CMInAppManager
@@ -148,7 +147,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
     private fun gotoLinkAccountReminder(mActivity: Activity?) {
         if(whiteListedPageAccountLinkReminder.contains(mActivity?.javaClass?.simpleName)) {
-            val intent = RouteManager.getIntent(mActivity, ApplinkConstInternalGlobal.LINK_ACC_REMINDER)
+            val intent = RouteManager.getIntent(mActivity, ApplinkConstInternalUserPlatform.LINK_ACC_REMINDER)
             mActivity?.startActivity(intent)
         }
     }

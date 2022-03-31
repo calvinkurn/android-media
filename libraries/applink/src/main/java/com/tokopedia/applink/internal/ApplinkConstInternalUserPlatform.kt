@@ -62,4 +62,9 @@ object ApplinkConstInternalUserPlatform {
     // TwoFactorActivity
     // tokopedia-android-internal://user/two-factor-register
     const val TWO_FACTOR_REGISTER = "${NEW_INTERNAL_USER}/two-factor-register"
+
+    // LinkAccountReminderActivity
+    // tokopedia-android-internal://user/link-acc-reminder
+    const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
+
 }
