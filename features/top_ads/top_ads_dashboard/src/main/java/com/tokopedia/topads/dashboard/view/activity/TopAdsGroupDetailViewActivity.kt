@@ -156,8 +156,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         return R.layout.topads_dash_fragment_group_detail_view_layout
     }
 
-    @Inject
-    lateinit var trackerImpl: TopAdsGroupDetailTrackerImpl
+    @set: Inject
+    var trackerImpl: TopAdsGroupDetailTrackerImpl ?= null
 
     override fun loadChildStatisticsData() {
         loadData()
