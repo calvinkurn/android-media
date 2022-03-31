@@ -180,7 +180,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         context?.let {
             trackingQueue = TrackingQueue(it)
             recommendationLifeCycleAware = RecommendationLifeCycleAware(
-                topAdsAnalytic, trackingQueue, rvAdapter, this, it
+                topAdsAnalytic, trackingQueue, rvAdapter, viewModel, this, it
             )
         }
         rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
@@ -688,12 +688,12 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         context?.let {
             viewModel.addWishListNormal(product.productId,
                     object : WishlistV2ActionListener {
-                        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                            showErrorMessage(errorMessage ?: "")
+                        override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                            showErrorMessage(ErrorHandler.getErrorMessage(context, throwable))
                             rvAdapter?.updateFailedAddToWishlist(notification, product, position)
                         }
 
-                        override fun onSuccessAddWishlist(productId: String?) {
+                        override fun onSuccessAddWishlist(productId: String) {
                             val msg = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
                             val ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
                             view?.let {
@@ -702,9 +702,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                             }
                         }
 
-                        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-                        override fun onSuccessRemoveWishlist(productId: String?) {}
-                    }, it)
+                        override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+                        override fun onSuccessRemoveWishlist(productId: String) {}
+                    })
         }
     }
 

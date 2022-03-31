@@ -163,7 +163,7 @@ class RecommendationLifeCycleAware constructor(
             callback: (Boolean, Throwable?) -> Unit
     ) {
         if (isAddWishlist) {
-            viewModel?.addWishlist(item, callback)
+            context?.let { viewModel?.addWishlist(item, callback, it) }
         } else {
             viewModel?.removeWishList(item, callback)
         }
