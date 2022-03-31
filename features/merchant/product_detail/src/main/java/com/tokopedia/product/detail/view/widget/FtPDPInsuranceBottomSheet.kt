@@ -8,16 +8,27 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.utils.URLGenerator.generateURLSessionLogin
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.di.DaggerProductDetailComponent
+import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.TkpdWebView
+import javax.inject.Inject
 
-class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
+class FtPDPInsuranceBottomSheet : BottomSheetUnify(), HasComponent<ProductDetailComponent> {
+
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     init {
         setShowListener {
@@ -40,6 +51,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         super.onCreate(savedInstanceState)
         arguments?.let {
             if (it.containsKey(KEY_SPONSOR_URL)) {
@@ -69,7 +81,11 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
                 domStorageEnabled = true
                 javaScriptEnabled = true
             }
-            loadUrl(url)
+            if(userSession.isLoggedIn)
+                loadUrl(generateURLSessionLogin(url,userSession.deviceId,userSession.userId))
+            else
+                loadUrl(url)
+
         }
     }
 
@@ -118,6 +134,15 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
             }
             pdpInsuranceBottomSheet.show(childFragmentManager, TAG)
         }
+    }
+
+    override fun getComponent(): ProductDetailComponent {
+        return DaggerProductDetailComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+    }
+    private fun initInjector() {
+        component.inject(this)
     }
 
 }
