@@ -9,20 +9,23 @@ import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
-import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
-import com.tokopedia.recharge_component.model.denom.DenomData
-import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.MenuDetailModel
 
 class TagihanDataFactory {
 
     private val gson = Gson()
 
-    fun getFavoriteNumberData(): TopupBillsPersoFavNumberData {
-        return gson.fromJson(
+    fun getFavoriteNumberData(withPrefill: Boolean): PersoFavNumberGroup {
+        val responses = gson.fromJson(
             gson.JsonToString(GET_FAVORITE_NUMBER),
-            TopupBillsPersoFavNumberData::class.java
+            Array<TopupBillsPersoFavNumberData>::class.java
+        ).toList()
+        return PersoFavNumberGroup(
+            favoriteNumberChips = responses[0],
+            favoriteNumberList = responses[1],
+            favoriteNumberPrefill = if (withPrefill) responses[2] else TopupBillsPersoFavNumberData()
         )
     }
 

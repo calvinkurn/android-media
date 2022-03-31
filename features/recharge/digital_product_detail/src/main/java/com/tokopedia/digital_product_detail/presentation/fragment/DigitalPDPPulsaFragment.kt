@@ -51,6 +51,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.R
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpPulsaBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
@@ -272,7 +273,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
+        viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
                 is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
@@ -285,6 +286,13 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+            }
+        })
+
+
+        viewModel.prefillData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
             }
         })
 
@@ -412,48 +420,30 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.getPrefixOperator(menuId)
     }
 
-    private fun getFavoriteNumber() {
+    private fun getFavoriteNumbers(favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModel.setFavoriteNumberLoading()
-        viewModel.getFavoriteNumber(
+        viewModel.getFavoriteNumbers(
             listOf(
                 TelcoCategoryType.CATEGORY_PULSA,
                 TelcoCategoryType.CATEGORY_PAKET_DATA,
                 TelcoCategoryType.CATEGORY_ROAMING
-            )
-        )
-    }
-
-    private fun getAutoComplete() {
-        viewModel.setAutoCompleteLoading()
-        viewModel.getAutoComplete(
-            listOf(
-                TelcoCategoryType.CATEGORY_PULSA,
-                TelcoCategoryType.CATEGORY_PAKET_DATA,
-                TelcoCategoryType.CATEGORY_ROAMING
-            )
+            ),
+            favoriteNumberTypes
         )
     }
 
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        getAutoComplete()
-        getFavoriteNumber()
+        getFavoriteNumbers(
+            listOf(
+                FavoriteNumberType.PREFILL,
+                FavoriteNumberType.CHIP,
+                FavoriteNumberType.LIST
+            )
+        )
         initEmptyState(data.banners)
-        renderPrefill(data.userPerso)
         renderTicker(data.tickers)
-    }
-
-    private fun renderPrefill(data: TopupBillsUserPerso) {
-        inputNumberActionType = InputNumberActionType.NOTHING
-        binding?.rechargePdpPulsaClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
-            } else {
-                setContactName(data.clientName)
-                setInputNumber(data.prefill, true)
-            }
-        }
     }
 
     private fun onFailedRecommendation() {
@@ -475,6 +465,24 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
                 setAutoCompleteList(autoComplete)
+            }
+        }
+    }
+
+    private fun onSuccessGetPrefill(prefills: List<TopupBillsPersoFavNumberItem>) {
+        inputNumberActionType = InputNumberActionType.NOTHING
+        binding?.rechargePdpPulsaClientNumberWidget?.run {
+            if (clientNumber.isNotEmpty()) {
+                setInputNumber(clientNumber, true)
+            } else {
+                if (prefills.isNotEmpty()) {
+                    if (prefills[0].subtitle.isNotEmpty()) {
+                        setContactName(prefills[0].title)
+                        setInputNumber(prefills[0].subtitle, true)
+                    } else {
+                        setInputNumber(prefills[0].title, true)
+                    }
+                }
             }
         }
     }
@@ -1252,8 +1260,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
-                getAutoComplete()
-                getFavoriteNumber()
+                getFavoriteNumbers(
+                    listOf(
+                        FavoriteNumberType.CHIP,
+                        FavoriteNumberType.LIST
+                    )
+                )
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {
