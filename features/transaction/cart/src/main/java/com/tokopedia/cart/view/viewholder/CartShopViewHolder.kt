@@ -149,7 +149,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         val cartItemDataList = cartShopHolderData.productUiModelList.distinctBy {
             if (it.isBundlingItem) it.bundleGroupId else it.productId
         }
-        val maxIndex = min(10, cartItemDataList.size)
+        val maxIndex = min(COLLAPSED_PRODUCTS_LIMIT, cartItemDataList.size)
         val cartCartCollapsedProductAdapter = CartCollapsedProductAdapter(actionListener)
         cartCartCollapsedProductAdapter.cartCollapsedProductHolderDataList = cartItemDataList.subList(0, maxIndex)
         val layoutManager = LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
