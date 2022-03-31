@@ -69,18 +69,6 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         } throws error
     }
 
-//    protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
-//        coEvery {
-//            repo.getFavoriteNumberList(any(), any())
-//        } returns response
-//    }
-//
-//    protected fun onGetAutoComplete_thenReturn(error: Throwable) {
-//        coEvery {
-//            repo.getFavoriteNumberList(any(), any())
-//        } throws error
-//    }
-
     protected fun onGetOperatorSelectGroup_thenReturn(response: DigitalCatalogOperatorSelectGroup) {
         coEvery {
             repo.getOperatorSelectGroup(any())

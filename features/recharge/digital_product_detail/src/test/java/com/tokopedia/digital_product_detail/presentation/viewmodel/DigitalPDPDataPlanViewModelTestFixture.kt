@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult

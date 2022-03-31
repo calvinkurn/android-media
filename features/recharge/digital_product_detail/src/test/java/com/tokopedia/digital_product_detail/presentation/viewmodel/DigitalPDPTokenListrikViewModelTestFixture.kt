@@ -2,7 +2,6 @@ package com.tokopedia.digital_product_detail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
@@ -82,18 +81,6 @@ abstract class DigitalPDPTokenListrikViewModelTestFixture {
             repo.getFavoriteNumbers(any(), any(), any())
         } throws error
     }
-
-//    protected fun onGetAutoComplete_thenReturn(response: TopupBillsPersoFavNumberData) {
-//        coEvery {
-//            repo.getFavoriteNumberList(any(), any())
-//        } returns response
-//    }
-//
-//    protected fun onGetAutoComplete_thenReturn(error: Throwable) {
-//        coEvery {
-//            repo.getFavoriteNumberList(any(), any())
-//        } throws error
-//    }
 
     protected fun onGetCatalogInputMultitab_thenReturn(response: DenomWidgetModel) {
         coEvery {

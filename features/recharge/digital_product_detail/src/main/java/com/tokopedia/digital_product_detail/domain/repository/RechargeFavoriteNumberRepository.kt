@@ -9,16 +9,4 @@ interface RechargeFavoriteNumberRepository {
         categoryIds: List<Int>,
         operatorIds: List<Int> = emptyList(),
     ): PersoFavNumberGroup
-
-//    suspend fun getFavoriteNumberAll(
-//        favoriteNumberTypes: List<RechargeFavoriteNumberRepositoryImpl.FavoriteNumberType>,
-//        categoryIds: List<Int>,
-//        operatorIds: List<Int> = emptyList(),
-//    ): PersoFavNumberGroup
-//
-//    suspend fun getFavoriteNumberChipsList(
-//        favoriteNumberTypes: List<RechargeFavoriteNumberRepositoryImpl.FavoriteNumberType>,
-//        categoryIds: List<Int>,
-//        operatorIds: List<Int> = emptyList()
-//    ): PersoFavNumberGroup
 }
