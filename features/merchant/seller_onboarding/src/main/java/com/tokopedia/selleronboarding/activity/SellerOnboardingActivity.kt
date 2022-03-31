@@ -1,7 +1,6 @@
 package com.tokopedia.selleronboarding.activity
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -65,11 +63,6 @@ class SellerOnboardingActivity : BaseActivity() {
         )
     }
     private var binding: ActivitySobOnboardingBinding? = null
-
-    override fun attachBaseContext (newBase: Context?) {
-        super.attachBaseContext (newBase)
-        SplitCompat.install (this)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
