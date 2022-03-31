@@ -92,6 +92,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/recharge_pdp_token_listrik_ticker"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.recharge_component.widget.RechargeBuyWidget

@@ -507,6 +507,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
         binding?.rechargePdpPulsaClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onFailedGetPrefixOperator(throwable: Throwable) {

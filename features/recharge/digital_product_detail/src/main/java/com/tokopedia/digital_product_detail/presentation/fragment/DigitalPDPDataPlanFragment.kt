@@ -1077,7 +1077,7 @@ class DigitalPDPDataPlanFragment :
                 override fun onGlobalLayout() {
                     binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     binding?.run {
-                        var dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
+                        val dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
                             resources.displayMetrics) + extraPadding
                         rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
                     }

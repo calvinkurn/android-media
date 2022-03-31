@@ -154,8 +154,8 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
         getDataFromBundle()
         setupKeyboardWatcher()
-        initClientNumberWidget()
         setupDynamicScrollViewPadding()
+        initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
     }
