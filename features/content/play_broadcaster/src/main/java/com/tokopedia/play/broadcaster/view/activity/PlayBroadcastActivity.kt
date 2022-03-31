@@ -44,7 +44,6 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.loading.LoadingDialogFragment
-import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -114,7 +113,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private var surfaceHolder: SurfaceHolder? = null
     private var mHandler: Handler? = null
-    private val playBroadcaster = broadcasterFactory.create(
+    private val broadcaster = broadcasterFactory.create(
         activityContext = this,
         handler = mHandler,
         callback = this
@@ -167,7 +166,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onDestroy() {
         super.onDestroy()
-        playBroadcaster.destroy()
+        broadcaster.destroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -249,7 +248,7 @@ class PlayBroadcastActivity : BaseActivity(),
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-                playBroadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
+                broadcaster.updateSurfaceSize(Broadcaster.Size(width, height))
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -270,7 +269,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     private suspend fun observeBroadcastInitState() {
-        playBroadcaster.getBroadcastInitState().collectLatest {
+        broadcaster.getBroadcastInitState().collectLatest {
             when(it) {
                 is BroadcastInitState.Error -> showDialogWhenUnSupportedDevices()
                 else -> {}
@@ -610,11 +609,11 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun createStreamer() {
         val holder = surfaceHolder ?: return
         val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-        playBroadcaster.create(holder, surfaceSize)
+        broadcaster.create(holder, surfaceSize)
     }
 
     private fun releaseStreamer() {
-        playBroadcaster.release()
+        broadcaster.release()
     }
 
     /*
@@ -630,7 +629,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun getBroadcaster(): PlayBroadcaster {
-        return playBroadcaster
+        return broadcaster
     }
 
     companion object {

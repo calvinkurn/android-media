@@ -75,7 +75,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger,
-    private val broadcastTimer: PlayBroadcastTimer
+    private val broadcastTimer: PlayBroadcastTimer,
 ) : ViewModel() {
 
     @AssistedFactory
@@ -221,9 +221,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _uiEvent
 
     val timerState = broadcastTimer.state
-
-    val isPastPauseDuration: Boolean
-        get() = broadcastTimer.isPastPauseDuration
 
     private val ingestUrl: String
         get() = hydraConfigStore.getIngestUrl()
