@@ -4,24 +4,8 @@
   "query": [
     {
       "event": "viewFintechIris",
-      "eventAction": "sim bnpl - impression status buyers",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "clickFintech",
-      "eventAction": "sim bnpl - tenure option click",
-      "eventCategory": "fin - info page",
-      "eventLabel": ".*",
-      "sessionIris": ".*",
-      "userId": ".*"
-    },
-    {
-      "event": "viewFintechIris",
-      "eventAction": "open simulation bottom sheet - impression",
-      "eventCategory": "fin - info page",
+      "eventAction": "pre occ page - impression activated buyer",
+      "eventCategory": "fin - optimize occ page",
       "eventLabel": ".*",
       "sessionIris": ".*",
       "userId": ".*"
