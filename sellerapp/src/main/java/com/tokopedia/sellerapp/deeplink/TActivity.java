@@ -44,7 +44,7 @@ public abstract class TActivity extends BaseActivity {
         setTheme(R.style.Theme_Tokopedia3);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
+            getWindow().setStatusBarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G600));
         }
 
         setContentView(getContentId());
@@ -118,7 +118,7 @@ public abstract class TActivity extends BaseActivity {
     protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(R.color.white);
+            toolbar.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0);
         } else {
             toolbar.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
         }
