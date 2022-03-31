@@ -9,10 +9,10 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtils
 
 /**
  * Created by stevenfredian on 7/3/17.
@@ -31,8 +31,8 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
 
     private fun initView(view: View) {
         txtDone = view.findViewById(R.id.txt_done)
-        val img = view.findViewById<ImageView>(R.id.rg_gender)
-        ImageUtils.loadImageWithoutPlaceholderAndError(img, MAIN_IMG)
+        val imgGender = view.findViewById<ImageView>(R.id.rg_gender)
+        imgGender?.loadImage(MAIN_IMG)
     }
 
     private fun setViewListener() {

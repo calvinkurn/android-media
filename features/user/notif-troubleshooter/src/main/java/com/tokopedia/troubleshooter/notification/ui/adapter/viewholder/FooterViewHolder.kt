@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.troubleshooter.notification.R
 import com.tokopedia.troubleshooter.notification.databinding.ItemFooterMessageBinding
 import com.tokopedia.troubleshooter.notification.ui.listener.FooterListener
@@ -14,7 +15,6 @@ import com.tokopedia.troubleshooter.notification.ui.uiview.FooterUIView
 import com.tokopedia.troubleshooter.notification.util.gotoDeviceSettings
 import com.tokopedia.troubleshooter.notification.util.setCustomSpan
 import com.tokopedia.unifyprinciples.R.color.Unify_G500
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.view.binding.viewBinding
 
 class FooterViewHolder(
@@ -32,10 +32,7 @@ class FooterViewHolder(
 
         binding?.btnAction?.setOnClickListener { onActionClicked(element.isDndMode) }
         binding?.txtTitle?.setOnClickListener { listener.onInfoClicked() }
-
-        binding?.imgStatus?.run {
-            ImageUtils.loadImageWithoutPlaceholderAndError(this, FOOTER_IMG)
-        }
+        binding?.imgStatus?.loadImage(FOOTER_IMG)
 
         binding?.txtTitle?.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 EMPTY_DRAWABLE,
