@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.custom.game
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
@@ -74,14 +75,15 @@ class QuizFormView : ConstraintLayout {
     fun setFormState(quizFormState: QuizFormStateUiModel) {
         when(quizFormState) {
             QuizFormStateUiModel.Preparation -> {
+                binding.groupActionBar.visibility = View.VISIBLE
                 binding.viewGameHeader.apply {
                     isEditable = true
                     focus()
                 }
             }
             QuizFormStateUiModel.SetDuration -> {
+                binding.groupActionBar.visibility = View.GONE
                 binding.viewGameHeader.isEditable = false
-                /** TODO: hide actionbar */
 
                 /** TODO: show bottomsheet */
             }

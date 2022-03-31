@@ -5,6 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N700_68">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_action_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ic_close_quiz_form, tv_bro_quiz_form_title, tv_bro_quiz_form_next"
+        />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_close_quiz_form"
         android:layout_width="@dimen/layout_lvl3"
@@ -19,6 +26,7 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bro_quiz_form_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_dp_12"
