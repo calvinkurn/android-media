@@ -56,6 +56,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import kotlinx.android.synthetic.main.find_nav_fragment.*
 import kotlinx.android.synthetic.main.layout_find_related.*
 import java.util.*
@@ -617,8 +618,20 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     private fun addWishList(productId: String, userId: String) {
         addWishListActionUseCase.setParams(productId, userId)
         addWishListActionUseCase.execute(
-                onSuccess = {
-                    onSuccessAddWishlist(productId)},
+                onSuccess = { result ->
+                    when (result) {
+                        is Success -> {
+                            if (result.data.toasterColor == TOASTER_RED) {
+                                onErrorAddWishList(result.data.message, productId)
+                            } else {
+                                onSuccessAddWishlist(productId)
+                            }
+                        }
+                        is Fail -> {
+                            val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                            onErrorAddWishList(errorMessage, productId)
+                        }
+                    } },
                 onError = {
                     onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
                 })
