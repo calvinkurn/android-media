@@ -150,7 +150,7 @@ open class PickerActivity : BaseActivity()
             }
 
             // exit Picker
-            data.getStringArrayListExtra(RESULT_PICKER)?.let {
+            data.getParcelableExtra<PickerResult>(RESULT_PICKER)?.let {
                 onFinishIntent(it)
             }
 
@@ -282,9 +282,9 @@ open class PickerActivity : BaseActivity()
         }
     }
 
-    private fun onFinishIntent(path: ArrayList<String>) {
+    private fun onFinishIntent(data: PickerResult) {
         val intent = Intent()
-        intent.putExtra(RESULT_PICKER, path)
+        intent.putExtra(RESULT_PICKER, data)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
