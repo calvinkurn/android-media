@@ -2,7 +2,6 @@ package com.tokopedia.media.picker.ui.fragment.camera
 
 import android.content.Context
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.view.GestureDetector
@@ -14,12 +13,19 @@ import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.VideoResult
+import com.otaliastudios.cameraview.controls.Flash
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentCameraBinding
+import com.tokopedia.media.picker.analytics.CAMERA_BACK_STRING
+import com.tokopedia.media.picker.analytics.CAMERA_FRONT_STRING
+import com.tokopedia.media.picker.analytics.FLASH_AUTO_STRING
+import com.tokopedia.media.picker.analytics.FLASH_OFF_STRING
+import com.tokopedia.media.picker.analytics.FLASH_ON_STRING
+import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
@@ -46,6 +52,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var cameraAnalytics: CameraAnalyticsImpl
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -71,6 +78,9 @@ open class CameraFragment : BaseDaggerFragment()
 
     private var isTakingPictureMode = true
     private var isInitFlashState = false
+    private val pageSource by lazy {
+        param.get().pageSourceName()
+    }
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -125,6 +135,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onCameraThumbnailClicked() {
         listener?.onCameraThumbnailClicked()
+        cameraAnalytics.clickThumbnail(pageSource)
     }
 
     override fun onDestroyView() {
@@ -146,11 +157,22 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onFlashClicked() {
         cameraView.setCameraFlashIndex()
         setCameraFlashState()
+
+        val flashStateString = when(cameraView.cameraFlash()){
+            Flash.AUTO -> FLASH_AUTO_STRING
+            Flash.ON -> FLASH_ON_STRING
+            else -> FLASH_OFF_STRING
+        }
+        cameraAnalytics.clickFlash(pageSource, flashStateString)
     }
 
     override fun onFlipClicked() {
         if (cameraView.isTakingPicture() || cameraView.isTakingVideo()) return
         cameraView.toggleFacing()
+
+        val cameraStateString =
+            if (cameraView.isFacingCameraIsFront()) CAMERA_FRONT_STRING else CAMERA_BACK_STRING
+        cameraAnalytics.clickFlip(pageSource, cameraStateString)
     }
 
     override fun onTakeMediaClicked() {
@@ -162,10 +184,12 @@ open class CameraFragment : BaseDaggerFragment()
         showShutterEffect {
             if (isTakingPictureMode) {
                 cameraView.onStartTakePicture()
+                cameraAnalytics.clickShutter(pageSource)
             } else {
                 cameraView.enableFlashTorch()
                 cameraView.onStartTakeVideo()
                 controller.onVideoDurationChanged()
+                cameraAnalytics.clickRecord(pageSource)
             }
         }
     }

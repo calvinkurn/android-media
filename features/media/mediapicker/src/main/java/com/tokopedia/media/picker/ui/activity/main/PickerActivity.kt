@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
@@ -91,6 +92,7 @@ open class PickerActivity : BaseActivity()
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var cameraAnalytics: CameraAnalyticsImpl
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -124,6 +126,10 @@ open class PickerActivity : BaseActivity()
             parent = it,
             listener = this
         )
+    }
+
+    private val pageSource by lazy {
+        param.get().pageSourceName()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -318,16 +324,17 @@ open class PickerActivity : BaseActivity()
         onContinueClicked()
     }
 
-    override fun onCameraTabSelected() {
+    override fun onCameraTabSelected(isDirectClick: Boolean) {
         container.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         container.resetBottomNavMargin()
     }
 
-    override fun onGalleryTabSelected() {
+    override fun onGalleryTabSelected(isDirectClick: Boolean) {
         container.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
         container.addBottomNavMargin()
+        if(isDirectClick) cameraAnalytics.clickGalleryTab(pageSource)
     }
 
     override fun tabVisibility(isShown: Boolean) {
@@ -399,6 +406,7 @@ open class PickerActivity : BaseActivity()
             R.string.picker_capture_limit_photo,
             param.get().maxMediaTotal()
         )
+        cameraAnalytics.maxPhotoLimit(pageSource)
     }
 
     override fun onShowVideoLimitReachedCameraToast() {
@@ -406,6 +414,7 @@ open class PickerActivity : BaseActivity()
             R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
+        cameraAnalytics.maxVideoLimit(pageSource)
     }
 
     override fun onShowVideoMinDurationToast() {

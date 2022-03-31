@@ -17,29 +17,75 @@ class CameraAnalyticsImpl @Inject constructor(
     private val shopId: String
         get() = userSession.shopId?: ""
 
-    override fun visitCameraPage(
-        entryPoint: String,
-        pagePath: String,
-        pageType: String
-    ) {
-        sendGeneralEvent(
-            event = EVENT_CLICK_COMMUNICATION,
-            eventAction = ACTION_VISIT_CAMERA,
-            eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
-            additionalEvent = mapOf(
-                KEY_PAGE_PATH to "",
-                KEY_PAGE_TYPE to ""
-            )
-        )
-    }
-
     override fun clickRecord(entryPoint: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_RECORD,
             eventCategory = CATEGORY_MEDIA_CAMERA,
             eventLabel = "$entryPoint - $userId - $shopId"
+        )
+    }
+
+    override fun clickShutter(entryPoint: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_SHUTTER,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$entryPoint - $userId - $shopId",
+        )
+    }
+
+    override fun clickFlash(entryPoint: String, flashState: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_FLASH,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$flashState - $entryPoint - $userId - $shopId",
+        )
+    }
+
+    override fun clickFlip(entryPoint: String, cameraState: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_FLIP,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$cameraState - $entryPoint - $userId - $shopId",
+        )
+    }
+
+    override fun clickThumbnail(entryPoint: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_THUMBNAIL,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$entryPoint - $userId - $shopId",
+        )
+    }
+
+    override fun clickGalleryTab(entryPoint: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_TAB_GALLERY,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$entryPoint - $userId - $shopId",
+        )
+    }
+
+    override fun maxPhotoLimit(entryPoint: String) {
+        sendGeneralEvent(
+            event = EVENT_VIEW_COMMUNICATION,
+            eventAction = ACTION_MAX_PHOTO,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$entryPoint - $userId - $shopId",
+        )
+    }
+
+    override fun maxVideoLimit(entryPoint: String) {
+        sendGeneralEvent(
+            event = EVENT_VIEW_COMMUNICATION,
+            eventAction = ACTION_MAX_VIDEO,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$entryPoint - $userId - $shopId",
         )
     }
 
