@@ -10,10 +10,7 @@ import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.toDpInt
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -50,7 +47,7 @@ class CarouselMerchantVoucherViewHolder (
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )
         }
-        binding?.shopName?.text = element.shopName
+        binding?.shopName?.text = element.shopName.parseAsHtml()
         binding?.titleBenefit?.text = element.benefit
         binding?.benefitPrice?.text = element.benefitPrice
         binding?.totalOtherCoupon?.text = element.totalOtherCoupon

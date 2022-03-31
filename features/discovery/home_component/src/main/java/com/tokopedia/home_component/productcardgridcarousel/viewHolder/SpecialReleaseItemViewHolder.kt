@@ -8,10 +8,7 @@ import com.tokopedia.home_component.databinding.HomeComponentSpecialReleaseItemB
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSpecialReleaseDataModel.Companion.CAROUEL_ITEM_SPECIAL_RELEASE_TIMER_BIND
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -45,7 +42,7 @@ class SpecialReleaseItemViewHolder(
             }
 
             if (element.grid.shop.shopName.isNotEmpty()) {
-                binding?.specialReleaseShopName?.text = element.grid.shop.shopName
+                binding?.specialReleaseShopName?.text = element.grid.shop.shopName.parseAsHtml()
                 binding?.specialReleaseShopName?.visible()
             } else {
                 binding?.specialReleaseShopName?.gone()
