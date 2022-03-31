@@ -78,7 +78,7 @@ class ChooseAddressWidget : ConstraintLayout,
         getComponent().inject(this)
     }
 
-    private fun initObservers() {
+    private fun initChosenAddressObserver() {
         val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
         if (fragment != null) {
             viewModel.getChosenAddress.observe(fragment.viewLifecycleOwner, {
@@ -143,18 +143,24 @@ class ChooseAddressWidget : ConstraintLayout,
                 }
                 viewModel.isFirstLoad = false
             })
+        }
+    }
+
+    private fun initRefreshTokonowObserver() {
+        val fragment = chooseAddressWidgetListener?.getLocalizingAddressHostFragment()
+        if (fragment != null) {
             viewModel.tokonowData.observe(fragment.viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
                         val data = it.data
                         val shouldRefresh = ChooseAddressUtils.refreshTokonowData(
-                                context = context,
-                                warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
-                                warehouseId = data.warehouseId,
-                                serviceType = data.serviceType,
-                                lastUpdate = data.lastUpdate,
-                                shopId = data.shopId
-                            )
+                            context = context,
+                            warehouses = TokonowWarehouseMapper.mapWarehouseItemToLocal(data.warehouses),
+                            warehouseId = data.warehouseId,
+                            serviceType = data.serviceType,
+                            lastUpdate = data.lastUpdate,
+                            shopId = data.shopId
+                        )
                         // trigger home to refresh data
                         if (viewModel.isFirstLoad && shouldRefresh) {
                             chooseAddressWidgetListener?.onTokonowDataRefreshed()
@@ -203,11 +209,11 @@ class ChooseAddressWidget : ConstraintLayout,
         updateWidget()
         if (viewModel.isFirstLoad) {
             if (localData.address_id.isEmpty()) {
-                initObservers()
+                initChosenAddressObserver()
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
             } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive()) {
-                initObservers()
+                initRefreshTokonowObserver()
                 viewModel.getTokonowData(localData)
             } else {
                 viewModel.isFirstLoad = false
