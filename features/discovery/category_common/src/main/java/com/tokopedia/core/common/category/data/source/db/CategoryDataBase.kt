@@ -6,11 +6,11 @@ import androidx.room.PrimaryKey
 @Entity(tableName = DBMetaData.DB_TABLE)
 data class CategoryDataBase(
         @PrimaryKey(autoGenerate = true) var id: Long?,
-        var name: String,
-        var identifier: String,
-        var weight: Int,
+        var name: String="",
+        var identifier: String="",
+        var weight: Int=0,
         var parentId: Long?,
-        var hasChild: Boolean
+        var hasChild: Boolean=false
         ){
 
     constructor(): this(null, "", "", 0, null, false)
