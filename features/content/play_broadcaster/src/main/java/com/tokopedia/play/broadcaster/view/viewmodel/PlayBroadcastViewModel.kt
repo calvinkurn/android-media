@@ -630,7 +630,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun updateCurrentInteractiveStatus() {
         viewModelScope.launch {
             val interactiveConfig = _gameConfig.value
-            if (interactiveConfig.isNoGameActive()) handleActiveInteractive()
+            if (!interactiveConfig.isNoGameActive()) handleActiveInteractive()
         }
     }
 
