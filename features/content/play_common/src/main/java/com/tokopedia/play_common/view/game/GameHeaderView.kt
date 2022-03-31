@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGameHeaderBinding
 import com.tokopedia.play_common.util.extension.doOnLayout
@@ -37,6 +38,14 @@ class GameHeaderView : ConstraintLayout {
         true
     )
 
+    private var onTextChanged: ((String) -> Unit)? = null
+
+    init {
+        binding.etPlayGameHeaderTitle.afterTextChanged {
+            onTextChanged?.invoke(it)
+        }
+    }
+
     var isEditable: Boolean = true
         set(value) {
             field = value
@@ -47,7 +56,11 @@ class GameHeaderView : ConstraintLayout {
     var title: String = ""
         set(value) {
             field = value
-            binding.etPlayGameHeaderTitle.setText(value)
+
+            if(binding.etPlayGameHeaderTitle.text.toString() == field) {
+                binding.etPlayGameHeaderTitle.setText(value)
+                binding.etPlayGameHeaderTitle.setSelection(value.length)
+            }
         }
 
     var maxLength: Int = 0
@@ -70,6 +83,10 @@ class GameHeaderView : ConstraintLayout {
             binding.etPlayGameHeaderTitle.requestFocus()
             binding.etPlayGameHeaderTitle.showKeyboard()
         }
+    }
+
+    fun setOnTextChangedListener(listener: (String) -> Unit) {
+        onTextChanged = listener
     }
 
     private fun setIcon() {

@@ -41,6 +41,8 @@ class QuizFormView : ConstraintLayout {
 
     private var mCloseListener: (() -> Unit)? = null
     private var mNextListener: (() -> Unit)? = null
+    private var onTitleChangedListener: ((String) -> Unit)? = null
+    private var onGiftChangedListener: ((String) -> Unit)? = null
 
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
@@ -53,6 +55,10 @@ class QuizFormView : ConstraintLayout {
             mCloseListener?.invoke()
         }
 
+        binding.viewGameHeader.setOnTextChangedListener {
+            onTitleChangedListener?.invoke(it)
+        }
+
         setupInsets()
     }
 
@@ -61,6 +67,8 @@ class QuizFormView : ConstraintLayout {
         /** TODO: set options */
 
         /** TODO: set gift */
+
+        binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
@@ -86,6 +94,14 @@ class QuizFormView : ConstraintLayout {
 
     fun setOnNextListener(listener: () -> Unit) {
         mNextListener = listener
+    }
+
+    fun setOnTitleChangedListener(listener: (String) -> Unit) {
+        onTitleChangedListener = listener
+    }
+
+    fun setOnGiftChangedListener(listener: (String) -> Unit) {
+        onGiftChangedListener = listener
     }
 
     fun setQuizConfig(quizConfig: QuizConfigUiModel) {

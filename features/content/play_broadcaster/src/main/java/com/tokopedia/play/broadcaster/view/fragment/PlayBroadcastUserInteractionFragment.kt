@@ -293,6 +293,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             setOnNextListener {
                 parentViewModel.submitAction(PlayBroadcastAction.ClickNextOnQuiz)
             }
+            setOnTitleChangedListener {
+                parentViewModel.submitAction(PlayBroadcastAction.InputQuizTitle(it))
+            }
+            setOnGiftChangedListener {
+                parentViewModel.submitAction(PlayBroadcastAction.InputQuizGift(it))
+            }
         }
     }
 
@@ -811,20 +817,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         state: QuizFormUiState,
         gameConfig: GameConfigUiState,
     ) {
-        if(prevState == state) return
+        if(prevState?.quizFormState != state.quizFormState) {
+            quizForm.setFormState(state.quizFormState)
 
-        quizForm.setFormState(state.quizFormState)
-
-        when(state.quizFormState) {
-            QuizFormStateUiModel.Nothing -> showQuizForm(false)
-            QuizFormStateUiModel.Preparation -> {
-                quizForm.setQuizConfig(gameConfig.quizConfig)
-                showQuizForm(true)
-            }
-            QuizFormStateUiModel.SetDuration -> {
-                /** TODO: handle set duration */
+            when(state.quizFormState) {
+                QuizFormStateUiModel.Nothing -> showQuizForm(false)
+                QuizFormStateUiModel.Preparation -> {
+                    quizForm.setQuizConfig(gameConfig.quizConfig)
+                    showQuizForm(true)
+                }
+                QuizFormStateUiModel.SetDuration -> {
+                    /** TODO: handle set duration */
+                }
             }
         }
+
+        if(prevState?.quizFormData != state.quizFormData)
+            quizForm.setFormData(state.quizFormData)
     }
 
     private fun isPinnedFormVisible(): Boolean {
