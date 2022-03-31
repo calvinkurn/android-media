@@ -14,12 +14,8 @@ data class GameConfigUiModel(
 
         fun generateGameTypeList(): List<GameType> {
                 return mutableListOf<GameType>().apply {
-                        add(GameType.Taptap)
-                        add(GameType.Quiz)
-
-                        /** TODO: uncomment this later */
-//                        if(tapTapConfig.isActive) add(GameType.Taptap)
-//                        if(quizConfig.isActive) add(GameType.Quiz)
+                        if(tapTapConfig.isActive) add(GameType.Taptap)
+                        if(quizConfig.isActive) add(GameType.Quiz)
                 }
         }
 

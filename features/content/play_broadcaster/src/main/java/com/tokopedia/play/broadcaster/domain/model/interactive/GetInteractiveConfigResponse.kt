@@ -43,22 +43,23 @@ data class GetInteractiveConfigResponse(
     )
 
     data class QuizConfig(
+        /** TODO: change default value */
         @SerializedName("isActive")
-        val isActive: Boolean = false,
+        val isActive: Boolean = true,
 
         @SerializedName("maxTitleLength")
-        val maxTitleLength: Int = 0,
+        val maxTitleLength: Int = 40,
 
         @SerializedName("maxChoicesCount")
-        val maxChoicesCount: Int = 0,
+        val maxChoicesCount: Int = 3,
 
         @SerializedName("minChoicesCount")
-        val minChoicesCount: Int = 0,
+        val minChoicesCount: Int = 2,
 
         @SerializedName("maxRewardLength")
-        val maxRewardLength: Int = 0,
+        val maxRewardLength: Int = 30,
 
         @SerializedName("quizDurationsInSecond")
-        val quizDurationsInSecond: List<Int> = emptyList(),
+        val quizDurationsInSecond: List<Int> = listOf(60, 120, 180),
     )
 }
