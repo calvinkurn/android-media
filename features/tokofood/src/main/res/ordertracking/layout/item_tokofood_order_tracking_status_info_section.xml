@@ -16,7 +16,7 @@
         android:id="@+id/rvOrderStatusStepper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/item_order_tracking_stepper_status"
+        tools:listitem="@layout/item_tokofood_order_tracking_stepper_status"
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

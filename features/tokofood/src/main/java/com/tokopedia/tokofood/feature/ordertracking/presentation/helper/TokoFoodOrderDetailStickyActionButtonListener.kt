@@ -1,21 +1,9 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.helper
 
 
-class BuyerOrderDetailStickyActionButtonHandler(
+class TokoFoodOrderDetailStickyActionButtonListener(
 
 ) {
-
-    private fun trackRespondToSubmissionOrderExtensionClicked() {
-
-    }
-
-    private fun onRespondToSubmissionOrderExtensionClicked() {
-
-    }
-
-    private fun onAskSellerActionButtonClicked() {
-
-    }
 
     private fun onRequestCancelActionButtonClicked() {
 
@@ -41,17 +29,6 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     }
 
-    private fun onBuyAgainAllProductButtonClicked() {
-
-    }
-
-    private fun onGiveReviewActionButtonClicked(url: String) {
-
-    }
-
-    private fun trackBuyAgainProduct() {
-
-    }
 
     private fun trackClickActionButton(fromPrimaryButton: Boolean, buttonName: String) {
 

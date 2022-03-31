@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true">
 
     <View
         android:id="@+id/viewOrderTrackingStatusMask"
@@ -11,10 +12,10 @@
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/ic_order_tracking_status_mask" />
+        android:background="@drawable/ic_tokofood_order_tracking_status_mask" />
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/viewOrderTrackingStatusLine"
+        android:id="@+id/ivOrderTrackingStatusLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -22,6 +23,6 @@
         app:layout_constraintBottom_toBottomOf="@id/viewOrderTrackingStatusMask"
         app:layout_constraintStart_toEndOf="@id/viewOrderTrackingStatusMask"
         app:layout_constraintTop_toTopOf="@id/viewOrderTrackingStatusMask"
-        app:srcCompat="@drawable/ic_order_tracking_status_line" />
+        app:srcCompat="@drawable/ic_tokofood_order_tracking_status_line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

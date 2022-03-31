@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="wrap"
         app:typographyType="heading_5"
-        tools:text="Total Harga (2 Barang)" />
+        tools:text="Total Belanja" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderTrackingPaymentInfoValue"

@@ -28,7 +28,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
     }
 
     init {
-        View.inflate(context, R.layout.partial_order_detail_sticky_action_buttons, this).run {
+        View.inflate(context, R.layout.tokofood_partial_order_detail_sticky_action_buttons, this).run {
             btnOrderDetailPrimaryActions = findViewById(R.id.btnOrderDetailPrimaryActions)
             btnOrderDetailSecondaryActions = findViewById(R.id.btnOrderDetailSecondaryActions)
         }

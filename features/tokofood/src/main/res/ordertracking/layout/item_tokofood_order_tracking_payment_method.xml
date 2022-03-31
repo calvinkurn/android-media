@@ -11,7 +11,7 @@
     android:animateLayoutChanges="true">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvOrderTrackingPaymentInfoLabel"
+        android:id="@+id/tvOrderTrackingPaymentMethodLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
@@ -23,10 +23,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        tools:text="Total Harga (2 Barang)" />
+        tools:text="Metode Pembayaran" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvOrderTrackingInfoValue"
+        android:id="@+id/tvOrderTrackingPaymentMethodValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -37,9 +37,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@id/tvOrderTrackingPaymentInfoLabel"
+        app:layout_constraintTop_toTopOf="@id/tvOrderTrackingPaymentMethodLabel"
         app:typographyType="body_3"
-        tools:text="Rp5.000.000" />
+        tools:text="Gopay" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

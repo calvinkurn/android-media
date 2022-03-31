@@ -7,12 +7,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.tokofood.databinding.ItemOrderTrackingStatusInfoWidgetBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusUiModel
+import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingStatusInfoWidgetBinding
 
 class OrderTrackingStatusInfoWidget : ConstraintLayout {
 
-    private var binding: ItemOrderTrackingStatusInfoWidgetBinding? = null
+    private var binding: ItemTokofoodOrderTrackingStatusInfoWidgetBinding? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -23,7 +22,7 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
     )
 
     init {
-        binding = ItemOrderTrackingStatusInfoWidgetBinding.inflate(
+        binding = ItemTokofoodOrderTrackingStatusInfoWidgetBinding.inflate(
             LayoutInflater.from(context),
             this,
             true

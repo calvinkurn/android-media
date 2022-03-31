@@ -14,7 +14,7 @@
         android:id="@+id/orderDetailStatusIndicator"
         android:layout_width="4dp"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@drawable/ic_order_detail_status_indicator"
+        android:background="@drawable/ic_tokofood_order_detail_status_indicator"
         app:layout_constraintBottom_toBottomOf="@id/tvOrderDetailStatusOrder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
