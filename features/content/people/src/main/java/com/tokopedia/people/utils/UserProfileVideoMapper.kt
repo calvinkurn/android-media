@@ -55,7 +55,7 @@ object UserProfileVideoMapper {
                     appLink = item.appLink,
                     startTime = UserProfileDateTimeFormatter.formatDate(item.startTime),
                     totalView = PlayWidgetTotalView(item.stats.view.formatted,
-                        false),
+                        channelType != PlayWidgetChannelType.Upcoming),
                     promoType = PlayWidgetPromoType.getByType(
                         getPromoType(item.configurations.promoLabels).type,
                         getPromoType(item.configurations.promoLabels).text

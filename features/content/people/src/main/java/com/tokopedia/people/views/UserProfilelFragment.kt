@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -67,7 +66,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import kotlin.math.abs
 
 class UserProfileFragment : BaseDaggerFragment(),
     View.OnClickListener,
@@ -702,18 +700,18 @@ class UserProfileFragment : BaseDaggerFragment(),
                 )
             }
         }
+        headerProfile?.title = data.profileHeader.profile.name
+        headerProfile?.subtitle = data.profileHeader.profile.username
 
-        appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val offset =
-                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-            if ((abs(verticalOffset) > offset!!)) {
-                headerProfile?.title = data.profileHeader.profile.name
-                headerProfile?.subtitle = "@${data.profileHeader.profile.username}"
-            } else {
-                headerProfile?.title = ""
-                headerProfile?.subtitle = ""
-            }
-        })
+//        appBarLayout?.addOnOffsetChangedListener(OnOffsetChangedListener { appBarLayout, verticalOffset ->
+//            val offset =
+//                context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+//            if ((abs(verticalOffset) > offset!!)) {
+//                headerProfile?.subtitle = ""
+//            } else {
+//                headerProfile?.subtitle = ""
+//            }
+//        })
     }
 
     private fun isProfileButtonVisible() : Boolean{
@@ -875,6 +873,9 @@ class UserProfileFragment : BaseDaggerFragment(),
 
             R.id.text_follower_count, R.id.text_follower_label -> {
                 userProfileTracker?.clickFollowers(userId, profileUserId == userId)
+                UserProfileTracker().openFollowersTab(
+                    userId
+                )
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
                         it,

@@ -18,7 +18,6 @@ import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_DISPLAY_NA
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_IS_FOLLOWERS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWERS
 import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_TOTAL_FOLLOWINGS
-import com.tokopedia.people.views.UserProfileFragment.Companion.EXTRA_USER_NAME
 import com.tokopedia.unifycomponents.TabsUnify
 import javax.inject.Inject
 
@@ -121,18 +120,17 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             }
 
             override fun onPageSelected(position: Int) {
-                if(position == 0) {
-                    UserProfileTracker().openFollowersTab(
-                        userId
-                    )
-                }
-                else{
+                if(position == 1) {
                     UserProfileTracker().openFollowingTab(
                         userId
                     )
                 }
+                else{
+                    UserProfileTracker().openFollowersTab(
+                        userId
+                    )
+                }
             }
-
 
             override fun onPageScrollStateChanged(state: Int) {
 
@@ -146,11 +144,6 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
 
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
             userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
-            val subTitle = arguments?.getString(EXTRA_USER_NAME).toString()
-
-            if (subTitle.isNotBlank()) {
-                subtitle = "@$subTitle"
-            }
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()
