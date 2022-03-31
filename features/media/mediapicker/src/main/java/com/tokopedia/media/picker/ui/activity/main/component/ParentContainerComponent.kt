@@ -43,6 +43,10 @@ class ParentContainerComponent(
         container().setBottomMargin(0)
     }
 
+    fun isFragmentActive(@FragmentType fragmentType: Int): Boolean{
+        return navigator?.currentSelectedPage == fragmentType
+    }
+
     override fun release() {}
 
 }

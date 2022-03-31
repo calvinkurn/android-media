@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentGalleryBinding
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
 import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
@@ -39,6 +41,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var galleryAnalytics: GalleryAnalyticsImpl
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -52,6 +55,10 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             this,
             factory
         )[GalleryViewModel::class.java]
+    }
+
+    private val pageSource by lazy {
+        param.get().pageSourceName()
     }
 
     override fun onCreateView(
@@ -113,7 +120,9 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.drawerSelector?.removeListener()
     }
 
-    override fun onItemClicked(media: MediaUiModel) {} //no-op
+    override fun onItemClicked(media: MediaUiModel) {
+        galleryAnalytics.clickGalleryThumbnail(pageSource)
+    }
 
     override fun onDataSetChanged(action: DrawerActionType) {
         if (!param.get().isMultipleSelectionType()) return
@@ -184,6 +193,8 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.albumSelector?.root?.showWithCondition(isShown)
 
         binding?.albumSelector?.container?.setOnClickListener {
+            galleryAnalytics.clickDropDown(pageSource)
+
             startActivityForResult(Intent(
                 requireContext(),
                 AlbumActivity::class.java
@@ -262,6 +273,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
         if (!isSelected) {
             stateOnAddPublished(media)
+            galleryAnalytics.selectGalleryItem(pageSource)
         } else {
             stateOnRemovePublished(media)
         }

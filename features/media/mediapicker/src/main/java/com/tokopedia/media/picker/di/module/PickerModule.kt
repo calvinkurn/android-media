@@ -33,7 +33,7 @@ class PickerModule {
         userSession: UserSessionInterface
     ) = PickerAnalytics(
         CameraAnalyticsImpl(userSession),
-        GalleryAnalyticsImpl()
+        GalleryAnalyticsImpl(userSession)
     )
 
     @Provides
