@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.home.beranda.presentation.view.customview.pullrefresh.LottiePullToRefreshLayout
+<com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="blocksDescendants"
     android:id="@+id/home_swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:max_offset_top="250dp"
-    app:pull_to_refresh_lottieFile="@raw/pull_to_refresh"
-    app:trigger_offset_top="125dp">
+    app:lottie_rawRes="@raw/pull_to_refresh"
+    app:indicator_overlay="false">
 
   <FrameLayout
       android:id="@+id/root"
@@ -114,4 +113,4 @@
 
   </FrameLayout>
 
-</com.tokopedia.home.beranda.presentation.view.customview.pullrefresh.LottiePullToRefreshLayout>
+</com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout>

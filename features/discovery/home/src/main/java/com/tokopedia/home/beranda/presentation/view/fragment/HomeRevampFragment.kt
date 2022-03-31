@@ -88,7 +88,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
-import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh.LottiePullToRefreshLayout
+import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -308,7 +308,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
-    private lateinit var refreshLayout: LottiePullToRefreshLayout
+    private lateinit var refreshLayout: LottieSwipeRefreshLayout
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -1177,9 +1177,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
 //        refreshLayout.setOnRefreshListener(this)
-        refreshLayout.onProgressListener {
-            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
-        }
+//        refreshLayout.onProgressListener {
+//            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
+//        }
     }
 
     private fun subscribeHome() {
@@ -1911,7 +1911,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData(isPageRefresh)
-        refreshLayout.stopRefreshing()
     }
 
     override fun onChooseAddressUpdated() {
@@ -1970,11 +1969,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-//        refreshLayout.isRefreshing = true
+        refreshLayout.isRefreshing = true
     }
 
     private fun hideLoading() {
-//        refreshLayout.isRefreshing = false
+        refreshLayout.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
 

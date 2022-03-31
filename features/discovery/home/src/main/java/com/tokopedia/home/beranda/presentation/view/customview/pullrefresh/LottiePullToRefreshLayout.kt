@@ -45,8 +45,4 @@ class LottiePullToRefreshLayout @JvmOverloads constructor(context: Context, attr
         super.stopRefreshing()
         lottieAnimationView.pauseAnimation()
     }
-
-    fun setCanChildScrollUp(canChildScrollUp: Boolean) {
-        this@LottiePullToRefreshLayout.canChildScrollUp = canChildScrollUp
-    }
 }
