@@ -16,6 +16,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
@@ -433,6 +434,28 @@ class ShipmentPresenterValidateUseFinalTest {
         // Then
         verifySequence {
             view.renderErrorCheckPromoShipmentData(message)
+            view.resetPromoBenefit()
+            view.cancelAllCourierPromo()
+        }
+    }
+
+    @Test
+    fun `WHEN validate use status get error but no error message THEN should show toaster with default error message`() {
+        // Given
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "ERROR",
+                        message = emptyList(),
+                        promoUiModel = PromoUiModel()
+                )
+        )
+
+        // When
+        presenter.checkPromoCheckoutFinalShipment(ValidateUsePromoRequest(), 0, "")
+
+        // Then
+        verifySequence {
+            view.renderErrorCheckPromoShipmentData(DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO)
             view.resetPromoBenefit()
             view.cancelAllCourierPromo()
         }

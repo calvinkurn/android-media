@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_lvl2"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:textColor="@color/Neutral_N400"
+            android:textColor="@color/Unify_N400"
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/pg_denom_grid_flash_sale"
             app:layout_constraintLeft_toRightOf="@+id/label_denom_grid_discount"

@@ -56,6 +56,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
+import android.widget.TextView
 
 class TopSectionVH(
     itemView: View,
@@ -164,14 +165,19 @@ class TopSectionVH(
         if (data?.progressInfoList?.isNotEmpty() == true) {
             currentTier?.text = data.progressInfoList.getOrNull(1)?.nextTierName ?: ""
             val diffAmount = data.progressInfoList.getOrNull(1)?.differenceAmountStr ?: ""
+            val diffAmountCurrent = data.progressInfoList.getOrNull(1)?.nextAmountStr ?: ""
             tierIconProgress?.loadImage(data.progressInfoList[1].nextTierIconImageURL ?: "")
 
             if (digitContainer?.childCount == 0) {
                 if (isContainsRp(diffAmount)) {
                     addRPToTransaction()
-                    setDigitContainerView(diffAmount.removePrefix("Rp").toCharArray())
+                    val digitTextView = DigitTextView(itemView.context)
+                    digitTextView.setValue(diffAmountCurrent.removePrefix("Rp"),diffAmount.removePrefix("Rp"))
+                    digitContainer?.addView(digitTextView)
                 } else {
-                    setDigitContainerView(diffAmount.toCharArray())
+                    val digitTextView = DigitTextView(itemView.context)
+                    digitTextView.setValue(diffAmountCurrent,diffAmount)
+                    digitContainer?.addView(digitTextView)
                     addXToTransaction()
                 }
             }
@@ -491,24 +497,6 @@ class TopSectionVH(
 
     }
 
-    private fun setDigitContainerView(getDigitValue: CharArray) {
-        for (i in getDigitValue){
-            if(i.isDigit()){
-                val digitTextView = DigitTextView(itemView.context)
-                digitTextView.setValue(i.digitToInt())
-                digitContainer?.addView(digitTextView)
-            }
-            else {
-                val dotView =Typography(itemView.context)
-                dotView.text="."
-                dotView.setWeight(Typography.BOLD)
-                digitContainer?.gravity = Gravity.BOTTOM
-                dotView.setTextColor(Color.WHITE)
-                digitContainer?.addView(dotView)
-            }
-        }
-    }
-
     private fun addRPToTransaction(){
         val rpView =Typography(itemView.context)
         rpView.apply {
@@ -526,7 +514,7 @@ class TopSectionVH(
             text = "x"
             setWeight(Typography.BOLD)
             setType(Typography.BODY_3)
-            setTextColor(Color.WHITE)
+            setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White ) )
         }
         digitContainer?.addView(dotView)
     }
@@ -569,7 +557,11 @@ class TopSectionVH(
                     }
                 } else {
                     progressBar?.setValue(progressCurrent, true)
-                    progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                    if (progressCurrent == 0) {
+                        progressBar?.setProgressIcon(null)
+                    } else {
+                        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                    }
                     progressBarIconAnimation(
                         container
                     ) {
