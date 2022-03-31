@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
-import android.net.Network
 import android.os.Handler
 import androidx.lifecycle.*
 import com.google.gson.Gson
@@ -14,7 +13,6 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
@@ -30,11 +28,12 @@ import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
-import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
@@ -67,7 +66,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import com.tokopedia.play_common.util.extension.combine
 
 /**
  * Created by mzennis on 24/05/20.
@@ -195,6 +194,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
 
+    private val _quizFormData = MutableStateFlow(QuizFormDataUiModel())
+    private val _quizFormState = MutableStateFlow<QuizFormStateUiModel>(QuizFormStateUiModel.Nothing)
+
     private val _channelUiState = _configInfo
         .filterNotNull()
         .map {
@@ -220,19 +222,30 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    private val _quizFormUiState = combine(
+        _quizFormData, _quizFormState
+    ) { quizFormData, quizFormState ->
+        QuizFormUiState(
+            quizFormData = quizFormData,
+            quizFormState = quizFormState,
+        )
+    }.flowOn(dispatcher.computation)
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
         _isExiting,
         _interactiveConfigUiState,
-    ) { channelState, pinnedMessage, productMap, isExiting, interactiveConfig ->
+        _quizFormUiState,
+    ) { channelState, pinnedMessage, productMap, isExiting, interactiveConfig, quizForm ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             isExiting = isExiting,
             interactiveConfig = interactiveConfig,
+            quizForm = quizForm,
         )
     }
 

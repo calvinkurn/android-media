@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.ui.state
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
@@ -16,6 +18,7 @@ data class PlayBroadcastUiState(
     val selectedProduct: List<ProductTagSectionUiModel>,
     val isExiting: Boolean,
     val interactiveConfig: InteractiveConfigUiState,
+    val quizForm: QuizFormUiState,
 )
 
 data class PlayChannelUiState(
@@ -32,4 +35,9 @@ data class InteractiveConfigUiState(
     val tapTapConfig: TapTapConfigUiModel,
     val quizConfig: QuizConfigUiModel,
     val gameTypeList: List<GameType>,
+)
+
+data class QuizFormUiState(
+    val quizFormData: QuizFormDataUiModel,
+    val quizFormState: QuizFormStateUiModel,
 )
