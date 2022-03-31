@@ -171,6 +171,7 @@ class DigitalPDPDataPlanFragment :
         getDataFromBundle()
         setupKeyboardWatcher()
         setupDynamicScrollListener()
+        setupDynamicScrollViewPadding()
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
@@ -544,6 +545,7 @@ class DigitalPDPDataPlanFragment :
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -557,6 +559,7 @@ class DigitalPDPDataPlanFragment :
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
         binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetPrefixOperator() {
@@ -1066,6 +1069,20 @@ class DigitalPDPDataPlanFragment :
     private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, requestCode)
+    }
+
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpPaketDataClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        var dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
     }
 
     //region ClientNumberInputFieldListener

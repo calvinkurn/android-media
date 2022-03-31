@@ -155,6 +155,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         getDataFromBundle()
         setupKeyboardWatcher()
         initClientNumberWidget()
+        setupDynamicScrollViewPadding()
         observeData()
         getCatalogMenuDetail()
     }
@@ -564,6 +565,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -577,6 +579,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
         binding?.rechargePdpTokenListrikClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetOperatorSelectGroup() {
@@ -759,6 +762,20 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun navigateToLoginPage(requestCode: Int = REQUEST_CODE_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
         startActivityForResult(intent, requestCode)
+    }
+
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpTokenListrikClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpTokenListrikClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        val dynamicPadding = rechargePdpTokenListrikClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpTokenListrikSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
     }
 
     private fun handleCallbackSavedNumber(
