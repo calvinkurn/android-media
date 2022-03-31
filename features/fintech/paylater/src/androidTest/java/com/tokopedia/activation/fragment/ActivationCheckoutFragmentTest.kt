@@ -61,6 +61,12 @@ class ActivationCheckoutFragmentTest {
     fun check_simulation_test() {
         actionTest {
             waitForData()
+            changeTenure()
+            waitForData()
+            clickOpenInstallmentDetail()
+            closeBottomSheet()
+            waitForData()
+            proceedToOccPage()
         } assertTest {
             hasPassedAnalytics(cassavaTestRule, PAY_LATER_PARTNER_BUTTON_CLICK)
             clearData()
@@ -80,8 +86,8 @@ class ActivationCheckoutFragmentTest {
         val bundle = Bundle()
         bundle.putString(PARAM_GATEWAY_ID, "7")
         bundle.putString(PARAM_PRODUCT_ID, "2147954780")
-        bundle.putString(PARAM_PRODUCT_TENURE,"3")
-        bundle.putString(PARAM_GATEWAY_CODE,"GOCICIL")
+        bundle.putString(PARAM_PRODUCT_TENURE, "3")
+        bundle.putString(PARAM_GATEWAY_CODE, "GOCICIL")
         val intent = Intent(context, OptimizedCheckoutActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)

@@ -9,6 +9,30 @@
       "eventLabel": ".*",
       "sessionIris": ".*",
       "userId": ".*"
+    },
+    {
+      "event": "viewFintechIris",
+      "eventAction": "view break up - impression",
+      "eventCategory": "fin - optimize occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintech",
+      "eventAction": "tenure option - click",
+      "eventCategory": "fin - optimize occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickFintech",
+      "eventAction": "CTA beli langsung - click activated buyers",
+      "eventCategory": "fin - occ page",
+      "eventLabel": ".*",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
 
   ]
