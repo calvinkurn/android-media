@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:layout_width="match_parent"
+        tools:background="@color/play_dms_N700_68">
+
+        <com.tokopedia.play_common.view.RoundedImageView
+            android:id="@+id/iv_engagement"
+            app:rImg_cornerRadius="@dimen/engagement_icon_radius"
+            android:layout_width="@dimen/engagement_icon_size"
+            android:layout_height="@dimen/engagement_icon_size"
+            android:layout_gravity="center"
+            android:background="@color/Unify_N0"
+            android:padding="@dimen/spacing_lvl3"
+            android:translationZ="1dp"
+            tools:background="@color/Unify_Static_Black"
+            tools:src="@drawable/iconunify_badge_os" />
+
+        <com.tokopedia.play_common.view.RoundedConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/engagement_rounded_header_top"
+            tools:background="@drawable/bg_quiz"
+            app:rcl_cornerRadius="@dimen/dp_12">
+
+            <!--marginBottom actual size must be 16dp but we need some space for bottom layout to layer the header-->
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_header_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/engagement_title_header_top"
+                android:layout_marginBottom="@dimen/layout_lvl3"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:textColor="@color/Unify_N0"
+                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_4"
+                tools:text="Follow untuk ikut quiz" />
+        </com.tokopedia.play_common.view.RoundedConstraintLayout>
+    </LinearLayout>
+</merge>
