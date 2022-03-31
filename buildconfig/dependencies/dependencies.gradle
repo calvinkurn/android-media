@@ -114,11 +114,11 @@ ext {
     unifyPrinciplesVersion = '1.4.0'
     unifyComponentsVersion = '1.2.0'
     unifyCoachMarkVersion = '1.2.16'
-    unifyCalendarVersion = '1.1.4'
+    unifyCalendarVersion = '1.2.0'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.9'
     unifyLoaderDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '1.0.10'
+    unifyDatePickerVersion = '1.1.0'
     unifyDateFilterVersion = '1.1.0'
     unifyPinVersion = '1.0.5'
     unifyEmptyStateVersion = '1.0.11.1'
@@ -129,10 +129,10 @@ ext {
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.9'
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
-    unifyTotalAmountVersion = '1.0.5'
+    unifyTotalAmountVersion = '1.0.6'
     unifyExplorePromoVersion = '1.0.2'
     unifyImageGalleryVersion = '1.0.1'
-    unifyViewAllCardVersion = '1.0.3'
+    unifyViewAllCardVersion = '1.0.4'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
