@@ -59,4 +59,7 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val LOGOUT = "${NEW_INTERNAL_USER}/logout"
 
+    // TwoFactorActivity
+    // tokopedia-android-internal://user/two-factor-register
+    const val TWO_FACTOR_REGISTER = "${NEW_INTERNAL_USER}/two-factor-register"
 }

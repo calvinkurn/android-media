@@ -425,10 +425,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     const val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
 
-    // TwoFactorActivity
-    // tokopedia-android-internal://global/two-factor-register
-    const val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
-
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"

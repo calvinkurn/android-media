@@ -16,6 +16,7 @@ import com.tokopedia.additional_check.view.TwoFactorFragment
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -153,7 +154,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     }
 
     private fun goTo2FAPage(activity: Activity?, twoFactorResult: TwoFactorResult) {
-        val i = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER)
+        val i = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.TWO_FACTOR_REGISTER)
             .apply {
                 putExtras(Bundle().apply {
                     putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
