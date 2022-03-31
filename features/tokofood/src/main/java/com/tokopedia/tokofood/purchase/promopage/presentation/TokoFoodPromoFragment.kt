@@ -174,14 +174,6 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun observeFragmentUiModel() {
         viewModel.fragmentUiModel.observe(viewLifecycleOwner, {
-            if (it.tabs.isNotEmpty() && viewBinding?.tabsPromoTokofood?.tabLayout?.tabCount == 0) {
-                it.tabs.forEach {
-                    viewBinding?.tabsPromoTokofood?.addNewTab(it.title)
-                }
-                viewBinding?.tabsPromoTokofood?.show()
-            } else {
-                viewBinding?.tabsPromoTokofood?.gone()
-            }
             renderTotalAmount(it)
         })
     }

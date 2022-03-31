@@ -29,16 +29,6 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabs_promo_tokofood"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
-        tools:layout_height="50dp"
-        tools:visibility="visible" />
-
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/layout_global_error_purchase_promo"
         android:layout_width="match_parent"
@@ -56,7 +46,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/total_amount_purchase_promo"
-        app:layout_constraintTop_toBottomOf="@+id/tabs_promo_tokofood"
+        app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
         tools:itemCount="50" />
 
     <com.tokopedia.totalamount.TotalAmount
