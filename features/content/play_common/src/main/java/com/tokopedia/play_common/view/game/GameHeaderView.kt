@@ -2,8 +2,10 @@ package com.tokopedia.play_common.view.game
 
 import android.content.Context
 import android.text.InputFilter
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
@@ -46,11 +48,17 @@ class GameHeaderView : ConstraintLayout {
         }
     }
 
-    var isEditable: Boolean = true
+    var isEditable: Boolean = false
         set(value) {
             field = value
-            binding.etPlayGameHeaderTitle.isEnabled = value
-            binding.etPlayGameHeaderTitle.isFocusable = value
+
+            binding.etPlayGameHeaderTitle.apply {
+                isFocusable = value
+                isFocusableInTouchMode = value
+                isEnabled = value
+            }
+
+            setFocus(value)
         }
 
     var title: String = ""
@@ -78,11 +86,21 @@ class GameHeaderView : ConstraintLayout {
             setBackground()
         }
 
-    fun focus() {
-        binding.etPlayGameHeaderTitle.doOnLayout {
+    private fun setFocus(isFocus: Boolean) {
+        if(isFocus) {
             binding.etPlayGameHeaderTitle.requestFocus()
-            binding.etPlayGameHeaderTitle.showKeyboard()
+            showKeyboard(true)
         }
+        else {
+            binding.etPlayGameHeaderTitle.clearFocus()
+            showKeyboard(false)
+        }
+    }
+
+    private fun showKeyboard(isShow: Boolean) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (isShow) imm.showSoftInput(binding.etPlayGameHeaderTitle, InputMethodManager.SHOW_IMPLICIT)
+        else imm.hideSoftInputFromWindow(binding.etPlayGameHeaderTitle.windowToken, 0)
     }
 
     fun setOnTextChangedListener(listener: (String) -> Unit) {

@@ -818,8 +818,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         gameConfig: GameConfigUiState,
     ) {
         if(prevState?.quizFormState != state.quizFormState) {
-            quizForm.setFormState(state.quizFormState)
-
             when(state.quizFormState) {
                 QuizFormStateUiModel.Nothing -> showQuizForm(false)
                 QuizFormStateUiModel.Preparation -> {
@@ -827,8 +825,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     showQuizForm(true)
                 }
                 QuizFormStateUiModel.SetDuration -> {
+                    hideKeyboard()
                     /** TODO: handle set duration */
                 }
+            }.also {
+                quizForm.setFormState(state.quizFormState)
             }
         }
 

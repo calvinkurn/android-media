@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
@@ -76,10 +78,7 @@ class QuizFormView : ConstraintLayout {
         when(quizFormState) {
             QuizFormStateUiModel.Preparation -> {
                 binding.groupActionBar.visibility = View.VISIBLE
-                binding.viewGameHeader.apply {
-                    isEditable = true
-                    focus()
-                }
+                binding.viewGameHeader.isEditable = true
             }
             QuizFormStateUiModel.SetDuration -> {
                 binding.groupActionBar.visibility = View.GONE
