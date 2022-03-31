@@ -5,13 +5,22 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
+import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
+import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.doOnLayout
+import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
@@ -41,6 +50,10 @@ class QuizFormView : ConstraintLayout {
         this,
         true,
     )
+    private val timePickerBinding = ViewPlayInteractiveTimePickerBinding.bind(binding.root)
+    private val bottomSheetHeaderBinding = BottomSheetHeaderBinding.bind(timePickerBinding.root)
+
+    private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
 
     private var mCloseListener: (() -> Unit)? = null
     private var mNextListener: (() -> Unit)? = null
@@ -49,6 +62,8 @@ class QuizFormView : ConstraintLayout {
 
     init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
+        bottomSheetHeaderBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
+        bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
             mNextListener?.invoke()
@@ -60,6 +75,14 @@ class QuizFormView : ConstraintLayout {
 
         binding.viewGameHeader.setOnTextChangedListener {
             onTitleChangedListener?.invoke(it)
+        }
+
+        bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
+            mCloseListener?.invoke()
+        }
+
+        timePickerBinding.btnApply.setOnClickListener {
+
         }
 
         setupInsets()
@@ -79,12 +102,15 @@ class QuizFormView : ConstraintLayout {
             QuizFormStateUiModel.Preparation -> {
                 binding.groupActionBar.visibility = View.VISIBLE
                 binding.viewGameHeader.isEditable = true
+
+                bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
             }
             QuizFormStateUiModel.SetDuration -> {
                 binding.groupActionBar.visibility = View.GONE
                 binding.viewGameHeader.isEditable = false
 
-                /** TODO: show bottomsheet */
+
+                bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
     }
@@ -111,11 +137,27 @@ class QuizFormView : ConstraintLayout {
     }
 
     private fun setupInsets() {
-        binding.root.doOnApplyWindowInsets { view, insets, padding, _ ->
+        binding.clQuizForm.doOnApplyWindowInsets { view, insets, padding, _ ->
             view.updatePadding(
                 top = insets.systemWindowInsetTop + padding.top,
                 bottom = insets.systemWindowInsetBottom + padding.bottom
             )
         }
+
+        timePickerBinding.btnApply.doOnApplyWindowInsets { view, insets, _, margin ->
+            val marginLp = view.marginLp
+            marginLp.bottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            view.layoutParams = marginLp
+        }
+    }
+
+    private fun formatTime(millis: Long): String {
+        val minute = millis.millisToMinutes()
+        val second = millis.millisToRemainingSeconds()
+
+        val stringBuilder = StringBuilder()
+        if (minute > 0) stringBuilder.append(context.getString(R.string.play_interactive_minute, minute))
+        if (second > 0) stringBuilder.append(context.getString(R.string.play_interactive_second, second))
+        return stringBuilder.toString()
     }
 }
