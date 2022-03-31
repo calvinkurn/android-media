@@ -191,19 +191,33 @@
         tools:visibility="visible"
         />
 
-    <com.google.android.exoplayer2.ui.PlayerControlView
+<!--    <com.google.android.exoplayer2.ui.PlayerControlView-->
+<!--        android:id="@+id/pcv_video"-->
+<!--        android:layout_width="@dimen/layout_lvl0"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/spacing_lvl4"-->
+<!--        android:layout_marginEnd="@dimen/spacing_lvl4"-->
+<!--        android:visibility="gone"-->
+<!--        app:controller_layout_id="@layout/layout_play_player_control"-->
+<!--        app:layout_constraintBottom_toBottomOf="@id/view_send_chat"-->
+<!--        app:layout_constraintTop_toTopOf="@id/view_send_chat"-->
+<!--        app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"-->
+<!--        app:layout_constraintStart_toEndOf="@id/view_product_see_more"-->
+<!--        app:show_timeout="-1"-->
+<!--        tools:visibility="visible"-->
+<!--        />-->
+
+    <com.tokopedia.play.view.custom.video.PlayVideoControlView
         android:id="@+id/pcv_video"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:controller_layout_id="@layout/layout_play_player_control"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
         app:layout_constraintTop_toTopOf="@id/view_send_chat"
         app:layout_constraintEnd_toStartOf="@id/view_kebab_menu"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
-        app:show_timeout="-1"
         tools:visibility="visible"
         />
 

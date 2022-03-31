@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
+    tools:background="@color/Unify_Static_Black"
+    >
+
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@+id/player_control"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:controller_layout_id="@layout/layout_play_player_control_new"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_time_remaining"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:show_timeout="-1"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_time_remaining"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="aaaaaa"
+        />
+
+</merge>
