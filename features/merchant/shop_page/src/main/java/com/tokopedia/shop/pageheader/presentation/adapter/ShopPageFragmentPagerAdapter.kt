@@ -52,16 +52,15 @@ internal class ShopPageFragmentPagerAdapter(
     private fun setTabIcon(tabIconUnify: IconUnify, position: Int, isActive: Boolean) {
         ctx?.let {
             tabIconUnify.apply {
-                isEnabled = if (isActive) {
+                if (isActive) {
                     val iconId = getTabIconDrawable(position, true)
                     val iconColor = ContextCompat.getColor(it, ICON_COLOR_LIGHT_ENABLE)
                     setImage(newIconId = iconId, newLightEnable = iconColor)
-                    true
+                    isEnabled = true
                 } else {
                     val iconId = getTabIconDrawable(position, false)
                     val iconColor = ContextCompat.getColor(it, ICON_COLOR_LIGHT)
                     setImage(newIconId = iconId, newLightEnable = iconColor)
-                    false
                 }
             }
         }
