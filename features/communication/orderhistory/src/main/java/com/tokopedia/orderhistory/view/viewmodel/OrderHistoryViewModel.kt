@@ -54,7 +54,7 @@ class OrderHistoryViewModel @Inject constructor(
                 onSuccess = {
                     wishListActionListener.onSuccessAddWishlist(productId)},
                 onError = {
-                    wishListActionListener.onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
+                    wishListActionListener.onErrorAddWishList(it, productId)
                 })
     }
 
