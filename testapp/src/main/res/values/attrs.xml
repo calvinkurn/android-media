@@ -15,4 +15,14 @@
     <declare-styleable name="LottiePullToRefreshLayout">
         <attr name="pull_to_refresh_lottieFile" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="SimpleSwipeRefreshLayout">
+        <attr name="max_offset_top_swipe" format="dimension" />
+        <attr name="trigger_offset_top_swipe" format="dimension" />
+        <attr name="indicator_overlay" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="LottieSwipeRefreshLayout">
+        <attr name="lottie_rawRes" format="reference" />
+    </declare-styleable>
 </resources>
