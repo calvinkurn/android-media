@@ -14,15 +14,13 @@ class TypographySwitcherViewHolder (view: View): AbstractViewHolder<TypographySw
 
     private val checkbox = itemView.findViewById<CheckBox>(R.id.dev_opt_new_typography)
 
-    init {
+    override fun bind(element: TypographySwitchUiModel?) {
+        checkbox.isChecked = Typography.isFontTypeOpenSauceOne
+
         checkbox.setOnCheckedChangeListener { _, isChecked ->
             Typography.isFontTypeOpenSauceOne = isChecked
             (itemView.context as Activity).recreate()
         }
-    }
-
-    override fun bind(element: TypographySwitchUiModel?) {
-        checkbox.isChecked = Typography.isFontTypeOpenSauceOne
     }
 
     companion object {
