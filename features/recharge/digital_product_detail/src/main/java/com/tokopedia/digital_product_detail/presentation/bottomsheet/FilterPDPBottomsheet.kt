@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
@@ -91,6 +92,13 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
         }
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        if (childFragment is AllFilterPDPBottomsheet) {
+            childFragment.setListener(this)
+        }
+    }
+
     private fun initView() {
         isFullpage = false
         isDragable = false
@@ -151,9 +159,10 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
 
     override fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent, position: Int) {
         if (::filterTagComponents.isInitialized) {
-            filterTagComponents.toMutableList()[position] = tagComponent
-            filterTagComponents.toList()
-            adapterFilter.notifyItemChanged(position)
+            val filterComponentChanged = filterTagComponents.toMutableList()
+            filterComponentChanged[position] = tagComponent
+            filterTagComponents = filterComponentChanged
+            adapterFilter.setChipList(filterTagComponents)
         }
     }
 

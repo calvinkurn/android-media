@@ -176,6 +176,14 @@ class DigitalPDPDataPlanFragment :
         getCatalogMenuDetail()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is ProductDescBottomSheet) {
+            childFragment.setListener(this)
+        } else if (childFragment is FilterPDPBottomsheet) {
+            childFragment.setListener(this)
+        }
+    }
+
     private fun setupKeyboardWatcher() {
         binding?.root?.let {
             keyboardWatcher.listen(it, object : DigitalKeyboardWatcher.Listener {
