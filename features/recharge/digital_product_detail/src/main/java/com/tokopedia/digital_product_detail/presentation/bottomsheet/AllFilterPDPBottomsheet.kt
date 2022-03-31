@@ -103,6 +103,9 @@ class AllFilterPDPBottomsheet : BottomSheetUnify(), DigitalPDPFilterAllViewHolde
     }
 
     private fun initView() {
+        isFullpage = false
+        isDragable = false
+        showCloseIcon = false
         binding = BottomSheetAllFilterBinding.inflate(LayoutInflater.from(context))
         binding?.let {
             if (::filterTagComponent.isInitialized) {
