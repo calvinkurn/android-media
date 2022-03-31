@@ -131,14 +131,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
 
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
+            mListener?.onLabelPromoClicked(this, model)
         }
 
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, model)
-        }
-
-        llPromoDetail.setOnClickListener {
-            mListener?.onLabelPromoClicked(this, model)
         }
 
         llPromoDetail.isVisibleOnTheScreen(onViewVisible = {

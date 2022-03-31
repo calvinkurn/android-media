@@ -132,14 +132,11 @@ class PlayWidgetCardMediumChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(it, data)
+            mListener?.onLabelPromoClicked(this, data)
         }
 
         ivAction.setOnClickListener {
             mListener?.onMenuActionButtonClicked(this, data)
-        }
-
-        llPromoDetail.setOnClickListener {
-            mListener?.onLabelPromoClicked(this, data)
         }
 
         llPromoDetail.isVisibleOnTheScreen(onViewVisible = {

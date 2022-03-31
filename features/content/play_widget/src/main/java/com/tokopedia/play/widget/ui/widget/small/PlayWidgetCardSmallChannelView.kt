@@ -130,15 +130,12 @@ class PlayWidgetCardSmallChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(this, data)
+            mListener?.onLabelPromoClicked(this, data)
         }
 
         tvContextualInfo.isVisibleOnTheScreen(onViewVisible = {
             mListener?.onLabelPromoImpressed(this, data)
         }, onViewNotVisible = {})
-
-        tvContextualInfo.setOnClickListener {
-            mListener?.onLabelPromoClicked(this, data)
-        }
     }
 
 

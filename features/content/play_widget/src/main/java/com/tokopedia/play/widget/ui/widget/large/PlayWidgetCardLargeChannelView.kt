@@ -125,9 +125,6 @@ class PlayWidgetCardLargeChannelView : FrameLayout, PlayVideoPlayerReceiver {
 
         setOnClickListener {
             mListener?.onChannelClicked(it, model)
-        }
-
-        llPromoDetail.setOnClickListener {
             mListener?.onLabelPromoClicked(this, model)
         }
 
