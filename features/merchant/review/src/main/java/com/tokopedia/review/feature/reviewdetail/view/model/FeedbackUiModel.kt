@@ -12,6 +12,7 @@ data class FeedbackUiModel(
     var reviewMediaThumbnail: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(listOf()),
     var autoReply: Boolean = false,
     var feedbackID: String = "",
+    var productID: String = "",
     var rating: Int? = 0,
     var replyText: String? = "",
     var replyTime: String? = "",

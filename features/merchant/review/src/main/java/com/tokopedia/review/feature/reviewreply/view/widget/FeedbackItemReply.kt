@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -18,6 +17,11 @@ import com.tokopedia.review.databinding.WidgetReplyFeedbackItemBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewreply.view.adapter.ReviewReplyListener
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifyprinciples.Typography
@@ -101,16 +105,59 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
     }
 
-    override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,
-                                    title: String, feedbackId: String, position: Int) {
+    private fun mapFeedbackUiModelToReviewMediaData(
+        imageUrls: List<String>,
+        feedbackId: String
+    ): ProductrevGetReviewMedia {
+        //TODO: map video data
+        val mappedReviewMediaVideos = listOf<ReviewMedia>()
+        val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
+            ReviewMedia(
+                imageId = url,
+                feedbackId = feedbackId,
+                mediaNumber = index.plus(1).plus(mappedReviewMediaVideos.size)
+            )
+        }
+        val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
+        val mappedReviewGalleryImages = imageUrls.map { url ->
+            ReviewGalleryImage(
+                attachmentId = url,
+                fullsizeURL = url,
+                feedbackId = feedbackId
+            )
+        }
+        return ProductrevGetReviewMedia(
+            reviewMedia = mappedReviewMedia,
+            detail = Detail(
+                reviewDetail = listOf(),
+                reviewGalleryImages = mappedReviewGalleryImages,
+                reviewGalleryVideos = listOf(),
+                mediaCount = mappedReviewMedia.size.toLong()
+            )
+        )
+    }
+
+    override fun onImageItemClicked(
+        imageUrls: List<String>,
+        thumbnailsUrl: List<String>,
+        title: String,
+        feedbackId: String,
+        productID: String,
+        position: Int
+    ) {
         context.run {
-            startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                    context = this,
-                    title = title,
-                    imageUrls = imageUrls,
-                    imageThumbnailUrls = thumbnailsUrl,
-                    imagePosition = position
-            ))
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = context,
+                productID = productID,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position + 1,
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = mapFeedbackUiModelToReviewMediaData(
+                    imageUrls, feedbackId
+                )
+            ).run { startActivity(this) }
         }
     }
 
@@ -148,6 +195,7 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
                     element.attachments.mapNotNull { it.thumbnailURL },
                     productReplyUiModel.productName.orEmpty(),
                     element.feedbackID,
+                    productReplyUiModel.productID,
                     position
                 )
             }

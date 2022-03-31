@@ -20,7 +20,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -59,6 +58,11 @@ import com.tokopedia.review.feature.inboxreview.util.InboxReviewPreference
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -282,13 +286,18 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 productId
         )
         context?.run {
-            startActivity(ImagePreviewSliderActivity.getCallingIntent(
-                    context = this,
-                    title = titleProduct,
-                    imageUrls = imageUrls,
-                    imageThumbnailUrls = thumbnailsUrl,
-                    imagePosition = position
-            ))
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = this,
+                productID = productId,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position + 1,
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = mapReviewMediaData(
+                    imageUrls, feedbackId
+                )
+            ).run { startActivity(this) }
         }
     }
 
@@ -720,4 +729,35 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         coachmark = context?.let { CoachMark2(it) }
     }
 
+    private fun mapReviewMediaData(
+        imageUrls: List<String>,
+        feedbackId: String
+    ): ProductrevGetReviewMedia {
+        //TODO: map video data
+        val mappedReviewMediaVideos = listOf<ReviewMedia>()
+        val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
+            ReviewMedia(
+                imageId = url,
+                feedbackId = feedbackId,
+                mediaNumber = index.plus(1).plus(mappedReviewMediaVideos.size)
+            )
+        }
+        val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
+        val mappedReviewGalleryImages = imageUrls.map { url ->
+            ReviewGalleryImage(
+                attachmentId = url,
+                fullsizeURL = url,
+                feedbackId = feedbackId
+            )
+        }
+        return ProductrevGetReviewMedia(
+            reviewMedia = mappedReviewMedia,
+            detail = Detail(
+                reviewDetail = listOf(),
+                reviewGalleryImages = mappedReviewGalleryImages,
+                reviewGalleryVideos = listOf(),
+                mediaCount = mappedReviewMedia.size.toLong()
+            )
+        )
+    }
 }

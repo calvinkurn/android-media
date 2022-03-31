@@ -184,6 +184,7 @@ object InboxReviewMapper {
             reviewMediaThumbnail = mappedReviewMediaThumbnail,
             autoReply = data.isAutoReply,
             feedbackID = data.feedbackId,
+            productID = data.productID,
             rating = data.rating,
             replyText = data.replyText,
             replyTime = data.replyTime,

@@ -177,6 +177,7 @@ class ProductFeedbackDetailViewHolder(
                     it.attachments.mapNotNull { it.fullSizeURL },
                     it.attachments.mapNotNull { it.thumbnailURL },
                     it.feedbackID,
+                    it.productID,
                     position
                 )
             }

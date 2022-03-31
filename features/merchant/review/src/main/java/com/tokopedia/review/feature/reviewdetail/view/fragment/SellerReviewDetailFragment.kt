@@ -65,6 +65,11 @@ import com.tokopedia.review.feature.reviewlist.util.mapper.SellerReviewProductLi
 import com.tokopedia.review.feature.reviewreply.view.activity.SellerReviewReplyActivity
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -696,6 +701,7 @@ class SellerReviewDetailFragment :
         imageUrls: List<String>,
         thumbnailsUrl: List<String>,
         feedbackId: String,
+        productID: String,
         position: Int
     ) {
         context?.run {
@@ -704,15 +710,18 @@ class SellerReviewDetailFragment :
                 thumbnailsUrl.getOrNull(position).orEmpty(),
                 position.toString()
             )
-            startActivity(
-                ImagePreviewSliderActivity.getCallingIntent(
-                    context = this,
-                    title = toolbarTitle,
-                    imageUrls = imageUrls,
-                    imageThumbnailUrls = thumbnailsUrl,
-                    imagePosition = position
+            ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+                context = this,
+                productID = productID,
+                shopID = "",
+                isProductReview = true,
+                isFromGallery = false,
+                mediaPosition = position + 1,
+                showSeeMore = false,
+                preloadedDetailedReviewMediaResult = mapReviewMediaData(
+                    imageUrls, feedbackId
                 )
-            )
+            ).run { startActivity(this) }
         }
     }
 
@@ -818,4 +827,35 @@ class SellerReviewDetailFragment :
         sharedPreference = SellerReviewDetailPreference(context)
     }
 
+    private fun mapReviewMediaData(
+        imageUrls: List<String>,
+        feedbackId: String
+    ): ProductrevGetReviewMedia {
+        //TODO: map video data
+        val mappedReviewMediaVideos = listOf<ReviewMedia>()
+        val mappedReviewMediaImages = imageUrls.mapIndexed { index, url ->
+            ReviewMedia(
+                imageId = url,
+                feedbackId = feedbackId,
+                mediaNumber = index.plus(1).plus(mappedReviewMediaVideos.size)
+            )
+        }
+        val mappedReviewMedia = mappedReviewMediaVideos.plus(mappedReviewMediaImages)
+        val mappedReviewGalleryImages = imageUrls.map { url ->
+            ReviewGalleryImage(
+                attachmentId = url,
+                fullsizeURL = url,
+                feedbackId = feedbackId
+            )
+        }
+        return ProductrevGetReviewMedia(
+            reviewMedia = mappedReviewMedia,
+            detail = Detail(
+                reviewDetail = listOf(),
+                reviewGalleryImages = mappedReviewGalleryImages,
+                reviewGalleryVideos = listOf(),
+                mediaCount = mappedReviewMedia.size.toLong()
+            )
+        )
+    }
 }
