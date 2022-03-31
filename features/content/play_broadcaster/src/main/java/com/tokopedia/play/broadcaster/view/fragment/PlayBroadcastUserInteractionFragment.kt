@@ -383,7 +383,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 true
             }
             isQuizFormVisible() -> {
-                showQuizForm(false)
+                parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
                 true
             }
             /** TODO: gonna delete this */
