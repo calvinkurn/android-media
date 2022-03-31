@@ -220,6 +220,7 @@
         android:layout_below="@id/content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:enabled="false"
         android:text="@string/sd_apply"
         android:visibility="gone"

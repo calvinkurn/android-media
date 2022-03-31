@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shopdiscount.bulk.data.request.GetSlashPriceBenefitRequest
 import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -55,7 +56,7 @@ class GetSlashPriceBenefitUseCase @Inject constructor(
 
     private var params = emptyMap<String, Any>()
 
-    suspend fun execute(source: String = "campaign", ip: String = "", useCase: String = ""): GetSlashPriceBenefitResponse {
+    suspend fun execute(source: String = CAMPAIGN, ip: String = "", useCase: String = ""): GetSlashPriceBenefitResponse {
         val request = GetSlashPriceBenefitRequest(source, ip, useCase)
         params = mapOf(REQUEST_PARAM_KEY to request)
         return executeOnBackground()
