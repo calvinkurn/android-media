@@ -133,4 +133,7 @@
     <dimen name="play_product_item_image_size">104dp</dimen>
     <dimen name="play_line_spacing_4">4sp</dimen>
     <dimen name="play_voucher_info_translationY">-2dp</dimen>
+
+    <!--Engagement tools-->
+    <dimen name="play_engagement_tools_width">104dp</dimen>
 </resources>
