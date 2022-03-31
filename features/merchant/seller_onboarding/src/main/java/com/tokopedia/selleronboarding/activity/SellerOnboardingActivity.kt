@@ -3,6 +3,7 @@ package com.tokopedia.selleronboarding.activity
 import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2
@@ -93,16 +95,34 @@ class SellerOnboardingActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("GradientVectorDrawable")
     private fun setPageBackground() {
         try {
             binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full)
-            val sobRamadhanDrawable =
-                VectorDrawableCompat.create(resources, R.drawable.bg_sob_ramadhan, theme)
-            binding?.bgSobRamadhan?.setImageDrawable(sobRamadhanDrawable)
-            val sobRamadhanPatternDrawable =
-                VectorDrawableCompat.create(resources, R.drawable.bg_sob_ramadhan_pattern, theme)
-            binding?.bgSobRamadhanPattern?.setImageDrawable(sobRamadhanPatternDrawable)
-        } catch (e: Resources.NotFoundException) {
+
+            val sobRamadhanDrawable: Drawable?
+            val sobRamadhanPatternDrawable: Drawable?
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                sobRamadhanDrawable = MethodChecker.getDrawable(this, R.drawable.bg_sob_ramadhan)
+                sobRamadhanPatternDrawable =
+                    MethodChecker.getDrawable(this, R.drawable.bg_sob_ramadhan_pattern)
+            } else {
+                sobRamadhanDrawable =
+                    VectorDrawableCompat.create(resources, R.drawable.bg_sob_ramadhan, theme)
+                sobRamadhanPatternDrawable =
+                    VectorDrawableCompat.create(
+                        resources,
+                        R.drawable.bg_sob_ramadhan_pattern,
+                        theme
+                    )
+            }
+            sobRamadhanDrawable?.let {
+                binding?.bgSobRamadhan?.setImageDrawable(it)
+            }
+            sobRamadhanPatternDrawable?.let {
+                binding?.bgSobRamadhanPattern?.setImageDrawable(it)
+            }
+        } catch (e: Exception) {
             Timber.e(e)
         }
     }
