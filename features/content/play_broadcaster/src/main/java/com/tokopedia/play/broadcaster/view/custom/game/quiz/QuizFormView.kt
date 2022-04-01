@@ -62,6 +62,7 @@ class QuizFormView : ConstraintLayout {
 
             /** TODO: set config here */
             binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
+            binding.viewQuizGift.maxLength = quizConfig.maxRewardLength
             timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
         }
 
@@ -81,6 +82,14 @@ class QuizFormView : ConstraintLayout {
 
         binding.viewGameHeader.setOnTextChangedListener {
             eventBus.emit(Event.TitleChanged(it))
+        }
+
+        binding.viewQuizGift.setOnTextChangeListener {
+            eventBus.emit(Event.GiftChanged(it))
+        }
+
+        binding.viewQuizGift.setOnRemoveGiftListener {
+            eventBus.emit(Event.GiftChanged(""))
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
@@ -105,7 +114,8 @@ class QuizFormView : ConstraintLayout {
 
         /** TODO: set options */
 
-        /** TODO: set gift */
+        /** Set Gift */
+        binding.viewQuizGift.gift = quizFormData.gift
 
         /** Set Quiz Duration */
         val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)

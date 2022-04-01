@@ -65,7 +65,7 @@ class GameHeaderView : ConstraintLayout {
         set(value) {
             field = value
 
-            if(binding.etPlayGameHeaderTitle.text.toString() == field) {
+            if(binding.etPlayGameHeaderTitle.text.toString() != field) {
                 binding.etPlayGameHeaderTitle.setText(value)
                 binding.etPlayGameHeaderTitle.setSelection(value.length)
             }
@@ -73,9 +73,11 @@ class GameHeaderView : ConstraintLayout {
 
     var maxLength: Int = 0
         set(value) {
-            field = value
+            if(field != value) {
+                field = value
 
-            binding.etPlayGameHeaderTitle.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+                binding.etPlayGameHeaderTitle.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+            }
         }
 
     var type: Type = Type.UNKNOWN
