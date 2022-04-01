@@ -48,6 +48,7 @@ import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.hideKeyboard
@@ -103,7 +104,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     )
 
     private val schedulePicker by lifecycleBound(
-        creator = { SchedulePicker(this) }
+        creator = { SchedulePicker(this) },
+        onLifecycle = whenLifecycle {
+            onPause { it.dismiss() }
+        }
     )
 
     private val schedulePickerListener = object : SchedulePicker.Listener {
