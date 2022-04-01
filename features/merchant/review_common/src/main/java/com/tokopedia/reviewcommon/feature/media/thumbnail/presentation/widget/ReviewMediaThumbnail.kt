@@ -29,9 +29,9 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
         this,
         true
     )
-    private var reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener? = null
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
     private val typeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        ReviewMediaThumbnailTypeFactory(ReviewMediaThumbnailListener())
+        ReviewMediaThumbnailTypeFactory(reviewMediaThumbnailListener)
     }
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         ReviewMediaThumbnailAdapter(typeFactory)
@@ -50,7 +50,7 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
     }
 
     fun setListener(listener: ReviewMediaThumbnailTypeFactory.Listener) {
-        reviewMediaThumbnailListener = listener
+        reviewMediaThumbnailListener.listener = listener
     }
 
     fun setRecycledViewPool(recycledViewPool: RecyclerView.RecycledViewPool) {
@@ -82,12 +82,13 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
     }
 
     private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        var listener: ReviewMediaThumbnailTypeFactory.Listener? = null
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            reviewMediaThumbnailListener?.onMediaItemClicked(item, position)
+            listener?.onMediaItemClicked(item, position)
         }
 
         override fun onRemoveMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            reviewMediaThumbnailListener?.onRemoveMediaItemClicked(item, position)
+            listener?.onRemoveMediaItemClicked(item, position)
         }
     }
 }

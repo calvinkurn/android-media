@@ -70,6 +70,8 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -162,6 +164,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             readReviewItemListener = this,
             attachedImagesClickListener = this,
             reviewBasicInfoListener = this,
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
             reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
         )
     }
@@ -1121,4 +1124,23 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         )
     }
 
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            (adapter as? ReadReviewAdapter)?.findReviewContainingThumbnail(item)?.let { (reviewItemPosition, element) ->
+                onAttachedImagesClicked(
+                    productReview = element.reviewData,
+                    positionClicked = position,
+                    shopId = element.shopId,
+                    reviewItemPosition = reviewItemPosition
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            item: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
+    }
 }

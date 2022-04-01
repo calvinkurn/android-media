@@ -18,22 +18,20 @@ import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
 import com.tokopedia.review.feature.reading.data.ProductReviewResponse
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
-import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSellerResponse
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(
     view: View,
     reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool,
+    reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
     private val readReviewItemListener: ReadReviewItemListener,
-    private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
     private val reviewBasicInfoListener: ReviewBasicInfoListener,
 ) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
@@ -60,15 +58,13 @@ class ReadReviewViewHolder(
     private var shopId = ""
     private var badRatingReason: ReviewBadRatingReasonWidget? = null
 
-    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
-
     init {
         bindViews()
         attachedMedia?.setRecycledViewPool(reviewMediaThumbnailRecycledViewPool)
+        attachedMedia?.setListener(reviewMediaThumbnailListener)
     }
 
     override fun bind(element: ReadReviewUiModel) {
-        reviewMediaThumbnailListener.element = element
         isProductReview = !element.isShopViewHolder
         shopId = element.shopId
         with(element.reviewData) {
@@ -334,7 +330,6 @@ class ReadReviewViewHolder(
         }
         attachedMedia?.apply {
             setData(mediaThumbnails)
-            setListener(reviewMediaThumbnailListener)
             show()
         }
     }
@@ -367,28 +362,6 @@ class ReadReviewViewHolder(
                 val greyColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
                 likeImage?.setImage(IconUnify.THUMB, greyColor)
             }
-        }
-    }
-
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
-        var element: ReadReviewUiModel? = null
-
-        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            element?.let {
-                attachedImagesClickListener.onAttachedImagesClicked(
-                    productReview = it.reviewData,
-                    positionClicked = position,
-                    shopId = shopId,
-                    reviewItemPosition = adapterPosition
-                )
-            }
-        }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
         }
     }
 }
