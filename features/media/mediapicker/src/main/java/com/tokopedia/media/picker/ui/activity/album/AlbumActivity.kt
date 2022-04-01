@@ -15,7 +15,6 @@ import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.media.databinding.ActivityAlbumBinding
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
-import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
@@ -52,10 +51,6 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
             listener = this,
             parent = it
         )
-    }
-
-    private val pageSoruce by lazy {
-        param.get().pageSourceName()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -38,7 +38,7 @@ class PickerPreviewActivity : BaseActivity()
 
     @Inject
     lateinit var param: ParamCacheManager
-    
+
     @Inject
     lateinit var previewAnalytics: PreviewAnalytics
 
