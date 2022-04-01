@@ -2,7 +2,6 @@ package com.tokopedia.checkout.journey.simple
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.checkout.ShipmentActivity
 import com.tokopedia.checkout.robot.checkoutPage
 import com.tokopedia.checkout.test.R
@@ -28,10 +27,7 @@ class CheckoutTokoNowTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
-
     private fun setup(safResponse: Int = R.raw.saf_bundle_tokonow_default_response, ratesResponse: Int = R.raw.ratesv3_tokonow_default_response) {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
             addMockResponse(SHIPMENT_ADDRESS_FORM_KEY, InstrumentationMockHelper.getRawString(context, safResponse), MockModelConfig.FIND_BY_CONTAINS)
             addMockResponse(SAVE_SHIPMENT_KEY, InstrumentationMockHelper.getRawString(context, R.raw.save_shipment_default_response), MockModelConfig.FIND_BY_CONTAINS)
@@ -59,7 +55,6 @@ class CheckoutTokoNowTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -82,7 +77,6 @@ class CheckoutTokoNowTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -108,7 +102,6 @@ class CheckoutTokoNowTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
@@ -130,14 +123,12 @@ class CheckoutTokoNowTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics {
             waitForData()
-            hasPassedAnalytics(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
             assertGoToPayment()
         }
     }
 
     @After
     fun cleanup() {
-        gtmLogDBSource.deleteAll().subscribe()
         if (activityRule.activity?.isDestroyed == false) activityRule.finishActivity()
     }
 
