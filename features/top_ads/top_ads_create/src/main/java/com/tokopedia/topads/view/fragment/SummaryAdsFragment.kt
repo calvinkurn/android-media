@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
@@ -49,9 +50,10 @@ import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -71,22 +73,41 @@ private const val AUTOBID_DEFUALT_BUDGET = 16000
 
 class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
+    private var toggle: SwitchUnify? = null
+    private var daily_budget: TextFieldUnify? = null
+    private var groupInput: TextFieldUnify? = null
+    private var productCount: Typography? = null
+    private var goToProduct: IconUnify? = null
+    private var divider2: DividerUnify? = null
+    private var group_non_auto: androidx.constraintlayout.widget.Group? = null
+    private var group_auto: androidx.constraintlayout.widget.Group? = null
+    private var goToAutobid: IconUnify? = null
+    private var divider3: DividerUnify? = null
+    private var keywordCount: Typography? = null
+    private var goToKeyword: IconUnify? = null
+    private var divider4: DividerUnify? = null
+    private var bidRange: Typography? = null
+    private var goToBudget: IconUnify? = null
+    private var btn_submit: UnifyButton? = null
+    private var info_text: Typography? = null
+    private var loading: LoaderUnify? = null
+
     private lateinit var viewModel: SummaryViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     var map = HashMap<String, Any>()
-    private var input = InputCreateGroup()
     var keyword = KeywordsItem()
     var group = Group()
     private var strategies: MutableList<String> = mutableListOf()
     private var keywordsList: MutableList<KeySharedModel> = mutableListOf()
-    private var adsItemsList: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = arrayListOf()
+    private var adsItemsList: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
+        arrayListOf()
     private var selectedProductIds: MutableList<String> = mutableListOf()
     private var selectedkeywordIds: MutableList<String> = mutableListOf()
     private var selectedkeywordTags: MutableList<String> = mutableListOf()
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
-    var isEnoughDeposit = false
+    private var isEnoughDeposit = false
     private var dailyBudget = 0
     private var suggestion = 0
     private var validation1 = true
@@ -99,11 +120,8 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         private const val MORE_INFO = " Info Selengkapnya"
         private const val MULTIPLIER = 40
         private const val MAXIMUM_LIMIT = 10000000
-        private const val UNLIMITED_BUDGET = "0"
-        private const val DEFINED_BUDGET = "1"
-        private const val INPUT = "input"
-        fun createInstance(): Fragment {
 
+        fun createInstance(): Fragment {
             val fragment = SummaryAdsFragment()
             val args = Bundle()
             fragment.arguments = args
@@ -142,9 +160,32 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
+        val view = inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
+        setUpView(view)
+        return view
+    }
+
+    private fun setUpView(view: View) {
+        toggle = view.findViewById(R.id.toggle)
+        daily_budget = view.findViewById(R.id.daily_budget)
+        groupInput = view.findViewById(R.id.groupInput)
+        productCount = view.findViewById(R.id.productCount)
+        goToProduct = view.findViewById(R.id.goToProduct)
+        divider2 = view.findViewById(R.id.divider2)
+        group_non_auto = view.findViewById(R.id.group_non_auto)
+        group_auto = view.findViewById(R.id.group_auto)
+        goToAutobid = view.findViewById(R.id.goToAutobid)
+        divider3 = view.findViewById(R.id.divider3)
+        keywordCount = view.findViewById(R.id.keywordCount)
+        goToKeyword = view.findViewById(R.id.goToKeyword)
+        divider4 = view.findViewById(R.id.divider4)
+        bidRange = view.findViewById(R.id.bidRange)
+        goToBudget = view.findViewById(R.id.goToBudget)
+        btn_submit = view.findViewById(R.id.btn_submit)
+        info_text = view.findViewById(R.id.info_text)
+        loading = view.findViewById(R.id.loading)
     }
 
     private fun onSuccess(data: DepositAmount) {
@@ -172,47 +213,49 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setAutoBidState()
-        btn_submit.setOnClickListener {
+        btn_submit?.setOnClickListener {
             if (groupInput?.textFieldInput?.text?.isNotEmpty() == true) {
                 loading?.visibility = View.VISIBLE
                 btn_submit?.isEnabled = false
-                viewModel.topAdsCreated(getProductData(), getKeywordData(), getGroupData(), this::onSuccessActivation, this::onErrorActivation)
+                viewModel.topAdsCreated(getProductData(),
+                    getKeywordData(), getGroupData(),
+                    this::onSuccessActivation, this::onErrorActivation)
                 sendAnalyticEvent()
             } else {
                 onErrorGroupName(getString(R.string.topads_create_group_name_empty_error))
             }
         }
         setUpInitialValues()
-        toggle.setOnCheckedChangeListener { _, isChecked ->
+        toggle?.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                daily_budget.visibility = View.VISIBLE
+                daily_budget?.visibility = View.VISIBLE
                 var budget = 0
                 try {
                     budget = Integer.parseInt(
-                        daily_budget.textFieldInput.text.toString().removeCommaRawString()
+                        daily_budget?.textFieldInput?.text.toString().removeCommaRawString()
                     )
                 } catch (e: NumberFormatException) {
                 }
-                if (budget < suggestion && daily_budget.isVisible) {
-                    daily_budget.setMessage(
+                if (budget < suggestion && daily_budget?.isVisible == true) {
+                    daily_budget?.setMessage(
                         String.format(
                             getString(R.string.topads_common_minimum_daily_budget),
                             minBudget
                         )
                     )
-                    daily_budget.setError(true)
+                    daily_budget?.setError(true)
                     validation2 = false
                     actionEnable()
                 }
             } else {
-                daily_budget.visibility = View.GONE
-                daily_budget.setError(false)
-                daily_budget.setMessage("")
+                daily_budget?.visibility = View.GONE
+                daily_budget?.setError(false)
+                daily_budget?.setMessage("")
                 validation2 = true
                 actionEnable()
             }
         }
-        daily_budget.textFieldInput.addTextChangedListener(watcher())
+        daily_budget?.textFieldInput?.addTextChangedListener(watcher())
         setLink()
     }
 
@@ -220,14 +263,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         if (stepperModel?.autoBidState?.isEmpty() == true) {
             group_non_auto?.visible()
             group_auto?.gone()
-            divider2.gone()
-            divider3.visible()
-            divider4.visible()
+            divider2?.gone()
+            divider3?.visible()
+            divider4?.visible()
         } else {
             group_non_auto?.gone()
             group_auto?.visible()
-            divider3.gone()
-            divider4.gone()
+            divider3?.gone()
+            divider4?.gone()
         }
     }
 
@@ -242,7 +285,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             (stepperModel?.finalBidPerClick ?: 0) * MULTIPLIER
         else
             AUTOBID_DEFUALT_BUDGET
-        daily_budget.textFieldInput.setText(dailyBudget.toString())
+        daily_budget?.textFieldInput?.setText(dailyBudget.toString())
         groupInput?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
         groupInput?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -255,7 +298,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             if (hasFocus) {
                 setGroupName()
             } else {
-                groupInput.textFieldInput.setText(stepperModel?.groupName)
+                groupInput?.textFieldInput?.setText(stepperModel?.groupName)
                 groupInput?.setError(false)
                 validation1 = true
                 actionEnable()
@@ -324,13 +367,15 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         keywordCount?.text = stepperModel?.selectedKeywordStage?.count().toString()
 
         goToProduct?.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_PRODUCT_EDIT, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_PRODUCT_EDIT,
+                "")
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_1, stepperModel)
         }
 
         goToKeyword?.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_KATA_KUNCI_EDIT, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsCreateEvent(CLICK_KATA_KUNCI_EDIT,
+                "")
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }
@@ -339,7 +384,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_3, stepperModel)
         }
-        goToAutobid.setOnClickListener {
+        goToAutobid?.setOnClickListener {
             stepperModel?.redirectionToSummary = true
             stepperListener?.getToFragment(UrlConstant.FRAGMENT_NUMBER_2, stepperModel)
         }
@@ -353,8 +398,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             spannableText.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        it,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        it, com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 ), startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -387,50 +431,52 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     private fun isMinValidation(input: Int): Boolean {
         return (input < (stepperModel?.finalBidPerClick
             ?: 0) * MULTIPLIER && stepperModel?.autoBidState?.isEmpty() == true) ||
-                (input < minBudget && stepperModel?.autoBidState?.isEmpty() != true) && daily_budget.isVisible
+                (input < minBudget && stepperModel?.autoBidState?.isEmpty() != true) && daily_budget?.isVisible == true
     }
 
-    private fun watcher(): NumberTextWatcher {
-        return object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val input = number.toInt()
-                if (isMinValidation(input)) {
-                    daily_budget.setError(true)
-                    daily_budget.setMessage(
-                        String.format(
-                            getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
-                            Utils.convertToCurrency(minBudget.toLong())
+    private fun watcher(): NumberTextWatcher? {
+        return daily_budget?.let { daily_budget ->
+            object : NumberTextWatcher(daily_budget.textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val input = number.toInt()
+                    if (isMinValidation(input)) {
+                        daily_budget.setError(true)
+                        daily_budget.setMessage(
+                            String.format(
+                                getString(com.tokopedia.topads.common.R.string.angarran_harrian_min_bid_error),
+                                Utils.convertToCurrency(minBudget.toLong())
+                            )
                         )
-                    )
-                    validation2 = false
-                    actionEnable()
-                } else if (input % DAILYBUDGET_FACTOR != 0) {
-                    daily_budget.setError(true)
-                    daily_budget.setMessage(
-                        String.format(
-                            getString(R.string.topads_common_error_multiple_50),
-                            DAILYBUDGET_FACTOR
+                        validation2 = false
+                        actionEnable()
+                    } else if (input % DAILYBUDGET_FACTOR != 0) {
+                        daily_budget.setError(true)
+                        daily_budget.setMessage(
+                            String.format(
+                                getString(R.string.topads_common_error_multiple_50),
+                                DAILYBUDGET_FACTOR
+                            )
                         )
-                    )
-                    validation2 = false
-                    actionEnable()
-                } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
-                    daily_budget.setError(true)
-                    daily_budget.setMessage(
-                        String.format(
-                            getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error),
-                            Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())
+                        validation2 = false
+                        actionEnable()
+                    } else if (input > MAXIMUM_LIMIT.toDouble() && daily_budget.isVisible) {
+                        daily_budget.setError(true)
+                        daily_budget.setMessage(
+                            String.format(
+                                getString(com.tokopedia.topads.common.R.string.angarran_harrian_max_bid_error),
+                                Utils.convertToCurrency(MAXIMUM_LIMIT.toLong())
+                            )
                         )
-                    )
-                    validation2 = false
-                    actionEnable()
-                } else {
-                    stepperModel?.dailyBudget = input
-                    daily_budget.setMessage("")
-                    daily_budget.setError(false)
-                    validation2 = true
-                    actionEnable()
+                        validation2 = false
+                        actionEnable()
+                    } else {
+                        stepperModel?.dailyBudget = input
+                        daily_budget.setMessage("")
+                        daily_budget.setError(false)
+                        validation2 = true
+                        actionEnable()
+                    }
                 }
             }
         }
@@ -439,17 +485,17 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     override fun onResume() {
         super.onResume()
         activity?.runOnUiThread {
-            daily_budget.textFieldInput.setText(dailyBudget.toString())
-            daily_budget.refreshDrawableState()
+            daily_budget?.textFieldInput?.setText(dailyBudget.toString())
+            daily_budget?.refreshDrawableState()
         }
     }
 
-    private fun getGroupData() : HashMap<String, Any?> {
-        var dataMap = HashMap<String, Any?>()
+    private fun getGroupData(): HashMap<String, Any?> {
+        val dataMap = HashMap<String, Any?>()
 
         dataMap[BUDGET_LIMITED] = toggle?.isChecked
 
-        dataMap[DAILY_BUDGET] = daily_budget.textFieldInput.text.toString().replace(".","")
+        dataMap[DAILY_BUDGET] = daily_budget?.textFieldInput?.text.toString().replace(".", "")
         dataMap[ParamObject.GROUP_NAME] = stepperModel?.groupName ?: ""
         dataMap[GROUPID] = ""
         dataMap[NAME_EDIT] = true
@@ -458,9 +504,11 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             strategies.clear()
             strategies.add(stepperModel?.autoBidState!!)
         } else {
-            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, stepperModel?.finalBidPerClick?.toFloat()))
-            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, stepperModel?.finalBidPerClick?.toFloat()))
-            dataMap[BID_TYPE] =  bidTypeData
+            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH,
+                stepperModel?.finalBidPerClick?.toFloat()))
+            bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE,
+                stepperModel?.finalBidPerClick?.toFloat()))
+            dataMap[BID_TYPE] = bidTypeData
         }
 
         dataMap[STRATEGIES] = strategies
@@ -490,7 +538,7 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         return dataKeyword
     }
 
-    private fun getProductData() : Bundle {
+    private fun getProductData(): Bundle {
         val datProduct = Bundle()
         adsItemsList.clear()
         if (stepperModel?.selectedProductIds?.count() ?: 0 > 0) {
