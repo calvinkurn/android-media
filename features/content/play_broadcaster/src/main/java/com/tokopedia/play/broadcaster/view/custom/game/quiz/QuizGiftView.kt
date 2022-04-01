@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.InputFilter
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
@@ -43,6 +44,8 @@ class QuizGiftView : ConstraintLayout {
             isEditable {
                 binding.clLabelView.hide()
                 binding.clInputView.show()
+
+                setFocus(true)
             }
         }
 
@@ -100,5 +103,20 @@ class QuizGiftView : ConstraintLayout {
 
     private fun isEditable(fn: () -> Unit) {
         if(isEditable) fn.invoke()
+    }
+
+    private fun setFocus(isFocus: Boolean) {
+        binding.etBroQuizGift.apply {
+            if(isFocus) requestFocus()
+            else clearFocus()
+        }
+
+        showKeyboard(isFocus)
+    }
+
+    private fun showKeyboard(isShow: Boolean) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (isShow) imm.showSoftInput(binding.etBroQuizGift, InputMethodManager.SHOW_IMPLICIT)
+        else imm.hideSoftInputFromWindow(binding.etBroQuizGift.windowToken, 0)
     }
 }
