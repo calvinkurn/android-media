@@ -348,7 +348,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         container.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
         container.addBottomNavMargin()
-        if (isDirectClick) cameraAnalytics.clickGalleryTab(pageSource)
+        if (isDirectClick) cameraAnalytics.clickGalleryTab()
     }
 
     override fun tabVisibility(isShown: Boolean) {
@@ -424,7 +424,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             R.string.picker_capture_limit_photo,
             param.get().maxMediaTotal()
         )
-        cameraAnalytics.maxPhotoLimit(pageSource)
+        cameraAnalytics.maxPhotoLimit()
     }
 
     override fun onShowVideoLimitReachedCameraToast() {
@@ -432,7 +432,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
-        cameraAnalytics.maxVideoLimit(pageSource)
+        cameraAnalytics.maxVideoLimit()
     }
 
     override fun onShowVideoMinDurationToast() {
@@ -499,7 +499,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             getString(R.string.picker_storage_fail_video_record),
             Toaster.TYPE_ERROR
         )
-        cameraAnalytics.recordLowStorage(pageSource)
+        cameraAnalytics.recordLowStorage()
     }
 
     private fun onShowValidationToaster(messageId: Int, param: Any) {

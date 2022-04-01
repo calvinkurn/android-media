@@ -30,9 +30,10 @@ class PickerModule {
     @Provides
     @PickerScope
     fun providePickerAnalytics(
-        userSession: UserSessionInterface
+        userSession: UserSessionInterface,
+        paramCacheManager: ParamCacheManager
     ) = PickerAnalytics(
-        CameraAnalyticsImpl(userSession),
+        CameraAnalyticsImpl(userSession, paramCacheManager),
         GalleryAnalyticsImpl(userSession)
     )
 

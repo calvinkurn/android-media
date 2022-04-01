@@ -2,42 +2,26 @@ package com.tokopedia.media.picker.analytics.camera
 
 interface CameraAnalytics {
 
-    fun clickRecord(
-        entryPoint: String,
-    )
+    fun clickRecord()
 
-    fun clickShutter(
-        entryPoint: String
-    )
+    fun clickShutter()
 
     fun clickFlash(
-        entryPoint: String,
         flashState: String
     )
 
     fun clickFlip(
-        entryPoint: String,
         cameraState: String
     )
 
-    fun clickThumbnail(
-        entryPoint: String
-    )
+    fun clickThumbnail()
 
-    fun clickGalleryTab(
-        entryPoint: String
-    )
+    fun clickGalleryTab()
 
-    fun maxPhotoLimit(
-        entryPoint: String
-    )
+    fun maxPhotoLimit()
 
-    fun maxVideoLimit(
-        entryPoint: String
-    )
+    fun maxVideoLimit()
 
-    fun recordLowStorage(
-        entryPoint: String
-    )
+    fun recordLowStorage()
 
 }

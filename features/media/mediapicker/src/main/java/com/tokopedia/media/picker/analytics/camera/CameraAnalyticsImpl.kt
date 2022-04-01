@@ -3,98 +3,104 @@
 package com.tokopedia.media.picker.analytics.camera
 
 import com.tokopedia.media.picker.analytics.*
+import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CameraAnalyticsImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val paramCacheManager: ParamCacheManager
 ) : CameraAnalytics {
 
     private val userId: String
-        get() = userSession.userId
+        get() = userSession.userId ?: ""
 
     private val shopId: String
-        get() = userSession.shopId?: ""
+        get() = userSession.shopId ?: ""
 
-    override fun clickRecord(entryPoint: String) {
+    private val sourcePage: String
+        get() = paramCacheManager.get().pageSourceName()
+
+    override fun clickRecord() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_RECORD,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId"
+            eventLabel = "$sourcePage - $userId - $shopId"
         )
     }
 
-    override fun clickShutter(entryPoint: String) {
+    override fun clickShutter() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_SHUTTER,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickFlash(entryPoint: String, flashState: String) {
+    override fun clickFlash(flashState: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_FLASH,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$flashState - $entryPoint - $userId - $shopId",
+            eventLabel = "$flashState - $sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickFlip(entryPoint: String, cameraState: String) {
+    override fun clickFlip(cameraState: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_FLIP,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$cameraState - $entryPoint - $userId - $shopId",
+            eventLabel = "$cameraState - $sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickThumbnail(entryPoint: String) {
+    override fun clickThumbnail() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_THUMBNAIL,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickGalleryTab(entryPoint: String) {
+    override fun clickGalleryTab() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_TAB_GALLERY,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun maxPhotoLimit(entryPoint: String) {
+    override fun maxPhotoLimit() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_PHOTO,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun maxVideoLimit(entryPoint: String) {
+    override fun maxVideoLimit() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_VIDEO,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun recordLowStorage(entryPoint: String) {
+    override fun recordLowStorage() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_LOW_STORAGE,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 

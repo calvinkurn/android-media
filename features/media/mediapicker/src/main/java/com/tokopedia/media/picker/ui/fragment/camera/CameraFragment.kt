@@ -135,7 +135,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onCameraThumbnailClicked() {
         listener?.onCameraThumbnailClicked()
-        cameraAnalytics.clickThumbnail(pageSource)
+        cameraAnalytics.clickThumbnail()
     }
 
     override fun onDestroyView() {
@@ -163,7 +163,7 @@ open class CameraFragment : BaseDaggerFragment()
             Flash.ON -> FLASH_ON_STRING
             else -> FLASH_OFF_STRING
         }
-        cameraAnalytics.clickFlash(pageSource, flashStateString)
+        cameraAnalytics.clickFlash(flashStateString)
     }
 
     override fun onFlipClicked() {
@@ -172,7 +172,7 @@ open class CameraFragment : BaseDaggerFragment()
 
         val cameraStateString =
             if (cameraView.isFacingCameraIsFront()) CAMERA_FRONT_STRING else CAMERA_BACK_STRING
-        cameraAnalytics.clickFlip(pageSource, cameraStateString)
+        cameraAnalytics.clickFlip(cameraStateString)
     }
 
     override fun onTakeMediaClicked() {
@@ -184,12 +184,12 @@ open class CameraFragment : BaseDaggerFragment()
         showShutterEffect {
             if (isTakingPictureMode) {
                 cameraView.onStartTakePicture()
-                cameraAnalytics.clickShutter(pageSource)
+                cameraAnalytics.clickShutter()
             } else {
                 cameraView.enableFlashTorch()
                 cameraView.onStartTakeVideo()
                 controller.onVideoDurationChanged()
-                cameraAnalytics.clickRecord(pageSource)
+                cameraAnalytics.clickRecord()
             }
         }
     }
