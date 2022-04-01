@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.inboxreview.presentation.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -19,10 +20,11 @@ import com.tokopedia.review.feature.inboxreview.presentation.adapter.FeedbackInb
 import com.tokopedia.review.feature.inboxreview.presentation.model.FeedbackInboxUiModel
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 
 class InboxReviewFeedbackViewHolder(
     view: View,
+    reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool,
+    reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
     private val feedbackInboxReviewListener: FeedbackInboxReviewListener
 ) : AbstractViewHolder<FeedbackInboxUiModel>(view) {
 
@@ -32,16 +34,15 @@ class InboxReviewFeedbackViewHolder(
         const val FEEDBACK_MAX_CHAR = 150
     }
 
-    private var element: FeedbackInboxUiModel? = null
     private val impressHolder = ImpressHolder()
     private val binding = ItemInboxReviewBinding.bind(view)
 
     init {
-        binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
+        binding.reviewMediaThumbnails.setListener(reviewMediaThumbnailListener)
+        binding.reviewMediaThumbnails.setRecycledViewPool(reviewMediaThumbnailRecycledViewPool)
     }
 
     override fun bind(element: FeedbackInboxUiModel) {
-        this.element = element
         with(binding) {
             if(adapterPosition == 0) {
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
@@ -192,26 +193,5 @@ class InboxReviewFeedbackViewHolder(
 
     private fun setBadRatingDisclaimer(disclaimer: String) {
         binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
-    }
-
-    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
-        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            element?.let {
-                feedbackInboxReviewListener.onMediaItemClicked(
-                    it.videoAttachments.map { it.videoUrl },
-                    it.imageAttachments.map { it.fullSizeURL },
-                    it.feedbackId,
-                    it.productID,
-                    position
-                )
-            }
-        }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
-        }
     }
 }

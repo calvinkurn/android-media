@@ -64,6 +64,8 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Re
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -108,7 +110,12 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private val inboxReviewAdapterTypeFactory by lazy {
-        InboxReviewAdapterTypeFactory(this, this)
+        InboxReviewAdapterTypeFactory(
+            feedbackInboxReviewListener = this,
+            globalErrorStateListener = this,
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
+            reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
+        )
     }
 
     private val inboxReviewAdapter: InboxReviewAdapter
@@ -775,5 +782,26 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 mediaCount = mappedReviewMedia.size.toLong()
             )
         )
+    }
+
+    private inner class ReviewMediaThumbnailListener : ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            inboxReviewAdapter.findFeedbackInboxContainingThumbnail(item)?.let {
+                onMediaItemClicked(
+                    it.videoAttachments.map { it.videoUrl },
+                    it.imageAttachments.map { it.fullSizeURL },
+                    it.feedbackId,
+                    it.productID,
+                    position
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            item: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
     }
 }
