@@ -258,7 +258,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             flBroStartLivestream.setOnClickListener {
                 analytic.clickStartStreaming(parentViewModel.channelId)
 
-                /** TODO: comment this first because we havent revamped the schedule functionality yet */
                 val schedule = parentViewModel.uiState.value.schedule.schedule
                 if (schedule is BroadcastScheduleUiModel.Scheduled) {
                     val currentTime = Date()
