@@ -159,6 +159,8 @@ class ReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun saveUiState(outState: Bundle) {
+        enableViewPagerTimer.cancel()
+        requestToggleViewPagerSwipe(true)
         outState.putParcelable(SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE, adapterUiState.value)
         outState.putParcelable(SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE, _viewPagerUiState.value)
     }
