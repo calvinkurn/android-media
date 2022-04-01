@@ -190,21 +190,6 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertTrue((actualResponse as RechargeNetworkResult.Success).data.isEmpty())
     }
 
-    protected fun verifyGetFavoriteNumberChipsFail() {
-        val actualResponse = viewModel.favoriteNumberChipsData.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
-    protected fun verifyGetFavoriteNumberListFail() {
-        val actualResponse = viewModel.autoCompleteData.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
-    protected fun verifyGetFavoriteNumberPrefillFail() {
-        val actualResponse = viewModel.prefillData.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
     protected fun verifyPrefixOperatorLoading(expectedResponse: RechargeNetworkResult.Loading){
         val actualResponse = viewModel.catalogPrefixSelect.value
         Assert.assertEquals(expectedResponse, actualResponse)

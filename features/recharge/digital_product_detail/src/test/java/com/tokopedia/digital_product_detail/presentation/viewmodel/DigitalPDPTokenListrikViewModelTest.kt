@@ -112,17 +112,6 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give fail result`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
-
-        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
-        verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberChipsFail()
-        verifyGetFavoriteNumberListFail()
-        verifyGetFavoriteNumberPrefillFail()
-    }
-
-    @Test
     fun `when updateCheckoutPassData with denom data called should update digitalCheckoutPassData`() {
         val denomData = dataFactory.getDenomData()
         viewModel.updateCheckoutPassData(

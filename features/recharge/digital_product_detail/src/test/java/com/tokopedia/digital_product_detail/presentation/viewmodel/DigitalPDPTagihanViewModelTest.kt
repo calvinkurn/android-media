@@ -79,16 +79,6 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give fail result`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
-
-        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
-        verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberChipsFail()
-        verifyGetFavoriteNumberListFail()
-        verifyGetFavoriteNumberPrefillFail()
-    }
-    @Test
     fun `given catalogSelectGroup loading state then should get loading state`() {
         val loadingResponse = RechargeNetworkResult.Loading
 
