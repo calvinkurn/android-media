@@ -3,6 +3,7 @@ package com.tokopedia.ovop2p.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.ovop2p.Constants
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequest
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.domain.usecase.OvoP2pTransferUseCase
 import com.tokopedia.ovop2p.view.fragment.OvoP2PForm.Companion.GENERAL_ERROR
@@ -30,22 +31,28 @@ class OvoP2pTransferRequestViewModel @Inject constructor(
             reqObj.errors?.let { errList ->
                 if (errList.isNotEmpty()) {
                     errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
-                        if (errMsg.contentEquals(NON_OVO_ERROR)) {
-                            transferReqBaseMutableLiveData.value = TransferReqNonOvo
-                        } else {
-                            transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
-                        }
+                        setTransferErrorMessage(errMsg)
                     }
                 } else {
-                    transferReqBaseMutableLiveData.value =
-                        reqObj.dstAccName?.let { TransferReqData(it) }
+                    setSuccessData(reqObj)
                 }
             } ?: kotlin.run {
-                transferReqBaseMutableLiveData.value =
-                    reqObj.dstAccName?.let { TransferReqData(it) }
+                setSuccessData(reqObj)
             }
-
         }
+    }
+
+    private fun setTransferErrorMessage(errMsg: String) {
+        if (errMsg.contentEquals(NON_OVO_ERROR)) {
+            transferReqBaseMutableLiveData.value = TransferReqNonOvo
+        } else {
+            transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
+        }
+    }
+
+    private fun setSuccessData(reqObj: OvoP2pTransferRequest) {
+        transferReqBaseMutableLiveData.value =
+            reqObj.dstAccName?.let { TransferReqData(it) }
     }
 
     private fun onFailTransfer(throwable: Throwable?) {
