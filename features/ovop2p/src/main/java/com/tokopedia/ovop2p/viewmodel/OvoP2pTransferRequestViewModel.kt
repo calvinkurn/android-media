@@ -6,8 +6,11 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.domain.usecase.OvoP2pTransferUseCase
 import com.tokopedia.ovop2p.view.fragment.OvoP2PForm.Companion.GENERAL_ERROR
-import com.tokopedia.ovop2p.view.viewStates.*
-import java.util.*
+import com.tokopedia.ovop2p.view.viewStates.TransferReqData
+import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorPage
+import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorSnkBar
+import com.tokopedia.ovop2p.view.viewStates.TransferReqNonOvo
+import com.tokopedia.ovop2p.view.viewStates.TransferRequestState
 import javax.inject.Inject
 
 class OvoP2pTransferRequestViewModel @Inject constructor(
@@ -45,7 +48,7 @@ class OvoP2pTransferRequestViewModel @Inject constructor(
         }
     }
 
-    private fun onFailTransfer(throwable: Throwable) {
+    private fun onFailTransfer(throwable: Throwable?) {
         transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(GENERAL_ERROR)
     }
 

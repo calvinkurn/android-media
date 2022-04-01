@@ -54,7 +54,7 @@ class OvoP2pTxnThankYouOvoUsrVM @Inject constructor(
         }
     }
 
-    private fun onFailThankYou(throwable: Throwable) {
+    private fun onFailThankYou(throwable: Throwable?) {
         transferThankyouLiveData.value = ThankYouErrSnkBar(GENERAL_ERROR)
     }
 

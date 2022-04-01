@@ -7,7 +7,11 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.domain.usecase.OvoTrxnConfirmationUseCase
 import com.tokopedia.ovop2p.view.fragment.OvoP2PForm
-import com.tokopedia.ovop2p.view.viewStates.*
+import com.tokopedia.ovop2p.view.viewStates.GoToThankYouPage
+import com.tokopedia.ovop2p.view.viewStates.OpenPinChlngWebView
+import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorPage
+import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorSnkBar
+import com.tokopedia.ovop2p.view.viewStates.TransferConfirmState
 import javax.inject.Inject
 
 class OvoP2pTrxnConfirmVM @Inject constructor(
@@ -55,7 +59,7 @@ class OvoP2pTrxnConfirmVM @Inject constructor(
         }
     }
 
-    private fun onFailConfirm(throwable: Throwable) {
+    private fun onFailConfirm(throwable: Throwable?) {
         txnConfirmMutableLiveData.value = TransferConfErrorSnkBar(OvoP2PForm.GENERAL_ERROR)
     }
 

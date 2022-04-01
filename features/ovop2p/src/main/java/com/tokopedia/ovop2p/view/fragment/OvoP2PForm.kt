@@ -38,15 +38,25 @@ import com.tokopedia.ovop2p.view.activity.OvoP2pWebViewActivity
 import com.tokopedia.ovop2p.view.adapters.ContactsCursorAdapter
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
-import com.tokopedia.ovop2p.view.viewStates.*
+import com.tokopedia.ovop2p.view.viewStates.GoToThankYouPage
+import com.tokopedia.ovop2p.view.viewStates.OpenPinChlngWebView
+import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorPage
+import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorSnkBar
+import com.tokopedia.ovop2p.view.viewStates.TransferConfirmState
+import com.tokopedia.ovop2p.view.viewStates.TransferReqData
+import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorPage
+import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorSnkBar
+import com.tokopedia.ovop2p.view.viewStates.TransferReqNonOvo
+import com.tokopedia.ovop2p.view.viewStates.TransferRequestState
+import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
+import com.tokopedia.ovop2p.view.viewStates.WalletData
+import com.tokopedia.ovop2p.view.viewStates.WalletError
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
 
 class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener, CoroutineScope {
@@ -103,7 +113,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         get() = Dispatchers.Main
 
     override fun onClick(v: View?) {
-        var id: Int = v?.id ?: -1
+        val id: Int = v?.id ?: -1
         if (id != -1) {
             when (id) {
                 R.id.proceed -> {
@@ -563,6 +573,4 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
             }
         }
     }
-
-
 }
