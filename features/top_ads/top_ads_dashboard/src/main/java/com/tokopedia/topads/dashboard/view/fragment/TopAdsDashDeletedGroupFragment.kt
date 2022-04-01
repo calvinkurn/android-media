@@ -25,14 +25,14 @@ import javax.inject.Inject
 
 class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
 
-    private lateinit var adapter: DeletedGroupItemsListAdapter
-    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
-    private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var recyclerView: RecyclerView
+    private var adapter: DeletedGroupItemsListAdapter? = null
+    private var recyclerviewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var layoutManager: LinearLayoutManager?= null
+    private var recyclerView: RecyclerView? = null
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
-    private lateinit var loader: LoaderUnify
+    private var loader: LoaderUnify? = null
     private val adType: String? by lazy { arguments?.getString(KEY_AD_TYPE) }
 
 
@@ -73,13 +73,16 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
     private fun setAdapter() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
-        recyclerView.isNestedScrollingEnabled = false
+        recyclerView?.isNestedScrollingEnabled = false
         adapter = DeletedGroupItemsListAdapter(
             DeletedItemsAdapterTypeFactoryImpl()
         )
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = layoutManager
-        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+        recyclerView?.adapter = adapter
+        recyclerView?.layoutManager = layoutManager
+        recyclerviewScrollListener?.let {
+            recyclerView?.addOnScrollListener(it)
+        }
+
     }
 
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -119,11 +122,11 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
 
     fun fetchFirstPage(adType: String) {
         currentPageNum = 1
-        adapter.clearList()
-        loader.show()
+        adapter?.clearList()
+        loader?.show()
         val startDate =
-            Utils.format.format((parentFragment as TopAdsBaseTabFragment).startDate)
-        val endDate = Utils.format.format((parentFragment as TopAdsBaseTabFragment).endDate)
+            Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.startDate)
+        val endDate = Utils.format.format((parentFragment as? TopAdsBaseTabFragment)?.endDate)
         topAdsDashboardPresenter.getDeletedAds(
             currentPageNum, adType,
             startDate, endDate, ::onSuccessResult, ::onEmptyResult
@@ -133,8 +136,8 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
     private fun onSuccessResult(topAdsDeletedAdsResponse: TopAdsDeletedAdsResponse) {
         setPaginationFlow(topAdsDeletedAdsResponse.topAdsDeletedAds.page)
         val list = topAdsDeletedAdsResponse.topAdsDeletedAds.topAdsDeletedAdsItemList
-        adapter.submitList(ArrayList(getList(list)))
-        loader.hide()
+        adapter?.submitList(ArrayList(getList(list)))
+        loader?.hide()
     }
 
     private fun setPaginationFlow(page: TopAdsDeletedAdsResponse.TopadsDeletedAds.Page) {
@@ -143,14 +146,14 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
             totalCount / page.perPage
         } else
             (totalCount / page.perPage) + 1
-        recyclerviewScrollListener.updateStateAfterGetData()
+        recyclerviewScrollListener?.updateStateAfterGetData()
         (parentFragment as TopAdsBaseTabFragment).setDeletedGroupCount(totalCount)
     }
 
     private fun getList(list: List<TopAdsDeletedAdsResponse.TopadsDeletedAds.TopAdsDeletedAdsItem>): MutableList<DeletedGroupItemsItemModel> {
         val itemList = ArrayList<DeletedGroupItemsItemModel>()
         list.forEach {
-            it.AdType = adType ?: ""
+            it.adType = adType ?: ""
             val model = DeletedGroupItemsItemModel(it)
             itemList.add(model)
         }
@@ -159,9 +162,9 @@ class TopAdsDashDeletedGroupFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
-        if (adapter.itemCount > 0) return
-        (parentFragment as TopAdsBaseTabFragment).setDeletedGroupCount(adapter.itemCount)
-        adapter.submitList(arrayListOf(DeletedGroupItemsEmptyModel()))
-        loader.hide()
+        if (adapter?.itemCount ?: 0 > 0) return
+        (parentFragment as TopAdsBaseTabFragment).setDeletedGroupCount(adapter?.itemCount ?: 0)
+        adapter?.submitList(arrayListOf(DeletedGroupItemsEmptyModel()))
+        loader?.hide()
     }
 }

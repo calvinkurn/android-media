@@ -46,7 +46,7 @@ data class TopAdsDeletedAdsResponse(
             val priceBid: String,
             @SerializedName("search_type")
             val searchType: Int,
-            var AdType: String = ""
+            var adType: String = ""
         )
 
         data class Page(

@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -53,16 +54,16 @@ private const val CUREENTY_ACTIVATED = 1
 
 class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
 
-    private lateinit var adapter: HeadLineAdItemsListAdapter
-    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
-    private lateinit var layoutManager: LinearLayoutManager
-    private lateinit var recyclerView: RecyclerView
+    private var adapter: HeadLineAdItemsListAdapter? = null
+    private var recyclerviewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var layoutManager: LinearLayoutManager? = null
+    private var recyclerView: RecyclerView? = null
     private var totalCount = 0
     private var totalPage = 0
     private var currentPageNum = 1
     private var singleDelGroupId = ""
     private var deleteCancel = false
-    private lateinit var loader: LoaderUnify
+    private var loader: LoaderUnify? = null
     private val groupIds: MutableList<String> = mutableListOf()
 
 
@@ -136,10 +137,11 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     private fun setAdapter() {
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
-        recyclerView.isNestedScrollingEnabled = false
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = layoutManager
-        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+        recyclerView?.isNestedScrollingEnabled = false
+        recyclerView?.adapter = adapter
+        recyclerView?.layoutManager = layoutManager
+        recyclerviewScrollListener?.let { recyclerView?.addOnScrollListener(it) }
+
     }
 
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -155,8 +157,8 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
 
     private fun fetchNextPage(page: Int) {
         val startDate =
-            Utils.format.format((parentFragment as TopAdsHeadlineBaseFragment).startDate)
-        val endDate = Utils.format.format((parentFragment as TopAdsHeadlineBaseFragment).endDate)
+            Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate)
+        val endDate = Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate)
         presenter.getGroupData(
             page,
             searchBar?.searchBarTextField?.text.toString(),
@@ -173,13 +175,13 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     private fun onSuccessGroupResult(response: GroupItemResponse.GetTopadsDashboardGroups) {
         totalCount = response.meta.page.total
         totalPage = (totalCount / response.meta.page.perPage) + 1
-        recyclerviewScrollListener.updateStateAfterGetData()
-        loader.visibility = View.GONE
+        recyclerviewScrollListener?.updateStateAfterGetData()
+        loader?.hide()
         response.data.forEach {
             groupIds.add(it.groupId)
-            adapter.items.add(HeadLineAdItemsItemModel(it))
+            adapter?.items?.add(HeadLineAdItemsItemModel(it))
         }
-        if (adapter.items.size.isZero()) {
+        if (adapter?.items?.size.isZero()) {
             onEmptyResult()
         } else if (groupIds.isNotEmpty()) {
             presenter.getGroupStatisticsData(
@@ -193,24 +195,24 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     }
 
     private fun onEmptyResult() {
-        adapter.items.add(HeadLineAdItemsEmptyModel())
+        adapter?.items?.add(HeadLineAdItemsEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
-            adapter.setEmptyView(
+            adapter?.setEmptyView(
                 !TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,
                 groupFilterSheet.getSelectedText(context)
             )
         } else {
-            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
+            adapter?.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
         }
     }
 
     private fun onSuccessStatistics(statistics: GetTopadsDashboardGroupStatistics) {
-        adapter.setstatistics(statistics.data)
+        adapter?.setstatistics(statistics.data)
     }
 
     private fun onSuccessCount(countList: List<CountDataItem>) {
-        adapter.setItemCount(countList)
-        loader.visibility = View.GONE
+        adapter?.setItemCount(countList)
+        loader?.visibility = View.GONE
     }
 
     private fun setFilterCount() {
@@ -223,19 +225,19 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
 
     private fun startSelectMode(select: Boolean) {
         if (select) {
-            adapter.setSelectMode(true)
+            adapter?.setSelectMode(true)
             actionbar.visibility = View.VISIBLE
             movetogroup.visibility = View.GONE
             btnAddItem.visibility = View.VISIBLE
         } else {
-            adapter.setSelectMode(false)
+            adapter?.setSelectMode(false)
             actionbar.visibility = View.GONE
             btnAddItem.visibility = View.GONE
         }
     }
 
     private fun singleItemDelete(pos: Int) {
-        singleDelGroupId = (adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId
+        singleDelGroupId = (adapter?.items?.getOrNull(pos) as? HeadLineAdItemsItemModel)?.data?.groupId?:""
         performAction(TopAdsDashboardConstant.ACTION_DELETE)
     }
 
@@ -282,7 +284,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     private fun getAdIds(): MutableList<String> {
         val ads: MutableList<String> = mutableListOf()
         return if (singleDelGroupId.isEmpty()) {
-            adapter.getSelectedItems().forEach {
+            adapter?.getSelectedItems()?.forEach {
                 ads.add(it.data.groupId)
             }
             ads
@@ -295,12 +297,12 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
         if (status != CUREENTY_ACTIVATED)
             presenter.setGroupAction(
                 ::onSuccessAction, TopAdsDashboardConstant.ACTION_ACTIVATE,
-                listOf((adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId), resources
+                listOf((adapter?.items?.getOrNull(pos) as? HeadLineAdItemsItemModel)?.data?.groupId?:""), resources
             )
         else
             presenter.setGroupAction(
                 ::onSuccessAction, TopAdsDashboardConstant.ACTION_DEACTIVATE,
-                listOf((adapter.items[pos] as HeadLineAdItemsItemModel).data.groupId), resources
+                listOf((adapter?.items?.getOrNull(pos) as? HeadLineAdItemsItemModel)?.data?.groupId?:""), resources
             )
     }
 
@@ -357,7 +359,7 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
             dialog.setTitle(
                 String.format(
                     getString(R.string.topads_dash_headline_bulk_delete_title),
-                    adapter.getSelectedItems().size
+                    adapter?.getSelectedItems()?.size
                 )
             )
             dialog.setDescription(getString(R.string.topads_dasg_headline_bulk_delete_desc))
@@ -392,12 +394,12 @@ class TopAdsHeadlineShopFragment : BaseDaggerFragment() {
     fun fetchFirstPage() {
         groupIds.clear()
         currentPageNum = 1
-        loader.visibility = View.VISIBLE
-        adapter.items.clear()
-        adapter.notifyDataSetChanged()
+        loader?.visibility = View.VISIBLE
+        adapter?.items?.clear()
+        adapter?.notifyDataSetChanged()
         val startDate =
-            Utils.format.format((parentFragment as TopAdsHeadlineBaseFragment).startDate)
-        val endDate = Utils.format.format((parentFragment as TopAdsHeadlineBaseFragment).endDate)
+            Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.startDate)
+        val endDate = Utils.format.format((parentFragment as? TopAdsHeadlineBaseFragment)?.endDate)
         presenter.getGroupData(
             currentPageNum,
             searchBar?.searchBarTextField?.text.toString(),

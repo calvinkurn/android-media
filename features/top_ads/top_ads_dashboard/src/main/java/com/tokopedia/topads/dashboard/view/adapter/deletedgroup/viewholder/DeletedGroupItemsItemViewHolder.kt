@@ -51,7 +51,7 @@ class DeletedGroupItemsItemViewHolder(
     }
 
     override fun bind(item: DeletedGroupItemsItemModel) {
-        when (item.topAdsDeletedAdsItem.AdType) {
+        when (item.topAdsDeletedAdsItem.adType) {
             AD_TYPE_SHOP_ADS -> loadForHeadlineTab(item.topAdsDeletedAdsItem)
             AD_TYPE_PRODUCT_ADS -> loadForProductTab(item.topAdsDeletedAdsItem)
             else -> loadForProductTab(item.topAdsDeletedAdsItem)
