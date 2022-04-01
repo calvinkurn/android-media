@@ -25,6 +25,7 @@ import com.tokopedia.home.R
 open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0)
     : ViewGroup(context, attrs, defStyle), NestedScrollingParent, NestedScrollingChild {
 
+    private var lottieSwipeRefreshListener: LottieSwipeRefreshListener? = null
     private var canChildScrollUp = false
     private var notify: Boolean = true
     var isRefreshing: Boolean = false
@@ -120,6 +121,10 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         contentChildView = ChildView(getChildAt(1))
     }
 
+    fun setListener(lottieSwipeRefreshListener: LottieSwipeRefreshListener) {
+        this.lottieSwipeRefreshListener = lottieSwipeRefreshListener
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         fun measureChild(childView: ChildView, widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -144,7 +149,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         layoutContentView()
     }
 
-    fun layoutTopView() {
+    private fun layoutTopView() {
         val topView = topChildView.view
         val topViewAttr = topChildView.positionAttr
 
@@ -169,7 +174,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
 
     }
 
-    fun layoutContentView() {
+    private fun layoutContentView() {
         val contentView = contentChildView.view
 
         val lp = contentView.layoutParams as LayoutParams
@@ -302,6 +307,13 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     private fun positionChildren(offset: Float) {
         topChildView.view.bringToFront()
         topChildView.view.y = topChildView.positionAttr.top + offset
+
+        if (offset > 0) {
+            lottieSwipeRefreshListener?.changeStatusBarToDark()
+        }
+        else {
+            lottieSwipeRefreshListener?.changeStatusBarToLight()
+        }
 
         if (!overlay) {
             contentChildView.view.y = contentChildView.positionAttr.top + offset

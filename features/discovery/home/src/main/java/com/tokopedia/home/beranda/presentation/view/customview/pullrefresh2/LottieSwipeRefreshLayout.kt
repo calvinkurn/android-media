@@ -19,6 +19,7 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
     : SimpleSwipeRefreshLayout(context, attrs, defStyle) {
 
     private var animationFile: Int = -1
+
     private val lottieAnimationView by lazy {
         LottieAnimationView(context).apply {
             if (animationFile == -1) {
@@ -47,13 +48,24 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
             style.recycle()
         }
 
+//        setOnRefreshListener {
+//            lottieSwipeRefreshListener?.changeStatusBarToDark()
+//        }
+
         addProgressListener {
             lottieAnimationView.progress = it
+//            if (it > 0.5f) {
+//                lottieSwipeRefreshListener?.changeStatusBarToDark()
+//            }
         }
 
         addTriggerListener {
             lottieAnimationView.resumeAnimation()
         }
+
+//        removeOnTriggerListener {
+//            lottieSwipeRefreshListener?.changeStatusBarToLight()
+//        }
     }
 
     fun setColorSchemeResources(color: Int) {
@@ -65,11 +77,15 @@ class LottieSwipeRefreshLayout @JvmOverloads constructor(context: Context, attrs
     override fun stopRefreshing() {
         super.stopRefreshing()
         lottieAnimationView.pauseAnimation()
+//        if (lottieAnimationView.progress < 0.65f) {
+//            lottieSwipeRefreshListener?.changeStatusBarToLight()
+//        }
     }
 
     override fun startRefreshing() {
         super.startRefreshing()
         lottieAnimationView.resumeAnimation()
+//        lottieSwipeRefreshListener?.changeStatusBarToDark()
     }
 
 //    fun setCanChildScrollUp(canChildScrollUp: Boolean) {

@@ -89,6 +89,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
 import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshLayout
+import com.tokopedia.home.beranda.presentation.view.customview.pullrefresh2.LottieSwipeRefreshListener
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home.beranda.presentation.view.listener.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
@@ -194,7 +195,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         RecommendationWidgetListener,
         QuestWidgetCallbacks,
         CMHomeWidgetCallback,
-        HomePayLaterWidgetListener{
+        HomePayLaterWidgetListener,
+        LottieSwipeRefreshListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -583,6 +585,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         onChooseAddressUpdated()
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
+        refreshLayout.setListener(this)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
         root = view.findViewById(R.id.root)
         if (arguments != null) {
@@ -2910,5 +2913,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun deletePayLaterWidget() {
         getHomeViewModel().deletePayLaterWidget()
+    }
+
+    override fun changeStatusBarToDark() {
+        mainParentStatusBarListener?.requestStatusBarDark()
+    }
+
+    override fun changeStatusBarToLight() {
+        if (isLightThemeStatusBar) {
+            mainParentStatusBarListener?.requestStatusBarLight()
+        }
     }
 }
