@@ -525,5 +525,7 @@
     <string name="error_empty_weight">Berat wajib diisi</string>
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
+    <string name="wpv_coachmark_title">Atur berat per varian, yuk!</string>
+    <string name="wpv_coachmark_message">Sekarang kamu bisa atur berat tiap varian.</string>
 
 </resources>

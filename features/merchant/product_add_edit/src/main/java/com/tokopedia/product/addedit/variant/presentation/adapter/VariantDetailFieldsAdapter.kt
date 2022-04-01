@@ -18,9 +18,15 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         return this.lastIndex
     }
 
-    fun addVariantDetailField(variantDetailInputLayoutModel: VariantDetailInputLayoutModel): Int {
+    fun addVariantDetailField(
+        variantDetailInputLayoutModel: VariantDetailInputLayoutModel,
+        displayWeightCoachmark: Boolean = false
+    ): Int {
         variantDetailInputLayoutModel.visitablePosition = lastIndex + 1
-        visitables.add(VariantDetailFieldsUiModel(variantDetailInputLayoutModel))
+        visitables.add(VariantDetailFieldsUiModel(
+            variantDetailInputLayoutModel,
+            displayWeightCoachmark
+        ))
         notifyItemInserted(this.lastIndex)
         return this.lastIndex
     }
@@ -47,8 +53,8 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
         list.forEachIndexed { index, visitable ->
             if (visitable is VariantDetailFieldsUiModel) {
                 visitable.variantDetailInputLayoutModel.priceEditEnabled = isEnabled
-                val variantDetailFieldsViewModel =
-                    VariantDetailFieldsUiModel(visitable.variantDetailInputLayoutModel)
+                val variantDetailFieldsViewModel = VariantDetailFieldsUiModel(
+                    visitable.variantDetailInputLayoutModel, visitable.displayWeightCoachmark)
                 notifyElement(index, variantDetailFieldsViewModel)
             }
         }
@@ -62,12 +68,6 @@ class VariantDetailFieldsAdapter(variantDetailTypeFactoryImpl: VariantDetailInpu
                     notifyItemChanged(position)
                 }
             }
-        }
-    }
-
-    fun getDetailInputLayoutList(): List<VariantDetailInputLayoutModel> {
-        return list.filterIsInstance<VariantDetailFieldsUiModel>().map {
-            it.variantDetailInputLayoutModel
         }
     }
 

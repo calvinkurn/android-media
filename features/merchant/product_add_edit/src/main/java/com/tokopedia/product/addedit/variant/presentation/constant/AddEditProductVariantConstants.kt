@@ -28,5 +28,6 @@ class AddEditProductVariantConstants {
         const val ADD_MODE = "add"
         const val ALL_MODE = "all"
         const val ALL_VARIANT_SEARCH_CATEGORY_ID = 1
+        const val COACHMARK_ADAPTER_POSITION = 1
     }
 }

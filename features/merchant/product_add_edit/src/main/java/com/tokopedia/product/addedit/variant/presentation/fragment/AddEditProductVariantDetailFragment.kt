@@ -25,6 +25,8 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.getFirstTimeWeightPerVariant
+import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil.setFirstTimeWeightPerVariant
 import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -82,6 +84,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
+    private val firstTimeWeightPerVariant: Boolean by lazy {
+        getFirstTimeWeightPerVariant(activity)
+    }
 
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -227,6 +232,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         return validatedInputModel
     }
 
+    override fun onCoachmarkDismissed() {
+        setFirstTimeWeightPerVariant(activity, false)
+    }
+
     override fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel) {
         viewModel.updateProductInputModel(multipleVariantEditInputModel)
     }
@@ -347,15 +356,16 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
             val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                    productVariantIndex, 0, unitValue.value, isSkuVisible)
-            val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
+                productVariantIndex, Int.ZERO, unitValue.value, isSkuVisible)
+            val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
+                variantDetailInputModel, firstTimeWeightPerVariant)
             fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
         }
     }
 
     private fun setupVariantDetailCombinationFields(selectedVariants: List<SelectionInputModel>) {
         //increment for indexing product variant
-        var productVariantIndex = 0
+        var productVariantIndex = Int.ZERO
         // variant level 1 properties
         val selectedVariantLevel1 = selectedVariants[VARIANT_VALUE_LEVEL_ONE_POSITION]
         val unitValueLevel1 = selectedVariantLevel1.options
@@ -365,8 +375,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         // start rendering
         unitValueLevel1.forEach { level1Value ->
             // render collapsible header
-            val headerVisitablePosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value)
-                    ?: 0
+            val headerVisitablePosition = variantDetailFieldsAdapter?.addUnitValueHeader(level1Value.value).orZero()
             viewModel.updateVariantDetailHeaderMap(headerVisitablePosition, false)
             // init header position - current header visitable position map values
             viewModel.updateCurrentHeaderPositionMap(headerVisitablePosition, headerVisitablePosition)
@@ -374,8 +383,9 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             unitValueLevel2.forEach { level2Value ->
                 val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
-                        productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
-                val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
+                    productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
+                val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(
+                    variantDetailInputModel, firstTimeWeightPerVariant)
                 fieldVisitablePosition?.let { viewModel.addToVariantDetailInputMap(fieldVisitablePosition, variantDetailInputModel) }
                 productVariantIndex++
             }

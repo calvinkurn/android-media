@@ -12,6 +12,7 @@ object SharedPreferencesUtil {
 
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_SPECIFICATION = "FirstTimeSpecification"
     private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_CUSTOM_VARIANT_TYPE = "FirstTimeCVT"
+    private const val MA_SA_ADDEDITPRODUCT_FIRST_TIME_WEIGHT_PER_VARIANT = "FirstTimeWPV"
     private const val MA_SA_ADDEDITPRODUCT_PRICE_WHEN_LOADED = "PriceWhenLoaded"
     private const val MA_SA_ADDEDITPRODUCT_PRODUCT_LIMITATION_MODEL = "ProductLimitationModel"
 
@@ -73,6 +74,21 @@ object SharedPreferencesUtil {
         val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_CUSTOM_VARIANT_TYPE, value)
+            commit()
+        }
+    }
+
+    fun getFirstTimeWeightPerVariant(activity: Activity?): Boolean {
+        if (activity == null) return false
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        return sharedPref.getBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_WEIGHT_PER_VARIANT, true)
+    }
+
+    fun setFirstTimeWeightPerVariant(activity: Activity?, value: Boolean) {
+        if (activity == null) return
+        val sharedPref = activity.getPreferences(Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean(MA_SA_ADDEDITPRODUCT_FIRST_TIME_WEIGHT_PER_VARIANT, value)
             commit()
         }
     }

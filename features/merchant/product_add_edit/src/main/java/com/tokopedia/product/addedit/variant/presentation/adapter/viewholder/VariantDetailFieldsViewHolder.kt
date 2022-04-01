@@ -9,18 +9,22 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setRecyclerViewEditorActionListener
 import com.tokopedia.product.addedit.variant.presentation.adapter.uimodel.VariantDetailFieldsUiModel
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COACHMARK_ADAPTER_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
 class VariantDetailFieldsViewHolder(
     itemView: View?,
-    variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
+    private val variantDetailFieldsViewHolderListener: VariantDetailFieldsViewHolderListener
 ): AbstractViewHolder<VariantDetailFieldsUiModel>(itemView) {
 
     interface VariantDetailFieldsViewHolderListener {
@@ -29,6 +33,7 @@ class VariantDetailFieldsViewHolder(
         fun onStockInputTextChanged(stockInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
         fun onSkuInputTextChanged(skuInput: String, adapterPosition: Int)
         fun onWeightInputTextChanged(weightInput: String, adapterPosition: Int): VariantDetailInputLayoutModel
+        fun onCoachmarkDismissed()
     }
 
     private var unitValueLabel: AppCompatTextView? = null
@@ -145,8 +150,10 @@ class VariantDetailFieldsViewHolder(
     override fun bind(element: VariantDetailFieldsUiModel?) {
         element?.run {
             val variantDetailInputLayoutModel = this.variantDetailInputLayoutModel
+
             // update visitable position before bind the data
             visitablePosition = variantDetailInputLayoutModel.visitablePosition
+
             // render input data to
             unitValueLabel?.text = variantDetailInputLayoutModel.unitValueLabel
             statusSwitch?.isChecked = variantDetailInputLayoutModel.isActive
@@ -160,10 +167,44 @@ class VariantDetailFieldsViewHolder(
             weightField?.textFieldInput?.setText(variantDetailInputLayoutModel.weight?.toString().orEmpty())
             weightField?.setError(variantDetailInputLayoutModel.isWeightError)
             weightField?.setMessage(variantDetailInputLayoutModel.weightFieldErrorMessage)
+
             // show / hide sku field
             setSkuFieldVisibility(variantDetailInputLayoutModel.isSkuFieldVisible)
+
             // enable / disable priceField
             priceField?.textFieldInput?.isEnabled = variantDetailInputLayoutModel.priceEditEnabled
+
+            // show weight coachmark
+            if (visitablePosition == COACHMARK_ADAPTER_POSITION && displayWeightCoachmark)
+                showCoachmark()
+        }
+    }
+
+    private fun showCoachmark() {
+        weightField?.let { anchorView ->
+            val items = listOf(
+                CoachMark2Item(
+                    anchorView,
+                    getString(R.string.label_cvt_tips_title),
+                    getString(R.string.label_cvt_tips),
+                    CoachMarkContentPosition.TOP.position
+                )
+            )
+            val coachMark = CoachMark2(itemView.context)
+            coachMark.showCoachMark(ArrayList(items))
+            hideCoachmarkWhenTouchOutside(coachMark)
+        }
+    }
+
+    private fun hideCoachmarkWhenTouchOutside(coachMark: CoachMark2) {
+        weightField?.requestFocus()
+        weightField?.requestFocusFromTouch()
+        weightField?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) coachMark.dismissCoachMark()
+        }
+        coachMark.setOnDismissListener {
+            weightField?.clearFocus()
+            variantDetailFieldsViewHolderListener.onCoachmarkDismissed()
         }
     }
 
