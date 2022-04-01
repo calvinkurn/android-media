@@ -494,14 +494,21 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
+    override fun onShowFailToVideoRecordToast() {
+        onShowToaster(
+            getString(R.string.picker_storage_fail_video_record),
+            Toaster.TYPE_ERROR
+        )
+    }
+
     private fun onShowValidationToaster(messageId: Int, param: Any) {
         val content = getString(messageId, param)
         onShowToaster(content)
     }
 
-    private fun onShowToaster(message: String) {
+    private fun onShowToaster(message: String, type: Int = Toaster.TYPE_NORMAL) {
         container.container().let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, type).show()
         }
     }
 
