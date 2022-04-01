@@ -26,8 +26,12 @@ class PreviewModule {
     @Provides
     @PreviewScope
     fun providePreviewAnalytics(
-        userSession: UserSessionInterface
-    ) = PreviewAnalyticsImpl(userSession)
+        userSession: UserSessionInterface,
+        paramCacheManager: ParamCacheManager
+    ): PreviewAnalytics{
+        return PreviewAnalyticsImpl(userSession, paramCacheManager)
+    }
+
 
     @Provides
     @PreviewScope
