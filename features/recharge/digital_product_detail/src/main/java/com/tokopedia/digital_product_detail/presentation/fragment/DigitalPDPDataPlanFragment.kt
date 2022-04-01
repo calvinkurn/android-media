@@ -319,7 +319,6 @@ class DigitalPDPDataPlanFragment :
         viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(true)
                 }
@@ -562,21 +561,16 @@ class DigitalPDPDataPlanFragment :
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
-                if (prefills.isNotEmpty()) {
-                    if (prefills[0].subtitle.isNotEmpty()) {
-                        setContactName(prefills[0].title)
-                        setInputNumber(prefills[0].subtitle, true)
+                if (isInputFieldEmpty() && prefills.isNotEmpty()) {
+                    if (prefills.first().subtitle.isNotEmpty()) {
+                        setContactName(prefills.first().title)
+                        setInputNumber(prefills.first().subtitle, true)
                     } else {
-                        setInputNumber(prefills[0].title, true)
+                        setInputNumber(prefills.first().title, true)
                     }
                 }
             }
         }
-    }
-
-    private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(false, true)
-        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetPrefixOperator() {

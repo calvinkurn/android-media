@@ -263,6 +263,9 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
     }
 
+    fun isInputFieldEmpty(): Boolean = binding.clientNumberWidgetBase
+        .clientNumberWidgetInputField.editText.text.isEmpty()
+
     fun showIndicatorIcon() {
         if (isClearableState) {
             hideCheckIcon()

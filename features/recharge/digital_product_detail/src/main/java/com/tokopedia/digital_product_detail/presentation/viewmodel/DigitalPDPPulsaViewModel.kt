@@ -137,9 +137,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
             _autoCompleteData.value = RechargeNetworkResult.Success(data.favoriteNumberList.persoFavoriteNumber.items)
             _prefillData.value = RechargeNetworkResult.Success(data.favoriteNumberPrefill.persoFavoriteNumber.items)
         }) {
-            _favoriteNumberChipsData.value = RechargeNetworkResult.Fail(it)
-            _autoCompleteData.value = RechargeNetworkResult.Fail(it)
-            _prefillData.value = RechargeNetworkResult.Fail(it)
+            // this section is not reachable due to no fail scenario
         }
     }
 

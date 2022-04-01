@@ -19,7 +19,7 @@ class GetRechargeFavoriteNumberUseCase @Inject constructor(
     private val useCase: MultiRequestGraphqlUseCase
 ): UseCase<PersoFavNumberGroup>() {
     var persoFavNumberGroup = PersoFavNumberGroup()
-    DigitalPDPPulsaFragment
+
     override suspend fun executeOnBackground(): PersoFavNumberGroup {
         persoFavNumberGroup = PersoFavNumberGroup()
 

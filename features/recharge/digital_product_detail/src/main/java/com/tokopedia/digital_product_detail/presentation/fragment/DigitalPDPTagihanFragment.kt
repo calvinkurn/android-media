@@ -165,7 +165,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpTagihanListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
@@ -382,12 +381,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
-                if (prefills.isNotEmpty()) {
-                    if (prefills[0].subtitle.isNotEmpty()) {
-                        setContactName(prefills[0].title)
-                        setInputNumber(prefills[0].subtitle, true)
+                if (isInputFieldEmpty() && prefills.isNotEmpty()) {
+                    if (prefills.first().subtitle.isNotEmpty()) {
+                        setContactName(prefills.first().title)
+                        setInputNumber(prefills.first().subtitle, true)
                     } else {
-                        setInputNumber(prefills[0].title, true)
+                        setInputNumber(prefills.first().title, true)
                     }
                 }
             }
@@ -404,12 +403,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 viewModel.digitalCheckoutPassData
             )
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_CART_DIGITAL)
-        }
-    }
-
-    private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpTagihanListrikClientNumberWidget.setFilterChipShimmer(false, true)
         }
     }
 
