@@ -118,7 +118,7 @@ public abstract class TActivity extends BaseActivity {
     protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
-            toolbar.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_NN0);
+            toolbar.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_Background);
         } else {
             toolbar.setBackgroundResource(com.tokopedia.resources.common.R.drawable.bg_white_toolbar_drop_shadow);
         }
