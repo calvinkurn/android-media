@@ -35,6 +35,7 @@ class EditAutoAdsBudgetFragment : AutoAdsBaseBudgetFragment(), View.OnClickListe
     override fun setUpView(view: View) {
         autoAdsWidget = view.findViewById(R.id.autoads_edit_widget)
         createAutoBg = view.findViewById(R.id.create_auto_bg)
+        buttonLayout = view.findViewById(R.id.buttonLayout)
     }
 
     override fun showLoading() {
