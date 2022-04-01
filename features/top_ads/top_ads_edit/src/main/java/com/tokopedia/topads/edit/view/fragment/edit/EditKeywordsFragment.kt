@@ -63,7 +63,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
 import com.tokopedia.topads.edit.view.sheet.ChooseKeyBottomSheet
-import com.tokopedia.topads.edit.view.sheet.InfoBottomSheet
+import com.tokopedia.topads.common.view.sheet.InfoBottomSheet
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster

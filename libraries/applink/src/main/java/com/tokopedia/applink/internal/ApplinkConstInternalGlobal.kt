@@ -481,4 +481,7 @@ object ApplinkConstInternalGlobal {
 
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
+
+    //DataExplorerActivity
+    const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
 }
