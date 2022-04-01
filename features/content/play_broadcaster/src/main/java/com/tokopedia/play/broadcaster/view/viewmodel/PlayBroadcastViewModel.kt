@@ -946,7 +946,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleClickNextOnQuiz() {
-        if(_quizFormState.value.next() == QuizFormStateUiModel.SetDuration) {
+        if(_quizFormState.value.next() is QuizFormStateUiModel.SetDuration) {
             val remainingDuration = livePusherMediator.remainingDurationInMillis
             val quizConfig = _gameConfig.value.quizConfig
 
@@ -981,8 +981,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSubmitQuizForm() {
-        /** TODO: submit data */
-        _quizFormState.setValue { next() }
+        viewModelScope.launchCatchError(block = {
+            _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
+
+            /** TODO: submit data */
+            delay(2000)
+
+            /** Reset Form */
+            _quizFormData.setValue { QuizFormDataUiModel() }
+            _quizFormState.setValue { QuizFormStateUiModel.Nothing }
+        }) {
+            _quizFormState.setValue { QuizFormStateUiModel.SetDuration(false) }
+            _uiEvent.emit(PlayBroadcastEvent.ShowErrorCreateQuiz(it))
+        }
     }
 
     /**

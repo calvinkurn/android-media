@@ -15,6 +15,7 @@ data class QuizFormDataUiModel(
         val isSelected: Boolean = false,
     )
 
+
     fun isFormValid(): Boolean {
         return title.isNotEmpty() && isOptionsValid()
     }

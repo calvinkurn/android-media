@@ -750,6 +750,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                 }
             }
         }
@@ -829,7 +830,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 QuizFormStateUiModel.Preparation -> {
                     showQuizForm(true)
                 }
-                QuizFormStateUiModel.SetDuration -> {
+                is QuizFormStateUiModel.SetDuration -> {
                     /** TODO: handle set duration */
                 }
             }

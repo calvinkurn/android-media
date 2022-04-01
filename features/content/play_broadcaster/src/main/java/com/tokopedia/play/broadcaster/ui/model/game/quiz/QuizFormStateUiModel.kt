@@ -15,10 +15,10 @@ sealed class QuizFormStateUiModel {
 
     object Preparation: QuizFormStateUiModel() {
         override fun prev() = Nothing
-        override fun next() = SetDuration
+        override fun next() = SetDuration(false)
     }
 
-    object SetDuration: QuizFormStateUiModel() {
+    data class SetDuration(val isLoading: Boolean): QuizFormStateUiModel() {
         override fun prev() = Preparation
         override fun next() = Nothing
     }

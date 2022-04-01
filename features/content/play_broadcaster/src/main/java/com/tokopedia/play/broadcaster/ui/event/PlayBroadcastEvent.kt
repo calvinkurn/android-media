@@ -5,4 +5,8 @@ sealed class PlayBroadcastEvent {
     data class ShowError(
         val error: Throwable
     ) : PlayBroadcastEvent()
+
+    data class ShowErrorCreateQuiz(
+        val error: Throwable
+    ) : PlayBroadcastEvent()
 }

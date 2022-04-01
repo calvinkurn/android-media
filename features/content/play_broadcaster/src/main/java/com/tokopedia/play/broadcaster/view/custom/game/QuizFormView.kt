@@ -125,11 +125,16 @@ class QuizFormView : ConstraintLayout {
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
             }
-            QuizFormStateUiModel.SetDuration -> {
+            is QuizFormStateUiModel.SetDuration -> {
                 binding.groupActionBar.visibility = View.GONE
                 binding.viewGameHeader.isEditable = false
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
+
+                timePickerBinding.btnApply.apply {
+                    isLoading = quizFormState.isLoading
+                    isEnabled = !quizFormState.isLoading
+                }
             }
         }
     }
@@ -140,6 +145,10 @@ class QuizFormView : ConstraintLayout {
 
     fun applyQuizConfig(quizConfig: QuizConfigUiModel) {
         this.quizConfig = quizConfig
+    }
+
+    fun setError(throwable: Throwable) {
+        /** TODO: handle error here */
     }
 
     private fun setupInsets() {
