@@ -947,16 +947,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleClickNextOnQuiz() {
         if(_quizFormState.value.next() is QuizFormStateUiModel.SetDuration) {
-            val remainingDuration = livePusherMediator.remainingDurationInMillis
-            val quizConfig = _gameConfig.value.quizConfig
-
-            _gameConfig.setValue {
-                copy(
-                    quizConfig = quizConfig.copy(
-                        eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
-                    )
-                )
-            }
+            updateQuizEligibleDuration()
         }
 
         _quizFormState.setValue { next() }
@@ -975,6 +966,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectQuizDuration(duration: Long) {
+        updateQuizEligibleDuration()
         _quizFormData.setValue {
             copy(duration = duration)
         }
@@ -993,6 +985,22 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }) {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(false) }
             _uiEvent.emit(PlayBroadcastEvent.ShowErrorCreateQuiz(it))
+        }
+    }
+
+    /**
+     * Quiz
+     */
+    private fun updateQuizEligibleDuration() {
+        val remainingDuration = livePusherMediator.remainingDurationInMillis
+        val quizConfig = _gameConfig.value.quizConfig
+
+        _gameConfig.setValue {
+            copy(
+                quizConfig = quizConfig.copy(
+                    eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
+                )
+            )
         }
     }
 
