@@ -3,6 +3,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <include layout="@layout/layout_title_auto_complete"/>
+    <include
+        android:id="@+id/recentViewTitleLayout"
+        layout="@layout/layout_title_auto_complete"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

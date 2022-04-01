@@ -5,7 +5,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
+import com.tokopedia.settingnotif.usersetting.data.pojo.SettingSections
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
+import com.tokopedia.settingnotif.usersetting.data.pojo.UserSetting
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.troubleshooter.notification.data.domain.GetTroubleshootStatusUseCase
 import com.tokopedia.troubleshooter.notification.data.entity.NotificationSendTroubleshoot
@@ -19,6 +21,7 @@ import com.tokopedia.troubleshooter.notification.ui.state.RingtoneState
 import com.tokopedia.troubleshooter.notification.ui.state.StatusState
 import com.tokopedia.troubleshooter.notification.ui.uiview.TickerItemUIView
 import com.tokopedia.troubleshooter.notification.ui.uiview.UserSettingUIView
+import com.tokopedia.troubleshooter.notification.util.FileUtils
 import com.tokopedia.troubleshooter.notification.util.isEqualsTo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,7 +29,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
@@ -140,6 +142,22 @@ class TroubleshootViewModelTest {
         viewModel.token isEqualsTo expectedValue
     }
 
+    @Test fun `it should throw if request a new token`() {
+        val throwable = Throwable("")
+        val expectedValue = Fail(throwable)
+
+        every { instanceManager.getNewToken(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwable)
+        }
+
+        viewModel.getNewToken()
+
+        verify { instanceManager.getNewToken(any(), any()) }
+        verify { tokenObserver.onChanged(expectedValue) }
+
+        viewModel.token isEqualsTo expectedValue
+    }
+
     @Test fun `it should update new token`() {
         val token = "123"
         viewModel.updateToken(token)
@@ -205,15 +223,20 @@ class TroubleshootViewModelTest {
         viewModel.deviceSetting.value isEqualsTo expectedValue
     }
 
-    @Test fun `it should return user settings for seller app properly`() {
+    @Test fun `it should return seller settings properly`() {
         runBlockingTest {
-            val userSettingMock = UserSettingUIView()
-            val expectedValue = Success(userSettingMock)
-
             mockkStatic(GlobalConfig::class)
 
+            val response = FileUtils.parse<UserNotificationResponse>(
+                fileName = "/success_seller_notif_setting.json",
+                typeOfT = UserNotificationResponse::class.java
+            )
+
+            val resultUiModel = viewModel.notificationSetting(response)
+            val expectedValue = Success(resultUiModel)
+
             every { GlobalConfig.isSellerApp() } returns true
-            coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+            coEvery { userSettingUseCase.executeOnBackground() } returns response
 
             viewModel.userSetting()
 
@@ -223,26 +246,39 @@ class TroubleshootViewModelTest {
 
     @Test fun `it should return user settings as buyer and have shop properly`() {
         runBlockingTest {
-            val userSettingMock = UserSettingUIView()
-            val expectedValue = Success(userSettingMock)
-
             mockkStatic(GlobalConfig::class)
+
+            val response = FileUtils.parse<UserNotificationResponse>(
+                fileName = "/success_notif_setting.json",
+                typeOfT = UserNotificationResponse::class.java
+            )
 
             every { GlobalConfig.isSellerApp() } returns false
             every { userSession.hasShop() } returns true
-            coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+
+            coEvery { userSettingUseCase.executeOnBackground() } returns response
 
             viewModel.userSetting()
 
-            verify { notificationSetting.onChanged(expectedValue) }
+            verify(atLeast = 1) { notificationSetting.onChanged(any()) }
         }
     }
 
     @Test fun `it should return user settings as buyer and did not have shop properly`() {
-        val userSettingMock = UserSettingUIView()
-        val expectedValue = Success(userSettingMock)
+        mockkStatic(GlobalConfig::class)
 
-        coEvery { userSettingUseCase.executeOnBackground() } returns UserNotificationResponse()
+        val response = FileUtils.parse<UserNotificationResponse>(
+            fileName = "/success_notif_setting.json",
+            typeOfT = UserNotificationResponse::class.java
+        )
+
+        val resultUiModel = viewModel.notificationSetting(response)
+        val expectedValue = Success(resultUiModel)
+
+        every { GlobalConfig.isSellerApp() } returns false
+        every { userSession.hasShop() } returns false
+
+        coEvery { userSettingUseCase.executeOnBackground() } returns response
 
         viewModel.userSetting()
 
@@ -285,10 +321,15 @@ class TroubleshootViewModelTest {
         verify { dndMode.onChanged(false) }
     }
 
-    @Test fun `it should added tickers`() {
+    @Test fun `it should added a ticker`() {
         viewModel.removeTickers()
-        viewModel.tickers(TickerItemUIView(), StatusState.Success)
+        viewModel.tickers(TickerItemUIView())
         assert(viewModel.tickerItems.isNotEmpty())
+    }
+
+    @Test fun `it should did not add a ticker`() {
+        viewModel.tickers(TickerItemUIView())
+        viewModel.tickers(TickerItemUIView())
     }
 
 }

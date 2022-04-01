@@ -1,12 +1,18 @@
 package com.tokopedia.play.view.uimodel.mapper
 
-import com.tokopedia.play.data.ChannelStatusResponse
-import com.tokopedia.play.data.Product
-import com.tokopedia.play.data.ShopInfo
-import com.tokopedia.play.data.Voucher
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
@@ -15,6 +21,7 @@ import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import javax.inject.Inject
 
 /**
@@ -27,10 +34,12 @@ class PlayUiModelMapper @Inject constructor(
         private val channelStatusMapper: PlayChannelStatusMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
+        private val playUserReportMapper: PlayUserReportReasoningMapper,
+        private val cartMapper: PlayCartMapper,
 ) {
 
-    fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
-        return input.map(productTagMapper::mapProductTag)
+    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel> {
+        return input.map(productTagMapper::mapSection)
     }
 
     fun mapMerchantVouchers(input: List<Voucher>): List<MerchantVoucherUiModel> {
@@ -45,6 +54,10 @@ class PlayUiModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusFromResponse(input)
     }
 
+    fun mapWaitingDuration(input: ChannelStatusResponse): Int {
+        return channelStatusMapper.mapWaitingDurationResponse(input)
+    }
+
     fun mapPartnerInfo(input: ShopInfo): Boolean {
         return input.favoriteData.alreadyFavorited == 1
     }
@@ -55,5 +68,47 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapInteractiveLeaderboard(input: GetInteractiveLeaderboardResponse): PlayLeaderboardInfoUiModel {
         return interactiveLeaderboardMapper.mapLeaderboard(input) { false }
+    }
+
+    fun mapAddToCartFeedback(input: AddToCartDataModel): CartFeedbackResponseModel {
+        return cartMapper.mapCartFeedbackResponse(input)
+    }
+
+    fun mapUserReport(input: List<UserReportOptions>): List<PlayUserReportReasoningUiModel> {
+        return input.map(playUserReportMapper::mapUserReportReasoning)
+    }
+
+    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
+        return input.status == "success"
+    }
+
+    fun mapVariantChildToProduct(
+        child: VariantChild,
+        prevDetail: PlayProductUiModel.Product,
+    ): PlayProductUiModel.Product {
+        val stock = child.stock
+
+        return PlayProductUiModel.Product(
+            id = child.productId,
+            shopId = prevDetail.shopId,
+            imageUrl = child.picture?.original.orEmpty(),
+            title = child.name,
+            stock = if (stock == null) OutOfStock
+            else StockAvailable(stock.stock ?: 0),
+            isVariantAvailable = true,
+            price = if (child.campaign?.discountedPercentage != 0f) {
+                DiscountedPrice(
+                    originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
+                    discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
+                    discountPercent = child.campaign?.discountedPercentage?.toInt()?:0,
+                    discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
+                )
+            } else {
+                OriginalPrice(child.priceFmt.toEmptyStringIfNull(), child.price)
+            },
+            minQty = prevDetail.minQty.orZero(),
+            isFreeShipping = prevDetail.isFreeShipping,
+            applink = prevDetail.applink
+        )
     }
 }

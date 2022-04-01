@@ -18,7 +18,11 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
@@ -56,6 +60,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         renderNotes()
         renderQuantity()
         renderPurchaseProtection()
+        renderAddOn(binding, product, shop)
     }
 
     private fun renderDivider() {
@@ -206,7 +211,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
                 return@apply
             }
-            tvProductNotesPreview.text = product.notes
+            tvProductNotesPreview.text = Utils.getHtmlFormat(product.notes)
             tvProductNotesPlaceholder.gone()
             tvProductNotesPreview.visible()
             tvProductNotesEdit.visible()
@@ -233,7 +238,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             if (noteTextWatcher != null) {
                 tfNote.editText.removeTextChangedListener(noteTextWatcher)
             }
-            tfNote.editText.setText(product.notes)
+            tfNote.editText.setText(Utils.getHtmlFormat(product.notes))
             noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
@@ -372,6 +377,51 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         listener.onPurchaseProtectionCheckedChange(tmpIsChecked, product.productId)
     }
 
+    private fun renderAddOn(binding: CardOrderProductBinding, product: OrderProduct, shop: OrderShop) {
+        with(binding) {
+            val addOn: AddOnsDataModel = if (shop.isFulfillment) {
+                shop.addOn
+            } else {
+                product.addOn
+            }
+            when (addOn.status) {
+                AddOnsResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON -> {
+                    buttonGiftingAddon.apply {
+                        state = ButtonGiftingAddOnView.State.ACTIVE
+                        setAddOnButtonData(addOn)
+                        setOnClickListener {
+                            listener.onClickAddOnButton(AddOnsResponse.STATUS_SHOW_ENABLED_ADD_ON_BUTTON, addOn, product, shop)
+                            orderSummaryAnalytics.eventClickAddOnsDetail(product.productId.toString())
+                        }
+                        show()
+                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
+                    }
+                }
+                AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON -> {
+                    buttonGiftingAddon.apply {
+                        state = ButtonGiftingAddOnView.State.INACTIVE
+                        setAddOnButtonData(addOn)
+                        setOnClickListener {
+                            listener.onClickAddOnButton(AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON, addOn, product, shop)
+                        }
+                        show()
+                        orderSummaryAnalytics.eventViewAddOnsWidget(product.productId.toString())
+                    }
+                }
+                else -> {
+                    buttonGiftingAddon.gone()
+                }
+            }
+        }
+    }
+
+    private fun ButtonGiftingAddOnView.setAddOnButtonData(addOn: AddOnsDataModel) {
+        title = addOn.addOnsButtonModel.title
+        desc = addOn.addOnsButtonModel.description
+        urlLeftIcon = addOn.addOnsButtonModel.leftIconUrl
+        urlRightIcon = addOn.addOnsButtonModel.rightIconUrl
+    }
+
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, productIndex: Int, shouldReloadRates: Boolean = true)
@@ -383,11 +433,12 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
         fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long)
 
         fun getLastPurchaseProtectionCheckState(productId: Long): Int
+
+        fun onClickAddOnButton(addOnButtonType: Int, addOn: AddOnsDataModel, product: OrderProduct, shop: OrderShop)
     }
 
     companion object {
         const val VIEW_TYPE = 3
-        const val MAX_NOTES_LENGTH = 144
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f

@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home.R
+import com.tokopedia.home_component.util.toDpInt
 
 /**
  * created by Dhaba
@@ -14,7 +14,7 @@ class CategoryWidgetV2SpacingItemDecoration(private val spacing: Int) : Recycler
         val position = parent.getChildAdapterPosition(view) // item position
 
         if (position == 0 || position == 1) {
-            outRect.left = view.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
+            outRect.left = 16f.toDpInt()
         } else {
             outRect.left = spacing/2
         }

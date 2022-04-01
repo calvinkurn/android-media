@@ -19,14 +19,18 @@ class ClassBuilder {
             chatMapper: PlayChatUiMapper = PlayChatUiMapper(userSession),
             channelStatusMapper: PlayChannelStatusMapper = PlayChannelStatusMapper(),
             channelInteractiveMapper: PlayChannelInteractiveMapper = PlayChannelInteractiveMapper(),
-            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper()
+            interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper = PlayInteractiveLeaderboardMapper(),
+            cartMapper: PlayCartMapper = PlayCartMapper(),
+            playUserReportMapper : PlayUserReportReasoningMapper =  PlayUserReportReasoningMapper()
     ) = PlayUiModelMapper(
             productTagMapper = productTagMapper,
             merchantVoucherMapper = merchantVoucherMapper,
             chatMapper = chatMapper,
             channelStatusMapper = channelStatusMapper,
             channelInteractiveMapper = channelInteractiveMapper,
-            interactiveLeaderboardMapper = interactiveLeaderboardMapper
+            interactiveLeaderboardMapper = interactiveLeaderboardMapper,
+            cartMapper = cartMapper,
+            playUserReportMapper = playUserReportMapper
     )
 
     fun getPlayChannelDetailsRecomMapper(

@@ -100,8 +100,8 @@ class ProductVideoCoordinator(
                 ?: 0
 
         newData.forEachIndexed { index, i ->
-            productVideoDataModel[index].isMute = i.isMute
-            productVideoDataModel[index].seekPosition = i.seekPosition
+            productVideoDataModel.getOrNull(index)?.isMute = i.isMute
+            productVideoDataModel.getOrNull(index)?.seekPosition = i.seekPosition
         }
 
         //If they not resume video in video detail, just ignore it

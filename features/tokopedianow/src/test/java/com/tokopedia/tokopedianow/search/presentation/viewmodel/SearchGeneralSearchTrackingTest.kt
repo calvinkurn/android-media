@@ -21,6 +21,7 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -99,5 +100,21 @@ class SearchGeneralSearchTrackingTest: SearchTestFixtures() {
 
         val generalSearch = tokoNowSearchViewModel.generalSearchEventLiveData.value!!
         assertThat(generalSearch[RELATEDKEYWORD], shouldBe(relatedKeyword))
+    }
+
+    @Test
+    fun `test general search tracking with empty keyword`() {
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
+
+        val keyword = ""
+
+        `Given search view model`(mapOf(
+                SearchApiConst.Q to keyword
+        ))
+        `Given get search first page use case will be successful`(searchModel)
+
+        `When view created`()
+
+        assertNull(tokoNowSearchViewModel.generalSearchEventLiveData.value)
     }
 }

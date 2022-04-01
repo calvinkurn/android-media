@@ -25,7 +25,7 @@ class ChatSettingActivity : BaseSimpleActivity(), HasComponent<ChatSettingCompon
 
     private fun initWindowBackground() {
         window.decorView.setBackgroundColor(
-            MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 

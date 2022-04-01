@@ -13,7 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.getNumberFormat
-import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomSheetNewSellerShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.PopupEndTenureUiModel
 

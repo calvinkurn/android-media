@@ -9,7 +9,8 @@
             android:name=".view.activity.OnboardingActivity"
             android:hardwareAccelerated="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -23,5 +24,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -5,212 +5,225 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListDigitalActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_digital" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListFlightActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_flight" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListHotelActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_hotel" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListDealsActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_deals" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListMarketplaceActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_marketplace" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailMarketplaceActivity"
             android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:configChanges="uiMode">
+            android:configChanges="uiMode"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_detail_marketplace" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailDigitalActivity"
             android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_detail_digital" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailFlightActivity"
             android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_detail_flight" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailHotelActivity"
             android:label="@string/title_promo_checkout_detail"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_detail_hotel" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListUmrahActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_umroh" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".list.view.activity.PromoCheckoutListEventActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
                     android:path="@string/path_promo_list_event" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".detail.view.activity.PromoCheckoutDetailEventActivity"
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"
@@ -222,12 +235,14 @@
             android:label="@string/title_promo_checkout_list"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
-            android:theme="@style/Theme.White" >
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_promo"

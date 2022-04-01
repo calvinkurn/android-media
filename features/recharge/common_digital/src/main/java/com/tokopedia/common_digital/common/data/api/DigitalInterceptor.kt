@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.authentication.AuthKeyExt
+import com.tokopedia.network.authentication.AuthKeyExt
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.exception.ResponseErrorException
@@ -33,29 +33,41 @@ class DigitalInterceptor(@ApplicationContext context: Context,
 
     @Throws(IOException::class)
     override fun throwChainProcessCauseHttpError(response: Response) {
-        val errorBody = response.body()!!.string()
-        response.body()!!.close()
+        val errorBody = response.peekBody(BYTE_COUNT.toLong()).string()
         Log.d(TAG, "Error body response : $errorBody")
         if (errorBody.isNotEmpty()) {
-            val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse = TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code())
+            val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse =
+                TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code)
             if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_DIGITAL) {
                 throw ResponseErrorException(digitalErrorResponse.digitalErrorMessageFormatted)
             } else if (digitalErrorResponse.typeOfError == TkpdDigitalResponse.DigitalErrorResponse.ERROR_SERVER) {
-                if (digitalErrorResponse.status.equals(DigitalError.STATUS_UNDER_MAINTENANCE, true)) {
+                if (digitalErrorResponse.status.equals(
+                        DigitalError.STATUS_UNDER_MAINTENANCE,
+                        true
+                    )
+                ) {
                     throw ResponseErrorException(digitalErrorResponse.serverErrorMessageFormatted)
-                } else if (digitalErrorResponse.status.equals(DigitalError.STATUS_REQUEST_DENIED, true)) {
+                } else if (digitalErrorResponse.status.equals(
+                        DigitalError.STATUS_REQUEST_DENIED,
+                        true
+                    )
+                ) {
                     throw ResponseErrorException(digitalErrorResponse.serverErrorMessageFormatted)
-                } else if (digitalErrorResponse.status.equals(DigitalError.STATUS_FORBIDDEN, true) &&
-                        MethodChecker.isTimezoneNotAutomatic(context)) {
+                } else if (digitalErrorResponse.status.equals(
+                        DigitalError.STATUS_FORBIDDEN,
+                        true
+                    ) &&
+                    MethodChecker.isTimezoneNotAutomatic(context)
+                ) {
                     throw ResponseErrorException(digitalErrorResponse.serverErrorMessageFormatted)
                 } else {
-                    throw HttpErrorException(response.code())
+                    throw HttpErrorException(response.code)
                 }
             } else {
-                throw HttpErrorException(response.code())
+                throw HttpErrorException(response.code)
             }
         }
-        throw HttpErrorException(response.code())
+        throw HttpErrorException(response.code)
     }
 
     override fun getHeaderMap(

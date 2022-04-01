@@ -25,8 +25,6 @@ import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey.HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,6 +42,9 @@ class ProfileViewHolder(
 ) : BaseViewHolder(itemView) {
 
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
+
+    fun getMemberTitle(): String =
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text.toString()
 
     fun bind(profile: ProfileDataView) {
         binding?.homeAccountProfileSection?.accountUserItemProfileName?.text = profile.name
@@ -124,11 +125,19 @@ class ProfileViewHolder(
     }
 
     private fun setBackground(context: Context) {
-        if(context.isDarkMode()) {
-            MethodChecker.setBackground(binding?.accountUserItemProfileContainer, MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark))
-        } else {
-            MethodChecker.setBackground(binding?.accountUserItemProfileContainer, MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop))
-        }
+        try {
+            if (context.isDarkMode()) {
+                MethodChecker.setBackground(
+                    binding?.accountUserItemProfileContainer,
+                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark)
+                )
+            } else {
+                MethodChecker.setBackground(
+                    binding?.accountUserItemProfileContainer,
+                    MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop)
+                )
+            }
+        } catch (e: Exception) {}
     }
 
     private fun loadImage(imageView: ImageView, imageUrl: String) {
@@ -136,18 +145,14 @@ class ProfileViewHolder(
     }
 
     private fun setupBalanceAndPointAdapter(itemView: View) {
-        if (isShowViewMoreWallet()) {
-            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.show()
-            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.setOnClickListener {
-                listener.onSettingItemClicked(
-                    CommonDataView(
-                        id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
-                        applink = ApplinkConstInternalGlobal.FUNDS_AND_INVESTMENT
-                    )
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.show()
+        binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.setOnClickListener {
+            listener.onSettingItemClicked(
+                CommonDataView(
+                    id = AccountConstants.SettingCode.SETTING_VIEW_ALL_BALANCE,
+                    applink = ApplinkConstInternalGlobal.FUNDS_AND_INVESTMENT
                 )
-            }
-        } else {
-            binding?.homeAccountProfileBalanceAndPointSection?.homeAccountViewMore?.hide()
+            )
         }
 
         binding?.homeAccountProfileBalanceAndPointSection?.homeAccountBalanceAndPointRv?.adapter =
@@ -248,17 +253,6 @@ class ProfileViewHolder(
             layoutManager
 
         binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutRv?.isLayoutFrozen = true
-    }
-
-    private fun isShowViewMoreWallet(): Boolean {
-        return if (itemView.context != null) {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE,
-                ""
-            ) == HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE
-        } else {
-            false
-        }
     }
 
     companion object {

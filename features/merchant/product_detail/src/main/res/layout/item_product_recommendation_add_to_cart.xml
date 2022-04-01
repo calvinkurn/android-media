@@ -3,5 +3,5 @@
     android:id="@+id/productCardView"
     android:layout_width="@dimen/dp_153"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     xmlns:android="http://schemas.android.com/apk/res/android"/>

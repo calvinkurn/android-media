@@ -5,16 +5,33 @@ import com.tokopedia.productcard.ProductCardModel
 
 object ProductHighlightModelMapper {
      fun mapToProductCardModel(channelGrid: ChannelGrid): ProductCardModel {
-            return ProductCardModel(
-                slashedPrice = channelGrid.slashedPrice,
-                productName = channelGrid.name,
-                formattedPrice = channelGrid.price,
-                productImageUrl = channelGrid.imageUrl,
-                discountPercentage = channelGrid.discount,
-                stockBarLabel = channelGrid.label,
-                stockBarPercentage = channelGrid.soldPercentage,
-                pdpViewCount = channelGrid.productViewCountFormatted,
-                isOutOfStock = channelGrid.isOutOfStock
-            )
-        }
+         with(channelGrid) {
+             return ProductCardModel(
+                 slashedPrice = slashedPrice,
+                 productName = name,
+                 formattedPrice = price,
+                 productImageUrl = imageUrl,
+                 discountPercentage = discount,
+                 pdpViewCount = productViewCountFormatted,
+                 stockBarLabel = label,
+                 stockBarPercentage = soldPercentage,
+                 labelGroupList = labelGroup.map {
+                     ProductCardModel.LabelGroup(
+                         position = it.position,
+                         title = it.title,
+                         type = it.type,
+                         imageUrl = it.url
+                     )
+                 },
+                 freeOngkir = ProductCardModel.FreeOngkir(
+                     channelGrid.isFreeOngkirActive,
+                     channelGrid.freeOngkirImageUrl
+                 ),
+                 isOutOfStock = isOutOfStock,
+                 ratingCount = rating,
+                 reviewCount = countReview,
+                 countSoldRating = ratingFloat
+             )
+         }
+     }
 }

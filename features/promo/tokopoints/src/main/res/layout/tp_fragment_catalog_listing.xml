@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <ViewFlipper
         android:id="@+id/container_main"
@@ -68,18 +68,6 @@
                     android:id="@+id/view_pager_sort_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/bottom_view_membership"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <include layout="@layout/tp_bottomview_membership" />
             </LinearLayout>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

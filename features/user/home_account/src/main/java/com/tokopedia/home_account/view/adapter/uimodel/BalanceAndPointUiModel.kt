@@ -8,4 +8,5 @@ data class BalanceAndPointUiModel(
     var applink: String = "",
     var isFailed: Boolean = false,
     var isActive: Boolean = true,
+    var hideTitle: Boolean = false
 )

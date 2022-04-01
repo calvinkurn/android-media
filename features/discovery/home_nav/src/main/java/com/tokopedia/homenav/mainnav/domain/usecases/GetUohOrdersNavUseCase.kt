@@ -51,7 +51,7 @@ class GetUohOrdersNavUseCase (
             }
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
-        graphqlUseCase.setRequestParams(generateParam(NavUohListParam()))
+        graphqlUseCase.setRequestParams(generateParam(NavUohListParam(verticalCategory = VERTICAL_CATEGORY)))
         graphqlUseCase.setTypeClass(UohData::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
@@ -87,5 +87,6 @@ class GetUohOrdersNavUseCase (
 
     companion object{
         private const val PARAM_INPUT = "input"
+        private const val VERTICAL_CATEGORY = "marketplace,tokonow,mp_pym,mp_pym_tokonow"
     }
 }

@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:paddingStart="0dp"
-            android:paddingEnd="@dimen/dp_11"
+            android:paddingEnd="11dp"
             android:paddingBottom="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

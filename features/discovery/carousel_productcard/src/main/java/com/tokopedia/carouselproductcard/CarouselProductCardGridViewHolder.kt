@@ -7,8 +7,9 @@ import com.tokopedia.productcard.ATCNonVariantListener
 import kotlinx.android.synthetic.main.carousel_product_card_item_grid_layout.view.*
 
 internal class CarouselProductCardGridViewHolder(
-        itemView: View
-): BaseProductCardViewHolder<CarouselProductCardModel>(itemView) {
+    itemView: View,
+    internalListener: CarouselProductCardInternalListener,
+): BaseProductCardViewHolder<CarouselProductCardModel>(itemView, internalListener) {
 
     companion object {
         @LayoutRes
@@ -21,6 +22,8 @@ internal class CarouselProductCardGridViewHolder(
         itemView.carouselProductCardItem?.applyCarousel()
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
+
+        registerProductCardLifecycleObserver(itemView.carouselProductCardItem, productCardModel)
 
         setCarouselProductCardListeners(carouselProductCardModel)
     }
@@ -68,5 +71,7 @@ internal class CarouselProductCardGridViewHolder(
 
     override fun recycle() {
         itemView.carouselProductCardItem?.recycle()
+
+        unregisterProductCardLifecycleObserver(itemView.carouselProductCardItem)
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.feedplus.view.analytics.widget
 import com.tokopedia.play.widget.analytic.list.PlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
 import com.tokopedia.play.widget.ui.PlayWidgetView
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.track.TrackApp
@@ -66,7 +66,7 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
 
     override fun onClickChannelCard(
             view: PlayWidgetSmallView,
-            item: PlayWidgetSmallChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
@@ -76,7 +76,7 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
                 event = "promoClick",
                 eventCategory = "feed updates - cmp",
                 eventAction = "click",
-                eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay",
+                eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType}",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = item.channelId,
@@ -113,7 +113,7 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
 
     override fun onImpressChannelCard(
             view: PlayWidgetSmallView,
-            item: PlayWidgetSmallChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
@@ -123,7 +123,7 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
                 event = "promoView",
                 eventCategory = "feed updates - cmp",
                 eventAction = "impression on play sgc channel",
-                eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay",
+                eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay - ${item.recommendationType}",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = item.channelId,

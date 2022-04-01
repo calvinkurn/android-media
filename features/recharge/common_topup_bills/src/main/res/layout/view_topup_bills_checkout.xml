@@ -5,7 +5,7 @@
     android:id="@+id/buy_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:elevation="@dimen/spacing_lvl3"
     android:paddingBottom="@dimen/unify_space_12"
     android:visibility="gone"

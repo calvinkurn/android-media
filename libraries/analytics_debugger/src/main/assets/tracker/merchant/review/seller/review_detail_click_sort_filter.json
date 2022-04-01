@@ -9,6 +9,7 @@
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
+      "theme": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
       "userId": ".*",
@@ -20,8 +21,8 @@
       "eventAction" : "click - sort or filter button",
       "eventLabel" : ".*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
-      "sessionIris": ".{1,}",
+      "productId": ".*",
+      "sessionIris": ".*",
       "screenName" : "review detail page"
     },
     {
@@ -29,20 +30,20 @@
       "eventCategory" : "review detail page",
       "eventAction" : "click - select sort options on bottomsheet",
       "eventLabel" : "sortBy:.*",
-      "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
-      "sessionIris": ".{1,}",
+      "shopId": ".*",
+      "productId": ".*",
+      "sessionIris": ".*",
       "screenName" : "review detail page"
     },
     {
       "eventCategory": "review detail page",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "shopId": "\\d{1,}",
       "screenName": "review detail page",
       "isActive": "true|false",
       "event": "clickReview",
       "eventAction": "click - select filter options on bottomsheet",
-      "sessionIris": ".{1,}",
+      "sessionIris": ".*",
       "eventLabel" : "filterBy:.*"
     },
     {
@@ -51,8 +52,8 @@
       "eventAction" : "click - close bottomsheet",
       "eventLabel" : ".*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
-      "sessionIris": ".{1,}",
+      "productId": ".*",
+      "sessionIris": ".*",
       "screenName" : "review detail page"
     }
   ]

@@ -59,6 +59,13 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical">
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="product_name_text,product_slashed_price_text,product_price_text" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/product_name_text"
                 android:layout_width="wrap_content"
@@ -113,14 +120,15 @@
                 android:id="@+id/product_arrow"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="12dp"
+                android:layout_marginEnd="6dp"
                 app:icon_color_light_enable="@color/Unify_N0"
                 app:icon_name="CHEVRON_RIGHT"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@id/barrier7"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/product_name_text"
+                app:layout_constraintVertical_bias="0.444"
                 app:unify_image_type="circle" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

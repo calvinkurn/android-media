@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="2dp"
     android:layout_marginEnd="2dp"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:padding="6dp">
 
     <com.tokopedia.unifycomponents.ticker.Ticker

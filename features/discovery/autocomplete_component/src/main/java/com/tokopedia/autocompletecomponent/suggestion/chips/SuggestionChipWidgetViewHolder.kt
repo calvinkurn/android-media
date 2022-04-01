@@ -6,13 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.chipwidget.AutocompleteChipDataView
 import com.tokopedia.autocompletecomponent.chipwidget.AutocompleteChipWidgetViewListener
+import com.tokopedia.autocompletecomponent.databinding.LayoutAutocompleteChipWidgetBinding
 import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
-import com.tokopedia.autocompletecomponent.suggestion.SuggestionListener
-import kotlinx.android.synthetic.main.layout_autocomplete_chip_widget.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SuggestionChipWidgetViewHolder(
         itemView: View,
-        private val clickListener: SuggestionListener
+        private val chipListener: SuggestionChipListener
 ): AbstractViewHolder<SuggestionChipWidgetDataView>(itemView) {
 
     companion object {
@@ -20,19 +21,26 @@ class SuggestionChipWidgetViewHolder(
         val LAYOUT = R.layout.layout_autocomplete_chip_widget
     }
 
-    override fun bind(element: SuggestionChipWidgetDataView) {
-        itemView.autocompleteChipWidgetView?.bindChipWidgetView(
-                data = element.toListAutocompleteChipDataView(),
-                listener = object : AutocompleteChipWidgetViewListener {
-                    override fun onChipClicked(item: AutocompleteChipDataView) {
-                        clickListener.onChipClicked(item.toBaseSuggestionDataViewChildItem())
-                    }
+    private var binding: LayoutAutocompleteChipWidgetBinding? by viewBinding()
 
+    override fun bind(element: SuggestionChipWidgetDataView) {
+        val chipWidget = binding?.autocompleteChipWidgetView ?: return
+        chipWidget.addOnImpressionListener(element.data) {
+            chipListener.onChipImpressed(element.data)
+        }
+        chipWidget.bindChipWidgetView(
+            data = element.data.toListAutocompleteChipDataView(),
+            listener = object : AutocompleteChipWidgetViewListener {
+                override fun onChipClicked(item: AutocompleteChipDataView, position: Int) {
+                    val baseSuggestionDataView = element.data
+                    val childItem = baseSuggestionDataView.childItems.getOrNull(position) ?: return
+                    chipListener.onChipClicked(baseSuggestionDataView, childItem)
                 }
+            }
         )
     }
 
-    private fun SuggestionChipWidgetDataView.toListAutocompleteChipDataView(): List<AutocompleteChipDataView> {
+    private fun BaseSuggestionDataView.toListAutocompleteChipDataView(): List<AutocompleteChipDataView> {
         return this.childItems.map {
             AutocompleteChipDataView(
                     template = it.template,
@@ -45,18 +53,5 @@ class SuggestionChipWidgetViewHolder(
                     position = position
             )
         }
-    }
-
-    private fun AutocompleteChipDataView.toBaseSuggestionDataViewChildItem(): BaseSuggestionDataView.ChildItem {
-        return BaseSuggestionDataView.ChildItem(
-                template = template,
-                type = type,
-                applink = applink,
-                url = url,
-                title = title,
-                searchTerm = searchTerm,
-                dimension90 = dimension90,
-                position = position
-        )
     }
 }

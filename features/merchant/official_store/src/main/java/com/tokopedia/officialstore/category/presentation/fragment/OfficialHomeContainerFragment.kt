@@ -39,12 +39,11 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.viewutil.OSChooseAddressWidgetView
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
+import com.tokopedia.officialstore.databinding.FragmentOfficialHomeBinding
 import com.tokopedia.officialstore.official.presentation.OfficialHomeFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -52,7 +51,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_official_home.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import javax.inject.Inject
 
@@ -62,7 +61,6 @@ class OfficialHomeContainerFragment
         AllNotificationListener,
         RecyclerViewScrollListener,
         OSContainerListener {
-
     companion object {
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
@@ -71,6 +69,7 @@ class OfficialHomeContainerFragment
         const val PARAM_HOME = "home"
     }
 
+    private var binding: FragmentOfficialHomeBinding? by viewBinding()
     private var currentOfficialStoreCategories: OfficialStoreCategories? = null
     private val queryHashingKey = "android_do_query_hashing"
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
@@ -86,7 +85,6 @@ class OfficialHomeContainerFragment
     private var badgeNumberInbox: Int = 0
     private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
-    private var useNewInbox = false
     private var chooseAddressView: OSChooseAddressWidgetView? = null
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
@@ -139,7 +137,6 @@ class OfficialHomeContainerFragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        initInboxAbTest()
         init(view)
         observeOfficialCategoriesData()
         fetchOSCategory()
@@ -175,16 +172,14 @@ class OfficialHomeContainerFragment
         tabLayout?.adjustTabCollapseOnScrolled(dy)
         chooseAddressView?.adjustViewCollapseOnScrolled(
                 dy = dy,
-                whenWidgetGone = {osDivider.gone()},
-                whenWidgetShow = {osDivider.show()})
+                whenWidgetGone = {binding?.osDivider?.gone()},
+                whenWidgetShow = {binding?.osDivider?.show()})
     }
 
     // from: GlobalNav, to show notification maintoolbar
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         mainToolbar?.run {
-            if (!useNewInbox) {
-                setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-            }
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
@@ -265,13 +260,22 @@ class OfficialHomeContainerFragment
                         this.currentOfficialStoreCategories = it.data
                         removeLoading()
                         populateCategoriesData(it.data)
+                    } else if(currentOfficialStoreCategories?.categories == it.data.categories && !it.data.isCache){
+                            tabAdapter.categoryList.forEachIndexed { index, category ->
+                                tracking.eventImpressionCategory(
+                                        category.title,
+                                        category.categoryId,
+                                        index,
+                                        category.icon
+                                )
+                            }
                     }
                 }
                 is Fail -> {
                     val throwable = it.throwable
                     removeLoading()
                     context?.let { ctx ->
-                        NetworkErrorHelper.showEmptyState(ctx, official_home_motion, ErrorHandler.getErrorMessage(ctx, throwable)) {
+                        NetworkErrorHelper.showEmptyState(ctx, binding?.officialHomeMotion, ErrorHandler.getErrorMessage(ctx, throwable)) {
                             fetchOSCategory()
                         }
                     }
@@ -315,7 +319,7 @@ class OfficialHomeContainerFragment
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val categoryReselected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
-                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
+                chooseAddressView?.forceExpandView(whenWidgetShow = {binding?.osDivider?.show()})
                 categoryReselected?.let {
                     selectedCategory = categoryReselected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
@@ -326,7 +330,7 @@ class OfficialHomeContainerFragment
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 val categorySelected = tabAdapter.categoryList.getOrNull(tab?.position.toZeroIfNull())
-                chooseAddressView?.forceExpandView(whenWidgetShow = {osDivider.show()})
+                chooseAddressView?.forceExpandView(whenWidgetShow = {binding?.osDivider?.show()})
                 categorySelected?.let {
                     selectedCategory = categorySelected
                     tracking.eventClickCategory(tab?.position.toZeroIfNull(), it)
@@ -348,18 +352,8 @@ class OfficialHomeContainerFragment
         return tabItemDataList
     }
 
-    private fun initInboxAbTest() {
-        useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-    }
-
     private fun getInboxIcon(): Int {
-        return if (useNewInbox) {
-            IconList.ID_INBOX
-        } else {
-            IconList.ID_MESSAGE
-        }
+        return IconList.ID_MESSAGE
     }
 
     private fun init(view: View) {
@@ -406,13 +400,13 @@ class OfficialHomeContainerFragment
 
     private fun removeLoading() {
         loadingCategoryLayout?.gone()
-        view_content_loading?.gone()
+        binding?.viewContentLoading?.root?.gone()
         tabLayout?.visible()
     }
 
     private fun configMainToolbar(view: View) {
         mainToolbar = view.findViewById(R.id.maintoolbar)
-        maintoolbar?.run {
+        mainToolbar?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(getToolbarIcons())
             setupSearchbar(
@@ -431,12 +425,10 @@ class OfficialHomeContainerFragment
                 .addIcon(getInboxIcon()) {}
         if(activityOfficialStore != PARAM_HOME)
         {
-            maintoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-            statusbar.visibility = View.GONE
+            mainToolbar?.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            statusBar?.visibility = View.GONE
         }
-        if (!useNewInbox) {
-            icons.addIcon(IconList.ID_NOTIFICATION) {}
-        }
+        icons.addIcon(IconList.ID_NOTIFICATION) {}
         icons.apply {
             addIcon(IconList.ID_CART) {}
             addIcon(IconList.ID_NAV_GLOBAL) {}

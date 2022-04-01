@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -65,7 +65,7 @@ interface PlayBroadcastMapper {
 
     fun mapShareInfo(channel: GetChannelResponse.Channel): ShareUiModel
 
-    fun mapLiveDuration(duration: String): LiveDurationUiModel
+    fun mapChannelSummary(title: String, coverUrl: String, date: String, duration: String, isEligiblePostVideo: Boolean): ChannelSummaryUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
 
@@ -81,7 +81,7 @@ interface PlayBroadcastMapper {
 
     fun mapLiveInfo(
         activeIngestUrl: String,
-        config: PlayLivePusherConfig
+        config: LivePusherConfig
     ): PlayLiveLogState
 
     fun mapPinnedMessage(

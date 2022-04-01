@@ -53,7 +53,6 @@ class IntroOvoFragment : BaseDaggerFragment(), IntroOvoContract.View {
 
     override fun initInjector() {
         activity?.let {
-            GraphqlClient.init(it)
             val tokoCashComponent = WalletComponentInstance.getComponent(it.application)
             tokoCashComponent.inject(this)
             presenter.attachView(this)

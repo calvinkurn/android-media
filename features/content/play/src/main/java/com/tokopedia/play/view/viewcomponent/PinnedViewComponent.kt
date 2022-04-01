@@ -1,16 +1,17 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.graphics.Typeface
 import android.text.Spannable
-import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PinnedMessageUiModel
+import com.tokopedia.play_common.util.extension.append
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -23,49 +24,42 @@ class PinnedViewComponent(
 ) : ViewComponent(container, idRes) {
 
     private val tvPinnedMessage: TextView = findViewById(R.id.tv_pinned_message)
-    private val tvPinnedAction: TextView = findViewById(R.id.tv_pinned_action)
 
     fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
-        val partnerName = pinnedMessage.partnerName
-        val spannableString = SpannableString(
-                buildString {
-                    if (partnerName.isNotEmpty()) {
-                        append(pinnedMessage.partnerName)
-                        append(' ')
-                    }
-
-                    append(pinnedMessage.title)
-                }
+        tvPinnedMessage.text = constructPinnedMessage(
+            pinnedMessage.title,
+            pinnedMessage.appLink.isNotBlank()
         )
-        if (partnerName.isNotEmpty()) {
-            spanPartnerName(pinnedMessage.partnerName, spannableString)
+
+        rootView.setOnClickListener {
+            if (pinnedMessage.appLink.isBlank()) return@setOnClickListener
+            listener.onPinnedMessageActionClicked(
+                this,
+                pinnedMessage.appLink,
+                pinnedMessage.title
+            )
         }
-        tvPinnedMessage.text = spannableString
-
-        if (pinnedMessage.applink.isNotEmpty()) {
-            tvPinnedAction.show()
-
-            tvPinnedAction.setOnClickListener {
-                listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
-            }
-
-        } else tvPinnedAction.hide()
     }
 
-    private fun spanPartnerName(partnerName: String, fullMessage: Spannable): Spannable {
-        fullMessage.setSpan(
+    private fun constructPinnedMessage(message: String, hasAppLink: Boolean): CharSequence {
+        val spanBuilder = SpannableStringBuilder()
+        spanBuilder.append(message)
+        if (hasAppLink) {
+            spanBuilder.append(' ')
+            spanBuilder.append(
+                text = getString(R.string.play_pinned_msg_applink_text),
+                flags = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
+                StyleSpan(Typeface.BOLD),
                 ForegroundColorSpan(
-                        MethodChecker.getColor(rootView.context, R.color.play_dms_G300)
+                    MethodChecker.getColor(rootView.context, R.color.play_dms_pinned_link)
                 ),
-                fullMessage.indexOf(partnerName),
-                partnerName.length,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        return fullMessage
+            )
+        }
+        return spanBuilder
     }
 
     interface Listener {
 
-        fun onPinnedMessageActionClicked(view: PinnedViewComponent, applink: String, message: String)
+        fun onPinnedMessageActionClicked(view: PinnedViewComponent, appLink: String, message: String)
     }
 }

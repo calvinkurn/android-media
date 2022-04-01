@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -760,7 +759,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty(),
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
@@ -781,7 +780,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty()
             )
         }
@@ -808,7 +807,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty(),
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
@@ -829,7 +828,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty()
             )
         }
@@ -961,7 +960,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
@@ -1028,12 +1027,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseName = data.getStringExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_NAME) ?: ""
                     selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
                     needReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
-
-                    shopPageTracking?.clickEtalaseChip(
-                            isMyShop,
-                            getSelectedEtalaseChip(),
-                            CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-                    )
 
                     shopPageTracking?.clickMoreMenuChip(
                             isMyShop,
@@ -1418,23 +1411,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopProductAdapter.changeProductCardGridType(gridType)
     }
 
-    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
-        val productListName =  shopProductAdapter.shopProductUiModelList.joinToString(","){
-            it.name.orEmpty()
+    override fun onChangeProductGridClicked(
+            initialGridType: ShopProductViewGridType,
+            finalGridType: ShopProductViewGridType
+    ) {
+        if(!isMyShop) {
+            shopPageTracking?.clickProductListToggle(initialGridType, finalGridType, shopId.orEmpty(), userId)
         }
-        shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
-        changeProductListGridView(gridType)
+        changeProductListGridView(finalGridType)
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        if (selectedSortName.isNotBlank()) {
-            shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
-        }
-        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
-            shopPageTracking?.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
-        }
-        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
-            shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
+        if(!isMyShop) {
+            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, userId)
         }
     }
 

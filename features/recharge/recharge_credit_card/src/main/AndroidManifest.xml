@@ -7,8 +7,8 @@
             android:label="@string/cc_title_toolbar"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateHidden">
-
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -21,7 +21,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>

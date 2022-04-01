@@ -31,7 +31,7 @@ class ExampleUnitTest2 {
     fun staticTest() {
         val query = "mutation RegisterUsername (\$affiliateName: String!) {\n  validate_use_promo_revamp(affiliateName: \$affiliateName) {\n    success\n    error {\n      message\n      type\n      code\n    }\n  }\n}\n"
 
-        val xTkpdAkamai = getAny(query)
+        val xTkpdAkamai = getQueryListFromQueryString(query)
                 .asSequence()
                 .filter { it ->
                     registeredGqlFunctions.containsKey(it)

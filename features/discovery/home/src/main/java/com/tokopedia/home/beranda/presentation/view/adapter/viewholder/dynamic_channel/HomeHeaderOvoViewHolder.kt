@@ -9,26 +9,29 @@ import com.tokopedia.home.beranda.helper.benchmark.BenchmarkHelper
 import com.tokopedia.home.beranda.helper.benchmark.TRACE_ON_BIND_HEADER_OVO
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.balance.HomeBalanceModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderOvoDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeHeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoWidgetView
+import com.tokopedia.home.databinding.HomeHeaderOvoBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt.getFullToolbarHeight
-import kotlinx.android.synthetic.main.home_header_ovo.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeHeaderOvoViewHolder(itemView: View,
                               private val listener: HomeCategoryListener
 )
-: AbstractViewHolder<HomeHeaderOvoDataModel>(itemView) {
+: AbstractViewHolder<HomeHeaderDataModel>(itemView) {
+
+    private var binding: HomeHeaderOvoBinding? by viewBinding()
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_header_ovo
     }
 
-    override fun bind(element: HomeHeaderOvoDataModel) {
+    override fun bind(element: HomeHeaderDataModel) {
         BenchmarkHelper.beginSystraceSection(TRACE_ON_BIND_HEADER_OVO)
         renderEmptySpace()
         element.headerDataModel?.let {
@@ -57,7 +60,7 @@ class HomeHeaderOvoViewHolder(itemView: View,
         BenchmarkHelper.endSystraceSection()
     }
 
-    override fun bind(element: HomeHeaderOvoDataModel, payloads: MutableList<Any>) {
+    override fun bind(element: HomeHeaderDataModel, payloads: MutableList<Any>) {
         bind(element)
     }
 
@@ -67,11 +70,13 @@ class HomeHeaderOvoViewHolder(itemView: View,
     }
 
     private fun renderChooseAddress(needToShowChooseAddress: Boolean) {
-        val chooseAddressView = itemView.widget_choose_address
-        if (needToShowChooseAddress) {
-            listener.initializeChooseAddressWidget(chooseAddressView, needToShowChooseAddress)
-        } else {
-            chooseAddressView.gone()
+        val chooseAddressView = binding?.widgetChooseAddress
+        chooseAddressView?.let {
+            if (needToShowChooseAddress) {
+                listener.initializeChooseAddressWidget(it, needToShowChooseAddress)
+            } else {
+                it.gone()
+            }
         }
     }
 

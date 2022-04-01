@@ -16,9 +16,11 @@
         "redirectApplink": ""
       },
       "ticker": {
-        "text": "Hasil disaring otomatis karena banyak yang beli di atas Rp720.000. \u003ca href\u003dhttps://staging.tokopedia.com/search?ob\u003d3\u0026q\u003dsamsung\u0026source\u003dsearch\u003eLihat semua harga\u003c/a\u003e",
-        "query": "pmin\u003d0",
-        "typeId": 1
+        "text": "Menampilkan hasil pencarian <b>laptop</b> dengan harga <b>murah</b>. Tetap mencari berdasarkan kata <a href=https://www.tokopedia.com/search?q=laptop+murah&skip_rewrite=true&source=search>\"laptop murah\"</a> ?",
+        "query": "skip_rewrite=true&srp_component_id=03.09.01.00",
+        "typeId": 2,
+        "componentId": "03.09.01.00",
+        "trackingOption": 3
       },
       "suggestion": {
         "currentKeyword": "",

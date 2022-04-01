@@ -7,20 +7,21 @@ import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductListDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchSeeMoreDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import io.mockk.*
+import io.mockk.slot
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.junit.Test
 
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
 
 internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
-    private val keyword = "sepatu"
     private val shopId = "8384142"
     private val shopName = "MizanBookCorner"
     private val applinkShop = "tokopedia://shop/$shopId?source=universe&st=product"
@@ -54,7 +55,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentSearch(item: BaseItemInitialStateSearch) {
         verifyOrder {
-            trackEventClickRecentSearch(getItemEventLabelForTracking(item), item.dimension90)
+            trackEventClickRecentSearch(item, getItemEventLabelForTracking(item))
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }
@@ -86,7 +87,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
 
     private fun InitialStateContract.View.onClickRecentShop(item: BaseItemInitialStateSearch) {
         verifyOrder {
-            trackEventClickRecentShop(getRecentShopLabelForTracking(item), any(), item.dimension90)
+            trackEventClickRecentShop(item, getRecentShopLabelForTracking(item), any())
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }
@@ -159,7 +160,13 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         val expectedLabel = "value: ${item.title} - title: ${item.header} - po: 1"
 
         verifyOrder {
-            trackEventClickDynamicSectionItem(any(), expectedLabel, item.featureId, item.dimension90)
+            trackEventClickDynamicSectionItem(
+                any(),
+                expectedLabel,
+                item,
+                item.featureId,
+                item.dimension90
+            )
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }
@@ -184,11 +191,18 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     }
 
     private fun InitialStateContract.View.onClickCuratedCampaignCard(item: CuratedCampaignDataView) {
-        val expectedLabel = "${item.title} - ${item.applink}"
+        val baseItemInitialState = item.baseItemInitialState
+        val expectedLabel = "${baseItemInitialState.title} - ${baseItemInitialState.applink}"
 
         verifyOrder {
-            trackEventClickCuratedCampaignCard(any(), expectedLabel, item.type, item.campaignCode)
-            route(item.applink, initialStatePresenter.getSearchParameter())
+            trackEventClickCuratedCampaignCard(
+                any(),
+                expectedLabel,
+                baseItemInitialState,
+                baseItemInitialState.type,
+                baseItemInitialState.campaignCode
+            )
+            route(baseItemInitialState.applink, initialStatePresenter.getSearchParameter())
             finish()
         }
     }
@@ -297,10 +311,12 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
         `Then verify view interaction is correct for tokonow dynamic section`(item)
     }
 
-    private fun `Then verify view interaction is correct for tokonow dynamic section`(item: BaseItemInitialStateSearch) {
+    private fun `Then verify view interaction is correct for tokonow dynamic section`(
+        item: BaseItemInitialStateSearch
+    ) {
         val expectedLabel = "value: ${item.title} - po: ${item.position} - page: ${item.applink}"
         verify {
-            initialStateView.trackEventClickTokoNowDynamicSectionItem(expectedLabel)
+            initialStateView.trackEventClickTokoNowDynamicSectionItem(expectedLabel, item)
         }
     }
 
@@ -325,7 +341,7 @@ internal class OnInitialStateItemClickTest: InitialStatePresenterTestFixtures(){
     private fun InitialStateContract.View.onClickChip(item: BaseItemInitialStateSearch) {
         val expectedLabel = "value: ${item.title} - title: ${item.header} - po: 1"
         verifyOrder {
-            trackEventClickChip(any(), expectedLabel, item.featureId, item.dimension90)
+            trackEventClickChip(any(), expectedLabel, item, item.featureId, item.dimension90)
             route(item.applink, initialStatePresenter.getSearchParameter())
             finish()
         }

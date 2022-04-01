@@ -19,6 +19,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsDataMapper
+import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -127,10 +128,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             }
 
             setOnItemClickListener { _, _, position, _ ->
-                listener.onClickAutoComplete()
                 val item = autoCompleteAdapter.getItem(position)
                 if (item is TopupBillsAutoCompleteContactDataView) {
                     setContactName(item.name)
+                    listener.onClickAutoComplete(item.name.isNotEmpty())
                 }
             }
         }
@@ -242,11 +243,12 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
     }
 
     fun setInputNumber(inputNumber: String) {
-        inputNumberField.editText.setText(formatPrefixClientNumber(inputNumber))
+        inputNumberField.editText.setText(
+            CommonTopupBillsUtil.formatPrefixClientNumber(inputNumber))
     }
 
     fun getInputNumber(): String {
-        return formatPrefixClientNumber(inputNumberField.editText.text.toString())
+        return CommonTopupBillsUtil.formatPrefixClientNumber(inputNumberField.editText.text.toString())
     }
 
     fun setContactName(contactName: String) {
@@ -310,33 +312,6 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         }
     }
 
-    private fun validatePrefixClientNumber(phoneNumber: String): String {
-        var phoneNumber = phoneNumber
-        if (phoneNumber.startsWith("62")) {
-            phoneNumber = phoneNumber.replaceFirst("62".toRegex(), "0")
-        }
-        if (phoneNumber.startsWith("+62")) {
-            phoneNumber = phoneNumber.replace("+62", "0")
-        }
-        phoneNumber = phoneNumber.replace(".", "")
-
-        return phoneNumber.replace("[^0-9]+".toRegex(), "")
-    }
-
-    private fun formatPrefixClientNumber(phoneNumber: String?): String {
-        phoneNumber?.run {
-            if ("".equals(phoneNumber.trim { it <= ' ' }, ignoreCase = true)) {
-                return phoneNumber
-            }
-            var phoneNumberWithPrefix = validatePrefixClientNumber(phoneNumber)
-            if (!phoneNumberWithPrefix.startsWith("0")) {
-                phoneNumberWithPrefix = "0$phoneNumber"
-            }
-            return phoneNumberWithPrefix
-        }
-        return ""
-    }
-
     fun hideSoftKeyboard() {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         imm?.hideSoftInputFromWindow(this.windowToken, 0)
@@ -349,7 +324,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
-        fun onClickAutoComplete()
+        fun onClickAutoComplete(isFavoriteContact: Boolean)
         fun onUserManualType()
     }
 

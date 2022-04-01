@@ -35,6 +35,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 
 }
@@ -70,6 +71,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
     implementation projectOrAar(rootProject.ext.features.gallery)
+    implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.merchantVoucher)
@@ -116,8 +118,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
@@ -131,9 +133,7 @@ dependencies {
         transitive = true
     }
     implementation projectOrAar(rootProject.ext.features.promoMvcWidget)
-
-    // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdk
+    implementation project(rootProject.ext.features.playWidget)
 
     //video player
     implementation rootProject.ext.miscDependencies.exoPlayerCore
@@ -162,6 +162,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
     androidTestImplementation rootProject.ext.testDependencies.testCore
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
+    kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents

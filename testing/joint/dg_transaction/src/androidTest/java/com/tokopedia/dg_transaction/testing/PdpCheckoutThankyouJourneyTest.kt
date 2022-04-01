@@ -6,6 +6,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.dg_transaction.testing.di.DaggerStubEmoneyPdpComponent
@@ -15,9 +16,13 @@ import com.tokopedia.dg_transaction.testing.digital_checkout.robot.digitalChecko
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivityStub
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.robot.emoneyPdp
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.utils.PdpCheckoutThankyouResponseConfig
+import com.tokopedia.dg_transaction.testing.thankyou_native.robot.thankYou
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
+import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
@@ -30,7 +35,7 @@ class PdpCheckoutThankyouJourneyTest {
         false, false)
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private lateinit var activity: EmoneyPdpActivityStub
     private var emoneyPdpComponentStub: StubEmoneyPdpComponent? = null
@@ -55,6 +60,11 @@ class PdpCheckoutThankyouJourneyTest {
         digitalCheckout {
             waitForData()
             clickCheckout()
+            waitForData()
+        }
+        thankYou {
+            mockPayAndNavigateThankYou(activity)
+            waitForData()
         }
         MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ID), hasAllSuccess())
     }

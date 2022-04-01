@@ -8,7 +8,7 @@ import com.tokopedia.sellerorder.databinding.PartialInfoLayoutBinding
 
 class SomConfirmShippingBottomSheet(
         context: Context
-) : SomBottomSheet<PartialInfoLayoutBinding>(LAYOUT, true, true, false, context.getString(R.string.automatic_shipping), context, true) {
+) : SomBottomSheet<PartialInfoLayoutBinding>(LAYOUT, true, true, false, false, false, context.getString(R.string.automatic_shipping), context, true) {
 
     companion object {
         private val LAYOUT = R.layout.partial_info_layout

@@ -5,6 +5,7 @@
     {
       "networkSpeed": ".*",
       "clientId": ".*",
+      "theme": ".*",
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
@@ -15,7 +16,7 @@
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": ".+",
+      "shopId": ".*",
       "screenName": "rating produk",
       "event": "clickReview",
       "eventAction": "click - rating produk tab",
@@ -24,7 +25,7 @@
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": ".+",
+      "shopId": ".*",
       "screenName": "rating produk",
       "event": "clickReview",
       "eventAction": "scroll - rating product page",
@@ -33,13 +34,13 @@
     },
     {
       "eventCategory": "ulasan - rating produk",
-      "shopId": ".+",
+      "shopId": ".*",
       "screenName": "rating produk",
-      "position": ".+",
+      "position": ".*",
       "event": "clickReview",
       "eventAction": "click - product on rating product",
       "sessionIris": ".*",
-      "eventLabel": ".+"
+      "eventLabel": "productId:.*"
     }
   ]
 }

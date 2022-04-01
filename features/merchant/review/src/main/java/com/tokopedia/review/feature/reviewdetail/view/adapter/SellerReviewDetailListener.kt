@@ -21,6 +21,8 @@ interface ProductFeedbackDetailListener {
 
 interface OverallRatingDetailListener {
     fun onFilterPeriodClicked(view: View, title: String)
+    fun shouldShowTickerForRatingDisclaimer(): Boolean
+    fun updateSharedPreference()
 }
 
 interface SellerRatingAndTopicListener {

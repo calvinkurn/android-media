@@ -2,11 +2,12 @@ package com.tokopedia.unifyorderhistory
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -25,7 +26,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import rx.Subscriber
 
 /**
  * Created by fwidjaja on 2020-05-07.
@@ -43,6 +43,9 @@ class UohListViewModelTest {
     private var listRecommendation = listOf<RecommendationWidget>()
     private var finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer()
     private var listMsg = arrayListOf<String>()
+
+    @RelaxedMockK
+    lateinit var getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase
 
     @RelaxedMockK
     lateinit var uohListUseCase: UohListUseCase
@@ -72,15 +75,18 @@ class UohListViewModelTest {
     lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
 
     @RelaxedMockK
+    lateinit var getUohPmsCounterUseCase: GetUohPmsCounterUseCase
+
+    @RelaxedMockK
     lateinit var atcUseCase: AddToCartUseCase
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        uohListViewModel = UohListViewModel(dispatcher, uohListUseCase,
+        uohListViewModel = UohListViewModel(dispatcher, getUohFilterCategoryUseCase, uohListUseCase,
                 getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
                 lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase,
-                rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase)
+                rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase, getUohPmsCounterUseCase)
 
         val order1 = UohListOrder.Data.UohOrders.Order(orderUUID = "abc", verticalID = "",
                 verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
@@ -107,6 +113,54 @@ class UohListViewModelTest {
         finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer(1)
 
         listMsg.add("Test")
+    }
+
+    // uoh filter category
+    @Test
+    fun getFilterCategoryData_shouldReturnSuccess() {
+        //given
+        coEvery {
+            getUohFilterCategoryUseCase.executeSuspend()
+        } returns Success(UohFilterCategory.Data())
+
+        //when
+        uohListViewModel.loadFilterCategory()
+
+        //then
+        assert(uohListViewModel.filterCategoryResult.value is Success)
+    }
+
+    @Test
+    fun getFilterCategoryData_shouldReturnFail() {
+        //given
+        coEvery {
+            getUohFilterCategoryUseCase.executeSuspend()
+        } returns Fail(Throwable())
+
+        //when
+        uohListViewModel.loadFilterCategory()
+
+        //then
+        assert(uohListViewModel.filterCategoryResult.value is Fail)
+    }
+
+    @Test
+    fun getFilterCategoryData_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            getUohFilterCategoryUseCase.executeSuspend()
+        } returns Success(UohFilterCategory.Data(uohFilterCategoryData = UohFilterCategory.Data.UohFilterCategoryData(
+                v2Filters = listOf(UohFilterCategory.Data.UohFilterCategoryData.FilterV2()),
+                categories = listOf(UohFilterCategory.Data.UohFilterCategoryData.Category())
+        )))
+
+        //when
+        uohListViewModel.loadFilterCategory()
+
+        //then
+        assert(uohListViewModel.filterCategoryResult.value is Success)
+        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory.Data>).data.uohFilterCategoryData.v2Filters.isNotEmpty())
+        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory.Data>).data.uohFilterCategoryData.categories.isNotEmpty())
     }
 
     // order_history_list
@@ -159,44 +213,43 @@ class UohListViewModelTest {
     fun getRecommendation_shouldReturnSuccess() {
         //given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
 
         //when
-        uohListViewModel.loadOrderList(UohListParam())
+        uohListViewModel.loadRecommendationList(0)
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders[0].orderUUID.equals("abc", true))
+        assert(uohListViewModel.recommendationListResult.value is Success)
     }
 
     @Test
     fun getRecommendation_shouldReturnFail() {
         //given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Fail(Throwable())
+            getRecommendationUseCase.getData(any())
+        } throws Exception()
 
         //when
-        uohListViewModel.loadOrderList(UohListParam())
+        uohListViewModel.loadRecommendationList(0)
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Fail)
+        assert(uohListViewModel.recommendationListResult.value is Fail)
     }
 
     @Test
     fun getRecommendation_shouldNotReturnEmpty() {
         //given
         coEvery {
-            uohListUseCase.executeSuspend(any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            getRecommendationUseCase.getData(any())
+        } returns listRecommendation
 
         //when
-        uohListViewModel.loadOrderList(UohListParam())
+        uohListViewModel.loadRecommendationList(0)
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.isNotEmpty())
+        assert(uohListViewModel.recommendationListResult.value is Success)
+        assert((uohListViewModel.recommendationListResult.value as Success).data == listRecommendation)
     }
 
     // finish order result
@@ -253,7 +306,7 @@ class UohListViewModelTest {
         } returns Success(AtcMultiData(AtcMultiData.AtcMulti("", "", AtcMultiData.AtcMulti.BuyAgainData(success = 1))))
 
         //when
-        uohListViewModel.doAtcMulti("", "", arrayListOf(), "")
+        uohListViewModel.doAtcMulti("", "", arrayListOf(AddToCartMultiParam()), "")
 
         //then
         assert(uohListViewModel.atcMultiResult.value is Success)
@@ -445,14 +498,11 @@ class UohListViewModelTest {
         //given
 
         coEvery {
-            atcUseCase.execute(any(), any()) }.answers {
-            (secondArg() as Subscriber<AddToCartDataModel>).onNext(
-                    AddToCartDataModel(
-                            status = AddToCartDataModel.STATUS_OK,
-                            data = DataModel(success = 1)
-                    )
-            )
-        }
+            atcUseCase.executeOnBackground()
+        } returns AddToCartDataModel(
+                        status = AddToCartDataModel.STATUS_OK,
+                        data = DataModel(success = 1)
+                )
 
         //when
         uohListViewModel.doAtc(AddToCartRequestParams())
@@ -466,9 +516,8 @@ class UohListViewModelTest {
     fun atc_shouldReturnFail() {
         //given
         coEvery {
-            atcUseCase.execute(any(), any()) }.answers {
-            (secondArg() as Subscriber<AddToCartDataModel>).onError(Throwable())
-        }
+            atcUseCase.executeOnBackground()
+        } throws Exception()
 
         //when
         uohListViewModel.doAtc(AddToCartRequestParams())
@@ -481,14 +530,11 @@ class UohListViewModelTest {
     fun atc_shouldNotReturnEmptyMessage() {
         //given
         coEvery {
-            atcUseCase.execute(any(), any()) }.answers {
-            (secondArg() as Subscriber<AddToCartDataModel>).onNext(
-                    AddToCartDataModel(
-                            status = AddToCartDataModel.STATUS_OK,
-                            data = DataModel(success = 1, message = listMsg)
-                    )
-            )
-        }
+            atcUseCase.executeOnBackground()
+        } returns AddToCartDataModel(
+                status = AddToCartDataModel.STATUS_OK,
+                data = DataModel(success = 1, message = listMsg)
+        )
 
         //when
         uohListViewModel.doAtc(AddToCartRequestParams())
@@ -527,4 +573,71 @@ class UohListViewModelTest {
         //then
         assert(uohListViewModel.tdnBannerResult.value == null)
     }
+
+    @Test
+    fun tdn_shouldReturnFail() {
+        //given
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws Exception()
+
+        //when
+        uohListViewModel.loadTdnBanner()
+
+        //then
+        assert(uohListViewModel.recommendationListResult.value is Fail)
+    }
+
+    @Test
+    fun getUohCounterSuccess_shouldReturnSuccess(){
+        //given
+        coEvery { getUohPmsCounterUseCase.executeSuspend() }.answers{
+            Success(PmsNotification(
+                    notifications = Notifications(
+                            buyerOrderStatus = BuyerOrderStatus(
+                                    paymentStatus = 1
+                            )
+                    )
+            ))
+        }
+
+        //when
+        uohListViewModel.loadPmsCounter()
+
+        //then
+        assert(uohListViewModel.getUohPmsCounterResult.value is Success)
+    }
+
+    @Test
+    fun getUohCounterSuccess_counterShouldBeCorrect(){
+        //given
+        val counter = 6
+        coEvery { getUohPmsCounterUseCase.executeSuspend() }.answers{
+            Success(PmsNotification(
+                    notifications = Notifications(
+                            buyerOrderStatus = BuyerOrderStatus(
+                                    paymentStatus = counter
+                            )
+                    )
+            ))
+        }
+
+        //when
+        uohListViewModel.loadPmsCounter()
+
+        //then
+        val result = uohListViewModel.getUohPmsCounterResult.value as Success<PmsNotification>
+        assert(result.data.notifications.buyerOrderStatus.paymentStatus == counter)
+    }
+
+    @Test
+    fun getUohCounterFail_shouldReturnFail(){
+        //given
+        coEvery { getUohPmsCounterUseCase.executeSuspend() } returns Fail(Exception())
+
+        //when
+        uohListViewModel.loadPmsCounter()
+
+        //then
+        assert(uohListViewModel.getUohPmsCounterResult.value is Fail)
+    }
+
 }

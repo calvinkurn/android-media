@@ -11,6 +11,8 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewOutlineProvider
 import androidx.annotation.RequiresApi
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.tkpd.atcvariant.BuildConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
@@ -18,6 +20,7 @@ import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.user.session.UserSession
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -50,6 +53,7 @@ class Utils {
         const val TIMER_SPRINT_SALE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
         const val DEFAULT_BANNER_WIDTH = 800
         const val DEFAULT_BANNER_HEIGHT = 150
+        const val DEFAULT_BANNER_WEIGHT = 1.0f
         const val BANNER_SUBSCRIPTION_DEFAULT_STATUS = -1
         const val SEARCH_DEEPLINK = "tokopedia://search-autocomplete"
         const val CART_CACHE_NAME = "CART"
@@ -62,15 +66,18 @@ class Utils {
         private const val SEJUTA_TEXT = "jt orang"
         private const val SEMILIAR_TEXT = "M orang"
         var preSelectedTab = -1
-        private const val IDENTIFIER = "identifier"
+        const val IDENTIFIER = "identifier"
         private const val COMPONENT_ID = "component_id"
-        private const val DEVICE = "device"
-        private const val DEVICE_VALUE = "Android"
-        private const val FILTERS = "filters"
+        const val DEVICE = "device"
+        const val DEVICE_VALUE = "Android"
+        const val FILTERS = "filters"
+        const val VERSION = "version"
+        const val SECTION_ID = "section_id"
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
-        private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_PAGE_NUMBER = "rpc_page_number"
+        const val RPC_PAGE__SIZE = "rpc_page_size"
+        const val RPC_NEXT_PAGE = "rpc_next_page"
 
 
         fun extractDimension(url: String?, dimension: String = "height"): Int? {
@@ -191,6 +198,16 @@ class Utils {
             return addressQueryParameterMap
         }
 
+
+        fun addAddressQueryMapWithWareHouse(userAddressData: LocalCacheModel?): MutableMap<String, String> {
+            val addressQueryParameterMap = addAddressQueryMap(userAddressData)
+            userAddressData?.let {
+                if (it.warehouse_id.isNotEmpty())
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
+            }
+            return addressQueryParameterMap
+        }
+
         fun isFutureSale(saleStartDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
@@ -203,11 +220,11 @@ class Utils {
         }
 
 
-        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
+        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val parsedSaleStartDate = parseData(saleStartDate)
-            val parsedSaleEndDate = parseData(saleEndDate)
+            val parsedSaleStartDate = parseData(saleStartDate, timerFormat)
+            val parsedSaleEndDate = parseData(saleEndDate, timerFormat)
             return if (parsedSaleStartDate != null && parsedSaleEndDate != null) {
                 (parsedSaleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < parsedSaleEndDate.time)
             } else {
@@ -313,6 +330,7 @@ class Utils {
                 ?: (component.getComponentsItem()?.size.isMoreThanZero()
                         && component.getComponentsItem()?.size?.rem(productPerPage) == 0)
         }
+
         fun getUserId(context: Context?): String {
             return context?.let { UserSession(it).userId } ?: ""
         }
@@ -346,6 +364,42 @@ class Utils {
                 }
             }catch (e:Exception){
 
+            }
+        }
+
+        fun updateProductAddedInCart(products:List<ComponentsItem>,
+                                             map: Map<String, MiniCartItem>?) {
+            if (map == null) return
+            products.forEach { componentsItem ->
+                componentsItem.data?.firstOrNull()?.let { dataItem ->
+                    if (dataItem.hasATC && !dataItem.parentProductId.isNullOrEmpty() && map.containsKey(dataItem.parentProductId)) {
+                        map[dataItem.parentProductId]?.quantity?.let { quantity ->
+                            dataItem.quantity = quantity
+                        }
+                    }else if (dataItem.hasATC && !dataItem.productId.isNullOrEmpty() && map.containsKey(dataItem.productId)) {
+                        map[dataItem.productId]?.quantity?.let { quantity ->
+                            dataItem.quantity = quantity
+                        }
+                    }
+                }
+            }
+        }
+
+        fun getParentPosition(componentsItem:ComponentsItem):Int{
+            var parentComponentPosition = componentsItem.parentComponentPosition
+            if(componentsItem.parentComponentId.isNotEmpty()){
+                getComponent(componentsItem.parentComponentId,componentsItem.pageEndPoint)?.let { parentComp ->
+                    parentComponentPosition = parentComp.position
+                }
+            }
+            return parentComponentPosition
+        }
+
+        fun logException(t: Throwable) {
+            if (!BuildConfig.DEBUG) {
+                FirebaseCrashlytics.getInstance().recordException(Exception(t))
+            } else {
+                t.printStackTrace()
             }
         }
     }

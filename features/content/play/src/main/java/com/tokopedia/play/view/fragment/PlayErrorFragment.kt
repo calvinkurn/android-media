@@ -40,7 +40,7 @@ class PlayErrorFragment @Inject constructor(
     private lateinit var parentViewModel: PlayParentViewModel
     private lateinit var container: View
     private lateinit var globalError: GlobalError
-    private lateinit var imgBack: ImageView
+    private lateinit var imgBack: View
 
     override fun getScreenName() = "Play Video"
 

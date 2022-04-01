@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.gm.common.constant.KYCStatusId
@@ -62,6 +63,8 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
         private const val PM_TAB_INDEX = 0
         private const val PM_PRO_TAB_INDEX = 1
         private const val REQUEST_LOGIN = 1313
+        private const val TAB_PARAM = "tab"
+        private const val TAB_PM_PRO = "pm_pro"
     }
 
     @Inject
@@ -274,7 +277,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun setupView() {
-        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
         setSupportActionBar(binding?.toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setWhiteStatusBar()
@@ -336,7 +339,24 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
 
             val isSingleOrEmptyTab = viewPagerAdapter.getTitles().size <= 1
             tabPmSubscription.isVisible = !isSingleOrEmptyTab
+
+            if (!isSingleOrEmptyTab) {
+                setSelectedTab()
+            }
         }
+    }
+
+    private fun setSelectedTab() {
+        val tab = intent.data?.let {
+            val params = UriUtil.uriQueryParamsToMap(it)
+            params[TAB_PARAM].orEmpty()
+        }
+        val tabIndex = if (tab?.equals(TAB_PM_PRO, true) == true) {
+            PM_PRO_TAB_INDEX
+        } else {
+            PM_TAB_INDEX
+        }
+        binding?.viewPagerPmSubscription?.currentItem = tabIndex
     }
 
     private fun sendTrackerOnPMTabClicked(tabIndex: Int) {

@@ -278,7 +278,7 @@ class DealsBrandDetailFragment : BaseDaggerFragment(), DealsBrandDetailAdapter.D
         activity?.let { activity ->
             val activity = WeakReference<Activity>(activity)
             if(!::dealsShareBrandDetail.isInitialized) dealsShareBrandDetail = DealsBrandDetailShare(activity)
-            dealsShareBrandDetail.shareEvent(brandDetail, brandDetail.title, { showShareLoading() }, { hideShareLoading() })
+            dealsShareBrandDetail.shareEvent(brandDetail, brandDetail.title, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
 

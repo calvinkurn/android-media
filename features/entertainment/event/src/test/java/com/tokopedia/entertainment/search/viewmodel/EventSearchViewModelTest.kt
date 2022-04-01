@@ -56,7 +56,6 @@ class EventSearchViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         eventSearchViewModel = EventSearchViewModel(dispatcher, graphqlRepository)
-        eventSearchViewModel.resources = context.resources
     }
 
     @Test
@@ -124,7 +123,7 @@ class EventSearchViewModelTest {
         ) as MutableMap<Type, Any>, HashMap<Type, List<GraphqlError>>(), false)
         assertNotNull(dataMock)
 
-        val dataMockMapped = SearchMapper.mappingLocationandKegiatantoSearchList(dataMock.data,"", eventSearchViewModel.resources)
+        val dataMockMapped = SearchMapper.mappingLocationandKegiatantoSearchList(dataMock.data,"")
 
         eventSearchViewModel.getSearchData("",CacheType.CACHE_FIRST,"")
 

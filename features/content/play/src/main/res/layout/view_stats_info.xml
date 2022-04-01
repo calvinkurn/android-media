@@ -18,7 +18,7 @@
         />
 
     <include
-        layout="@layout/layout_total_view"
+        layout="@layout/layout_total_view_viewer"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_marginStart="@dimen/spacing_lvl2"

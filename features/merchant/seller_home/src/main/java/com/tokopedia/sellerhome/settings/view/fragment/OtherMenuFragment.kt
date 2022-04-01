@@ -22,8 +22,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.linker.LinkerManager
@@ -36,8 +38,13 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.menu.common.analytics.*
+import com.tokopedia.seller.menu.common.analytics.NewOtherMenuTracking
+import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
+import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
+import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
+import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -59,6 +66,7 @@ import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShare
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -78,11 +86,12 @@ import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
-    StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
+    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
         private const val TAB_PM_PARAM = "tab"
 
+        private const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
         private const val DELIMITER = " - "
 
@@ -91,7 +100,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
         const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 
-        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
 
         const val SHOP_BADGE = "shop badge"
@@ -132,6 +140,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
 
+    private val kreditTopadsClickedBundle by lazy {
+        Bundle().also {
+            it.putBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        }
+    }
+
     private val topAdsBottomSheet by lazy {
         BottomSheetUnify().apply {
             setCloseClickListener {
@@ -170,7 +184,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? SellerHomeActivity)?.attachCallback(this)
+        (activity as? SellerHomeActivity)?.run {
+            attachCallback(this@OtherMenuFragment)
+            attachOtherMenuFragmentChangeCallback(this@OtherMenuFragment)
+        }
         viewModel.run {
             setErrorStateMapDefaultValue()
             setSuccessStateMapDefaultValue()
@@ -252,6 +269,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         startActivity(Intent(context, MenuSettingActivity::class.java))
     }
 
+    override fun getIsMVCProductEnabled(): Boolean = getIsProductCouponEnabled()
+
     override fun getRecyclerView(): RecyclerView? = getRecyclerView(view)
 
     override fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> =
@@ -271,8 +290,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onFollowersCountClicked() {
-//        NewOtherMenuTracking.sendEventClickTotalFollowers()
-//        goToShopFavouriteList()
+        NewOtherMenuTracking.sendEventClickTotalFollowers()
+        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -296,7 +315,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             bottomSheet.dismiss()
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
         } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            RouteManager.route(context,kreditTopadsClickedBundle, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
@@ -310,7 +329,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onShopOperationalClicked() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
@@ -419,11 +438,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     checkUsingCustomBranchLinkDomain(linkerShareData)
-                    val shareString = getString(
+                    val shareString = activity?.getString(
                         R.string.sah_new_other_share_text,
                         userSession.shopName,
                         linkerShareData?.shareContents
-                    )
+                    ).orEmpty()
                     shareModel.subjectName = userSession.shopName
                     SharingUtil.executeShareIntent(
                         shareModel,
@@ -507,10 +526,13 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         viewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
             viewHolder?.setShopStatusData(it)
             if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
+                val throwable = it.throwable
+                showErrorToaster(throwable) {
                     onRefreshShopInfo()
                 }
-                logHeaderError(it.throwable, SHOP_INFO)
+                if (throwable is UserShopInfoException) {
+                    logHeaderError(throwable, "$SHOP_INFO - ${throwable.errorType}")
+                }
             }
         }
     }
@@ -620,6 +642,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun observeToasterAlreadyShown() {
+        viewModel.setDefaultToasterState(false)
         viewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
             canShowErrorToaster = !isToasterAlreadyShown
         }
@@ -634,10 +657,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun goToReputationHistory() {
-        val reputationHistoryIntent =
-            RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-                putExtra(GO_TO_REPUTATION_HISTORY, true)
-            }
+        val appLink = UriUtil.buildUriAppendParam(
+            ApplinkConst.REPUTATION,
+            mapOf(ReviewApplinkConst.PARAM_TAB to ReviewApplinkConst.BUYER_REVIEW_TAB)
+        )
+        val reputationHistoryIntent = RouteManager.getIntent(context, appLink)
         startActivity(reputationHistoryIntent)
     }
 
@@ -727,6 +751,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             context?.getString(R.string.setting_header_error_message,
                 errorType
             ).orEmpty()
+        )
+        SellerHomeErrorHandler.logExceptionToServer(
+            errorTag = SellerHomeErrorHandler.OTHER_MENU,
+            throwable = throwable,
+            errorType = context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty(),
+            deviceId = userSession.deviceId.orEmpty()
         )
     }
 
@@ -852,6 +884,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         return urlString.split("/").toMutableList().also { list ->
             list[list.lastIndex] = replacementValue
         }.joinToString("/")
+    }
+
+    private fun getIsProductCouponEnabled(): Boolean {
+        return try {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {

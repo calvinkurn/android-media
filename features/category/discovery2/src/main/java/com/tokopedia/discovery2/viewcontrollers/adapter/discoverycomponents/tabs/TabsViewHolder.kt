@@ -1,8 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tabs
 
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -20,6 +22,9 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.TabsUnify
 
 private const val TAB_START_PADDING = 20
@@ -49,6 +54,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
+            if((fragment.activity as DiscoveryActivity).isFromCategory())
+                tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
             var selectedPosition = 0
             it.forEachIndexed { index, tabItem ->
@@ -63,8 +70,12 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        if(selectedPosition>=0) {
+                        if(selectedPosition>=0 && (fragment.activity as DiscoveryActivity).isFromCategory()) {
+                            tabsHolder.gone()
                             tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                            Handler().postDelayed({
+                                tabsHolder.show()
+                            },400)
                             selectedPosition = -1
                         }
                     }
@@ -174,7 +185,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             if (it.size >= tab.position)
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
                         ?.trackTabsClick(tabsViewModel.components.id,
-                                tabsViewModel.components.position,
+                                tabsViewModel.position,
                                 it[tab.position],
                                 tab.position)
         }

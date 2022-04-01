@@ -9,10 +9,10 @@ import com.tokopedia.charts.common.ChartColor
  */
 
 data class LineChartEntryConfigModel(
-        val lineWidth: Float = 1f,
-        val lineColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_COLOR),
-        val fillDrawable: Drawable? = null,
-        val fillColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_CHART_FILL_COLOR),
-        val drawFillEnabled: Boolean = true,
-        val isLineDashed: Boolean = false
+    val lineWidth: Float = 1f,
+    val lineColor: Int = Color.parseColor(ChartColor.DMS_DEFAULT_LINE_COLOR),
+    val fillDrawable: Drawable? = null,
+    val fillColor: Int = Color.parseColor(ChartColor.DMS_DEFAULT_LINE_CHART_FILL_COLOR),
+    val drawFillEnabled: Boolean = true,
+    val isLineDashed: Boolean = false
 )

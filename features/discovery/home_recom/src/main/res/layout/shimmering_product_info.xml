@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_loading"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_112"
+    android:layout_height="112dp"
     android:orientation="vertical">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering"
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
         android:layout_marginBottom="8dp"
         app:corners="@integer/corner_radius_shimmering"
         app:layout_constraintBottom_toBottomOf="parent"

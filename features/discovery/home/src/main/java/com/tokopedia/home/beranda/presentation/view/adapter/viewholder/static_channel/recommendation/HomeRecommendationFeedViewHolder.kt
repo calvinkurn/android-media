@@ -8,6 +8,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -48,9 +49,9 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         // 2nd dp8 comes from N50 divider in home recommendation feed viewholder
         // 3rd dp8 comes from N0 divider in home recommendation feed viewholder
         layoutParams?.height = listener.windowHeight - listener.homeMainToolbarHeight +
-                context.resources.getDimensionPixelSize(R.dimen.dp_8) +
-                context.resources.getDimensionPixelSize(R.dimen.dp_8) +
-                context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                8f.toDpInt() +
+                8f.toDpInt() +
+                8f.toDpInt()
         container?.layoutParams = layoutParams
 
         recommendationTabDataModelList = homeRecommendationFeedDataModel.recommendationTabDataModel

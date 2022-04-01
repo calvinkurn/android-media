@@ -34,8 +34,8 @@ class ShopHomeVoucherViewHolder(
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     interface ShopHomeVoucherViewHolderListener {
-        fun onVoucherImpression()
-        fun onVoucherTokoMemberInformationImpression()
+        fun onVoucherImpression(model: ShopHomeVoucherUiModel, position: Int)
+        fun onVoucherTokoMemberInformationImpression(model: ShopHomeVoucherUiModel, position: Int)
         fun onVoucherReloaded()
     }
 
@@ -86,9 +86,9 @@ class ShopHomeVoucherViewHolder(
         } else {
             if (model.data != null && model.data.isShown == true) {
                 if(model.data.animatedInfoList?.size.orZero() > 1)
-                    shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression()
+                    shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression(model, adapterPosition)
                 else
-                    shopHomeVoucherViewHolderListener.onVoucherImpression()
+                    shopHomeVoucherViewHolderListener.onVoucherImpression(model, adapterPosition)
                 merchantVoucherShimmering?.hide()
                 merchantVoucherWidget?.show()
                 merchantVoucherReload?.hide()

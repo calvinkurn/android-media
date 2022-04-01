@@ -116,6 +116,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/badRatingReasonReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingDisclaimerWidget
+        android:id="@+id/badRatingReasonDisclaimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/badRatingReasonReview" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/inbox_review_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="badRatingReasonReview, badRatingReasonDisclaimer, rvItemAttachmentFeedback, tvFeedbackReview"/>
+
     <View
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
@@ -123,7 +150,7 @@
         tools:background="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"/>
 
@@ -136,7 +163,7 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         tools:text="Balasan otomatis •"/>
 
@@ -144,7 +171,7 @@
         android:id="@+id/tvReplyDate"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/inbox_review_barrier"
         app:layout_constraintStart_toEndOf="@id/tvReplyUser"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"

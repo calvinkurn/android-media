@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
 import com.tokopedia.user_identification_common.KYCConstant
 
@@ -15,7 +14,9 @@ import com.tokopedia.user_identification_common.KYCConstant
 class UserIdentificationInfoActivity : BaseSimpleActivity() {
     var isSourceSeller = false
     private var projectId = -1
-    private var callbackUrl: String? = null
+    private var redirectUrl: String? = null
+    private var callback: String? = null
+    private var kycType = ""
 
     interface Listener {
         fun onTrackBackPressed()
@@ -38,16 +39,22 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        try {
-            projectId = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
-            callbackUrl = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
-        } catch (ex: NullPointerException) {
-            projectId = KYCConstant.STATUS_DEFAULT
-        } catch (ex: NumberFormatException) {
-            projectId = KYCConstant.STATUS_DEFAULT
-        } catch (e: Exception) {
-            e.printStackTrace()
+        intent?.data?.let {
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            callback = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK).orEmpty()
+            redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
         }
-        return UserIdentificationInfoFragment.createInstance(isSourceSeller, projectId, callbackUrl)
+
+        if (kycType.isEmpty()) {
+            kycType = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+        }
+
+        return UserIdentificationInfoFragment.createInstance(
+                isSourceSeller,
+                projectId,
+                kycType,
+                if (callback.isNullOrEmpty()) redirectUrl else callback
+        )
     }
 }

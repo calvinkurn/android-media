@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.listener
 import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.RechargeRecommendationTracking
-import com.tokopedia.home.beranda.domain.interactor.DeclineRechargeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.repository.HomeDeclineRechargeRecommendationRepository
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendationData
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home_component.listener.RechargeRecommendationListener
@@ -32,8 +32,8 @@ class RechargeRecommendationCallback (val context: Context?,
         }
 
         val requestParams = mapOf(
-                DeclineRechargeRecommendationUseCase.PARAM_UUID to reminderData.UUID,
-                DeclineRechargeRecommendationUseCase.PARAM_CONTENT_ID to reminderData.id)
+                HomeDeclineRechargeRecommendationRepository.PARAM_UUID to reminderData.UUID,
+                HomeDeclineRechargeRecommendationRepository.PARAM_CONTENT_ID to reminderData.id)
         homeCategoryListener.declineRechargeRecommendationItem(requestParams)
     }
 
@@ -43,10 +43,6 @@ class RechargeRecommendationCallback (val context: Context?,
                     it, mapRemindertoRechargeRecommendationData(reminderData)
             )
         }
-    }
-
-    override fun getRechargeRecommendation() {
-        homeCategoryListener.getRechargeRecommendation()
     }
 
     private fun mapRemindertoRechargeRecommendationData(reminderData: ReminderData): RechargeRecommendationData {

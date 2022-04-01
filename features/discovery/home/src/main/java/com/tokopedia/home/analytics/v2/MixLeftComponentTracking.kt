@@ -1,8 +1,10 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home.analytics.v2.MixLeftComponentTracking.CustomEvent.MIXLEFT_LIST
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.getTopadsString
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
@@ -14,19 +16,20 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
         const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
+        const val MIXLEFT_LIST = "/ - p%s - %s - %s - carousel - %s - %s - %s - %s"
     }
 
-    private const val LIST_MIX_LEFT = "dynamic channel left carousel - product"
     private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
     private const val IMPRESSION_MIX_LEFT_BANNER = "impression on banner dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_BANNER = "click on banner dynamic channel left carousel"
     private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
-    private const val PROMOTION_BANNER_ID = "%s_%s_%s_%s"
     private const val PROMOTION_BANNER_NAME = "/ - p%s - dynamic channel left carousel - banner - %s"
 
 
     private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
     private const val CLICK_MIX_LEFT_LOADMORE_CARD = "click view all card on dynamic channel left carousel"
+    private val LIST_CAROUSEL_PRODUCT = MIXLEFT_LIST.format("%s", "dynamic channel left carousel - product", "%s","%s","%s","%s","%s")
+
 
 
     private fun getMixLeftClickLoadMore(channel: ChannelModel, userId: String): HashMap<String, Any> {
@@ -85,9 +88,13 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         pageName = channel.pageName,
                         isCarousel = true
                 )),
-                list = String.format(
-                        Value.LIST, positionOnHome, LIST_MIX_LEFT
-                ))
+                list = LIST_CAROUSEL_PRODUCT.format(
+                    positionOnHome,
+                    grid.getTopadsString(),
+                    grid.recommendationType,
+                    channel.pageName,
+                    channel.trackingAttributionModel.galaxyAttribution,
+                    channel.channelHeader.name))
                 .appendChannelId(channel.id)
                 .build()
     }
@@ -120,9 +127,13 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                         pageName = channel.pageName,
                         isCarousel = true
                 )),
-                list = String.format(
-                        Value.LIST, positionOnHome, LIST_MIX_LEFT
-                ))
+                list = LIST_CAROUSEL_PRODUCT.format(
+                    positionOnHome,
+                    grid.getTopadsString(),
+                    grid.recommendationType,
+                    channel.pageName,
+                    channel.trackingAttributionModel.galaxyAttribution,
+                    channel.channelHeader.name))
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -160,9 +171,13 @@ object MixLeftComponentTracking: BaseTrackerConst()  {
                                 isCarousel = true
                         )
                 ),
-                list = String.format(
-                        Value.LIST, positionOnHome, LIST_MIX_LEFT
-                ))
+                list = LIST_CAROUSEL_PRODUCT.format(
+                    positionOnHome,
+                    grid.getTopadsString(),
+                    grid.recommendationType,
+                    channel.pageName,
+                    channel.trackingAttributionModel.galaxyAttribution,
+                    channel.channelHeader.name))
                 .appendChannelId(channel.id)
                 .appendScreen(Screen.DEFAULT)
                 .appendCurrentSite(CurrentSite.DEFAULT)

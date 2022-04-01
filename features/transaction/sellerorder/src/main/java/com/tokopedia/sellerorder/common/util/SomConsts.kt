@@ -33,6 +33,7 @@ object SomConsts {
     const val DETAIL_PRODUCTS_TYPE = "products"
     const val DETAIL_SHIPPING_TYPE = "shipping"
     const val DETAIL_PAYMENT_TYPE = "payment"
+    const val DETAIL_MVC_USAGE_TYPE = "mvc_usage"
 
     const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
     const val EXTRA_USER_MODE = "EXTRA_USER_MODE"
@@ -55,6 +56,7 @@ object SomConsts {
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
+    const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -95,6 +97,9 @@ object SomConsts {
     const val STATUS_CODE_ORDER_ORDER_CONFIRMED = 400
     const val STATUS_CODE_ORDER_DELIVERED = 600
     const val STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT = 699
+    const val STATUS_CODE_WAITING_PICKUP = 450
+    const val STATUS_CODE_READY_TO_SEND = 520
+    const val STATUS_CODE_RECEIPT_CHANGED = 530
 
     const val SORT_ASCENDING = 0
     const val SORT_DESCENDING = 2
@@ -132,9 +137,9 @@ object SomConsts {
     const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
 
     // Order list sort by value
-    const val SORT_BY_PAYMENT_DATE_ASCENDING = 0
-    const val SORT_BY_TOTAL_OPEN_DESCENDING = 1
-    const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
+    const val SORT_BY_PAYMENT_DATE_ASCENDING = 0L
+    const val SORT_BY_TOTAL_OPEN_DESCENDING = 1L
+    const val SORT_BY_PAYMENT_DATE_DESCENDING = 2L
 
     // Som List Illustration
     const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"

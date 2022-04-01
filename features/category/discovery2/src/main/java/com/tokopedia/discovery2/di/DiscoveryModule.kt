@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.repository.banner.BannerGQLRepository
+import com.tokopedia.discovery2.repository.banner.BannerRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
@@ -20,16 +22,21 @@ import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigation
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherGQLRepository
 import com.tokopedia.discovery2.repository.merchantvoucher.MerchantVoucherRepository
+import com.tokopedia.discovery2.repository.mycoupon.MyCouponGQLRepository
+import com.tokopedia.discovery2.repository.mycoupon.MyCouponRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusGQLRepository
 import com.tokopedia.discovery2.repository.pushstatus.pushstatus.PushStatusRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
-import com.tokopedia.discovery2.repository.quickFilter.FilterRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.IQuickFilterGqlRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterGQLRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponGQLRepository
 import com.tokopedia.discovery2.repository.quickcoupon.QuickCouponRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardGQLRepository
+import com.tokopedia.discovery2.repository.shopcard.ShopCardRepository
+import com.tokopedia.discovery2.repository.section.SectionGQLRepository
+import com.tokopedia.discovery2.repository.section.SectionRepository
 import com.tokopedia.discovery2.repository.tabs.TabsGQLRepository
 import com.tokopedia.discovery2.repository.tabs.TabsRepository
 import com.tokopedia.discovery2.repository.tokopoints.TokopointsRepository
@@ -42,8 +49,7 @@ import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.util.PlayWidgetConnectionUtil
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -114,6 +120,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
+    fun provideBannerRepository(): BannerRepository {
+        return BannerGQLRepository()
+    }
+
+    @Provides
     fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository {
         return repoProvider.provideTopAdsHeadlineRepository()
     }
@@ -166,6 +177,21 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
         return QuickFilterGQLRepository()
     }
 
+    @Provides
+    fun provideShopCardRepository(): ShopCardRepository {
+        return ShopCardGQLRepository()
+    }
+
+    @Provides
+    fun provideSectionRepository():SectionRepository{
+        return SectionGQLRepository()
+    }
+
+    @Provides
+    fun provideMyCouponRepository(@ApplicationContext context: Context): MyCouponRepository {
+        return MyCouponGQLRepository(provideGetStringMethod(context))
+    }
+
     @DiscoveryScope
     @Provides
     fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
@@ -179,14 +205,14 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>,
+                          mapper: PlayWidgetUiMapper,
                           connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(
             playWidgetUseCase,
             playWidgetReminderUseCase,
             playWidgetUpdateChannelUseCase,
-            mapperProviders,
+            mapper,
             connectionUtil
         )
     }

@@ -5,14 +5,14 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 
 data class InspirationCarouselChipsProductModel(
-        @SerializedName("searchProductCarouselByIdentifier")
-        @Expose
-        val searchProductCarouselByIdentifier: SearchProductCarouselByIdentifier = SearchProductCarouselByIdentifier(),
+    @SerializedName("searchProductCarouselByIdentifier")
+    @Expose
+    val searchProductCarouselByIdentifier: SearchProductCarouselByIdentifier = SearchProductCarouselByIdentifier(),
 ) {
 
     data class SearchProductCarouselByIdentifier(
-            @SerializedName("product")
-            @Expose
-            val product: List<InspirationCarouselProduct> = listOf(),
+        @SerializedName("product")
+        @Expose
+        val product: List<InspirationCarouselProduct> = listOf(),
     )
 }

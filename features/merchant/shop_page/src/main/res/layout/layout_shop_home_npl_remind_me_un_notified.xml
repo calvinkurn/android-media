@@ -27,7 +27,7 @@
         android:minWidth="@dimen/dp_34"
         android:layout_marginStart="@dimen/dp_7"
         android:layout_marginLeft="@dimen/dp_7"
-        android:text="@string/shop_home_npl_remind_me"
+        android:text="@string/shop_page_label_remind_me"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -21,6 +21,10 @@ object KycUploadErrorCodeUtil {
     private const val KYC_UPLOAD_ERROR_CODE_DEFAULT = -12
     const val KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT = -13
 
+    const val FAILED_ENCRYPTION = "Encryption gagal"
+    const val FILE_PATH_KTP_EMPTY = "file ktp tidak ditemukan"
+    const val FILE_PATH_FACE_EMPTY = "file selfie/liveness tidak ditemukan"
+
     fun getErrorCode(e: Throwable): Int {
         if (e is UnknownHostException) {
             return KYC_UPLOAD_UNKNOWNHOST

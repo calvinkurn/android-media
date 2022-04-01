@@ -11,7 +11,7 @@ import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.fragment.BasePromoCheckoutDetailFragment
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailDealsFragment
-import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDealsFragment.Companion.EXTRA_CHECKOUT_DATA
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDealsFragment
 
 class PromoCheckoutDetailDealsActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutDetailComponent> {
 
@@ -24,17 +24,21 @@ class PromoCheckoutDetailDealsActivity : BaseSimpleActivity(), HasComponent<Prom
                 intent?.extras?.getString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE) ?: "",
                 intent?.extras?.getBoolean(BasePromoCheckoutDetailFragment.EXTRA_IS_USE, false)
                         ?: false,
-                intent?.extras?.getString(EXTRA_CHECKOUT_DATA, "")
+                intent?.extras?.getString(PromoCheckoutDetailDealsFragment.EXTRA_CATEGORY_NAME, ""),
+                intent?.extras?.getInt(PromoCheckoutDetailDealsFragment.EXTRA_GRAND_TOTAL, 0) ?: 0,
+                intent?.extras?.getString(PromoCheckoutDetailDealsFragment.EXTRA_META_DATA, "")
         )
     }
 
     companion object {
-        fun newInstance(context: Context?, codeCoupon: String, isUse: Boolean, checkoutData: String): Intent {
+        fun newInstance(context: Context?, codeCoupon: String, isUse: Boolean, categoryName: String, grandTotal:Int, metaData: String): Intent {
             val intent = Intent(context, PromoCheckoutDetailDealsActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE, codeCoupon)
             bundle.putBoolean(BasePromoCheckoutDetailFragment.EXTRA_IS_USE, isUse)
-            bundle.putString(EXTRA_CHECKOUT_DATA, checkoutData)
+            bundle.putString(PromoCheckoutListDealsFragment.EXTRA_CATEGORY_NAME, categoryName)
+            bundle.putInt(PromoCheckoutListDealsFragment.EXTRA_GRAND_TOTAL, grandTotal)
+            bundle.putString(PromoCheckoutListDealsFragment.EXTRA_META_DATA, metaData)
             intent.putExtras(bundle)
             return intent
         }

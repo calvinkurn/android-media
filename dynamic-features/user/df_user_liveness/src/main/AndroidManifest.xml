@@ -2,19 +2,17 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.user.liveness">
 
-    <dist:module
-        dist:title="@string/title_liveness_detection">
+    <dist:module dist:title="@string/title_liveness_detection">
         <dist:delivery>
-            <dist:on-demand/>
+            <dist:on-demand />
             <dist:install-time>
                 <dist:conditions>
-                    <dist:min-sdk dist:value="21"/>
-                    <dist:max-sdk dist:value="23"/>
+                    <dist:min-sdk dist:value="21" />
+                    <dist:max-sdk dist:value="23" />
                 </dist:conditions>
             </dist:install-time>
         </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
-
     <application android:hasCode="false" />
 </manifest>

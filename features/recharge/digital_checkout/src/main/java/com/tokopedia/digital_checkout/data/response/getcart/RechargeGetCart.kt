@@ -97,14 +97,6 @@ data class RechargeGetCart(
         @Expose
         val defaultPromo: String = "",
 
-        @SerializedName("cross_selling_type")
-        @Expose
-        val crossSellingType: Int = 0,
-
-        @SerializedName("cross_selling_config")
-        @Expose
-        val crossSellingConfig: CrossSellingConfig = CrossSellingConfig(),
-
         @SerializedName("pop_up")
         @Expose
         val popUp: PopUpData = PopUpData(),
@@ -123,7 +115,11 @@ data class RechargeGetCart(
 
         @SerializedName("admin_fee")
         @Expose
-        val adminFee: Double = 0.0
+        val adminFee: Double = 0.0,
+
+        @SerializedName("admin_fee_included")
+        @Expose
+        val isAdminFeeIncluded : Boolean= false
 ) {
     data class Response(
             @SerializedName("rechargeGetCart")

@@ -19,13 +19,13 @@
         <ImageView
             android:id="@+id/dynamic_icon_image_view"
             android:contentDescription="@string/content_desc_icon_image"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"/>
     </FrameLayout>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/dynamic_icon_typography"
-        android:layout_width="@dimen/dp_56"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:ellipsize="end"

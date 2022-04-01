@@ -3,7 +3,9 @@ package com.tokopedia.favorite.data.source.apis.converterfactory
 import com.google.gson.Gson
 import com.tokopedia.favorite.data.source.apis.response.GeneratedHost
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import org.json.JSONException
 import org.json.JSONObject
@@ -15,7 +17,7 @@ class GeneratedHostConverter : Converter.Factory() {
 
     companion object {
         private val TAG = GeneratedHostConverter::class.java.simpleName
-        private val MEDIA_TYPE = MediaType.parse("text/plain")
+        private val MEDIA_TYPE = "text/plain".toMediaTypeOrNull()
     }
 
     override fun responseBodyConverter(
@@ -52,8 +54,8 @@ class GeneratedHostConverter : Converter.Factory() {
             retrofit: Retrofit
     ): Converter<*, RequestBody>? {
         return if (String::class.java == type) {
-            Converter<String, RequestBody> {
-                value -> RequestBody.create(MEDIA_TYPE, value)
+            Converter<String, RequestBody> { value ->
+                value.toRequestBody(MEDIA_TYPE)
             }
         } else null
     }

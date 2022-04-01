@@ -1,50 +1,39 @@
 package com.tokopedia.broadcaster.tracker
 
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import kotlinx.coroutines.*
-import java.lang.Exception
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 interface BroadcasterTracker {
     fun priority(): Priority
     fun tag(): String
-    fun track(data: LoggerUIModel)
+    fun track(interval: Int, data: LoggerUIModel)
     fun stopTrack()
 }
 
-class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
+class BroadcasterTrackerImpl : BroadcasterTracker {
 
-    private val mTrackerData = mutableListOf<LoggerUIModel>()
     private var trackerTimer: Timer? = null
-
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.IO
 
     override fun priority() = Priority.P2
 
     override fun tag() = TAG
 
-    override fun track(data: LoggerUIModel) {
+    override fun track(interval: Int, data: LoggerUIModel) {
         if (data.url.isEmpty()) return
-
-        mTrackerData.add(data)
 
         trackerTimer = Timer()
         trackerTimer?.schedule(object : TimerTask() {
             override fun run() {
-                launch {
-                    sendToNewRelic()
-
-                    withContext(Dispatchers.Main) {
-                        mTrackerData.clear()
-                    }
-                }
+                ServerLogger.log(
+                    priority = priority(),
+                    tag = tag(),
+                    message = data.toMap()
+                )
             }
 
-        }, DELAYED_TIME, PERIOD_TIME)
+        }, DELAYED_TIME, interval.toLong())
     }
 
     override fun stopTrack() {
@@ -52,22 +41,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
             // cancel period task
             trackerTimer?.cancel()
             trackerTimer = null
-
-            // cancel coroutines
-            if (isActive) {
-                cancel()
-            }
         } catch (e: Exception) {}
-    }
-
-    private fun sendToNewRelic() {
-        mTrackerData.forEach {
-            ServerLogger.log(
-                priority = priority(),
-                tag = tag(),
-                message = it.toMap()
-            )
-        }
     }
 
     private fun LoggerUIModel.toMap(): Map<String, String> {
@@ -93,7 +67,6 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
         private const val TAG = "LIVE_BROADCASTER"
 
         const val DELAYED_TIME = 1000L
-        const val PERIOD_TIME = 5000L
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.review.common.analytics
 
 object ReviewTrackingConstant {
     const val VIEW_REVIEW = "viewReviewIris"
+    const val KEY_VIEW_ITEM = "view_item"
     const val VIEW_OVO_INCENTIVES_TICKER = "view - ovo incentives ticker"
     const val EVENT_CLICK_REVIEW = "clickReview"
     const val REVIEW_PAGE = "ulasan page"

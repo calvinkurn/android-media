@@ -17,7 +17,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class AddToCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
+open class AddToCartUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
                                            private val addToCartDataMapper: AddToCartDataMapper,
                                            private val chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper) : UseCase<AddToCartDataModel>() {
 

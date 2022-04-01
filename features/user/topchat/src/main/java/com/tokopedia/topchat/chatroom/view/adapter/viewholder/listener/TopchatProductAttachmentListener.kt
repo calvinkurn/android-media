@@ -12,4 +12,5 @@ interface TopchatProductAttachmentListener : ProductAttachmentListener {
     )
 
     fun trackClickUpdateStock(product: ProductAttachmentUiModel)
+    fun isOCCActive(): Boolean
 }

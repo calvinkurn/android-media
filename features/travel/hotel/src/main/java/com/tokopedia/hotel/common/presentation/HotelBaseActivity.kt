@@ -43,7 +43,6 @@ abstract class HotelBaseActivity : BaseSimpleActivity(), TravelMenuBottomSheet.T
         super.onCreate(savedInstanceState, persistentState)
 
         initInjector()
-        GraphqlClient.init(this)
     }
 
     private fun initInjector() {

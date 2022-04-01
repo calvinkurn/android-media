@@ -12,17 +12,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import android.widget.ScrollView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -44,6 +45,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.FIRST_CATEGORY_SELECTED
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
@@ -110,10 +112,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_PICKER
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.SHOWCASE_PICKER_RESULT_REQUEST_CODE
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -126,7 +125,7 @@ import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
 @FlowPreview
-class AddEditProductDetailFragment : BaseDaggerFragment(),
+class AddEditProductDetailFragment : AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         NameRecommendationAdapter.ProductNameItemClickListener,
         WholeSaleInputViewHolder.TextChangedListener,
@@ -156,6 +155,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var isFragmentVisible = false
     private var needToSetCategoryName = false
 
+    private var scrollViewParent: ScrollView? = null
+
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
     private var productPhotosView: RecyclerView? = null
@@ -181,9 +182,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product specification
     private var productSpecificationLayout: ViewGroup? = null
     private var productSpecificationTextView: Typography? = null
+    private var productSpecificationHeaderTextView: Typography? = null
     private var addProductSpecificationButton: Typography? = null
     private var productSpecificationReloadLayout: View? = null
     private var productSpecificationReloadButton: Typography? = null
+    private var tooltipSpecificationRequired: View? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -223,9 +226,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productShowCasesReloadButton: Typography? = null
 
     // button continue
-    private var submitButton: ViewGroup? = null
-    private var submitTextView: AppCompatTextView? = null
-    private var submitLoadingIndicator: LoaderUnify? = null
+    private var submitButton: UnifyButton? = null
 
     // PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -289,10 +290,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        setFragmentToUnifyBgColor()
+
+        // set navigation highlight
+        highlightNavigationButton(PageIndicator.INDICATOR_DETAIL_PAGE)
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
+
+        scrollViewParent = view.findViewById(R.id.scrollViewParent)
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -331,6 +337,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
+            categoryAlertDialog?.setDefaultMaxWidth()
             categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
             categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
             categoryAlertDialog?.setPrimaryCTAClickListener {
@@ -353,7 +360,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
-                if (viewModel.specificationList.isNotEmpty()) {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isNotEmpty()) {
                     showChangeCategoryDialog {
                         startCategoryActivity(REQUEST_CODE_CATEGORY)
                     }
@@ -366,9 +373,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add product specification button
         productSpecificationLayout = view.findViewById(R.id.add_edit_product_specification_layout)
         productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
+        productSpecificationHeaderTextView = view.findViewById(R.id.tv_product_specification_header)
         addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
         productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
         productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
+        tooltipSpecificationRequired = view.findViewById(R.id.tooltipSpecificationRequired)
 
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
@@ -492,8 +501,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // submit button
         submitButton = view.findViewById(R.id.btn_submit)
-        submitTextView = view.findViewById(R.id.tv_submit_text)
-        submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
         setupButton()
 
         // fill the form with detail input model
@@ -671,22 +678,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // Continue to add product description
         submitButton?.setOnClickListener {
-            submitTextView?.hide()
-            submitLoadingIndicator?.show()
+            submitButton?.isLoading = true
             validateInput()
-            val isInputValid = viewModel.isInputValid.value
-            isInputValid?.let {
-                if (it) {
-                    val isAdding = viewModel.isAdding
-                    val isDrafting = viewModel.isDrafting
-                    val isFirstMoved = viewModel.isFirstMoved
-                    if (isAdding && isFirstMoved) moveToDescriptionActivity()
-                    else if (isAdding && !isDrafting) submitInput()
-                    else submitInputEdit()
-                }
-            }
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
+            validateSpecificationList()
         }
 
         setupDefaultFieldMessage()
@@ -707,10 +701,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToPreOrderDurationInputStatus()
         subscribeToProductSkuInputStatus()
         subscribeToShopShowCases()
-        subscribeToSpecificationList()
+        subscribeToAnnotationCategoryData()
         subscribeToSpecificationText()
+        subscribeToHasRequiredSpecification()
+        subscribeToSelectedSpecificationList()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
+        subscribeToProductNameValidationFromNetwork()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -802,9 +799,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun setupButton() {
         if (viewModel.isAdding && viewModel.isFirstMoved) {
-            submitTextView?.text = getString(R.string.action_continue)
+            submitButton?.text = getString(R.string.action_continue)
         } else {
-            submitTextView?.text = getString(R.string.action_save)
+            submitButton?.text = getString(R.string.action_save)
         }
     }
 
@@ -820,6 +817,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.removeObservers(this)
         viewModel.isInputValid.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
+    }
+
+    private fun submitInputData() {
+        val isAdding = viewModel.isAdding
+        val isDrafting = viewModel.isDrafting
+        val isFirstMoved = viewModel.isFirstMoved
+        if (isAdding && isFirstMoved) moveToDescriptionActivity()
+        else if (isAdding && !isDrafting) submitInput()
+        else submitInputEdit()
     }
 
     private fun updateAddNewWholeSalePriceButtonVisibility() {
@@ -953,7 +959,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
                     saveInstanceCacheManager.get(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL,
                             ProductInputModel::class.java, viewModel.productInputModel)?.apply {
-                        viewModel.updateSpecification(detailInputModel.specifications.orEmpty())
+                        viewModel.updateSelectedSpecification(detailInputModel.specifications.orEmpty())
                     }
                 }
             }
@@ -1112,7 +1118,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             wholesaleList = getWholesaleInput()
             productShowCases = viewModel.productShowCases
-            specifications = viewModel.specificationList
+            specifications = viewModel.selectedSpecificationList.value
         }
     }
 
@@ -1432,8 +1438,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    private fun subscribeToSpecificationList() {
-        viewModel.annotationCategoryData.observe(viewLifecycleOwner, Observer { result ->
+    private fun subscribeToAnnotationCategoryData() {
+        viewModel.annotationCategoryData.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     productSpecificationLayout?.isVisible = result.data.isNotEmpty()
@@ -1441,6 +1447,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     addProductSpecificationButton?.show()
                     productSpecificationReloadLayout?.hide()
                     viewModel.updateSpecificationByAnnotationCategory(result.data)
+                    viewModel.updateHasRequiredSpecification(result.data)
                 }
                 is Fail -> {
                     productSpecificationLayout?.show()
@@ -1453,25 +1460,39 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToSpecificationText() {
-        viewModel.specificationText.observe(viewLifecycleOwner, Observer {
+        viewModel.specificationText.observe(viewLifecycleOwner, {
             productSpecificationTextView?.text = it
-            addProductSpecificationButton?.text = if (viewModel.specificationList.isEmpty()) {
+        })
+    }
+
+    private fun subscribeToHasRequiredSpecification() {
+        viewModel.hasRequiredSpecification.observe(viewLifecycleOwner, {
+            productSpecificationHeaderTextView.displayRequiredAsterisk(it)
+            val specificationList = viewModel.selectedSpecificationList.value.orEmpty()
+            tooltipSpecificationRequired?.isVisible = it && specificationList.isEmpty()
+        })
+    }
+
+    private fun subscribeToSelectedSpecificationList() {
+        viewModel.selectedSpecificationList.observe(viewLifecycleOwner) {
+            addProductSpecificationButton?.text = if (it.isEmpty()) {
                 getString(R.string.action_specification_add)
             } else {
                 getString(R.string.action_specification_change)
             }
-        })
+            val hasRequiredSpecification = viewModel.hasRequiredSpecification.value.orFalse()
+            tooltipSpecificationRequired?.isVisible = it.isEmpty() && hasRequiredSpecification
+        }
     }
 
     private fun subscribeToInputStatus() {
         viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
-            if (it) enableSubmitButton()
-            else disableSubmitButton()
+            submitButton?.isEnabled = it
         })
     }
 
     private fun subscribeToCategoryRecommendation() {
-        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.productCategoryRecommendationLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> {
@@ -1549,6 +1570,44 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.getProductPriceRecommendation()
     }
 
+    private fun subscribeToProductNameValidationFromNetwork() {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
+            submitButton?.isLoading = false
+            when(it) {
+                is Success -> {
+                    val isError = it.data.isNotBlank()
+                    if (isError) {
+                        productNameField?.requestFocus()
+                        viewModel.productNameMessage = it.data
+                        viewModel.setIsProductNameInputError(true)
+                    } else {
+                        // set live data to null so it cannot commit observing twice when back from previous page
+                        viewModel.setProductNameInputFromNetwork(null)
+                        viewModel.setIsProductNameInputError(false)
+                        submitInputData()
+                    }
+                }
+                is Fail -> {
+                    viewModel.productNameMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    viewModel.setIsProductNameInputError(true)
+                }
+            }
+        })
+    }
+
+    private fun validateSpecificationList() {
+        if (viewModel.validateSelectedSpecificationList()) {
+            viewModel.validateProductNameInputFromNetwork(productNameField.getText())
+        } else {
+            submitButton?.isLoading = false
+            scrollViewParent?.post {
+                scrollViewParent?.smoothScrollTo(Int.ZERO, productSpecificationLayout?.top.orZero())
+                productSpecificationTextView?.text = MethodChecker.fromHtml(
+                    getString(R.string.error_specification_signal_status_empty_red))
+            }
+        }
+    }
+
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
 
@@ -1597,7 +1656,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // get annotation category, if not already obtained from the server (specifications == null)
         val specifications = viewModel.productInputModel.detailInputModel.specifications
         if (specifications != null) {
-            viewModel.updateSpecification(specifications)
+            viewModel.updateSelectedSpecification(specifications)
         } else {
             getAnnotationCategory()
         }
@@ -1654,7 +1713,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productInputModel.detailInputModel.apply {
                 if (productCategoryId.isNotBlank()) categoryId = productCategoryId
                 if (productCategoryName.isNotBlank()) categoryName = productCategoryName
-                specifications = viewModel.specificationList
+                specifications = viewModel.selectedSpecificationList.value
             }
 
             val cacheManager = SaveInstanceCacheManager(this, true)
@@ -1765,18 +1824,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun disableWholesale() {
         productWholeSaleSwitch?.isChecked = false
         viewModel.shouldUpdateVariant = false
-    }
-
-    private fun enableSubmitButton() {
-        submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
-    }
-
-    private fun disableSubmitButton() {
-        submitButton?.isClickable = false
-        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)) }
     }
 
     private fun showDurationUnitOption() {
@@ -1932,7 +1979,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
 
                 // display confirmation if product has a specs
-                if (viewModel.specificationList.isEmpty()) {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isEmpty()) {
                     selectCategoryRecommendation(items, position)
                 } else {
                     showChangeCategoryDialog {

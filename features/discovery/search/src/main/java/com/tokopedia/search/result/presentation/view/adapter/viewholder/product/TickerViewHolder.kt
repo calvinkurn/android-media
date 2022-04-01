@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
@@ -32,19 +33,22 @@ class TickerViewHolder(
     private fun bindTickerView(element: TickerDataView) {
         val shouldShowTicker = !(tickerListener.isTickerHasDismissed || element.text.isEmpty())
 
-        binding?.root?.let {
-            it.shouldShowWithAction(shouldShowTicker) {
-                it.setHtmlDescription(element.text)
-                it.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        onDescriptionViewClick(element)
-                    }
+        val tickerView = binding?.root ?: return
 
-                    override fun onDismiss() {
-                        onTickerDismissed()
-                    }
-                })
+        tickerView.shouldShowWithAction(shouldShowTicker) {
+            tickerView.addOnImpressionListener(element) {
+                tickerListener.onTickerImpressed(element)
             }
+            tickerView.setHtmlDescription(element.text)
+            tickerView.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    onDescriptionViewClick(element)
+                }
+
+                override fun onDismiss() {
+                    onTickerDismissed()
+                }
+            })
         }
     }
 

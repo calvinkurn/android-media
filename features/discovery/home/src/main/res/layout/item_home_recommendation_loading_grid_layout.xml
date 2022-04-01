@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center_horizontal"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:id="@+id/loading"
     android:orientation="vertical"
     android:layout_marginLeft="8dp"

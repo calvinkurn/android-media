@@ -7,7 +7,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.formattedToMB
-import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
 import com.tokopedia.media.loader.tracker.MediaLoaderTrackerParam
@@ -51,9 +50,6 @@ object MediaListenerBuilder {
             val fileSizeInMb = fileSize.toLong().formattedToMB()
 
             val loadTime = (System.currentTimeMillis() - startTime).toString()
-
-            // save for an accumulative bitmap size in local
-            Loader.bitmapSize()?.saveSize(fileSize)
 
             // tracker
             if (properties.data is String && !properties.isIcon) {

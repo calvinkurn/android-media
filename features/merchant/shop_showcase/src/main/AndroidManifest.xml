@@ -1,18 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.shop_showcase">
-    <application>
 
+    <application>
         <activity
             android:name=".shop_showcase_product_add.presentation.activity.ShopShowcaseProductAddActivity"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".shop_showcase_add.presentation.activity.ShopShowcaseAddActivity"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -25,25 +25,22 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".shop_showcase_management.presentation.activity.ShopShowcaseListActivity"
             android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_merchant"
                     android:pathPattern="@string/path_shop_showcase_list" />
             </intent-filter>
         </activity>
-
-
-
-
-
     </application>
 </manifest>

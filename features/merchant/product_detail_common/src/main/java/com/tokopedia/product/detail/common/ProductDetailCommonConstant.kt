@@ -13,6 +13,7 @@ object ProductDetailCommonConstant {
     const val PARAM_INPUT = "input"
     const val PARAM_IS_SHOP_OWNER = "isShopOwner"
     const val PARAM_USER_LOCATION = "userLocation"
+    const val PARAM_TOKONOW = "tokonow"
     const val PARAM_AFFILIATE_UUID = "affiliate"
 
     const val PARAM_SHOP_IDS = "shopIds"
@@ -26,11 +27,14 @@ object ProductDetailCommonConstant {
     const val SHOP_ID_PARAM = "shopId"
     const val FIELDS_PARAM = "fields"
     const val PRODUCT_ID_PARAM = "productId"
+    const val GIFTABLE_PARAM = "isGiftable"
+    const val PARENT_ID_PARAM = "parentId"
 
 
     //notify me (teaser campaign)
     const val PARAM_TEASER_CAMPAIGN_ID = "campaignId"
     const val PARAM_TEASER_PRODUCT_ID = "productId"
+    const val PARAM_TEASER_PRODUCT_ID_64 = "product_id_64"
     const val PARAM_TEASER_ACTION = "action"
     const val PARAM_TEASER_SOURCE = "source"
     const val PARAM_TOKO_NOW = "isTokoNow"
@@ -57,6 +61,7 @@ object ProductDetailCommonConstant {
     const val KEY_OCC_BUTTON = "occ"
     const val KEY_SAVE_BUNDLING_BUTTON = "save_bundling"
     const val KEY_SAVE_TRADEIN_BUTTON = "save_tradein"
+    const val KEY_DEFAULT_CHOOSE_VARIANT = "default_choose_variant"
     const val KEY_CHAT = "chat"
     const val KEY_REMIND_ME = "remind_me"
     const val KEY_DEFAULT_OOS = "default-oos"
@@ -90,6 +95,8 @@ object ProductDetailCommonConstant {
     const val REQUEST_CODE_CHECKOUT = 12382
     const val REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS = 1198
     const val REQUEST_CODE_TRADEIN_PDP = 2881
+    const val RQUEST_CODE_UPDATE_FINTECH_WIDGET = 1991
+    const val RQUEST_CODE_ACTIVATE_GOPAY = 1992
 
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
@@ -100,6 +107,7 @@ object ProductDetailCommonConstant {
     const val BEBAS_ONGKIR_NORMAL = 1
     const val BEBAS_ONGKIR_EXTRA = 2
     const val BO_TOKONOW = 3
+    const val BO_TOKONOW_15 = 4
 
     const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
     const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"

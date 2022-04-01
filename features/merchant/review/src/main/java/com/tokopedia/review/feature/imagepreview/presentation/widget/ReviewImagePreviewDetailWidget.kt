@@ -7,6 +7,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.data.UserReviewStats
@@ -42,6 +43,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
     private var reviewText: Typography? = null
     private var likeCount: Typography? = null
     private var likeButton: IconUnify? = null
+    private var badRatingReason: ReviewBadRatingReasonWidget? = null
 
     private fun init() {
         View.inflate(context, R.layout.widget_image_preview_review_detail, this)
@@ -55,6 +57,7 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
         reviewText = findViewById(R.id.review_gallery_review)
         likeCount = findViewById(R.id.review_gallery_like_count)
         likeButton = findViewById(R.id.review_gallery_like_icon)
+        badRatingReason = findViewById(R.id.review_image_preview_bad_rating_reason)
     }
 
     fun setPhotoCount(index: Int, total: Long) {
@@ -131,6 +134,13 @@ class ReviewImagePreviewDetailWidget : BaseCustomView {
 
     fun setReviewerImage(imageUrl: String) {
         basicInfo?.setReviewerImage(imageUrl)
+    }
+
+    fun setBadRatingReason(reason: String) {
+        badRatingReason?.apply {
+            showBadRatingReason(reason)
+            setTextToWhite()
+        }
     }
 
 }

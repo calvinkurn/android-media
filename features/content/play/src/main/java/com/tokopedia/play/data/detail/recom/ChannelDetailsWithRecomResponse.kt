@@ -71,6 +71,12 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("type")
         val type: String = "seller", // [tokopedia, buyer, seller]
 
+        @SerializedName("thumbnail_url")
+        val thumbnailUrl: String = "",
+
+        @SerializedName("badge_url")
+        val badgeUrl: String = "",
+
         @SerializedName("name")
         val name: String = "",
 
@@ -154,10 +160,7 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("feeds_like_params")
         val feedLikeParam: FeedLikeParam = FeedLikeParam(),
 
-        @SerializedName("pinned_product_config")
-        val pinnedProductConfig: PinnedProductConfig = PinnedProductConfig(),
-
-            @SerializedName("room_background")
+        @SerializedName("room_background")
         val roomBackground: RoomBackground = RoomBackground(),
 
         @SerializedName("reminder")
@@ -211,14 +214,6 @@ data class ChannelDetailsWithRecomResponse(
         val likeType: Int = 1
     )
 
-    data class PinnedProductConfig(
-        @SerializedName("pin_title")
-        val pinTitle: String = "",
-
-        @SerializedName("bottom_sheet_title")
-        val bottomSheetTitle: String = ""
-    )
-
     data class RoomBackground(
         @SerializedName("image_url")
         val imageUrl: String = ""
@@ -231,8 +226,14 @@ data class ChannelDetailsWithRecomResponse(
         @SerializedName("redirect_url")
         val redirectUrl: String = "",
 
+        @SerializedName("meta_title")
+        val metaTitle: String = "",
+
+        @SerializedName("meta_description")
+        val metaDescription: String = "",
+
         @SerializedName("is_show_button")
-        val isShowButton: Boolean = false
+        val isShowButton: Boolean = false,
     )
 
     data class RealTimeNotificationConfig(

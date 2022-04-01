@@ -17,9 +17,9 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.ShipmentActivity
-import com.tokopedia.checkout.bundle.view.viewholder.PromoCheckoutViewHolder
-import com.tokopedia.checkout.bundle.view.viewholder.ShipmentButtonPaymentViewHolder
-import com.tokopedia.checkout.bundle.view.viewholder.ShipmentItemViewHolder
+import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder
+import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.unifyprinciples.Typography
@@ -161,18 +161,12 @@ class CheckoutPageRobot {
 
                         override fun perform(uiController: UiController?, view: View) {
                             assertEquals(View.VISIBLE, view.findViewById<View>(R.id.layout_state_has_selected_single_shipping).visibility)
-                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text)
+                            assertEquals(title, view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text.toString())
                             if (originalPrice != null) {
-                                assertEquals(originalPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).text)
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                            } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
+                                Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(originalPrice))
                             }
                             if (discountedPrice != null) {
-                                assertEquals(discountedPrice, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).text)
-                                assertEquals(View.VISIBLE, view.findViewById<Typography>(R.id.label_selected_single_shipping_original_price).visibility)
-                            } else {
-                                assertEquals(View.GONE, view.findViewById<Typography>(R.id.label_selected_single_shipping_discounted_price).visibility)
+                                Assert.assertTrue((view.findViewById<Typography>(R.id.label_selected_single_shipping_title).text).contains(discountedPrice))
                             }
                             assertEquals(eta, view.findViewById<Typography>(R.id.label_single_shipping_eta).text)
                             if (message != null) {

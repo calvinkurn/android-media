@@ -48,16 +48,23 @@
             app:layout_constraintTop_toBottomOf="@id/review_gallery_basic_info"
             app:typographyType="body_2" />
 
+        <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+            android:id="@+id/review_image_preview_bad_rating_reason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/review_gallery_review"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/review_gallery_like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/layout_lvl1"
             android:textColor="@color/Unify_Static_White_96"
-            app:typographyType="body_2"
             app:layout_constraintBottom_toBottomOf="@id/review_gallery_like_icon"
             app:layout_constraintEnd_toStartOf="@id/review_gallery_like_icon"
-            app:layout_constraintTop_toTopOf="@id/review_gallery_like_icon" />
+            app:layout_constraintTop_toTopOf="@id/review_gallery_like_icon"
+            app:typographyType="body_2" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/review_gallery_like_icon"

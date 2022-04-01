@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="dummy text" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
+        android:layout_marginTop="4dp"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/typography_title"
+        tools:text="dummy text"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typography_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="dummy text" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -22,9 +22,6 @@ class TopupBillsBanner(
         @SerializedName("title")
         @Expose
         val title: String = "",
-        @SerializedName("promo_code")
-        @Expose
-        val promoCode: String = "",
         @SerializedName("app_link")
         @Expose
         val applinkUrl: String = ""

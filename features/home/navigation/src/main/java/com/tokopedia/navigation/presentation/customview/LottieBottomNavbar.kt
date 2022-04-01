@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
@@ -74,20 +75,20 @@ class LottieBottomNavbar : LinearLayout {
         if (badgeValue == 0) {
             badgeText?.layoutParams = emptyBadgeLayoutParam
             badgeText?.setPadding(
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_1),
-                    resources.getDimensionPixelOffset(R.dimen.dp_2),
-                    resources.getDimensionPixelOffset(R.dimen.dp_1)
+                    5f.toDpInt(),
+                    1f.toDpInt(),
+                    2f.toDpInt(),
+                    1f.toDpInt()
             )
             badgeText?.text = ""
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circle)
         } else {
             badgeText?.layoutParams = badgeLayoutParam
             badgeText?.setPadding(
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_2),
-                    resources.getDimensionPixelOffset(R.dimen.dp_5),
-                    resources.getDimensionPixelOffset(R.dimen.dp_2)
+                    5f.toDpInt(),
+                    2f.toDpInt(),
+                    5f.toDpInt(),
+                    2f.toDpInt()
             )
 
             badgeText?.background = ContextCompat.getDrawable(context, R.drawable.bg_badge_circular)
@@ -106,21 +107,21 @@ class LottieBottomNavbar : LinearLayout {
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
+                0f.toDpInt(),
+                1f.toDpInt(),
                 badgeRightMargin,
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                1f.toDpInt()
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(R.dimen.dp_12),
-                resources.getDimensionPixelOffset(R.dimen.dp_12))
+                12f.toDpInt(),
+                12f.toDpInt())
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
-                badgeRightMargin+resources.getDimensionPixelOffset(R.dimen.dp_12),
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                0f.toDpInt(),
+                1f.toDpInt(),
+                badgeRightMargin+12f.toDpInt(),
+                1f.toDpInt()
         )
 
         badgeTextViewList?.forEach {
@@ -167,28 +168,28 @@ class LottieBottomNavbar : LinearLayout {
         titleList.clear()
         containerList.clear()
 
-        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, resources.getDimensionPixelOffset(R.dimen.dp_28))
+        val llLayoutParam = LinearLayout.LayoutParams(itemWidth, 28f.toDpInt())
         val imgLayoutParam = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                resources.getDimensionPixelOffset(R.dimen.dp_28))
+                28f.toDpInt())
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
-                resources.getDimensionPixelOffset(R.dimen.dp_20),
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                0f.toDpInt(),
+                1f.toDpInt(),
+                20f.toDpInt(),
+                1f.toDpInt()
         )
 
         emptyBadgeLayoutParam = FrameLayout.LayoutParams(
-                resources.getDimensionPixelOffset(R.dimen.dp_12),
-                resources.getDimensionPixelOffset(R.dimen.dp_12))
+                12f.toDpInt(),
+                12f.toDpInt())
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                resources.getDimensionPixelOffset(R.dimen.dp_0),
-                resources.getDimensionPixelOffset(R.dimen.dp_1),
-                resources.getDimensionPixelOffset(R.dimen.dp_25),
-                resources.getDimensionPixelOffset(R.dimen.dp_1)
+                0f.toDpInt(),
+                1f.toDpInt(),
+                25f.toDpInt(),
+                1f.toDpInt()
         )
 
         val txtLayoutParam = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
@@ -479,6 +480,4 @@ interface IBottomClickListener {
     fun menuReselected(position: Int, id: Int)
 }
 
-fun Float.toDp(context: Context): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics).toInt()
-}
+fun Float.toDpInt(): Int = this.toPx().toInt()

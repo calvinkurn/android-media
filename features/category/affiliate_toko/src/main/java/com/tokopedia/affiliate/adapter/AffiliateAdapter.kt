@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredShimmerModel
 
@@ -17,6 +18,7 @@ class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
     }
     fun resetList(){
         this.visitables.clear()
+        notifyDataSetChanged()
     }
 
     fun removeShimmer(listSize: Int) {
@@ -25,6 +27,13 @@ class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
                 this.visitables.removeAt(listSize + i)
             }
             notifyItemRangeRemoved(listSize,shimmerItemCount)
+        }
+    }
+
+    fun addDataPlatformShimmer() {
+        addElement(AffiliateDataPlatformShimmerModel())
+        for (i in 1..shimmerItemCount) {
+             addElement(AffiliateShimmerModel())
         }
     }
 }

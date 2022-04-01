@@ -7,11 +7,10 @@
     android:paddingBottom="@dimen/layout_lvl2"
     android:orientation="vertical">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/review_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <include layout="@layout/partial_review_shimmering"

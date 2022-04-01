@@ -6,6 +6,7 @@ import com.tokopedia.talk.feature.reading.data.model.TalkGoToWrite
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
 import com.tokopedia.talk.feature.reading.data.model.ViewState
 import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
+import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponse
 import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
@@ -24,6 +25,27 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
     fun `when getDiscussionAggregate should execute expected use case and get expected data`() {
         val response = DiscussionAggregateResponse()
         val readingListResponse = DiscussionDataResponseWrapper()
+        val productId = "15267029"
+        val shopId = "480749"
+
+        onGetDiscussionAggregate_thenReturn(response)
+        onGetDiscussionData_thenReturn(readingListResponse)
+
+        viewModel.getDiscussionAggregate(productId, shopId)
+
+        val expectedResponse = Success(response)
+        val expectedReadingListResponse = Success(readingListResponse)
+
+        verifyGetDiscussionAggregateUseCaseExecuted()
+        verifyGetDiscussionDataUseCaseExecuted()
+        verifyDiscussionAggregateEquals(expectedResponse)
+        verifyDiscussionDataEquals(expectedReadingListResponse)
+    }
+
+    @Test
+    fun `when getDiscussionAggregate but total question not zero should execute expected use case and get expected data`() {
+        val response = DiscussionAggregateResponse()
+        val readingListResponse = DiscussionDataResponseWrapper(DiscussionDataResponse(totalQuestion = 10))
         val productId = "15267029"
         val shopId = "480749"
 

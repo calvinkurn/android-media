@@ -20,7 +20,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
-class CategoryNavigationViewModel(val application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class CategoryNavigationViewModel(application: Application, private val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val listData = MutableLiveData<Result<ArrayList<ComponentsItem>>>()
     private val title = MutableLiveData<Result<String>>()
@@ -40,7 +40,7 @@ class CategoryNavigationViewModel(val application: Application, private val comp
         getCategoryNavigationData()
     }
 
-    fun getCategoryNavigationData() {
+    private fun getCategoryNavigationData() {
         launchCatchError(
                 block = {
                     withContext(Dispatchers.IO) {

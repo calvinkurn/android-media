@@ -24,7 +24,9 @@ data class FeedbackInboxUiModel(
         var sellerUser: String = "",
         var isMoreReply: Boolean = false,
         var isReplied: Boolean = false,
-        var isKejarUlasan: Boolean = false
+        var isKejarUlasan: Boolean = false,
+        var ratingDisclaimer: String = "",
+        var badRatingReason: String = ""
 ): BaseInboxReview {
 
     data class Attachment(

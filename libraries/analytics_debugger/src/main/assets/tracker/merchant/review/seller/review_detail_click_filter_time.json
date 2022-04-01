@@ -8,6 +8,7 @@
       "productId": ".*",
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
+      "theme": ".*",
       "shopId": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
@@ -20,7 +21,7 @@
       "eventAction" : "click - time filter",
       "eventLabel" : ".*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "sessionIris": ".{1,}",
       "screenName" : "review detail page"
     },
@@ -30,7 +31,7 @@
       "eventAction" : "click - apply time filter",
       "eventLabel" : "filterBy:.*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "sessionIris": ".{1,}",
       "screenName" : "review detail page"
     }

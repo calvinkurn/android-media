@@ -40,6 +40,7 @@
     <string name="path_add_email">/add-email</string>
     <string name="path_add_phone">/add-phone</string>
     <string name="path_cotp">/cotp</string>
+    <string name="path_silent_verif">/silent-verification</string>
     <string name="path_otp_push_notif_receiver">/otp-push-notif-receiver</string>
     <string name="path_otp_push_notif_setting">/otp-push-notif-setting</string>
     <string name="path_qr_login">/qr-login</string>
@@ -110,5 +111,6 @@
     <string name="path_ovo_regis_init">/ovo-reg-init</string>
 
     <string name="path_image_picker_insta">/image-picker/v2/</string>
+    <string name="path_data_explorer">/data-explorer</string>
 
 </resources>

@@ -51,13 +51,14 @@
         app:typographyWeight="bold"
         tools:text="Adeedast Naiki"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/setting_shop_badge_height"
         app:layout_constraintBottom_toBottomOf="@id/innerCircle"
         app:layout_constraintStart_toStartOf="@id/shopName"
         app:layout_constraintTop_toBottomOf="@id/shopName"
+        app:unify_image_corner_radius="0"
         app:srcCompat="@drawable/ic_power_merchant" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -124,13 +125,14 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/shopScoreChevronRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:srcCompat="@drawable/ic_seller_menu_chevron_right"
+            app:icon_name="CHEVRON_RIGHT"
+            app:icon_color_light_enable="@color/Unify_N400"
             tools:ignore="ContentDescription" />
 
     </LinearLayout>

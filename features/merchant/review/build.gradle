@@ -36,15 +36,16 @@ android {
                     pathSources + 'common'
             ]
         }
-    }
-    androidExtensions {
-        experimental = true
+        androidTest {
+            resources.srcDirs += "$projectDir/src/androidTest/resources"
+        }
     }
     defaultConfig {
         multiDexEnabled true
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -108,9 +109,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
     compileOnly rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
 
     implementation rootProject.ext.unifyDependencies.coach_mark
@@ -143,6 +144,10 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
     androidTestImplementation rootProject.ext.miscDependencies.exoPlayer
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {

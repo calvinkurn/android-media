@@ -7,11 +7,9 @@ import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.di.PlayScope
 import com.tokopedia.play.ui.chatlist.model.PlayChat
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayUserWinnerStatusUiModel
-import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -45,8 +43,7 @@ class PlaySocketToModelMapper @Inject constructor(
     fun mapPinnedMessage(input: PinnedMessage): PinnedMessageUiModel {
         return PinnedMessageUiModel(
                 id = input.pinnedMessageId,
-                applink = input.redirectUrl,
-                partnerName = "", /**Skip**/
+                appLink = input.redirectUrl,
                 title = input.title,
         )
     }
@@ -55,8 +52,12 @@ class PlaySocketToModelMapper @Inject constructor(
         return PlayQuickReplyInfoUiModel(input.data)
     }
 
-    fun mapProductTag(input: ProductTag): Pair<List<PlayProductUiModel>, Boolean> {
-        return input.listOfProducts.map(productTagMapper::mapProductTag) to input.isShowProductTagging
+    fun mapProductSection(input: ProductSection): Triple<List<ProductSectionUiModel>, Int, String> {
+        return Triple(
+            input.sectionList.map(productTagMapper::mapSection),
+            input.config.peekProductCount,
+            input.config.bottomSheetTitle
+        )
     }
 
     fun mapMerchantVoucher(input: MerchantVoucher): List<MerchantVoucherUiModel> {

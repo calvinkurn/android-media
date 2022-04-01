@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.updateinactivephone.di.InactivePhoneScope
-import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneAccountListViewModel
-import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneDataUploadViewModel
-import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneOnboardingViewModel
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.updateinactivephone.features.InactivePhoneViewModel
+import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListViewModel
+import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneDataUploadViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,23 +15,23 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class InactivePhoneViewModelModule {
 
-    @InactivePhoneScope
+    @ActivityScope
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-    @InactivePhoneScope
+    @ActivityScope
     @Binds
     @IntoMap
     @ViewModelKey(InactivePhoneAccountListViewModel::class)
     abstract fun accountListViewModel(viewModelInactivePhone: InactivePhoneAccountListViewModel): ViewModel
 
-    @InactivePhoneScope
+    @ActivityScope
     @Binds
     @IntoMap
-    @ViewModelKey(InactivePhoneOnboardingViewModel::class)
-    abstract fun onboardingViewModel(viewModelInactivePhone: InactivePhoneOnboardingViewModel): ViewModel
+    @ViewModelKey(InactivePhoneViewModel::class)
+    abstract fun onboardingViewModel(viewModelInactivePhone: InactivePhoneViewModel): ViewModel
 
-    @InactivePhoneScope
+    @ActivityScope
     @Binds
     @IntoMap
     @ViewModelKey(InactivePhoneDataUploadViewModel::class)

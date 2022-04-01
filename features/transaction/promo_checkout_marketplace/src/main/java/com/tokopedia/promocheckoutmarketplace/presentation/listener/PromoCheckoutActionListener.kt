@@ -8,19 +8,21 @@ interface PromoCheckoutActionListener {
 
     fun onClickPromoManualInputTextField()
     
-    fun onClickApplyManualInputPromo(promoCode: String, isFromLastSeen: Boolean)
+    fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean)
 
     fun onCLickClearManualInputPromo()
-
-    fun onClickPromoListHeader(element: PromoListHeaderUiModel)
 
     fun onClickPromoListItem(element: PromoListItemUiModel, position: Int)
 
     fun onClickPromoItemDetail(element: PromoListItemUiModel)
 
-    fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel)
-
     fun onClickEmptyStateButton(element: PromoEmptyStateUiModel)
 
     fun onClickErrorStateButton(destination: String)
+
+    fun onTabSelected(element: PromoTabUiModel)
+
+    fun onShowPromoItem(element: PromoListItemUiModel, position: Int)
+
+    fun onShowPromoRecommendation(element: PromoRecommendationUiModel)
 }

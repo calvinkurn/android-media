@@ -11,7 +11,6 @@ import androidx.annotation.LayoutRes
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -19,7 +18,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
+import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
+import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
@@ -27,7 +29,6 @@ import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
-import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
@@ -143,12 +144,9 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun getFeatureRecommendationData() {
-        val configFlag: ConfigFlag? = thanksPageData.configFlag?.let {
-            Gson().fromJson(it, ConfigFlag::class.java)
-        }
-        configFlag?.apply {
-            if (isThanksWidgetEnabled)
-                thanksPageDataViewModel.getFeatureEngine(thanksPageData)
+        thanksPageData.configFlagData?.apply {
+            if (isThanksWidgetEnabled && shouldHideFeatureRecom == false)
+                thanksPageDataViewModel.checkForGoPayActivation(thanksPageData)
         }
     }
 
@@ -175,34 +173,45 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun addMarketPlaceRecommendation() {
-        val recomContainer = getRecommendationContainer()
-        iRecommendationView = recomContainer?.let { container ->
-            val view = getRecommendationView(marketRecommendationPlaceLayout)
+        if (::thanksPageData.isInitialized) {
 
-            //container 1 to display top ads recommendation view
-            container.addContainer(TOP_ADS_HEADLINE_ABOVE_RECOM)
+            if (thanksPageData.configFlagData?.shouldHideProductRecom == true) return
 
-            container.addView(view)
+            val recomContainer = getRecommendationContainer()
+            iRecommendationView = recomContainer?.let { container ->
+                val view = getRecommendationView(marketRecommendationPlaceLayout)
 
-            //container 2 to display top ads recommendation view
-            container.addContainer(TOP_ADS_HEADLINE_BELOW_RECOM)
+                //container 1 to display top ads recommendation view
+                container.addContainer(TOP_ADS_HEADLINE_ABOVE_RECOM)
 
-            view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
-        }
-        if (::thanksPageData.isInitialized)
+                container.addView(view)
+
+                //container 2 to display top ads recommendation view
+                container.addContainer(TOP_ADS_HEADLINE_BELOW_RECOM)
+
+                view.findViewById<MarketPlaceRecommendation>(R.id.marketPlaceRecommendationView)
+            }
             iRecommendationView?.loadRecommendation(thanksPageData, this)
+        }
     }
 
     private fun addDigitalRecommendation(pgCategoryIds: List<Int> = listOf(), pageType: ThankPageType) {
-        val recomContainer = getRecommendationContainer()
-        iDigitalRecommendationView = recomContainer?.let { container ->
-            val view = getRecommendationView(digitalRecommendationLayout)
-            container.addView(view)
-            view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
+        if (::thanksPageData.isInitialized) {
+
+            if (thanksPageData.configFlagData?.shouldHideDigitalRecom == true) return
+
+            val recomContainer = getRecommendationContainer()
+            iDigitalRecommendationView = recomContainer?.let { container ->
+                val view = getRecommendationView(digitalRecommendationLayout)
+                container.addView(view)
+                view.findViewById<DigitalRecommendation>(R.id.digitalRecommendationView)
+            }
+
+            iDigitalRecommendationView?.loadRecommendation(
+                thanksPageData,
+                this, digitalRecomTrackingQueue, pgCategoryIds, pageType
+            )
         }
-        if (::thanksPageData.isInitialized)
-            iDigitalRecommendationView?.loadRecommendation(thanksPageData,
-                this, digitalRecomTrackingQueue, pgCategoryIds, pageType)
     }
 
     private fun getRecommendationView(@LayoutRes layout: Int): View {
@@ -273,7 +282,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     defaultAddress.address_id, defaultAddress.city_id, defaultAddress.district_id,
                     defaultAddress.lat, defaultAddress.long, defaultAddress.label,
                     defaultAddress.postal_code,
-                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString()
+                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses), data.tokonow.serviceType
                 )
             }
         } else {
@@ -286,7 +296,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                     addressData.latitude, addressData.longitude,
                     "${addressData.addressName} ${addressData.receiverName}",
                     addressData.postalCode,
-                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString()
+                    data.tokonow.shopId.toString(), data.tokonow.warehouseId.toString(),
+                    TokonowWarehouseMapper.mapWarehousesResponseToLocal(data.tokonow.warehouses), data.tokonow.serviceType
                 )
             }
         }
@@ -369,24 +380,28 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     fun setUpHomeButton(homeButton: TextView?) {
-        homeButton?.let {
-            thanksPageData.thanksCustomization?.let {
-                it.customHomeButtonTitle?.apply {
-                    if (isNotBlank())
-                        homeButton.text = this
-                }
-            }
-
-            homeButton.setOnClickListener {
+        if (thanksPageData.configFlagData?.shouldHideHomeButton == false) {
+            homeButton?.let {
                 thanksPageData.thanksCustomization?.let {
-                    if (it.customHomeUrlApp.isNullOrBlank())
+                    it.customHomeButtonTitle?.apply {
+                        if (isNotBlank())
+                            homeButton.text = this
+                    }
+                }
+
+                homeButton.setOnClickListener {
+                    thanksPageData.thanksCustomization?.let {
+                        if (it.customHomeUrlApp.isNullOrBlank())
+                            gotoHomePage()
+                        else
+                            launchApplink(it.customHomeUrlApp)
+                    } ?: run {
                         gotoHomePage()
-                    else
-                        launchApplink(it.customHomeUrlApp)
-                } ?: run {
-                    gotoHomePage()
+                    }
                 }
             }
+        } else {
+            homeButton?.gone()
         }
     }
 

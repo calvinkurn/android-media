@@ -20,7 +20,8 @@
             android:name=".view.activity.PlayBroadcastActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Play.FullScreen"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

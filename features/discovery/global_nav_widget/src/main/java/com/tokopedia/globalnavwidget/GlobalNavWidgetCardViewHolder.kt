@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import kotlinx.android.synthetic.main.global_nav_widget_card_item_layout.view.*
+import com.tokopedia.globalnavwidget.databinding.GlobalNavWidgetCardItemLayoutBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class GlobalNavWidgetCardViewHolder(
         itemView: View,
         private val listener: GlobalNavWidgetListener
 ): RecyclerView.ViewHolder(itemView) {
+
+    private var binding: GlobalNavWidgetCardItemLayoutBinding? by viewBinding()
 
     companion object {
         val LAYOUT = R.layout.global_nav_widget_card_item_layout
@@ -29,7 +32,7 @@ internal class GlobalNavWidgetCardViewHolder(
     }
 
     private fun bindOnClickListener(item: GlobalNavWidgetModel.Item) {
-        itemView.globalNavCardItemCardView?.setOnClickListener { _ ->
+        binding?.globalNavCardItemCardView?.setOnClickListener { _ ->
             listener.onClickItem(item)
         }
     }
@@ -37,25 +40,25 @@ internal class GlobalNavWidgetCardViewHolder(
     private fun bindImageBackgroundAndLogo(item: GlobalNavWidgetModel.Item) {
         val backgroundUrl = if (item.imageUrl.isNotEmpty()) item.imageUrl else item.backgroundUrl
 
-        itemView.globalNavCardItemBackground?.let {
+        binding?.globalNavCardItemBackground?.let {
             ImageHandler.loadImageFitCenter(context, it, backgroundUrl)
         }
 
         val shouldShowLogo = item.imageUrl.isEmpty() && item.logoUrl.isNotEmpty()
 
-        itemView.globalNavCardItemLogo?.shouldShowWithAction(shouldShowLogo) {
+        binding?.globalNavCardItemLogo?.shouldShowWithAction(shouldShowLogo) {
             ImageHandler.loadImageFitCenter(context, it, item.logoUrl)
         }
     }
 
     private fun bindCategoryName(item: GlobalNavWidgetModel.Item) {
-        itemView.globalNavCardCategoryName?.shouldShowWithAction(item.categoryName.isNotEmpty()) {
-            itemView.globalNavCardCategoryName?.text = item.categoryName
+        binding?.globalNavCardCategoryName?.shouldShowWithAction(item.categoryName.isNotEmpty()) {
+            binding?.globalNavCardCategoryName?.text = item.categoryName
         }
     }
 
     private fun bindTitle(item: GlobalNavWidgetModel.Item) {
-        itemView.globalNavCardTitle.shouldShowWithAction(item.name.isNotEmpty()) {
+        binding?.globalNavCardTitle.shouldShowWithAction(item.name.isNotEmpty()) {
             it.text = MethodChecker.fromHtml(item.name)
         }
     }
@@ -63,20 +66,20 @@ internal class GlobalNavWidgetCardViewHolder(
     private fun bindSubtitleAndStrikethrough(item: GlobalNavWidgetModel.Item) {
         val shouldShowStrikethrough = item.strikethrough.isNotEmpty()
 
-        itemView.globalNavCardStrikethrough.shouldShowWithAction(shouldShowStrikethrough) {
+        binding?.globalNavCardStrikethrough.shouldShowWithAction(shouldShowStrikethrough) {
             it.text = MethodChecker.fromHtml(item.strikethrough)
             it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
         val shouldShowSubtitle = !shouldShowStrikethrough && item.subtitle.isNotEmpty()
 
-        itemView.globalNavCardSubtitle.shouldShowWithAction(shouldShowSubtitle) {
+        binding?.globalNavCardSubtitle.shouldShowWithAction(shouldShowSubtitle) {
             it.text = MethodChecker.fromHtml(item.subtitle)
         }
     }
 
     private fun bindInfo(item: GlobalNavWidgetModel.Item) {
-        itemView.globalNavCardPrice.shouldShowWithAction(item.info.isNotEmpty()) {
+        binding?.globalNavCardPrice.shouldShowWithAction(item.info.isNotEmpty()) {
             it.text = MethodChecker.fromHtml(item.info)
         }
     }

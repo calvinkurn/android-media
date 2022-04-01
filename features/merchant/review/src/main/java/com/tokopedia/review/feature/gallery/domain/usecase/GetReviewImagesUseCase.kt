@@ -53,6 +53,7 @@ class GetReviewImagesUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                         formatted
                         count
                     }
+                    badRatingReasonFmt
                   }
                   image {
                     attachmentID

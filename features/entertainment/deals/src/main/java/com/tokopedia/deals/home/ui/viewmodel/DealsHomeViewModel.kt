@@ -37,7 +37,7 @@ class DealsHomeViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val observableEventHomeLayout: LiveData<Result<List<DealsBaseItemDataView>>>
         get() = _observableEventHomeLayout
 
-    var mutableTickerData = DealsEventHome.TickerHome()
+    private var mutableTickerData = DealsEventHome.TickerHome()
 
     init {
         _observableEventHomeLayout.postValue(Success(GetInitialHomeLayoutModelUseCase.requestEmptyViewModels()))

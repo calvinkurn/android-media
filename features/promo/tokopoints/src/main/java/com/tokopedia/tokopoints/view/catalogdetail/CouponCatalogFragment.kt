@@ -369,7 +369,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val tvTnc: Typography = requireView().findViewById(R.id.tnc_content)
         if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
             tvTnc.text = HtmlUrlHelper(
-                data.tnc!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
+                data.tnc?:"",tvTnc.context).spannedString
             tvTnc.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.tnc)?.hide()
@@ -378,7 +378,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
         if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
             tvHowToUse.text = HtmlUrlHelper(
-                data.howToUse!!.replace("(\r\n|\n)".toRegex(), "<br />"),tvTnc.context).spannedString
+                data.howToUse?:"",tvTnc.context).spannedString
             tvHowToUse.movementMethod = getMovementMethod()
         } else {
             view?.findViewById<Typography>(R.id.how_to_use)?.hide()

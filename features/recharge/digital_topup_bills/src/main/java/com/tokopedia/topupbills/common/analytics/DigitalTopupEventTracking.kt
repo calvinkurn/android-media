@@ -88,6 +88,8 @@ interface DigitalTopupEventTracking {
             const val VIEW_FAVORITE_CONTACT_CHIP = "view favorite contact chip"
             const val CLICK_FAVORITE_NUMBER_CHIP = "click favorite number chip"
             const val CLICK_FAVORITE_CONTACT_CHIP = "click favorite contact chip"
+            const val CLICK_AUTOCOMPLETE_FAVORITE_NUMBER = "click autocomplete fav number"
+            const val CLICK_AUTOCOMPLETE_FAVORITE_CONTACT = "click autocomplete fav contact"
             const val VIEW_SPECIAL_PRODUCT_PROMO = "view special product promo"
             const val CLICK_SPECIAL_PRODUCT_PROMO = "click special product promo"
         }

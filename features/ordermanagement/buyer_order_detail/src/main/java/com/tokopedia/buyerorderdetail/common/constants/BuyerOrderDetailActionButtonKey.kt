@@ -13,4 +13,5 @@ object BuyerOrderDetailActionButtonKey {
     const val SEE_SIMILAR_PRODUCTS = "see_similar_products"
     const val TRACK_SHIPMENT = "track"
     const val VIEW_COMPLAINT = "view_complaint"
+    const val RESPONSE_EXTEND_ORDER = "response_extend_order"
 }

@@ -16,9 +16,9 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationData: DigitalRecommendationData,
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
-    protected val productViewListener: ProductViewHolder.ProductViewListener,
+    protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
-    private val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
+    protected val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -91,6 +91,14 @@ open class BuyerOrderDetailTypeFactory(
     fun type(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel): Int =
             PgRecommendationViewHolder.LAYOUT
 
+    fun type(driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel): Int {
+        return DriverTippingInfoViewHolder.LAYOUT
+    }
+
+    fun type(addonsListUiModel: AddonsListUiModel): Int {
+        return AddonsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             AwbInfoViewHolder.LAYOUT -> AwbInfoViewHolder(parent)
@@ -111,6 +119,8 @@ open class BuyerOrderDetailTypeFactory(
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
             PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
+            DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
+            AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }

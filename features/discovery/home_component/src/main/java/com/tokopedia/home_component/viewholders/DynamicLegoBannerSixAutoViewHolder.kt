@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.HomeComponentLegoBannerSixAutoBinding
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego6AutoBannerListener
@@ -21,9 +22,7 @@ import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_component_lego_banner.view.home_component_header_view
-import kotlinx.android.synthetic.main.home_component_lego_banner_six_auto.view.*
-import kotlinx.android.synthetic.main.home_component_lego_banner_six_auto.view.recycleList
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Devara on 2020-04-28
@@ -33,6 +32,7 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
                                          val homeComponentListener: HomeComponentListener?,
                                          val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<DynamicLegoBannerSixAutoDataModel>(view) {
 
+    private var binding: HomeComponentLegoBannerSixAutoBinding? by viewBinding()
     private var isCacheData = false
     companion object {
         @LayoutRes
@@ -41,7 +41,7 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
 
     init {
         parentRecyclerViewPool?.let {
-            itemView.recycleList.setRecycledViewPool(parentRecyclerViewPool)
+            binding?.recycleList?.setRecycledViewPool(parentRecyclerViewPool)
         }
     }
 
@@ -59,24 +59,24 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
     private fun setChannelDivider(element: DynamicLegoBannerSixAutoDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
     private fun setGrids(element: DynamicLegoBannerSixAutoDataModel) {
         if (element.channelModel.channelBanner.imageUrl.isNotEmpty()) {
-            itemView.item_lego_auto_image.post {
-                itemView.item_lego_auto_image.onUrlLoaded = {success ->
+            binding?.itemLegoAutoImage?.post {
+                binding?.itemLegoAutoImage?.onUrlLoaded = {success ->
                     if (success && element.channelModel.channelBanner.backColor.isNotEmpty()) {
-                        itemView.gridHolder.setBackgroundColor(
+                        binding?.gridHolder?.setBackgroundColor(
                                 Color.parseColor(element.channelModel.channelBanner.backColor)
                         )
                     }
                 }
-                itemView.item_lego_auto_image.setImageUrl(url = element.channelModel.channelBanner.imageUrl)
+                binding?.itemLegoAutoImage?.setImageUrl(url = element.channelModel.channelBanner.imageUrl)
             }
-            itemView.item_lego_auto_image.setOnClickListener {
+            binding?.itemLegoAutoImage?.setOnClickListener {
                 legoSixAutoListener?.onTallImageClicked(element.channelModel, (adapterPosition+1))
             }
         }
@@ -190,7 +190,7 @@ class DynamicLegoBannerSixAutoViewHolder(val view: View,
     }
 
     private fun setHeaderComponent(element: DynamicLegoBannerSixAutoDataModel) {
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 legoSixAutoListener?.onSeeAllClicked(element.channelModel, adapterPosition)
             }

@@ -206,19 +206,21 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) { loadData() }
     }
 
-    override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoUiModel?, preOrderModel: PreOrderModel?) {
-        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModel, isDisableOrderPrioritas, preOrderModel)
-        if (promoViewModel?.etaData != null && promoViewModel.etaData.textEta.isEmpty() && promoViewModel.etaData.errorCode == 1) shippingDurationAdapter!!.initiateShowcase()
+    override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
+        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModelList, isDisableOrderPrioritas, preOrderModel)
+       if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
+
         val hasCourierPromo = checkHasCourierPromo(serviceDataList)
         if (hasCourierPromo) {
             sendAnalyticCourierPromo(serviceDataList)
         }
-        if (promoViewModel != null) {
-            mPromoTracker?.eventViewPromoLogisticTicker(promoViewModel.promoCode)
-            if (promoViewModel.disabled) {
-                mPromoTracker?.eventViewPromoLogisticTickerDisable(promoViewModel.promoCode)
+        promoViewModelList.forEach {
+            mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
+            if (it.disabled) {
+                mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
             }
         }
+
     }
 
     private fun checkHasCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>): Boolean {
@@ -273,7 +275,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             }
         } else {
             for (shippingCourierUiModel in shippingCourierUiModelList) {
-                shippingCourierUiModel.isSelected = shippingCourierUiModel.productData.isRecommend
+                shippingCourierUiModel.isSelected = if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
                 if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     flagNeedToSetPinpoint = true
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
@@ -283,9 +285,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
         if (shippingDurationBottomsheetListener != null) {
             try {
+                val courierData = if (serviceData.selectedShipperProductId > 0) presenter!!.getCourierItemDataById(
+                    serviceData.selectedShipperProductId,
+                    shippingCourierUiModelList
+                ) else presenter!!.getCourierItemData(shippingCourierUiModelList)
                 shippingDurationBottomsheetListener?.onShippingDurationChoosen(
-                        shippingCourierUiModelList, presenter!!.getCourierItemData(shippingCourierUiModelList),
-                        mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                    shippingCourierUiModelList,
+                    courierData,
+                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                         flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
                 bottomSheet?.dismiss()
             } catch (e: Exception) {

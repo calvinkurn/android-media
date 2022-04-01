@@ -19,7 +19,7 @@ class ShimmerViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: ShimmerViewModel by lazy {
-        spyk(ShimmerViewModel(application, componentsItem, 0))
+        spyk(ShimmerViewModel(application, componentsItem, 99))
     }
 
     @Before
@@ -32,12 +32,16 @@ class ShimmerViewModelTest {
     fun `design type test`() {
         every { componentsItem.properties } returns null
         assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
-        every { componentsItem.properties?.template } returns Constant.ProductTemplate.GRID
-        assert(viewModel.getTemplateType() == Constant.ProductTemplate.GRID)
+        every { componentsItem.properties?.template } returns Constant.ProductTemplate.LIST
+        assert(viewModel.getTemplateType() == Constant.ProductTemplate.LIST)
     }
 
     @Test
     fun `component value is present in live data`() {
         assert(viewModel.getComponentData().value == componentsItem)
+    }
+    @Test
+    fun `test for position passed to VM`(){
+        assert(viewModel.position == 99)
     }
 }

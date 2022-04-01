@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class PaymentInfoUiModel(
@@ -18,8 +20,12 @@ data class PaymentInfoUiModel(
             return typeFactory?.type(this).orZero()
         }
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return label.isNotBlank() && value.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 
@@ -31,8 +37,12 @@ data class PaymentInfoUiModel(
             return typeFactory?.type(this).orZero()
         }
 
-        override fun shouldShow(): Boolean {
+        override fun shouldShow(context: Context?): Boolean {
             return label.isNotBlank() && value.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 }

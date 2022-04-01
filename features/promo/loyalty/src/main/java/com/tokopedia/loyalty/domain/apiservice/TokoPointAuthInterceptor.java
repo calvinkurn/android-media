@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
-import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.loyalty.domain.entity.response.TokoPointErrorResponse;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.network.NetworkRouter;
@@ -29,8 +29,8 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
-        String responseError = response.body().string();
-        if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
+        String responseError = response.peekBody(BYTE_COUNT).string();
+        if (!responseError.isEmpty() && responseError.contains("header")) {
             TokoPointErrorResponse tokoPointErrorResponse = new Gson().fromJson(
                     responseError, TokoPointErrorResponse.class
             );

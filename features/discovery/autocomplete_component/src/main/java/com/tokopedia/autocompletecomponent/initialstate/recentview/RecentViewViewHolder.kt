@@ -15,14 +15,14 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutRecentViewAutocompleteBinding
+import com.tokopedia.autocompletecomponent.databinding.LayoutRecentViewItemAutocompleteBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
-import kotlinx.android.synthetic.main.layout_recent_view_item_autocomplete.view.*
-import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class RecentViewViewHolder(
-        itemView: View,
-        listener: InitialStateItemClickListener
+    itemView: View,
+    listener: RecentViewListener
 ) : AbstractViewHolder<RecentViewDataView>(itemView) {
 
     companion object {
@@ -30,22 +30,27 @@ class RecentViewViewHolder(
         val LAYOUT = R.layout.layout_recent_view_autocomplete
     }
 
-    private val adapter: ItemAdapter
+    private val adapter: ItemAdapter = ItemAdapter(listener)
+    private var binding: LayoutRecentViewAutocompleteBinding? by viewBinding()
 
     init {
-        val layoutManager = LinearLayoutManager(itemView.context,
-                LinearLayoutManager.HORIZONTAL, false)
-        itemView.recyclerView?.layoutManager = layoutManager
-        ViewCompat.setLayoutDirection(itemView.recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = ItemAdapter(listener)
-        itemView.recyclerView?.adapter = adapter
+        binding?.recyclerViewRecentView?.let { recyclerView ->
+            val layoutManager = LinearLayoutManager(
+                itemView.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            recyclerView.layoutManager = layoutManager
+            ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
+            recyclerView.adapter = adapter
+        }
     }
 
     override fun bind(element: RecentViewDataView) {
         adapter.setData(element.list)
     }
 
-    private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    private inner class ItemAdapter(private val clickListener: RecentViewListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
         private var data: List<BaseItemInitialStateSearch> = ArrayList()
 
         fun setData(data: List<BaseItemInitialStateSearch>) {
@@ -54,8 +59,13 @@ class RecentViewViewHolder(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-            val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.layout_recent_view_item_autocomplete, parent, false)
+            val itemView = LayoutInflater
+                .from(parent.context)
+                .inflate(
+                    R.layout.layout_recent_view_item_autocomplete,
+                    parent,
+                    false
+                )
             return ItemViewHolder(itemView, clickListener)
         }
 
@@ -67,11 +77,18 @@ class RecentViewViewHolder(
             return data.size
         }
 
-        inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
+        inner class ItemViewHolder(
+            itemView: View,
+            private val recentViewListener: RecentViewListener,
+        ) : RecyclerView.ViewHolder(itemView) {
+            private var binding: LayoutRecentViewItemAutocompleteBinding? by viewBinding()
+
             fun bind(item: BaseItemInitialStateSearch) {
-                itemView.autocompleteRecentViewItem?.loadImageCircle(itemView.context, item.imageUrl)
-                itemView.autocompleteRecentViewItem?.setOnClickListener {
-                    clickListener.onRecentViewClicked(item)
+                val recentViewItem = binding?.autocompleteRecentViewItem ?: return
+
+                recentViewItem.loadImageCircle(itemView.context, item.imageUrl)
+                recentViewItem.setOnClickListener {
+                    recentViewListener.onRecentViewClicked(item)
                 }
             }
 

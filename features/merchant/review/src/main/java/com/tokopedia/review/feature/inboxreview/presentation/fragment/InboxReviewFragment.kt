@@ -22,7 +22,14 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.presentation.listener.OnTabChangeListener
@@ -55,8 +62,13 @@ import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyF
 import com.tokopedia.review.feature.reviewreply.view.model.ProductReplyUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setCounter
+import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.setNotification
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -76,6 +88,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         private const val positionUnAnswered = 1
         private const val positionAnswered = 2
         private const val allSelected = 5
+        private const val ONE = 1
     }
 
     @Inject
@@ -365,7 +378,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
     }
 
     private fun setInboxReviewTabCounter(counter: Int = 0) {
-        (activity as? InboxReputationActivity)?.fragmentList?.forEachIndexed { index, fragment ->
+        (activity as? InboxReputationActivity)?.getFragmentList()?.forEachIndexed { index, fragment ->
             if (fragment::class.java == this::class.java) {
                     if (counter.isMoreThanZero()) {
                         (activity as? InboxReputationActivity)
@@ -476,13 +489,15 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 endlessRecyclerViewScrollListener?.loadMoreNextPage()
             }
         } else {
-            if (data.feedbackInboxList.isEmpty() && isFilter && data.page == 1) {
-                binding?.sortFilterInboxReview?.show()
-                inboxReviewAdapter.addInboxFeedbackEmpty(true)
-            } else if (data.feedbackInboxList.isEmpty() && !isFilter && data.page == 1) {
-                binding?.sortFilterInboxReview?.show()
-                inboxReviewAdapter.clearAllElements()
-                inboxReviewAdapter.addInboxFeedbackEmpty(false)
+            if (inboxReviewAdapter.list.isEmpty() && data.feedbackInboxList.isEmpty()) {
+                if (isFilter && data.page == ONE) {
+                    binding?.sortFilterInboxReview?.show()
+                    inboxReviewAdapter.addInboxFeedbackEmpty(true)
+                } else if (!isFilter && data.page == ONE) {
+                    binding?.sortFilterInboxReview?.show()
+                    inboxReviewAdapter.clearAllElements()
+                    inboxReviewAdapter.addInboxFeedbackEmpty(false)
+                }
             } else {
                 inboxReviewAdapter.setFeedbackListData(data.feedbackInboxList)
             }
@@ -646,16 +661,16 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 refChipUnify.chip_image_icon.hide()
             }
         } else {
-            if (countSelected == 0) {
+            if (countSelected == Int.ZERO) {
                 itemSortFilterList[positionRating].apply {
                     title = ALL_RATINGS
                     refChipUnify.chip_image_icon.hide()
                 }
-            } else if (countSelected == 1) {
+            } else if (countSelected == ONE) {
                 itemSortFilterList[positionRating].apply {
                     title = ratingOneSelected
                     refChipUnify.chip_image_icon.show()
-                    refChipUnify.chip_image_icon.setImage(R.drawable.ic_filter_rating, 0F)
+                    refChipUnify.chip_image_icon.setImage(com.tokopedia.review.R.drawable.ic_filter_rating, 0F)
                 }
             } else {
                 itemSortFilterList[positionRating].apply {

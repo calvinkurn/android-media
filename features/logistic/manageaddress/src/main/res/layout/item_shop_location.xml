@@ -50,17 +50,21 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_1"
-            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="4dp"
             android:lineSpacingExtra="@dimen/sp_6"
             app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_44"
             tools:text="Jl. Prof. DR. Satrio No.Kav 11, RT.3/RW.3, Karet Semanggi, Setia Budi" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_2"
-            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@color/Unify_N700_44"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="2dp"
@@ -87,7 +91,7 @@
                 app:lv_image_margin_right="16dp"
                 app:lv_image_width="20dp"
                 app:lv_title="@string/app_name"
-                app:lv_title_color="@color/Unify_N700_32"
+                app:lv_title_color="@color/Unify_N700_44"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"/>
 
@@ -102,7 +106,7 @@
                 app:lv_image_margin_right="16dp"
                 app:lv_image_width="20dp"
                 app:lv_title="@string/app_name"
-                app:lv_title_color="@color/Unify_N700_32"
+                app:lv_title_color="@color/Unify_N700_44"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"/>
 
@@ -117,7 +121,7 @@
                 app:lv_image_margin_right="16dp"
                 app:lv_image_width="20dp"
                 app:lv_title="@string/app_name"
-                app:lv_title_color="@color/Unify_N700_32"
+                app:lv_title_color="@color/Unify_N700_44"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"/>
         </LinearLayout>

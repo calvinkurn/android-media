@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AddEditProductCategoryViewModel @Inject constructor(
@@ -22,8 +21,9 @@ class AddEditProductCategoryViewModel @Inject constructor(
 
     fun getCategoryLiteTree() {
         launchCatchError(coroutineDispatcher.io, block = {
-            val category = Success(getCategoryLiteTreeUseCase.createObservable(GetCategoryLiteTreeUseCase.createRequestParams()).toBlocking().first())
-            _categoryLiteTree.postValue(category)
+            val param = GetCategoryLiteTreeUseCase.createRequestParams()
+            val category = getCategoryLiteTreeUseCase.getCategoryLiteData(param)
+            _categoryLiteTree.postValue(Success(category))
         }) {
             _categoryLiteTree.postValue(Fail(it))
         }

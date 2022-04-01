@@ -7,8 +7,8 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
-import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.util.ProductManageAdapterLogger
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
@@ -16,26 +16,76 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
-    baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl
+    baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl,
+    private val deviceId: String
 ) : BaseProductManageAdapter<Visitable<*>, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
 
     fun updateProduct(itemList: List<Visitable<*>>) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRODUCT)
         submitList(itemList)
     }
 
-    fun updateEmptyState(emptyModel: EmptyModel) {
-        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
-            val dataCount = visitables.filter { it !is EmptyModel }.count().orZero()
-            if (dataCount > 0) {
-                visitables.removeAll { it !is EmptyModel }
-                notifyItemRangeRemoved(visitables.size, dataCount)
+    fun removeEmptyAndUpdateLayout(itemList: List<Visitable<*>>) {
+        logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_AND_UPDATE_LAYOUT)
+        val items = data.filter { it !is EmptyModel }.toMutableList().apply {
+            addAll(itemList)
+        }
+        submitList(items)
+    }
+
+    fun checkAllProducts(itemsChecked: MutableList<ProductUiModel>,
+                         onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit) {
+        logUpdate(ProductManageAdapterLogger.MethodName.CHECK_ALL_PRODUCTS)
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        val newItems = items.map { product ->
+            val checkedProduct = itemsChecked.firstOrNull { it.id == product.id }
+            if (checkedProduct == null) {
+                itemsChecked.add(product)
             }
-            visitables.add(emptyModel)
-            notifyItemInserted(lastIndex)
+            product.copy(isChecked = true)
+        }
+        submitList(newItems)
+        onSetItemsChecked(itemsChecked)
+    }
+
+    fun unCheckMultipleProducts(productIds: List<String>? = null,
+                                itemsChecked: MutableList<ProductUiModel>,
+                                onSetItemsUnchecked: (MutableList<ProductUiModel>) -> Unit) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UNCHECK_MULTIPLE_PRODUCTS)
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        val productIdList =
+            productIds ?: items.map {
+                it.id
+            }
+        val newItems = items.map { product ->
+            if (productIdList.contains(product.id)) {
+                itemsChecked.firstOrNull { it.id == product.id }?.let { checkedProduct ->
+                    itemsChecked.remove(checkedProduct)
+                }
+                product.copy(isChecked = false)
+            } else {
+                product
+            }
+        }
+        submitList(newItems)
+        onSetItemsUnchecked(itemsChecked)
+    }
+
+    fun updateEmptyState(emptyModel: EmptyModel) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
+        if (data.getOrNull(lastIndex) !is EmptyModel) {
+            val list = data.toMutableList()
+            val dataCount = data.filter { it !is EmptyModel }.count().orZero()
+            if (dataCount > 0) {
+                list.removeAll { it !is EmptyModel }
+            }
+            list.add(emptyModel)
+            submitList(list)
         }
     }
 
     fun updatePrice(productId: String, price: String) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE)
         submitList(productId) {
             val formattedPrice = price.toIntOrZero().getCurrencyFormatted()
             val editedPrice = PriceUiModel(price, formattedPrice)
@@ -44,6 +94,7 @@ class ProductManageListAdapter(
     }
 
     fun updatePrice(editResult: EditVariantResult) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE_VARIANT)
         submitList(editResult.productId) {
             val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price.orZero()
             val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price.orZero()
@@ -55,6 +106,7 @@ class ProductManageListAdapter(
     }
 
     fun updateStock(productId: String, stock: Int?, status: ProductStatus?) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_STOCK)
         submitList(productId) {
             var product = it
             stock?.let { product = product.copy(stock = stock) }
@@ -64,10 +116,12 @@ class ProductManageListAdapter(
     }
 
     fun updateCashBack(productId: String, cashback: Int) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_CASHBACK)
         submitList(productId) { it.copy(cashBack = cashback) }
     }
 
     fun deleteProduct(productId: String) {
+        logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCT)
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         items.findIndex(productId)?.let { index ->
             items.removeAt(index)
@@ -75,15 +129,35 @@ class ProductManageListAdapter(
         }
     }
 
+    fun deleteProducts(productIds: List<String>) {
+        logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCTS)
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        productIds.forEach { id ->
+            items.findIndex(id)?.let { index ->
+                items.removeAt(index)
+            }
+        }
+        submitList(items)
+    }
+
     fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
+        logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_FEATURED_PRODUCT)
         submitList(productId) { it.copy(isFeatured = isFeaturedProduct) }
     }
 
-    fun setProductStatus(productId: String, productStatus: ProductStatus) {
-        submitList(productId) { it.copy(status = productStatus) }
+    fun setProductsStatuses(productIds: List<String>, productStatus: ProductStatus) {
+        logUpdate(ProductManageAdapterLogger.MethodName.SET_PRODUCTS_STATUSES)
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        productIds.forEach { id ->
+            items.findIndex(id)?.let { index ->
+                items[index] = items[index].copy(status = productStatus)
+            }
+        }
+        submitList(items)
     }
 
     fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
+        logUpdate(ProductManageAdapterLogger.MethodName.SET_MULTI_SELECT_ENABLED)
         val items = data.filterIsInstance<ProductUiModel>().map {
             it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
         }
@@ -91,6 +165,7 @@ class ProductManageListAdapter(
     }
 
     fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
+        logUpdate(ProductManageAdapterLogger.MethodName.FILTER_PRODUCT_LIST)
         val productList = data.filterIsInstance<ProductUiModel>().filter { predicate.invoke(it) }
         submitList(productList)
     }
@@ -103,4 +178,9 @@ class ProductManageListAdapter(
             submitList(items)
         }
     }
+
+    private fun logUpdate(methodName: String) {
+        ProductManageAdapterLogger.logUpdate(deviceId, methodName)
+    }
+
 }

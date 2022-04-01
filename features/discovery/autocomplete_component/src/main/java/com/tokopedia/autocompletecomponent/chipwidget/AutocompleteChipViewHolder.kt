@@ -20,7 +20,7 @@ class AutocompleteChipViewHolder(
 
     private fun bindListener(item: AutocompleteChipDataView) {
         itemView.autocompleteChip?.setOnClickListener {
-            clickListener.onChipClicked(item)
+            clickListener.onChipClicked(item, adapterPosition)
         }
     }
 }

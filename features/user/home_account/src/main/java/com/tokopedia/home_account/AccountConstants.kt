@@ -200,7 +200,6 @@ object AccountConstants {
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
-        const val SETTING_OLD_ACCOUNT = 40
         const val SETTING_MORE_MEMBER = 43
         const val SETTING_INSTANT_PAYMENT = 44
         const val SETTING_INSTANT_BUY = 45
@@ -208,8 +207,9 @@ object AccountConstants {
         const val SETTING_ABOUT_TOKOPEDIA = 47
         const val SETTING_QUALITY_SETTING = 49
         const val SETTING_DARK_MODE = 50
-        const val SETTING_VIEW_ALL_BALANCE = 51
         const val SETTING_LINK_ACCOUNT = 51
+        const val SETTING_VIEW_ALL_BALANCE = 52
+        const val SETTING_PLAY_WIDGET_AUTOPLAY = 53
     }
 
     object KEY {
@@ -217,6 +217,7 @@ object AccountConstants {
         const val KEY_PREF_SAFE_SEARCH = "notification_safe_mode"
         const val KEY_SHOW_COACHMARK = "home_account_coachmark"
         const val CLEAR_CACHE = "clear cache"
+        const val KEY_PREF_PLAY_WIDGET_AUTOPLAY = "play_widget_autoplay"
     }
 
     object REQUEST {

@@ -19,6 +19,7 @@
     <dimen name="kyc_centralized_144dp">144dp</dimen>
     <dimen name="kyc_centralized_154dp">154dp</dimen>
     <dimen name="kyc_centralized_179dp">179dp</dimen>
+    <dimen name="kyc_centralized_195dp">195dp</dimen>
     <dimen name="kyc_centralized_224dp">224dp</dimen>
     <dimen name="kyc_centralized_218dp">218dp</dimen>
     <dimen name="kyc_centralized_272dp">272dp</dimen>

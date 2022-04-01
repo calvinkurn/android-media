@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.common.utils
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
@@ -11,6 +12,8 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
@@ -86,4 +89,19 @@ object PowerMerchantSpannableUtil {
             onClick()
         }
     }
+
+    fun getColorHexString(context: Context?, idColor: Int): String {
+        return try {
+            val colorHexInt = context?.let { ContextCompat.getColor(it, idColor) }
+            val colorToHexString = colorHexInt?.let {
+                Integer.toHexString(it).uppercase().substring(START_INDEX_HEX_STRING)
+            }
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
+    private const val START_INDEX_HEX_STRING = 2
 }

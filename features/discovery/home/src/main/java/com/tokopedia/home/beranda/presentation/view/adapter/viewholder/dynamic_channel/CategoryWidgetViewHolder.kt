@@ -16,15 +16,17 @@ import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home.databinding.HomeDcCategoryWidgetBinding
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.home_dc_category_widget.view.*
-import kotlinx.android.synthetic.main.home_dc_category_widget.view.home_component_divider_footer
-import kotlinx.android.synthetic.main.home_dc_category_widget.view.home_component_divider_header
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class CategoryWidgetViewHolder(val view: View, private val categoryListener: HomeCategoryListener) :
         DynamicChannelViewHolder(view, categoryListener) {
+
+    private var binding: HomeDcCategoryWidgetBinding? by viewBinding()
 
     companion object {
         @LayoutRes
@@ -33,7 +35,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
-        val recyclerView = itemView.recycleList
+        val recyclerView = binding?.recycleList
         if (!channel.isCache) {
             itemView.addOnImpressionListener(channel) {
                 categoryListener.putEEToIris(
@@ -44,18 +46,18 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
                                 channel) as HashMap<String, Any>)
             }
         }
-        recyclerView.adapter = CategoryWidgetItemAdapter(channel, categoryListener, adapterPosition)
-        recyclerView.layoutManager = GridLayoutManager(
+        recyclerView?.adapter = CategoryWidgetItemAdapter(channel, categoryListener, adapterPosition)
+        recyclerView?.layoutManager = GridLayoutManager(
                 view.context,
                 CATEGORY_WIDGET_SPAN_COUNT,
                 GridLayoutManager.HORIZONTAL,
                 false)
 
-        if (recyclerView.itemDecorationCount == 0) {
-            val dimens = R.dimen.dp_0
-            recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
+        if (recyclerView?.itemDecorationCount == 0) {
+            val dimens = 0f.toDpInt()
+            recyclerView?.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     CATEGORY_WIDGET_SPAN_COUNT,
-                    itemView.context.resources.getDimensionPixelOffset(dimens)
+                    dimens
             ))
         }
         setChannelDivider(channel)
@@ -72,8 +74,8 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
     private fun setChannelDivider(channel: DynamicHomeChannel.Channels) {
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = channel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 

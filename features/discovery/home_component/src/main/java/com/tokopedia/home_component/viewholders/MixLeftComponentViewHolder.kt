@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
+import com.tokopedia.home_component.databinding.GlobalDcMixLeftBinding
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
@@ -37,7 +38,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import kotlinx.android.synthetic.main.global_dc_mix_left.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -71,6 +72,7 @@ class MixLeftComponentViewHolder (itemView: View,
 
     private var isCacheData = false
 
+    private var binding: GlobalDcMixLeftBinding? by viewBinding()
 
     companion object {
         @LayoutRes
@@ -118,8 +120,8 @@ class MixLeftComponentViewHolder (itemView: View,
     private fun setChannelDivider(element: MixLeftDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
@@ -279,7 +281,7 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     private fun setHeaderComponent(element: MixLeftDataModel) {
-        itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
+        binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 mixLeftComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }

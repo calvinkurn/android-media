@@ -11,7 +11,9 @@ import com.tokopedia.shop.score.penalty.presentation.fragment.ShopPenaltyDetailF
 class ShopPenaltyDetailPageActivity : BaseSimpleActivity(), HasComponent<PenaltyComponent> {
 
     override fun getNewFragment(): Fragment {
-        return ShopPenaltyDetailFragment.newInstance()
+        val keyCacheManagerId =
+            intent?.extras?.getString(ShopPenaltyDetailFragment.KEY_CACHE_MANAGE_ID).orEmpty()
+        return ShopPenaltyDetailFragment.newInstance(keyCacheManagerId)
     }
 
     override fun getComponent(): PenaltyComponent {

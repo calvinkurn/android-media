@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -27,22 +28,31 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.common.*
+import com.tokopedia.sellerhome.common.DeepLinkHandler
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
-import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.di.component.DaggerHomeDashboardComponent
+import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
@@ -54,13 +64,14 @@ import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
-    SomListLoadTimeMonitoringActivity {
+open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomClickListener,
+    SomListLoadTimeMonitoringActivity, HasComponent<HomeDashboardComponent> {
 
     companion object {
         @JvmStatic
@@ -111,6 +122,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private var statusBarCallback: StatusBarCallback? = null
+    private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
+    private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
@@ -146,6 +159,16 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+    }
+
+    override fun checkAppUpdateAndInApp() {
+        // no op, this activity already uses UpdateCheckerHelper
+    }
+
+    override fun getComponent(): HomeDashboardComponent {
+        return DaggerHomeDashboardComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
     }
 
     override fun onResume() {
@@ -214,28 +237,28 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override fun menuClicked(position: Int, id: Int): Boolean {
         when (position) {
             FragmentType.HOME -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 showToolbarNotificationBadge()
                 checkForSellerAppReview(FragmentType.HOME)
             }
             FragmentType.PRODUCT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
             }
             FragmentType.CHAT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
                 if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
                     initSomListLoadTimeMonitoring()
                 }
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
             FragmentType.OTHER -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 showOtherSettingsFragment()
             }
         }
@@ -265,6 +288,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         statusBarCallback = callback
     }
 
+    fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {
+        sellerHomeFragmentChangeCallback = callback
+    }
+
+    fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
+        otherMenuFragmentChangeCallback = callback
+    }
+
     private fun setContentView() {
         binding = ActivitySahSellerHomeBinding.inflate(layoutInflater).apply {
             setContentView(root)
@@ -273,7 +304,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 
@@ -350,10 +381,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun initInjector() {
-        DaggerSellerHomeComponent.builder()
-            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
+        component.inject(this)
     }
 
     private fun setupNavigator() {
@@ -439,7 +467,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setCurrentFragmentType(@FragmentType pageType: Int) {
-        statusBarCallback?.setCurrentFragmentType(pageType)
+        sellerHomeFragmentChangeCallback?.setCurrentFragmentType(pageType)
+        otherMenuFragmentChangeCallback?.setCurrentFragmentType(pageType)
     }
 
     private fun observeNotificationsLiveData() {
@@ -474,10 +503,15 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                 is Fail -> {
                     SellerHomeErrorHandler.logException(
                         it.throwable,
-                        SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
 
+                    SellerHomeErrorHandler.logExceptionToServer(
+                        SellerHomeErrorHandler.SELLER_HOME_TAG,
+                        it.throwable,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                        SellerHomeErrorHandler.SHOP_INFO,
+                    )
                     navigator?.run {
                         if (isHomePageSelected()) {
                             supportActionBar?.title = userSession.shopName
@@ -546,10 +580,10 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
             BottomMenu(
                 R.id.menu_home,
                 resources.getString(R.string.sah_home),
-                R.raw.anim_bottom_nav_home,
-                R.raw.anim_bottom_nav_home_to_enabled,
-                R.drawable.ic_sah_bottom_nav_home_active,
-                R.drawable.ic_sah_bottom_nav_home_inactive,
+                R.raw.anim_bottom_nav_home_mosque,
+                R.raw.anim_bottom_nav_home_mosque_to_enabled,
+                R.drawable.ic_sah_bottom_nav_home_mosque_active,
+                R.drawable.ic_sah_bottom_nav_home_mosque_inactive,
                 com.tokopedia.unifyprinciples.R.color.Unify_G600,
                 false,
                 BOTTOM_NAV_EXIT_ANIM_DURATION,

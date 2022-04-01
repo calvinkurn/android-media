@@ -14,6 +14,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.isNotEmpty
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -339,9 +340,10 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                         widget_event_pdp_tab_section.setNullMode()
                         widget_event_pdp_tab_section.hide()
                     }
-
                     setDrawableColorFilter(navIcon, color)
-                    setDrawableColorFilter(event_pdp_toolbar.menu.getItem(0).icon, color)
+                    if (event_pdp_toolbar.menu.isNotEmpty()) {
+                        setDrawableColorFilter(event_pdp_toolbar.menu.getItem(0).icon, color)
+                    }
                 }
             }
         })
@@ -497,7 +499,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             val context = WeakReference<Activity>(activity)
             if(!::eventShare.isInitialized) eventShare = EventShare(context)
             val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
-            eventShare.shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
+            eventShare.shareEvent(productDetailData, titleShare, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
 

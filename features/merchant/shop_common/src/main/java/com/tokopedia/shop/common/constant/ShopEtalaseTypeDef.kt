@@ -12,6 +12,7 @@ annotation class ShopEtalaseTypeDef {
         const val ETALASE_DEFAULT = -1 // Generated etalase
         const val ETALASE_CAMPAIGN = -2
         const val ETALASE_THEMATIC_CAMPAIGN = -3
+        const val ETALASE_FLASH_SALE = -4
         const val ETALASE_CUSTOM = 1
     }
 }

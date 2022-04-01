@@ -22,6 +22,10 @@ class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapte
 
     private var items: List<TipsTrickCarouselModel> = emptyList()
 
+    companion object {
+        private const val CARD_WIDTH_MULTIPLIER = 3
+    }
+
     fun setItems(items: List<TipsTrickCarouselModel>) {
         this.items = items
         notifyDataSetChanged()
@@ -52,7 +56,7 @@ class TipsTrickCarouselAdapter(private val userId: String) : RecyclerView.Adapte
             }
 
             val dp12 = context.resources.getDimension(R.dimen.mvc_dimen_12dp)
-            val cardWidth = getScreenWidth().minus(dp12.toInt() * 3)
+            val cardWidth = getScreenWidth().minus(dp12.toInt() * CARD_WIDTH_MULTIPLIER)
             parentMvcCarousel.layoutParams.width = cardWidth
             parentMvcCarousel.requestLayout()
             imgMvcVoucherCarousel.layoutParams.width = cardWidth.minus(dp12.toInt())

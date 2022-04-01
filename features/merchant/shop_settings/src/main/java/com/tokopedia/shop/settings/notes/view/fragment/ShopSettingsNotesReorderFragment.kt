@@ -76,9 +76,6 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     override fun onCreate(savedInstanceState: Bundle?) {
         shopNoteModels = arguments?.getParcelableArrayList(EXTRA_NOTE_LIST)
         super.onCreate(savedInstanceState)
-        context?.let {
-            GraphqlClient.init(it)
-        }
         adapterTerms = ShopNoteReorderAdapter(ShopNoteReorderFactory(null))
     }
 

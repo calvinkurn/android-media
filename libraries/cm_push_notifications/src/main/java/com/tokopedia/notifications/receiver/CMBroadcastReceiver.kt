@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.receiver
 
 import android.app.Activity
+import android.app.Application
 import android.content.*
 import android.os.Bundle
 import android.util.Log
@@ -11,8 +12,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.analytics.ProductAnalytics
 import com.tokopedia.notifications.analytics.ProductAnalytics.clickCollapsedBody
@@ -30,6 +34,7 @@ import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,12 +57,18 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
+
+    private fun initGraphql(application: Application) {
+        val authenticator = TkpdAuthenticatorGql(application, application as NetworkRouter, UserSession(application), RefreshTokenGql())
+        GraphqlClient.init(application, authenticator)
+    }
+
     private fun initInjector(context: Context) {
         try {
-            GraphqlClient.init(context)
-            val baseMainApplication = context.applicationContext as BaseMainApplication
+            val application = context.applicationContext as BaseMainApplication
+            initGraphql(application)
             DaggerCMNotificationComponent.builder()
-                    .baseAppComponent(baseMainApplication.baseAppComponent)
+                    .baseAppComponent(application.baseAppComponent)
                     .notificationModule(NotificationModule(context))
                     .build()
                     .inject(this)

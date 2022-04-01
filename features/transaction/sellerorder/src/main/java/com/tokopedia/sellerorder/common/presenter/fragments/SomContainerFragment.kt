@@ -38,7 +38,7 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
         private const val URL_WELCOME_ILLUSTRATION = "https://images.tokopedia.net/img/android/sellerorder/ic_som_welcome_page_illustration.png"
     }
 
-    private val binding by viewBinding(FragmentSomContainerBinding::bind)
+    private var binding by viewBinding(FragmentSomContainerBinding::bind)
 
     private var somListFragment: SomListFragment? = null
     private var somDetailFragment: SomDetailFragment? = null

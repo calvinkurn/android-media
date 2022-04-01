@@ -102,7 +102,7 @@ class LoginByQrFragment: BaseOtpToolbarFragment(), IOnBackPressed {
     }
 
     private fun initView() {
-        viewBound.containerView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        viewBound.containerView?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         viewBound.userName?.text = userSession.name ?: ""
 
         viewBound.approveButton?.setOnClickListener {

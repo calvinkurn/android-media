@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/transaction_komisi_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:text="@string/affiliate_komisi"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/transaction_komisi_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:visibility="gone"
+        android:id="@+id/transaction_komisi_icon"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        app:icon_name="INFORMATION"
+        app:icon_color_light_enable="@color/Unify_N700_68"
+        app:icon_color_night_enable="@color/Unify_N700_68"
+        app:layout_constraintTop_toTopOf="@id/transaction_komisi_header"
+        app:layout_constraintLeft_toRightOf="@id/transaction_komisi_header"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:text="5%"
+        android:id="@+id/transaction_komisi"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:gravity="end"
+        android:visibility="gone"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toRightOf="@id/transaction_komisi_icon"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/transaction_komisi_header"
+        app:typographyType="body_2"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

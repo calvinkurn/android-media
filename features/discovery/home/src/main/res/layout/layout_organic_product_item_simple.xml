@@ -25,7 +25,7 @@
         android:id="@+id/channel_price_1"
         style="@style/TextView.Micro.Orange.Bold"
         android:fontFamily="sans-serif-medium"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="4sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_before_disc_price_1"
         tools:text="Rp 1.399.500" />
@@ -33,8 +33,8 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/channel_before_disc_price_1"
         style="@style/TextView.Micro.BlackDisabled"
+        android:lineSpacingExtra="4sp"
         app:typographyType="body_3"
-        android:lineSpacingExtra="@dimen/sp_4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_name"
         tools:text="Rp 2.799.000" />
@@ -45,11 +45,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="4sp"
         android:lines="2"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/channel_image_1"

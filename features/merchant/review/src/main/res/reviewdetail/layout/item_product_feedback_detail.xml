@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible"/>
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ivOptionReviewFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="?selectableItemBackground"
         android:layout_marginEnd="@dimen/dp_14"
-        app:srcCompat="@drawable/ic_option"/>
+        app:icon_name="MENU_KEBAB_VERTICAL"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackUser"
@@ -105,6 +105,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
+    <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
+        android:id="@+id/badRatingReasonReview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/product_feedback_detail_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="badRatingReasonReview, rvItemAttachmentFeedback, tvFeedbackReview"/>
+
     <View
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
@@ -112,7 +127,7 @@
         tools:background="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/product_feedback_detail_barrier"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"/>
 
@@ -125,7 +140,7 @@
         app:typographyType="body_3"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700_96"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/product_feedback_detail_barrier"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         tools:text="Balasan otomatis •"/>
 
@@ -133,7 +148,7 @@
         android:id="@+id/tvReplyDate"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
+        app:layout_constraintTop_toBottomOf="@id/product_feedback_detail_barrier"
         app:layout_constraintStart_toEndOf="@id/tvReplyUser"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"

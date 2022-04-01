@@ -10,7 +10,7 @@
         android:layout_width="@dimen/comparison_widget_product_card_width"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:layout_marginEnd="@dimen/dp_1"
+        android:layout_marginEnd="1dp"
         />
     <androidx.cardview.widget.CardView
         android:layout_width="@dimen/comparison_widget_product_card_width"

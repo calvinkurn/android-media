@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.LayoutProductHighlightBinding
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.mapper.ProductHighlightModelMapper
@@ -18,9 +19,11 @@ import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import kotlinx.android.synthetic.main.layout_product_highlight.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 
 class ProductHighlightComponentViewHolder(
@@ -28,13 +31,15 @@ class ProductHighlightComponentViewHolder(
         val listener: HomeComponentListener?,
         private val productHighlightListener: ProductHighlightListener?
 ): AbstractViewHolder<ProductHighlightDataModel>(view) {
-
+    private var binding: LayoutProductHighlightBinding? by viewBinding()
     private var isCacheData = false
     private var masterProductCardListView: ProductCardListView? = null
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_product_highlight
+        private const val TITLE_LENGTH = 22
+        private const val START_INDEX = 0
     }
 
     override fun bind(element: ProductHighlightDataModel?) {
@@ -64,30 +69,30 @@ class ProductHighlightComponentViewHolder(
     private fun setChannelDivider(element: ProductHighlightDataModel) {
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
-            dividerTop = itemView.home_component_divider_header,
-            dividerBottom = itemView.home_component_divider_footer
+            dividerTop = binding?.homeComponentDividerHeader,
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
     private fun setDealsCountDownTimer(dataModel: ProductHighlightDataModel) {
-        itemView.deals_channel_subtitle.text = dataModel.channelModel.channelHeader.subtitle
+        binding?.dealsChannelSubtitle?.text = dataModel.channelModel.channelHeader.subtitle
         if (dataModel.channelModel.channelHeader.textColor.isNotEmpty()) {
             val textColor = Color.parseColor(dataModel.channelModel.channelHeader.textColor)
-            itemView.deals_channel_subtitle.setTextColor(textColor)
+            binding?.dealsChannelSubtitle?.setTextColor(textColor)
         }
 
         if (dataModel.channelModel.channelHeader.expiredTime.isNotEmpty()) {
             val expiredTime = DateHelper.getExpiredTime(dataModel.channelModel.channelHeader.expiredTime)
             if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
-                itemView.deals_count_down?.run {
-                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
+                binding?.dealsCountDown?.run {
+                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))}"
                     timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
                         TimerUnifySingle.VARIANT_ALTERNATE
                     } else {
                         TimerUnifySingle.VARIANT_MAIN
                     }
 
-                    visibility = View.VISIBLE
+                    visible()
 
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
@@ -105,19 +110,26 @@ class ProductHighlightComponentViewHolder(
                 }
             }
         } else {
-            itemView.deals_count_down.visibility = View.GONE
+            binding?.dealsCountDown?.gone()
+            binding?.dealsChannelSubtitle?.gone()
         }
     }
 
     private fun setDealsChannelBackground(it: ChannelBanner) {
-        itemView.deals_background.setGradientBackground(it.gradientColor)
+        binding?.dealsBackground?.setGradientBackground(it.gradientColor)
     }
 
     private fun setDealsChannelTitle(it: ChannelHeader) {
-        itemView.deals_channel_title.text = it.name
+        val title = if (it.name.length > TITLE_LENGTH) getString(
+            R.string.discovery_home_product_highlight_title_with_ellipsize_format, it.name.substring(
+                START_INDEX,
+                TITLE_LENGTH
+            )
+        ) else it.name
+        binding?.dealsChannelTitle?.text = title
         if (it.textColor.isNotEmpty()) {
             val textColor = Color.parseColor(it.textColor)
-            itemView.deals_channel_title.setTextColor(textColor)
+            binding?.dealsChannelTitle?.setTextColor(textColor)
         }
     }
 

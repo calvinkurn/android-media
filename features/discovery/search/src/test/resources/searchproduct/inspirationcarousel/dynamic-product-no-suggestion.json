@@ -964,12 +964,14 @@
         "position": 4,
         "layout": "product_list",
         "type": "dynamic",
+        "tracking_option": "3",
         "options": [
           {
             "title": "Mungkin kamu juga suka",
             "url": "https://www.tokopedia.com/tokoacoy/samsung-galaxy-j5-prime-fullset",
             "applink": "tokopedia://product/219723699",
             "identifier": "",
+            "component_id": "03.02.01.00",
             "product": [
               {
                 "id": 219723699,
@@ -982,6 +984,7 @@
                 "price": 1200000,
                 "description": [],
                 "wishlist": false,
+                "component_id": "03.02.01.00",
                 "badges": [
                   {
                     "title": "Official Store",

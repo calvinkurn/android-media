@@ -34,6 +34,7 @@ abstract class BaseFrameTimingBenchmark {
          * Read the docs
          * https://developer.android.com/studio/profile/macrobenchmark
          */
+        var currentIteration = 0
         benchmarkRule.measureRepeated(
             packageName = MacroIntent.TKPD_PACKAGE_NAME,
             metrics = listOf(FrameTimingMetric()),
@@ -46,9 +47,10 @@ abstract class BaseFrameTimingBenchmark {
                 startActivityAndWait(intent)
             }
         ) {
-            pageInteractionTest()
+            pageInteractionTest(currentIteration)
+            currentIteration++
         }
     }
-    abstract fun pageInteractionTest()
+    abstract fun pageInteractionTest(currentIteration: Int)
     abstract fun getIntent(): Intent
 }

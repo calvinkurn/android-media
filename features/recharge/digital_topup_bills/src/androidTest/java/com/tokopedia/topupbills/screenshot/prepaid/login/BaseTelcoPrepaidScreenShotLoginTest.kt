@@ -140,8 +140,8 @@ abstract class BaseTelcoPrepaidScreenShotLoginTest {
 
     fun take_screenshot_filter_chip() {
         findViewAndScreenShot(R.id.telco_filter_chip, generatePrefix(), "filter_chip")
-        CommonTelcoActions.clientNumberWidget_clickFilterChip_withText("Tokopedia")
-        CommonTelcoActions.clientNumberWidget_validateText("081232323239")
+        CommonTelcoActions.clientNumberWidget_clickFilterChip_withText("085612309812")
+        CommonTelcoActions.clientNumberWidget_validateText("085612309812")
         Thread.sleep(1000)
         onView(withId(R.id.telco_filter_chip)).perform(ViewActions.swipeLeft())
         Thread.sleep(1000)

@@ -35,7 +35,7 @@
             android:textStyle="bold"
             android:clickable="true"
             android:focusable="true"
-            android:lineSpacingExtra="@dimen/sp_6"
+            android:lineSpacingExtra="6sp"
             android:text="@string/comparison_see_more_title"
             android:textColor="@color/Unify_G500"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -45,7 +45,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_7"
+        android:paddingBottom="7dp"
         >
 
         <androidx.recyclerview.widget.RecyclerView
@@ -78,7 +78,7 @@
         android:gravity="center_vertical"
         android:layout_height="wrap_content"
         android:paddingTop="6dp"
-        android:paddingBottom="@dimen/dp_13"
+        android:paddingBottom="13dp"
         >
         <com.tokopedia.unifyprinciples.Typography
             android:layout_gravity="bottom"

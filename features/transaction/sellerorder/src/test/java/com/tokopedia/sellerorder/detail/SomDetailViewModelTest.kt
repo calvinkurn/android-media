@@ -31,7 +31,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
 
-    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Products>()
+    private var listProducts = listOf<SomDetailOrder.Data.GetSomDetail.Details.Product>()
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
     @RelaxedMockK
@@ -67,7 +67,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             authorizeChatReplyAccessUseCase
         )
 
-        val product1 = SomDetailOrder.Data.GetSomDetail.Products("123")
+        val product1 = SomDetailOrder.Data.GetSomDetail.Details.Product("123")
         listProducts = arrayListOf(product1).toMutableList()
 
         val reasonReject1 = SomReasonRejectData.Data.SomRejectReason(1)
@@ -141,7 +141,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
             somGetOrderDetailUseCase.execute(any())
         } returns Success(
             GetSomDetailResponse(
-                getSomDetail = SomDetailOrder.Data.GetSomDetail(listProduct = listProducts)
+                getSomDetail = SomDetailOrder.Data.GetSomDetail(details = SomDetailOrder.Data.GetSomDetail.Details(nonBundle = listProducts))
             )
         )
 
@@ -151,7 +151,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
         //then
         assert(viewModel.orderDetailResult.value is Success)
         assert(
-            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.listProduct?.isNotEmpty()
+            (viewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.getProductList()?.isNotEmpty()
                 ?: false
         )
     }

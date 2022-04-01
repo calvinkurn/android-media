@@ -64,8 +64,12 @@ class InspirationCarouselOptionGridViewHolder(
     private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselGridProduct(product)
+                inspirationCarouselListener.onInspirationCarouselGridProductImpressed(product)
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        binding?.optionGridCardView?.recycle()
     }
 }

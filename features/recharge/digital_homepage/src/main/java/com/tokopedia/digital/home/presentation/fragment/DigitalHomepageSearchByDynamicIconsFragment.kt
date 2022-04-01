@@ -30,7 +30,11 @@ class DigitalHomepageSearchByDynamicIconsFragment : DigitalHomePageSearchFragmen
     }
 
     override fun searchCategory(searchQuery: String) {
-        viewModel.searchByDynamicIconsCategory(searchQuery, platformId, sectionId, enablePersonalized)
+        if (!searchQuery.isNullOrEmpty()) {
+            viewModel.searchByDynamicIconsCategory(searchQuery, platformId, sectionId, enablePersonalized)
+        } else {
+            viewModel.cancelAutoComplete()
+        }
     }
 
     private fun initSearchBarView(placeHolder: String) {

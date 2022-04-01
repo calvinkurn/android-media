@@ -53,6 +53,7 @@ class GetProductReviewListUseCase @Inject constructor(graphqlRepository: Graphql
                     formatted
                     count
                   }
+                  badRatingReasonFmt
                 }
                 shop {
                   shopID

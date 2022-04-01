@@ -51,8 +51,32 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    isShowEtalaseName
                   }
                   data {
+                    ... on BundleWidget {
+                      bundleGroupID
+                      bundleName
+                      bundleDetails {
+                        bundleID
+                        originalPrice
+                        displayPrice
+                        displayPriceRaw
+                        discountPercentage
+                        isPO
+                        isProductsHaveVariant
+                        preorderInfo
+                        savingAmountWording
+                        minOrder
+                        minOrderWording
+                      }
+                      bundleProducts {
+                        productID
+                        productName
+                        imageUrl
+                        appLink
+                      }
+                    }
                     ... on DisplayWidget {
                       imageUrl
                       videoUrl
@@ -64,6 +88,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      linkID
+                      Name
                     }
                     ... on ProductWidget {
                       productID
@@ -132,6 +158,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       timeCounter
                       totalNotify
                       totalNotifyWording
+                      totalProduct
+                      totalProductWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName
@@ -171,6 +199,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           title
                           url
                         }
+                      }
+                      backgroundGradientColor {
+                        firstColor
+                        secondColor
                       }
                     }
                   }

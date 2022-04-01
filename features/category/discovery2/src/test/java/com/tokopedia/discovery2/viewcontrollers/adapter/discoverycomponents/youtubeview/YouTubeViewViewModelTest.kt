@@ -20,7 +20,7 @@ class YouTubeViewViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: YouTubeViewViewModel by lazy {
-        spyk(YouTubeViewViewModel(application, componentsItem, 0))
+        spyk(YouTubeViewViewModel(application, componentsItem, 99))
     }
 
     @Before
@@ -38,5 +38,9 @@ class YouTubeViewViewModelTest {
         val item = DataItem()
         list.add(item)
         assert(viewModel.getVideoId().value === item)
+    }
+    @Test
+    fun `test for position passed to VM`(){
+        assert(viewModel.position == 99)
     }
 }

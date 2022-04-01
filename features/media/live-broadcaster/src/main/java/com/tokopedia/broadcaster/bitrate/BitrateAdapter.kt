@@ -1,6 +1,7 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.tokopedia.broadcaster.LibStreamerGL
+import com.tokopedia.broadcaster.lib.LarixStreamer
+import com.tokopedia.broadcaster.data.BitrateMode
 import com.wmspanel.libstream.Streamer.FpsRange
 import java.util.*
 import kotlin.math.abs
@@ -20,7 +21,7 @@ abstract class BitrateAdapter {
     private var mCurrentFps = 0.0
     private var mCurrentRange: FpsRange = FpsRange(30, 30)
     private var mFpsRanges: Array<FpsRange?> = emptyArray()
-    private var mStreamer: LibStreamerGL? = null
+    private var mStreamer: LarixStreamer? = null
     private var mCheckTimer: Timer? = null
     private var mListener: Listener? = null
 
@@ -39,11 +40,11 @@ abstract class BitrateAdapter {
         mFpsRanges = fpsRanges
     }
 
-    open fun start(streamer: LibStreamerGL, connectionId: Int) {
+    open fun start(streamer: LarixStreamer, connectionId: Int) {
         start(streamer, mSettingsBitrate, connectionId)
     }
 
-    open fun start(streamer: LibStreamerGL, bitrate: Long, connectionId: Int) {
+    open fun start(streamer: LarixStreamer, bitrate: Long, connectionId: Int) {
         mStreamer = streamer
         mConnectionId = connectionId
         mLossHistory.clear()
@@ -75,10 +76,12 @@ abstract class BitrateAdapter {
         val checkNetwork: TimerTask = object : TimerTask() {
             override fun run() {
                 try {
-                    if (mStreamer == null || mConnectionId == null) return
-                    val audioLost: Long = mStreamer!!.getAudioPacketsLost(mConnectionId!!)
-                    var videoLost: Long = mStreamer!!.getVideoPacketsLost(mConnectionId!!)
-                    videoLost += mStreamer!!.getUdpPacketsLost(mConnectionId!!)
+                    val connectionId = mConnectionId?: return
+                    val streamer = mStreamer?: return
+
+                    val audioLost: Long = streamer.getAudioPacketsLost(connectionId)
+                    var videoLost: Long = streamer.getVideoPacketsLost(connectionId)
+                    videoLost += streamer.getUdpPacketsLost(connectionId)
                     check(audioLost, videoLost)
                 } catch (ignored: Exception) {}
             }
@@ -189,23 +192,21 @@ abstract class BitrateAdapter {
 
     companion object {
 
-        fun ladderAscend(
+        fun instance(
             bitrate: Long,
+            bitrateMode: BitrateMode,
             fpsRanges: Array<FpsRange?>
         ): BitrateAdapter {
-            return BitrateLadderAscendMode().apply {
-                this.setBitrate(bitrate)
-                this.setFpsRanges(fpsRanges)
-            }
-        }
-
-        fun logarithmicDescend(
-            bitrate: Long,
-            fpsRanges: Array<FpsRange?>
-        ): BitrateAdapter {
-            return LogarithmicDescendMode().apply {
-                this.setBitrate(bitrate)
-                this.setFpsRanges(fpsRanges)
+            return if (bitrateMode == BitrateMode.LadderAscend) {
+                BitrateLadderAscendMode().apply {
+                    this.setBitrate(bitrate)
+                    this.setFpsRanges(fpsRanges)
+                }
+            } else {
+                LogarithmicDescendMode().apply {
+                    this.setBitrate(bitrate)
+                    this.setFpsRanges(fpsRanges)
+                }
             }
         }
 

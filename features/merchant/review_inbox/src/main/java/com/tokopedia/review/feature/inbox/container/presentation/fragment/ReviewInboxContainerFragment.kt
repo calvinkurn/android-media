@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
@@ -23,7 +24,6 @@ import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.OnBackPressedListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
 import com.tokopedia.review.feature.inbox.container.analytics.ReviewInboxContainerTracking
@@ -50,7 +50,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         fun createNewInstance(tab: String = "", source: String = "") : ReviewInboxContainerFragment{
             return ReviewInboxContainerFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ReviewInboxConstants.PARAM_TAB, tab)
+                    putString(ReviewApplinkConst.PARAM_TAB, tab)
                     putString(ReviewInboxConstants.PARAM_SOURCE, source)
                 }
             }
@@ -132,14 +132,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()
         super.onViewCreated(view, savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_Background))
         initToolbar()
         observeReviewTabs()
         getCounterData()
         setupTabLayout()
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            adjustViewBasedOnRole()
-        }
     }
 
     override fun onDestroy() {
@@ -205,13 +202,13 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun selectTab() {
         when(tab) {
-            ReviewInboxConstants.PENDING_TAB -> {
+            ReviewApplinkConst.PENDING_TAB -> {
                 binding?.reviewInboxViewPager?.currentItem = PENDING_TAB_INDEX
             }
-            ReviewInboxConstants.HISTORY_TAB -> {
+            ReviewApplinkConst.HISTORY_TAB -> {
                 binding?.reviewInboxViewPager?.currentItem = HISTORY_TAB_INDEX
             }
-            ReviewInboxConstants.SELLER_TAB -> {
+            ReviewApplinkConst.SELLER_TAB -> {
                 binding?.reviewInboxViewPager?.currentItem = SELLER_TAB_INDEX
             }
             else ->  {
@@ -269,14 +266,11 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun updateCounter(counter: Int) {
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            return
-        }
         binding?.reviewInboxTabs?.tabLayout?.getTabAt(PENDING_TAB_INDEX)?.setCounter(counter)
     }
 
     private fun getDataFromArguments() {
-        tab = arguments?.getString(ReviewInboxConstants.PARAM_TAB, "") ?: ""
+        tab = arguments?.getString(ReviewApplinkConst.PARAM_TAB, "") ?: ""
         source = arguments?.getString(ReviewInboxConstants.PARAM_SOURCE, ReviewInboxConstants.DEFAULT_SOURCE) ?: ReviewInboxConstants.DEFAULT_SOURCE
         if(source.isEmpty()) {
             source = ReviewInboxConstants.DEFAULT_SOURCE
@@ -288,10 +282,6 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
     }
 
     private fun initToolbar() {
-        if(InboxUnifiedRemoteConfig.isInboxUnified()) {
-            binding?.headerReviewInboxContainer?.hide()
-            return
-        }
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
@@ -324,7 +314,7 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
 
     private fun setBuyerReviewFragment() {
         if(buyerReviewFragment == null) {
-            buyerReviewFragment = InboxReputationFragment.createInstance(ReviewInboxContainerAdapter.TAB_BUYER_REVIEW) as? InboxReputationFragment?
+            buyerReviewFragment = InboxReputationFragment.createInstance(ReviewInboxConstants.TAB_BUYER_REVIEW) as? InboxReputationFragment?
             shouldCommitBuyerReviewFragment = true
         }
     }
@@ -357,15 +347,5 @@ class ReviewInboxContainerFragment : BaseDaggerFragment(), HasComponent<ReviewIn
             }
         }
         return tabTitles
-    }
-
-    private fun adjustViewBasedOnRole() {
-        if(containerListener?.role == RoleType.BUYER) {
-            updateInboxUnifiedBuyerView()
-            return
-        }
-        updateInboxUnifiedSellerView()
-        setBuyerReviewFragment()
-        attachBuyerReviewFragment()
     }
 }

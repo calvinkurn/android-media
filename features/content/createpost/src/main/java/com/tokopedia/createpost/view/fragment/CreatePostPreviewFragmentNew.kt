@@ -13,35 +13,36 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.createpost.createpost.R
-import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
-import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
-import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
+import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.view.plist.ShopPageProduct
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
+import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
+import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
+import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.posttag.TagViewProvider
-import com.tokopedia.createpost.view.viewmodel.*
-import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.content_creation_video_post.*
 import kotlinx.android.synthetic.main.content_creation_video_post.view.*
 import kotlinx.android.synthetic.main.feed_preview_post_fragment_new.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
+import java.lang.Runnable
 import kotlin.math.round
 
 /**
@@ -102,6 +103,10 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val menuTitle =  activity?.getString(R.string.feed_content_text_lanjut)
         if(!menuTitle.isNullOrEmpty()) {
             MenuManager.addCustomMenu(activity, menuTitle, true, menu) {
+                GlobalScope.launchCatchError(Dispatchers.IO, block = {
+                    setMediaWidthAndHeight()
+                }) { Timber.d(it) }
+
                 activityListener?.clickContinueOnTaggingPage()
             }
         }
@@ -110,6 +115,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             MenuManager.MENU_ITEM_ID -> {
+                GlobalScope.launchCatchError(Dispatchers.IO, block = {
+                    setMediaWidthAndHeight()
+                }) { Timber.d(it) }
                 activityListener?.clickContinueOnTaggingPage()
                 return true
             }
@@ -668,13 +676,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         val tagsAlreadyAdded = createPostModel.completeImageList[currentImagePos].tags
         val productsAdded = createPostModel.completeImageList[currentImagePos].products
         var isAdded = false
-        val tagToBeAdded = tagsAlreadyAdded[tagsAlreadyAdded.size-1]
-        if (productsAdded.size > 0){
-            productsAdded.forEachIndexed { index, relatedProductItem ->
-                if (relatedProductItem.id == product.id) {
-                    isAdded = true
-                    tagsAlreadyAdded[index] = tagToBeAdded
-                    tagsAlreadyAdded[index].tagIndex = index
+        val tagToBeAdded = tagsAlreadyAdded.lastOrNull()
+        tagToBeAdded?.let {
+            if (productsAdded.size > 0) {
+                productsAdded.forEachIndexed { index, relatedProductItem ->
+                    if (relatedProductItem.id == product.id) {
+                        isAdded = true
+                        tagsAlreadyAdded[index] = tagToBeAdded
+                        tagsAlreadyAdded[index].tagIndex = index
+                    }
                 }
             }
         }
@@ -707,6 +717,22 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             (parent.width - newBitmapHeight) / 2
         } else
             0
+    }
+    private fun setMediaWidthAndHeight(){
+        val mediaModel = createPostModel.completeImageList[0]
+        try {
+
+                var mBmp = Glide.with(requireActivity())
+                        .asBitmap()
+                        .load(mediaModel.path)
+                        .submit()
+                        .get()
+                createPostModel.mediaWidth = mBmp.width.toPx()
+                createPostModel.mediaHeight = mBmp.height.toPx()
+
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 }
 

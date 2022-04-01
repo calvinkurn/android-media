@@ -27,5 +27,14 @@ data class ProductrevGetReviewDetailReview(
         val sentAsAnonymous: Boolean = false,
         @SerializedName("reviewerName")
         @Expose
-        val reviewerName: String = ""
+        val reviewerName: String = "",
+        @SerializedName("badRatingReasonFmt")
+        @Expose
+        val badRatingReasonFmt: String = "",
+        @SerializedName("ratingDisclaimer")
+        @Expose
+        val ratingDisclaimer: String = "",
+        @SerializedName("editDisclaimer")
+        @Expose
+        val editDisclaimer: String = ""
 )
