@@ -242,6 +242,8 @@ class HomePlayWidgetAnalyticListener(
                     "$finalChannelPositionInList - " +
                     "$mBusinessWidgetPosition - " +
                     "is autoplay $isAutoPlay - " +
+                    "${item.poolType} - " +
+                    "${item.promoType} - " +
                     "${item.recommendationType} - " +
                     "is rilisan spesial true",
             promotions = listOf(

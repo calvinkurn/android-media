@@ -1948,10 +1948,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         isAutoPlay: Boolean
     ) {
         val list = ArrayList<Map<String, Any>>()
+        val autoplayText = if(isAutoPlay) "success" else "failed"
         list.add(mapOf(
-            KEY_ID to componentsItem.id,
-            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - - - ${componentsItem.name}-$BANNER",
-            KEY_CREATIVE to (componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING),
+            KEY_ID to "0_${if (shopId.isEmpty()) 0 else shopId}_$channelId",
+            KEY_NAME to "/${removeDashPageIdentifier(pagePath)} - $pageType - ${widgetPosition + 1} - ${componentsItem.name}-$BANNER",
+            KEY_CREATIVE to " - ${componentsItem.data?.firstOrNull()?.creativeName?: EMPTY_STRING} - is autoplay $autoplayText",
             KEY_POSITION to "$channelPositionInList - "
         ))
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
