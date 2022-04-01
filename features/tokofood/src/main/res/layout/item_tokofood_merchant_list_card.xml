@@ -35,32 +35,16 @@
             />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_tokofood_merchant_category"
+            android:id="@+id/tg_tokofood_merchant_price_scale"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            app:typographyWeight="bold"
+            app:typographyType="small"
             android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant"
             app:layout_constraintTop_toBottomOf="@+id/tg_tokofood_merchant_title"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            android:textColor="@color/Unify_NN600"
-            tools:text="Category Level 1, Category Level 2"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_tokofood_merchant_distance"
-            android:layout_width="@dimen/unify_space_0"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant"
-            app:layout_constraintTop_toBottomOf="@+id/tg_tokofood_merchant_category"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            android:textColor="@color/Unify_NN600"
-            tools:text="5 km"
+            tools:text="$$$$"
             />
 
         <View
@@ -71,23 +55,50 @@
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:background="@drawable/ic_tokofood_card_dot_divider"
             android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@id/tg_tokofood_merchant_distance"
-            app:layout_constraintTop_toTopOf="@id/tg_tokofood_merchant_distance"
-            app:layout_constraintBottom_toBottomOf="@id/tg_tokofood_merchant_distance"
+            app:layout_constraintStart_toEndOf="@id/tg_tokofood_merchant_price_scale"
+            app:layout_constraintTop_toTopOf="@id/tg_tokofood_merchant_price_scale"
+            app:layout_constraintBottom_toBottomOf="@id/tg_tokofood_merchant_price_scale"
             tools:visibility="visible" />
 
+
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tg_tokofood_merchant_eta"
+            android:id="@+id/tg_tokofood_merchant_category"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/view_divider_tokofood_merchant"
-            app:layout_constraintTop_toTopOf="@id/tg_tokofood_merchant_distance"
-            app:layout_constraintBottom_toBottomOf="@id/tg_tokofood_merchant_distance"
             android:layout_marginStart="@dimen/spacing_lvl2"
+            app:layout_constraintStart_toEndOf="@+id/view_divider_tokofood_merchant"
+            app:layout_constraintTop_toTopOf="@+id/view_divider_tokofood_merchant"
+            app:layout_constraintBottom_toBottomOf="@+id/view_divider_tokofood_merchant"
+            app:layout_constraintEnd_toEndOf="parent"
             app:typographyType="small"
-            app:typographyWeight="bold"
+            app:typographyWeight="reguler"
             android:textColor="@color/Unify_NN600"
-            tools:text="Tiba 30 min"
+            tools:text="Category Level 1, Category Level 2"
+            />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_merchant_diskon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:labelType="general_light_red"
+            app:layout_constraintTop_toBottomOf="@+id/tg_tokofood_merchant_price_scale"
+            app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_tokofood_merchant_distance"
+            android:layout_width="@dimen/unify_space_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant"
+            app:layout_constraintTop_toBottomOf="@+id/label_merchant_diskon"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            android:textColor="@color/Unify_NN600"
+            tools:text="5 km"
             />
 
         <ImageView
@@ -115,7 +126,6 @@
             app:layout_constraintStart_toEndOf="@+id/img_tokofood_merchant_rating"
             app:layout_constraintTop_toTopOf="@+id/img_tokofood_merchant_rating"
             app:layout_constraintBottom_toBottomOf="@+id/img_tokofood_merchant_rating"
-            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl2"
             tools:text="4.5"
             />
