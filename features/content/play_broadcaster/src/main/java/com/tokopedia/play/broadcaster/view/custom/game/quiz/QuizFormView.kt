@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.view.custom.game
+package com.tokopedia.play.broadcaster.view.custom.game.quiz
 
 import android.content.Context
 import android.util.AttributeSet
@@ -18,8 +18,6 @@ import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
-import com.tokopedia.play_common.lifecycle.viewLifecycleBound
-import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView

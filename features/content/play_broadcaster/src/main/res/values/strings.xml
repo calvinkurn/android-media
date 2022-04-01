@@ -266,4 +266,5 @@
     <string name="play_bro_select_game_title">Pilih game</string>
     <string name="play_bro_quiz_form_title">Buat Quiz</string>
     <string name="play_bro_quiz_set_duration_title">Atur durasi quiz</string>
+    <string name="play_bro_quiz_gift_label">Kasih Hadiah (Opsional)</string>
 </resources>
