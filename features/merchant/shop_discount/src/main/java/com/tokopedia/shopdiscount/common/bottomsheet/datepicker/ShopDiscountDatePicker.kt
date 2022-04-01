@@ -42,6 +42,7 @@ object ShopDiscountDatePicker {
         context: Context,
         fragmentManager: FragmentManager,
         title: String,
+        minDate : Date,
         selectedDate: Date,
         callback: Callback
     ) {
@@ -51,7 +52,7 @@ object ShopDiscountDatePicker {
 
         val dateTimePicker = DateTimePickerUnify(
             context,
-            getCouponStartDate(),
+            minDate.toCalendar(),
             selectedDate.toCalendar(),
             getCouponEndDate(selectedDate),
             null,
@@ -62,7 +63,7 @@ object ShopDiscountDatePicker {
             setTitle(title)
 //            setInfo(info)
             setInfoVisible(true)
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.ShopDiscountDialogStyle)
+            //setStyle(DialogFragment.STYLE_NORMAL, R.style.ShopDiscountDialogStyle)
             datePickerButton.text = buttonText
             datePickerButton.setOnClickListener {
                 callback.onDatePickerSubmitted(getDate().time)

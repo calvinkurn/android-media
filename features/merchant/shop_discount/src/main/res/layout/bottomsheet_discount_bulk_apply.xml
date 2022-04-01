@@ -209,6 +209,12 @@
                 app:qty_min_value="0"
                 app:unify_qty_step_value="1" />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupChipPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

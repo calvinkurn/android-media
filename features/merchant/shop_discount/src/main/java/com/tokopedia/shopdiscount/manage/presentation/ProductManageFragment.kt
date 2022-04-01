@@ -1,7 +1,6 @@
 package com.tokopedia.shopdiscount.manage.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,9 +53,10 @@ class ProductManageFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        //displayBulkApplyBottomSheet()
-        viewModel.getSlashPriceProducts()
+        displayBulkApplyBottomSheet()
         observeProducts()
+        observeProductsMeta()
+        viewModel.getSlashPriceProductsMeta()
     }
 
     private fun setupViews() {
@@ -72,13 +72,24 @@ class ProductManageFragment : BaseDaggerFragment() {
                 is Success -> {
                 }
                 is Fail -> {
-
                     binding?.root showError it.throwable
                 }
             }
         }
     }
 
+    private fun observeProductsMeta() {
+        viewModel.productsMeta.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    viewModel.getSlashPriceProducts()
+                }
+                is Fail -> {
+                    binding?.root showError it.throwable
+                }
+            }
+        }
+    }
 
     private fun displayBulkApplyBottomSheet() {
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()

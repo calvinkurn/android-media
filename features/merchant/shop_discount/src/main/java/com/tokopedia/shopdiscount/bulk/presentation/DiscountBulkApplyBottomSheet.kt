@@ -2,6 +2,8 @@ package com.tokopedia.shopdiscount.bulk.presentation
 
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +16,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
+import com.tokopedia.shopdiscount.common.bottomsheet.datepicker.ShopDiscountDatePicker
 import com.tokopedia.shopdiscount.databinding.BottomsheetDiscountBulkApplyBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
@@ -41,6 +45,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_MODE = "mode"
         private const val NUMBER_PATTERN = "#,###,###"
+        private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
 
         @JvmStatic
         fun newInstance(mode: Mode = Mode.SHOW_ALL_FIELDS): DiscountBulkApplyBottomSheet {
@@ -55,7 +60,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     }
 
-    private val mode by lazy { arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode}
+    private val mode by lazy { arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode }
 
     private var binding by autoClearedNullable<BottomsheetDiscountBulkApplyBinding>()
 
@@ -119,11 +124,13 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         viewModel.benefit.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    binding?.loader?.gone()
-                    binding?.content?.visible()
-                    binding?.btnApply?.visible()
+                    showScreenContent()
+                    handleShopBenefits(it.data)
+
+
                 }
                 is Fail -> {
+                    hideScreenContent()
                     binding?.loader?.gone()
                     binding?.content?.gone()
                     binding?.btnApply?.gone()
@@ -133,18 +140,34 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun handleShopBenefits(data: GetSlashPriceBenefitResponse) {
+        val benefits = data.getSlashPriceBenefit.slashPriceBenefits
+        if (data.getSlashPriceBenefit.isUseVps && benefits.isNotEmpty()) {
+            //VPS
+            val vpsPackage = benefits[0]
+            val endDate = Date(vpsPackage.expiredAtUnix)
+            viewModel.setSelectedEndDate(endDate)
+            binding?.groupChipPeriod?.gone()
+            binding?.tfuEndDate?.isEnabled = false
+        } else {
+            //Membership
+            binding?.tfuEndDate?.isEnabled = true
+        }
+    }
+
     private fun observeInputValidation() {
         viewModel.areInputValid.observe(viewLifecycleOwner) { validationState ->
-            binding?.btnApply?.isEnabled = validationState is DiscountBulkApplyViewModel.ValidationState.Valid
+            binding?.btnApply?.isEnabled =
+                validationState is DiscountBulkApplyViewModel.ValidationState.Valid
 
-            when(validationState) {
+            when (validationState) {
                 DiscountBulkApplyViewModel.ValidationState.InvalidDiscountAmount -> {
                     showErrorMessage(
                         binding?.tfuDiscountAmount ?: return@observe,
                         getString(R.string.sd_invalid_discount_amount)
                     )
                 }
-                DiscountBulkApplyViewModel.ValidationState.InvalidDiscountPercentage ->{
+                DiscountBulkApplyViewModel.ValidationState.InvalidDiscountPercentage -> {
                     showErrorMessage(
                         binding?.tfuDiscountAmount ?: return@observe,
                         getString(R.string.sd_invalid_discount_percentage)
@@ -181,11 +204,14 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 binding?.tfuDiscountAmount?.textInputLayout?.editText?.text = null
                 binding?.tfuDiscountAmount?.appendText(EMPTY_STRING)
                 binding?.tfuDiscountAmount?.prependText(getString(R.string.sd_rupiah))
+                binding?.tfuDiscountAmount?.editText?.filters = arrayOf()
             } else {
                 binding?.tfuDiscountAmount?.setLabel(getString(R.string.sd_discount_percentage))
                 binding?.tfuDiscountAmount?.textInputLayout?.editText?.text = null
                 binding?.tfuDiscountAmount?.appendText(getString(R.string.sd_percent))
                 binding?.tfuDiscountAmount?.prependText(EMPTY_STRING)
+                binding?.tfuDiscountAmount?.editText?.filters =
+                    arrayOf(InputFilter.LengthFilter(DISCOUNT_PERCENTAGE_MAX_DIGIT))
             }
             viewModel.onDiscountAmountChanged(Int.ZERO)
         }
@@ -196,15 +222,45 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         setupDiscountAmountListener()
 
         binding?.run {
+            chipOneYearPeriod.chipType = ChipsUnify.TYPE_SELECTED
+            tfuDiscountAmount.textInputLayout.errorIconDrawable = null
+
             if (mode == Mode.HIDE_PERIOD_FIELDS) {
                 groupDiscountPeriod.gone()
             }
 
-            chipOneYearPeriod.chipType = ChipsUnify.TYPE_SELECTED
+            setupDatePicker()
+            setupQuantityEditor()
+
             contentSwitcher.setOnCheckedChangeListener { _, isChecked ->
                 val discountType = if (isChecked) DiscountType.PERCENTAGE else DiscountType.RUPIAH
                 viewModel.onDiscountTypeChanged(discountType)
             }
+
+            btnApply.setOnClickListener {
+                val currentSelection = viewModel.getCurrentSelection()
+                onApplyClickListener(currentSelection)
+                dismiss()
+            }
+        }
+    }
+
+    private fun setupDatePicker() {
+        binding?.run {
+            tfuStartDate.editText.inputType = InputType.TYPE_NULL
+            tfuStartDate.editText.setOnClickListener {
+                displayStartDateTimePicker()
+            }
+
+            tfuEndDate.editText.inputType = InputType.TYPE_NULL
+            tfuEndDate.editText.setOnClickListener {
+                displayEndDateTimePicker()
+            }
+        }
+    }
+
+    private fun setupQuantityEditor() {
+        binding?.run {
             quantityEditor.setValueChangedListener { newValue, _, _ ->
                 viewModel.onMaxPurchaseQuantityChanged(newValue)
                 viewModel.validateInput()
@@ -229,13 +285,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 }
 
             })
-            btnApply.setOnClickListener {
-                val currentSelection = viewModel.getCurrentSelection()
-                onApplyClickListener(currentSelection)
-                dismiss()
-            }
         }
     }
+
 
     private fun setupDiscountAmountListener() {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
@@ -279,8 +331,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
-
-                viewModel.validateInput()
             }
         }
 
@@ -299,8 +349,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipSixMonthPeriod.chipType = ChipsUnify.TYPE_SELECTED
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
-
-                viewModel.validateInput()
             }
         }
 
@@ -319,8 +367,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_SELECTED
                 chipCustomSelection.chipType = ChipsUnify.TYPE_NORMAL
-
-                viewModel.validateInput()
             }
         }
 
@@ -330,7 +376,9 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.run {
             chipCustomSelection.selectedChangeListener = { isActive ->
                 if (isActive) {
-                    viewModel.onCustomSelectionPeriodSelected(Date(), Date())
+                    chipOneYearPeriod.chipType = ChipsUnify.TYPE_NORMAL
+                    chipSixMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
+                    chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 }
             }
 
@@ -340,10 +388,44 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 chipOneMonthPeriod.chipType = ChipsUnify.TYPE_NORMAL
                 chipCustomSelection.chipType = ChipsUnify.TYPE_SELECTED
 
-                viewModel.validateInput()
+                viewModel.onCustomSelectionPeriodSelected()
             }
         }
 
+    }
+
+    private fun displayStartDateTimePicker() {
+        ShopDiscountDatePicker.show(
+            requireContext(),
+            childFragmentManager,
+            getString(R.string.sd_start_date),
+            Date(),
+            viewModel.getSelectedStartDate(),
+            object : ShopDiscountDatePicker.Callback {
+                override fun onDatePickerSubmitted(selectedDate: Date) {
+                    viewModel.setSelectedStartDate(selectedDate)
+                    binding?.chipCustomSelection?.chipType = ChipsUnify.TYPE_SELECTED
+                }
+
+            }
+        )
+    }
+
+    private fun displayEndDateTimePicker() {
+        ShopDiscountDatePicker.show(
+            requireContext(),
+            childFragmentManager,
+            getString(R.string.sd_end_date),
+            viewModel.getSelectedStartDate(),
+            viewModel.getSelectedEndDate(),
+            object : ShopDiscountDatePicker.Callback {
+                override fun onDatePickerSubmitted(selectedDate: Date) {
+                    viewModel.setSelectedEndDate(selectedDate)
+                    binding?.chipCustomSelection?.chipType = ChipsUnify.TYPE_SELECTED
+                }
+
+            }
+        )
     }
 
     fun setOnApplyClickListener(onApplyClickListener: (DiscountSettings) -> Unit) {
@@ -352,11 +434,21 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun showErrorMessage(view: TextFieldUnify2, errorMessage: String) {
         view.textInputLayout.error = errorMessage
-        view.textInputLayout.isErrorEnabled = true
     }
 
     private fun clearErrorMessage(view: TextFieldUnify2) {
         view.textInputLayout.error = EMPTY_STRING
-        view.textInputLayout.isErrorEnabled = false
+    }
+
+    private fun showScreenContent() {
+        binding?.loader?.gone()
+        binding?.content?.visible()
+        binding?.btnApply?.visible()
+    }
+
+    private fun hideScreenContent() {
+        binding?.loader?.gone()
+        binding?.content?.visible()
+        binding?.btnApply?.visible()
     }
 }

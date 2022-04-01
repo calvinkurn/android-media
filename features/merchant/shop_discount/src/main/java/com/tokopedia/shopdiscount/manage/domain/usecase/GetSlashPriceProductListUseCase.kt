@@ -25,57 +25,57 @@ class GetSlashPriceProductListUseCase @Inject constructor(
 
     override fun getQuery(): String {
         return """
-           query GetSlashPriceProductList(${'$'}params: GetSlashPriceProductListRequest!) {
+            query GetSlashPriceProductList(${'$'}params: GetSlashPriceProductListRequest!) {
               GetSlashPriceProductList(params: ${'$'}params) {
                 response_header {
-      status
-      success
-    }
-    slash_price_product_list {
-      slash_price_product_id
-      product_id
-      name
-      price {
-        min
-        min_formatted
-        max
-        max_formatted
-      }
-      stock
-      url
-      sku
-      picture
-      discounted_price
-      discounted_percentage
-      max_order
-      start_date
-      end_date
-      warehouses {
-        warehouse_id
-        warehouse_name
-        warehouse_location
-        warehouse_stock
-        max_order
-        event_id
-        original_price
-        discounted_price
-        discounted_percentage
-      }
-      is_variant
-      is_expand
-      discounted_price_data {
-        min
-        min_formatted
-        max
-        max_formatted
-      }
-      discount_percentage_data {
-        min
-        min_formatted
-        max
-        max_formatted
-      }
-    }
+                  status
+                  success
+                }
+                slash_price_product_list {
+                  slash_price_product_id
+                  product_id
+                  name
+                  price {
+                    min
+                    min_formatted
+                    max
+                    max_formatted
+                  }
+                  stock
+                  url
+                  sku
+                  picture
+                  discounted_price
+                  discounted_percentage
+                  max_order
+                  start_date
+                  end_date
+                  warehouses {
+                    warehouse_id
+                    warehouse_name
+                    warehouse_location
+                    warehouse_stock
+                    max_order
+                    event_id
+                    original_price
+                    discounted_price
+                    discounted_percentage
+                  }
+                  is_variant
+                  is_expand
+                  discounted_price_data {
+                    min
+                    min_formatted
+                    max
+                    max_formatted
+                  }
+                  discount_percentage_data {
+                    min
+                    min_formatted
+                    max
+                    max_formatted
+                  }
+                }
                 total_product
               }
             }
