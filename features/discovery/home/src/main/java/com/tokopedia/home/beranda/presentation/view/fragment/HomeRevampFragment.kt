@@ -179,7 +179,7 @@ import kotlin.collections.ArrayList
  */
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-        OnRefreshListener,
+//        OnRefreshListener,
         HomeCategoryListener,
         AllNotificationListener,
         FragmentListener,
@@ -1176,6 +1176,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
              */
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
+        refreshLayout.setOnRefreshListener { onRefresh() }
 //        refreshLayout.setOnRefreshListener(this)
 //        refreshLayout.onProgressListener {
 //            Toast.makeText(requireContext(), "$it", Toast.LENGTH_SHORT).show()
@@ -1896,7 +1897,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onRefresh() {
+    private fun onRefresh() {
         refreshQuestWidget()
         coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
@@ -1905,6 +1906,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (this::viewModel.isInitialized) {
             getHomeViewModel().getSearchHint(isFirstInstall())
             getHomeViewModel().refreshHomeData()
+        }
+        else {
+            hideLoading()
         }
         if (activity is RefreshNotificationListener) {
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
