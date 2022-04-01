@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.UrlConstant
@@ -32,10 +34,9 @@ import com.tokopedia.topads.view.adapter.product.ProductListAdapterTypeFactoryIm
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductEmptyViewModel
 import com.tokopedia.topads.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.view.model.ProductAdsListViewModel
-import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.topads_create_fragment_product_list.*
 import javax.inject.Inject
 
 /**
@@ -48,12 +49,23 @@ private const val PRODUCT_PAGE_NAME = "android.topads_create"
 
 class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
 
+    private var rootLayout: ConstraintLayout? = null
+    private var searchInputView: SearchBarUnify? = null
+    private var btnSort: UnifyImageButton? = null
+    private var btnFilter: UnifyImageButton? = null
+    private var notPromoted: ChipsUnify? = null
+    private var promoted: ChipsUnify? = null
+    private var swipeRefreshLayout: SwipeToRefresh? = null
+    private var tipBtn: FloatingButtonUnify? = null
+    private var btnNext: UnifyButton? = null
+    private var selectProductInfo: Typography? = null
+    private var tvToolTipText: Typography? = null
+    private var imgTooltipIcon: ImageUnify? = null
+
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
     private lateinit var productListAdapter: ProductListAdapter
-    private var tvToolTipText: Typography? = null
-    private var imgTooltipIcon: ImageUnify? = null
-    var items = mutableListOf<EtalaseViewModel>()
+    private var items = mutableListOf<EtalaseViewModel>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -79,8 +91,10 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(ProductAdsListViewModel::class.java)
-        productListAdapter = ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(ProductAdsListViewModel::class.java)
+        productListAdapter =
+            ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
     }
 
     override fun initiateStepperModel() {
@@ -90,7 +104,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     override fun saveStepperModel(stepperModel: CreateManualAdsStepperModel) {}
 
     override fun gotoNextPage() {
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PRODUCT_IKLAN, getSelectedProduct().joinToString(","))
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_PRODUCT_IKLAN,
+            getSelectedProduct().joinToString(","))
         if (stepperModel?.redirectionToSummary == false)
             stepperListener?.goToNextPage(stepperModel)
         else {
@@ -128,9 +143,21 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         getComponent(CreateAdsComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         val view = inflater.inflate(R.layout.topads_create_fragment_product_list, container, false)
         recyclerView = view.findViewById(R.id.product_list)
+        rootLayout = view.findViewById(R.id.linearLayout10)
+        searchInputView = view.findViewById(R.id.searchInputView)
+        btnSort = view.findViewById(R.id.btn_sort)
+        btnFilter = view.findViewById(R.id.btn_filter)
+        notPromoted = view.findViewById(R.id.not_promoted)
+        promoted = view.findViewById(R.id.promoted)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        tipBtn = view.findViewById(R.id.tip_btn)
+        btnNext = view.findViewById(R.id.btn_next)
+        selectProductInfo = view.findViewById(R.id.select_product_info)
         setAdapter()
         return view
     }
@@ -157,53 +184,57 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun fetchList() {
         viewModel.productList(getKeyword(),
-                getSelectedEtalaseId(),
-                getSelectedSortId(),
-                getPromoted(),
-                ROW,
-                START,
-                PRODUCT_PAGE_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+            getSelectedEtalaseId(), getSelectedSortId(), getPromoted(), ROW, START,
+            PRODUCT_PAGE_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (stepperModel?.redirectionToSummary == true) {
-            btn_next?.text = getString(R.string.topads_common_save_butt)
+            btnNext?.text = getString(R.string.topads_common_save_butt)
         }
         context?.let {
             sortProductList = ProductSortSheetList.newInstance()
             filterSheetProductList = ProductFilterSheetList.newInstance()
         }
-        btn_next.setOnClickListener {
+        btnNext?.setOnClickListener {
             gotoNextPage()
         }
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            tvToolTipText = this.findViewById(R.id.tooltip_text)
-            tvToolTipText?.text = getString(com.tokopedia.topads.common.R.string.tip_memilih_produk)
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    tvToolTipText = this.findViewById(R.id.tooltip_text)
+                    tvToolTipText?.text =
+                        getString(com.tokopedia.topads.common.R.string.tip_memilih_produk)
 
-            imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
-        }
+                    imgTooltipIcon = this.findViewById(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_tips))
+                }
 
-        tip_btn?.addItem(tooltipView)
-        tip_btn.setOnClickListener {
+        tipBtn?.addItem(tooltipView)
+        tipBtn?.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
-                add(TipsUiRowModel(R.string.pilih_produk_yang_berada_dalam, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak, R.drawable.topads_create_ic_checklist))
-                add(TipsUiRowModel(R.string.pilih_produk_terpopuler, R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.pilih_produk_yang_berada_dalam,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.pilih_produk_dengan_ulasan_terbanyak,
+                    R.drawable.topads_create_ic_checklist))
+                add(TipsUiRowModel(R.string.pilih_produk_terpopuler,
+                    R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
+            val tipsListSheet =
+                context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.showHeader = true
             tipsListSheet?.showKnob = false
             tipsListSheet?.setTitle(getString(R.string.tip_memilih_produk))
             tipsListSheet?.show(childFragmentManager, "")
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN, "")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_TIPS_PRODUCT_IKLAN,
+                "")
         }
-        btn_sort.setOnClickListener {
+        btnSort?.setOnClickListener {
             sortProductList.show(childFragmentManager, "")
         }
-        btn_filter.setOnClickListener {
+        btnFilter?.setOnClickListener {
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
             } else {
@@ -213,25 +244,28 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
         filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
-        not_promoted.setOnClickListener {
-            not_promoted.chipType = ChipsUnify.TYPE_SELECTED
-            promoted.chipType = ChipsUnify.TYPE_NORMAL
+        notPromoted?.setOnClickListener {
+            notPromoted?.chipType = ChipsUnify.TYPE_SELECTED
+            promoted?.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()
         }
-        promoted.setOnClickListener {
-            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
-            promoted.chipType = ChipsUnify.TYPE_SELECTED
+        promoted?.setOnClickListener {
+            notPromoted?.chipType = ChipsUnify.TYPE_NORMAL
+            promoted?.chipType = ChipsUnify.TYPE_SELECTED
             refreshProduct()
         }
-        Utils.setSearchListener(searchInputView, context, linearLayout10, ::refreshProduct)
-        swipe_refresh_layout.setOnRefreshListener {
+
+        if (searchInputView != null && rootLayout != null)
+            Utils.setSearchListener(searchInputView!!, context, rootLayout!!, ::refreshProduct)
+
+        swipeRefreshLayout?.setOnRefreshListener {
             refreshProduct()
         }
     }
 
     private fun refreshProduct() {
         START = 0
-        swipe_refresh_layout.isRefreshing = true
+        swipeRefreshLayout?.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
         fetchList()
@@ -248,7 +282,7 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        not_promoted.chipType = ChipsUnify.TYPE_SELECTED
+        notPromoted?.chipType = ChipsUnify.TYPE_SELECTED
         refreshProduct()
     }
 
@@ -256,14 +290,14 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
-    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
+    private fun getKeyword() = searchInputView?.searchBarTextField?.text.toString()
 
     private fun getPromoted(): String {
         return ALL
     }
 
     private fun onProductListSelected() {
-        if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             stepperModel?.selectedPromo = getSelectedProduct()
             stepperModel?.adIdsPromo = getSelectedProductAdId()
             stepperModel?.selectedNonPromo?.let {
@@ -283,29 +317,30 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-        select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
-        btn_next.isEnabled = count > 0
+        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        btnNext?.isEnabled = count > 0
     }
 
     private fun onEmptyProduct() {
         clearShimmerList()
-        btn_next.isEnabled = false
+        btnNext?.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
-        select_product_info.text = String.format(getString(R.string.format_selected_produk), 0)
+        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), 0)
     }
 
     private fun onError(t: Throwable) {
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
+        NetworkErrorHelper.createSnackbarRedWithAction(activity,
+            t.localizedMessage) { refreshProduct() }
     }
 
     private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (START == 0)
             clearShimmerList()
         prepareForNextFetch(eof)
-        btn_next.isEnabled = false
+        btnNext?.isEnabled = false
         data.forEach { result ->
-            if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+            if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
                 if (result.adID.toFloat() > 0)
                     productListAdapter.items.add(ProductItemViewModel(result))
 
@@ -323,8 +358,8 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
         }
         val count = stepperModel?.selectedProductIds?.size ?: 0
-        select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
-        btn_next.isEnabled = count > 0
+        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        btnNext?.isEnabled = count > 0
         productListAdapter.notifyDataSetChanged()
     }
 
@@ -335,13 +370,15 @@ class ProductAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     }
 
     private fun clearRefreshLoading() {
-        swipe_refresh_layout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
         items.clear()
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
-        data.forEachIndexed { index, result -> items.add(index + 1, EtalaseItemViewModel(false, result)) }
+        data.forEachIndexed { index, result ->
+            items.add(index + 1, EtalaseItemViewModel(false, result))
+        }
         filterSheetProductList.updateData(items)
     }
 }
