@@ -29,7 +29,6 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
@@ -74,7 +73,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -287,24 +285,18 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
 
-        quizForm.apply {
-            setOnCloseListener {
-                parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
-            }
-            setOnNextListener {
-                parentViewModel.submitAction(PlayBroadcastAction.ClickNextOnQuiz)
-            }
-            setOnTitleChangedListener {
-                parentViewModel.submitAction(PlayBroadcastAction.InputQuizTitle(it))
-            }
-            setOnGiftChangedListener {
-                parentViewModel.submitAction(PlayBroadcastAction.InputQuizGift(it))
-            }
-            setOnSelectDurationListener {
-                parentViewModel.submitAction(PlayBroadcastAction.SelectQuizDuration(it))
-            }
-            setOnSubmitListener {
-                parentViewModel.submitAction(PlayBroadcastAction.SubmitQuizForm)
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            quizForm.listen().subscribe().collect {
+                parentViewModel.submitAction(
+                    when(it) {
+                        QuizFormView.Event.Back -> PlayBroadcastAction.ClickBackOnQuiz
+                        QuizFormView.Event.Next -> PlayBroadcastAction.ClickNextOnQuiz
+                        is QuizFormView.Event.TitleChanged -> PlayBroadcastAction.InputQuizTitle(it.title)
+                        is QuizFormView.Event.GiftChanged -> PlayBroadcastAction.InputQuizGift(it.gift)
+                        is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)
+                        QuizFormView.Event.Submit -> PlayBroadcastAction.SubmitQuizForm
+                    }
+                )
             }
         }
     }

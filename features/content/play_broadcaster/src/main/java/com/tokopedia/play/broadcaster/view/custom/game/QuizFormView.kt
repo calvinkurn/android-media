@@ -5,24 +5,19 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.core.view.isNotEmpty
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
-import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.marginLp
-import com.tokopedia.play_common.util.extension.showKeyboard
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.updatePadding
@@ -56,12 +51,7 @@ class QuizFormView : ConstraintLayout {
 
     private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
 
-    private var mCloseListener: (() -> Unit)? = null
-    private var mNextListener: (() -> Unit)? = null
-    private var onTitleChangedListener: ((String) -> Unit)? = null
-    private var onGiftChangedListener: ((String) -> Unit)? = null
-    private var onSelectDurationListener: ((Long) -> Unit)? = null
-    private var onSubmitListener: (() -> Unit)? = null
+    private val eventBus = EventBus<Event>()
 
     private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
         set(value) {
@@ -79,28 +69,28 @@ class QuizFormView : ConstraintLayout {
         bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
-            mNextListener?.invoke()
+            eventBus.emit(Event.Next)
         }
 
-        binding.icCloseQuizForm.setOnClickListener { 
-            mCloseListener?.invoke()
+        binding.icCloseQuizForm.setOnClickListener {
+            eventBus.emit(Event.Back)
         }
 
         binding.viewGameHeader.setOnTextChangedListener {
-            onTitleChangedListener?.invoke(it)
+            eventBus.emit(Event.TitleChanged(it))
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
-            mCloseListener?.invoke()
+            eventBus.emit(Event.Back)
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
             val selectedDuration = quizConfig.availableStartTimeInMs[index]
-            onSelectDurationListener?.invoke(selectedDuration)
+            eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
         timePickerBinding.btnApply.setOnClickListener {
-            onSubmitListener?.invoke()
+            eventBus.emit(Event.Submit)
         }
 
         setupInsets()
@@ -144,32 +134,12 @@ class QuizFormView : ConstraintLayout {
         }
     }
 
+    fun listen(): EventBus<Event> {
+        return eventBus
+    }
+
     fun applyQuizConfig(quizConfig: QuizConfigUiModel) {
         this.quizConfig = quizConfig
-    }
-
-    fun setOnCloseListener(listener: () -> Unit) {
-        mCloseListener = listener
-    }
-
-    fun setOnNextListener(listener: () -> Unit) {
-        mNextListener = listener
-    }
-
-    fun setOnTitleChangedListener(listener: (String) -> Unit) {
-        onTitleChangedListener = listener
-    }
-
-    fun setOnGiftChangedListener(listener: (String) -> Unit) {
-        onGiftChangedListener = listener
-    }
-
-    fun setOnSelectDurationListener(listener: (Long) -> Unit) {
-        onSelectDurationListener = listener
-    }
-
-    fun setOnSubmitListener(listener: () -> Unit) {
-        onSubmitListener = listener
     }
 
     private fun setupInsets() {
@@ -195,5 +165,14 @@ class QuizFormView : ConstraintLayout {
         if (minute > 0) stringBuilder.append(context.getString(R.string.play_interactive_minute, minute))
         if (second > 0) stringBuilder.append(context.getString(R.string.play_interactive_second, second))
         return stringBuilder.toString()
+    }
+
+    sealed class Event {
+        object Back: Event()
+        object Next: Event()
+        data class TitleChanged(val title: String): Event()
+        data class GiftChanged(val gift: String): Event()
+        data class SelectDuration(val duration: Long): Event()
+        object Submit: Event()
     }
 }
