@@ -26,7 +26,7 @@ class TokomemberDashGetProgramFormUsecase @Inject constructor(graphqlRepository:
     }
 
     private fun getRequestParams(programID: Int ,shopId: Int ,actionType: String ): Map<String, Any> {
-        return mapOf(PROGRAM_ID to shopId , SHOP_ID to shopId, ACTION_TYPE to actionType )
+        return mapOf(PROGRAM_ID to programID , SHOP_ID to shopId, ACTION_TYPE to actionType )
     }
 
     companion object {
