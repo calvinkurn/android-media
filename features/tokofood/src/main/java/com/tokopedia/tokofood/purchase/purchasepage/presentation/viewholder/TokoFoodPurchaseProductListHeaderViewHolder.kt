@@ -27,7 +27,8 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
                 }
             }
 
-            itemView.renderAlpha(element)
+            textProductListHeader.renderAlpha(element)
+            textProductListAction.renderAlpha(element)
         }
     }
 

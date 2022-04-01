@@ -85,6 +85,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     private fun constructRecycleViewItem() {
+        // Todo : read API response, map to UiModel, below is example mapping using mock data
         val tmpData = mutableListOf<Visitable<*>>()
         val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel()
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingUnavailable))
