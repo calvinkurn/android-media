@@ -62,7 +62,7 @@ object ShopDiscountDatePicker {
             setTitle(title)
 //            setInfo(info)
             setInfoVisible(true)
-            setStyle(DialogFragment.STYLE_NORMAL, R.style.ShopDiscountDialogStyle)
+            //setStyle(DialogFragment.STYLE_NORMAL, R.style.ShopDiscountDialogStyle)
             datePickerButton.text = buttonText
             datePickerButton.setOnClickListener {
                 callback.onDatePickerSubmitted(getDate().time)

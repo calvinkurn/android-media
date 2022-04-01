@@ -29,6 +29,7 @@ class DiscountBulkApplyViewModel @Inject constructor(
         private const val ONE_YEAR = 1
         private const val SIX_MONTH = 6
         private const val ONE_MONTH = 1
+        private const val START_TIME_OFFSET_IN_MINUTES = 10
     }
     private val _startDate = MutableLiveData<Date>()
     val startDate: LiveData<Date>
@@ -53,8 +54,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
         object Valid : ValidationState()
     }
 
-    private var currentlySelectedStartDate : Date? = null
-    private var currentlySelectedEndDate : Date? = null
+    private var selectedStartDate : Date? = null
+    private var selectedEndDate : Date? = null
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 1
@@ -96,47 +97,51 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
     
     fun onOneYearPeriodSelected() {
-        val now = Date()
+        val startDate = getDefaultStartDate()
         val endDate = Calendar.getInstance()
         endDate.add(Calendar.YEAR, ONE_YEAR)
 
-        this.currentlySelectedStartDate = now
-        this.currentlySelectedEndDate = endDate.time
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
-        _startDate.value = now
+        _startDate.value = startDate
         _endDate.value = endDate.time
     }
 
     fun onSixMonthPeriodSelected() {
-        val now = Date()
+        val startDate = getDefaultStartDate()
         val endDate = Calendar.getInstance()
         endDate.add(Calendar.MONTH, SIX_MONTH)
 
-        this.currentlySelectedStartDate = now
-        this.currentlySelectedEndDate = endDate.time
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
-        _startDate.value = now
+        _startDate.value = startDate
         _endDate.value = endDate.time
     }
 
     fun onOneMonthPeriodSelected() {
-        val now = Date()
+        val startDate = getDefaultStartDate()
         val endDate = Calendar.getInstance()
         endDate.add(Calendar.MONTH, ONE_MONTH)
 
-        this.currentlySelectedStartDate = now
-        this.currentlySelectedEndDate = endDate.time
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
-        _startDate.value = now
+        _startDate.value = startDate
         _endDate.value = endDate.time
     }
 
-    fun onCustomSelectionPeriodSelected(startDate: Date, endDate: Date) {
-        this.currentlySelectedStartDate = startDate
-        this.currentlySelectedEndDate = endDate
+    fun onCustomSelectionPeriodSelected() {
+        val startDate = getDefaultStartDate()
+        val endDate = Calendar.getInstance()
+        endDate.add(Calendar.MONTH, SIX_MONTH)
+
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
         _startDate.value = startDate
-        _endDate.value = endDate
+        _endDate.value = endDate.time
     }
 
     fun onDiscountTypeChanged(discountType: DiscountType) {
@@ -158,12 +163,35 @@ class DiscountBulkApplyViewModel @Inject constructor(
 
     fun getCurrentSelection(): DiscountSettings {
         return DiscountSettings(
-            currentlySelectedStartDate,
-            currentlySelectedEndDate,
+            selectedStartDate,
+            selectedEndDate,
             selectedDiscountType,
             selectedDiscountAmount,
             selectedMaxQuantity
         )
     }
 
+    private fun getDefaultStartDate(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+        return calendar.time
+    }
+
+    fun getSelectedStartDate() : Date {
+        return selectedStartDate ?: Date()
+    }
+
+    fun getSelectedEndDate() : Date {
+        return selectedEndDate ?: Date()
+    }
+
+    fun setSelectedStartDate(startDate: Date) {
+        selectedStartDate = startDate
+        _startDate.value = startDate
+    }
+
+    fun setSelectedEndDate(endDate: Date) {
+        selectedEndDate = endDate
+        _endDate.value = endDate
+    }
 }
