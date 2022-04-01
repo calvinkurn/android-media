@@ -42,6 +42,7 @@ object ShopDiscountDatePicker {
         context: Context,
         fragmentManager: FragmentManager,
         title: String,
+        minDate : Date,
         selectedDate: Date,
         callback: Callback
     ) {
@@ -51,7 +52,7 @@ object ShopDiscountDatePicker {
 
         val dateTimePicker = DateTimePickerUnify(
             context,
-            getCouponStartDate(),
+            minDate.toCalendar(),
             selectedDate.toCalendar(),
             getCouponEndDate(selectedDate),
             null,

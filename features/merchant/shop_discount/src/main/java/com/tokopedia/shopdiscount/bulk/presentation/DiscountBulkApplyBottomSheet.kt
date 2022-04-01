@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.common.bottomsheet.datepicker.ShopDiscountDatePicker
@@ -123,31 +124,34 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         viewModel.benefit.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    binding?.loader?.gone()
-                    binding?.content?.visible()
-                    binding?.btnApply?.visible()
+                    showScreenContent()
+                    handleShopBenefits(it.data)
 
-                    val benefits = it.data.getSlashPriceBenefit.slashPriceBenefits
-                    if (it.data.getSlashPriceBenefit.isUseVps && benefits.isNotEmpty()) {
-                        //VPS
-                        val vpsPackage = benefits[0]
-                        val endDate = Date(vpsPackage.expiredAtUnix)
-                        viewModel.setSelectedEndDate(endDate)
-                        binding?.groupChipPeriod?.gone()
-                        binding?.tfuEndDate?.isEnabled = false
-                    } else {
-                        //Membership
-                        binding?.tfuEndDate?.isEnabled = true
-                    }
 
                 }
                 is Fail -> {
+                    hideScreenContent()
                     binding?.loader?.gone()
                     binding?.content?.gone()
                     binding?.btnApply?.gone()
                     binding?.root showError it.throwable
                 }
             }
+        }
+    }
+
+    private fun handleShopBenefits(data: GetSlashPriceBenefitResponse) {
+        val benefits = data.getSlashPriceBenefit.slashPriceBenefits
+        if (data.getSlashPriceBenefit.isUseVps && benefits.isNotEmpty()) {
+            //VPS
+            val vpsPackage = benefits[0]
+            val endDate = Date(vpsPackage.expiredAtUnix)
+            viewModel.setSelectedEndDate(endDate)
+            binding?.groupChipPeriod?.gone()
+            binding?.tfuEndDate?.isEnabled = false
+        } else {
+            //Membership
+            binding?.tfuEndDate?.isEnabled = true
         }
     }
 
@@ -395,6 +399,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_start_date),
+            Date(),
             viewModel.getSelectedStartDate(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -411,6 +416,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_end_date),
+            viewModel.getSelectedStartDate(),
             viewModel.getSelectedEndDate(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
@@ -432,5 +438,17 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun clearErrorMessage(view: TextFieldUnify2) {
         view.textInputLayout.error = EMPTY_STRING
+    }
+
+    private fun showScreenContent() {
+        binding?.loader?.gone()
+        binding?.content?.visible()
+        binding?.btnApply?.visible()
+    }
+
+    private fun hideScreenContent() {
+        binding?.loader?.gone()
+        binding?.content?.visible()
+        binding?.btnApply?.visible()
     }
 }
