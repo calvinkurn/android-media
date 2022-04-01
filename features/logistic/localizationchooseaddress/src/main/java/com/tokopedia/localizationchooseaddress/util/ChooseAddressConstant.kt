@@ -7,7 +7,6 @@ class ChooseAddressConstant {
     companion object {
         const val EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA"
         const val EXTRA_IS_FROM_ANA = "EXTRA_IS_FROM_ANA"
-        const val ROLLENCE_REFRESH_TOKONOW = "android_lca_refresh"
 
         const val ERROR_CODE_EMPTY_LAT_LONG_PARAM = 3
         const val ERROR_CODE_INVALID_LAT_LONG_PARAM = 4
