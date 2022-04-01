@@ -46,6 +46,11 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        reviewVideoPlayer.cleanupVideoPlayer()
+    }
+
     override fun onReviewVideoPlayerIsPlaying() {
         // noop
     }

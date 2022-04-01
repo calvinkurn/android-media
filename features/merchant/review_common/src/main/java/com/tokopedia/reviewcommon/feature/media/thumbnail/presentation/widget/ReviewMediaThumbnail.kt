@@ -4,11 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.reviewcommon.databinding.WidgetReviewMediaThumbnailBinding
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.ReviewMediaThumbnailAdapter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewMediaThumbnail @JvmOverloads constructor(
@@ -28,7 +31,7 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
     )
     private var reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener? = null
     private val typeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        ReviewMediaThumbnailTypeFactory(reviewMediaThumbnailListener)
+        ReviewMediaThumbnailTypeFactory(ReviewMediaThumbnailListener())
     }
     private val adapter by lazy(LazyThreadSafetyMode.NONE) {
         ReviewMediaThumbnailAdapter(typeFactory)
@@ -36,6 +39,7 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
 
     init {
         binding.root.layoutManager = ReviewMediaThumbnailLayoutManager(context)
+        (binding.root.layoutManager as? LinearLayoutManager)?.recycleChildrenOnDetach = true
     }
 
     fun setData(data: ReviewMediaThumbnailUiModel) {
@@ -47,6 +51,10 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
 
     fun setListener(listener: ReviewMediaThumbnailTypeFactory.Listener) {
         reviewMediaThumbnailListener = listener
+    }
+
+    fun setRecycledViewPool(recycledViewPool: RecyclerView.RecycledViewPool) {
+        binding.root.setRecycledViewPool(recycledViewPool)
     }
 
     private inner class ReviewMediaThumbnailLayoutManager(
@@ -70,6 +78,16 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
             override fun getSpanSize(position: Int): Int {
                 return 1
             }
+        }
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            reviewMediaThumbnailListener?.onMediaItemClicked(item, position)
+        }
+
+        override fun onRemoveMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            reviewMediaThumbnailListener?.onRemoveMediaItemClicked(item, position)
         }
     }
 }

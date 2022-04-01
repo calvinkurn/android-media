@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reading.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -30,9 +31,10 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(
     view: View,
+    reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool,
     private val readReviewItemListener: ReadReviewItemListener,
     private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
-    private val reviewBasicInfoListener: ReviewBasicInfoListener
+    private val reviewBasicInfoListener: ReviewBasicInfoListener,
 ) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
@@ -57,15 +59,16 @@ class ReadReviewViewHolder(
     private var isProductReview = false
     private var shopId = ""
     private var badRatingReason: ReviewBadRatingReasonWidget? = null
-    private var element: ReadReviewUiModel? = null
+
+    private val reviewMediaThumbnailListener = ReviewMediaThumbnailListener()
 
     init {
         bindViews()
-        attachedMedia?.setListener(ReviewMediaThumbnailListener())
+        attachedMedia?.setRecycledViewPool(reviewMediaThumbnailRecycledViewPool)
     }
 
     override fun bind(element: ReadReviewUiModel) {
-        this.element = element
+        reviewMediaThumbnailListener.element = element
         isProductReview = !element.isShopViewHolder
         shopId = element.shopId
         with(element.reviewData) {
@@ -331,6 +334,7 @@ class ReadReviewViewHolder(
         }
         attachedMedia?.apply {
             setData(mediaThumbnails)
+            setListener(reviewMediaThumbnailListener)
             show()
         }
     }
@@ -367,6 +371,8 @@ class ReadReviewViewHolder(
     }
 
     private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        var element: ReadReviewUiModel? = null
+
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             element?.let {
                 attachedImagesClickListener.onAttachedImagesClicked(
