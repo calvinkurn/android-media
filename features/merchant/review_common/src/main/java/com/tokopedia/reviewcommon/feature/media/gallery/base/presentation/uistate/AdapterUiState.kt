@@ -5,6 +5,6 @@ import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimode
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ReviewMediaGalleryAdapterUiState(
+data class AdapterUiState(
     val mediaItemUiModels: List<MediaItemUiModel>
 ): Parcelable

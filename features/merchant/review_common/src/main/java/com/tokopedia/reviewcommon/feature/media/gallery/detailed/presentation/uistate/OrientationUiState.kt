@@ -2,7 +2,7 @@ package com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.u
 
 import java.io.Serializable
 
-sealed interface DetailedReviewMediaGalleryOrientationUiState : Serializable {
+sealed interface OrientationUiState : Serializable {
 
     fun isPortrait(): Boolean {
         return this is Portrait
@@ -12,13 +12,13 @@ sealed interface DetailedReviewMediaGalleryOrientationUiState : Serializable {
         return this is Landscape
     }
 
-    object Portrait : DetailedReviewMediaGalleryOrientationUiState {
+    object Portrait : OrientationUiState {
         override fun equals(other: Any?): Boolean {
             return other is Portrait
         }
     }
 
-    object Landscape : DetailedReviewMediaGalleryOrientationUiState {
+    object Landscape : OrientationUiState {
         override fun equals(other: Any?): Boolean {
             return other is Landscape
         }

@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ReviewMediaGalleryViewPagerUiState(
+data class ViewPagerUiState(
     val currentPagerPosition: Int = Int.ZERO,
     val previousPagerPosition: Int = Int.ZERO,
     val enableUserInput: Boolean = true

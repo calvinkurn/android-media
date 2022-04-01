@@ -18,8 +18,8 @@ import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalle
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.qualifier.ReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.adapter.ReviewMediaGalleryAdapter
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ReviewMediaGalleryAdapterUiState
-import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ReviewMediaGalleryViewPagerUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.AdapterUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ViewPagerUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.viewmodel.ReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
@@ -69,14 +69,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     private var orientationUiStateCollectorJob: Job? = null
 
     private val reviewMediaGalleryViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            requireActivity(), reviewMediaGalleryViewModelFactory
-        ).get(ReviewMediaGalleryViewModel::class.java)
+        ViewModelProvider(requireActivity(), reviewMediaGalleryViewModelFactory)
+            .get(ReviewMediaGalleryViewModel::class.java)
     }
     private val sharedReviewMediaGalleryViewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(
-            requireActivity(), detailedReviewMediaGalleryViewModelFactory
-        ).get(SharedReviewMediaGalleryViewModel::class.java)
+        ViewModelProvider(requireActivity(), detailedReviewMediaGalleryViewModelFactory)
+            .get(SharedReviewMediaGalleryViewModel::class.java)
     }
     private val galleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ReviewMediaGalleryAdapter(this, this)
@@ -238,14 +236,14 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         }
     }
 
-    private fun updateAdapter(uiState: ReviewMediaGalleryAdapterUiState) {
+    private fun updateAdapter(uiState: AdapterUiState) {
         if (uiState.mediaItemUiModels.isNotEmpty()) {
             galleryAdapter.updateItems(uiState.mediaItemUiModels)
         }
     }
 
     private fun FragmentReviewMediaGalleryBinding.updateViewPager(
-        uiState: ReviewMediaGalleryViewPagerUiState
+        uiState: ViewPagerUiState
     ) {
         val pointToValidPosition = uiState.currentPagerPosition != RecyclerView.NO_POSITION && galleryAdapter.itemCount > uiState.currentPagerPosition
         val pointToDifferentPosition = viewPagerReviewMediaGallery.currentItem != uiState.currentPagerPosition
@@ -264,7 +262,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     private fun restoreUiState(savedInstanceState: Bundle) {
-        savedInstanceState.getParcelable<ReviewMediaGalleryAdapterUiState>(
+        savedInstanceState.getParcelable<AdapterUiState>(
             ReviewMediaGalleryViewModel.SAVED_STATE_MEDIA_GALLERY_ADAPTER_UI_STATE
         )?.let { savedReviewMediaGalleryAdapterUiState ->
             galleryAdapter.restoreUiState(savedReviewMediaGalleryAdapterUiState.mediaItemUiModels)

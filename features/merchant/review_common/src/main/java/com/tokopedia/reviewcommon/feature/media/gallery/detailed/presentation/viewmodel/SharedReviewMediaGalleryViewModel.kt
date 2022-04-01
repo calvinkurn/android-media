@@ -16,10 +16,11 @@ import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimode
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.GetDetailedReviewMediaUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity.Companion.TOASTER_KEY_ERROR_GET_REVIEW_MEDIA
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.DetailedReviewActionMenuUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uimodel.ToasterUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.Job
@@ -54,8 +55,6 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         private const val SAVED_STATE_ORIENTATION_UI_STATE = "savedStateOrientationUiState"
         private const val SAVED_STATE_OVERLAY_VISIBILITY = "savedStateOverlayVisibility"
         private const val SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET = "savedStateShowActionMenuBottomSheet"
-
-        private const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_SHOP_ID = "extrasShopId"
@@ -97,8 +96,8 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _currentReviewDetail = MutableStateFlow<ReviewDetailUiModel?>(null)
     val currentReviewDetail: StateFlow<ReviewDetailUiModel?>
         get() = _currentReviewDetail
-    private val _orientationUiState = MutableStateFlow<DetailedReviewMediaGalleryOrientationUiState>(DetailedReviewMediaGalleryOrientationUiState.Portrait)
-    val orientationUiState: StateFlow<DetailedReviewMediaGalleryOrientationUiState>
+    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
+    val orientationUiState: StateFlow<OrientationUiState>
         get() = _orientationUiState
     private val _overlayVisibility = MutableStateFlow(true)
     val overlayVisibility: StateFlow<Boolean>
@@ -145,6 +144,12 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private var loadMoreDetailedReviewMediaJob: Job? = null
 
     init {
+        handleLoadReviewMedia()
+        handleToggleLike()
+        handleMediaNumberToLoadUpdate()
+    }
+
+    private fun handleLoadReviewMedia() {
         launch {
             combine(
                 _productID,
@@ -167,34 +172,16 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 }
             }
         }
-        launch {
-            _toggleLikeRequest.collect {
-                if (it != null) {
-                    launchNewToggleLikeJob(it)
-                }
-            }
-        }
+    }
+
+    private fun handleToggleLike() {
+        launch { _toggleLikeRequest.collect { if (it != null) launchNewToggleLikeJob(it) } }
+    }
+
+    private fun handleMediaNumberToLoadUpdate() {
         launch {
             _currentMediaItem.collectLatest {
-                if (it is LoadingStateItemUiModel) {
-                    _mediaNumberToLoad.value = it.mediaNumber
-                }
-            }
-        }
-        launch {
-            _toasterEventActionClickQueue.collectLatest {
-                val currentMediaItem = _currentMediaItem.value
-                if (it == TOASTER_KEY_ERROR_GET_REVIEW_MEDIA && currentMediaItem is LoadingStateItemUiModel) {
-                    val mediaNumberToLoad = currentMediaItem.mediaNumber
-                    val mediaLoaded = _detailedReviewMediaResult.value?.reviewMedia?.any {
-                        it.mediaNumber == mediaNumberToLoad
-                    }.orFalse()
-                    if (_productID.value.isNotBlank() && mediaNumberToLoad.isMoreThanZero() && !mediaLoaded) {
-                        loadMoreDetailedReviewMediaJob = loadMoreDetailedReviewMediaJob?.takeIf {
-                            !it.isCompleted
-                        } ?: getReviewMedia(_productID.value, ceil(mediaNumberToLoad.toFloat() / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT.toFloat()).toInt())
-                    }
-                }
+                if (it is LoadingStateItemUiModel) _mediaNumberToLoad.value = it.mediaNumber
             }
         }
     }
@@ -290,6 +277,23 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         return (firstLoaded / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT)
     }
 
+    fun retryGetReviewMedia() {
+        _currentMediaItem.value?.let { currentMediaItem ->
+            val mediaNumberToLoad = currentMediaItem.mediaNumber
+            val mediaLoaded = _detailedReviewMediaResult.value?.reviewMedia?.any {
+                it.mediaNumber == mediaNumberToLoad
+            }.orFalse()
+            if (_productID.value.isNotBlank() && mediaNumberToLoad.isMoreThanZero() && !mediaLoaded) {
+                loadMoreDetailedReviewMediaJob = loadMoreDetailedReviewMediaJob?.takeIf {
+                    !it.isCompleted
+                } ?: getReviewMedia(
+                    _productID.value,
+                    ceil(mediaNumberToLoad.toFloat() / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT.toFloat()).toInt()
+                )
+            }
+        }
+    }
+
     fun saveState(outState: Bundle) {
         outState.putSerializable(SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
         outState.putString(SAVED_STATE_PRODUCT_ID, _productID.value)
@@ -359,11 +363,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun requestPortraitMode() {
-        _orientationUiState.value = DetailedReviewMediaGalleryOrientationUiState.Portrait
+        _orientationUiState.value = OrientationUiState.Portrait
     }
 
     fun requestLandscapeMode() {
-        _orientationUiState.value = DetailedReviewMediaGalleryOrientationUiState.Landscape
+        _orientationUiState.value = OrientationUiState.Landscape
     }
 
     fun toggleOverlayVisibility() {

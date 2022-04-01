@@ -25,8 +25,6 @@ import com.tokopedia.reviewcommon.feature.media.detail.presentation.widget.Revie
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.widget.ReviewDetailSupplementaryInfo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity.Companion.GALLERY_SOURCE_CREDIBILITY_SOURCE
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity.DetailedReviewMediaGalleryActivity.Companion.READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
@@ -43,6 +41,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
         private const val ARG_IS_FROM_GALLERY = "argIsFromGallery"
+        private const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
+        private const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
+
         const val TAG = "ReviewDetailFragment"
 
         fun createInstance(isFromGallery: Boolean): ReviewDetailFragment {

@@ -16,7 +16,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimode
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -40,7 +40,7 @@ class ReviewDetailViewModel @Inject constructor(
     private val _showExpandedReviewDetailBottomSheet = MutableStateFlow(false)
     private val _currentMediaItem = MutableStateFlow<MediaItemUiModel?>(null)
     private val _getDetailedReviewMediaResult = MutableStateFlow<ProductrevGetReviewMedia?>(null)
-    private val _orientationUiState = MutableStateFlow<DetailedReviewMediaGalleryOrientationUiState>(DetailedReviewMediaGalleryOrientationUiState.Portrait)
+    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
     private val _overlayVisibility = MutableStateFlow(true)
 
     val currentReviewDetail: StateFlow<ReviewDetailUiModel?> = combine(
@@ -102,7 +102,7 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     private fun mapBasicInfoUiState(
-        orientationUiState: DetailedReviewMediaGalleryOrientationUiState,
+        orientationUiState: OrientationUiState,
         overlayVisibility: Boolean,
         currentMediaItem: MediaItemUiModel?,
         currentReviewDetail: ReviewDetailUiModel?
@@ -122,7 +122,7 @@ class ReviewDetailViewModel @Inject constructor(
 
     private fun mapSupplementaryUiState(
         expanded: Boolean,
-        orientationUiState: DetailedReviewMediaGalleryOrientationUiState,
+        orientationUiState: OrientationUiState,
         overlayVisibility: Boolean,
         currentMediaItem: MediaItemUiModel?,
         currentReviewDetail: ReviewDetailUiModel?
@@ -255,7 +255,7 @@ class ReviewDetailViewModel @Inject constructor(
         _showExpandedReviewDetailBottomSheet.value = false
     }
 
-    fun updateCurrentOrientation(orientationUiState: DetailedReviewMediaGalleryOrientationUiState) {
+    fun updateCurrentOrientation(orientationUiState: OrientationUiState) {
         _orientationUiState.value = orientationUiState
     }
 

@@ -1,17 +1,18 @@
 package com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.viewmodel
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
-import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ReviewMediaGalleryAdapterUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.AdapterUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ReviewMediaGalleryUiState
-import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ReviewMediaGalleryViewPagerUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.ViewPagerUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.model.VideoMediaItemUiModel
@@ -36,17 +37,17 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         const val SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE = "savedStateMediaViewPagerUiState"
     }
 
-    private val _orientationUiState = MutableStateFlow<DetailedReviewMediaGalleryOrientationUiState>(DetailedReviewMediaGalleryOrientationUiState.Portrait)
-    private val _viewPagerUiState = MutableStateFlow(ReviewMediaGalleryViewPagerUiState())
-    val viewPagerUiState: StateFlow<ReviewMediaGalleryViewPagerUiState>
+    private val _orientationUiState = MutableStateFlow<OrientationUiState>(OrientationUiState.Portrait)
+    private val _viewPagerUiState = MutableStateFlow(ViewPagerUiState())
+    val viewPagerUiState: StateFlow<ViewPagerUiState>
         get() = _viewPagerUiState
     private val _mediaItems = MutableStateFlow<List<MediaItemUiModel>>(emptyList())
     private val adapterUiState = _mediaItems.mapLatest {
-        ReviewMediaGalleryAdapterUiState(it)
+        AdapterUiState(it)
     }.stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = ReviewMediaGalleryAdapterUiState(_mediaItems.value)
+        initialValue = AdapterUiState(_mediaItems.value)
     )
     val uiState: StateFlow<ReviewMediaGalleryUiState> = combine(
         adapterUiState, _viewPagerUiState, ::mapUiState
@@ -65,12 +66,21 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         initialValue = null
     )
 
+    private val enableViewPagerTimer = object: CountDownTimer(500L, 500L) {
+        override fun onTick(millisUntilFinished: Long) {
+            // noop
+        }
+
+        override fun onFinish() {
+            requestToggleViewPagerSwipe(true)
+        }
+    }
     // workaround for viewpager2 issue where page changed after screen rotation
     private var changingConfiguration: Boolean = false
 
     private fun mapUiState(
-        adapterUiState: ReviewMediaGalleryAdapterUiState,
-        viewPagerUiState: ReviewMediaGalleryViewPagerUiState
+        adapterUiState: AdapterUiState,
+        viewPagerUiState: ViewPagerUiState
     ): ReviewMediaGalleryUiState {
         val currentUiState = uiState.value
         val firstMediaItem = currentUiState.adapterUiState.mediaItemUiModels.firstOrNull()
@@ -103,7 +113,14 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         return detail.reviewGalleryImages.find {
             it.attachmentId == imageId
         }?.let {
-            ImageMediaItemUiModel(it.attachmentId, it.fullsizeURL, imageNumber, showSeeMore, totalMediaCount, it.feedbackId)
+            ImageMediaItemUiModel(
+                it.attachmentId,
+                it.fullsizeURL,
+                imageNumber,
+                showSeeMore,
+                totalMediaCount,
+                it.feedbackId
+            )
         }
     }
 
@@ -116,18 +133,28 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         return detail.reviewGalleryVideos.find {
             it.attachmentId == videoId
         }?.let {
-            VideoMediaItemUiModel(it.attachmentId, it.url, videoNumber, showSeeMore, totalMediaCount, it.feedbackId)
+            VideoMediaItemUiModel(
+                it.attachmentId,
+                it.url,
+                videoNumber,
+                showSeeMore,
+                totalMediaCount,
+                it.feedbackId
+            )
         }
     }
 
     fun onPageSelected(position: Int) {
         if (!changingConfiguration) {
+            enableViewPagerTimer.cancel()
+            requestToggleViewPagerSwipe(false)
             _viewPagerUiState.update {
                 it.copy(
                     previousPagerPosition = it.currentPagerPosition,
                     currentPagerPosition = position
                 )
             }
+            enableViewPagerTimer.start()
         }
     }
 
@@ -137,7 +164,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun restoreUiState(savedInstanceState: Bundle) {
-        savedInstanceState.getParcelable<ReviewMediaGalleryViewPagerUiState>(
+        savedInstanceState.getParcelable<ViewPagerUiState>(
             SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE
         )?.let { savedReviewMediaGalleryViewPagerUiState ->
             _viewPagerUiState.value = savedReviewMediaGalleryViewPagerUiState
@@ -202,7 +229,7 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         _viewPagerUiState.update { it.copy(enableUserInput = enable) }
     }
 
-    fun updateOrientationUiState(orientationUiState: DetailedReviewMediaGalleryOrientationUiState) {
+    fun updateOrientationUiState(orientationUiState: OrientationUiState) {
         changingConfiguration = _orientationUiState.value != orientationUiState
         _orientationUiState.value = orientationUiState
     }

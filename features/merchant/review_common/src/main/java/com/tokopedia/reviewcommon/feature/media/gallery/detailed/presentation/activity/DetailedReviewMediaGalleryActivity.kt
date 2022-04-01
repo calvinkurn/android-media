@@ -26,7 +26,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.DetailedRevi
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.bottomsheet.ActionMenuBottomSheet
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.ActionMenuBottomSheetUiState
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.DetailedReviewMediaGalleryOrientationUiState
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.controller.presentation.fragment.ReviewMediaPlayerControllerFragment
 import com.tokopedia.unifycomponents.Toaster
@@ -45,9 +45,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     companion object {
         const val EXTRAS_CACHE_MANAGER_ID = "extrasCacheManagerId"
-
-        const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
-        const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
+        const val TOASTER_KEY_ERROR_GET_REVIEW_MEDIA = "ERROR_GET_REVIEW_MEDIA"
     }
 
     @Inject
@@ -63,6 +61,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     private var orientationUiStateCollectorJob: Job? = null
     private var actionMenuBottomSheetUiStateCollectorJob: Job? = null
     private var toasterQueueCollectorJob: Job? = null
+    private var toasterActionCLickEventCollectorJob: Job? = null
     private var gestureDetector: GestureDetectorCompat? = null
 
     private var galleryFragment: ReviewMediaGalleryFragment? = null
@@ -298,7 +297,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         } ?: launch {
             sharedReviewMediaGalleryViewModel.orientationUiState.collectLatest {
                 requestedOrientation = when(it) {
-                    DetailedReviewMediaGalleryOrientationUiState.Landscape -> {
+                    OrientationUiState.Landscape -> {
                         enableFullscreen()
                         ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                     }
@@ -335,6 +334,15 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 }
             }
         }
+        toasterActionCLickEventCollectorJob = toasterActionCLickEventCollectorJob?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            sharedReviewMediaGalleryViewModel.toasterEventActionClickQueue.collectLatest {
+                if (it == TOASTER_KEY_ERROR_GET_REVIEW_MEDIA) {
+                    sharedReviewMediaGalleryViewModel.retryGetReviewMedia()
+                }
+            }
+        }
     }
 
     private fun cancelUiStateCollector() {
@@ -342,6 +350,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         orientationUiStateCollectorJob?.cancel()
         actionMenuBottomSheetUiStateCollectorJob?.cancel()
         toasterQueueCollectorJob?.cancel()
+        toasterActionCLickEventCollectorJob?.cancel()
     }
 
     private fun MotionEvent.isAboveCloseButton(): Boolean {
