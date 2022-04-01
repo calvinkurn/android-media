@@ -135,12 +135,14 @@ class QuizFormView : ConstraintLayout {
             QuizFormStateUiModel.Preparation -> {
                 binding.groupActionBar.visibility = View.VISIBLE
                 binding.viewGameHeader.isEditable = true
+                binding.viewQuizGift.isEditable = true
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
             }
             is QuizFormStateUiModel.SetDuration -> {
                 binding.groupActionBar.visibility = View.GONE
                 binding.viewGameHeader.isEditable = false
+                binding.viewQuizGift.isEditable = false
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
 

@@ -40,15 +40,19 @@ class QuizGiftView : ConstraintLayout {
 
     init {
         binding.clLabelView.setOnClickListener {
-            binding.clLabelView.hide()
-            binding.clInputView.show()
+            isEditable {
+                binding.clLabelView.hide()
+                binding.clInputView.show()
+            }
         }
 
         binding.icCloseInputGift.setOnClickListener {
-            binding.clLabelView.show()
-            binding.clInputView.hide()
+            isEditable {
+                binding.clLabelView.show()
+                binding.clInputView.hide()
 
-            mOnRemovedListener?.invoke()
+                mOnRemovedListener?.invoke()
+            }
         }
 
         binding.etBroQuizGift.afterTextChanged {
@@ -75,11 +79,26 @@ class QuizGiftView : ConstraintLayout {
             }
         }
 
+    var isEditable: Boolean = true
+        set(value) {
+            field = value
+
+            binding.etBroQuizGift.apply {
+                isFocusable = value
+                isFocusableInTouchMode = value
+                isEnabled = value
+            }
+        }
+
     fun setOnTextChangeListener(listener: (String) -> Unit) {
         mOnChangedListener = listener
     }
 
     fun setOnRemoveGiftListener(listener: () -> Unit) {
         mOnRemovedListener = listener
+    }
+
+    private fun isEditable(fn: () -> Unit) {
+        if(isEditable) fn.invoke()
     }
 }
