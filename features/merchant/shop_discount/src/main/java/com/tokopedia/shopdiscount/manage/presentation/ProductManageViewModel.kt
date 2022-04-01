@@ -29,10 +29,11 @@ class ProductManageViewModel @Inject constructor(
     val productsMeta: LiveData<Result<GetSlashPriceProductListMetaResponse>>
         get() = _productsMeta
 
-    fun getSlashPriceProducts() {
+    fun getSlashPriceProducts(page : Int) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getSlashPriceProductListUseCase.execute(page = 1)
+                getSlashPriceProductListUseCase.setRequestParams(page = page)
+                getSlashPriceProductListUseCase.executeOnBackground()
             }
             _products.value = Success(result)
         }, onError = {
@@ -43,7 +44,8 @@ class ProductManageViewModel @Inject constructor(
     fun getSlashPriceProductsMeta() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getSlashPriceProductListMetaUseCase.execute()
+                getSlashPriceProductListMetaUseCase.setRequestParams()
+                getSlashPriceProductListMetaUseCase.executeOnBackground()
             }
             _productsMeta.value = Success(result)
         }, onError = {

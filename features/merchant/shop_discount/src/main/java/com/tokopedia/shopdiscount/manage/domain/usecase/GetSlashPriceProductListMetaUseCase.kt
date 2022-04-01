@@ -1,30 +1,24 @@
 package com.tokopedia.shopdiscount.manage.domain.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.shopdiscount.manage.data.request.GetSlashPriceProductListMetaRequest
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListMetaResponse
 import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetSlashPriceProductListMetaUseCase @Inject constructor(
     private val repository: GraphqlRepository
-) : UseCase<GetSlashPriceProductListMetaResponse>(), GqlQueryInterface {
+) : GraphqlUseCase<GetSlashPriceProductListMetaResponse>(repository) {
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
-    }
-
-    override fun getOperationNameList(): List<String> {
-        return emptyList()
-    }
-
-    override fun getQuery(): String {
-        return """
+        private const val REQUEST_QUERY_NAME = "GetSlashPriceProductListMeta"
+        private const val REQUEST_QUERY = """
             query GetSlashPriceProductListMeta(${'$'}params: GetSlashPriceProductListMetaRequest)  {
               GetSlashPriceProductListMeta(params: ${'$'}params){
                 response_header {
@@ -44,29 +38,32 @@ class GetSlashPriceProductListMetaUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+        """
     }
 
-    override fun getTopOperationName(): String {
-        return EMPTY_STRING
+    init {
+        setupUseCase()
     }
 
-    private var params = emptyMap<String, Any>()
+    @GqlQuery(
+        REQUEST_QUERY_NAME,
+        REQUEST_QUERY
+    )
 
-    suspend fun execute(
+    private fun setupUseCase() {
+        setGraphqlQuery(GetSlashPriceProductListMeta())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(GetSlashPriceProductListMetaResponse::class.java)
+    }
+
+    fun setRequestParams(
         source: String = CAMPAIGN,
         ip: String = EMPTY_STRING,
         useCase: String = EMPTY_STRING
-    ): GetSlashPriceProductListMetaResponse {
-        val request = GetSlashPriceProductListMetaRequest(source, ip, useCase)
-        params = mapOf(REQUEST_PARAM_KEY to request)
-        return executeOnBackground()
-    }
-
-    override suspend fun executeOnBackground(): GetSlashPriceProductListMetaResponse {
-        val request =
-            GraphqlRequest(this, GetSlashPriceProductListMetaResponse::class.java, params, true)
-        return repository.response(listOf(request)).getSuccessData()
+    ) {
+        val request = RequestHeader(source, ip, useCase)
+        val params = mapOf(REQUEST_PARAM_KEY to request)
+        setRequestParams(params)
     }
 
 

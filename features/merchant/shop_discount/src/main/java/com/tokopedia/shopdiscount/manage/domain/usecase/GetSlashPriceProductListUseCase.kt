@@ -1,30 +1,24 @@
 package com.tokopedia.shopdiscount.manage.domain.usecase
 
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.manage.data.request.GetSlashPriceProductListRequest
 import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListResponse
 import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN
-import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
-import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetSlashPriceProductListUseCase @Inject constructor(
     private val repository: GraphqlRepository
-) : UseCase<GetSlashPriceProductListResponse>(), GqlQueryInterface {
+) : GraphqlUseCase<GetSlashPriceProductListResponse>(repository) {
 
     companion object {
         private const val REQUEST_PARAM_KEY = "params"
-    }
-
-    override fun getOperationNameList(): List<String> {
-        return emptyList()
-    }
-
-    override fun getQuery(): String {
-        return """
+        private const val REQUEST_QUERY_NAME = "GetSlashPriceProductList"
+        private const val REQUEST_QUERY = """
             query GetSlashPriceProductList(${'$'}params: GetSlashPriceProductListRequest!) {
               GetSlashPriceProductList(params: ${'$'}params) {
                 response_header {
@@ -79,16 +73,21 @@ class GetSlashPriceProductListUseCase @Inject constructor(
                 total_product
               }
             }
-        """.trimIndent()
+        """
     }
 
-    override fun getTopOperationName(): String {
-        return EMPTY_STRING
+    init {
+        setupUseCase()
     }
 
-    private var params = emptyMap<String, Any>()
+    @GqlQuery(REQUEST_QUERY_NAME, REQUEST_QUERY)
+    private fun setupUseCase() {
+        setGraphqlQuery(GetSlashPriceProductList())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(GetSlashPriceProductListResponse::class.java)
+    }
 
-    suspend fun execute(
+    fun setRequestParams(
         source: String = CAMPAIGN,
         ip: String = "",
         useCase: String = "",
@@ -98,8 +97,8 @@ class GetSlashPriceProductListUseCase @Inject constructor(
         categoryIds: List<String> = emptyList(),
         etalaseIds: List<String> = emptyList(),
         warehouseIds: List<String> = emptyList()
-    ): GetSlashPriceProductListResponse {
-        val requestHeader = GetSlashPriceProductListRequest.RequestHeader(source, ip, useCase)
+    ) {
+        val requestHeader = RequestHeader(source, ip, useCase)
         val filter = GetSlashPriceProductListRequest.Filter(
             page,
             pageSize,
@@ -109,15 +108,8 @@ class GetSlashPriceProductListUseCase @Inject constructor(
             warehouseIds
         )
         val request = GetSlashPriceProductListRequest(requestHeader, filter)
-        params = mapOf(REQUEST_PARAM_KEY to request)
-        return executeOnBackground()
+        val params = mapOf(REQUEST_PARAM_KEY to request)
+        setRequestParams(params)
     }
-
-    override suspend fun executeOnBackground(): GetSlashPriceProductListResponse {
-        val request =
-            GraphqlRequest(this, GetSlashPriceProductListResponse::class.java, params, true)
-        return repository.response(listOf(request)).getSuccessData()
-    }
-
 
 }

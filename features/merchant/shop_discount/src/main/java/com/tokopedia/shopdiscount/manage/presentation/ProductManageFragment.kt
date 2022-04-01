@@ -53,7 +53,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        displayBulkApplyBottomSheet()
+        //displayBulkApplyBottomSheet()
         observeProducts()
         observeProductsMeta()
         viewModel.getSlashPriceProductsMeta()
@@ -70,6 +70,9 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    if (it.data.getSlashPriceProductList.totalProduct == 0) {
+
+                    }
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -82,7 +85,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    viewModel.getSlashPriceProducts()
+                    viewModel.getSlashPriceProducts(1)
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
