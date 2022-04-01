@@ -33,9 +33,9 @@
         android:id="@+id/recharge_pdp_token_listrik_sv_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/layout_lvl6"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/recharge_pdp_token_listrik_background_image"
+        android:layout_marginTop="@dimen/nested_scroll_view_margin"
+        app:layout_constraintTop_toTopOf="@id/recharge_pdp_token_listrik_client_number_widget"
         app:layout_constraintBottom_toTopOf="@id/recharge_pdp_token_listrik_buy_widget">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -92,6 +92,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/recharge_pdp_token_listrik_ticker"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
     <com.tokopedia.recharge_component.widget.RechargeBuyWidget
