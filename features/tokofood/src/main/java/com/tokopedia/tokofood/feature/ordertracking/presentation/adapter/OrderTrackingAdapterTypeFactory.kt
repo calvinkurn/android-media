@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DetailOrderHeaderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
@@ -39,7 +39,7 @@ class OrderTrackingAdapterTypeFactory: BaseAdapterTypeFactory(), OrderTrackingTy
         TODO("Not yet implemented")
     }
 
-    override fun type(detailOrderHeaderUiModel: DetailOrderHeaderUiModel): Int {
+    override fun type(orderDetailHeaderUiModel: OrderDetailHeaderUiModel): Int {
         TODO("Not yet implemented")
     }
 

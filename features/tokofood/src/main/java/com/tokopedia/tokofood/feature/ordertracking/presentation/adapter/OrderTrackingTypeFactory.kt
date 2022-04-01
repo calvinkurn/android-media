@@ -1,11 +1,12 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DetailOrderHeaderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailShippingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingLoadingUiModel
@@ -14,6 +15,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentGrandTotalUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StatusInfoHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
@@ -26,11 +28,15 @@ interface OrderTrackingTypeFactory {
 
     fun type(orderTrackingTickerUiModel: OrderTrackingTickerUiModel): Int
 
+    fun type(restaurantUserAddressUiModel: RestaurantUserAddressUiModel): Int
+
     fun type(shippingHeaderUiModel: ShippingHeaderUiModel): Int
 
     fun type(orderDetailShippingUiModel: OrderDetailShippingUiModel): Int
 
-    fun type(detailOrderHeaderUiModel: DetailOrderHeaderUiModel): Int
+    fun type(orderDetailHeaderUiModel: OrderDetailHeaderUiModel): Int
+
+    fun type(orderDetailToggleCtaUiModel: OrderDetailToggleCtaUiModel): Int
 
     fun type(driverSectionUiModel: DriverSectionUiModel): Int
 

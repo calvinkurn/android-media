@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 
 data class OrderTrackingStatusInfoUiModel(
     val stepperStatusList: List<StepperStatusUiModel>,
+    val statusKey: String,
     val orderStatusTitle: String,
     val orderStatusSubTitle: String,
     val lottieUrl: String

@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         android:textColor="@color/Unify_NN950"
-        tools:text="1 x Rp24.000"
+        tools:text="@string/order_detail_qty_price_value"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
@@ -41,18 +41,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvFoodItemName"/>
 
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icFoodNote"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon_name="EDIT"
+        app:icon_color_light_enable="@color/Unify_NN600"
+        android:layout_marginTop="2dp"
+        app:layout_constraintStart_toStartOf="@id/tvFoodItemName"
+        app:layout_constraintTop_toBottomOf="@id/rvVariantAddon"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFoodItemNote"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:typographyType="body_3"
         android:layout_marginTop="2dp"
+        android:layout_marginStart="4dp"
         android:textColor="@color/Unify_NN600"
         android:textStyle="italic"
         app:typographyWeight="reguler"
         tools:text="Pastiin pesanannya sesuai ya mas"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/tvFoodItemName"
+        app:layout_constraintStart_toEndOf="@id/icFoodNote"
         app:layout_constraintTop_toBottomOf="@id/rvVariantAddon"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,7 +31,7 @@
         android:id="@+id/ivOrderTrackingDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_distance_user_resto"
+        app:srcCompat="@drawable/ic_tokofood_distance_user_resto"
         app:layout_constraintStart_toStartOf="@id/icOrderTrackingMerchant"
         app:layout_constraintEnd_toEndOf="@id/icOrderTrackingMerchant"
         app:layout_constraintTop_toBottomOf="@id/icOrderTrackingMerchant"/>
@@ -44,7 +44,7 @@
         android:textColor="@color/Unify_GN500"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="6Km dari tujuan"
+        tools:text="@string/order_tracking_distance_restaurant"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
         app:layout_constraintTop_toTopOf="@id/ivOrderTrackingDistance"/>
 

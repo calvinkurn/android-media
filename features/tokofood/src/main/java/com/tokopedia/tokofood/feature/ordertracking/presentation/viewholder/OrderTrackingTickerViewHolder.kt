@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingTickerBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingTickerUiModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderTrackingTickerViewHolder(itemView: View): AbstractViewHolder<OrderTrackingTickerUiModel>(itemView) {
@@ -13,16 +14,26 @@ class OrderTrackingTickerViewHolder(itemView: View): AbstractViewHolder<OrderTra
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_ticker
+
+        const val TICKER_INFO_TYPE = "info"
+        const val TICKER_ANNOUNCE_TYPE = "announce"
     }
 
     private val binding: ItemTokofoodOrderTrackingTickerBinding? by viewBinding()
 
-    override fun bind(element: OrderTrackingTickerUiModel?) {
+    override fun bind(element: OrderTrackingTickerUiModel) {
         binding?.run {
             tickerOrderTrackingLive.apply {
-
+                tickerType = mapTickerType(element.type)
             }
         }
     }
 
+    private fun mapTickerType(type: String): Int {
+        return when (type) {
+            TICKER_INFO_TYPE -> Ticker.TYPE_INFORMATION
+            TICKER_ANNOUNCE_TYPE -> Ticker.TYPE_ANNOUNCEMENT
+            else -> 0
+        }
+    }
 }

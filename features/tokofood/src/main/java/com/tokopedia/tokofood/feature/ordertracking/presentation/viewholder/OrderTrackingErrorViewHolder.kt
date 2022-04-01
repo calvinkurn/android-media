@@ -18,13 +18,15 @@ class OrderTrackingErrorViewHolder(itemView: View) :
         val LAYOUT = R.layout.item_tokofood_order_tracking_error
     }
 
-    private val binding by viewBinding<ItemTokofoodOrderTrackingErrorBinding>()
+    private val binding = ItemTokofoodOrderTrackingErrorBinding.bind(itemView)
 
     override fun bind(element: OrderTrackingErrorUiModel) {
-        binding?.globalErrorOrderTracking?.run {
-            setType(if (element.throwable is IOException) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR)
-            setActionClickListener {
-                //TODO
+        with(binding) {
+            globalErrorOrderTracking.run {
+                setType(if (element.throwable is IOException) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR)
+                setActionClickListener {
+                    //TODO
+                }
             }
         }
     }

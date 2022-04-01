@@ -4,9 +4,9 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactory
 
 class OrderTrackingEstimationUiModel(
-    val estimation: String,
-    val estimationTextColor: String
-) : BaseOrderTrackingTypeFactory {
+    val estimationLabel: String,
+    val timeEstimation: String
+    ) : BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

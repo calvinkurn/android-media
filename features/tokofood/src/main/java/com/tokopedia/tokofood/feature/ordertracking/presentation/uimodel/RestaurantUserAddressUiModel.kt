@@ -3,21 +3,15 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactory
 
-
-class FoodItemUiModel(
-    val foodName: String,
-    val quantity: String,
-    val priceStr: String,
-    val addOnVariantList: List<AddonVariantItemUiModel> = emptyList(),
-    val notes: String,
-    val isExpand: Boolean
+data class RestaurantUserAddressUiModel(
+    val merchantName: String,
+    val distanceInKm: String,
+    val destinationLabel: String,
+    val destinationPhone: String,
+    val destinationAddress: String
 ): BaseOrderTrackingTypeFactory {
+
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
-
-data class AddonVariantItemUiModel(
-    val displayName: String,
-    val optionName: String
-)
