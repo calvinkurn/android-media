@@ -9,6 +9,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.stub.data.UserSessionStub
+import com.tokopedia.sellerhome.stub.gql.GraphqlRepositoryStub
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPref
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +36,7 @@ class SellerHomeModuleStub {
     @SellerHomeScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
+        return GraphqlRepositoryStub.getInstance()
     }
 
     @SellerHomeScope

@@ -363,6 +363,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_DARK_MODE -> {
                 setupDarkMode(isActive)
             }
+            AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
+            }
             else -> {
             }
         }
@@ -494,7 +497,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     })
                 } else {
                     activity?.supportFragmentManager?.run {
-                        biometricOfferingDialog?.show(this, "")
+                        if(biometricOfferingDialog?.isAdded == false) {
+                            biometricOfferingDialog?.show(this, "")
+                        }
                     }
 
                     val reason = if(data?.hasExtra(RegisterFingerprintActivity.RESULT_INTENT_REGISTER_BIOM) == true) {
@@ -649,12 +654,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if(activity != null) {
                 if(BiometricPromptHelper.isBiometricAvailable(requireActivity())) {
                     homeAccountAnalytic.trackOnShowBiometricOffering()
-                    if(biometricOfferingDialog != null) {
+                    if(biometricOfferingDialog != null && biometricOfferingDialog?.isAdded == false) {
                         activity?.supportFragmentManager?.run {
                             biometricOfferingDialog?.show(this, "")
                         }
                     } else {
-                        biometricOfferingDialog = FingerprintDialogHelper.createBiometricOfferingDialog(
+                        biometricOfferingDialog =
+                            FingerprintDialogHelper.createBiometricOfferingDialog(
                                 requireActivity(),
                                 onPrimaryBtnClicked = {
                                     biometricTracker.trackClickOnAktivasi()
@@ -662,7 +668,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                         requireContext(),
                                         ApplinkConstInternalUserPlatform.REGISTER_BIOMETRIC
                                     )
-                                    startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+                                    startActivityForResult(
+                                        intent,
+                                        REQUEST_CODE_REGISTER_BIOMETRIC
+                                    )
                                     biometricOfferingDialog?.dismiss()
                                 },
                                 onSecondaryBtnClicked = {
@@ -674,6 +683,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                     biometricTracker.trackClickOnCloseBtnOffering()
                                 })
                     }
+
                 } else {
                     showDialogLogout()
                 }
