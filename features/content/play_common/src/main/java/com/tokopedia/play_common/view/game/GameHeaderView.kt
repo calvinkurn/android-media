@@ -92,7 +92,7 @@ class GameHeaderView : ConstraintLayout {
         onTextChanged = listener
     }
 
-    private fun setFocus(isFocus: Boolean) {
+    fun setFocus(isFocus: Boolean) {
         binding.etPlayGameHeaderTitle.apply {
             if(isFocus) requestFocus()
             else clearFocus()

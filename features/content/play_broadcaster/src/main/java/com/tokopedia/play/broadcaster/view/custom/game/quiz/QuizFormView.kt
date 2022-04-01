@@ -22,6 +22,7 @@ import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.updatePadding
+import kotlinx.coroutines.*
 
 /**
  * Created By : Jonathan Darwin on March 30, 2022
@@ -42,6 +43,7 @@ class QuizFormView : ConstraintLayout {
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
+    /** Binding */
     private val binding = ViewQuizFormBinding.inflate(
         LayoutInflater.from(context),
         this,
@@ -55,6 +57,9 @@ class QuizFormView : ConstraintLayout {
     val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     private val eventBus = EventBus<Event>()
+
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
         set(value) {
@@ -106,6 +111,21 @@ class QuizFormView : ConstraintLayout {
         }
 
         setupInsets()
+    }
+
+    override fun setVisibility(visibility: Int) {
+        super.setVisibility(visibility)
+        if(visibility == View.VISIBLE) {
+            scope.launch {
+                delay(SHOW_KEYBOARD_DELAY)
+                binding.viewGameHeader.setFocus(true)
+            }
+        }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        scope.cancel()
     }
 
     fun setFormData(quizFormData: QuizFormDataUiModel) {
@@ -202,5 +222,9 @@ class QuizFormView : ConstraintLayout {
         data class GiftChanged(val gift: String): Event()
         data class SelectDuration(val duration: Long): Event()
         object Submit: Event()
+    }
+
+    companion object {
+        private const val SHOW_KEYBOARD_DELAY = 500L
     }
 }
