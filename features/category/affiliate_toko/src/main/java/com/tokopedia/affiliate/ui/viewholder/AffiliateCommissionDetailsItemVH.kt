@@ -8,11 +8,15 @@ import com.tokopedia.affiliate.bodyTypoMap
 import com.tokopedia.affiliate.headerTypoMap
 import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
+
+
+
 
 class AffiliateCommissionDetailsItemVH(
     itemView: View,
@@ -24,15 +28,63 @@ class AffiliateCommissionDetailsItemVH(
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_commison_detail_item
-        val TYPE_BOLD = "bold"
-        val TYPE_REGULER = "regular"
+        const val TYPE_BOLD = "bold"
+        const val TYPE_REGULER = "regular"
+        const val TYPE_DATE_TIME = "datetime"
 
     }
-
+    private val header: Typography = itemView.findViewById(R.id.transaction_komisi_header)
+    private val infoIcon: IconUnify = itemView.findViewById(R.id.transaction_komisi_icon)
+    private val valueTv: Typography = itemView.findViewById(R.id.transaction_komisi)
     override fun bind(element: AffiliateCommissionItemModel?) {
-        val header = itemView.findViewById<Typography>(R.id.transaction_komisi_header)
-        val infoIcon = itemView.findViewById<IconUnify>(R.id.transaction_komisi_icon)
-        val valueTv = itemView.findViewById<Typography>(R.id.transaction_komisi)
+        setType(element)
+        setTextType(element)
+        setDetailTitle(element)
+        setDetailDescription(element)
+        setTooltilView(element)
+        setClickLitener(element)
+    }
+
+    private fun setType(element: AffiliateCommissionItemModel?) {
+        if(element?.data?.detailType == TYPE_DATE_TIME){
+            element.data?.detailDescription?.let { date ->
+                element.data?.detailDescription = DateUtils().formatDate(dateString = date)
+            }
+        }
+    }
+
+    private fun setClickLitener(element: AffiliateCommissionItemModel?) {
+        infoIcon.setOnClickListener {
+            affiliateInfoClickInterfaces?.onInfoClick(element?.data?.detailTitle,element?.data?.detailTooltip,element?.data?.advanceTooltip)
+        }
+    }
+
+    private fun setTooltilView(element: AffiliateCommissionItemModel?) {
+        if(element?.data?.detailTooltip?.isNotEmpty() == true || element?.data?.advanceTooltip?.isNotEmpty() == true){
+            infoIcon.show()
+        }else{
+            infoIcon.hide()
+        }
+    }
+
+    private fun setDetailDescription(element: AffiliateCommissionItemModel?) {
+        element?.data?.detailDescription?.let { desc ->
+            if (desc.isEmpty())
+                valueTv.hide()
+            else {
+                valueTv.show()
+                valueTv.text = desc
+            }
+        }
+    }
+
+    private fun setDetailTitle(element: AffiliateCommissionItemModel?) {
+        element?.data?.detailTitle?.let { title ->
+            header.text = title
+        }
+    }
+
+    private fun setTextType(element: AffiliateCommissionItemModel?) {
         element?.data?.textType?.let { type ->
             when (type) {
                 TYPE_BOLD -> {
@@ -68,25 +120,6 @@ class AffiliateCommissionDetailsItemVH(
                     valueTv.setWeight(Typography.REGULAR)
                 }
             }
-        }
-        element?.data?.detailTitle?.let { title ->
-            header.text = title
-        }
-        element?.data?.detailDescription?.let { desc ->
-            if (desc.isEmpty())
-                valueTv.hide()
-            else {
-                valueTv.show()
-                valueTv.text = desc
-            }
-        }
-        if(element?.data?.detailTooltip?.isNotEmpty() == true || element?.data?.advanceTooltip?.isNotEmpty() == true){
-            infoIcon.show()
-        }else{
-            infoIcon.hide()
-        }
-        infoIcon.setOnClickListener {
-            affiliateInfoClickInterfaces?.onInfoClick(element?.data?.detailTitle,element?.data?.detailTooltip,element?.data?.advanceTooltip)
         }
     }
 

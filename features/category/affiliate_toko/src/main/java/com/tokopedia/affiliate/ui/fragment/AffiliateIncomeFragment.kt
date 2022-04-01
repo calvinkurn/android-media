@@ -213,6 +213,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         listSize = 0
         adapter.resetList()
         hideGlobalErrorEmptyState()
+        affiliateIncomeViewModel.getAffiliateBalance()
         affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
     }
 
@@ -275,7 +276,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         view?.findViewById<SwipeRefreshLayout>(R.id.swipe)?.let {
             it.setOnRefreshListener {
-                affiliateIncomeViewModel.getAffiliateBalance()
                 resetItems()
             }
             view?.findViewById<AppBarLayout>(R.id.appbar)?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
