@@ -49,9 +49,6 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
-import com.tokopedia.play.view.wrapper.InteractionEvent
-import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -133,10 +130,6 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableOnboarding
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
-    val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>>
-        get() = _observableUserReportReasoning
-    val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>>
-        get() = _observableUserReportSubmission
     val observableKebabMenuSheet: LiveData<Map<KebabMenuType, BottomInsetsState>>
         get() = _observableKebabSheets
 
@@ -160,6 +153,15 @@ class PlayViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
+
+    /***
+     * User Report
+     */
+    private val _userReportItems = MutableStateFlow(PlayUserReportUiModel.Empty)
+    val userReportItems: StateFlow<PlayUserReportUiModel.Loaded> = _userReportItems
+
+    private val _userReportSubmission = MutableStateFlow<ResultState>(ResultState.Loading)
+    val userReportSubmission: StateFlow<ResultState> = _userReportSubmission
 
     /**
      * Data State
@@ -424,8 +426,6 @@ class PlayViewModel @AssistedInject constructor(
             }
         }
     }
-    private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
-    private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
 
     //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
@@ -2088,19 +2088,16 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun getUserReportList(){
-        _observableUserReportReasoning.value = PlayResult.Loading(true)
+        _userReportItems.update { it.copy(resultState = ResultState.Loading)        }
 
         viewModelScope.launchCatchError(block = {
             val userReportUiModel = repo.getReasoningList()
 
-            val data = PlayUserReportUiModel.Loaded(
-                reasoningList = userReportUiModel
-            )
-            _observableUserReportReasoning.value = PlayResult.Success(data = data)
-
+            _userReportItems.update { it.copy(resultState = ResultState.Success, reasoningList = userReportUiModel) }
         }){
-            _observableUserReportReasoning.value = PlayResult.Failure(it){
-                getUserReportList()
+            error ->
+            _userReportItems.update {
+                it.copy(resultState = ResultState.Fail(error = error))
             }
         }
     }
@@ -2112,6 +2109,7 @@ class PlayViewModel @AssistedInject constructor(
                          timestamp: Long,
                          reportDesc: String){
         viewModelScope.launchCatchError(block = {
+            _userReportSubmission.value = ResultState.Loading
             val isSuccess =
                 repo.submitReport(
                     channelId = channelId,
@@ -2123,14 +2121,13 @@ class PlayViewModel @AssistedInject constructor(
                 )
 
             if(isSuccess){
-                _observableUserReportSubmission.value = PlayResult.Success(Event(Unit))
+                _userReportSubmission.value = ResultState.Success
             }else{
                 throw Throwable()
             }
-        }){
-            _observableUserReportSubmission.value = PlayResult.Failure(it)
+        }){ err ->
+            _userReportSubmission.value = ResultState.Fail(err)
         }
-
     }
 
     private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){

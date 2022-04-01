@@ -15,6 +15,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
@@ -29,7 +30,7 @@ import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -37,6 +38,7 @@ import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
@@ -160,31 +162,34 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     private fun observeUserReport() {
-        playViewModel.observableUserReportReasoning.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> if (it.showPlaceholder) userReportSheetView.showPlaceholder()
-                is PlayResult.Success -> userReportSheetView.setReportSheet(it.data)
-                is PlayResult.Failure -> userReportSheetView.showError(
-                    isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
-                    onError = it.onRetry
-                )
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.userReportItems.withCache().collectLatest {
+                val data = it.value
+                when(data.resultState){
+                    is ResultState.Loading -> userReportSheetView.showPlaceholder()
+                    is ResultState.Success ->
+                        if(it.prevValue != data) userReportSheetView.setReportSheet(data)
+                    is ResultState.Fail -> userReportSheetView.showError(
+                            isConnectionError = data.resultState is ConnectException || data.resultState.error is UnknownHostException,
+                            onError = {}
+                    )
+                }
             }
-        })
+        }
     }
 
     private fun observeUserReportSubmission() {
-        playViewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Success -> {
-                    hideSheets()
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.userReportSubmission.collectLatest {
+                when(it){
+                    is ResultState.Success -> hideSheets()
+                    is ResultState.Fail -> doShowToaster(
+                        toasterType = Toaster.TYPE_ERROR,
+                        message = ErrorHandler.getErrorMessage(requireContext(), it.error)
+                    )
                 }
-                is PlayResult.Failure ->
-                    doShowToaster(
-                    toasterType = Toaster.TYPE_ERROR,
-                    message = ErrorHandler.getErrorMessage(requireContext(), it.error)
-                )
             }
-        })
+        }
     }
 
     private fun observeEvent(){

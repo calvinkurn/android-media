@@ -18,6 +18,7 @@ import com.tokopedia.play.view.type.PlayUserReportSectionType
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportSection
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -114,7 +115,8 @@ class PlayUserReportSheetViewComponent(
     }
 
     private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(
-        reasoningList = List(5){PlayUserReportReasoningUiModel.Placeholder}
+        reasoningList = List(5){PlayUserReportReasoningUiModel.Placeholder},
+        resultState = ResultState.Loading
     )
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
