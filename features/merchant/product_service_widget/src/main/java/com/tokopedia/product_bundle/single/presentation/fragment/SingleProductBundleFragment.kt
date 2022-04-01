@@ -25,7 +25,6 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -385,11 +384,6 @@ class SingleProductBundleFragment(
         loaderDialog?.dialog?.dismiss()
     }
 
-    private fun refreshPage() {
-        val productBundleActivity = requireActivity() as ProductBundleActivity
-        productBundleActivity.refreshPage()
-    }
-
     private fun atcProductBundle() {
         showLoadingDialog()
         if (userSession.userId.isEmpty()) {
@@ -404,6 +398,10 @@ class SingleProductBundleFragment(
                 adapter.getSelectedData()
             )
         }
+    }
+
+    private fun refreshPage() {
+        // testing
     }
 
     companion object {
