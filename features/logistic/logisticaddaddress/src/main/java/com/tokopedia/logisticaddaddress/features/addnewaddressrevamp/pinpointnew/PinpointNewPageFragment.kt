@@ -55,6 +55,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtil
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
@@ -188,12 +189,13 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
         }
+        if (!isEdit) {
+            if (isAllowed) {
+                AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
+            } else {
+                AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
 
-        if (isAllowed) {
-            AddNewAddressRevampAnalytics.onClickAllowLocationPinpoint(userSession.userId)
-        } else {
-            AddNewAddressRevampAnalytics.onClickDontAllowLocationPinpoint(userSession.userId)
-
+            }
         }
     }
 
@@ -519,7 +521,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }
             chipsCurrentLoc.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                } else {
+                    EditAddressRevampAnalytics.onClickGunakanLokasiSaatIniPinpoint(userSession.userId)
+                }
                 if (AddNewAddressUtils.isGpsEnabled(context)) {
                     if (allPermissionsGranted()) {
                         hasRequestedLocation = true
@@ -535,7 +541,11 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
             chipsSearch.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.SEARCH) }
             chipsSearch.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                } else {
+                    EditAddressRevampAnalytics.onClickCariUlangAlamat(userSession.userId)
+                }
                 goToSearchPage()
             }
         }
@@ -754,6 +764,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         } else {
             currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
             binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
+                EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId, true)
                 setResultAddressFormNegative()
             }
         }
@@ -776,14 +787,22 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
     private fun updateInvalidBottomSheetData(type: Int) {
         if (type == BOTTOMSHEET_OUT_OF_INDO) {
-            AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+            if (!isEdit) {
+                AddNewAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+            } else {
+                EditAddressRevampAnalytics.onImpressBottomSheetOutOfIndo(userSession.userId)
+            }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
                 tvInvalidLoc.text = getString(R.string.out_of_indonesia_title)
                 tvInvalidLocDetail.text = getString(R.string.out_of_indonesia_desc_new)
             }
         } else {
-            AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
+            if (!isEdit) {
+                AddNewAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
+            } else {
+                EditAddressRevampAnalytics.onImpressBottomSheetAlamatTidakTerdeteksi(userSession.userId)
+            }
             if (showIllustrationMap) {
                 binding?.mapsEmpty?.visibility = View.VISIBLE
                 binding?.mapViews?.visibility = View.GONE

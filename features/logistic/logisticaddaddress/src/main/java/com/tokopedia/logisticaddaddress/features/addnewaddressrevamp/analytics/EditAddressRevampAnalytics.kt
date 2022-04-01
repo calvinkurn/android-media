@@ -42,7 +42,7 @@ object EditAddressRevampAnalytics : BaseTrackerConst() {
     private const val ACTION_CLICK_FIELD_CARI_LOKASI = "click field cari lokasi"
     private const val ACTION_CLICK_DROPDOWN_SUGGESTION_ALAMAT = "click dropdown suggestion alamat"
 //    event category
-    private const val CATEGORY_EDIT_ADDRESS_PAGE = "edit address page"
+    const val CATEGORY_EDIT_ADDRESS_PAGE = "edit address page"
     private const val CATEGORY_EDIT_KOTA_KECAMATAN_PAGE = "edit address, kota kecamatan page"
     private const val CATEGORY_EDIT_KODE_POS_PAGE = "edit address, kode pos page"
     private const val CATEGORY_EDIT_PINPOINT_PAGE = "edit address, pinpoint page"
@@ -358,12 +358,12 @@ object EditAddressRevampAnalytics : BaseTrackerConst() {
             .build())
     }
 
-    fun onClickPilihLokasiIni(userId: String) {
+    fun onClickPilihLokasiIni(userId: String, success: Boolean) {
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
             .appendEvent(EVENT_CLICK)
             .appendEventCategory(CATEGORY_EDIT_PINPOINT_PAGE)
             .appendEventAction(ACTION_CLICK_PILIH_LOKASI_INI)
-            .appendEventLabel("")
+            .appendEventLabel(if (success) LABEL_SUCCESS else LABEL_NOT_SUCCESS)
             .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
             .appendCurrentSite(CurrentSite.DEFAULT)
             .appendUserId(userId)

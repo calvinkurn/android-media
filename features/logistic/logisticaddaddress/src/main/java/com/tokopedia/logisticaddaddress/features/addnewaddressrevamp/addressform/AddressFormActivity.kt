@@ -11,6 +11,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIV
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,6 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressRevampComponent> {
 
     private var isPositiveFlow: Boolean? = true
+    private var isEdit: Boolean = false
     private val userSession: UserSessionInterface by lazy {
         UserSession(this)
     }
@@ -32,11 +34,13 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
         var fragment: AddressFormFragment? = null
         if (intent.data?.lastPathSegment != null) {
             val addressId = intent.data?.lastPathSegment
+            isEdit = true
             fragment = AddressFormFragment.newInstance(addressId = addressId)
         }
         else if (intent.extras != null) {
             val bundle = intent.extras
             isPositiveFlow = bundle?.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            isEdit = false
             fragment = AddressFormFragment.newInstance(bundle?: Bundle())
         }
         return fragment
@@ -44,8 +48,12 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
 
     override fun onBackPressed() {
         super.onBackPressed()
-        if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
-        else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+        if (!isEdit) {
+            if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
+            else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
+        } else {
+            EditAddressRevampAnalytics.onClickBackArrowEditAddress(userSession.userId)
+        }
     }
 
 }

@@ -49,6 +49,7 @@ import com.tokopedia.logisticaddaddress.domain.model.add_address.ContactData
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.LabelAlamatChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.pinpointnew.PinpointNewPageActivity
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetRevamp
 import com.tokopedia.logisticaddaddress.utils.AddEditAddressUtil
@@ -135,6 +136,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
                 currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
             } else {
+                EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
                 addressId = it.getString(EXTRA_ADDRESS_ID, "")
             }
         }
@@ -279,18 +281,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 is Success -> {
                     if (it.data.isSuccess == 1) {
                         onSuccessEditAddress()
+                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
+                    } else {
+                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
                     }
                 }
 
                 is Fail -> {
-//                    if (isPositiveFlow) {
-//                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(userSession.userId, "")
-//                        AddNewAddressRevampAnalytics.onClickSimpanPositive(userSession.userId, NOT_SUCCESS)
-//                    }
-//                    else {
-//                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, "")
-//                        AddNewAddressRevampAnalytics.onClickSimpanNegative(userSession.userId, NOT_SUCCESS)
-//                    }
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
                     val msg = it.throwable.message.toString()
                     view?.let { view -> Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
                 }
@@ -444,8 +442,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             formAccount.etNomorHp.textFieldInput.setText(data.phone)
 //            formAccount.etNomorHp.setFirstIcon(R.drawable.ic_contact_black)
             formAccount.etNomorHp.getFirstIcon().setOnClickListener {
-//                if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickIconPhoneBookPositive(userSession.userId)
-//                else AddNewAddressRevampAnalytics.onClickIconPhoneBookNegative(userSession.userId)
+                EditAddressRevampAnalytics.onClickIconPhoneBook(userSession.userId)
                 onNavigateToContact()
             }
 //            formAccount.etNomorHp.textFieldInput.addTextChangedListener(setWrapperWatcherPhone(formAccount.etNomorHp.textFieldWrapper, getString(R.string.validate_no_ponsel_new)))
@@ -464,7 +461,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             setupNegativePinpointCard()
             binding?.run {
                 cardAddressNegative.root.setOnClickListener {
-//                    AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
+                    EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
                     checkKotaKecamatan()
                 }
 
@@ -473,12 +470,12 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     inputType = InputType.TYPE_NULL
                     setOnFocusChangeListener { _, hasFocus ->
                         if (hasFocus) {
-//                            AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
+                            EditAddressRevampAnalytics.onClickFieldKotaKecamatan(userSession.userId)
                             showDistrictRecommendationBottomSheet(false)
                         }
                     }
                     setOnClickListener {
-//                        AddNewAddressRevampAnalytics.onClickFieldKotaKecamatanNegative(userSession.userId)
+                        EditAddressRevampAnalytics.onClickFieldKotaKecamatan(userSession.userId)
                         showDistrictRecommendationBottomSheet(false)
                     }
                 }
@@ -499,6 +496,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 cardAddress.btnChange.visibility = View.VISIBLE
                 cardAddress.btnChange.setOnClickListener {
                     goToPinpointPage()
+                    EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
                 }
 
                 cardAddress.addressDistrict.text = formattedAddress
@@ -510,7 +508,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding?.userConsent, getString(R.string.btn_simpan), if(isPositiveFlow) LogisticUserConsentHelper.ANA_REVAMP_POSITIVE else LogisticUserConsentHelper.ANA_REVAMP_NEGATIVE)
+        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, binding?.userConsent, getString(R.string.btn_simpan), EditAddressRevampAnalytics.CATEGORY_EDIT_ADDRESS_PAGE)
 
         binding?.btnSaveAddressNew?.setOnClickListener {
             if (validateForm()) {
@@ -656,6 +654,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             } else if (!validated && !isPositiveFlow) {
                 AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(userSession.userId, field)
             }
+        } else {
+            if (!validated) {
+                EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                EditAddressRevampAnalytics.onClickSimpanError(userSession.userId, field)
+            }
         }
         return validated
     }
@@ -713,7 +716,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint)
+        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint, isEdit = isEdit)
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
     }
@@ -847,53 +850,87 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
             formAccount.etNamaPenerima.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaPositive(userSession.userId)
-                    else  AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaNegative(userSession.userId)
+                    if (!isEdit) {
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaPositive(userSession.userId)
+                        else  AddNewAddressRevampAnalytics.onClickFieldNamaPenerimaNegative(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldNamaPenerima(userSession.userId)
+                    }
                 }
             }
 
             formAccount.etNomorHp.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickFieldNomorHpPositive(userSession.userId)
-                    else  AddNewAddressRevampAnalytics.onClickFieldNomorHpNegative(userSession.userId)
+                    if (!isEdit) {
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickFieldNomorHpPositive(userSession.userId)
+                        else  AddNewAddressRevampAnalytics.onClickFieldNomorHpNegative(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldNomorHp(userSession.userId)
+                    }
                 }
             }
 
             formAddress.etLabel.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     eventShowListLabelAlamat()
-                    AddNewAddressRevampAnalytics.onClickFieldLabelAlamatPositive(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldLabelAlamatPositive(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldLabelAlamat(userSession.userId)
+                    }
+
                 }
             }
 
             formAddress.etAlamatNew.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressRevampAnalytics.onClickFieldAlamatPositive(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldAlamatPositive(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldAlamat(userSession.userId)
+                    }
                 }
             }
 
             formAddress.etCourierNote.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressRevampAnalytics.onClickFieldCatatanKurirPositive(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldCatatanKurirPositive(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldCatatanKurir(userSession.userId)
+                    }
                 }
             }
 
             formAddressNegative.etLabel.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     eventShowListLabelAlamat()
-                    AddNewAddressRevampAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldLabelAlamatNegative(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldLabelAlamat(userSession.userId)
+                    }
+
                 }
             }
 
             formAddressNegative.etAlamat.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressRevampAnalytics.onClickFieldAlamatNegative(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldAlamatNegative(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldAlamat(userSession.userId)
+                    }
                 }
             }
 
             formAddressNegative.etCourierNote.textFieldInput.setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
-                    AddNewAddressRevampAnalytics.onClickFieldCatatanKurirNegative(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickFieldCatatanKurirNegative(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickFieldCatatanKurir(userSession.userId)
+                    }
                 }
             }
         }
@@ -1090,18 +1127,26 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             if (isPositiveFlow) {
                 formAddress.rvLabelAlamatChips.visibility = View.GONE
                 formAddress.etLabel.textFieldInput.run {
-                    AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickChipsLabelAlamat(userSession.userId)
+                    }
                     setText(labelAlamat)
                     setSelection(formAddress.etLabel.textFieldInput.text.length)
                 }
             } else {
                 formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
                 formAddressNegative.etLabel.textFieldInput.run {
-                    AddNewAddressRevampAnalytics.onClickChipsLabelAlamatNegative(userSession.userId)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickChipsLabelAlamatNegative(userSession.userId)
+                    } else {
+                        EditAddressRevampAnalytics.onClickChipsLabelAlamat(userSession.userId)
+                    }
                     setText(labelAlamat)
                     setSelection(formAddressNegative.etLabel.textFieldInput.text.length)
                 }
-            }   
+            }
         }
     }
 
