@@ -98,6 +98,6 @@ const val dd_MMM_yyyy_HH_mm = "dd MMM yyyy, HH:mm"
 
 const val UTC = "UTC"
 
-const val CLICK_TYPE = "click"
+const val CLICK_TYPE = "totalClick"
 
-const val COMMISSION_TYPE = "commission"
+const val COMMISSION_TYPE = "totalCommission"
