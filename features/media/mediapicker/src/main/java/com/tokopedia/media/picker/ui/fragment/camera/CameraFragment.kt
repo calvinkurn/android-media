@@ -172,9 +172,13 @@ open class CameraFragment : BaseDaggerFragment()
         if (cameraView.isTakingPicture() || cameraView.isTakingVideo()) return
         cameraView.toggleFacing()
 
-        val cameraStateString =
-            if (cameraView.isFacingCameraIsFront()) CAMERA_FRONT_STRING else CAMERA_BACK_STRING
-        cameraAnalytics.clickFlip(cameraStateString)
+        val cameraState = if (cameraView.isFacingCameraIsFront()) {
+            CAMERA_FRONT_STRING
+        } else {
+            CAMERA_BACK_STRING
+        }
+
+        cameraAnalytics.clickFlip(cameraState)
     }
 
     override fun onTakeMediaClicked() {
