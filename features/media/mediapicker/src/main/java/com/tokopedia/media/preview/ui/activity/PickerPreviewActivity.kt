@@ -16,6 +16,7 @@ import com.tokopedia.media.preview.analytics.PREVIEW_PAGE_UPLOAD
 import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_CAMMERA
 import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_GALLERY
 import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_RECORDER
+import com.tokopedia.media.preview.analytics.PreviewAnalytics
 import com.tokopedia.media.preview.analytics.PreviewAnalyticsImpl
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.di.module.PreviewModule
@@ -36,7 +37,7 @@ class PickerPreviewActivity : BaseActivity()
     , DrawerSelectionWidget.Listener {
 
     @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var previewAnalytics: PreviewAnalyticsImpl
+    @Inject lateinit var previewAnalytics: PreviewAnalytics
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
@@ -61,10 +62,6 @@ class PickerPreviewActivity : BaseActivity()
         ViewModelProvider(this)[PreviewViewModel::class.java]
     }
 
-    private val pageSource by lazy {
-        param.get().pageSourceName()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preview)
@@ -84,7 +81,7 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onCloseClicked() {
-        previewAnalytics.clickBackButton(pageSource)
+        previewAnalytics.clickBackButton()
         onBackPickerIntent()
     }
 
@@ -98,8 +95,12 @@ class PickerPreviewActivity : BaseActivity()
 
     override fun onContinueClicked() {
         val isWithEditor = param.get().withEditor()
-        val buttonState = if(isWithEditor) PREVIEW_PAGE_LANJUT else PREVIEW_PAGE_UPLOAD
-        previewAnalytics.clickNextButton(pageSource, buttonState)
+        val buttonState = if (isWithEditor) {
+            PREVIEW_PAGE_LANJUT
+        } else {
+            PREVIEW_PAGE_UPLOAD
+        }
+        previewAnalytics.clickNextButton(buttonState)
 
         val result = uiModel
             .map { it.path }
@@ -128,7 +129,7 @@ class PickerPreviewActivity : BaseActivity()
 
         binding?.drawerSelector?.setThumbnailSelected(previousIndex, drawerIndexSelected)
 
-        previewAnalytics.clickDrawerThumbnail(pageSource)
+        previewAnalytics.clickDrawerThumbnail()
     }
 
     override fun onDataSetChanged(action: DrawerActionType) {
@@ -236,7 +237,7 @@ class PickerPreviewActivity : BaseActivity()
         }
 
         binding?.btnRetake?.setOnClickListener {
-            previewAnalytics.clickRetakeButton(pageSource, retakeState)
+            previewAnalytics.clickRetakeButton(retakeState)
             onCancelOrRetakeMedia(media)
         }
     }

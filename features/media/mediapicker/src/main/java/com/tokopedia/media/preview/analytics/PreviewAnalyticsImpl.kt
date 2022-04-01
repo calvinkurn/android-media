@@ -1,51 +1,56 @@
 package com.tokopedia.media.preview.analytics
 
+import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class PreviewAnalyticsImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val paramCacheManager: ParamCacheManager
 ) : PreviewAnalytics {
     private val userId: String
-        get() = userSession.userId
+        get() = userSession.userId ?: ""
 
     private val shopId: String
-        get() = userSession.shopId?: ""
+        get() = userSession.shopId ?: ""
 
-    override fun clickNextButton(entryPoint: String, buttonState: String) {
+    private val sourcePage: String
+        get() = paramCacheManager.get().pageSourceName()
+
+    override fun clickNextButton(buttonState: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_NEXT,
             eventCategory = CATEGORY_MEDIA_PREVIEW,
-            eventLabel = "$buttonState - $entryPoint - $userId - $shopId"
+            eventLabel = "$buttonState - $sourcePage - $userId - $shopId"
         )
     }
 
-    override fun clickBackButton(entryPoint: String) {
+    override fun clickBackButton() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_BACK,
             eventCategory = CATEGORY_MEDIA_PREVIEW,
-            eventLabel = "$entryPoint - $userId - $shopId"
+            eventLabel = "$sourcePage - $userId - $shopId"
         )
     }
 
-    override fun clickRetakeButton(entryPoint: String, retakeState: String) {
+    override fun clickRetakeButton(retakeState: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_ULANG,
             eventCategory = CATEGORY_MEDIA_PREVIEW,
-            eventLabel = "$retakeState - $entryPoint - $userId - $shopId"
+            eventLabel = "$retakeState - $sourcePage - $userId - $shopId"
         )
     }
 
-    override fun clickDrawerThumbnail(entryPoint: String) {
+    override fun clickDrawerThumbnail() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_THUMBNAIL,
             eventCategory = CATEGORY_MEDIA_PREVIEW,
-            eventLabel = "$entryPoint - $userId - $shopId"
+            eventLabel = "$sourcePage - $userId - $shopId"
         )
     }
 
