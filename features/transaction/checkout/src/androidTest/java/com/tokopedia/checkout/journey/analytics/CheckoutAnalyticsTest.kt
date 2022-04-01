@@ -56,7 +56,7 @@ class CheckoutAnalyticsTest {
             clickChoosePaymentButton(activityRule)
         } validateAnalytics  {
             waitForData()
-            hasPassedAnalytics(cassavaTestRule, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
         }
     }
 
