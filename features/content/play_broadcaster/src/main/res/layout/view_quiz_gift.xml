@@ -5,15 +5,18 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:id="@+id/cl_label_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="@drawable/bg_play_quiz_gift"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:padding="@dimen/spacing_lvl3">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_quiz_gift"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="GIFT"
@@ -31,12 +34,12 @@
             app:layout_constraintBottom_toBottomOf="@id/ic_quiz_gift"
             app:layout_constraintStart_toEndOf="@id/ic_quiz_gift"
             app:layout_constraintTop_toTopOf="@id/ic_quiz_gift"
-            app:typographyType="body_1" />
+            app:typographyType="body_2" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_quiz_chevron_right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/spacing_lvl3"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
@@ -45,6 +48,85 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toEndOf="@id/tv_bro_quiz_gift_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_input_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@drawable/bg_play_quiz_gift"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="@dimen/spacing_lvl3">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_quiz_input_gift"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="GIFT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_bro_quiz_gift_input_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:text="@string/play_bro_quiz_gift_input_label"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/ic_quiz_input_gift"
+            app:layout_constraintStart_toEndOf="@id/ic_quiz_input_gift"
+            app:layout_constraintTop_toTopOf="@id/ic_quiz_input_gift"
+            app:typographyType="body_2" />
+
+        <FrameLayout
+            android:id="@+id/fl_divider"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_Static_White"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintTop_toTopOf="@id/ic_quiz_input_gift"
+            app:layout_constraintBottom_toBottomOf="@id/ic_quiz_input_gift"
+            app:layout_constraintStart_toEndOf="@id/tv_bro_quiz_gift_input_label"
+            />
+
+        <EditText
+            android:id="@+id/et_bro_quiz_gift"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/play_bro_quiz_gift_hint"
+            android:background="@null"
+            android:inputType="textCapWords"
+            android:textColor="@color/Unify_Static_White"
+            android:textColorHint="@color/play_bro_quiz_header_title_hint"
+            android:textStyle="bold"
+            android:textSize="@dimen/fontSize_lvl3"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:layout_constraintStart_toEndOf="@id/fl_divider"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ic_close_input_gift"
+            />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_close_input_gift"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="CLEAR"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/et_bro_quiz_gift"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

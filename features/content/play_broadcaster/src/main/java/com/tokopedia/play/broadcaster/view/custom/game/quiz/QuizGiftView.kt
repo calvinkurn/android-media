@@ -1,9 +1,12 @@
 package com.tokopedia.play.broadcaster.view.custom.game.quiz
 
 import android.content.Context
+import android.text.InputFilter
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
 
 /**
@@ -31,5 +34,29 @@ class QuizGiftView : ConstraintLayout {
         true,
     )
 
+    init {
+        binding.clLabelView.setOnClickListener {
+            binding.clLabelView.hide()
+            binding.clInputView.show()
+        }
 
+        binding.icCloseInputGift.setOnClickListener {
+            binding.clLabelView.show()
+            binding.clInputView.hide()
+        }
+    }
+
+    var maxLength: Int = 0
+        set(value) {
+            field = value
+
+            binding.etBroQuizGift.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+        }
+
+    var gift: String = ""
+        set(value) {
+            field = value
+
+            binding.etBroQuizGift.setText(gift)
+        }
 }
