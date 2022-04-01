@@ -20,6 +20,7 @@ import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressViewM
 import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.ERROR_CODE_EMPTY_STATE_CHOSEN_ADDRESS
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -208,7 +209,7 @@ class ChooseAddressWidget : ConstraintLayout,
         val localData = ChooseAddressUtils.getLocalizingAddressData(context)
         updateWidget()
         if (viewModel.isFirstLoad) {
-            if (localData.address_id.isEmpty()) {
+            if (localData.address_id.isEmpty() || localData.version != LCA_VERSION) {
                 initChosenAddressObserver()
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
