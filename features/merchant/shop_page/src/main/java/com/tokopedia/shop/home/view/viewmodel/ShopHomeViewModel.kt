@@ -35,6 +35,7 @@ import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
+import com.tokopedia.shop.common.util.ShopAsyncErrorException
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
 import com.tokopedia.shop.common.util.ShopPageMapper
@@ -279,7 +280,7 @@ class ShopHomeViewModel @Inject constructor(
             productDetails: List<ShopHomeBundleProductUiModel>,
             onFinishAddToCart: (atcBundleModel: AddToCartBundleModel) -> Unit,
             onErrorAddBundleToCart: (exception: Throwable) -> Unit,
-            bundleQuantity: Int
+            productQuantity: Int
     ) {
 
         launchCatchError(block = {
@@ -287,7 +288,7 @@ class ShopHomeViewModel @Inject constructor(
             val bundleProductDetails = productDetails.map {
                 ProductDetail(
                         productId = it.productId,
-                        quantity = bundleQuantity,
+                        quantity = productQuantity,
                         shopId = shopId,
                         customerId = userId
                 )
@@ -296,7 +297,7 @@ class ShopHomeViewModel @Inject constructor(
             val atcBundleParams = AddToCartBundleRequestParams(
                     shopId = shopId,
                     bundleId = bundleId,
-                    bundleQty = bundleQuantity,
+                    bundleQty = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_QUANTITY,
                     selectedProductPdp = ShopHomeProductBundleItemUiModel.DEFAULT_BUNDLE_PRODUCT_PARENT_ID,
                     productDetails = bundleProductDetails
             )
@@ -759,7 +760,10 @@ class ShopHomeViewModel @Inject constructor(
             _shopHomeWidgetContentData.emit(Success(mapShopHomeWidgetData))
         }) {
             _shopHomeWidgetContentDataError.emit(listWidgetLayout)
-            _shopHomeWidgetContentData.emit(Fail(it))
+            _shopHomeWidgetContentData.emit(Fail(ShopAsyncErrorException(
+                ShopAsyncErrorException.AsyncQueryType.SHOP_PAGE_GET_LAYOUT_V2,
+                it
+            )))
         }
     }
 

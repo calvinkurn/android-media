@@ -33,6 +33,8 @@ sealed class PowerMerchantStatus : ShopType(POWER_MERCHANT_LAYOUT, POWER_MERCHAN
 
 sealed class RegularMerchant : ShopType(REGULAR_MERCHANT_LAYOUT, REGULAR_MERCHANT_HEADER) {
     object NeedUpgrade: RegularMerchant()
+    object Verified: RegularMerchant()
+    object Pending: RegularMerchant()
 }
 
 sealed class PowerMerchantProStatus : ShopType(POWER_MERCHANT_PRO_LAYOUT, POWER_MERCHANT_HEADER, POWER_MERCHANT_PRO_HEADER_ICON) {
