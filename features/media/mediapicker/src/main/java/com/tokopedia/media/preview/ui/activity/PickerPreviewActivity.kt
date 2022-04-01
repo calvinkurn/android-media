@@ -36,8 +36,11 @@ class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
     , DrawerSelectionWidget.Listener {
 
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var previewAnalytics: PreviewAnalytics
+    @Inject
+    lateinit var param: ParamCacheManager
+    
+    @Inject
+    lateinit var previewAnalytics: PreviewAnalytics
 
     private val binding: ActivityPreviewBinding? by viewBinding()
     private val uiModel = arrayListOf<MediaUiModel>()
