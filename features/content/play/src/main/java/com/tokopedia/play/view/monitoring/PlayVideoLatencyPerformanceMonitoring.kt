@@ -1,11 +1,7 @@
 package com.tokopedia.play.view.monitoring
 
-import android.util.Log
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.play_common.util.PlayConnectionCommon
-import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import javax.inject.Inject
-
 
 /**
  * Created by mzennis on 08/03/21.
@@ -26,7 +22,6 @@ class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
         reset()
 
         mTotalDuration = System.currentTimeMillis()
-        Log.d("SUKSES", mTotalDuration.toString())
         mPerformanceMonitoring = PerformanceMonitoring.start(PLAY_VIDEO_LATENCY_TRACE)
         mHasStarted = true
     }
@@ -37,8 +32,6 @@ class PlayVideoLatencyPerformanceMonitoring @Inject constructor() {
         mPerformanceMonitoring?.stopTrace()
         mTotalDuration = System.currentTimeMillis() - mTotalDuration
         mHasStarted = false
-
-        PlayLiveRoomMetricsCommon.getTimeToFirstByte(mTotalDuration)
     }
 
     fun reset() {

@@ -2,17 +2,13 @@ package com.tokopedia.play.view.fragment
 
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.firebase.BuildConfig
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -54,12 +50,12 @@ import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.uimodel.PlayCastState
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
-import com.tokopedia.play_common.util.PlayConnectionCommon
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -80,7 +76,8 @@ class PlayVideoFragment @Inject constructor(
         private val dispatchers: CoroutineDispatchers,
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
-        private val pipSessionStorage: PiPSessionStorage
+        private val pipSessionStorage: PiPSessionStorage,
+        private val playLog: PlayLog
 ) : TkpdBaseV4Fragment(), PlayFragmentContract, VideoViewComponent.DataSource {
 
     private val job = SupervisorJob()
@@ -224,10 +221,13 @@ class PlayVideoFragment @Inject constructor(
 
         val theActivity = requireActivity()
         if (theActivity is PlayActivity) {
-            playParentViewModel = ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(PlayParentViewModel::class.java)
+            playParentViewModel =
+                ViewModelProvider(theActivity, theActivity.getViewModelFactory()).get(
+                    PlayParentViewModel::class.java
+                )
         }
-
-        Log.d("LOG VIDEO", "inetSpeed: ${PlayLiveRoomMetricsCommon.getInetSpeed(requireContext())}")
+        playViewModel.handleInetSpeed(PlayLiveRoomMetricsCommon.getInetSpeed(requireContext()))
+        playLog.sendAll(playViewModel.channelId, (playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -315,7 +315,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog, playViewModel.latestCompleteChannelData)
     }
 
     private fun initView(view: View) {
@@ -508,11 +508,6 @@ class PlayVideoFragment @Inject constructor(
             videoLoadingView.showCasting()
             return
         }
-       val a =  (BuildConfig.VERSION_CODE.toString() +
-                Build.VERSION.SDK_INT.toString() + Build.MANUFACTURER+ Build.MODEL)
-        Log.d("SUKSES" , a)
-        PlayConnectionCommon.isConnectCellular(context = requireContext())
-
         when (state) {
             PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
             is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = state.bufferSource)

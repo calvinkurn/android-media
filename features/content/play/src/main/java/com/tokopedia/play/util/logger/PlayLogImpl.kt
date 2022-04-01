@@ -2,6 +2,7 @@ package com.tokopedia.play.util.logger
 
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import java.util.concurrent.ConcurrentLinkedQueue
 import javax.inject.Inject
 
@@ -24,16 +25,19 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
     }
 
     //[(duration, timestamp),(duration, timestamp)]
-    override fun logBufferEvent(bufferingEvent: List<Pair<String, String>>, bufferingCount: Int) {
+    override fun logBufferEvent(bufferingEvent: PlayLiveRoomMetricsCommon.BufferEvent, bufferingCount: Int) {
         logCollector.collect(
             Pair("bufferingCount", bufferingCount.toString())
         )
+
+        logCollector.addList(bufferingEvent)
+
         logCollector.collect(
-            Pair("bufferingEvent", bufferingEvent.toString())
+            Pair("bufferingEvent", logCollector.getList())
         )
     }
 
-    override fun lofWatchingDuration(watchingTime: String) {
+    override fun logWatchingDuration(watchingTime: String) {
         logCollector.collect(
             Pair("watchingDuration", watchingTime)
         )
@@ -58,18 +62,25 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
 
     companion object{
         private const val PLAY_LOG_TAG = "PlayViewerMonitoring"
-        private const val LIMIT_LOG = 5
+        private const val LIMIT_LOG = 10
     }
 }
 
 class PlayLogCollector @Inject constructor(){
-    private val logs = ConcurrentLinkedQueue<Pair<String, String>>()
+    private val logs = ConcurrentLinkedQueue<Pair<String, Any>>()
+    private val listOfLogs = mutableListOf<Any>()
 
-    fun collect(log: Pair<String, String>) {
+    fun collect(log: Pair<String, Any>) {
         logs.add(log)
     }
 
-    fun getAll(): ConcurrentLinkedQueue<Pair<String, String>> {
+    fun getAll(): ConcurrentLinkedQueue<Pair<String, Any>> {
         return logs
     }
+
+    fun addList(data: Any){
+        listOfLogs.add(data)
+    }
+
+    fun getList() = listOfLogs
 }

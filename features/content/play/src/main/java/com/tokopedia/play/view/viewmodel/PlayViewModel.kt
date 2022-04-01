@@ -462,7 +462,10 @@ class PlayViewModel @AssistedInject constructor(
 
     private val videoPerformanceListener = object : PlayViewerVideoPerformanceListener {
         override fun onPlaying() {
-            if (videoLatencyPerformanceMonitoring.hasStarted) videoLatencyPerformanceMonitoring.stop()
+            if (videoLatencyPerformanceMonitoring.hasStarted) {
+                videoLatencyPerformanceMonitoring.stop()
+                playLog.logTimeToFirstByte(videoLatencyPerformanceMonitoring.totalDuration.toString())
+            }
         }
 
         override fun onError() {
@@ -2018,6 +2021,10 @@ class PlayViewModel @AssistedInject constructor(
             metaTitle = shareInfo.metaTitle,
             metaDescription = shareInfo.metaDescription,
         )
+    }
+
+     fun handleInetSpeed(speedInMBps: Int){
+        playLog.logDownloadSpeed(speedInMBps.toString())
     }
 
     companion object {

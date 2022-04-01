@@ -1,8 +1,12 @@
 package com.tokopedia.play.analytic
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.view.storage.PlayChannelData
+import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import kotlin.math.abs
 
@@ -11,7 +15,9 @@ import kotlin.math.abs
  */
 class VideoAnalyticHelper(
         private val context: Context,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val log: PlayLog,
+        private val channelData: PlayChannelData
 ) {
 
     @TrackingField
@@ -55,7 +61,9 @@ class VideoAnalyticHelper(
                     shouldTrackNext = bufferTrackingModel.shouldTrackNext
             )
 
-            PlayLiveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
+            val bufferEvent = PlayLiveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
+            log.logBufferEvent(bufferingCount = bufferEvent.second, bufferingEvent = bufferEvent.first)
+            log.sendAll(channelData.id, (channelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl)
 
         } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
             if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic()
@@ -79,7 +87,8 @@ class VideoAnalyticHelper(
                     cumulationDuration = watchDurationModel.cumulationDuration + abs(System.currentTimeMillis() - watchTime)
             )
         }
-        PlayLiveRoomMetricsCommon.getWatchingDuration(watchDurationModel.cumulationDuration)
+
+        log.logWatchingDuration(watchDurationModel.cumulationDuration.toString())
     }
 
     /**

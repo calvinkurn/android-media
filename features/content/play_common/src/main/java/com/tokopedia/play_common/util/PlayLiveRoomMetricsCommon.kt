@@ -3,7 +3,6 @@ package com.tokopedia.play_common.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
-import android.util.Log
 import java.lang.Exception
 
 /**
@@ -29,47 +28,18 @@ object PlayLiveRoomMetricsCommon {
         } catch (e: Exception) {
             0
         }
-
-        /***
-         * Send to logger - put it on view model first fetch - buffer
-         */
     }
 
     /***
      * Get buffering event from video [duration, timestamp]
      */
     @JvmStatic
-    fun getBufferingEventData(bufferCount: Int, timestamp: Long){
+    fun getBufferingEventData(bufferCount: Int, timestamp: Long): Pair<BufferEvent, Int>{
         val currentTimeStamp = System.currentTimeMillis()
         val duration = currentTimeStamp - timestamp
 
-        Log.d("LOG VIDEO", "watching buffer duration: $duration")
-        Log.d("LOG VIDEO", "watching buffer count: $bufferCount")
-
-        /***
-         * Send to logger - data from analytics
-         */
+        return Pair(BufferEvent(duration, timestamp), bufferCount)
     }
 
-    /***
-     * Get watch duration from video
-     */
-    @JvmStatic
-    fun getWatchingDuration(duration: Long){
-        Log.d("LOG VIDEO", "watching duration: $duration")
-        /***
-         * Send to logger - data from analytics
-         */
-    }
-
-    /***
-     * Get time to first byte
-     */
-    @JvmStatic
-    fun getTimeToFirstByte(duration: Long){
-        Log.d("LOG VIDEO", "time to first byte: $duration")
-        /***
-         * Send to logger - data from Video Latency
-         */
-    }
+    data class BufferEvent(val duration: Long, val timestamp: Long)
 }
