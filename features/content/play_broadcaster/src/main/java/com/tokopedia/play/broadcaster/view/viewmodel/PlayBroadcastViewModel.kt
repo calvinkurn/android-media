@@ -979,6 +979,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             /** TODO: submit data */
             delay(2000)
 
+            throw Exception("Testing aja")
+
             /** Reset Form */
             _quizFormData.setValue { QuizFormDataUiModel() }
             _quizFormState.setValue { QuizFormStateUiModel.Nothing }

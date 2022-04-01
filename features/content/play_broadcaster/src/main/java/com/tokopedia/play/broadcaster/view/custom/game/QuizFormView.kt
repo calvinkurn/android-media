@@ -16,7 +16,10 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
+import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
@@ -50,6 +53,8 @@ class QuizFormView : ConstraintLayout {
     private val bottomSheetHeaderBinding = BottomSheetHeaderBinding.bind(timePickerBinding.root)
 
     private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
+
+    val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     private val eventBus = EventBus<Event>()
 
@@ -149,6 +154,10 @@ class QuizFormView : ConstraintLayout {
 
     fun setError(throwable: Throwable) {
         /** TODO: handle error here */
+        showErrorToaster(
+            err = throwable,
+            bottomMargin = timePickerBinding.btnApply.height + offset8
+        )
     }
 
     private fun setupInsets() {
