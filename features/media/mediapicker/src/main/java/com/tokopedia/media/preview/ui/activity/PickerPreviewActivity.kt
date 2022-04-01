@@ -17,7 +17,6 @@ import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_CAMMERA
 import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_GALLERY
 import com.tokopedia.media.preview.analytics.PREVIEW_RETAKE_RECORDER
 import com.tokopedia.media.preview.analytics.PreviewAnalytics
-import com.tokopedia.media.preview.analytics.PreviewAnalyticsImpl
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.di.module.PreviewModule
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
