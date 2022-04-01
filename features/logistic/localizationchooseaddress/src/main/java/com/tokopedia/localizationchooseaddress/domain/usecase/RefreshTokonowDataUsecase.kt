@@ -1,10 +1,9 @@
 package com.tokopedia.localizationchooseaddress.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.data.query.RefreshTokonowDataQuery
 import com.tokopedia.localizationchooseaddress.domain.response.RefreshTokonowDataResponse
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class RefreshTokonowDataUsecase @Inject constructor(private val useCase: GraphqlUseCase<RefreshTokonowDataResponse.Data>) {
@@ -13,8 +12,9 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
         useCase.setTypeClass(RefreshTokonowDataResponse.Data::class.java)
     }
 
+    @GqlQuery(RefreshTokonowQuery, TOKONOW_REFRESH_USER_LCA_DATA)
     suspend fun execute(localCacheModel: LocalCacheModel): RefreshTokonowDataResponse.Data {
-        useCase.setGraphqlQuery(RefreshTokonowDataQuery)
+        useCase.setGraphqlQuery(RefreshTokonowQuery())
         useCase.setRequestParams(generateParam(localCacheModel))
         return useCase.executeOnBackground()
     }
@@ -46,5 +46,36 @@ class RefreshTokonowDataUsecase @Inject constructor(private val useCase: Graphql
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_SERVICE_TYPE = "serviceType"
         private const val PARAM_WAREHOUSES = "warehouses"
+        private const val RefreshTokonowQuery = "RefreshTokonowQuery"
+        private const val TOKONOW_REFRESH_USER_LCA_DATA = """
+    query TokonowRefreshUserLCAData(${'$'}tokonowLastUpdate:String!, ${'$'}districtID:String!, ${'$'}latitude:String, ${'$'}longitude:String, ${'$'}shopID:String!, ${'$'}warehouseID:String!, ${'$'}serviceType:String!, ${'$'}warehouses:[RefreshUserLCAWarehouse!]!){
+      TokonowRefreshUserLCAData(
+        tokonowLastUpdate: ${'$'}tokonowLastUpdate,
+        districtID: ${'$'}districtID, 
+        latitude: ${'$'}latitude, 
+        longitude: ${'$'}longitude,
+        shopID: ${'$'}shopID, 
+        warehouseID: ${'$'}warehouseID, 
+        serviceType: ${'$'}serviceType, 
+        warehouses: ${'$'}warehouses
+      ) {
+        header {
+          process_time
+          reason
+          error_code
+        }
+        data {
+          tokonowLastUpdate
+          warehouseID
+          shopID
+          serviceType
+          warehouses {
+            serviceType
+            warehouseID
+          }
+        }
+      }
+    }
+    """
     }
 }
