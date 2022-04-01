@@ -499,6 +499,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             getString(R.string.picker_storage_fail_video_record),
             Toaster.TYPE_ERROR
         )
+        cameraAnalytics.recordLowStorage(pageSource)
     }
 
     private fun onShowValidationToaster(messageId: Int, param: Any) {

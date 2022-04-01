@@ -89,6 +89,15 @@ class CameraAnalyticsImpl @Inject constructor(
         )
     }
 
+    override fun recordLowStorage(entryPoint: String) {
+        sendGeneralEvent(
+            event = EVENT_VIEW_COMMUNICATION,
+            eventAction = ACTION_LOW_STORAGE,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$entryPoint - $userId - $shopId",
+        )
+    }
+
     private fun sendGeneralEvent(
         event: String,
         eventCategory: String,

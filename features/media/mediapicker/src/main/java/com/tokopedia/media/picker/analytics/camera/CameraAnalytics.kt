@@ -36,4 +36,8 @@ interface CameraAnalytics {
         entryPoint: String
     )
 
+    fun recordLowStorage(
+        entryPoint: String
+    )
+
 }

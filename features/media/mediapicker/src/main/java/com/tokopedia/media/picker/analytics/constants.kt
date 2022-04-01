@@ -8,8 +8,6 @@ const val KEY_EVENT_LABEL = "eventLabel"
 const val KEY_CURRENT_SITE = "currentSite"
 const val KEY_USER_ID = "userId"
 const val KEY_BUSINESS_UNIT = "businessUnit"
-const val KEY_PAGE_PATH = "pagePath"
-const val KEY_PAGE_TYPE = "pageType"
 
 // event
 const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
@@ -20,7 +18,6 @@ const val CATEGORY_MEDIA_CAMERA = "media camera"
 const val CATEGORY_MEDIA_GALLERY = "media gallery"
 
 // event action
-const val ACTION_VISIT_CAMERA = "visit camera"
 const val ACTION_CLICK_RECORD = "click record"
 const val ACTION_CLICK_MEDIA = "click media"
 const val ACTION_CLICK_NEXT = "click lanjut"
@@ -41,6 +38,7 @@ const val ACTION_CLICK_FLASH = "click flash"
 const val ACTION_CLICK_FLIP = "click flip"
 const val ACTION_CLICK_TAB_GALLERY = "click gallery tab"
 const val ACTION_MAX_PHOTO = "max photo"
+const val ACTION_LOW_STORAGE = "low storage"
 
 // additional
 const val BUSINESS_UNIT = "media"
