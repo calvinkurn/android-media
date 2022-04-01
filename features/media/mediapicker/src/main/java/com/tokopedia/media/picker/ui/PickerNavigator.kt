@@ -98,7 +98,7 @@ class PickerNavigator constructor(
         return fragmentByTag ?: fragment
     }
 
-    private fun isCurrentPageOf(@FragmentType page: Int): Boolean {
+    fun isCurrentPageOf(@FragmentType page: Int): Boolean {
         val fragment = fragmentOf(page) ?: return false
         val fragmentState = fragment.lifecycle.currentState
 
