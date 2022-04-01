@@ -21,6 +21,16 @@ class DiscountBulkApplyViewModel @Inject constructor(
     private val getSlashPriceBenefitUseCase: GetSlashPriceBenefitUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val MINIMUM_DISCOUNT_AMOUNT = 100
+        private const val MINIMUM_DISCOUNT_PERCENTAGE = 1
+        private const val MAXIMUM_DISCOUNT_PERCENTAGE = 99
+        private const val MAXIMUM_PURCHASE_QUANTITY = 99_999
+        private const val ONE_YEAR = 1
+        private const val SIX_MONTH = 6
+        private const val ONE_MONTH = 1
+        private const val START_TIME_OFFSET_IN_MINUTES = 10
+    }
     private val _startDate = MutableLiveData<Date>()
     val startDate: LiveData<Date>
         get() = _startDate
@@ -29,12 +39,23 @@ class DiscountBulkApplyViewModel @Inject constructor(
     val endDate: LiveData<Date>
         get() = _endDate
 
-    private val _areInputValid = MutableLiveData<Boolean>()
-    val areInputValid: LiveData<Boolean>
+    private val _areInputValid = MutableLiveData<ValidationState>()
+    val areInputValid: LiveData<ValidationState>
         get() = _areInputValid
 
-    private var currentlySelectedStartDate = Date()
-    private var currentlySelectedEndDate = Date()
+    private val _discountType = MutableLiveData<DiscountType>()
+    val discountType: LiveData<DiscountType>
+        get() = _discountType
+
+    sealed class ValidationState {
+        object InvalidDiscountAmount : ValidationState()
+        object InvalidDiscountPercentage : ValidationState()
+        object InvalidMaxPurchase : ValidationState()
+        object Valid : ValidationState()
+    }
+
+    private var selectedStartDate : Date? = null
+    private var selectedEndDate : Date? = null
     private var selectedDiscountType = DiscountType.RUPIAH
     private var selectedDiscountAmount = 0
     private var selectedMaxQuantity = 1
@@ -57,98 +78,75 @@ class DiscountBulkApplyViewModel @Inject constructor(
     }
 
     fun validateInput() {
-        if (mode == DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS) {
-            val isValid = isValidDiscount(getCurrentSelection())
-            _areInputValid.value = isValid
+        if (selectedDiscountType == DiscountType.RUPIAH && selectedDiscountAmount < MINIMUM_DISCOUNT_AMOUNT) {
+            _areInputValid.value = ValidationState.InvalidDiscountAmount
             return
         }
 
-        if (mode == DiscountBulkApplyBottomSheet.Mode.HIDE_PERIOD_FIELDS) {
-            val isValid = isValidNonPeriodDiscount(getCurrentSelection())
-            _areInputValid.value = isValid
+        if (selectedDiscountType == DiscountType.PERCENTAGE && selectedDiscountAmount !in MINIMUM_DISCOUNT_PERCENTAGE..MAXIMUM_DISCOUNT_PERCENTAGE) {
+            _areInputValid.value = ValidationState.InvalidDiscountPercentage
             return
         }
+
+        if (selectedMaxQuantity >= MAXIMUM_PURCHASE_QUANTITY) {
+            _areInputValid.value = ValidationState.InvalidMaxPurchase
+            return
+        }
+
+        _areInputValid.value = ValidationState.Valid
     }
-
-    private fun isValidDiscount(discountSettings: DiscountSettings): Boolean {
-        if (discountSettings.startDate == null) {
-            return false
-        }
-
-        if (discountSettings.endDate == null) {
-            return false
-        }
-
-        if (discountSettings.discountAmount == 0) {
-
-            return false
-        }
-
-        if (discountSettings.maxPurchaseQuantity == 0) {
-            return false
-        }
-
-        return true
-    }
-
-    private fun isValidNonPeriodDiscount(discountSettings: DiscountSettings): Boolean {
-        if (discountSettings.discountAmount == 0) {
-            return false
-        }
-
-        if (discountSettings.maxPurchaseQuantity == 0) {
-            return false
-        }
-
-        return true
-    }
-
+    
     fun onOneYearPeriodSelected() {
-        val now = Date()
+        val startDate = getDefaultStartDate()
         val endDate = Calendar.getInstance()
-        endDate.add(Calendar.YEAR, 1)
+        endDate.add(Calendar.YEAR, ONE_YEAR)
 
-        this.currentlySelectedStartDate = now
-        this.currentlySelectedEndDate = endDate.time
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
-        _startDate.value = now
+        _startDate.value = startDate
         _endDate.value = endDate.time
     }
 
     fun onSixMonthPeriodSelected() {
-        val now = Date()
+        val startDate = getDefaultStartDate()
         val endDate = Calendar.getInstance()
-        endDate.add(Calendar.MONTH, 6)
+        endDate.add(Calendar.MONTH, SIX_MONTH)
 
-        this.currentlySelectedStartDate = now
-        this.currentlySelectedEndDate = endDate.time
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
-        _startDate.value = now
+        _startDate.value = startDate
         _endDate.value = endDate.time
     }
 
     fun onOneMonthPeriodSelected() {
-        val now = Date()
+        val startDate = getDefaultStartDate()
         val endDate = Calendar.getInstance()
-        endDate.add(Calendar.MONTH, 1)
+        endDate.add(Calendar.MONTH, ONE_MONTH)
 
-        this.currentlySelectedStartDate = now
-        this.currentlySelectedEndDate = endDate.time
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
-        _startDate.value = now
+        _startDate.value = startDate
         _endDate.value = endDate.time
     }
 
-    fun onCustomSelectionPeriodSelected(startDate: Date, endDate: Date) {
-        this.currentlySelectedStartDate = startDate
-        this.currentlySelectedEndDate = endDate
+    fun onCustomSelectionPeriodSelected() {
+        val startDate = getDefaultStartDate()
+        val endDate = Calendar.getInstance()
+        endDate.add(Calendar.MONTH, SIX_MONTH)
+
+        this.selectedStartDate = startDate
+        this.selectedEndDate = endDate.time
 
         _startDate.value = startDate
-        _endDate.value = endDate
+        _endDate.value = endDate.time
     }
 
     fun onDiscountTypeChanged(discountType: DiscountType) {
         this.selectedDiscountType = discountType
+        _discountType.value = discountType
     }
 
     fun onDiscountAmountChanged(discountAmount: Int) {
@@ -163,23 +161,37 @@ class DiscountBulkApplyViewModel @Inject constructor(
         this.mode = mode
     }
 
-    fun setCurrentlySelectedStartDate(currentlySelectedStartDate: Date) {
-        this.currentlySelectedStartDate = currentlySelectedStartDate
-    }
-
-    fun setCurrentlySelectedEndDate(currentlySelectedEndDate: Date) {
-        this.currentlySelectedEndDate = currentlySelectedEndDate
-    }
-
-
     fun getCurrentSelection(): DiscountSettings {
         return DiscountSettings(
-            currentlySelectedStartDate,
-            currentlySelectedEndDate,
+            selectedStartDate,
+            selectedEndDate,
             selectedDiscountType,
             selectedDiscountAmount,
             selectedMaxQuantity
         )
     }
 
+    private fun getDefaultStartDate(): Date {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.MINUTE, START_TIME_OFFSET_IN_MINUTES)
+        return calendar.time
+    }
+
+    fun getSelectedStartDate() : Date {
+        return selectedStartDate ?: Date()
+    }
+
+    fun getSelectedEndDate() : Date {
+        return selectedEndDate ?: Date()
+    }
+
+    fun setSelectedStartDate(startDate: Date) {
+        selectedStartDate = startDate
+        _startDate.value = startDate
+    }
+
+    fun setSelectedEndDate(endDate: Date) {
+        selectedEndDate = endDate
+        _endDate.value = endDate
+    }
 }

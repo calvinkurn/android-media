@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:paddingBottom="@dimen/unify_space_16">
 
     <ScrollView
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/btnApply"
-        android:fillViewport="true">
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -83,32 +85,32 @@
                 android:id="@+id/groupDiscountPeriod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tpgDiscountPeriod,chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection" />
+                app:constraint_referenced_ids="tpgDiscountPeriod,chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection, tfuStartDate, tfuEndDate" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/tfuStartDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_4"
                 app:layout_constraintEnd_toStartOf="@+id/tfuEndDate"
                 app:layout_constraintHorizontal_bias="0.5"
-                android:layout_marginEnd="@dimen/unify_space_4"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chipOneMonthPeriod"
-                app:unify_text_field_label_static="true"
-                app:unify_text_field_label="@string/sd_start_date" />
+                app:unify_text_field_label="@string/sd_start_date"
+                app:unify_text_field_label_static="true" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/tfuEndDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                android:layout_marginStart="@dimen/unify_space_4"
                 app:layout_constraintStart_toEndOf="@+id/tfuStartDate"
                 app:layout_constraintTop_toTopOf="@+id/tfuStartDate"
-                app:unify_text_field_label_static="true"
-                app:unify_text_field_label="@string/sd_end_date" />
+                app:unify_text_field_label="@string/sd_end_date"
+                app:unify_text_field_label_static="true" />
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/divider"
@@ -142,10 +144,11 @@
                 android:id="@+id/tfuDiscountAmount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="@dimen/unify_space_12"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/contentSwitcher"
+                app:unify_text_field_input_type="number"
                 app:unify_text_field_label="@string/sd_discount_amount"
                 app:unify_text_field_placeholder="@string/sd_discount_amount"
                 app:unify_text_field_prepend_text="@string/sd_rupiah" />
@@ -203,8 +206,14 @@
                 app:layout_constraintTop_toTopOf="@+id/tpgMaxPurchase"
                 app:qty_default_value="0"
                 app:qty_max_value="99"
-                app:qty_min_value="1"
+                app:qty_min_value="0"
                 app:unify_qty_step_value="1" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupChipPeriod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -214,15 +223,29 @@
         android:id="@+id/btnApply"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:enabled="false"
         android:text="@string/sd_apply"
+        android:visibility="gone"
         app:unifyButtonRightLoader="false"
         app:unifyButtonSize="large"
-        android:enabled="false"
         app:unifyButtonType="main"
-        app:unifyButtonVariant="filled" />
+        app:unifyButtonVariant="filled"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader"
+        android:layout_width="@dimen/unify_space_64"
+        android:layout_height="@dimen/unify_space_64"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        app:loader_type="circular" />
 
 </RelativeLayout>

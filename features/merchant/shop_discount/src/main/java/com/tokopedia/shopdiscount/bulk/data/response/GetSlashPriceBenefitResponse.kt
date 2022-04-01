@@ -32,7 +32,7 @@ data class GetSlashPriceBenefitResponse(
             @SerializedName("expired_at")
             val expiredAt: String = "",
             @SerializedName("expired_at_unix")
-            val expiredAtUnix: Int = 0,
+            val expiredAtUnix: Long = 0,
             @SerializedName("max_quota")
             val maxQuota: Int = 0,
             @SerializedName("package_id")

@@ -18,6 +18,10 @@
     <string name="sd_apply">Terapkan</string>
     <string name="sd_rupiah">Rp</string>
     <string name="sd_percent">%</string>
+    <string name="sd_invalid_discount_amount">Min. Rp100</string>
+    <string name="sd_invalid_discount_percentage">Diskon harus 1–99%</string>
+    <string name="sd_discount_percentage">Persentase diskon</string>
+    <string name="sd_invalid_max_purchase">Maks. pembelian tidak boleh melebihi 99.999</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
