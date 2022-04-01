@@ -187,9 +187,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
     fun validateBulkDelete() {
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
+        val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
         _uiEvent.value = UiEvent(
                 state = UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
-                data = unavailableProducts.second.size
+                data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
         )
     }
 
@@ -212,8 +213,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
             unavailableSectionItems.add(accordionDivider)
             unavailableSectionItems.add(it.second)
         }
+        val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
+        unavailableSectionItems.addAll(tmpCollapsedUnavailableItems.toMutableList())
+        deleteProducts(unavailableSectionItems, unavailableProducts.second.size + collapsedUnavailableProducts.second.size)
         tmpCollapsedUnavailableItems.clear()
-        deleteProducts(unavailableSectionItems, unavailableProducts.second.size)
     }
 
     fun toggleUnavailableProductsAccordion() {
@@ -255,7 +258,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         newAccordionUiModel.isCollapsed = false
         dataList[mAccordionData.first] = newAccordionUiModel
         val index = mAccordionData.first - 1
-        dataList.addAll(index, tmpCollapsedUnavailableItems)
+        dataList.addAll(index, tmpCollapsedUnavailableItems.toMutableList())
+        tmpCollapsedUnavailableItems.clear()
     }
 
     fun scrollToUnavailableItem() {
