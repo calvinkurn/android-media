@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -28,6 +29,7 @@ import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTrackin
 import com.tokopedia.review.feature.inbox.history.analytics.ReviewHistoryTrackingConstants
 import com.tokopedia.review.feature.inbox.history.di.DaggerReviewHistoryComponent
 import com.tokopedia.review.feature.inbox.history.di.ReviewHistoryComponent
+import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapter
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.ReviewHistoryAdapterTypeFactory
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.mapper.ReviewHistoryDataMapper
@@ -38,8 +40,10 @@ import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewH
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.FragmentReviewHistoryBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
@@ -62,6 +66,9 @@ class ReviewHistoryFragment :
     lateinit var viewModel: ReviewHistoryViewModel
 
     private var binding by autoClearedNullable<FragmentReviewHistoryBinding>()
+
+    private val reviewHistoryAdapter: ReviewHistoryAdapter
+        get() = adapter as ReviewHistoryAdapter
 
     override fun getComponent(): ReviewHistoryComponent? {
         return activity?.run {
@@ -96,9 +103,13 @@ class ReviewHistoryFragment :
 
     override fun getAdapterTypeFactory(): ReviewHistoryAdapterTypeFactory {
         return ReviewHistoryAdapterTypeFactory(
-            imagesClickListener = this,
-            reviewHistoryItemListener = this
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
+            reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
         )
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory> {
+        return ReviewHistoryAdapter(adapterTypeFactory)
     }
 
     override fun getScreenName(): String {
@@ -362,6 +373,31 @@ class ReviewHistoryFragment :
     private fun setupErrorPage() {
         binding?.reviewHistoryConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
             loadInitialData()
+        }
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            reviewHistoryAdapter.findReviewHistoryContainingThumbnail(item)?.let {
+                trackAttachedImageClicked(
+                    it.productrevFeedbackHistory.product.productId,
+                    it.productrevFeedbackHistory.review.feedbackId
+                )
+                onAttachedMediaClicked(
+                    it.productrevFeedbackHistory.product.productId,
+                    it.productrevFeedbackHistory.review.feedbackId,
+                    position,
+                    it.productrevFeedbackHistory.review.imageAttachments.map { it.fullSize },
+                    it.productrevFeedbackHistory.review.videoAttachments.mapNotNull { it.url }
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            item: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
         }
     }
 }
