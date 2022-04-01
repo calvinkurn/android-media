@@ -1,7 +1,6 @@
 package com.tokopedia.play.analytic
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.video.state.PlayViewerVideoState

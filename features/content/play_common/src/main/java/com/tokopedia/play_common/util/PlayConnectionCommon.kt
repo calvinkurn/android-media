@@ -4,7 +4,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import android.util.Log
 import java.lang.Exception
 
 object PlayConnectionCommon {
@@ -33,8 +32,6 @@ object PlayConnectionCommon {
                 val networkCapabilities = connectivityManager.activeNetwork ?: return false
                 val actNw =
                     connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
-                Log.d("sukses",actNw.linkUpstreamBandwidthKbps.toString())
-                Log.d("sukses",actNw.linkDownstreamBandwidthKbps.toString())
                 when {
                     checkWifi -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                     checkCellular -> return actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
@@ -75,26 +72,4 @@ object PlayConnectionCommon {
             false
         }
     }
-
-    /***
-     * Get user's avg internet connection speed, in Kbps
-     */
-    @JvmStatic
-    fun getInetSpeed(context: Context): Int {
-        return try {
-            val connectivityManager =
-                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val networkCapabilities = connectivityManager.activeNetwork
-                val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities)
-                val avgSpeed = (actNw?.linkDownstreamBandwidthKbps?.plus(actNw.linkUpstreamBandwidthKbps))?.div(2) ?: 0
-                avgSpeed
-            }else{
-                0
-            }
-        } catch (e: Exception) {
-            0
-        }
-    }
-
 }

@@ -3,7 +3,6 @@ package com.tokopedia.play.widget.player
 import android.content.Context
 import android.net.Uri
 import android.os.CountDownTimer
-import android.util.Log
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
