@@ -5,17 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:background="@color/Unify_Background"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/header"
+        android:id="@+id/headerCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_header_is_show_back_button="true"
-        app:unify_header_is_show_shadow="false"
-        app:unify_header_transparent_mode="true" />
+        app:unify_header_is_show_shadow="true" />
+
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/progressCard"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerCard"/>
 
     <View
         android:id="@+id/viewBg"
@@ -23,7 +30,16 @@
         android:layout_height="232dp"
         android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header" />
+        app:layout_constraintTop_toBottomOf="@+id/headerCard" />
+
+    <com.tokopedia.carousel.CarouselUnify
+        android:id="@+id/carouselCard"
+        android:layout_width="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerCard"
+        />
 
     <com.tokopedia.unifycomponents.TipsUnify
         android:id="@+id/tipTokomember"
@@ -54,6 +70,9 @@
         android:id="@+id/rvColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_12"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvTitleColor"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleColor" />
 
@@ -82,6 +101,8 @@
         android:id="@+id/rvCardBg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="@+id/tvTitleColor"
         app:layout_constraintTop_toBottomOf="@+id/tvTitleCardBg" />
 

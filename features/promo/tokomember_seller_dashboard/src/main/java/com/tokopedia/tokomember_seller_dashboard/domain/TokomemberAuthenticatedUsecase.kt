@@ -1,6 +1,5 @@
 package com.tokopedia.tokomember_seller_dashboard.domain
 
-import com.tokopedia.tokomember_seller_dashboard.model.TmSellerInfoResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

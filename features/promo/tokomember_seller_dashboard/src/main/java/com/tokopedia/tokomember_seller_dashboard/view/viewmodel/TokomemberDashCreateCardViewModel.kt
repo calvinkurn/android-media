@@ -28,7 +28,7 @@ class TokomemberDashCreateCardViewModel @Inject constructor(
             _tokomemberCardResultLiveData.postValue(Success(it))
         }, {
             _tokomemberCardResultLiveData.postValue(Fail(it))
-        }, 3684)
+        }, 3827)
     }
 
     override fun onCleared() {

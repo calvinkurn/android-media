@@ -44,6 +44,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
+    implementation projectOrAar(rootProject.ext.features.tokomemberUiCommon)
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
