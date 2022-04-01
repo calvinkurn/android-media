@@ -90,53 +90,28 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData()
+        val response = dataFactory.getFavoriteNumberData(false)
         onGetFavoriteNumber_thenReturn(response)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberChipsSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberListSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberPrefillSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give success fail`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
+    fun `when getting favoriteNumber without prefill should run and give success result`() {
+        val response = dataFactory.getFavoriteNumberData(false)
+        onGetFavoriteNumber_thenReturn(response)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberFail()
+        verifyGetFavoriteNumberChipsSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberListSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberPrefillSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
-
-    @Test
-    fun `given autoComplete loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setAutoCompleteLoading()
-        verifyGetAutoCompleteLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting autoComplete should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
-            val response = dataFactory.getFavoriteNumberData()
-            onGetAutoComplete_thenReturn(response)
-
-            viewModel.getAutoComplete(listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
-        }
-
-    @Test
-    fun `when getting autoComplete should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
-            onGetAutoComplete_thenReturn(NullPointerException())
-
-            viewModel.getAutoComplete(listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteFail()
-        }
 
     @Test
     fun `given catalogPrefixSelect loading state then should get loading state`() {

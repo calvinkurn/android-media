@@ -33,7 +33,6 @@ object DigitalPDPConstant {
     const val VALIDATOR_DELAY_TIME = 3000L
     const val DELAY_MULTI_TAB = 1000L
     const val DELAY_CLIENT_NUMBER_TRANSITION = 200L
-    const val DELAY_AUTOCOMPLETE = 500L
 
     const val CHECKOUT_NO_PROMO = "0"
     const val LOADER_DIALOG_TEXT = ""

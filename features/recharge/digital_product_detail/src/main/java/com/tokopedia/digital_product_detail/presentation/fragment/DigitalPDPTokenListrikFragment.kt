@@ -47,6 +47,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenListrikBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
@@ -222,10 +223,9 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 }
             }
         })
-        viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
+        viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpTokenListrikClientNumberWidget?.setFilterChipShimmer(true)
                 }
@@ -235,6 +235,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+            }
+        })
+
+        viewModel.prefillData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
             }
         })
 
@@ -332,10 +338,14 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        getAutoComplete()
-        getFavoriteNumber()
+        getFavoriteNumber(
+            listOf(
+                FavoriteNumberType.PREFILL,
+                FavoriteNumberType.CHIP,
+                FavoriteNumberType.LIST
+            )
+        )
         initEmptyState(data.banners)
-        renderPrefill(data.userPerso)
         renderTicker(data.tickers)
     }
 
@@ -417,32 +427,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getFavoriteNumber() {
+    private fun getFavoriteNumber(favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(listOf(categoryId), listOf(operatorId.toInt()))
-        }
-    }
-
-    private fun getAutoComplete() {
-        viewModel.run {
-            setAutoCompleteLoading()
-            getAutoComplete(listOf(categoryId), listOf(operatorId.toInt()))
-        }
-    }
-
-    private fun renderPrefill(data: TopupBillsUserPerso) {
-        if (operatorId.isEmpty()) {
-            operatorId = data.prefillOperatorId
-        }
-        inputNumberActionType = InputNumberActionType.NOTHING
-        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
-            } else {
-                setContactName(data.clientName)
-                setInputNumber(data.prefill, true)
-            }
+            getFavoriteNumbers(listOf(categoryId), listOf(operatorId.toInt()), favoriteNumberTypes)
         }
     }
 
@@ -577,9 +565,22 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.rechargePdpTokenListrikClientNumberWidget?.setFilterChipShimmer(false, true)
-        setupDynamicScrollViewPadding()
+    private fun onSuccessGetPrefill(prefills: List<TopupBillsPersoFavNumberItem>) {
+        inputNumberActionType = InputNumberActionType.NOTHING
+        binding?.rechargePdpTokenListrikClientNumberWidget?.run {
+            if (clientNumber.isNotEmpty()) {
+                setInputNumber(clientNumber, true)
+            } else {
+                if (isInputFieldEmpty() && prefills.isNotEmpty()) {
+                    if (prefills.first().subtitle.isNotEmpty()) {
+                        setContactName(prefills.first().title)
+                        setInputNumber(prefills.first().subtitle, true)
+                    } else {
+                        setInputNumber(prefills.first().title, true)
+                    }
+                }
+            }
+        }
     }
 
     private fun onSuccessGetOperatorSelectGroup() {
@@ -1126,8 +1127,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
-                getAutoComplete()
-                getFavoriteNumber()
+                getFavoriteNumber(
+                    listOf(
+                        FavoriteNumberType.CHIP,
+                        FavoriteNumberType.LIST
+                    )
+                )
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {

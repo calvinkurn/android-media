@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
-import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
@@ -52,6 +51,7 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -316,10 +316,9 @@ class DigitalPDPDataPlanFragment :
             }
         })
 
-        viewModel.favoriteNumberData.observe(viewLifecycleOwner, {
+        viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
-                is RechargeNetworkResult.Fail -> onFailedGetFavoriteNumber(it.error)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(true)
                 }
@@ -329,6 +328,12 @@ class DigitalPDPDataPlanFragment :
         viewModel.autoCompleteData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetAutoComplete(it.data)
+            }
+        })
+
+        viewModel.prefillData.observe(viewLifecycleOwner, {
+            when (it) {
+                is RechargeNetworkResult.Success -> onSuccessGetPrefill(it.data)
             }
         })
 
@@ -480,28 +485,16 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun getFavoriteNumber() {
+    private fun getFavoriteNumbers(favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModel.run {
             setFavoriteNumberLoading()
-            getFavoriteNumber(
+            getFavoriteNumbers(
                 listOf(
                     TelcoCategoryType.CATEGORY_PULSA,
                     TelcoCategoryType.CATEGORY_PAKET_DATA,
                     TelcoCategoryType.CATEGORY_ROAMING
-                )
-            )
-        }
-    }
-
-    private fun getAutoComplete() {
-        viewModel.run {
-            setAutoCompleteLoading()
-            getAutoComplete(
-                listOf(
-                    TelcoCategoryType.CATEGORY_PULSA,
-                    TelcoCategoryType.CATEGORY_PAKET_DATA,
-                    TelcoCategoryType.CATEGORY_ROAMING
-                )
+                ),
+                favoriteNumberTypes
             )
         }
     }
@@ -509,10 +502,14 @@ class DigitalPDPDataPlanFragment :
     private fun onSuccessGetMenuDetail(data: MenuDetailModel) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
         loyaltyStatus = data.userPerso.loyaltyStatus
-        getAutoComplete()
-        getFavoriteNumber()
+        getFavoriteNumbers(
+            listOf(
+                FavoriteNumberType.CHIP,
+                FavoriteNumberType.LIST,
+                FavoriteNumberType.PREFILL
+            )
+        )
         initEmptyState(data.banners)
-        renderPrefill(data.userPerso)
         renderTicker(data.tickers)
     }
 
@@ -558,9 +555,22 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(false, true)
-        setupDynamicScrollViewPadding()
+    private fun onSuccessGetPrefill(prefills: List<TopupBillsPersoFavNumberItem>) {
+        inputNumberActionType = InputNumberActionType.NOTHING
+        binding?.rechargePdpPaketDataClientNumberWidget?.run {
+            if (clientNumber.isNotEmpty()) {
+                setInputNumber(clientNumber, true)
+            } else {
+                if (isInputFieldEmpty() && prefills.isNotEmpty()) {
+                    if (prefills.first().subtitle.isNotEmpty()) {
+                        setContactName(prefills.first().title)
+                        setInputNumber(prefills.first().subtitle, true)
+                    } else {
+                        setInputNumber(prefills.first().title, true)
+                    }
+                }
+            }
+        }
     }
 
     private fun onSuccessGetPrefixOperator() {
@@ -751,18 +761,6 @@ class DigitalPDPDataPlanFragment :
                 this@DigitalPDPDataPlanFragment,
                 this@DigitalPDPDataPlanFragment
             )
-        }
-    }
-
-    private fun renderPrefill(data: TopupBillsUserPerso) {
-        inputNumberActionType = InputNumberActionType.NOTHING
-        binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
-            } else {
-                setContactName(data.clientName)
-                setInputNumber(data.prefill, true)
-            }
         }
     }
 
@@ -1458,8 +1456,12 @@ class DigitalPDPDataPlanFragment :
                 } else {
                     handleCallbackAnySavedNumberCancel()
                 }
-                getAutoComplete()
-                getFavoriteNumber()
+                getFavoriteNumbers(
+                    listOf(
+                        FavoriteNumberType.CHIP,
+                        FavoriteNumberType.LIST
+                    )
+                )
             } else if (requestCode == REQUEST_CODE_LOGIN) {
                 addToCart()
             } else if (requestCode == REQUEST_CODE_LOGIN_ALT) {

@@ -92,11 +92,21 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
                     }
 
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
 
                     }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
                         var isManualInput = false
                         hideClearIcon()
                         clearErrorState()
@@ -300,6 +310,9 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     }
 
     fun isErrorMessageShown(): Boolean = binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.isInputError
+
+    fun isInputFieldEmpty(): Boolean = binding.clientNumberWidgetMainLayout
+        .clientNumberWidgetBase.clientNumberWidgetInputField.editText.text.isEmpty()
 
     fun setErrorInputField(errorMessage: String, resetProvider: Boolean = false) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {

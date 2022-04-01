@@ -10,7 +10,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetRechargeFavoriteNumberUseCase @Inject constructor(
+class RechargeFavoriteNumberUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<TopupBillsPersoFavNumberData>(graphqlRepository) {
     
