@@ -24,8 +24,12 @@ class TokoFoodPurchaseAccordionViewHolder(private val viewBinding: ItemPurchaseA
                 textAccordion.text = element.showLessWording
                 imageChevron.rotation = 180f
             }
-            itemView.setOnClickListener {
-                listener.onToggleShowHideUnavailableItemsClicked()
+            if (element.isDisabled) {
+                itemView.setOnClickListener {  }
+            } else {
+                itemView.setOnClickListener {
+                    listener.onToggleShowHideUnavailableItemsClicked()
+                }
             }
 
             itemView.renderAlpha(element)
