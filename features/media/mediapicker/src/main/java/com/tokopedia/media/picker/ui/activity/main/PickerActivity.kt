@@ -134,10 +134,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         )
     }
 
-    private val pageSource by lazy {
-        param.get().pageSourceName()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_picker)
@@ -316,14 +312,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     override fun onCloseClicked() {
         if (container.isFragmentActive(FragmentType.GALLERY)) {
-            galleryAnalytics.clickCloseButton(pageSource)
+            galleryAnalytics.clickCloseButton()
         }
         finish()
     }
 
     override fun onContinueClicked() {
         if (container.isFragmentActive(FragmentType.GALLERY)) {
-            galleryAnalytics.clickNextButton(pageSource)
+            galleryAnalytics.clickNextButton()
         }
 
         val intent = Intent(this, PickerPreviewActivity::class.java).apply {
@@ -341,7 +337,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         container.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         container.resetBottomNavMargin()
-        if (isDirectClick) galleryAnalytics.clickCameraTab(pageSource)
+        if (isDirectClick) galleryAnalytics.clickCameraTab()
     }
 
     override fun onGalleryTabSelected(isDirectClick: Boolean) {
@@ -407,7 +403,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxMediaTotal()
         )
 
-        galleryAnalytics.galleryMaxPhotoLimit(pageSource)
+        galleryAnalytics.galleryMaxPhotoLimit()
     }
 
     override fun onShowVideoLimitReachedGalleryToast() {
@@ -416,7 +412,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxVideoCount()
         )
 
-        galleryAnalytics.galleryMaxVideoLimit(pageSource)
+        galleryAnalytics.galleryMaxVideoLimit()
     }
 
     override fun onShowMediaLimitReachedCameraToast() {
@@ -441,7 +437,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().minVideoDuration().toSec()
         )
 
-        galleryAnalytics.minVideoDuration(pageSource)
+        galleryAnalytics.minVideoDuration()
     }
 
     override fun onShowVideoMaxDurationToast() {
@@ -450,7 +446,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
         )
 
-        galleryAnalytics.maxVideoDuration(pageSource)
+        galleryAnalytics.maxVideoDuration()
     }
 
     override fun onShowVideoMaxFileSizeToast() {
@@ -459,7 +455,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxVideoFileSize().toMb()
         )
 
-        galleryAnalytics.maxVideoSize(pageSource)
+        galleryAnalytics.maxVideoSize()
     }
 
     override fun onShowImageMaxFileSizeToast() {
@@ -468,7 +464,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxImageFileSize().toMb()
         )
 
-        galleryAnalytics.maxImageSize(pageSource)
+        galleryAnalytics.maxImageSize()
     }
 
     override fun onShowImageMinResToast() {
@@ -477,7 +473,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().minImageResolution()
         )
 
-        galleryAnalytics.minImageResolution(pageSource)
+        galleryAnalytics.minImageResolution()
     }
 
     override fun onShowImageMaxResToast() {

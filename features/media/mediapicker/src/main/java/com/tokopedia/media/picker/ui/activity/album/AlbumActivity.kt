@@ -95,7 +95,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     private val onAlbumClickListener = object : OnAlbumClickListener {
         override fun invoke(album: AlbumUiModel) {
-            galleryAnalytics.clickAlbumFolder(pageSoruce, album.name)
+            galleryAnalytics.clickAlbumFolder(album.name)
 
             setResult(RESULT_OK, Intent().apply {
                 putExtra(INTENT_BUCKET_ID, album.id)

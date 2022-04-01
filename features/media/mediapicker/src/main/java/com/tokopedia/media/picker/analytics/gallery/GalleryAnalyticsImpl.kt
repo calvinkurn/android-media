@@ -26,143 +26,148 @@ import com.tokopedia.media.picker.analytics.KEY_EVENT_ACTION
 import com.tokopedia.media.picker.analytics.KEY_EVENT_CATEGORY
 import com.tokopedia.media.picker.analytics.KEY_EVENT_LABEL
 import com.tokopedia.media.picker.analytics.KEY_USER_ID
+import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class GalleryAnalyticsImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val paramCacheManager: ParamCacheManager
 ) : GalleryAnalytics {
 
     private val userId: String
-        get() = userSession.userId
+        get() = userSession.userId ?: ""
 
     private val shopId: String
-        get() = userSession.shopId?: ""
+        get() = userSession.shopId ?: ""
 
-    override fun selectGalleryItem(entryPoint: String) {
+    private val sourcePage: String
+        get() = paramCacheManager.get().pageSourceName()
+
+    override fun selectGalleryItem() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_MEDIA,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickNextButton(entryPoint: String) {
+    override fun clickNextButton() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_NEXT,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickCloseButton(entryPoint: String) {
+    override fun clickCloseButton() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_CLOSE,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickDropDown(entryPoint: String) {
+    override fun clickDropDown() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_DROPDOWN,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickGalleryThumbnail(entryPoint: String) {
+    override fun clickGalleryThumbnail() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_THUMBNAIL,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickCameraTab(entryPoint: String) {
+    override fun clickCameraTab() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_TAB_CAMERA,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun galleryMaxPhotoLimit(entryPoint: String) {
+    override fun galleryMaxPhotoLimit() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_IMAGE,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun galleryMaxVideoLimit(entryPoint: String) {
+    override fun galleryMaxVideoLimit() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_VIDEO,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun maxVideoDuration(entryPoint: String) {
+    override fun maxVideoDuration() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_VIDEO_DURATION,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun maxImageSize(entryPoint: String) {
+    override fun maxImageSize() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_IMAGE_SIZE,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun maxVideoSize(entryPoint: String) {
+    override fun maxVideoSize() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MAX_VIDEO_SIZE,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun clickAlbumFolder(entryPoint: String, albumName: String) {
+    override fun clickAlbumFolder(albumName: String) {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_ALBUM,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$albumName - $entryPoint - $userId - $shopId",
+            eventLabel = "$albumName - $sourcePage - $userId - $shopId",
         )
     }
 
-    override fun minVideoDuration(entryPoint: String) {
+    override fun minVideoDuration() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MIN_DURATION,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
-    override fun minImageResolution(entryPoint: String) {
+    override fun minImageResolution() {
         sendGeneralEvent(
             event = EVENT_VIEW_COMMUNICATION,
             eventAction = ACTION_MIN_RESOLUTION,
             eventCategory = CATEGORY_MEDIA_GALLERY,
-            eventLabel = "$entryPoint - $userId - $shopId",
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 

@@ -57,10 +57,6 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         )[GalleryViewModel::class.java]
     }
 
-    private val pageSource by lazy {
-        param.get().pageSourceName()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -121,7 +117,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     override fun onItemClicked(media: MediaUiModel) {
-        galleryAnalytics.clickGalleryThumbnail(pageSource)
+        galleryAnalytics.clickGalleryThumbnail()
     }
 
     override fun onDataSetChanged(action: DrawerActionType) {
@@ -193,7 +189,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.albumSelector?.root?.showWithCondition(isShown)
 
         binding?.albumSelector?.container?.setOnClickListener {
-            galleryAnalytics.clickDropDown(pageSource)
+            galleryAnalytics.clickDropDown()
 
             startActivityForResult(Intent(
                 requireContext(),
@@ -273,7 +269,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
         if (!isSelected) {
             stateOnAddPublished(media)
-            galleryAnalytics.selectGalleryItem(pageSource)
+            galleryAnalytics.selectGalleryItem()
         } else {
             stateOnRemovePublished(media)
         }

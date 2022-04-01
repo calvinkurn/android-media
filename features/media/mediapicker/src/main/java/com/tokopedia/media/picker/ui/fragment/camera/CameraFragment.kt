@@ -78,9 +78,6 @@ open class CameraFragment : BaseDaggerFragment()
 
     private var isTakingPictureMode = true
     private var isInitFlashState = false
-    private val pageSource by lazy {
-        param.get().pageSourceName()
-    }
 
     private val viewModel by lazy {
         ViewModelProvider(

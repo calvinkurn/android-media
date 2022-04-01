@@ -34,7 +34,7 @@ class PickerModule {
         paramCacheManager: ParamCacheManager
     ) = PickerAnalytics(
         CameraAnalyticsImpl(userSession, paramCacheManager),
-        GalleryAnalyticsImpl(userSession)
+        GalleryAnalyticsImpl(userSession, paramCacheManager)
     )
 
     @Provides
