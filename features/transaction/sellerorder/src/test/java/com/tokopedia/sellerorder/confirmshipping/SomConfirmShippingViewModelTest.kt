@@ -164,7 +164,7 @@ class SomConfirmShippingViewModelTest {
         } returns SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg))
 
         //when
-        somConfirmShippingViewModel.changeCourier("", "", "", "")
+        somConfirmShippingViewModel.changeCourier("", "", 0, 0)
 
         //then
         assert(somConfirmShippingViewModel.changeCourierResult.value is Success)
@@ -179,7 +179,7 @@ class SomConfirmShippingViewModelTest {
         } throws Throwable()
 
         //when
-        somConfirmShippingViewModel.changeCourier("", "", "", "")
+        somConfirmShippingViewModel.changeCourier("", "", 0, 0)
 
         //then
         assert(somConfirmShippingViewModel.changeCourierResult.value is Fail)
@@ -193,7 +193,7 @@ class SomConfirmShippingViewModelTest {
         } returns SomChangeCourier.Data(SomChangeCourier.Data.MpLogisticChangeCourier(listMsg))
 
         //when
-        somConfirmShippingViewModel.changeCourier("", "", "", "")
+        somConfirmShippingViewModel.changeCourier("", "", 0, 0)
 
         //then
         assert(somConfirmShippingViewModel.changeCourierResult.value is Success)
