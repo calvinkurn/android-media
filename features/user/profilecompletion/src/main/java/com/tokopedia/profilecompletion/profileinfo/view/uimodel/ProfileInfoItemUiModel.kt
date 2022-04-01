@@ -12,7 +12,7 @@ data class ProfileInfoItemUiModel(
     var placeholder: String = "",
     var showVerifiedTag: Boolean = false,
     var action: () -> Unit = {},
-): BaseProfileInfoUiModel {
+) : BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {
 	return typeFactory.type(this)
     }

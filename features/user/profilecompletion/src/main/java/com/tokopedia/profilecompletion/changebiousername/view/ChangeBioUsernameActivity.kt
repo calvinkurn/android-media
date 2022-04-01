@@ -38,15 +38,16 @@ import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameF
  * appendQueryParameter(ApplinkConstInternalUserPlatform.MIN_CHAR_EDIT_INFO_PARAM, 4) }}.toString()
  */
 
-class ChangeBioUsernameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
+class ChangeBioUsernameActivity : BaseSimpleActivity(),
+    HasComponent<ProfileCompletionSettingComponent> {
     override fun getNewFragment(): Fragment {
-        return ChangeBioUsernameFragment()
+	return ChangeBioUsernameFragment()
     }
 
     override fun getComponent(): ProfileCompletionSettingComponent {
-        return DaggerProfileCompletionSettingComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
-            .build()
+	return DaggerProfileCompletionSettingComponent.builder()
+	    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+	    .profileCompletionSettingModule(ProfileCompletionSettingModule(this))
+	    .build()
     }
 }

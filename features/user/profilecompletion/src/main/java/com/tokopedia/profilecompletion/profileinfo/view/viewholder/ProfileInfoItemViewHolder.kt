@@ -12,46 +12,48 @@ import com.tokopedia.profilecompletion.databinding.ProfileItemViewBinding
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoItemUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ProfileInfoItemViewHolder(val view: View,
-			      private val listener: ProfileInfoItemInterface) : AbstractViewHolder<ProfileInfoItemUiModel>(view) {
+class ProfileInfoItemViewHolder(
+    val view: View,
+    private val listener: ProfileInfoItemInterface
+) : AbstractViewHolder<ProfileInfoItemUiModel>(view) {
 
     private var binding: ProfileItemViewBinding? by viewBinding()
 
     override fun bind(element: ProfileInfoItemUiModel?) {
-	if(element?.isEnable == true) {
+	if (element?.isEnable == true) {
 	    binding?.containerClick?.setOnClickListener {
 		element.action.invoke()
 	    }
 	}
-		binding?.fragmentProfileItemIcon?.setOnClickListener {
-			element?.action?.invoke()
-			listener.onRightIconClicked(element)
-		}
-		if (element?.showVerifiedTag == true) binding?.tvVerification?.visible()
-		else binding?.tvVerification?.gone()
-		binding?.fragmentProfileItemTitle?.text = element?.title
-		binding?.fragmentProfileItemValue?.text =
-			if (element?.itemValue.isNullOrBlank()) element?.placeholder else element?.itemValue
-		if (element?.itemValue.isNullOrBlank()) {
-			binding?.fragmentProfileItemValue?.setTextColor(
-				MethodChecker.getColor(
-					view.context,
-					com.tokopedia.unifyprinciples.R.color.Unify_NN400
-				)
-			)
-		} else {
-			binding?.fragmentProfileItemValue?.setTextColor(
-				MethodChecker.getColor(
-					view.context,
-					com.tokopedia.unifyprinciples.R.color.Unify_NN950
-				)
-			)
-		}
-		if (element?.rightIcon != -1) {
-			binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
-		} else {
-			binding?.fragmentProfileItemIcon?.hide()
-		}
+	binding?.fragmentProfileItemIcon?.setOnClickListener {
+	    element?.action?.invoke()
+	    listener.onRightIconClicked(element)
+	}
+	if (element?.showVerifiedTag == true) binding?.tvVerification?.visible()
+	else binding?.tvVerification?.gone()
+	binding?.fragmentProfileItemTitle?.text = element?.title
+	binding?.fragmentProfileItemValue?.text =
+	    if (element?.itemValue.isNullOrBlank()) element?.placeholder else element?.itemValue
+	if (element?.itemValue.isNullOrBlank()) {
+	    binding?.fragmentProfileItemValue?.setTextColor(
+		MethodChecker.getColor(
+		    view.context,
+		    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+		)
+	    )
+	} else {
+	    binding?.fragmentProfileItemValue?.setTextColor(
+		MethodChecker.getColor(
+		    view.context,
+		    com.tokopedia.unifyprinciples.R.color.Unify_NN950
+		)
+	    )
+	}
+	if (element?.rightIcon != -1) {
+	    binding?.fragmentProfileItemIcon?.setImage(element?.rightIcon)
+	} else {
+	    binding?.fragmentProfileItemIcon?.hide()
+	}
     }
 
     companion object {

@@ -11,10 +11,11 @@ class ProfileInfoTracker @Inject constructor() {
     fun trackOnInfoProfileClick(label: String) {
 	track(
 	    TrackAppUtils.gtmData(
-	    EVENT_CLICK_ACCOUNT,
-	    CATEGORY_CHANGE_PROFILE,
-	    ACTION_CLICK_INFORMATION,
-	    label)
+		EVENT_CLICK_ACCOUNT,
+		CATEGORY_CHANGE_PROFILE,
+		ACTION_CLICK_INFORMATION,
+		label
+	    )
 	)
     }
 
@@ -25,7 +26,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_PROFILE,
 		ACTION_CLICK_BACK,
-		LABEL_CHANGE_PROFILE_PAGE)
+		LABEL_CHANGE_PROFILE_PAGE
+	    )
 	)
     }
 
@@ -36,7 +38,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_PROFILE,
 		ACTION_CLICK_UBAH_FOTO_PROFIL,
-		label)
+		label
+	    )
 	)
     }
 
@@ -47,7 +50,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_PROFILE,
 		ACTION_CLICK_ENTRY_POINT,
-		"$LABEL_CLICK - $entryPoint")
+		"$LABEL_CLICK - $entryPoint"
+	    )
 	)
     }
 
@@ -58,7 +62,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_PROFILE,
 		ACTION_CLICK_ENTRY_POINT,
-		"$LABEL_SUCCESS - $label")
+		"$LABEL_SUCCESS - $label"
+	    )
 	)
     }
 
@@ -69,7 +74,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_CLICK)
+		LABEL_CLICK
+	    )
 	)
     }
 
@@ -80,7 +86,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_SUCCESS)
+		LABEL_SUCCESS
+	    )
 	)
     }
 
@@ -91,7 +98,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_FAILED - $errorMsg")
+		"$LABEL_FAILED - $errorMsg"
+	    )
 	)
     }
 
@@ -102,7 +110,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_NAME,
 		ACTION_CLICK_BACK,
-		"")
+		""
+	    )
 	)
     }
 
@@ -113,7 +122,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_NAME,
 		ACTION_CLOSE_BOTTOM_SHEET_CHANGE_NAME,
-		"")
+		""
+	    )
 	)
     }
 
@@ -124,7 +134,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_BIRTHDAY,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_CLICK)
+		LABEL_CLICK
+	    )
 	)
     }
 
@@ -135,7 +146,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_BIRTHDAY,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_SUCCESS)
+		LABEL_SUCCESS
+	    )
 	)
     }
 
@@ -146,7 +158,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_BIRTHDAY,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_FAILED - $errorMsg")
+		"$LABEL_FAILED - $errorMsg"
+	    )
 	)
     }
 
@@ -157,7 +170,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_BIRTHDAY,
 		ACTION_CLOSE_BOTTOM_SHEET_CHANGE_BIRTHDAY,
-		"")
+		""
+	    )
 	)
     }
 
@@ -168,7 +182,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_GENDER,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_CLICK)
+		LABEL_CLICK
+	    )
 	)
     }
 
@@ -179,7 +194,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_GENDER,
 		ACTION_CLICK_BTN_SIMPAN,
-		LABEL_SUCCESS)
+		LABEL_SUCCESS
+	    )
 	)
     }
 
@@ -190,7 +206,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_GENDER,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_FAILED - $errorMsg")
+		"$LABEL_FAILED - $errorMsg"
+	    )
 	)
     }
 
@@ -202,7 +219,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_ADD_EMAIL,
 		ACTION_CLICK_BACK,
-		"")
+		""
+	    )
 	)
     }
 
@@ -213,7 +231,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_CHANGE_EMAIL,
 		ACTION_CLICK_BACK,
-		"")
+		""
+	    )
 	)
     }
 
@@ -224,7 +243,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_ADD_PHONE,
 		ACTION_CLICK_BACK,
-		"")
+		""
+	    )
 	)
     }
 
@@ -235,7 +255,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_CLICK - username")
+		"$LABEL_CLICK - username"
+	    )
 	)
     }
 
@@ -246,7 +267,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_SUCCESS - username")
+		"$LABEL_SUCCESS - username"
+	    )
 	)
     }
 
@@ -257,7 +279,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_SIMPAN,
-		"$LABEL_FAILED - username - $errorMsg")
+		"$LABEL_FAILED - username - $errorMsg"
+	    )
 	)
     }
 
@@ -268,7 +291,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BACK_USERNAME,
-		"")
+		""
+	    )
 	)
     }
 
@@ -279,7 +303,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_LANJUT,
-		"$LABEL_CLICK - bio")
+		"$LABEL_CLICK - bio"
+	    )
 	)
     }
 
@@ -290,7 +315,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_LANJUT,
-		"$LABEL_SUCCESS - bio")
+		"$LABEL_SUCCESS - bio"
+	    )
 	)
     }
 
@@ -301,7 +327,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BTN_LANJUT,
-		"$LABEL_FAILED - bio - $errorMsg")
+		"$LABEL_FAILED - bio - $errorMsg"
+	    )
 	)
     }
 
@@ -312,7 +339,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_BACK_BIO,
-		"")
+		""
+	    )
 	)
     }
 
@@ -323,7 +351,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_INFO_PROFILE,
 		ACTION_CLICK_LIHAT_HALAMAN,
-		"")
+		""
+	    )
 	)
     }
 
@@ -334,7 +363,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_ADD_EMAIL,
 		ACTION_CLICK_BTN_LANJUT,
-		LABEL_CLICK)
+		LABEL_CLICK
+	    )
 	)
     }
 
@@ -345,7 +375,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_ADD_EMAIL,
 		ACTION_CLICK_BTN_LANJUT,
-		LABEL_SUCCESS)
+		LABEL_SUCCESS
+	    )
 	)
     }
 
@@ -356,7 +387,8 @@ class ProfileInfoTracker @Inject constructor() {
 		EVENT_CLICK_ACCOUNT,
 		CATEGORY_ADD_EMAIL,
 		ACTION_CLICK_BTN_LANJUT,
-		"$LABEL_FAILED - $errorMsg")
+		"$LABEL_FAILED - $errorMsg"
+	    )
 	)
     }
 
@@ -367,7 +399,7 @@ class ProfileInfoTracker @Inject constructor() {
     }
 
     companion object {
-        const val EVENT_CLICK_ACCOUNT = "clickAccount"
+	const val EVENT_CLICK_ACCOUNT = "clickAccount"
 	const val CATEGORY_CHANGE_PROFILE = "account setting - change profile"
 	const val CATEGORY_CHANGE_NAME = "account setting - change name"
 	const val CATEGORY_CHANGE_BIRTHDAY = "account setting - change birthday"

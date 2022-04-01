@@ -6,7 +6,7 @@ import com.tokopedia.profilecompletion.profileinfo.view.uimodel.BaseProfileInfoU
 
 class ProfileInfoAdapter(
     profileInfoListTypeFactory: ProfileInfoListTypeFactory
-): BaseListAdapter<Visitable<*>, ProfileInfoListTypeFactory>(profileInfoListTypeFactory) {
+) : BaseListAdapter<Visitable<*>, ProfileInfoListTypeFactory>(profileInfoListTypeFactory) {
 
     fun setProfileInfoItem(profileInfoItemUiList: List<BaseProfileInfoUiModel>) {
 	visitables?.clear()

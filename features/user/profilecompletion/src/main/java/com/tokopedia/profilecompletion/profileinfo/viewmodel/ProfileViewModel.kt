@@ -30,11 +30,11 @@ class ProfileViewModel @Inject constructor(
     private val saveProfilePictureUseCase: SaveProfilePictureUseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val mutableProfileInfoUiData = MutableLiveData<ProfileInfoUiModel>()
     val profileInfoUiData: LiveData<ProfileInfoUiModel>
-        get() = mutableProfileInfoUiData
+	get() = mutableProfileInfoUiData
 
     private val mutableErrorMessage = SingleLiveEvent<ProfileInfoError>()
     val errorMessage: LiveData<ProfileInfoError> = mutableErrorMessage
@@ -43,72 +43,75 @@ class ProfileViewModel @Inject constructor(
     val saveImageProfileResponse: LiveData<String> = _saveImageProfileResponse
 
     private val coroutineErrorHandler = CoroutineExceptionHandler { _, error ->
-        mutableErrorMessage.value = ProfileInfoError.GeneralError(error)
+	mutableErrorMessage.value = ProfileInfoError.GeneralError(error)
     }
 
     fun getProfileInfo() {
-        launch (coroutineErrorHandler) {
-            try {
-                val profileInfo = async { profileInfoUseCase(Unit) }
-                val profileRole = async { profileRoleUseCase(Unit) }
-                val profileFeed = async { profileFeedInfoUseCase(userSession.userId)}
+	launch(coroutineErrorHandler) {
+	    try {
+		val profileInfo = async { profileInfoUseCase(Unit) }
+		val profileRole = async { profileRoleUseCase(Unit) }
+		val profileFeed = async { profileFeedInfoUseCase(userSession.userId) }
 
-                mutableProfileInfoUiData.value = ProfileInfoUiModel(
-                    profileInfo.await().profileInfoData,
-                    profileRole.await().profileRole,
-                    profileFeed.await().profileFeedData
-                )
-            } catch (e: Exception) {
-                when (e) {
-                    is CancellationException -> {
+		mutableProfileInfoUiData.value = ProfileInfoUiModel(
+		    profileInfo.await().profileInfoData,
+		    profileRole.await().profileRole,
+		    profileFeed.await().profileFeedData
+		)
+	    } catch (e: Exception) {
+		when (e) {
+		    is CancellationException -> {
 
-                    } else -> {
-                    mutableErrorMessage.value = ProfileInfoError.GeneralError(e)
-                }
-                }
-            }
-        }
+		    }
+		    else -> {
+			mutableErrorMessage.value = ProfileInfoError.GeneralError(e)
+		    }
+		}
+	    }
+	}
     }
 
     /* Use media uploader */
     fun uploadPicture(image: File) {
-        launch {
-            try {
-                val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
-                when (val result = uploader(param)) {
-                    is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(result.message)
-                }
-            } catch (e: Exception) {
-                mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
-            }
-        }
+	launch {
+	    try {
+		val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
+		when (val result = uploader(param)) {
+		    is UploadResult.Success -> saveProfilePicture(result.uploadId)
+		    is UploadResult.Error -> mutableErrorMessage.value =
+			ProfileInfoError.ErrorSavePhoto(result.message)
+		}
+	    } catch (e: Exception) {
+		mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
+	    }
+	}
     }
 
     /* To send uploadID from media uploader to accounts BE */
     fun saveProfilePicture(uploadId: String) {
-        launch {
-            try {
-                val res = saveProfilePictureUseCase(
-                    mapOf(SaveProfilePictureUseCase.PARAM_UPLOAD_ID to uploadId)
-                )
-                if (res.data.errorMessage.isEmpty() &&
-                    res.data.innerData.isSuccess == 1 &&
-                    res.data.innerData.imageUrl.isNotEmpty()
-                ) {
-                    val imgUrl = res.data.innerData.imageUrl
-                    userSession.profilePicture = imgUrl
-                    _saveImageProfileResponse.value = imgUrl
-                } else {
-                    mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
-                }
-            } catch (e: Exception) {
-                mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
-            }
-        }
+	launch {
+	    try {
+		val res = saveProfilePictureUseCase(
+		    mapOf(SaveProfilePictureUseCase.PARAM_UPLOAD_ID to uploadId)
+		)
+		if (res.data.errorMessage.isEmpty() &&
+		    res.data.innerData.isSuccess == 1 &&
+		    res.data.innerData.imageUrl.isNotEmpty()
+		) {
+		    val imgUrl = res.data.innerData.imageUrl
+		    userSession.profilePicture = imgUrl
+		    _saveImageProfileResponse.value = imgUrl
+		} else {
+		    mutableErrorMessage.value =
+			ProfileInfoError.ErrorSavePhoto(res.data.errorMessage.first())
+		}
+	    } catch (e: Exception) {
+		mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)
+	    }
+	}
     }
 
     companion object {
-        private val SOURCE_ID = "tPxBYm"
+	private val SOURCE_ID = "tPxBYm"
     }
 }

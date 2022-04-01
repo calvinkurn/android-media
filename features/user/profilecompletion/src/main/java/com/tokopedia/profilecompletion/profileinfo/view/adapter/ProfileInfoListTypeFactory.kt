@@ -13,25 +13,31 @@ import com.tokopedia.profilecompletion.profileinfo.view.viewholder.ProfileInfoTi
 class ProfileInfoListTypeFactory(
     private val profileItemListener: ProfileInfoItemViewHolder.ProfileInfoItemInterface,
     private val profileItemTitleListener: ProfileInfoTitleViewHolder.ProfileInfoTitleInterface
-): BaseAdapterTypeFactory(), TypeFactoryProfileViewHolder {
+) : BaseAdapterTypeFactory(), TypeFactoryProfileViewHolder {
     override fun type(profileInfoItemUiModel: ProfileInfoItemUiModel): Int {
 	return ProfileInfoItemViewHolder.LAYOUT_RES
     }
 
     override fun type(profileInfoTitleUiModel: ProfileInfoTitleUiModel): Int {
-        return ProfileInfoTitleViewHolder.LAYOUT_RES
+	return ProfileInfoTitleViewHolder.LAYOUT_RES
     }
 
     override fun type(dividerProfileUiModel: DividerProfileUiModel): Int {
-        return DividerProfileViewHolder.LAYOUT_RES
+	return DividerProfileViewHolder.LAYOUT_RES
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        return when (type) {
-            ProfileInfoItemViewHolder.LAYOUT_RES -> ProfileInfoItemViewHolder(parent, profileItemListener)
-            ProfileInfoTitleViewHolder.LAYOUT_RES -> ProfileInfoTitleViewHolder(parent, profileItemTitleListener)
-            DividerProfileViewHolder.LAYOUT_RES -> DividerProfileViewHolder(parent)
-            else -> return super.createViewHolder(parent, type)
-        }
+	return when (type) {
+	    ProfileInfoItemViewHolder.LAYOUT_RES -> ProfileInfoItemViewHolder(
+		parent,
+		profileItemListener
+	    )
+	    ProfileInfoTitleViewHolder.LAYOUT_RES -> ProfileInfoTitleViewHolder(
+		parent,
+		profileItemTitleListener
+	    )
+	    DividerProfileViewHolder.LAYOUT_RES -> DividerProfileViewHolder(parent)
+	    else -> return super.createViewHolder(parent, type)
+	}
     }
 }

@@ -7,7 +7,7 @@ data class ProfileInfoTitleUiModel(
     override var id: String = "",
     override var title: String = "",
     var infoIcon: Int = IconUnify.INFORMATION
-): BaseProfileInfoUiModel {
+) : BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {
 	return typeFactory.type(this)
     }

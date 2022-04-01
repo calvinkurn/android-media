@@ -8,9 +8,10 @@ import com.tokopedia.profilecompletion.databinding.ProfileItemTitleViewBinding
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.ProfileInfoTitleUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ProfileInfoTitleViewHolder(val view: View,
-				 private val listener: ProfileInfoTitleInterface
-): AbstractViewHolder<ProfileInfoTitleUiModel>(view) {
+class ProfileInfoTitleViewHolder(
+    val view: View,
+    private val listener: ProfileInfoTitleInterface
+) : AbstractViewHolder<ProfileInfoTitleUiModel>(view) {
 
     private var binding: ProfileItemTitleViewBinding? by viewBinding()
 

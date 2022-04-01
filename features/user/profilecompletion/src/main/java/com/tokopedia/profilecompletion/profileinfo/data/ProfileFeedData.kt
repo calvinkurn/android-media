@@ -2,12 +2,12 @@ package com.tokopedia.profilecompletion.profileinfo.data
 
 import com.google.gson.annotations.SerializedName
 
-data class ProfileFeedResponse (
+data class ProfileFeedResponse(
     @SerializedName("feedXProfileForm")
     val profileFeedData: ProfileFeedData = ProfileFeedData()
 )
 
-data class ProfileFeedData (
+data class ProfileFeedData(
     @SerializedName("profile")
     val profile: ProfileFeed = ProfileFeed(),
 

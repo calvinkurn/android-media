@@ -39,122 +39,133 @@ class ChangeGenderFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(ChangeGenderViewModel::class.java) }
 
     override fun getScreenName(): String {
-        return ""
+	return ""
     }
 
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ColorUtils.setBackgroundColor(context, activity)
+	super.onCreate(savedInstanceState)
+	ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_change_gender, container, false)
-        return view
+    override fun onCreateView(
+	inflater: LayoutInflater,
+	container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	val view = inflater.inflate(R.layout.fragment_change_gender, container, false)
+	return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setListener()
-        setObserver()
+	super.onViewCreated(view, savedInstanceState)
+	setListener()
+	setObserver()
     }
 
     private fun setListener() {
-        rg_gender?.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
-            buttonSubmit.isEnabled = true
-        }
+	rg_gender?.setOnCheckedChangeListener { _: RadioGroup, _: Int ->
+	    buttonSubmit.isEnabled = true
+	}
 
-        buttonSubmit.setOnClickListener {
-            if (radioGroupIsSelected()) {
-                tracker.trackOnBtnSimpanChangeGenderClick()
-                showLoading()
-                val selectedGenderView = rg_gender?.findViewById<RadioButton>(rg_gender?.checkedRadioButtonId?: 0)
-                val selectedGender = rg_gender?.indexOfChild(selectedGenderView)
-                context?.let { ctx -> viewModel.mutateChangeGender(ctx, mapSelectedGender(selectedGender?: 0)) }
-            }
-        }
+	buttonSubmit.setOnClickListener {
+	    if (radioGroupIsSelected()) {
+		tracker.trackOnBtnSimpanChangeGenderClick()
+		showLoading()
+		val selectedGenderView =
+		    rg_gender?.findViewById<RadioButton>(rg_gender?.checkedRadioButtonId ?: 0)
+		val selectedGender = rg_gender?.indexOfChild(selectedGenderView)
+		context?.let { ctx ->
+		    viewModel.mutateChangeGender(
+			ctx,
+			mapSelectedGender(selectedGender ?: 0)
+		    )
+		}
+	    }
+	}
     }
 
     private fun mapSelectedGender(selectedGender: Int): Int {
-        return if (selectedGender > 1) TYPE_WOMAN else TYPE_MAN
+	return if (selectedGender > 1) TYPE_WOMAN else TYPE_MAN
     }
 
     private fun radioGroupIsSelected(): Boolean {
-        return rg_gender?.checkedRadioButtonId != -1
+	return rg_gender?.checkedRadioButtonId != -1
     }
 
     private fun setObserver() {
-        viewModel.mutateChangeGenderResponse.observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessChangeGender(it.data)
-                        is Fail -> onErrorChangeGender(it.throwable)
-                    }
-                }
-        )
+	viewModel.mutateChangeGenderResponse.observe(
+	    viewLifecycleOwner,
+	    Observer {
+		when (it) {
+		    is Success -> onSuccessChangeGender(it.data)
+		    is Fail -> onErrorChangeGender(it.throwable)
+		}
+	    }
+	)
     }
 
     private fun onErrorChangeGender(throwable: Throwable) {
-        dismissLoading()
-        view?.run {
-            val errorMsg = ErrorHandlerSession.getErrorMessage(throwable, context, true)
-            tracker.trackOnBtnSimpanChangeGenderFailed(errorMsg)
-            Toaster.showError(
-                    this,
-                    errorMsg,
-                    Snackbar.LENGTH_LONG)
-        }
+	dismissLoading()
+	view?.run {
+	    val errorMsg = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+	    tracker.trackOnBtnSimpanChangeGenderFailed(errorMsg)
+	    Toaster.showError(
+		this,
+		errorMsg,
+		Snackbar.LENGTH_LONG
+	    )
+	}
     }
 
     private fun onSuccessChangeGender(result: ChangeGenderResult) {
-        dismissLoading()
-        tracker.trackOnBtnSimpanChangeGenderSuccess()
-        activity?.run {
-            val intent = Intent()
-            val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, result.data.completionScore)
-            bundle.putInt(EXTRA_SELECTED_GENDER, result.selectedGender)
-            intent.putExtras(bundle)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
+	dismissLoading()
+	tracker.trackOnBtnSimpanChangeGenderSuccess()
+	activity?.run {
+	    val intent = Intent()
+	    val bundle = Bundle()
+	    bundle.putInt(EXTRA_PROFILE_SCORE, result.data.completionScore)
+	    bundle.putInt(EXTRA_SELECTED_GENDER, result.selectedGender)
+	    intent.putExtras(bundle)
+	    setResult(Activity.RESULT_OK, intent)
+	    finish()
+	}
     }
 
 
     private fun showLoading() {
-        mainView.visibility = View.GONE
-        buttonSubmit.visibility = View.GONE
-        progressBar.visibility = View.VISIBLE
+	mainView.visibility = View.GONE
+	buttonSubmit.visibility = View.GONE
+	progressBar.visibility = View.VISIBLE
     }
 
     private fun dismissLoading() {
-        mainView.visibility = View.VISIBLE
-        buttonSubmit.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+	mainView.visibility = View.VISIBLE
+	buttonSubmit.visibility = View.VISIBLE
+	progressBar.visibility = View.GONE
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        viewModel.mutateChangeGenderResponse.removeObservers(this)
-        viewModel.flush()
+	super.onDestroy()
+	viewModel.mutateChangeGenderResponse.removeObservers(this)
+	viewModel.flush()
     }
 
     companion object {
 
-        val TYPE_MAN = 1
-        val TYPE_WOMAN = 2
+	val TYPE_MAN = 1
+	val TYPE_WOMAN = 2
 
-        val EXTRA_PROFILE_SCORE = "profile_score"
-        val EXTRA_SELECTED_GENDER = "selected_gender"
+	val EXTRA_PROFILE_SCORE = "profile_score"
+	val EXTRA_SELECTED_GENDER = "selected_gender"
 
-        fun createInstance(bundle: Bundle): ChangeGenderFragment {
-            val fragment = ChangeGenderFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+	fun createInstance(bundle: Bundle): ChangeGenderFragment {
+	    val fragment = ChangeGenderFragment()
+	    fragment.arguments = bundle
+	    return fragment
+	}
     }
 }

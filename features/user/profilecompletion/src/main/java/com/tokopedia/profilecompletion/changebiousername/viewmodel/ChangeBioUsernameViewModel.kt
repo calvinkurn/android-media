@@ -31,37 +31,37 @@ class ChangeBioUsernameViewModel @Inject constructor(
     private val _resultValidationUsername = MutableLiveData<Result<UsernameValidation>>()
 
     val resultValidationUsername: LiveData<Result<UsernameValidation>>
-        get() = _resultValidationUsername
+	get() = _resultValidationUsername
 
     private val _resultSubmitUsername = MutableLiveData<Result<SubmitBioUsername>>()
 
     val resultSubmitUsername: LiveData<Result<SubmitBioUsername>>
-        get() = _resultSubmitUsername
+	get() = _resultSubmitUsername
 
     val _resultSubmitBio = MutableLiveData<Result<SubmitBioUsername>>()
 
     val resultSubmitBio: LiveData<Result<SubmitBioUsername>>
-        get() = _resultSubmitBio
+	get() = _resultSubmitBio
 
     private var validationUsernameJob: Job? = null
 
     private val _profileFeed = MutableLiveData<Result<ProfileFeedData>>()
 
     val profileFeed: LiveData<Result<ProfileFeedData>>
-    get() = _profileFeed
+	get() = _profileFeed
 
     private val _loadingState = MutableLiveData<Boolean>()
 
     val loadingState: LiveData<Boolean>
-        get() = _loadingState
+	get() = _loadingState
 
     fun getProfileFeed() {
-        launchCatchError(block = {
-            val result = profileFeedUsecase(userSession.userId)
-            _profileFeed.value = Success(result.profileFeedData)
-        }, onError = {
-            _profileFeed.value = Fail(it)
-        })
+	launchCatchError(block = {
+	    val result = profileFeedUsecase(userSession.userId)
+	    _profileFeed.value = Success(result.profileFeedData)
+	}, onError = {
+	    _profileFeed.value = Fail(it)
+	})
     }
 
 
@@ -70,56 +70,56 @@ class ChangeBioUsernameViewModel @Inject constructor(
         cancel that job and create new job.
      */
     fun validateUsername(username: String) {
-        cancelValidation()
-        validationUsernameJob = launchCatchError(block = {
-            delay(2000)
-            _loadingState.value = true
-            val result = validateUseCase(username)
-            _loadingState.value = false
-            _resultValidationUsername.value = Success(result.response)
-        }, onError = {
-            _resultValidationUsername.value = Fail(it)
-        })
+	cancelValidation()
+	validationUsernameJob = launchCatchError(block = {
+	    delay(2000)
+	    _loadingState.value = true
+	    val result = validateUseCase(username)
+	    _loadingState.value = false
+	    _resultValidationUsername.value = Success(result.response)
+	}, onError = {
+	    _resultValidationUsername.value = Fail(it)
+	})
     }
 
     fun cancelValidation() {
-        if (validationUsernameJob != null && validationUsernameJob?.isActive == true) {
-            validationUsernameJob?.cancel()
-        }
+	if (validationUsernameJob != null && validationUsernameJob?.isActive == true) {
+	    validationUsernameJob?.cancel()
+	}
     }
 
     fun submitUsername(username: String) {
-        launchCatchError(block = {
-            val resultValidation = validateUseCase(username).response
-            val isValidUsername = resultValidation.isValid
-            if (isValidUsername) {
-                val result = submitProfileUseCase(
-                    SubmitProfileParam(
-                        username = username,
-                        isUpdateUsername = true
-                    )
-                )
-                val status = result.response.status
-                if (status) {
-                    _resultSubmitUsername.value = Success(result.response)
-                } else {
-                    _resultSubmitUsername.value = Fail(Throwable("status false"))
-                }
-            } else {
-                _resultSubmitUsername.value = Fail(Throwable(resultValidation.errorMessage))
-            }
-        }, onError = {
-            _resultSubmitUsername.value = Fail(it)
-        })
+	launchCatchError(block = {
+	    val resultValidation = validateUseCase(username).response
+	    val isValidUsername = resultValidation.isValid
+	    if (isValidUsername) {
+		val result = submitProfileUseCase(
+		    SubmitProfileParam(
+			username = username,
+			isUpdateUsername = true
+		    )
+		)
+		val status = result.response.status
+		if (status) {
+		    _resultSubmitUsername.value = Success(result.response)
+		} else {
+		    _resultSubmitUsername.value = Fail(Throwable("status false"))
+		}
+	    } else {
+		_resultSubmitUsername.value = Fail(Throwable(resultValidation.errorMessage))
+	    }
+	}, onError = {
+	    _resultSubmitUsername.value = Fail(it)
+	})
     }
 
     fun submitBio(bio: String) {
-        launchCatchError(block = {
-            val result =
-                submitProfileUseCase(SubmitProfileParam(bio = bio, isUpdateBioGraphy = true))
-            _resultSubmitBio.value = Success(result.response)
-        }, onError = {
-            _resultSubmitBio.value = Fail(it)
-        })
+	launchCatchError(block = {
+	    val result =
+		submitProfileUseCase(SubmitProfileParam(bio = bio, isUpdateBioGraphy = true))
+	    _resultSubmitBio.value = Success(result.response)
+	}, onError = {
+	    _resultSubmitBio.value = Fail(it)
+	})
     }
 }

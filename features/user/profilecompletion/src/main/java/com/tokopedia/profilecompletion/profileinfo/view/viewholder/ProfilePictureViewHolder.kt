@@ -6,7 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.profileinfo.view.uimodel.DividerProfileUiModel
 
-class ProfilePictureViewHolder(val view: View, val listener: ProfilePictureInterface) : AbstractViewHolder<DividerProfileUiModel>(view) {
+class ProfilePictureViewHolder(val view: View, val listener: ProfilePictureInterface) :
+    AbstractViewHolder<DividerProfileUiModel>(view) {
 
     override fun bind(element: DividerProfileUiModel?) {
 
@@ -18,6 +19,6 @@ class ProfilePictureViewHolder(val view: View, val listener: ProfilePictureInter
     }
 
     interface ProfilePictureInterface {
-        fun onChangeProfilePictureClicked()
+	fun onChangeProfilePictureClicked()
     }
 }

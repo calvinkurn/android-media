@@ -54,168 +54,189 @@ class ChangeNameFragment : BaseDaggerFragment() {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_change_fullname, container, false)
+    override fun onCreateView(
+	inflater: LayoutInflater,
+	container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	return inflater.inflate(R.layout.fragment_change_fullname, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ColorUtils.setBackgroundColor(context, activity)
-        oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
-        chancesChangeName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
+	super.onCreate(savedInstanceState)
+	ColorUtils.setBackgroundColor(context, activity)
+	oldName = arguments?.getString(ApplinkConstInternalGlobal.PARAM_FULL_NAME).toString()
+	chancesChangeName =
+	    arguments?.getString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME).toString()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+	super.onViewCreated(view, savedInstanceState)
 
-        if (oldName.isNotEmpty()) {
-            changeNameTextName?.editText?.setText(oldName)
-            changeNameTextName?.editText?.text?.length?.let {
-                changeNameTextName?.editText?.setSelection(it)
-            }
-        }
+	if (oldName.isNotEmpty()) {
+	    changeNameTextName?.editText?.setText(oldName)
+	    changeNameTextName?.editText?.text?.length?.let {
+		changeNameTextName?.editText?.setSelection(it)
+	    }
+	}
 
-        initObserver()
-        initListener()
-        viewModel.getUserProfileRole()
+	initObserver()
+	initListener()
+	viewModel.getUserProfileRole()
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        infoTracker.trackOnClickBtnBackChangeName()
-        return super.onFragmentBackPressed()
+	infoTracker.trackOnClickBtnBackChangeName()
+	return super.onFragmentBackPressed()
     }
 
     private fun initListener() {
-        changeNameTextName?.icon2?.setOnClickListener {
-            changeNameTextName?.editText?.text?.clear()
-        }
+	changeNameTextName?.icon2?.setOnClickListener {
+	    changeNameTextName?.editText?.text?.clear()
+	}
 
-        changeNameTextName?.editText?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+	changeNameTextName?.editText?.addTextChangedListener(object : TextWatcher {
+	    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-            }
+	    }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                changeNameTextName.isInputError = false
-                changeNameTextName.setMessage("")
-                if (s != null) {
-                    when {
-                        s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
-                            when {
-                                s.isEmpty() -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_cant_empty)))
-                                s.length < MINIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_min_3)))
-                                s.length > MAXIMUM_LENGTH -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_max_35)))
-                            }
-                            changeNameButtonSave?.isEnabled = false
-                        }
-                        s.toString() == oldName -> {
-                            changeNameButtonSave?.isEnabled = false
-                        }
-                        else -> {
-                            changeNameButtonSave?.isEnabled = true
-                        }
-                    }
-                }
-            }
+	    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+		changeNameTextName.isInputError = false
+		changeNameTextName.setMessage("")
+		if (s != null) {
+		    when {
+			s.length < MINIMUM_LENGTH || s.length > MAXIMUM_LENGTH -> {
+			    when {
+				s.isEmpty() -> onErrorChangeName(Throwable(resources.getString(R.string.error_name_cant_empty)))
+				s.length < MINIMUM_LENGTH -> onErrorChangeName(
+				    Throwable(
+					resources.getString(
+					    R.string.error_name_min_3
+					)
+				    )
+				)
+				s.length > MAXIMUM_LENGTH -> onErrorChangeName(
+				    Throwable(
+					resources.getString(
+					    R.string.error_name_max_35
+					)
+				    )
+				)
+			    }
+			    changeNameButtonSave?.isEnabled = false
+			}
+			s.toString() == oldName -> {
+			    changeNameButtonSave?.isEnabled = false
+			}
+			else -> {
+			    changeNameButtonSave?.isEnabled = true
+			}
+		    }
+		}
+	    }
 
-            override fun afterTextChanged(s: Editable?) {
-                if (changeNameTextName?.editText?.text?.isNotEmpty() == true) {
-                    changeNameTextName?.icon2?.show()
-                } else {
-                    changeNameTextName?.icon2?.gone()
-                }
+	    override fun afterTextChanged(s: Editable?) {
+		if (changeNameTextName?.editText?.text?.isNotEmpty() == true) {
+		    changeNameTextName?.icon2?.show()
+		} else {
+		    changeNameTextName?.icon2?.gone()
+		}
 
-            }
-        })
+	    }
+	})
 
-        changeNameButtonSave?.setOnClickListener {
-            infoTracker.trackOnClickBtnSimpanChangeNameClick()
-            val fullName = changeNameTextName?.editText?.text
-            if (fullName != null) {
-                showLoading()
-                viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
-            } else {
-                onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
-            }
-        }
+	changeNameButtonSave?.setOnClickListener {
+	    infoTracker.trackOnClickBtnSimpanChangeNameClick()
+	    val fullName = changeNameTextName?.editText?.text
+	    if (fullName != null) {
+		showLoading()
+		viewModel.changePublicName(changeNameTextName?.editText?.text.toString())
+	    } else {
+		onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
+	    }
+	}
     }
 
     private fun initObserver() {
-        viewModel.changeNameResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessChangeName(it.data)
-                is Fail -> onErrorChangeName(it.throwable)
-            }
-        })
+	viewModel.changeNameResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessChangeName(it.data)
+		is Fail -> onErrorChangeName(it.throwable)
+	    }
+	})
 
-        viewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> { updateChangesCounter(it.data.chancesChangeName) }
-                is Fail -> { updateChangesCounter(chancesChangeName) }
-            }
-        })
+	viewModel.userProfileRole.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> {
+		    updateChangesCounter(it.data.chancesChangeName)
+		}
+		is Fail -> {
+		    updateChangesCounter(chancesChangeName)
+		}
+	    }
+	})
     }
 
     private fun updateChangesCounter(counter: String) {
-        activity?.getString(R.string.change_name_note, counter)?.let { changeNameHint ->
-            changeNameTextNote?.text = changeNameHint
-        }
+	activity?.getString(R.string.change_name_note, counter)?.let { changeNameHint ->
+	    changeNameTextNote?.text = changeNameHint
+	}
     }
 
     private fun onSuccessChangeName(result: ChangeNameResult) {
-        hideLoading()
-        userSession.name = result.fullName
+	hideLoading()
+	userSession.name = result.fullName
 
-        activity?.run {
-            val intent = Intent()
-            val bundle = Bundle()
-            bundle.putInt(EXTRA_PROFILE_SCORE, result.data.completionScore)
-            bundle.putString(EXTRA_PUBLIC_NAME, result.fullName)
-            intent.putExtras(bundle)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
-        }
+	activity?.run {
+	    val intent = Intent()
+	    val bundle = Bundle()
+	    bundle.putInt(EXTRA_PROFILE_SCORE, result.data.completionScore)
+	    bundle.putString(EXTRA_PUBLIC_NAME, result.fullName)
+	    intent.putExtras(bundle)
+	    setResult(Activity.RESULT_OK, intent)
+	    finish()
+	}
 
-        infoTracker.trackOnClickBtnSimpanChangeNameSuccess()
+	infoTracker.trackOnClickBtnSimpanChangeNameSuccess()
     }
 
 
     private fun onErrorChangeName(throwable: Throwable) {
-        hideLoading()
-        changeNameTextName.isInputError = true
-        throwable.message?.let { message ->
-            infoTracker.trackOnClickBtnSimpanChangeNameFailed(message)
-            activity?.let {
-                changeNameTextName.setMessage(message)
-            }
-        }
+	hideLoading()
+	changeNameTextName.isInputError = true
+	throwable.message?.let { message ->
+	    infoTracker.trackOnClickBtnSimpanChangeNameFailed(message)
+	    activity?.let {
+		changeNameTextName.setMessage(message)
+	    }
+	}
     }
 
     private fun showLoading() {
-        changeNameViewMain?.hide()
-        changeNameProgressBar?.show()
+	changeNameViewMain?.hide()
+	changeNameProgressBar?.show()
     }
 
     private fun hideLoading() {
-        changeNameViewMain?.show()
-        changeNameProgressBar?.hide()
+	changeNameViewMain?.show()
+	changeNameProgressBar?.hide()
     }
 
     companion object {
-        const val MINIMUM_LENGTH = 3
-        const val MAXIMUM_LENGTH = 35
+	const val MINIMUM_LENGTH = 3
+	const val MAXIMUM_LENGTH = 35
 
-        const val EXTRA_PROFILE_SCORE = "profile_score"
-        const val EXTRA_PUBLIC_NAME = "public_name"
+	const val EXTRA_PROFILE_SCORE = "profile_score"
+	const val EXTRA_PUBLIC_NAME = "public_name"
 
-        fun createInstance(bundle: Bundle): Fragment {
-            val fragment = ChangeNameFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+	fun createInstance(bundle: Bundle): Fragment {
+	    val fragment = ChangeNameFragment()
+	    fragment.arguments = bundle
+	    return fragment
+	}
     }
 
 }

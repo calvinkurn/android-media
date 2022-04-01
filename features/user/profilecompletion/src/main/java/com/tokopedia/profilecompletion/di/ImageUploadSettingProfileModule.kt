@@ -45,158 +45,187 @@ class ImageUploadSettingProfileModule {
     @Provides
     @ProfileCompletionQualifier
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
-        return context as NetworkRouter
+	return context as NetworkRouter
     }
 
     @Provides
     @ProfileCompletionQualifier
-    fun provideFingerprintInterceptor(@ProfileCompletionQualifier networkRouter: NetworkRouter,
-                                      userSessionInterface: UserSessionInterface): FingerprintInterceptor {
-        return FingerprintInterceptor(networkRouter, userSessionInterface)
+    fun provideFingerprintInterceptor(
+	@ProfileCompletionQualifier networkRouter: NetworkRouter,
+	userSessionInterface: UserSessionInterface
+    ): FingerprintInterceptor {
+	return FingerprintInterceptor(networkRouter, userSessionInterface)
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun okHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)
+	return OkHttpRetryPolicy(
+	    NET_READ_TIMEOUT,
+	    NET_WRITE_TIMEOUT,
+	    NET_CONNECT_TIMEOUT,
+	    NET_RETRY
+	)
     }
 
     @ProfileCompletionQualifier
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
-                                   @ProfileCompletionQualifier networkRouter: NetworkRouter,
-                                   userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
-        return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
+    fun provideTkpdAuthInterceptor(
+	@ApplicationContext context: Context,
+	@ProfileCompletionQualifier networkRouter: NetworkRouter,
+	userSessionInterface: UserSessionInterface
+    ): TkpdAuthInterceptor {
+	return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        val logging = HttpLoggingInterceptor()
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.level = HttpLoggingInterceptor.Level.BODY
-        } else {
-            logging.level = HttpLoggingInterceptor.Level.NONE
-        }
-        return logging
+	val logging = HttpLoggingInterceptor()
+	if (GlobalConfig.isAllowDebuggingTools()) {
+	    logging.level = HttpLoggingInterceptor.Level.BODY
+	} else {
+	    logging.level = HttpLoggingInterceptor.Level.NONE
+	}
+	return logging
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
-        return ErrorResponseInterceptor(ImageUploaderResponseError::class.java)
+	return ErrorResponseInterceptor(ImageUploaderResponseError::class.java)
     }
 
     @ProfileCompletionQualifier
     @Provides
-    fun provideOkHttpClient(@ProfileCompletionQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
-                            @ProfileCompletionQualifier fingerprintInterceptor: FingerprintInterceptor,
-                            @ProfileCompletionQualifier retryPolicy: OkHttpRetryPolicy,
-                            @ProfileCompletionQualifier loggingInterceptor: HttpLoggingInterceptor,
-                            @ProfileCompletionQualifier errorHandlerInterceptor: ErrorResponseInterceptor): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-        builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(fingerprintInterceptor)
-        builder.addInterceptor(errorHandlerInterceptor)
+    fun provideOkHttpClient(
+	@ProfileCompletionQualifier tkpdAuthInterceptor: TkpdAuthInterceptor,
+	@ProfileCompletionQualifier fingerprintInterceptor: FingerprintInterceptor,
+	@ProfileCompletionQualifier retryPolicy: OkHttpRetryPolicy,
+	@ProfileCompletionQualifier loggingInterceptor: HttpLoggingInterceptor,
+	@ProfileCompletionQualifier errorHandlerInterceptor: ErrorResponseInterceptor
+    ): OkHttpClient {
+	val builder = OkHttpClient.Builder()
+	builder.addInterceptor(tkpdAuthInterceptor)
+	builder.addInterceptor(fingerprintInterceptor)
+	builder.addInterceptor(errorHandlerInterceptor)
 
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(loggingInterceptor)
-        }
-        builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
-        builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
-        builder.writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
-        return builder.build()
+	if (GlobalConfig.isAllowDebuggingTools()) {
+	    builder.addInterceptor(loggingInterceptor)
+	}
+	builder.readTimeout(retryPolicy.readTimeout.toLong(), TimeUnit.SECONDS)
+	builder.connectTimeout(retryPolicy.connectTimeout.toLong(), TimeUnit.SECONDS)
+	builder.writeTimeout(retryPolicy.writeTimeout.toLong(), TimeUnit.SECONDS)
+	return builder.build()
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun provideRetrofitBuilder(@ProfileCompletionQualifier gson: Gson): Retrofit.Builder {
-        return Retrofit.Builder()
-                .addConverterFactory(StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+	return Retrofit.Builder()
+	    .addConverterFactory(StringResponseConverter())
+	    .addConverterFactory(GsonConverterFactory.create(gson))
+	    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun provideGson(): Gson {
-        return GsonBuilder()
-                .setDateFormat(GSON_DATE_FORMAT)
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create()
+	return GsonBuilder()
+	    .setDateFormat(GSON_DATE_FORMAT)
+	    .setPrettyPrinting()
+	    .serializeNulls()
+	    .create()
     }
 
     @Provides
     @ProfileCompletionQualifier
-    fun provideUploadImageDataSourceCloud(@ProfileCompletionQualifier retrofit: Retrofit.Builder, @ProfileCompletionQualifier okHttpClient: OkHttpClient): UploadImageDataSourceCloud {
-        return UploadImageDataSourceCloud(retrofit, okHttpClient)
+    fun provideUploadImageDataSourceCloud(
+	@ProfileCompletionQualifier retrofit: Retrofit.Builder,
+	@ProfileCompletionQualifier okHttpClient: OkHttpClient
+    ): UploadImageDataSourceCloud {
+	return UploadImageDataSourceCloud(retrofit, okHttpClient)
     }
 
     @Provides
     @ProfileCompletionQualifier
     fun provideUploadImageDataSource(@ProfileCompletionQualifier uploadImageDataSourceCloud: UploadImageDataSourceCloud): UploadImageDataSource {
-        return UploadImageDataSource(uploadImageDataSourceCloud)
+	return UploadImageDataSource(uploadImageDataSourceCloud)
     }
 
     @Provides
     @ProfileCompletionQualifier
     fun provideUploadImageRepository(@ProfileCompletionQualifier uploadImageDataSourceCloud: UploadImageDataSource): UploadImageRepository {
-        return UploadImageRepositoryImpl(uploadImageDataSourceCloud)
+	return UploadImageRepositoryImpl(uploadImageDataSourceCloud)
     }
 
     @ProfileCompletionQualifier
     @Provides
-    fun provideWsV4RetrofitWithErrorHandler(@ProfileCompletionQualifier okHttpClient: OkHttpClient,
-                                            @ProfileCompletionQualifier retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(ImageUploaderUrl.BASE_URL).client(okHttpClient).build()
+    fun provideWsV4RetrofitWithErrorHandler(
+	@ProfileCompletionQualifier okHttpClient: OkHttpClient,
+	@ProfileCompletionQualifier retrofitBuilder: Retrofit.Builder
+    ): Retrofit {
+	return retrofitBuilder.baseUrl(ImageUploaderUrl.BASE_URL).client(okHttpClient).build()
     }
 
     @Provides
     @ProfileCompletionQualifier
     fun provideGenerateHostApi(@ProfileCompletionQualifier retrofit: Retrofit): GenerateHostApi {
-        return retrofit.create(GenerateHostApi::class.java)
+	return retrofit.create(GenerateHostApi::class.java)
     }
 
     @Provides
     @ProfileCompletionQualifier
-    fun provideGenerateHostCloud(@ProfileCompletionQualifier generateHostApi: GenerateHostApi,
-                                          userSession: UserSessionInterface): GenerateHostCloud {
-        return GenerateHostCloud(generateHostApi, userSession)
+    fun provideGenerateHostCloud(
+	@ProfileCompletionQualifier generateHostApi: GenerateHostApi,
+	userSession: UserSessionInterface
+    ): GenerateHostCloud {
+	return GenerateHostCloud(generateHostApi, userSession)
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun provideGenerateHostDataSource(@ProfileCompletionQualifier generateHostCloud: GenerateHostCloud): GenerateHostDataSource {
-        return GenerateHostDataSource(generateHostCloud)
+	return GenerateHostDataSource(generateHostCloud)
     }
 
 
     @Provides
     @ProfileCompletionQualifier
     fun provideGenerateHostRepository(@ProfileCompletionQualifier generateHostDataSource: GenerateHostDataSource): GenerateHostRepository {
-        return GenerateHostRepositoryImpl(generateHostDataSource)
+	return GenerateHostRepositoryImpl(generateHostDataSource)
     }
 
     @Provides
     @ProfileCompletionQualifier
-    fun provideImageUploaderUtils( userSession: UserSessionInterface): ImageUploaderUtils {
-        return ImageUploaderUtils(userSession)
+    fun provideImageUploaderUtils(userSession: UserSessionInterface): ImageUploaderUtils {
+	return ImageUploaderUtils(userSession)
     }
 
     @ProfileCompletionQualifier
     @Provides
     fun provideUploadImageUseCase(
-            @ProfileCompletionQualifier uploadImageRepository: UploadImageRepository,
-            @ProfileCompletionQualifier generateHostRepository: GenerateHostRepository,
-            @ProfileCompletionQualifier gson: Gson,
-            userSession: UserSessionInterface,
-            @ProfileCompletionQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<UploadProfileImageModel> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, UploadProfileImageModel::class.java, imageUploaderUtils)
+	@ProfileCompletionQualifier uploadImageRepository: UploadImageRepository,
+	@ProfileCompletionQualifier generateHostRepository: GenerateHostRepository,
+	@ProfileCompletionQualifier gson: Gson,
+	userSession: UserSessionInterface,
+	@ProfileCompletionQualifier imageUploaderUtils: ImageUploaderUtils
+    ): UploadImageUseCase<UploadProfileImageModel> {
+	return UploadImageUseCase(
+	    uploadImageRepository,
+	    generateHostRepository,
+	    gson,
+	    userSession,
+	    UploadProfileImageModel::class.java,
+	    imageUploaderUtils
+	)
     }
 
     @Provides
-    fun provideSaveProfilePictureUseCase(repository: GraphqlRepository, dispatchers: CoroutineDispatchers): SaveProfilePictureUseCase {
-        return SaveProfilePictureUseCase(repository, dispatchers)
+    fun provideSaveProfilePictureUseCase(
+	repository: GraphqlRepository,
+	dispatchers: CoroutineDispatchers
+    ): SaveProfilePictureUseCase {
+	return SaveProfilePictureUseCase(repository, dispatchers)
     }
 }
