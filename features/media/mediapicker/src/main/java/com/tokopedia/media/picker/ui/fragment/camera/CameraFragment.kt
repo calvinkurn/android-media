@@ -25,7 +25,7 @@ import com.tokopedia.media.picker.analytics.CAMERA_FRONT_STRING
 import com.tokopedia.media.picker.analytics.FLASH_AUTO_STRING
 import com.tokopedia.media.picker.analytics.FLASH_OFF_STRING
 import com.tokopedia.media.picker.analytics.FLASH_ON_STRING
-import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
+import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
@@ -50,9 +50,14 @@ open class CameraFragment : BaseDaggerFragment()
     , CameraControllerComponent.Listener
     , CameraViewComponent.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var cameraAnalytics: CameraAnalyticsImpl
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var cameraAnalytics: CameraAnalytics
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null

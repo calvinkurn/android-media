@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
-import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
+import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
@@ -95,10 +95,10 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     lateinit var param: ParamCacheManager
 
     @Inject
-    lateinit var galleryAnalytics: GalleryAnalyticsImpl
+    lateinit var galleryAnalytics: GalleryAnalytics
 
     @Inject
-    lateinit var cameraAnalytics: CameraAnalyticsImpl
+    lateinit var cameraAnalytics: CameraAnalytics
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
