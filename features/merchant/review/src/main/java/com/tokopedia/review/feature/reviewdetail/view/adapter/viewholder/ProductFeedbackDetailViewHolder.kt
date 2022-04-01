@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder
 
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -18,9 +19,10 @@ import com.tokopedia.review.feature.reviewdetail.util.mapper.SellerReviewProduct
 import com.tokopedia.review.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
-import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 
 class ProductFeedbackDetailViewHolder(
+    reviewMediaThumbnailRecycledViewPool: RecyclerView.RecycledViewPool,
+    reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
     private val view: View,
     private val productFeedbackDetailListener: ProductFeedbackDetailListener
 ) : AbstractViewHolder<FeedbackUiModel>(view) {
@@ -40,7 +42,8 @@ class ProductFeedbackDetailViewHolder(
     private val binding = ItemProductFeedbackDetailBinding.bind(view)
 
     init {
-        binding.reviewMediaThumbnails.setListener(ReviewMediaThumbnailListener())
+        binding.reviewMediaThumbnails.setListener(reviewMediaThumbnailListener)
+        binding.reviewMediaThumbnails.setRecycledViewPool(reviewMediaThumbnailRecycledViewPool)
     }
 
     override fun bind(element: FeedbackUiModel) {
@@ -122,15 +125,9 @@ class ProductFeedbackDetailViewHolder(
     }
 
     private fun setImageAttachment(element: FeedbackUiModel) {
-        with(binding) {
-            reviewMediaThumbnails.apply {
-                setData(element.reviewMediaThumbnail)
-            }
-            if (element.reviewMediaThumbnail.mediaThumbnails.isEmpty()) {
-                reviewMediaThumbnails.hide()
-            } else {
-                reviewMediaThumbnails.show()
-            }
+        with(binding.reviewMediaThumbnails) {
+            setData(element.reviewMediaThumbnail)
+            showWithCondition(element.reviewMediaThumbnail.mediaThumbnails.isNotEmpty())
         }
     }
 
@@ -168,26 +165,5 @@ class ProductFeedbackDetailViewHolder(
 
     private fun setBadRatingReason(reason: String) {
         badRatingReason.showBadRatingReason(reason)
-    }
-
-    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
-        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            element?.let {
-                productFeedbackDetailListener.onImageItemClicked(
-                    it.imageAttachments.mapNotNull { it.fullSizeURL },
-                    it.videoAttachments.mapNotNull { it.videoUrl },
-                    it.feedbackID,
-                    it.productID,
-                    position
-                )
-            }
-        }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
-        }
     }
 }

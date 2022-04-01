@@ -28,7 +28,6 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -71,6 +70,8 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Re
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -121,7 +122,14 @@ class SellerReviewDetailFragment :
     private var binding by autoClearedNullable<FragmentSellerReviewDetailBinding>()
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this, this, this, this)
+        SellerReviewDetailAdapterTypeFactory(
+            listener = this,
+            overallRatingDetailListener = this,
+            productFeedbackDetailListener = this,
+            ratingAndTopicsDetailListener = this,
+            reviewMediaThumbnailListener = ReviewMediaThumbnailListener(),
+            reviewMediaThumbnailRecycledViewPool = RecyclerView.RecycledViewPool()
+        )
     }
 
     private val coachMark: CoachMark by lazy {
@@ -871,5 +879,26 @@ class SellerReviewDetailFragment :
                 mediaCount = mappedReviewMedia.size.toLong()
             )
         )
+    }
+
+    private inner class ReviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener {
+        override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
+            reviewSellerDetailAdapter.findFeedbackContainingThumbnail(item)?.let {
+                onImageItemClicked(
+                    it.imageAttachments.mapNotNull { it.fullSizeURL },
+                    it.videoAttachments.mapNotNull { it.videoUrl },
+                    it.feedbackID,
+                    it.productID,
+                    position
+                )
+            }
+        }
+
+        override fun onRemoveMediaItemClicked(
+            item: ReviewMediaThumbnailVisitable,
+            position: Int
+        ) {
+            // noop
+        }
     }
 }
