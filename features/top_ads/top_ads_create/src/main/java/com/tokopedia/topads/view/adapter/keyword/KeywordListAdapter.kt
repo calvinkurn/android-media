@@ -11,8 +11,8 @@ import com.tokopedia.topads.view.adapter.bidinfo.viewholder.HIGH
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.LOW
 import com.tokopedia.topads.view.adapter.bidinfo.viewholder.MEDIUM
 import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.*
-
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Author errysuprayogi on 14,November,2019
@@ -21,7 +21,12 @@ class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : Rec
 
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val keywordName : Typography = view.findViewById(R.id.keyword_name)
+        val keywordCount : Typography = view.findViewById(R.id.keyword_count)
+        val keywordCompetition : Label = view.findViewById(R.id.keywordCompetition)
+        val checkBox : CheckboxUnify = view.findViewById(R.id.checkBox)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordListAdapter.ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.topads_create_layout_keyword_list_item, parent, false)
@@ -43,23 +48,23 @@ class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : Rec
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.view.keyword_name.text = items[holder.adapterPosition].keyword
+        holder.keywordName.text = items[holder.adapterPosition].keyword
         try {
             if (items[holder.adapterPosition].totalSearch == "-1") {
-                holder.view.keyword_count.text = "  -  "
+                holder.keywordCount.text = "  -  "
 
             } else
-                holder.view.keyword_count.text = Utils.convertToCurrencyString(items[holder.adapterPosition].totalSearch.toLong())
+                holder.keywordCount.text = Utils.convertToCurrencyString(items[holder.adapterPosition].totalSearch.toLong())
         } catch (e: Exception) {
-            holder.view.keyword_count.text = items[holder.adapterPosition].totalSearch.toString()
+            holder.keywordCount.text = items[holder.adapterPosition].totalSearch.toString()
         }
-        holder.view.checkBox.setOnCheckedChangeListener(null)
-        holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
+        holder.checkBox.setOnCheckedChangeListener(null)
+        holder.checkBox.isChecked = items[holder.adapterPosition].onChecked
 
         holder.view.setOnClickListener {
-            holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
+            holder.checkBox.isChecked = !holder.checkBox.isChecked
         }
-        holder.view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+        holder.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
             if (holder.adapterPosition != RecyclerView.NO_POSITION) {
                 items[holder.adapterPosition].onChecked = isChecked
                 onChecked.invoke(holder.adapterPosition)
@@ -67,23 +72,23 @@ class KeywordListAdapter(private val onChecked: ((position: Int) -> Unit)) : Rec
         }
         when (items[holder.adapterPosition].competition) {
             LOW -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
+                holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_low))
             }
 
             MEDIUM -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_moderation))
             }
 
             HIGH -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
+                holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_high))
             }
 
             items[holder.adapterPosition].competition -> {
-                holder.view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
-                holder.view.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
+                holder.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREY)
+                holder.keywordCompetition.setLabel(holder.view.resources.getString(R.string.topads_common_keyword_competition_unknown))
             }
 
         }
