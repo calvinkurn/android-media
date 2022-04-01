@@ -1007,6 +1007,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubStarted() {
+        productFeaturedView?.setTransparent(true)
+        pinnedView?.setTransparent(true)
+
         if (!orientation.isLandscape) return
 
         cancelAllAnimations()
@@ -1014,6 +1017,9 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun onScrubEnded() {
+        productFeaturedView?.setTransparent(false)
+        pinnedView?.setTransparent(false)
+
         if (!orientation.isLandscape) return
 
         cancelAllAnimations()
