@@ -14,6 +14,7 @@ import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.media.databinding.ActivityAlbumBinding
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
@@ -24,9 +25,14 @@ import javax.inject.Inject
 
 class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var galleryAnalytics: GalleryAnalyticsImpl
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var galleryAnalytics: GalleryAnalytics
 
     private val binding: ActivityAlbumBinding? by viewBinding()
 
