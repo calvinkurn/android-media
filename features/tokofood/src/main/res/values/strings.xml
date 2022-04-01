@@ -1,3 +1,9 @@
 <resources>
-    <string name="tokofood_title">Tokofood</string>
+    <string name="app_name">tokofood</string>
+    
+    
+    <!-- Order Tracking -->
+    <string name="order_tracking_invoice_number_label">No. Invoice</string>
+    <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
+    <string name="order_tracking_detail_payment_label">Detail Pembayaran</string>
 </resources>

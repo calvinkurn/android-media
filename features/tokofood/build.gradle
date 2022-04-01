@@ -8,6 +8,18 @@ android {
     buildFeatures {
         viewBinding true
     }
+    def pathSources = "src/main/res/"
+    sourceSets {
+        main {
+            res.srcDirs = [
+                    pathSources,
+                    pathSources + 'home',
+                    pathSources + 'merchant',
+                    pathSources + 'purchase',
+                    pathSources + 'ordertracking'
+            ]
+        }
+    }
 }
 
 buildscript {
