@@ -363,6 +363,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_DARK_MODE -> {
                 setupDarkMode(isActive)
             }
+            AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
+            }
             else -> {
             }
         }

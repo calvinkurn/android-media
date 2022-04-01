@@ -35,4 +35,5 @@ object DigitalPDPConstant {
     const val DELAY_CLIENT_NUMBER_TRANSITION = 200L
 
     const val CHECKOUT_NO_PROMO = "0"
+    const val LOADER_DIALOG_TEXT = ""
 }

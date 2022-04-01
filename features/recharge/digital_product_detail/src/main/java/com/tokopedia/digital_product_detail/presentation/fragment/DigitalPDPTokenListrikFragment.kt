@@ -37,6 +37,7 @@ import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_QR_PARAM
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.EXTRA_UPDATED_TITLE
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.PARAM_NEED_RESULT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.REQUEST_CODE_LOGIN
@@ -60,6 +61,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -124,6 +126,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     private lateinit var localCacheHandler: LocalCacheHandler
     private var actionTypeTrackingJob: Job? = null
     private var inputNumberActionType = InputNumberActionType.MANUAL
+    private var loader: LoaderDialog? = null
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -293,7 +296,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -308,12 +311,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 }
 
                 is RechargeNetworkResult.Fail -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     showErrorToaster(atcData.error)
                 }
 
                 is RechargeNetworkResult.Loading -> {
-                    onLoadingBuyWidget(true)
+                    showLoadingDialog()
                 }
             }
         })
@@ -400,7 +403,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetRecommendations() {
-        binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpTokenListrikRecommendationWidget?.hide()
     }
 
     private fun getRecommendations() {
@@ -408,7 +411,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             listOf(binding?.rechargePdpTokenListrikClientNumberWidget?.getInputNumber() ?: "")
         viewModel.setRecommendationLoading()
         viewModel.cancelRecommendationJob()
-        viewModel.getRecommendations(clientNumbers, listOf(categoryId))
+        viewModel.getRecommendations(clientNumbers, listOf(categoryId), listOf(operatorId.toInt()))
     }
 
     private fun getCatalogMenuDetail() {
@@ -433,7 +436,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedRecommendation() {
-        binding?.rechargePdpTokenListrikRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpTokenListrikRecommendationWidget?.hide()
     }
 
     private fun renderRecommendation(data: RecommendationWidgetModel) {
@@ -492,18 +495,22 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridLayout(
-                this,
-                denomData,
-                selectedInitialPosition
-            )
-            it.rechargePdpTokenListrikDenomGridWidget.show()
+            if (denomData.listDenomData.isNotEmpty()) {
+                it.rechargePdpTokenListrikDenomGridWidget.renderDenomGridLayout(
+                    this,
+                    denomData,
+                    selectedInitialPosition
+                )
+                it.rechargePdpTokenListrikDenomGridWidget.show()
+            } else {
+                it.rechargePdpTokenListrikDenomGridWidget.hide()
+            }
         }
     }
 
     private fun onFailedDenomGrid() {
         binding?.let {
-            it.rechargePdpTokenListrikDenomGridWidget.renderFailDenomGrid()
+            it.rechargePdpTokenListrikDenomGridWidget.hide()
         }
     }
 
@@ -518,20 +525,26 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
-            it.rechargePdpTokenListrikBuyWidget.showBuyWidget(denomGrid, this)
+            it.rechargePdpTokenListrikBuyWidget.show()
+            it.rechargePdpTokenListrikBuyWidget.renderBuyWidget(denomGrid, this)
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
-            it.rechargePdpTokenListrikBuyWidget.hideBuyWidget()
+            it.rechargePdpTokenListrikBuyWidget.hide()
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean) {
-        binding?.let {
-            it.rechargePdpTokenListrikBuyWidget.isLoadingButton(isLoading)
+    private fun showLoadingDialog() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText(LOADER_DIALOG_TEXT)
         }
+        loader?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loader?.dialog?.dismiss()
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {

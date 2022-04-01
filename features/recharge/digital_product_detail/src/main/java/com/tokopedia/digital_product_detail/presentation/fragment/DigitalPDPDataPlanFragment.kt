@@ -39,6 +39,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
@@ -68,6 +69,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -138,6 +140,8 @@ class DigitalPDPDataPlanFragment :
     private var categoryId = TelcoCategoryType.CATEGORY_PAKET_DATA
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
+    private var loader: LoaderDialog? = null
+    private var productDescBottomSheet: ProductDescBottomSheet? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
 
@@ -352,7 +356,6 @@ class DigitalPDPDataPlanFragment :
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-
                     if (productId >= 0) {
                         viewModel.setAutoSelectedDenom(
                             denomData.data.denomFull.listDenomData,
@@ -404,7 +407,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -419,12 +422,12 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 is RechargeNetworkResult.Fail -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     showErrorToaster(atcData.error)
                 }
 
                 is RechargeNetworkResult.Loading -> {
-                    onLoadingBuyWidget(true)
+                    showLoadingDialog()
                 }
             }
         })
@@ -532,11 +535,6 @@ class DigitalPDPDataPlanFragment :
                 getCatalogMenuDetail()
             }
         }
-        onFailedRecommendation()
-    }
-
-    private fun onFailedRecommendation() {
-        binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
     }
 
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
@@ -595,7 +593,7 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedGetRecommendations() {
-        binding?.rechargePdpPaketDataRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpPaketDataRecommendationWidget?.hide()
     }
 
     private fun onSuccessSortFilter(initialSelectedCounter: Int = 0) {
@@ -686,18 +684,22 @@ class DigitalPDPDataPlanFragment :
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPaketDataDenomFullWidget.renderDenomFullLayout(
-                this,
-                denomData,
-                selectedInitialPosition
-            )
-            it.rechargePdpPaketDataDenomFullWidget.show()
+            if (denomData.listDenomData.isNotEmpty()) {
+                it.rechargePdpPaketDataDenomFullWidget.renderDenomFullLayout(
+                    this,
+                    denomData,
+                    selectedInitialPosition
+                )
+                it.rechargePdpPaketDataDenomFullWidget.show()
+            } else {
+                it.rechargePdpPaketDataDenomFullWidget.hide()
+            }
         }
     }
 
     private fun onFailedDenomFull() {
         binding?.let {
-            it.rechargePdpPaketDataDenomFullWidget.renderFailDenomFull()
+            it.rechargePdpPaketDataDenomFullWidget.hide()
         }
     }
 
@@ -725,17 +727,21 @@ class DigitalPDPDataPlanFragment :
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPaketDataPromoWidget.show()
-            it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
-                this, denomFull,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
-            )
+            if (denomFull.listDenomData.isNotEmpty()) {
+                it.rechargePdpPaketDataPromoWidget.show()
+                it.rechargePdpPaketDataPromoWidget.renderMCCMFull(
+                    this, denomFull,
+                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                )
+            } else {
+                it.rechargePdpPaketDataPromoWidget.hide()
+            }
         }
     }
 
     private fun onLoadingAndFailMCCM() {
         binding?.let {
-            it.rechargePdpPaketDataPromoWidget.renderFailMCCMFull()
+            it.rechargePdpPaketDataPromoWidget.hide()
         }
     }
 
@@ -796,12 +802,16 @@ class DigitalPDPDataPlanFragment :
 
     private fun renderRecommendation(data: RecommendationWidgetModel) {
         binding?.let {
-            it.rechargePdpPaketDataRecommendationWidget.show()
-            it.rechargePdpPaketDataRecommendationWidget.renderRecommendationLayout(
-                this,
-                data.title,
-                data.recommendations
-            )
+            if (data.recommendations.isNotEmpty()) {
+                it.rechargePdpPaketDataRecommendationWidget.show()
+                it.rechargePdpPaketDataRecommendationWidget.renderRecommendationLayout(
+                    this,
+                    data.title,
+                    data.recommendations
+                )
+            } else {
+                it.rechargePdpPaketDataRecommendationWidget.hide()
+            }
         }
     }
 
@@ -814,20 +824,26 @@ class DigitalPDPDataPlanFragment :
 
     private fun onShowBuyWidget(denomFull: DenomData) {
         binding?.let {
-            it.rechargePdpPaketDataBuyWidget.showBuyWidget(denomFull, this)
+            it.rechargePdpPaketDataBuyWidget.show()
+            it.rechargePdpPaketDataBuyWidget.renderBuyWidget(denomFull, this)
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
-            it.rechargePdpPaketDataBuyWidget.hideBuyWidget()
+            it.rechargePdpPaketDataBuyWidget.hide()
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean) {
-        binding?.let {
-            it.rechargePdpPaketDataBuyWidget.isLoadingButton(isLoading)
+    private fun showLoadingDialog() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText(LOADER_DIALOG_TEXT)
         }
+        loader?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loader?.dialog?.dismiss()
     }
 
     private fun initEmptyState(banners: List<TopupBillsBanner>) {
@@ -866,7 +882,6 @@ class DigitalPDPDataPlanFragment :
         binding?.run {
             if (rechargePdpPaketDataEmptyStateWidget.isVisible) {
                 rechargePdpPaketDataEmptyStateWidget.hide()
-                rechargePdpPaketDataRecommendationWidget.show()
             }
         }
     }
@@ -1214,10 +1229,15 @@ class DigitalPDPDataPlanFragment :
             binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
             operator.id
         )
-        if (userSession.isLoggedIn) {
-            addToCart()
+        if (binding?.rechargePdpPaketDataClientNumberWidget?.isErrorMessageShown() == true) {
+            binding?.rechargePdpPaketDataClientNumberWidget?.startShakeAnimation()
+            productDescBottomSheet?.dismiss()
         } else {
-            navigateToLoginPage()
+            if (userSession.isLoggedIn) {
+                addToCart()
+            } else {
+                navigateToLoginPage()
+            }
         }
     }
 
@@ -1347,7 +1367,8 @@ class DigitalPDPDataPlanFragment :
         layoutType: DenomWidgetEnum
     ) {
         fragmentManager?.let {
-            ProductDescBottomSheet(denomFull, this).show(it, "")
+            productDescBottomSheet = ProductDescBottomSheet(denomFull, this)
+            productDescBottomSheet?.show(it, "")
         }
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.clickFullDenomChevron(
@@ -1373,17 +1394,19 @@ class DigitalPDPDataPlanFragment :
         filterTagComponents: List<TelcoFilterTagComponent>,
         initialSelectedCounter: Int
     ) {
-        viewModel.updateFilterData(filterTagComponents)
-        onSuccessSortFilter(initialSelectedCounter)
-        viewModel.run {
-            cancelCatalogProductJob()
-            setRechargeCatalogInputMultiTabLoading()
-            getRechargeCatalogInputMultiTab(
-                menuId,
-                operator.id,
-                binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
-                false
-            )
+        if (viewModel.isFilterChanged(filterTagComponents)) {
+            viewModel.updateFilterData(filterTagComponents)
+            onSuccessSortFilter(initialSelectedCounter)
+            viewModel.run {
+                cancelCatalogProductJob()
+                setRechargeCatalogInputMultiTabLoading()
+                getRechargeCatalogInputMultiTab(
+                    menuId,
+                    operator.id,
+                    binding?.rechargePdpPaketDataClientNumberWidget?.getInputNumber() ?: "",
+                    false
+                )
+            }
         }
     }
 

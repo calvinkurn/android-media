@@ -41,6 +41,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.E
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_VALID_NUMBER_LENGTH
@@ -66,6 +67,7 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
@@ -136,6 +138,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     private var categoryId = TelcoCategoryType.CATEGORY_PULSA
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
+    private var loader: LoaderDialog? = null
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -354,7 +357,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -369,12 +372,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 }
 
                 is RechargeNetworkResult.Fail -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     showErrorToaster(atcData.error)
                 }
 
                 is RechargeNetworkResult.Loading -> {
-                    onLoadingBuyWidget(true)
+                    showLoadingDialog()
                 }
             }
         })
@@ -446,10 +449,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         renderTicker(data.tickers)
     }
 
-    private fun onFailedRecommendation() {
-        binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
-    }
-
     private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
         binding?.rechargePdpPulsaClientNumberWidget?.run {
             setFilterChipShimmer(false, favoriteNumber.isEmpty())
@@ -512,7 +511,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 getCatalogMenuDetail()
             }
         }
-        onFailedRecommendation()
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
@@ -530,7 +528,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedGetRecommendations() {
-        binding?.rechargePdpPulsaRecommendationWidget?.renderFailRecommendation()
+        binding?.rechargePdpPulsaRecommendationWidget?.hide()
     }
 
     private fun initClientNumberWidget() {
@@ -629,18 +627,22 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(
-                this,
-                denomData,
-                selectedInitialPosition
-            )
-            it.rechargePdpPulsaDenomGridWidget.show()
+            if (denomData.listDenomData.isNotEmpty()) {
+                it.rechargePdpPulsaDenomGridWidget.renderDenomGridLayout(
+                    this,
+                    denomData,
+                    selectedInitialPosition
+                )
+                it.rechargePdpPulsaDenomGridWidget.show()
+            } else {
+                it.rechargePdpPulsaDenomGridWidget.hide()
+            }
         }
     }
 
     private fun onFailedDenomGrid() {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.renderFailDenomGrid()
+            it.rechargePdpPulsaDenomGridWidget.hide()
         }
     }
 
@@ -685,17 +687,21 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             } else {
                 selectedInitialPosition = null
             }
-            it.rechargePdpPulsaPromoWidget.show()
-            it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
-                this, denomGrid,
-                getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
-            )
+            if (denomGrid.listDenomData.isNotEmpty()) {
+                it.rechargePdpPulsaPromoWidget.show()
+                it.rechargePdpPulsaPromoWidget.renderMCCMGrid(
+                    this, denomGrid,
+                    getString(com.tokopedia.unifyprinciples.R.color.Unify_N0), selectedInitialPosition
+                )
+            } else {
+                it.rechargePdpPulsaPromoWidget.hide()
+            }
         }
     }
 
     private fun onLoadingAndFailMCCM() {
         binding?.let {
-            it.rechargePdpPulsaPromoWidget.renderFailMCCMGrid()
+            it.rechargePdpPulsaPromoWidget.hide()
         }
     }
 
@@ -707,20 +713,26 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget(denomGrid: DenomData) {
         binding?.let {
-            it.rechargePdpPulsaBuyWidget.showBuyWidget(denomGrid, this)
+            it.rechargePdpPulsaBuyWidget.show()
+            it.rechargePdpPulsaBuyWidget.renderBuyWidget(denomGrid, this)
         }
     }
 
     private fun onHideBuyWidget() {
         binding?.let {
-            it.rechargePdpPulsaBuyWidget.hideBuyWidget()
+            it.rechargePdpPulsaBuyWidget.hide()
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean) {
-        binding?.let {
-            it.rechargePdpPulsaBuyWidget.isLoadingButton(isLoading)
+    private fun showLoadingDialog() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText(LOADER_DIALOG_TEXT)
         }
+        loader?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loader?.dialog?.dismiss()
     }
 
     private fun renderTicker(tickers: List<TopupBillsTicker>) {

@@ -35,6 +35,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.LOADER_DIALOG_TEXT
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
@@ -51,6 +52,7 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListener
@@ -105,6 +107,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     private var categoryId = GeneralCategoryType.CATEGORY_LISTRIK_PLN
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
+    private var loader: LoaderDialog? = null
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -199,7 +202,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.addToCartResult.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -213,11 +216,11 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                     navigateToCart(it.data.categoryId)
                 }
                 is RechargeNetworkResult.Fail -> {
-                    onLoadingBuyWidget(false)
+                    hideLoadingDialog()
                     showErrorToaster(it.error)
                 }
                 is RechargeNetworkResult.Loading -> {
-                    onLoadingBuyWidget(true)
+                    showLoadingDialog()
                 }
             }
         })
@@ -234,7 +237,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                     setErrorInputField(msg.first)
                     if (msg.second) {
                         showErrorToaster(MessageErrorException(msg.first))
-                        onLoadingBuyWidget(false)
+                        hideLoadingDialog()
                     }
                 }
             }
@@ -502,14 +505,20 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
     private fun onShowBuyWidget() {
         binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.showSimplifyBuyWidget(this)
+            it.rechargePdpTagihanListrikBuyWidget.show()
+            it.rechargePdpTagihanListrikBuyWidget.renderSimplifyBuyWidget(this)
         }
     }
 
-    private fun onLoadingBuyWidget(isLoading: Boolean) {
-        binding?.let {
-            it.rechargePdpTagihanListrikBuyWidget.isLoadingButton(isLoading)
+    private fun showLoadingDialog() {
+        loader = LoaderDialog(requireContext()).apply {
+            setLoadingText(LOADER_DIALOG_TEXT)
         }
+        loader?.show()
+    }
+
+    private fun hideLoadingDialog() {
+        loader?.dialog?.dismiss()
     }
 
     private fun renderOperatorChipsAndTitle(catalogOperators: DigitalCatalogOperatorSelectGroup) {
@@ -904,7 +913,6 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     }
 
     override fun onClickedButton() {
-        onLoadingBuyWidget(true)
         if (viewModel.isEligibleToBuy) {
             viewModel.updateCheckoutPassData(
                 userSession.userId.generateRechargeCheckoutToken(),
@@ -916,13 +924,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 navigateToLoginPage()
             }
         } else {
-            viewModel.run {
-                cancelValidatorJob()
-                validateClientNumber(
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.getInputNumber() ?: "",
-                    true
-                )
-            }
+            binding?.rechargePdpTagihanListrikClientNumberWidget?.startShakeAnimation()
         }
     }
 

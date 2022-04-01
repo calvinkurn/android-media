@@ -60,13 +60,13 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
 
     protected fun onGetRecommendation_thenReturn(response: RecommendationWidgetModel) {
         coEvery {
-            repo.getRecommendations(any(), any(), any())
+            repo.getRecommendations(any(), any(), any(), any())
         } returns response
     }
 
     protected fun onGetRecommendation_thenReturn(error: Throwable) {
         coEvery {
-            repo.getRecommendations(any(), any(), any())
+            repo.getRecommendations(any(), any(), any(), any())
         } throws error
     }
 
@@ -127,11 +127,11 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
     }
 
     protected fun verifyGetRecommendationsRepoGetCalled() {
-        coVerify { repo.getRecommendations(any(), any()) }
+        coVerify { repo.getRecommendations(any(), any(), any(), any()) }
     }
 
     protected fun verifyGetRecommendationsRepoWasNotCalled() {
-        coVerify { repo.getRecommendations(any(), any()) wasNot Called }
+        coVerify { repo.getRecommendations(any(), any(), any(), any()) wasNot Called }
     }
 
     protected fun verifyGetFavoriteNumberChipsRepoGetCalled() {

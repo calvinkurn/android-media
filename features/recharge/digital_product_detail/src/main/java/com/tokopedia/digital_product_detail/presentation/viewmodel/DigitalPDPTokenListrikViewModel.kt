@@ -204,10 +204,10 @@ class DigitalPDPTokenListrikViewModel @Inject constructor(
         _recommendationData.value = RechargeNetworkResult.Loading
     }
 
-    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+    fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>, dgOperatorIds: List<Int>) {
         recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
-            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds)
+            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds, dgOperatorIds)
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)

@@ -62,7 +62,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
-        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.getRecommendations(listOf(), listOf(), listOf())
         skipRecommendationDelay()
         verifyGetRecommendationsRepoGetCalled()
         verifyGetRecommendationSuccess(mappedResponse)
@@ -72,7 +72,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
     fun `when getting recommendation should run and give fail result`() = testCoroutineRule.runBlockingTest {
         onGetRecommendation_thenReturn(NullPointerException())
 
-        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.getRecommendations(listOf(), listOf(), listOf())
         skipRecommendationDelay()
         verifyGetRecommendationsRepoGetCalled()
         verifyGetRecommendationFail()
@@ -484,7 +484,7 @@ class DigitalPDPTokenListrikViewModelTest: DigitalPDPTokenListrikViewModelTestFi
         val mappedResponse = mapperFactory.mapDigiPersoToRecommendation(response.recommendationData, true)
         onGetRecommendation_thenReturn(mappedResponse)
 
-        viewModel.getRecommendations(listOf(), listOf())
+        viewModel.getRecommendations(listOf(), listOf(), listOf())
         viewModel.cancelRecommendationJob()
         verifyRecommendationJobIsCancelled()
         verifyGetRecommendationsRepoWasNotCalled()

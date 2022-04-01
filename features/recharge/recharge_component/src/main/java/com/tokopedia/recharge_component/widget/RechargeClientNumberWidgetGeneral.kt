@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -57,13 +58,13 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     private var textFieldStaticLabel: String = ""
 
     private var isClearableState = false
+    private var inputFieldType: InputFieldType? = null
 
     private var customInputNumberFormatter: ((String) -> String)? = null
 
     init {
         initInputField()
         initSortFilterChip()
-        initAutoComplete()
     }
 
     private fun initInputField() {
@@ -131,15 +132,22 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             }
         }
 
+        val emptyStateUnitRes = when (inputFieldType) {
+            InputFieldType.Listrik -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
+            InputFieldType.Telco -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
+            else -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
+        }
+
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
             R.layout.item_recharge_client_number_auto_complete,
             mutableListOf(),
+            context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.text.toString()
                 }
-            }
+            },
         )
 
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.run {
@@ -209,6 +217,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
     fun setInputFieldType(type: InputFieldType) {
         with(binding) {
+            inputFieldType = type
             clientNumberWidgetBase.clientNumberWidgetInputField.run {
                 editText.inputType = type.inputType
                 icon1.run {
@@ -221,6 +230,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 }
             }
         }
+        initAutoComplete()
     }
 
     fun setInputFieldStaticLabel(label: String) {
@@ -411,5 +421,10 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             adapter = adapterInquiry
             layoutManager = LinearLayoutManager(context)
         }
+    }
+
+    fun startShakeAnimation() {
+        binding.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
     }
 }
