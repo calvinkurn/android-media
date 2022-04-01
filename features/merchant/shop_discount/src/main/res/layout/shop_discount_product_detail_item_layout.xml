@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_product"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/text_product_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/img_product"
+        app:layout_constraintRight_toLeftOf="@id/img_edit_product"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Product NameProduct" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_discounted_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintLeft_toLeftOf="@id/text_product_name"
+        app:layout_constraintRight_toLeftOf="@id/img_edit_product"
+        app:layout_constraintTop_toBottomOf="@id/text_product_name"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp250.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        app:labelType="highlight_light_red"
+        app:layout_constraintLeft_toLeftOf="@id/text_discounted_price"
+        app:layout_constraintTop_toBottomOf="@id/text_discounted_price"
+        tools:text="25-30%" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/label_discount"
+        app:layout_constraintLeft_toRightOf="@id/label_discount"
+        app:layout_constraintTop_toTopOf="@id/label_discount"
+        app:typographyType="small"
+        tools:text="Rp100.000.000-Rp150.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_stock_and_total_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toLeftOf="@id/label_discount"
+        app:layout_constraintTop_toBottomOf="@id/label_discount"
+        app:typographyType="small"
+        tools:text="Stok: 999 di 5 lokasi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_start_date_end_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintLeft_toLeftOf="@id/text_stock_and_total_location"
+        app:layout_constraintTop_toBottomOf="@id/text_stock_and_total_location"
+        app:typographyType="small"
+        tools:text="25 Sep 2022 08:00 - 31 Des 2022 08:00 WIB" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_edit_product"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/text_product_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_product_detail_edit"
+        app:unify_image_corner_radius="0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

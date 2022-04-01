@@ -18,4 +18,11 @@
     <string name="sd_apply">Terapkan</string>
     <string name="sd_rupiah">Rp</string>
     <string name="sd_percent">%</string>
+
+    <!-- Product Detail   -->
+    <string name="change_discount">Ubah Diskon</string>
+    <string name="product_detail_original_price_format">%1s-%2s</string>
+    <string name="product_detail_stock_and_total_warehouse_format">Stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+    <string name="product_detail_start_date_end_date_format">%1s - %2s</string>
+
 </resources>
