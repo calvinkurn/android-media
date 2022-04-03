@@ -5,10 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListMetaResponse
-import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListResponse
+import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
+import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListMetaUseCase
-import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,29 +16,14 @@ import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSlashPriceProductListUseCase: GetSlashPriceProductListUseCase,
-    private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase
+    private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase,
+    private val productListMetaMapper: ProductListMetaMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _products = MutableLiveData<Result<GetSlashPriceProductListResponse>>()
-    val products: LiveData<Result<GetSlashPriceProductListResponse>>
-        get() = _products
-
-    private val _productsMeta = MutableLiveData<Result<GetSlashPriceProductListMetaResponse>>()
-    val productsMeta: LiveData<Result<GetSlashPriceProductListMetaResponse>>
+    private val _productsMeta = MutableLiveData<Result<List<DiscountStatusMeta>>>()
+    val productsMeta: LiveData<Result<List<DiscountStatusMeta>>>
         get() = _productsMeta
 
-    fun getSlashPriceProducts(page : Int) {
-        launchCatchError(block = {
-            val result = withContext(dispatchers.io) {
-                getSlashPriceProductListUseCase.setRequestParams(page = page)
-                getSlashPriceProductListUseCase.executeOnBackground()
-            }
-            _products.value = Success(result)
-        }, onError = {
-            _products.value = Fail(it)
-        })
-    }
 
     fun getSlashPriceProductsMeta() {
         launchCatchError(block = {
@@ -47,7 +31,8 @@ class ProductManageViewModel @Inject constructor(
                 getSlashPriceProductListMetaUseCase.setRequestParams()
                 getSlashPriceProductListMetaUseCase.executeOnBackground()
             }
-            _productsMeta.value = Success(result)
+            val formattedProductMeta = productListMetaMapper.map(result.getSlashPriceProductListMeta.data.tab)
+            _productsMeta.value = Success(formattedProductMeta)
         }, onError = {
             _productsMeta.value = Fail(it)
         })

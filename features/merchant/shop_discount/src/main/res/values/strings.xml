@@ -22,6 +22,7 @@
     <string name="sd_invalid_discount_percentage">Diskon harus 1–99%</string>
     <string name="sd_discount_percentage">Persentase diskon</string>
     <string name="sd_invalid_max_purchase">Maks. pembelian tidak boleh melebihi 99.999</string>
+    <string name="sd_shop_discount">Diskon Toko</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

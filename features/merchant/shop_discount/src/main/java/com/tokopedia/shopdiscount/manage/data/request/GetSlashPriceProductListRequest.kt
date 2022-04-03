@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 
 data class GetSlashPriceProductListRequest(
     @SerializedName("request_header")
@@ -37,6 +38,10 @@ data class GetSlashPriceProductListRequest(
 
         @SerializedName("warehouse_ids")
         @Expose
-        var warehouseIds: List<String> = emptyList()
+        var warehouseIds: List<String> = emptyList(),
+
+        @SerializedName("status")
+        @Expose
+        var status: Int = DiscountStatus.ONGOING
     )
 }

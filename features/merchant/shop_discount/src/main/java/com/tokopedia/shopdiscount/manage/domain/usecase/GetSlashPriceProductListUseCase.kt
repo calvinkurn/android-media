@@ -96,7 +96,8 @@ class GetSlashPriceProductListUseCase @Inject constructor(
         keyword: String = "",
         categoryIds: List<String> = emptyList(),
         etalaseIds: List<String> = emptyList(),
-        warehouseIds: List<String> = emptyList()
+        warehouseIds: List<String> = emptyList(),
+        status: Int
     ) {
         val requestHeader = RequestHeader(source, ip, useCase)
         val filter = GetSlashPriceProductListRequest.Filter(
@@ -105,7 +106,8 @@ class GetSlashPriceProductListUseCase @Inject constructor(
             keyword,
             categoryIds,
             etalaseIds,
-            warehouseIds
+            warehouseIds,
+            status
         )
         val request = GetSlashPriceProductListRequest(requestHeader, filter)
         val params = mapOf(REQUEST_PARAM_KEY to request)
