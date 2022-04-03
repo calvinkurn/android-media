@@ -1260,6 +1260,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         })
     }
 
+    @OptIn(FlowPreview::class, kotlinx.coroutines.ExperimentalCoroutinesApi::class)
     private fun observeUpdateNetworkStatusData() {
         getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
             resetImpressionListener()
@@ -1292,6 +1293,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     showLoading()
                 }
             }
+        })
+        getHomeViewModel().hideShowLoading.observe(viewLifecycleOwner, Observer {
+            hideLoading()
         })
     }
 
@@ -2917,11 +2921,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun changeStatusBarToDark() {
         mainParentStatusBarListener?.requestStatusBarDark()
+        navToolbar?.setMargin(0, -4, 0, 0)
     }
 
     override fun changeStatusBarToLight() {
         if (isLightThemeStatusBar) {
             mainParentStatusBarListener?.requestStatusBarLight()
         }
+        navToolbar?.setMargin(0, 0, 0, 0)
     }
 }

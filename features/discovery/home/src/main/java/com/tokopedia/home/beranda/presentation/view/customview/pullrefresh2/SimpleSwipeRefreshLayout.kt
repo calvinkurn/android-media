@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.animation.DecelerateInterpolator
 import android.widget.ListView
+import androidx.core.content.ContextCompat
 import androidx.core.view.NestedScrollingChild
 import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.NestedScrollingParent
@@ -85,7 +87,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
         private const val STICKY_FACTOR = 0.66F
         private const val STICKY_MULTIPLIER = 0.75F
         private const val ROLL_BACK_DURATION = 300L
-        private const val DEFAULT_INDICATOR_TARGET = 64f
+        const val DEFAULT_INDICATOR_TARGET = 67f
         const val ELEVATION = 4
     }
 
@@ -152,6 +154,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
     private fun layoutTopView() {
         val topView = topChildView.view
         val topViewAttr = topChildView.positionAttr
+        topView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         val lp = topView.layoutParams as LayoutParams
         if (lp.width == ViewGroup.LayoutParams.MATCH_PARENT) {
@@ -160,11 +163,12 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(context: Context, 
             val right: Int = left + topView.measuredWidth
             val bottom = - ELEVATION
             topChildView = topChildView.copy(positionAttr = PositionAttr(left = left, top = top, right = right, bottom = bottom))
+//            topView.background = ColorDrawable(resources.getColor(R.color.bg_corner_red))
             topView.layout(left, top, right, bottom)
         } else {
             val indicatorWidth: Int = topView.measuredWidth
             val left: Int = width / 2 - indicatorWidth / 2
-            val top: Int = (paddingTop + lp.topMargin) - topViewAttr.height - ELEVATION
+            val top: Int = (paddingTop + lp.topMargin) - topViewAttr.height - ELEVATION + 20
             val right: Int = width / 2 + indicatorWidth / 2
             val bottom = -ELEVATION
 

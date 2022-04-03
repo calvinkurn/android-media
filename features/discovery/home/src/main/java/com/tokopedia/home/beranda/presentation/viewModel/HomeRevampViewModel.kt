@@ -108,6 +108,9 @@ open class HomeRevampViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
+    val hideShowLoading: LiveData<Boolean> get() = _hideShowLoadingLiveData
+    private val _hideShowLoadingLiveData = MutableLiveData<Boolean>()
+
     val errorEventLiveData: LiveData<Event<Throwable>>
         get() = _errorEventLiveData
     private val _errorEventLiveData = MutableLiveData<Event<Throwable>>()
@@ -269,12 +272,12 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+            _hideShowLoadingLiveData.postValue(true)
             Log.d("DevaraFikryTest", "getHomeDataJob Active")
             return
         }
-        if (homeDataModel.flowCompleted == false) {
-            _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+        if (!homeDataModel.flowCompleted) {
+            _hideShowLoadingLiveData.postValue(true)
             Log.d("DevaraFikryTest", "flow Not completed")
             return
         }
