@@ -197,6 +197,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_PAYLATER_CICIL -> {
                     createPayLaterHomeToDoWidget(channel)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_CUE_WIDGET -> {
+
+                }
             }
         }
         if (addLoadingMore) {
