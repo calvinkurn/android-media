@@ -356,7 +356,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         ProductDetailAdapter(asyncDifferConfig, this, adapterFactory)
     }
     private var navToolbar: NavToolbar? = null
-    private var toasterWishlistText = ""
 
     private var buttonActionType: Int = 0
     private var isTopadsDynamicsSlottingAlreadyCharged = false
@@ -1389,7 +1388,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         if (viewModel.isUserSessionActive) {
             if (isActive) {
                 productInfo?.basic?.productID?.let {
-                    toasterWishlistText = getString(R.string.toaster_success_remove_wishlist)
                     viewModel.removeWishList(it,
                             onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                             onErrorRemoveWishList = this::onErrorRemoveWishList)
@@ -1398,7 +1396,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             } else {
                 productInfo?.basic?.productID?.let {
-                    toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
                     addWishList()
                     productInfo.let {
                         DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -2864,7 +2861,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {
-        view?.showToasterSuccess(toasterWishlistText)
+        view?.showToasterSuccess(
+            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+            ctaListener = { }
+        )
         pdpUiUpdater?.updateWishlistData(false)
         updateUi()
         sendIntentResultWishlistChange(productId ?: "", false)
@@ -2880,11 +2881,9 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun onSuccessAddWishlist(productId: String?) {
         view?.showToasterSuccess(
-                message = toasterWishlistText,
-                ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                ctaListener = {
-                    goToWishlist()
-                }
+            message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            ctaListener = { goToWishlist() }
         )
         pdpUiUpdater?.updateWishlistData(true)
         updateUi()
@@ -3208,7 +3207,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             }
 
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
-                toasterWishlistText = getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button)
                 addWishList()
                 return@let
             }
