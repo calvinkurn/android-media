@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.product.addedit.R
 import javax.inject.Inject
 
-class VariantResourceProvider @Inject constructor(@ApplicationContext val context: Context?) {
+class IMSResourceProvider @Inject constructor(@ApplicationContext val context: Context?) {
 
     private fun getString(resId: Int): String? {
         return try {

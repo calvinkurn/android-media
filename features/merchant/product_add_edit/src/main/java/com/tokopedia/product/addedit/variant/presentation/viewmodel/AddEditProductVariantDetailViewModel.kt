@@ -5,7 +5,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.ProductStatus
@@ -13,7 +12,7 @@ import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_INACTIVE_STRING
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.common.util.VariantResourceProvider
+import com.tokopedia.product.addedit.common.util.IMSResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.DEFAULT_IS_PRIMARY_INDEX
@@ -36,7 +35,7 @@ import javax.inject.Inject
 
 class AddEditProductVariantDetailViewModel @Inject constructor(
     val provider: ResourceProvider,
-    private val variantResourceProvider: VariantResourceProvider,
+    private val imsResourceProvider: IMSResourceProvider,
     private val userSession: UserSessionInterface,
     coroutineDispatcher: CoroutineDispatcher
 ) : BaseViewModel(coroutineDispatcher) {
@@ -307,7 +306,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.price = priceInput
         if (priceInput.isEmpty()) {
-            inputModel.priceFieldErrorMessage = variantResourceProvider.getEmptyProductPriceErrorMessage()
+            inputModel.priceFieldErrorMessage = imsResourceProvider.getEmptyProductPriceErrorMessage()
         } else {
             val productPrice = priceInput.toBigIntegerOrNull().orZero()
             inputModel.priceFieldErrorMessage = validateVariantPriceInput(productPrice)
@@ -320,7 +319,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.stock = stockInput
         if (stockInput == null) {
-            inputModel.stockFieldErrorMessage = variantResourceProvider.getEmptyProductStockErrorMessage()
+            inputModel.stockFieldErrorMessage = imsResourceProvider.getEmptyProductStockErrorMessage()
         } else {
             val productStock = stockInput.toBigInteger()
             inputModel.stockFieldErrorMessage = validateProductVariantStockInput(productStock)
@@ -333,7 +332,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val inputModel = inputLayoutModelMap[adapterPosition] ?: VariantDetailInputLayoutModel()
         inputModel.weight = weightInput
         if (weightInput == null) {
-            inputModel.weightFieldErrorMessage = variantResourceProvider.getEmptyProductWeightErrorMessage()
+            inputModel.weightFieldErrorMessage = imsResourceProvider.getEmptyProductWeightErrorMessage()
         } else {
             inputModel.weightFieldErrorMessage = validateProductVariantWeightInput(weightInput)
         }
@@ -344,7 +343,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateVariantPriceInput(priceInput: BigInteger): String {
         return when {
             priceInput < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
-                variantResourceProvider.getMinLimitProductPriceErrorMessage(MIN_PRODUCT_PRICE_LIMIT)
+                imsResourceProvider.getMinLimitProductPriceErrorMessage(MIN_PRODUCT_PRICE_LIMIT)
             }
             else -> ""
         }
@@ -353,10 +352,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
             stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                variantResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
+                imsResourceProvider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             }
             stockInput > MAX_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                variantResourceProvider.getMaxLimitProductStockErrorMessage(MAX_PRODUCT_STOCK_LIMIT)
+                imsResourceProvider.getMaxLimitProductStockErrorMessage(MAX_PRODUCT_STOCK_LIMIT)
             }
             else -> ""
         }
@@ -365,10 +364,10 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantWeightInput(weightInput: Int): String {
         return when {
             weightInput < MIN_PRODUCT_WEIGHT_LIMIT -> {
-                variantResourceProvider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
+                imsResourceProvider.getMinLimitProductWeightErrorMessage(MIN_PRODUCT_WEIGHT_LIMIT)
             }
             weightInput > MAX_PRODUCT_WEIGHT_LIMIT -> {
-                variantResourceProvider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
+                imsResourceProvider.getMaxLimitProductWeightErrorMessage(MAX_PRODUCT_WEIGHT_LIMIT)
             }
             else -> ""
         }

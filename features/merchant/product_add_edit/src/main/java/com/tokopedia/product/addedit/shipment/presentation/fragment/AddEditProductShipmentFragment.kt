@@ -45,7 +45,6 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISEDITING
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISFIRSTMOVED
 import com.tokopedia.product.addedit.common.util.*
-import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductShipmentBinding
@@ -77,8 +76,6 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.ON_DEMAND_VALIDATION
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
@@ -678,12 +675,10 @@ class AddEditProductShipmentFragment:
     }
 
     private fun validateInputWeight(inputText: String): Boolean {
-        val minWeight = formatProductPriceInput(MIN_WEIGHT.toString())
-        val maxWeightGram = formatProductPriceInput(MAX_WEIGHT_GRAM.toString())
-        val errorMessage = getString(R.string.error_weight_not_valid, minWeight, maxWeightGram)
-        val isValid = shipmentViewModel.isWeightValid(inputText)
+        val errorMessage = shipmentViewModel.validateWeightInput(inputText)
+        val isValid = errorMessage.isEmpty()
         tfWeightAmount?.setError(!isValid)
-        tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
+        tfWeightAmount?.setMessage(errorMessage)
         btnEnd?.isEnabled = isValid
         btnSave?.isEnabled = isValid
         return isValid
