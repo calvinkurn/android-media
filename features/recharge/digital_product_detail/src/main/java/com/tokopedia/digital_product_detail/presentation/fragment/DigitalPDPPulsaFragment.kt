@@ -613,6 +613,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.let {
             var selectedInitialPosition = selectedPosition
             if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.GRID_TYPE)) {
+                viewModel.updateSelectedPositionId(selectedPosition)
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
                 selectedInitialPosition = null
@@ -673,6 +674,7 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         binding?.let {
             var selectedInitialPosition = selectedPosition
             if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_GRID_TYPE)) {
+                viewModel.updateSelectedPositionId(selectedPosition)
                 onShowBuyWidget(viewModel.selectedGridProduct.denomData)
             } else {
                 selectedInitialPosition = null

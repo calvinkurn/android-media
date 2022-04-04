@@ -274,11 +274,14 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
                 && selectedGridProduct.denomData.id.isNotEmpty()) {
-                    selectedGridProduct.position = index
                     selectedProductPositionId = index
             }
         }
         return selectedProductPositionId
+    }
+
+    fun updateSelectedPositionId(position: Int?) {
+        position?.let { selectedGridProduct.position = it }
     }
 
     fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean = (selectedGridProduct.denomData.id.isNotEmpty()
