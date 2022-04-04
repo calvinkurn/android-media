@@ -15,56 +15,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabs"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/tabsUnify"
+        android:layout_width="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header"/>
+        app:layout_constraintTop_toBottomOf="@id/header"
+        android:layout_height="wrap_content"/>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefresh"
-        android:layout_width="match_parent"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabs">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:itemCount="3"
-            tools:listitem="@layout/sd_item_product" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/globalError"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:globalerrors_type="SERVER_ERROR"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="Coba ulangi pencarian dengan kata kunci atau filter lain, ya."
-        app:unifyEmptyStateImageUrl="https://ecs7.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
-        app:unifyEmptyStateOrientation="horizontal"
-        app:unifyEmptyStateTitle="Kupon yang kamu cari nggak ditemukan"
-        app:unifyEmptyStateType="section" />
+        app:layout_constraintTop_toBottomOf="@id/tabsUnify" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,36 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
-import com.tokopedia.shopdiscount.manage.domain.entity.Product
-import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
+import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
-import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
+import com.tokopedia.unifycomponents.TabsUnifyMediator
+import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-
-class ProductManageFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
+class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val PAGE_SIZE = 10
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
             arguments = Bundle()
@@ -69,33 +61,17 @@ class ProductManageFragment : BaseSimpleListFragment<ProductListAdapter, Product
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        applyUnifyBackgroundColor()
-        setupViews()
         //displayBulkApplyBottomSheet()
         observeProductsMeta()
-        observeProducts()
         viewModel.getSlashPriceProductsMeta()
-    }
-
-    private fun setupViews() {
-        binding?.run {
-            tabs.getUnifyTabLayout().addOnTabSelectedListener(object :
-                TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    viewModel.onTabChanged()
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab) {}
-                override fun onTabReselected(tab: TabLayout.Tab) {}
-            })
-        }
     }
 
     private fun observeProductsMeta() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    displayTabs(it.data)
+                    val formattedDiscountStatusMeta = viewModel.findDiscountStatusCount(it.data)
+                    displayTabs(formattedDiscountStatusMeta)
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -104,36 +80,22 @@ class ProductManageFragment : BaseSimpleListFragment<ProductListAdapter, Product
         }
     }
 
+    private fun displayTabs(tabs: List<PageTab>) {
+        val pages = mutableListOf<Pair<String, Fragment>>()
 
-    private fun observeProducts() {
-        viewModel.products.observe(viewLifecycleOwner) {
-            when (it) {
-                is Success -> {
-                    renderList(it.data, it.data.size == getPerPage())
-                }
-                is Fail -> {
-                    binding?.root showError it.throwable
-                }
+        tabs.forEach { tab ->
+            val fragment = ProductListFragment.newInstance(tab.discountStatusId)
+            pages.add(Pair(tab.name, fragment))
+        }
+
+        val pagerAdapter = TabPagerAdapter(requireActivity(), pages)
+
+        binding?.run {
+            viewPager.adapter = pagerAdapter
+            tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+            TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
+                tab.setCustomText(pages[position].first)
             }
-        }
-    }
-
-    private fun observeTabChange() {
-        viewModel.tabChanged.observe(viewLifecycleOwner) { statusId ->
-
-        }
-    }
-
-    private fun displayTabs(tabs: List<DiscountStatusMeta>) {
-        tabs.forEachIndexed { index, discountStatusMeta ->
-            val tabName = String.format(
-                getString(R.string.sd_tab_name),
-                discountStatusMeta.name,
-                discountStatusMeta.productCount
-            )
-            val isSelected = index == 0
-            binding?.tabs?.addNewTab(tabName, isSelected)
-            binding?.tabs?.customTabMode = TabLayout.MODE_SCROLLABLE
         }
     }
 
@@ -144,72 +106,4 @@ class ProductManageFragment : BaseSimpleListFragment<ProductListAdapter, Product
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
-
-    private val onProductClick : (Product) -> Unit = { product ->
-
-    }
-
-    override fun createAdapter(): ProductListAdapter {
-        return ProductListAdapter(onProductClick)
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        return binding?.recyclerView
-    }
-
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return binding?.swipeRefresh
-    }
-
-    override fun getPerPage(): Int {
-        return PAGE_SIZE
-    }
-
-    override fun addElementToAdapter(list: List<Product>) {
-        adapter?.addData(list)
-    }
-
-    override fun loadData(page: Int) {
-        binding?.globalError?.gone()
-        binding?.emptyState?.gone()
-        viewModel.getSlashPriceProducts(page, 2)
-    }
-
-    override fun clearAdapterData() {
-        adapter?.clearData()
-    }
-
-    override fun onShowLoading() {
-        if (adapter?.itemCount.isMoreThanZero()) {
-            // loadingList?.show()
-        }
-        binding?.emptyState?.gone()
-        adapter?.showLoading()
-    }
-
-    override fun onHideLoading() {
-        //loadingList?.gone()
-        binding?.emptyState?.gone()
-        adapter?.hideLoading()
-    }
-
-    override fun onDataEmpty() {
-        binding?.emptyState?.visible()
-    }
-
-    override fun onGetListError(message: String) {
-        displayError(message)
-    }
-
-    private fun displayError(errorMessage : String) {
-        binding?.run {
-            globalError.visible()
-            globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { loadInitialData() }
-            root showError errorMessage
-        }
-
-    }
-
-
 }
