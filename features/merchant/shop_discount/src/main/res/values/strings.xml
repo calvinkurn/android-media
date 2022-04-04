@@ -23,6 +23,11 @@
     <string name="sd_discount_percentage">Persentase diskon</string>
     <string name="sd_invalid_max_purchase">Maks. pembelian tidak boleh melebihi 99.999</string>
     <string name="sd_shop_discount">Diskon Toko</string>
+    <string name="sd_tab_name">%s (%s)</string>
+    <string name="sd_placeholder">%s - %s</string>
+    <string name="sd_total_stock_various_multiple_location">Total stok: %s di beberapa lokasi</string>
+    <string name="sd_total_stock_multiple_location">Total stok: %s di %s lokasi</string>
+    <string name="sd_total_stock">Total stok: %s</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

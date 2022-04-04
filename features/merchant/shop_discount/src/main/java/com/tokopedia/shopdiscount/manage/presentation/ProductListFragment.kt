@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.usecase.coroutines.Fail
@@ -65,7 +66,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         super.onViewCreated(view, savedInstanceState)
         setupViews()
         observeProducts()
-
     }
 
     private fun setupViews() {
@@ -78,7 +78,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    val b= it.data.size
                     renderList(it.data, it.data.size == getPerPage())
                 }
                 is Fail -> {
@@ -143,17 +142,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     override fun onGetListError(message: String) {
         displayError(message)
     }
-
-    /*private fun createTabs(data: List<DiscountStatusMeta>) {
-      val adapter =
-      TabsUnifyMediator()
-      data.forEach {
-          val tab = TabsUnify()
-          val tabName = "${it.name} (${it.productCount})"
-          binding?.tabs?.addNewTab(tabName)
-          binding.tabs.customTabMode = TabLayout.MODE_SCROLLABLE
-      }
-  }*/
 
     private fun displayError(errorMessage : String) {
         binding?.run {

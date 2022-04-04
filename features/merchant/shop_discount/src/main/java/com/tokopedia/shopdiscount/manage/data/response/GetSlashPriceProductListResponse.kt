@@ -29,7 +29,7 @@ data class GetSlashPriceProductListResponse(
             @SerializedName("discounted_percentage")
             val discountedPercentage: Int = 0,
             @SerializedName("discounted_price")
-            val discountedPrice: Int = 0,
+            val discountedPrice: Long = 0,
             @SerializedName("discounted_price_data")
             val discountedPriceData: DiscountedPriceData = DiscountedPriceData(),
             @SerializedName("end_date")

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:padding="@dimen/unify_space_16"
+    android:layout_marginBottom="@dimen/unify_space_8"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -82,7 +83,7 @@
         tools:text="Stok: 999 di 5 lokasi" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgDiscountPeriod"
+        android:id="@+id/tpgInformation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -100,7 +101,7 @@
         app:layout_constraintEnd_toStartOf="@+id/imgMore"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintTop_toBottomOf="@+id/tpgDiscountPeriod"
+        app:layout_constraintTop_toBottomOf="@+id/tpgInformation"
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost" />

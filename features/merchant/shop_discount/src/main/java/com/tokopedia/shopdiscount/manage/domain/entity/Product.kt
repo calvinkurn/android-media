@@ -1,21 +1,23 @@
 package com.tokopedia.shopdiscount.manage.domain.entity
 
 import com.tokopedia.shopdiscount.common.entity.ProductType
-import java.util.*
 
 data class Product(
     val name: String,
-    val originalMinPrice: Long,
-    val originalMaxPrice: Long,
-    val discountedMinPrice: Long,
-    val discountedMaxPrice: Long,
-    val discountMinPercentage: Int,
-    val discountMaxPercentage: Int,
+    val formattedOriginalMinPrice: String,
+    val formattedOriginalMaxPrice: String,
+    val formattedDiscountMinPrice: String,
+    val formattedDiscountMaxPrice: String,
+    val formattedDiscountMinPercentage: String,
+    val formattedDiscountMaxPercentage: String,
     val imageUrl: String,
     val totalStock: String,
     val locationCount: Int,
     val variantCount: Int,
-    val discountStartDate: Date,
-    val discountEndDate: Date,
-    val productType: ProductType
+    val discountStartDate: String,
+    val discountEndDate: String,
+    val productType: ProductType,
+    val hasSameDiscountPercentageAmount: Boolean,
+    val hasSameDiscountedPriceAmount: Boolean,
+    val hasSameOriginalPrice: Boolean
 )

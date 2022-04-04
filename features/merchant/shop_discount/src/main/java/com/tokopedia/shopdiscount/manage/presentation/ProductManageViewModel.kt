@@ -32,9 +32,21 @@ class ProductManageViewModel @Inject constructor(
                 getSlashPriceProductListMetaUseCase.executeOnBackground()
             }
             val formattedProductMeta = productListMetaMapper.map(result.getSlashPriceProductListMeta.data.tab)
-            _productsMeta.value = Success(formattedProductMeta)
+            val adjustedProductMeta = adjustOrdering(formattedProductMeta)
+            _productsMeta.value = Success(adjustedProductMeta)
         }, onError = {
             _productsMeta.value = Fail(it)
         })
+    }
+
+    private fun adjustOrdering(formattedProductMeta: List<DiscountStatusMeta>): List<DiscountStatusMeta> {
+        return formattedProductMeta.sortedWith { o1, _ ->
+            return@sortedWith when (o1?.name.orEmpty()) {
+                "ACTIVE" -> 1
+                "SCHEDULED" -> 0
+                "PAUSED" -> -1
+                else -> -2
+            }
+        }
     }
 }

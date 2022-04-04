@@ -4,16 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.shopdiscount.R
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
@@ -37,7 +33,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<FragmentDiscountProductManageBinding>()
-    override fun getScreenName() : String = ProductManageFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ProductManageFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -73,17 +69,12 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private fun setupViews() {
         binding?.run {
-            tabs.addNewTab("Berlangsung", true)
-            tabs.addNewTab("Mendatang", false)
-            tabs.addNewTab("Dialihkan", false)
             tabs.getUnifyTabLayout().addOnTabSelectedListener(object :
                 TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     val position = tab.position
-                    val fragment =  ProductListFragment.newInstance(DiscountStatus.ONGOING)
+                    val fragment = ProductListFragment.newInstance(DiscountStatus.ONGOING)
                     router.replace(childFragmentManager, R.id.container, fragment)
-
-
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -96,7 +87,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-
+                    displayTabs(it.data)
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -105,19 +96,17 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    class ViewPagerFragmentAdapter(
-        private val tabs: List<DiscountStatusMeta>,
-        fragmentManager: FragmentManager,
-        lifecycle: Lifecycle
-    ) : FragmentStateAdapter(fragmentManager, lifecycle) {
-        override fun getItemCount(): Int {
-            return tabs.size
+    private fun displayTabs(tabs: List<DiscountStatusMeta>) {
+        tabs.forEachIndexed { index, discountStatusMeta ->
+            val tabName = String.format(
+                getString(R.string.sd_tab_name),
+                discountStatusMeta.name,
+                discountStatusMeta.productCount
+            )
+            val isSelected = index == 0
+            binding?.tabs?.addNewTab(tabName, isSelected)
+            binding?.tabs?.customTabMode = TabLayout.MODE_SCROLLABLE
         }
-
-        override fun createFragment(position: Int): Fragment {
-            return ProductListFragment.newInstance(DiscountStatus.ONGOING)
-        }
-
     }
 
     private fun displayBulkApplyBottomSheet() {
