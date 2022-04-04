@@ -14,13 +14,14 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
+import com.tokopedia.shopdiscount.R
 
 class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
 
@@ -63,6 +64,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupViews()
         observeProducts()
     }
@@ -77,7 +79,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    renderList(it.data, it.data.size == getPerPage())
+                    binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    renderList(it.data.products, it.data.products.size == getPerPage())
                 }
                 is Fail -> {
                     binding?.root showError it.throwable

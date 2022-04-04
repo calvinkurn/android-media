@@ -3,18 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_Background"
+    android:layout_height="wrap_content"
+    app:card_type="clear"
     tools:context=".manage.presentation.ProductListFragment">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgTotalProduct"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        tools:text="80 Produk"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgMultiSelect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/sd_multi_select"
+        android:textColor="@color/Unify_G500"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tpgTotalProduct">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -51,5 +77,6 @@
         app:unifyEmptyStateOrientation="horizontal"
         app:unifyEmptyStateTitle="Kupon yang kamu cari nggak ditemukan"
         app:unifyEmptyStateType="section" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

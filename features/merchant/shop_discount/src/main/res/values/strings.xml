@@ -28,6 +28,13 @@
     <string name="sd_total_stock_various_multiple_location">Total stok: %s di beberapa lokasi</string>
     <string name="sd_total_stock_multiple_location">Total stok: %s di %s lokasi</string>
     <string name="sd_total_stock">Total stok: %s</string>
+    <string name="sd_search">Cari produk atau pakai filter</string>
+    <string name="sd_total_product">%s Produk</string>
+    <string name="sd_multi_select">Pilih Sekaligus</string>
+    <string name="sd_create_discount">Buat Diskon</string>
+    <string name="sd_ticker_announcement_wording"><![CDATA[Cek info Diskon Toko selengkapnya <a href="http://stackoverflow.com/questions/9204303/android-is-it-possible-to-add-a-clickable-link-into-a-string-resource">
+        di sini
+    </a>]]></string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

@@ -10,14 +10,18 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
+import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -61,9 +65,49 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
+        setupViews()
         //displayBulkApplyBottomSheet()
         observeProductsMeta()
         viewModel.getSlashPriceProductsMeta()
+    }
+
+    private fun setupViews() {
+        setupTicker()
+        setupSearchBar()
+        setupToolbar()
+    }
+
+    private fun setupTicker() {
+        binding?.run {
+            ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    displayBulkApplyBottomSheet()
+                }
+
+                override fun onDismiss() {
+                    TODO("Not yet implemented")
+                }
+
+            })
+        }
+    }
+
+    private fun setupSearchBar() {
+        binding?.run {
+            searchBar.searchBarTextField.isFocusable = false
+            searchBar.setOnClickListener { displayBulkApplyBottomSheet() }
+        }
+    }
+
+    private fun setupToolbar() {
+        val shopIcon = IconUnify(requireContext(), IconUnify.SHOP_INFO)
+        binding?.run {
+            header.addCustomRightContent(shopIcon)
+            header.setNavigationOnClickListener { activity?.finish() }
+            header.setOnClickListener { displayBulkApplyBottomSheet() }
+        }
     }
 
     private fun observeProductsMeta() {
