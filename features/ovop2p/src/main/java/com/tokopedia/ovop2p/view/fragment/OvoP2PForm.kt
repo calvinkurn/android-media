@@ -21,7 +21,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -42,13 +41,10 @@ import com.tokopedia.ovop2p.view.viewStates.GoToThankYouPage
 import com.tokopedia.ovop2p.view.viewStates.OpenPinChlngWebView
 import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorPage
 import com.tokopedia.ovop2p.view.viewStates.TransferConfErrorSnkBar
-import com.tokopedia.ovop2p.view.viewStates.TransferConfirmState
 import com.tokopedia.ovop2p.view.viewStates.TransferReqData
 import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorPage
 import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorSnkBar
 import com.tokopedia.ovop2p.view.viewStates.TransferReqNonOvo
-import com.tokopedia.ovop2p.view.viewStates.TransferRequestState
-import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
 import com.tokopedia.ovop2p.view.viewStates.WalletData
 import com.tokopedia.ovop2p.view.viewStates.WalletError
 import com.tokopedia.ovop2p.viewmodel.OvoDetailViewModel
@@ -251,47 +247,27 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private fun createAndSubscribeToWalletBalVM() {
         walletDetailViewModel.fetchWalletDetails()
         walletDetailViewModel.walletLiveData.observe(
-            viewLifecycleOwner,
-            getWalletVMObserver(activity as LoaderUiListener)
-        )
-    }
-
-    private fun getWalletVMObserver(loaderUiListener: LoaderUiListener): Observer<WalletBalanceState> {
-        return Observer {
-            loaderUiListener.hideProgressDialog()
-            when (it) {
-                is WalletError -> {
-                    showErrorSnackBar(it.errMsg)
-                }
+            viewLifecycleOwner){
+            (activity as LoaderUiListener).hideProgressDialog()
+            when(it)
+            {
                 is WalletData -> {
                     saldoTextView.text = it.cashBalance
                     sndrAmt = it.rawCashBalance
                 }
+                is WalletError -> showErrorSnackBar(it.errMsg)
             }
         }
+
     }
+
 
     private fun createAndSubscribeTransferRequestVM() {
         walletDetailViewModel.transferReqBaseMutableLiveData.observe(
-                    viewLifecycleOwner,
-                    getTransferReqObserver(activity as LoaderUiListener)
-                )
-            }
-
-
-    private fun getTransferReqObserver(loaderUiListener: LoaderUiListener): Observer<TransferRequestState> {
-        return Observer {
-            loaderUiListener.hideProgressDialog()
-            when (it) {
-                is TransferReqErrorSnkBar -> {
-                    showErrorSnackBar(it.errMsg)
-                }
-                is TransferReqErrorPage -> {
-                    gotoErrorPage(it.errMsg)
-                }
-                is TransferReqNonOvo -> {
-                    showNonOvoUserConfirmDialog()
-                }
+                    viewLifecycleOwner){
+            ( activity as LoaderUiListener).hideProgressDialog()
+            when(it)
+            {
                 is TransferReqData -> {
                     if (!TextUtils.isEmpty(it.dstAccName)) {
                         rcvrName = it.dstAccName
@@ -299,33 +275,22 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     }
                     showOvoUserConfirmationDialog()
                 }
+                is TransferReqErrorPage ->  gotoErrorPage(it.errMsg)
+                is TransferReqErrorSnkBar ->  showErrorSnackBar(it.errMsg)
+               is  TransferReqNonOvo ->  showNonOvoUserConfirmDialog()
             }
         }
-    }
+            }
 
     private fun createAndSubscribeTransferConfirmVM() {
         walletDetailViewModel.txnConfirmMutableLiveData.observe(
-            viewLifecycleOwner,
-            getTransferConfObserver(activity as LoaderUiListener)
-        )
-            }
-
-
-    private fun getTransferConfObserver(loaderUiListener: LoaderUiListener): Observer<TransferConfirmState> {
-        return Observer {
-            loaderUiListener.hideProgressDialog()
-            when (it) {
-                is TransferConfErrorPage -> {
-                    gotoErrorPage(it.errMsg)
-                }
-                is TransferConfErrorSnkBar -> {
-                    showErrorSnackBar(it.errMsg)
-                }
-                is GoToThankYouPage -> {
-                    saveRcvrData()
-                    gotoThankYouActivity(it.transferId, nonOvoUsr)
-                }
-                is OpenPinChlngWebView -> {
+            viewLifecycleOwner){
+            ( activity as LoaderUiListener).hideProgressDialog()
+            when(it)
+            {
+                is GoToThankYouPage -> { saveRcvrData()
+                    gotoThankYouActivity(it.transferId, nonOvoUsr)}
+                is OpenPinChlngWebView ->{
                     saveRcvrData()
                     if (context != null) {
                         var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(
@@ -335,9 +300,11 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                         activity?.startActivity(intent)
                     }
                 }
+                is TransferConfErrorPage -> gotoErrorPage(it.errMsg)
+                is TransferConfErrorSnkBar ->   showErrorSnackBar(it.errMsg)
             }
         }
-    }
+            }
 
     private fun saveRcvrData() {
         PersistentCacheManager.instance.put(Constants.Keys.RECIEVER_PHONE, rcvrPhnNo)
