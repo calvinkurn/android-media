@@ -302,184 +302,19 @@ class AddEditProductPreviewFragment :
         // setup toolbar and action button
         setupToolbar()
 
-        // photos
-        productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
-        productPhotosView?.let {
-            it.adapter = productPhotoAdapter
-            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            val photoItemTouchHelperCallback = PhotoItemTouchHelperCallback(it)
-            photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
-            photoItemTouchHelper?.attachToRecyclerView(it)
-        }
-        addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
-        addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
-
-        // detail
-        addEditProductDetailTitle = view.findViewById(R.id.tv_product_detail)
-        addEditProductDetailButton = view.findViewById(R.id.tv_start_add_edit_product_detail)
-        productDetailPreviewLayout = view.findViewById(R.id.product_detail_preview_layout)
-        productNameView = view.findViewById(R.id.tv_product_name)
-        productPriceView = view.findViewById(R.id.tv_product_price)
-        productStockView = view.findViewById(R.id.tv_product_stock)
-        dividerDetail = view.findViewById(R.id.divider_detail)
-
-        // description
-        addEditProductDescriptionTitle = view.findViewById(R.id.tv_product_description)
-        addEditProductDescriptionButton = view.findViewById(R.id.tv_start_add_edit_product_description)
-
-        // variant
-        addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
-        addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
-        addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
-        sellerFeatureCarousel = view.findViewById(R.id.sellerFeatureCarousel)
-
-        // shipment
-        addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
-        addEditProductShipmentButton = view.findViewById(R.id.tv_start_add_edit_product_shipment)
-
-        // promotion
-        editProductPromotionLayout = view.findViewById(R.id.edit_product_promotion_step_layout)
-        editProductPromotionButton = view.findViewById(R.id.tv_edit_product_promotion)
-
-        // status
-        editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
-        productStatusSwitch = view.findViewById(R.id.su_product_status)
-
-        // loading
-        loadingLayout = view.findViewById(R.id.loading_layout)
-
-        // admin revamp
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
-        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
-        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
-
-        // product limitation
-        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
-
-        addEditProductPhotoButton?.setOnClickListener {
-            // tracking
-            val buttonTextStart: String = getString(R.string.action_start)
-            if (isEditing()) {
-                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
-                moveToImagePicker()
-            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
-                ProductAddStepperTracking.trackStart(shopId)
-                // validate whether shop has location
-                isStartButtonClicked = true
-                if (hasLocation) {
-                    moveToImagePicker()
-                } else {
-                    validateShopLocation()
-                }
-            } else {
-                moveToImagePicker()
-            }
-        }
-
-        productStatusSwitch?.setOnClickListener {
-            val isChecked = productStatusSwitch?.isChecked ?: false
-            viewModel.updateProductStatus(isChecked)
-            viewModel.setIsDataChanged(true)
-
-            // track switch status on click
-            if (isChecked && isEditing()) {
-                ProductEditStepperTracking.trackChangeProductStatus(shopId)
-            }
-        }
-
-        doneButton?.setOnClickListener {
-            updateImageList()
-            if (isEditing()) {
-                ProductEditStepperTracking.trackFinishButton(shopId)
-            }
-
-            val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
-                    ?: DetailInputModel())
-            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
-
-            if (validateMessage.isNotEmpty()) {
-                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
-                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-                productLimitationBottomSheet?.setIsSavingToDraft(true)
-                productLimitationBottomSheet?.show(childFragmentManager, context)
-            } else {
-                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
-                    viewModel.validateProductNameInput(it)
-                }
-            }
-        }
-
-        addProductPhotoTipsLayout?.setOnClickListener {
-            if (!isEditing()) {
-                ProductAddStepperTracking.trackHelpProductQuality(shopId)
-            }
-            showPhotoTips()
-        }
-
-        addEditProductDetailButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackChangeProductDetail(shopId)
-            }
-            val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
-            moveToDetailFragment(productInputModel, false)
-        }
-
-        addEditProductDescriptionButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackChangeProductDesc(shopId)
-            }
-            moveToDescriptionFragment()
-        }
-
-        addEditProductVariantButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackAddProductVariant(shopId)
-            }
-            showVariantDialog()
-        }
-
-        addProductVariantTipsLayout?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackClickHelpPriceVariant(shopId)
-            }
-            showVariantTips()
-        }
-
-        addEditProductShipmentButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackChangeShipping(shopId)
-            }
-            moveToShipmentFragment()
-        }
-
-        editProductPromotionButton?.setOnClickListener {
-            if (isEditing()) {
-                ProductEditStepperTracking.trackChangePromotion(shopId)
-            }
-            setCashback()
-        }
-
-        if (!GlobalConfig.isSellerApp()) {
-            sellerFeatureCarousel?.apply {
-                setListener(object : SellerFeatureCarousel.SellerFeatureClickListener {
-                    override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
-                        if (!isDrafting()) {
-                            when (item) {
-                                is SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
-                                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
-                            }
-                        }
-                    }
-                })
-                addItemDecoration()
-                setItems(listOf(
-                        SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel(Any()),
-                        SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(Any())
-                ))
-            }
-        }
+        // setup views prop
+        setupPhotosViews(view)
+        setupDetailViews(view)
+        setupDescriptionViews(view)
+        setupVariantViews(view)
+        setupShipmentViews(view)
+        setupPromotionViews(view)
+        setupStatusViews(view)
+        setupLoadingViews(view)
+        setupAdminRevampViews(view)
+        setupDoneButton(view)
+        setupSellerAppViews()
+        setupProductLimitationViews(view)
 
         onFragmentResult()
         setupBackPressed()
@@ -491,10 +326,7 @@ class AddEditProductPreviewFragment :
         }
 
         multiLocationTicker?.showWithCondition(viewModel.shouldShowMultiLocationTicker)
-
         context?.let { UpdateShopActiveWorker.execute(it) }
-
-        setupProductLimitationViews()
 
         //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
@@ -779,6 +611,186 @@ class AddEditProductPreviewFragment :
                 }
             }
         })
+    }
+
+    private fun setupPhotosViews(view: View) {
+        productPhotosView = view.findViewById(R.id.rv_product_photos)
+        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, mutableListOf(), this)
+        productPhotosView?.let {
+            it.adapter = productPhotoAdapter
+            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            val photoItemTouchHelperCallback = PhotoItemTouchHelperCallback(it)
+            photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
+            photoItemTouchHelper?.attachToRecyclerView(it)
+        }
+        addProductPhotoTipsLayout = view.findViewById(R.id.add_product_photo_tips_layout)
+        addEditProductPhotoButton = view.findViewById(R.id.tv_start_add_edit_product_photo)
+        addEditProductPhotoButton?.setOnClickListener {
+            // tracking
+            val buttonTextStart: String = getString(R.string.action_start)
+            if (isEditing()) {
+                ProductEditStepperTracking.trackClickChangeProductPic(shopId)
+                moveToImagePicker()
+            } else if (addEditProductPhotoButton?.text == buttonTextStart) {
+                ProductAddStepperTracking.trackStart(shopId)
+                // validate whether shop has location
+                isStartButtonClicked = true
+                if (hasLocation) {
+                    moveToImagePicker()
+                } else {
+                    validateShopLocation()
+                }
+            } else {
+                moveToImagePicker()
+            }
+        }
+        addProductPhotoTipsLayout?.setOnClickListener {
+            if (!isEditing()) {
+                ProductAddStepperTracking.trackHelpProductQuality(shopId)
+            }
+            showPhotoTips()
+        }
+    }
+
+    private fun setupDetailViews(view: View) {
+        addEditProductDetailTitle = view.findViewById(R.id.tv_product_detail)
+        addEditProductDetailButton = view.findViewById(R.id.tv_start_add_edit_product_detail)
+        productDetailPreviewLayout = view.findViewById(R.id.product_detail_preview_layout)
+        productNameView = view.findViewById(R.id.tv_product_name)
+        productPriceView = view.findViewById(R.id.tv_product_price)
+        productStockView = view.findViewById(R.id.tv_product_stock)
+        dividerDetail = view.findViewById(R.id.divider_detail)
+        addEditProductDetailButton?.setOnClickListener {
+            if (isEditing()) {
+                ProductEditStepperTracking.trackChangeProductDetail(shopId)
+            }
+            val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
+            moveToDetailFragment(productInputModel, false)
+        }
+    }
+
+    private fun setupDescriptionViews(view: View) {
+        addEditProductDescriptionTitle = view.findViewById(R.id.tv_product_description)
+        addEditProductDescriptionButton = view.findViewById(R.id.tv_start_add_edit_product_description)
+        addEditProductDescriptionButton?.setOnClickListener {
+            if (isEditing()) {
+                ProductEditStepperTracking.trackChangeProductDesc(shopId)
+            }
+            moveToDescriptionFragment()
+        }
+    }
+
+    private fun setupShipmentViews(view: View) {
+        addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
+        addEditProductShipmentButton = view.findViewById(R.id.tv_start_add_edit_product_shipment)
+        addEditProductShipmentButton?.setOnClickListener {
+            if (isEditing()) {
+                ProductEditStepperTracking.trackChangeShipping(shopId)
+            }
+            moveToShipmentFragment()
+        }
+    }
+
+    private fun setupVariantViews(view: View) {
+        addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
+        addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
+        addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
+        sellerFeatureCarousel = view.findViewById(R.id.sellerFeatureCarousel)
+        addEditProductVariantButton?.setOnClickListener {
+            if (isEditing()) {
+                ProductEditStepperTracking.trackAddProductVariant(shopId)
+            }
+            showVariantDialog()
+        }
+        addProductVariantTipsLayout?.setOnClickListener {
+            if (isEditing()) {
+                ProductEditStepperTracking.trackClickHelpPriceVariant(shopId)
+            }
+            showVariantTips()
+        }
+    }
+
+    private fun setupAdminRevampViews(view: View) {
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
+        adminRevampErrorLayout = view.findViewById(R.id.add_edit_error_layout)
+        adminRevampGlobalError = view.findViewById(R.id.add_edit_admin_global_error)
+    }
+
+    private fun setupLoadingViews(view: View) {
+        loadingLayout = view.findViewById(R.id.loading_layout)
+    }
+
+    private fun setupStatusViews(view: View) {
+        editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
+        productStatusSwitch = view.findViewById(R.id.su_product_status)
+        productStatusSwitch?.setOnClickListener {
+            val isChecked = productStatusSwitch?.isChecked ?: false
+            viewModel.updateProductStatus(isChecked)
+            viewModel.setIsDataChanged(true)
+
+            // track switch status on click
+            if (isChecked && isEditing()) {
+                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            }
+        }
+    }
+
+    private fun setupPromotionViews(view: View) {
+        editProductPromotionLayout = view.findViewById(R.id.edit_product_promotion_step_layout)
+        editProductPromotionButton = view.findViewById(R.id.tv_edit_product_promotion)
+        editProductPromotionButton?.setOnClickListener {
+            if (isEditing()) {
+                ProductEditStepperTracking.trackChangePromotion(shopId)
+            }
+            setCashback()
+        }
+    }
+
+    private fun setupSellerAppViews() {
+        if (!GlobalConfig.isSellerApp()) {
+            sellerFeatureCarousel?.apply {
+                setListener(object : SellerFeatureCarousel.SellerFeatureClickListener {
+                    override fun onSellerFeatureClicked(item: SellerFeatureUiModel) {
+                        if (!isDrafting()) {
+                            when (item) {
+                                is SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel -> goToSellerAppEditProduct(viewModel.getProductId())
+                                is SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel -> goToSellerAppProductManageThenSetCashback()
+                            }
+                        }
+                    }
+                })
+                addItemDecoration()
+                setItems(listOf(
+                    SellerFeatureUiModel.AddEditSetVariantFeatureWithDataUiModel(Any()),
+                    SellerFeatureUiModel.SetCashbackFeatureWithDataUiModel(Any())
+                ))
+            }
+        }
+    }
+
+    private fun setupDoneButton(view: View) {
+        doneButton?.setOnClickListener {
+            updateImageList()
+            if (isEditing()) {
+                ProductEditStepperTracking.trackFinishButton(shopId)
+            }
+
+            val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
+                ?: DetailInputModel())
+            val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+
+            if (validateMessage.isNotEmpty()) {
+                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            } else if (isAddingOrDuplicating && !isProductLimitEligible) {
+                productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
+                productLimitationBottomSheet?.setIsSavingToDraft(true)
+                productLimitationBottomSheet?.show(childFragmentManager, context)
+            } else {
+                viewModel.productInputModel.value?.detailInputModel?.productName?.let {
+                    viewModel.validateProductNameInput(it)
+                }
+            }
+        }
     }
 
     private fun onFragmentResult() {
@@ -1684,7 +1696,8 @@ class AddEditProductPreviewFragment :
         productLimitationBottomSheet?.show(childFragmentManager, context)
     }
 
-    private fun setupProductLimitationViews() {
+    private fun setupProductLimitationViews(view: View) {
+        productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
         val productLimitStartDate = getString(R.string.label_product_limitation_start_date)
         val tickers = listOf(
             TickerData(
