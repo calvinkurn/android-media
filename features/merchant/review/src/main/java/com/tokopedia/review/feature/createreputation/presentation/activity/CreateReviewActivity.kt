@@ -17,9 +17,13 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import timber.log.Timber
 
 // ApplinkConstInternalMarketPlace.CREATE_REVIEW
+@ExperimentalCoroutinesApi
+@FlowPreview
 class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ReviewPerformanceMonitoringListener {
 
     companion object {
@@ -45,7 +49,6 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
         showWriteFormBottomSheet()
     }
 
-
     override fun getComponent(): BaseAppComponent {
         return (application as BaseMainApplication).baseAppComponent
     }
@@ -57,14 +60,14 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
-                ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
-                ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ReviewConstants.CREATE_REVIEW_PLT_PREPARE_METRICS,
+            ReviewConstants.CREATE_REVIEW_PLT_NETWORK_METRICS,
+            ReviewConstants.CREATE_REVIEW_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(ReviewConstants.CREATE_REVIEW_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
@@ -113,7 +116,7 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
             productId = bundle?.getString(ReviewConstants.ARGS_PRODUCT_ID) ?: ""
             reputationId = bundle?.getString(ReviewConstants.ARGS_REPUTATION_ID) ?: ""
             rating = bundle?.getInt(CreateReviewFragment.REVIEW_CLICK_AT, rating)
-                    ?: DEFAULT_PRODUCT_RATING
+                ?: DEFAULT_PRODUCT_RATING
         }
     }
 
@@ -130,10 +133,22 @@ class CreateReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent
     }
 
     private fun showWriteFormBottomSheet() {
-        createReviewBottomSheet = CreateReviewBottomSheet.createInstance(rating, productId, reputationId, utmSource)
-        createReviewBottomSheet?.apply {
-            clearContentPadding = true
-            show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
+        (supportFragmentManager.findFragmentByTag(
+            CREATE_REVIEW_BOTTOM_SHEET_TAG
+        ) as? CreateReviewBottomSheet).let {
+            if (it == null) {
+                createReviewBottomSheet = CreateReviewBottomSheet.createInstance(
+                    rating,
+                    productId,
+                    reputationId,
+                    utmSource
+                )
+                createReviewBottomSheet?.apply {
+                    show(supportFragmentManager, CREATE_REVIEW_BOTTOM_SHEET_TAG)
+                }
+            } else {
+                createReviewBottomSheet = it
+            }
         }
     }
 

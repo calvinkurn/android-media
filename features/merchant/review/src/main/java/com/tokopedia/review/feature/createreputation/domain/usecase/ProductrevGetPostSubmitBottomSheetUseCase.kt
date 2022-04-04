@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.createreputation.domain.usecase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 @GqlQuery(
@@ -15,6 +14,11 @@ class ProductrevGetPostSubmitBottomSheetUseCase @Inject constructor(
 ) : GraphqlUseCase<com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper>(
     graphqlRepository
 ) {
+
+    init {
+        setGraphqlQuery(GetPostSubmitBottomSheet.GQL_QUERY)
+        setTypeClass(com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper::class.java)
+    }
 
     companion object {
         const val PARAM_FEEDBACK_ID = "feedbackID"
@@ -45,23 +49,25 @@ class ProductrevGetPostSubmitBottomSheetUseCase @Inject constructor(
             """
     }
 
-    fun setParams(
-        feedbackId: String,
-        reviewText: String,
-        imagesTotal: Int,
-        isInboxEmpty: Boolean,
-        incentiveAmount: Int
+    fun setParams(requestParams: PostSubmitReviewRequestParams) {
+        setRequestParams(requestParams.toRequestParamMap())
+    }
+
+    data class PostSubmitReviewRequestParams(
+        val feedbackId: String,
+        val reviewText: String,
+        val imagesTotal: Int,
+        val isInboxEmpty: Boolean,
+        val incentiveAmount: Int
     ) {
-        setGraphqlQuery(GetPostSubmitBottomSheet.GQL_QUERY)
-        setTypeClass(com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponseWrapper::class.java)
-        setRequestParams(
-            RequestParams.create().apply {
-                putString(PARAM_FEEDBACK_ID, feedbackId)
-                putString(PARAM_REVIEW_TEXT, reviewText)
-                putInt(PARAM_IMAGES_TOTAL, imagesTotal)
-                putBoolean(PARAM_IS_INBOX_EMPTY, isInboxEmpty)
-                putInt(PARAM_INCENTIVE_AMOUNT, incentiveAmount)
-            }.parameters
-        )
+        fun toRequestParamMap(): Map<String, Any> {
+            return mapOf(
+                PARAM_FEEDBACK_ID to feedbackId,
+                PARAM_REVIEW_TEXT to reviewText,
+                PARAM_IMAGES_TOTAL to imagesTotal,
+                PARAM_IS_INBOX_EMPTY to isInboxEmpty,
+                PARAM_INCENTIVE_AMOUNT to incentiveAmount
+            )
+        }
     }
 }

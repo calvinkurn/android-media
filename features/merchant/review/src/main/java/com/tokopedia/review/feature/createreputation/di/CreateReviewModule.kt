@@ -8,7 +8,6 @@ import dagger.Provides
 
 @Module
 class CreateReviewModule {
-
     @CreateReviewScope
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) : TrackingQueue {

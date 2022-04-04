@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_media_picker_error"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="14dp"
+    android:paddingEnd="16dp">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_create_review_media_picker_error_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="@string/review_form_media_picker_error_upload"
+        android:textColor="@color/Unify_RN600"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_create_review_media_picker_retry_upload"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:icon_color_light_disabled="@color/Unify_G500"
+        app:icon_color_light_enable="@color/Unify_G500"
+        app:icon_color_night_disabled="@color/Unify_G500"
+        app:icon_color_night_enable="@color/Unify_G500"
+        app:icon_name="RELOAD"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/tv_create_review_media_picker_retry_upload"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_create_review_media_picker_retry_upload" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_create_review_media_picker_retry_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:paddingEnd="0dp"
+        android:text="@string/review_form_media_picker_error_upload"
+        android:textColor="@color/Unify_G500"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/ic_create_review_media_picker_retry_upload"
+        app:layout_constraintTop_toBottomOf="@id/tv_create_review_media_picker_error_upload"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

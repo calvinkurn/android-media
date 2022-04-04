@@ -1,140 +1,257 @@
 package com.tokopedia.review.feature.createreputation.presentation.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View.OnTouchListener
+import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat
+import android.widget.EditText
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaBinding
-import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
-import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewStringRes
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 
+class CreateReviewTextArea @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
+) : BaseCreateReviewCustomView<WidgetCreateReviewTextAreaBinding>(context, attrs, defStyleAttr) {
 
-class CreateReviewTextArea : BaseCustomView {
-
-    constructor(context: Context) : super(context) {
-        init()
+    companion object {
+        private const val TRANSITION_DURATION = 300L
     }
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
+    private val transitionHandler = TransitionHandler()
+    private val textAreaListener = TextAreaListener()
+
+    private var sourceName: CreateReviewTextAreaTextUiModel.Source? = null
+
+    override val binding = WidgetCreateReviewTextAreaBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        binding.layoutTextArea.root.editText.addTextChangedListener(textAreaListener)
+        binding.layoutTextArea.root.editText.onFocusChangeListener = textAreaListener
+        binding.layoutTextArea.root.icon2.setOnClickListener(textAreaListener)
+        binding.layoutTextArea.root.labelText.gone()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
-        context,
-        attrs,
-        defStyleAttr
+    override fun shouldRequestClearFocusOnClick(event: MotionEvent): Boolean {
+        val viewCoordinate = getExpandIconCoordinate()
+        val inX = event.x.toInt() in viewCoordinate.first().first..viewCoordinate.first().second
+        val inY = event.y.toInt() in viewCoordinate.last().first..viewCoordinate.last().second
+        return inX && inY
+    }
+
+    override fun shouldRequestFocusOnClick(event: MotionEvent): Boolean {
+        val viewCoordinate = getExpandIconCoordinate()
+        val notInX = event.x.toInt() !in viewCoordinate.first().first..viewCoordinate.first().second
+        val notInY = event.y.toInt() !in viewCoordinate.last().first..viewCoordinate.last().second
+        return notInX && notInY
+    }
+
+    private fun showLoading() = transitionHandler.transitionToShowLoading()
+
+    private fun WidgetCreateReviewTextAreaBinding.showTextArea(
+        uiState: CreateReviewTextAreaUiState.Showing
     ) {
-        init()
+        transitionHandler.transitionToShowTextArea()
+        setupTextArea(uiState)
     }
 
-    private val binding =
-        WidgetCreateReviewTextAreaBinding.inflate(LayoutInflater.from(context), this, true)
-
-    override fun clearFocus() {
-        binding.createReviewEditText.clearFocus()
+    private fun WidgetCreateReviewTextAreaBinding.setupTextArea(
+        uiState: CreateReviewTextAreaUiState.Showing
+    ) {
+        setupExpandButton()
+        setupText(uiState.reviewTextAreaTextUiModel)
+        setupHint(uiState.hint)
+        setupHelper(uiState.helper)
+        setupFocus(uiState.hasFocus)
     }
 
-    fun requestFocusForEditText() {
-        binding.createReviewEditText.apply {
-            requestFocus()
-            val imm: InputMethodManager? =
-                context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            imm?.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
+    private fun WidgetCreateReviewTextAreaBinding.setupExpandButton() {
+        if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA) {
+            layoutTextArea.root.setSecondIcon(R.drawable.ic_expand)
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun init() {
-        binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
-        binding.createReviewEditText.apply {
-            setOnTouchListener(OnTouchListener { v, event ->
-                if (binding.createReviewEditText.hasFocus()) {
-                    v.parent.requestDisallowInterceptTouchEvent(true)
-                    when (event.action and MotionEvent.ACTION_MASK) {
-                        MotionEvent.ACTION_SCROLL -> {
-                            v.parent.requestDisallowInterceptTouchEvent(false)
-                            return@OnTouchListener true
-                        }
-                    }
-                }
-                false
-            })
-            setHintTextColor(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N700_44
-                )
-            )
-        }
-    }
-
-    fun setListener(textAreaListener: TextAreaListener) {
-        binding.createReviewExpandButton.setOnClickListener {
-            textAreaListener.onExpandButtonClicked(binding.createReviewEditText.text.toString())
-        }
-        binding.createReviewEditText.apply {
-            setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus) {
-                    binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_selected)
-                    textAreaListener.apply {
-                        trackWhenHasFocus(binding.createReviewEditText.text.length)
-                        scrollToShowTextArea()
-                    }
-                } else {
-                    binding.createReviewTextAreaContainer.setBackgroundResource(R.drawable.bg_review_create_text_area_default)
-                    textAreaListener.hideText()
-                }
+    private fun WidgetCreateReviewTextAreaBinding.setupText(
+        reviewTextAreaTextUiModel: CreateReviewTextAreaTextUiModel
+    ) {
+        with(layoutTextArea.root.editText) {
+            if (reviewTextAreaTextUiModel.source != sourceName) {
+                tag = reviewTextAreaTextUiModel.source
+                setText(reviewTextAreaTextUiModel.text)
+                tag = null
+                setSelection(reviewTextAreaTextUiModel.text.length)
             }
-            addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                    // No Op
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    // No Op
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    textAreaListener.onTextChanged(s?.length ?: 0)
-                }
-
-            })
         }
     }
 
-    fun setText(text: String) {
-        binding.createReviewEditText.setText(text)
+    private fun WidgetCreateReviewTextAreaBinding.setupHint(hint: CreateReviewStringRes) {
+        layoutTextArea.root.setPlaceholder(hint.getString(context))
     }
 
-    fun getText(): String {
-        return binding.createReviewEditText.text.toString()
+    private fun WidgetCreateReviewTextAreaBinding.setupHelper(helper: CreateReviewStringRes) {
+        if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA) {
+            layoutTextArea.root.setMessage(helper.getString(context))
+        }
     }
 
-    fun append(text: String) {
-        binding.createReviewEditText.append(text)
+    private fun WidgetCreateReviewTextAreaBinding.setupFocus(hasFocus: Boolean) {
+        if (hasFocus) {
+            layoutTextArea.root.requestFocus()
+            layoutTextArea.root.editText.showKeyboard()
+        } else {
+            layoutTextArea.root.clearFocus()
+            layoutTextArea.root.editText.hideKeyboard()
+        }
     }
 
-    fun setPlaceHolder(text: String) {
-        binding.createReviewEditText.hint = text
+    private fun EditText.showKeyboard() {
+        val imm = context.getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
+        imm.showSoftInput(this, 0)
     }
 
-    fun getPlaceHolder(): String {
-        return binding.createReviewEditText.hint.toString()
+    private fun EditText.hideKeyboard() {
+        val imm = context.getSystemService(
+            Context.INPUT_METHOD_SERVICE
+        ) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
-    fun isEmpty(): Boolean {
-        return binding.createReviewEditText.text.isEmpty()
+    private fun isChangedByUser(): Boolean {
+        return binding.layoutTextArea.root.editText.tag == null
+    }
+
+    private fun getExpandIconCoordinate(): List<Pair<Int, Int>> {
+        val viewCoordinate = IntArray(2).also { binding.layoutTextArea.root.icon2.getLocationOnScreen(it) }
+        val viewStartX = viewCoordinate.first() - binding.layoutTextArea.root.icon2.left
+        val viewEndX = viewStartX + binding.layoutTextArea.root.icon2.width + binding.layoutTextArea.root.icon2.right
+        val viewStartY = viewCoordinate.last() - binding.layoutTextArea.root.icon2.top
+        val viewEndY = viewStartY + binding.layoutTextArea.root.icon2.height + binding.layoutTextArea.root.icon2.bottom
+        return listOf(
+            viewStartX to viewEndX,
+            viewStartY to viewEndY
+        )
+    }
+
+    fun updateUi(uiState: CreateReviewTextAreaUiState, source: CreateReviewTextAreaTextUiModel.Source) {
+        this.sourceName = source
+        when(uiState) {
+            is CreateReviewTextAreaUiState.Loading -> {
+                showLoading()
+                animateShow()
+            }
+            is CreateReviewTextAreaUiState.Showing -> {
+                binding.showTextArea(uiState)
+                animateShow()
+            }
+        }
+    }
+
+    fun setListener(newTextAreaListener: Listener) {
+        textAreaListener.listener = newTextAreaListener
+    }
+
+    fun setMinLine(minLine: Int) {
+        binding.layoutTextArea.root.minLine = minLine
+    }
+
+    fun setMaxLine(maxLine: Int) {
+        binding.layoutTextArea.root.maxLine = maxLine
+    }
+
+    fun removeBorder() {
+        binding.layoutTextArea.root.textInputLayout.boxStrokeWidth = Int.ZERO
+        binding.layoutTextArea.root.textInputLayout.boxStrokeWidthFocused = Int.ZERO
+    }
+
+    private inner class TransitionHandler {
+        private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
+            Fade().apply {
+                duration = TRANSITION_DURATION
+                addTarget(binding.layoutTextArea.root)
+                addTarget(binding.layoutTextAreaLoading.root)
+                interpolator = AccelerateInterpolator()
+            }
+        }
+
+        private fun WidgetCreateReviewTextAreaBinding.showLoadingLayout() {
+            layoutTextAreaLoading.root.show()
+        }
+
+        private fun WidgetCreateReviewTextAreaBinding.hideLoadingLayout() {
+            layoutTextAreaLoading.root.gone()
+        }
+
+        private fun WidgetCreateReviewTextAreaBinding.showTextAreaLayout() {
+            layoutTextArea.root.show()
+        }
+
+        private fun WidgetCreateReviewTextAreaBinding.hideTextAreaLayout() {
+            layoutTextArea.root.gone()
+        }
+
+        private fun WidgetCreateReviewTextAreaBinding.beginDelayedTransition() {
+            TransitionManager.beginDelayedTransition(root, fadeTransition)
+        }
+
+        fun transitionToShowTextArea() {
+            with(binding) {
+                beginDelayedTransition()
+                hideLoadingLayout()
+                showTextAreaLayout()
+            }
+        }
+
+        fun transitionToShowLoading() {
+            with(binding) {
+                beginDelayedTransition()
+                hideTextAreaLayout()
+                showLoadingLayout()
+            }
+        }
+    }
+
+    private inner class TextAreaListener: OnFocusChangeListener, TextWatcher, OnClickListener {
+        var listener: Listener? = null
+
+        override fun onFocusChange(v: View?, hasFocus: Boolean) {
+            listener?.onFocusChanged(hasFocus)
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        override fun afterTextChanged(s: Editable?) {
+            if (isChangedByUser()) {
+                sourceName?.let { listener?.onTextChanged(s?.toString().orEmpty(), it) }
+            }
+        }
+
+        override fun onClick(v: View?) {
+            if (v?.id == binding.layoutTextArea.root.icon2.id) {
+                listener?.onExpandButtonClicked()
+            }
+        }
+    }
+
+    interface Listener {
+        fun onTextChanged(text: String, source: CreateReviewTextAreaTextUiModel.Source)
+        fun onFocusChanged(hasFocus: Boolean)
+        fun onExpandButtonClicked()
     }
 }

@@ -8,9 +8,9 @@ import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiMode
 import com.tokopedia.review.feature.createreputation.model.DefaultImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
-import com.tokopedia.review.feature.createreputation.presentation.viewholder.BaseImageReviewViewHolder
-import com.tokopedia.review.feature.createreputation.presentation.viewholder.DefaultImageReviewViewHolder
-import com.tokopedia.review.feature.createreputation.presentation.viewholder.ImageReviewViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.BaseImageReviewViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.DefaultImageReviewViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.ImageReviewViewHolder
 
 class ImageReviewAdapter(private val imageClickListener: ImageClickListener) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 

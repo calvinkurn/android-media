@@ -1,0 +1,151 @@
+package com.tokopedia.review.feature.createreputation.presentation.widget
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.animation.AccelerateInterpolator
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.review.databinding.WidgetCreateReviewMediaPickerBinding
+import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewMediaAdapter
+import com.tokopedia.review.feature.createreputation.presentation.adapter.typefactory.CreateReviewMediaTypeFactory
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
+
+class CreateReviewMediaPicker @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = Int.ZERO
+) : BaseCreateReviewCustomView<WidgetCreateReviewMediaPickerBinding>(context, attrs, defStyleAttr) {
+
+    companion object {
+        private const val TRANSITION_DURATION = 300L
+    }
+
+    private val mediaPickerListener = MediaPickerListener()
+    private val typeFactory = CreateReviewMediaTypeFactory(mediaPickerListener)
+    private val adapter = CreateReviewMediaAdapter(typeFactory)
+    private val transitionHandler = TransitionHandler()
+
+    override val binding = WidgetCreateReviewMediaPickerBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        binding.layoutMediaPicker.root.adapter = adapter
+        binding.layoutMediaPickerError.root.setOnClickListener(mediaPickerListener)
+    }
+
+    private fun showLoading() {
+        transitionHandler.transitionToShowLoading()
+    }
+
+    private fun showMediaPicker(
+        uiState: CreateReviewMediaPickerUiState.Showing
+    ) {
+        val containsError = uiState.mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }
+        transitionHandler.transitionToShowMediaPicker(containsError)
+        setupMediaPicker(uiState.mediaItems)
+    }
+
+    private fun setupMediaPicker(
+        mediaItems: List<CreateReviewMediaUiModel>
+    ) {
+        adapter.setMediaReviewData(mediaItems)
+    }
+
+    fun updateUi(uiState: CreateReviewMediaPickerUiState) {
+        when(uiState) {
+            is CreateReviewMediaPickerUiState.Loading -> {
+                showLoading()
+                animateShow()
+            }
+            is CreateReviewMediaPickerUiState.Showing -> {
+                showMediaPicker(uiState)
+                animateShow()
+            }
+        }
+    }
+
+    fun setListener(newCreateReviewMediaPickerListener: Listener) {
+        mediaPickerListener.listener = newCreateReviewMediaPickerListener
+    }
+
+    private inner class TransitionHandler {
+        private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
+            Fade().apply {
+                duration = TRANSITION_DURATION
+                addTarget(binding.layoutMediaPicker.root)
+                addTarget(binding.layoutMediaPickerError.root)
+                addTarget(binding.layoutMediaPickerLoading.root)
+                interpolator = AccelerateInterpolator()
+            }
+        }
+
+        private fun WidgetCreateReviewMediaPickerBinding.showLoadingLayout() {
+            layoutMediaPickerLoading.root.show()
+        }
+
+        private fun WidgetCreateReviewMediaPickerBinding.hideLoadingLayout() {
+            layoutMediaPickerLoading.root.gone()
+        }
+
+        private fun WidgetCreateReviewMediaPickerBinding.showMediaPickerLayout(
+            error: Boolean
+        ) {
+            layoutMediaPicker.root.show()
+            layoutMediaPickerError.root.showWithCondition(error)
+        }
+
+        private fun WidgetCreateReviewMediaPickerBinding.hideMediaPickerLayout() {
+            layoutMediaPicker.root.gone()
+        }
+
+        private fun WidgetCreateReviewMediaPickerBinding.beginDelayedTransition() {
+            TransitionManager.beginDelayedTransition(root, fadeTransition)
+        }
+
+        fun transitionToShowMediaPicker(error: Boolean) {
+            with(binding) {
+                beginDelayedTransition()
+                hideLoadingLayout()
+                showMediaPickerLayout(error)
+            }
+        }
+
+        fun transitionToShowLoading() {
+            with(binding) {
+                beginDelayedTransition()
+                hideMediaPickerLayout()
+                showLoadingLayout()
+            }
+        }
+    }
+
+    private inner class MediaPickerListener: CreateReviewMediaAdapter.Listener, View.OnClickListener {
+        var listener: Listener? = null
+
+        override fun onAddMediaClicked() {
+            listener?.onAddMediaClicked()
+        }
+
+        override fun onRemoveMediaClicked(media: CreateReviewMediaUiModel) {
+            listener?.onRemoveMediaClicked(media)
+        }
+
+        override fun onClick(v: View?) {
+            when(v?.id) {
+                binding.layoutMediaPickerError.root.id -> listener?.onRetryUploadClicked()
+            }
+        }
+    }
+
+    interface Listener {
+        fun onAddMediaClicked()
+        fun onRemoveMediaClicked(media: CreateReviewMediaUiModel)
+        fun onRetryUploadClicked()
+    }
+}

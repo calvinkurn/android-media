@@ -2,6 +2,7 @@ package com.tokopedia.reputation.common.view
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,7 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
     var countMinus = 5
     var lastReview = 0
     var clickAt = 0
-    private var handle = Handler()
+    private var handle = Handler(Looper.getMainLooper())
     private var listener: AnimatedReputationListener? = null
     private var shouldShowDesc = false
     private var starHeight = -1
@@ -154,6 +155,15 @@ class AnimatedRatingPickerCreateReviewView @JvmOverloads constructor(
         generateReviewText(reviewClickAt)
     }
 
+    fun setRating(rating: Int) {
+        this.clickAt = rating
+        if (clickAt < lastReview) {
+            handle.post(reverseAnimation)
+        } else {
+            handle.post(normalAnimation)
+        }
+        generateReviewText(rating)
+    }
 
     fun getReviewClickAt(): Int = clickAt
 

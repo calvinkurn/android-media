@@ -59,7 +59,7 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.databinding.FragmentCreateReviewBinding
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
-import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
+import com.tokopedia.review.feature.createreputation.di.old.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
@@ -70,8 +70,8 @@ import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.In
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
-import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
-import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
+import com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
@@ -511,6 +511,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
             return ReviewUtil.routeToWebview(it, ovoIncentiveBottomSheet, url)
         }
         return false
+    }
+
+    override fun onDismissIncentiveBottomSheet() {
+
     }
 
     override fun onClickCloseThankYouBottomSheet() {

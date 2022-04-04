@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
+        android:id="@+id/text_area_expanded_create_review_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/review_template_expanded_create_review_bottom_sheet"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplate
+        android:id="@+id/review_template_expanded_create_review_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/helper_text_area_expanded_create_review_bottom_sheet" />
+
+    <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewExpandedTextAreaHelper
+        android:id="@+id/helper_text_area_expanded_create_review_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

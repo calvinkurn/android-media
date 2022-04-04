@@ -7,7 +7,7 @@ import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.presentation.listener.RecyclerViewItemRemoverListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewBadRatingCategoryListener
-import com.tokopedia.review.feature.createreputation.presentation.viewholder.ReviewBadRatingCategoryViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.ReviewBadRatingCategoryViewHolder
 
 class ReviewBadRatingCategoriesAdapter(private val badRatingCategoryListener: ReviewBadRatingCategoryListener) :
     RecyclerView.Adapter<ReviewBadRatingCategoryViewHolder>(),

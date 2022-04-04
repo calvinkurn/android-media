@@ -4,7 +4,6 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 @GqlQuery(
@@ -42,39 +41,35 @@ class ProductrevSubmitReviewUseCase @Inject constructor(graphqlRepository: Graph
         setGraphqlQuery(SubmitReview.GQL_QUERY)
     }
 
-    fun setParams(
-        reputationId: String,
-        productId: String,
-        shopId: String,
-        reputationScore: Int = 0,
-        rating: Int,
-        reviewText: String,
-        isAnonymous: Boolean,
-        attachmentIds: List<String> = emptyList(),
-        utmSource: String,
-        badRatingCategoryIds: List<String>
+    fun setParams(requestParams: SubmitReviewRequestParams) {
+        setRequestParams(requestParams.toRequestParamMap())
+    }
+
+    data class SubmitReviewRequestParams(
+        val reputationId: String,
+        val productId: String,
+        val shopId: String,
+        val reputationScore: Int = 0,
+        val rating: Int,
+        val reviewText: String,
+        val isAnonymous: Boolean,
+        val attachmentIds: List<String> = emptyList(),
+        val utmSource: String,
+        val badRatingCategoryIds: List<String>
     ) {
-        setRequestParams(RequestParams.create().apply {
-            putString(PARAM_REPUTATION_ID, reputationId)
-            putString(PARAM_PRODUCT_ID, productId)
-            putString(PARAM_SHOP_ID, shopId)
-            if (reputationScore != 0) {
-                putInt(PARAM_REPUTATION_SCORE, reputationScore)
-            }
-            putInt(PARAM_RATING, rating)
-            if (reviewText.isNotBlank()) {
-                putString(PARAM_REVIEW_TEXT, reviewText)
-            }
-            if (isAnonymous) {
-                putBoolean(PARAM_IS_ANONYMOUS, isAnonymous)
-            }
-            if (attachmentIds.isNotEmpty()) {
-                putObject(PARAM_ATTACHMENT_ID, attachmentIds)
-            }
-            if (badRatingCategoryIds.isNotEmpty()) {
-                putObject(PARAM_BAD_RATING_CATEGORY_IDS, badRatingCategoryIds)
-            }
-            putString(PARAM_UTM_SOURCE, utmSource)
-        }.parameters)
+        fun toRequestParamMap(): Map<String, Any> {
+            return mapOf(
+                PARAM_REPUTATION_ID to reputationId,
+                PARAM_PRODUCT_ID to productId,
+                PARAM_SHOP_ID to shopId,
+                PARAM_REPUTATION_SCORE to reputationScore,
+                PARAM_RATING to rating,
+                PARAM_REVIEW_TEXT to reviewText,
+                PARAM_IS_ANONYMOUS to isAnonymous,
+                PARAM_ATTACHMENT_ID to attachmentIds,
+                PARAM_UTM_SOURCE to utmSource,
+                PARAM_BAD_RATING_CATEGORY_IDS to badRatingCategoryIds
+            )
+        }
     }
 }

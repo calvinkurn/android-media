@@ -224,7 +224,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/create_review_add_photo_barrier"/>
 
-            <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
+            <com.tokopedia.review.feature.createreputation.presentation.widget.old.CreateReviewTextArea
                 android:id="@+id/createReviewExpandableTextArea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

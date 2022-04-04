@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.presentation.listener.RecyclerViewItemRemoverListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
-import com.tokopedia.review.feature.createreputation.presentation.viewholder.ReviewTemplatesViewHolder
+import com.tokopedia.review.feature.createreputation.presentation.viewholder.old.ReviewTemplatesViewHolder
 
 class ReviewTemplatesAdapter(private val reviewTemplateListener: ReviewTemplateListener) : RecyclerView.Adapter<ReviewTemplatesViewHolder>(), RecyclerViewItemRemoverListener {
 

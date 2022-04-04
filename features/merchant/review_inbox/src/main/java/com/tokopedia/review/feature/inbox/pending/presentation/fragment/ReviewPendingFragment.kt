@@ -304,6 +304,10 @@ class ReviewPendingFragment :
         return false
     }
 
+    override fun onDismissIncentiveBottomSheet() {
+
+    }
+
     override fun onClickCloseThankYouBottomSheet() {
         // No Op
     }
@@ -557,10 +561,6 @@ class ReviewPendingFragment :
             ReviewInboxConstants.PARAM_SOURCE,
             ReviewInboxConstants.DEFAULT_SOURCE
         ) ?: ReviewInboxConstants.DEFAULT_SOURCE
-    }
-
-    private fun goToHome() {
-        RouteManager.route(context, ApplinkConst.HOME)
     }
 
     private fun goToCredibility() {
