@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -70,7 +70,7 @@ class SingleProductBundleFragment(
     lateinit var userSession: UserSessionInterface
 
     private var tvBundlePreorder: Typography? = null
-    private var bundleListLayout: LinearLayoutCompat? = null
+    private var bundleListLayout: ConstraintLayout? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
