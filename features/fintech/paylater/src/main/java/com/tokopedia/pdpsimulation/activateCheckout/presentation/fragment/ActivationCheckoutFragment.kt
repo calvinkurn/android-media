@@ -17,11 +17,13 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.CheckoutData
+import com.tokopedia.pdpsimulation.activateCheckout.domain.model.InstallmentBottomSheetDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.PaylaterGetOptimizedModel
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureDetail
 import com.tokopedia.pdpsimulation.activateCheckout.domain.model.TenureSelectedModel
 import com.tokopedia.pdpsimulation.activateCheckout.helper.DataMapper
 import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper
+import com.tokopedia.pdpsimulation.activateCheckout.helper.OccBundleHelper.setBundleForInstalmentBottomSheet
 import com.tokopedia.pdpsimulation.activateCheckout.listner.ActivationListner
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.adapter.ActivationTenureAdapter
 import com.tokopedia.pdpsimulation.activateCheckout.presentation.bottomsheet.SelectGateWayBottomSheet
@@ -546,9 +548,27 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
             openPriceBreakDownBottomSheet()
         }
         proceedToCheckout.setOnClickListener {
+            sendCTAClickEvent()
             payLaterActivationViewModel.addProductToCart(
                 payLaterActivationViewModel.selectedProductId,
                 quantity
+            )
+        }
+    }
+
+    private fun sendCTAClickEvent() {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let { checkoutData ->
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickCTACheckoutPage(
+                    payLaterActivationViewModel.selectedProductId,
+                    checkoutData.userState ?: "",
+                    checkoutData.gateway_name.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition]?.monthly_installment.orEmpty(),
+                    checkoutData.tenureDetail[selectedTenurePosition]?.tenure.toString(),
+                    quantity.toString(),
+                    checkoutData.userAmount ?: "",
+                    variantName
+                )
             )
         }
     }
@@ -565,12 +585,13 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
 
     private fun openPriceBreakDownBottomSheet() {
         installmentModel?.let {
-            val bundle = Bundle().apply {
-                putParcelable(
-                    PayLaterInstallmentFeeInfo.INSTALLMENT_DETAIL,
-                    installmentModel
-                )
-            }
+          var bundle =   setBundleForInstalmentBottomSheet( InstallmentBottomSheetDetail(
+                installmentDetail =  it,
+                gatwayToChipMap =  payLaterActivationViewModel.gatewayToChipMap,
+                selectedProductPrice = payLaterActivationViewModel.price.toString(),
+                gatewayIdSelected =  payLaterActivationViewModel.selectedGatewayId.toInt(),
+                selectedTenure = selectedTenurePosition
+            ))
             bottomSheetNavigator.showBottomSheet(PayLaterInstallmentFeeInfo::class.java, bundle)
         }
     }
@@ -763,7 +784,22 @@ class ActivationCheckoutFragment : BaseDaggerFragment(), ActivationListner {
         }
         amountToPay.text = tenureSelectedModel.priceText.orEmpty()
         paymentDuration.text = "x${tenureSelectedModel.tenure.orEmpty()}"
+        sendTenureSelectedAnalytics(newPositionToSelect)
         updateRecyclerViewData(newPositionToSelect, tenureSelectedModel)
+    }
+
+    private fun sendTenureSelectedAnalytics(newPositionToSelect:Int) {
+        payLaterActivationViewModel.gatewayToChipMap[payLaterActivationViewModel.selectedGatewayId.toInt()]?.let{ checkoutData ->
+            sendAnalyticEvent(
+                PdpSimulationEvent.ClickTenureEvent(
+                    payLaterActivationViewModel.selectedProductId,
+                    checkoutData.userState?:"",
+                    payLaterActivationViewModel.price.toString(),
+                    checkoutData.tenureDetail[newPositionToSelect].tenure.toString(),
+                    checkoutData.gateway_name?:""
+                )
+            )
+        }
     }
 
     private fun updateRecyclerViewData(

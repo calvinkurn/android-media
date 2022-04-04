@@ -129,7 +129,7 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 return element.productList.getOrNull(carouselProductCardPosition)
             }
         }
-
+        recyclerView?.isNestedScrollingEnabled = false
         when (element.name) {
 
             RECENT_ACTIVITY -> {

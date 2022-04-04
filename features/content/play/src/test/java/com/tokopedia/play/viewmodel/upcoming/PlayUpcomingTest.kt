@@ -404,7 +404,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.assertEqualTo(PlayPartnerFollowStatus.Followable(true))
+            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.Followable(true))
         }
     }
 
@@ -426,7 +426,7 @@ class PlayUpcomingTest {
             }
 
             /** Verify **/
-            state.partner.followStatus.assertEqualTo(PlayPartnerFollowStatus.NotFollowable)
+            state.partner.status.assertEqualTo(PlayPartnerFollowStatus.NotFollowable)
         }
     }
 

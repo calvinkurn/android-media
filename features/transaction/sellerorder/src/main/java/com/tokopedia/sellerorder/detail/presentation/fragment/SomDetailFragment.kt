@@ -1008,7 +1008,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickProduct(orderDetailId: Int) {
+    override fun onClickProduct(orderDetailId: Long) {
         val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
         val intent = RouteManager.getIntent(activity, appLinkSnapShot)
         intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
