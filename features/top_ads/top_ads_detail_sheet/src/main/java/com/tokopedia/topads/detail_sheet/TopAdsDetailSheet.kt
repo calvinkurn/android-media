@@ -47,16 +47,16 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     private var imgProduct: ImageUnify? = null
     private var txtTitleProduct: Typography? = null
     private var txtBudget: Typography? = null
-    private var btn_switch: SwitchUnify? = null
+    private var btnSwitch: SwitchUnify? = null
     private var tickerInfo: Ticker? = null
-    private var autoads_widget: AutoAdsWidgetCommon? = null
+    private var autoadsWidget: AutoAdsWidgetCommon? = null
     private var adInfo: CardView? = null
-    private var tampil_count: Typography? = null
-    private var pengeluaran_count: Typography? = null
-    private var klik_count: Typography? = null
-    private var pendapatan_count: Typography? = null
-    private var persentase_klik_count: Typography? = null
-    private var produk_terjual_count: Typography? = null
+    private var tampilCount: Typography? = null
+    private var pengeluaranCount: Typography? = null
+    private var klikCount: Typography? = null
+    private var pendapatanCount: Typography? = null
+    private var persentaseKlikCount: Typography? = null
+    private var produkTerjualCount: Typography? = null
     private var createAd: Typography? = null
     private var singleAd: CardUnify? = null
     private var createGroupLayout: ConstraintLayout? = null
@@ -65,7 +65,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
     private var groupId: String = "0"
     private val autoAdsWidget: AutoAdsWidgetCommon?
-        get() = autoads_widget
+        get() = autoadsWidget
     private var adId: String = "0"
     private var category: Int = 0
     private var adType: String = "1"
@@ -115,7 +115,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     }
 
     private fun onSuccessPost(action: String) {
-        btn_switch?.isChecked = action == ACTION_ACTIVATE
+        btnSwitch?.isChecked = action == ACTION_ACTIVATE
     }
 
     fun show(fragmentManager: FragmentManager, adTye: String, adId: String, categoryType: Int, ) {
@@ -140,7 +140,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
                 imgProduct?.visibility = View.GONE
                 txtTitleProduct?.visibility = View.GONE
                 txtBudget?.visibility = View.GONE
-                btn_switch?.visibility = View.GONE
+                btnSwitch?.visibility = View.GONE
                 autoAdsWidget?.loadData(LOAD_DATA_SHEET)
                 autoAdsWidget?.visibility = View.VISIBLE
             }
@@ -186,7 +186,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             }
         }
 
-        btn_switch?.setOnClickListener {
+        btnSwitch?.setOnClickListener {
             if ((it as Switch).isChecked) {
                 sendToggleEvent(TOGGLE_BUTTON_ON)
                 viewModel.setProductAction(::onSuccessPost, ACTION_ACTIVATE,
@@ -236,7 +236,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
     private fun onSuccessGroupId(data: List<SingleAd>) {
         data.firstOrNull().let {
             groupId = it?.groupID ?: SINGLE_AD
-            btn_switch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
+            btnSwitch?.isChecked = it?.status == STATUS_ACTIVE || it?.status == STATUS_TIDAK_TAMPIL
             txtBudget?.text = String.format(getString(R.string.topads_detail_budget), it?.priceBid)
         }
         viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
@@ -259,7 +259,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             if (it.adId.toString() == adId) {
                 ImageHandler.LoadImage(imgProduct, data[index].productImageUri)
                 txtTitleProduct?.text = data[index].productName
-                pendapatan_count?.text = data[index].statTotalGrossProfit
+                pendapatanCount?.text = data[index].statTotalGrossProfit
                 return@forEachIndexed
             }
         }
@@ -267,11 +267,11 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
     private fun onsuccessProductStats(data: List<WithoutGroupDataItem>) {
         data.firstOrNull().let {
-            tampil_count?.text = it?.statTotalImpression
-            klik_count?.text = it?.statTotalClick
-            persentase_klik_count?.text = it?.statTotalCtr
-            pengeluaran_count?.text = it?.statTotalSpent
-            produk_terjual_count?.text = it?.statTotalConversion
+            tampilCount?.text = it?.statTotalImpression
+            klikCount?.text = it?.statTotalClick
+            persentaseKlikCount?.text = it?.statTotalCtr
+            pengeluaranCount?.text = it?.statTotalSpent
+            produkTerjualCount?.text = it?.statTotalConversion
         }
     }
 
