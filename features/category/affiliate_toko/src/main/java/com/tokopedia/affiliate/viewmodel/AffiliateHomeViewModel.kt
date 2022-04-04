@@ -43,6 +43,11 @@ class AffiliateHomeViewModel @Inject constructor(
     private var rangeChanged = MutableLiveData<Boolean>()
     private var showProductCount = true
     private var lastID = "0"
+    private var firstTime = true
+    private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
+    private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
+
+    private var selectedDateValue = "30"
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
@@ -70,6 +75,15 @@ class AffiliateHomeViewModel @Inject constructor(
 
     fun getAffiliatePerformance(page: Int) {
         launchCatchError(block = {
+            if(firstTime) affiliateUserPerformanceUseCase.getAffiliateFilter()?.let { filters ->
+                filters.data?.getAffiliateDateFilter?.forEach { filter->
+                    if(filter?.filterType == "LastThirtyDays"){
+                        filter.filterDescription?.let { selectedDateMessage = it }
+                        filter.filterValue?.let { selectedDateValue = it }
+                        filter.filterTitle?.let { selectedDateRange = it }
+                    }
+                }
+            }
             var performanceList: AffiliateUserPerformaListItemData? = null
             if (page == PAGE_ZERO) {
                 dataPlatformShimmerVisibility.value = true
@@ -162,10 +176,6 @@ class AffiliateHomeViewModel @Inject constructor(
         return performaTempList
     }
 
-    private var selectedDateRange = AffiliateBottomDatePicker.THIRTY_DAYS
-    private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
-
-    private var selectedDateValue = "30"
     fun getSelectedDate(): String {
         return selectedDateRange
     }
