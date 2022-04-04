@@ -183,7 +183,6 @@ class QuizFormView : ConstraintLayout {
     }
 
     fun setError(throwable: Throwable) {
-        /** TODO: handle error here */
         showErrorToaster(
             err = throwable,
             bottomMargin = timePickerBinding.btnApply.height + offset8
