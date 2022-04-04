@@ -7,6 +7,8 @@ import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequest
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
+import com.tokopedia.ovop2p.domain.model.Wallet
+import com.tokopedia.ovop2p.domain.model.WalletDataBase
 import com.tokopedia.ovop2p.domain.usecase.GetWalletBalanceUseCase
 import com.tokopedia.ovop2p.domain.usecase.OvoP2pTransferUseCase
 import com.tokopedia.ovop2p.domain.usecase.OvoTrxnConfirmationUseCase
@@ -22,6 +24,7 @@ import com.tokopedia.ovop2p.view.viewStates.TransferReqErrorSnkBar
 import com.tokopedia.ovop2p.view.viewStates.TransferReqNonOvo
 import com.tokopedia.ovop2p.view.viewStates.TransferRequestState
 import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
+import com.tokopedia.ovop2p.view.viewStates.WalletData
 import com.tokopedia.ovop2p.view.viewStates.WalletError
 import javax.inject.Inject
 
@@ -37,33 +40,39 @@ class OvoDetailViewModel @Inject constructor(
     fun fetchWalletDetails() {
         getWalletBalanceUseCase.getWalletDetail(
             ::getSuccessWalletDetail,
-            ::onFailErrorMessage
+            ::onFailGeneralWalletDetail
         )
     }
 
-    private fun getSuccessWalletDetail(responseType: GetWalletBalanceUseCase.ResposeType) {
-        when (responseType) {
-            is GetWalletBalanceUseCase.ResposeType.FailResponse -> {
-                walletLiveData.value = responseType.errorMessage?.let { error ->
-                    WalletError(
-                        error
-                    )
+    private fun getSuccessWalletDetail(walletDataBase: WalletDataBase) {
+        walletDataBase.wallet?.let { walletObj ->
+            walletObj.errors?.let { errList ->
+                if (errList.isNotEmpty()) {
+                    onFailErrorMessage(errList[0].message)
+                } else {
+                    onSuccessGetWalletDetail(walletObj)
                 }
+            } ?: kotlin.run {
+                onSuccessGetWalletDetail(walletObj)
             }
-            is GetWalletBalanceUseCase.ResposeType.SuccessResponse -> {
-                walletLiveData.value = responseType.walletData
-            }
+        } ?: kotlin.run {
+            onFailGeneralWalletDetail(null)
         }
     }
 
+    private fun onSuccessGetWalletDetail(walletObj: Wallet) {
+        var cashBal = walletObj.cashBalance
+        cashBal = Constants.Prefixes.SALDO + cashBal
+        val sndrAmt = walletObj.rawCashBalance.toLong()
+        walletLiveData.value = WalletData(cashBal, sndrAmt)
+    }
 
-    private fun onFailErrorMessage(responseType: GetWalletBalanceUseCase.ResposeType) {
-        walletLiveData.value =
-            (responseType as GetWalletBalanceUseCase.ResposeType.FailResponse).errorMessage?.let { error ->
-                WalletError(
-                    error
-                )
-            }
+    private fun onFailErrorMessage(message: String) {
+        walletLiveData.value = WalletError(message)
+    }
+
+    private fun onFailGeneralWalletDetail(throwable: Throwable?) {
+        walletLiveData.value = WalletError(GENERAL_ERROR)
     }
 
 
@@ -73,6 +82,7 @@ class OvoDetailViewModel @Inject constructor(
             ::onFailConfirm,
             transferReqMap
         )
+        //   OvoP2pUtil.executeOvoP2pTransferConfirm(context, getTransferConfirmSubscriber(context), transferReqMap)
     }
 
     private fun onSuccessConfirm(ovoP2pTransferConfirmBase: OvoP2pTransferConfirmBase) {
