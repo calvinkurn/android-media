@@ -34,8 +34,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 		try {
 		    if (userSession.isLoggedIn) {
 			val syncResult = checkDataSync()
-			if (isNeedMigration() && (dataStore.getUserId().first()
-				.isEmpty() || syncResult.isNotEmpty())
+			if (isNeedMigration() &&
+			    (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
 			) {
 			    migrateData()
 			} else {
@@ -234,7 +234,6 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
     companion object {
 	const val WORKER_ID = "DATASTORE_MIGRATION_WORKER"
-	const val INTERVAL_WEEKLY = 7L
 
 	const val DATA_STORE_PREF = "DATA_STORE_MIGRATION_PREF"
 	const val KEY_MIGRATION_STATUS = "data_store_migration_status"
@@ -242,7 +241,7 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	fun scheduleWorker(context: Context) {
 	    try {
 		val periodicWorker = PeriodicWorkRequest
-		    .Builder(DataStoreMigrationWorker::class.java, 15, TimeUnit.MINUTES)
+		    .Builder(DataStoreMigrationWorker::class.java, 3, TimeUnit.DAYS)
 		    .setConstraints(Constraints.NONE)
 		    .build()
 
