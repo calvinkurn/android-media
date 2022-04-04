@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.dialog.DialogUnify
@@ -31,8 +34,10 @@ import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
 import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_base_edit_activity_layout.*
+import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -44,15 +49,23 @@ private const val CLICK_SIMPAN_BUTTON = "click - simpan"
 private const val CLICK_SIMPAN_BUTTON_EDIT = "click - simpan edit form"
 private const val VIEW_EDIT_FORM = "view - edit form"
 
-class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, SaveButtonStateCallBack {
+class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
+    SaveButtonStateCallBack {
+
+    private var root: ConstraintLayout? = null
+    private var toolbar: Toolbar? = null
+    private var backArrow: ImageUnify? = null
+    private var btnSubmit: Typography? = null
+    private var tabLayout: TabsUnify? = null
+    private var viewPager: TouchViewPager? = null
 
     @Inject
     lateinit var viewModel: EditFormDefaultViewModel
     private lateinit var adapter: TopAdsEditPagerAdapter
     var list: ArrayList<Fragment> = ArrayList()
-    var dataProduct = Bundle()
-    var dataKeyword = HashMap<String, Any?>()
-    var dataGroup = HashMap<String, Any?>()
+    private var dataProduct = Bundle()
+    private var dataKeyword = HashMap<String, Any?>()
+    private var dataGroup = HashMap<String, Any?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,32 +73,36 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendViewFormEvent(VIEW_EDIT_FORM, "")
         renderTabAndViewPager()
         setupToolBar()
-        backArrow.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.toolbar_back_black))
-        backArrow.setOnClickListener {
+        backArrow?.setImageDrawable(AppCompatResources.getDrawable(this,
+            com.tokopedia.topads.common.R.drawable.toolbar_back_black))
+        backArrow?.setOnClickListener {
             onBackPressed()
         }
 
-        btn_submit.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_SIMPAN_BUTTON_EDIT, "")
-            btn_submit?.isEnabled = false
+        btnSubmit?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(CLICK_SIMPAN_BUTTON_EDIT,
+                "")
+            btnSubmit?.isEnabled = false
             getDataFromChildFragments()
             saveChanges()
         }
     }
 
     private fun getDataFromChildFragments() {
-        val fragments = (view_pager.adapter as TopAdsEditPagerAdapter).list
-        for (fragment in fragments) {
-            when (fragment) {
-                is EditProductFragment ->
-                    dataProduct = fragment.sendData()
+        val fragments = (viewPager?.adapter as? TopAdsEditPagerAdapter)?.list
+        if (fragments != null) {
+            for (fragment in fragments) {
+                when (fragment) {
+                    is EditProductFragment ->
+                        dataProduct = fragment.sendData()
 
-                is EditGroupAdFragment ->
-                    dataGroup = fragment.sendData()
+                    is EditGroupAdFragment ->
+                        dataGroup = fragment.sendData()
 
-                is BaseEditKeywordFragment -> {
-                    dataKeyword = fragment.sendData()
-                    sendSaveDataEvent(fragment.getKeywordNameItems())
+                    is BaseEditKeywordFragment -> {
+                        dataKeyword = fragment.sendData()
+                        sendSaveDataEvent(fragment.getKeywordNameItems())
+                    }
                 }
             }
         }
@@ -93,7 +110,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
 
     private fun saveChanges() {
         viewModel.topAdsCreated(dataProduct, dataKeyword, dataGroup,
-                ::onSuccessGroupEdited, ::onErrorEdit)
+            ::onSuccessGroupEdited, ::onErrorEdit)
     }
 
     private fun sendSaveDataEvent(items: MutableList<Map<String, Any>>) {
@@ -102,9 +119,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
 
         items.forEach {
             val keywordModel = DataLayer.mapOf(
-                    Constants.KEYWORD_NAME, it["name"],
-                    Constants.KEYWORD_ID, it["id"],
-                    Constants.KEYWORD_TYPE, it["type"]
+                Constants.KEYWORD_NAME, it["name"],
+                Constants.KEYWORD_ID, it["id"],
+                Constants.KEYWORD_TYPE, it["type"]
             )
             map.add(keywordModel as MutableMap<String, String>)
         }
@@ -123,11 +140,11 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         val errorMessage = Utils.getErrorMessage(this, error ?: "")
         root?.let {
             Toaster.build(it, errorMessage,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,
-                    getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(com.tokopedia.topads.common.R.string.topads_common_text_ok)).show()
         }
-        btn_submit?.isEnabled = true
+        btnSubmit?.isEnabled = true
     }
 
     private fun setupToolBar() {
@@ -136,32 +153,39 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
 
     private fun renderTabAndViewPager() {
         val bundle = intent.extras
-        view_pager.adapter = getViewPagerAdapter()
-        view_pager.offscreenPageLimit = 3
-        tab_layout?.addNewTab(PRODUK_NAME)
-        tab_layout?.addNewTab(KATA_KUNCI)
-        tab_layout?.addNewTab(LAINNYA_NAME)
-        tab_layout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 1) ?: 2)?.select()
-        view_pager.currentItem = bundle?.getInt(TAB_POSITION, 1) ?: 2
-        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-                //do nothing
-            }
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-                //do nothing
-            }
-
-            override fun onTabSelected(p0: TabLayout.Tab) {
-                when (p0.position) {
-                    0 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_PRODUK_TAB, "")
-                    1 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_KATA_KUNCI_TAB, "")
-                    2 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_ATUR_TAB, "")
+        viewPager?.adapter = getViewPagerAdapter()
+        viewPager?.offscreenPageLimit = 3
+        tabLayout?.addNewTab(PRODUK_NAME)
+        tabLayout?.addNewTab(KATA_KUNCI)
+        tabLayout?.addNewTab(LAINNYA_NAME)
+        tabLayout?.getUnifyTabLayout()?.getTabAt(bundle?.getInt(TAB_POSITION, 1) ?: 2)?.select()
+        viewPager?.currentItem = bundle?.getInt(TAB_POSITION, 1) ?: 2
+        tabLayout?.getUnifyTabLayout()
+            ?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabReselected(p0: TabLayout.Tab?) {
+                    //do nothing
                 }
-                view_pager.setCurrentItem(p0.position, true)
-            }
 
-        })
+                override fun onTabUnselected(p0: TabLayout.Tab?) {
+                    //do nothing
+                }
+
+                override fun onTabSelected(p0: TabLayout.Tab) {
+                    when (p0.position) {
+                        0 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                            CLICK_PRODUK_TAB,
+                            "")
+                        1 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                            CLICK_KATA_KUNCI_TAB,
+                            "")
+                        2 -> TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(
+                            CLICK_ATUR_TAB,
+                            "")
+                    }
+                    viewPager?.setCurrentItem(p0.position, true)
+                }
+
+            })
     }
 
     private fun getViewPagerAdapter(): TopAdsEditPagerAdapter {
@@ -170,14 +194,17 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         list.add(EditProductFragment.newInstance(bundle))
         list.add(BaseEditKeywordFragment.newInstance(bundle))
         list.add(EditGroupAdFragment.newInstance(bundle))
-        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, LAINNYA_NAME), supportFragmentManager, 0)
+        adapter = TopAdsEditPagerAdapter(arrayOf(PRODUK_NAME, KATA_KUNCI, LAINNYA_NAME),
+            supportFragmentManager,
+            0)
         adapter.setData(list)
         return adapter
     }
 
     override fun getComponent(): TopAdsEditComponent {
         val toAdsEditComponent = DaggerTopAdsEditComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).topAdEditModule(TopAdEditModule(this)).build()
+            (application as BaseMainApplication).baseAppComponent)
+            .topAdEditModule(TopAdEditModule(this)).build()
         toAdsEditComponent.inject(this)
         return toAdsEditComponent
     }
@@ -191,8 +218,12 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
 
     private fun checkChangesMade(): Boolean {
         getDataFromChildFragments()
-        val dataAddProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(ADDED_PRODUCTS)
-        val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(DELETED_PRODUCTS)
+        val dataAddProduct =
+            dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(
+                ADDED_PRODUCTS)
+        val dataDeleteProduct =
+            dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>(
+                DELETED_PRODUCTS)
         val keywordsPositiveCreate = dataKeyword[Constants.POSITIVE_CREATE] as? MutableList<*>
         val keywordsPositiveDelete = dataKeyword[Constants.POSITIVE_DELETE] as? MutableList<*>
         val keywordsNegCreate = dataKeyword[Constants.NEGATIVE_KEYWORDS_ADDED] as? MutableList<*>
@@ -204,8 +235,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
         if (dataAddProduct?.isNotEmpty() != false || dataDeleteProduct?.isNotEmpty() != false || isDataChanged == true)
             return true
         if (keywordsPositiveCreate?.isNotEmpty() != false || keywordsPositiveDelete?.isNotEmpty() != false
-                || keywordsNegCreate?.isNotEmpty() != false || keywordsNegDelete?.isNotEmpty() != false
-                || keywordsPostiveEdit?.isNotEmpty() != false)
+            || keywordsNegCreate?.isNotEmpty() != false || keywordsNegDelete?.isNotEmpty() != false
+            || keywordsPostiveEdit?.isNotEmpty() != false
+        )
             return true
 
         return false
@@ -231,27 +263,29 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     }
 
     private fun setButton(shouldEnable: Boolean) {
-        btn_submit.isEnabled = shouldEnable
+        btnSubmit?.isEnabled = shouldEnable
     }
 
     override fun setButtonState() {
-        val fragments = (view_pager.adapter as TopAdsEditPagerAdapter).list
+        val fragments = (viewPager?.adapter as? TopAdsEditPagerAdapter)?.list
         var valid1 = true
         var valid2 = true
         var valid3 = true
-        for (fragment in fragments) {
-            when (fragment) {
-                is EditProductFragment -> {
-                    valid1 = fragment.getButtonState()
+        if (fragments != null) {
+            for (fragment in fragments) {
+                when (fragment) {
+                    is EditProductFragment -> {
+                        valid1 = fragment.getButtonState()
+                    }
+                    is EditGroupAdFragment -> {
+                        valid2 = fragment.getButtonState()
+                    }
+                    is BaseEditKeywordFragment -> {
+                        valid3 = fragment.getButtonState()
+                    }
                 }
-                is EditGroupAdFragment -> {
-                    valid2 = fragment.getButtonState()
-                }
-                is BaseEditKeywordFragment -> {
-                    valid3 = fragment.getButtonState()
-                }
+                btnSubmit?.isEnabled = valid1 && valid2 && valid3
             }
-            btn_submit.isEnabled = valid1 && valid2 && valid3
         }
     }
 }
