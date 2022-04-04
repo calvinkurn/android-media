@@ -12,10 +12,12 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal class DefaultNetworkMonitor(
     context: Context?,
@@ -32,8 +34,13 @@ internal class DefaultNetworkMonitor(
             networkCapabilities: NetworkCapabilities
         ) {
             super.onCapabilitiesChanged(network, networkCapabilities)
-            val onWifi = networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            val onWifi = isConnectedToWifi()
             onWifiConnectionChange(onWifi)
+        }
+
+        private fun isConnectedToWifi(): Boolean {
+            val currentContext = this@DefaultNetworkMonitor.context ?: return false
+            return DeviceConnectionInfo.isConnectWifi(currentContext)
         }
     }
 
@@ -79,5 +86,7 @@ internal class DefaultNetworkMonitor(
     }
 
     override val wifiConnectionState: Flow<Boolean>
-        get() = connectedToWifiState
+        get() = connectedToWifiState.distinctUntilChanged { old, new ->
+            old == new
+        }
 }
