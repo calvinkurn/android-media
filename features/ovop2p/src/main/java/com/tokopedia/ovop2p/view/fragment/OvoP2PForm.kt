@@ -51,9 +51,7 @@ import com.tokopedia.ovop2p.view.viewStates.TransferRequestState
 import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
 import com.tokopedia.ovop2p.view.viewStates.WalletData
 import com.tokopedia.ovop2p.view.viewStates.WalletError
-import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
-import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
-import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
+import com.tokopedia.ovop2p.viewmodel.OvoDetailViewModel
 import javax.inject.Inject
 
 class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener {
@@ -82,28 +80,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val walletDetailViewModel: GetWalletBalanceViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val walletDetailViewModel: OvoDetailViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
             ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(GetWalletBalanceViewModel::class.java)
+        viewModelProvider.get(OvoDetailViewModel::class.java)
     }
 
-    private val ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        val viewModelProvider =
-            ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(OvoP2pTransferRequestViewModel::class.java)
-    }
-
-
-    private val ovoP2pTrxnConfirmViewModel: OvoP2pTrxnConfirmVM by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        val viewModelProvider =
-            ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(OvoP2pTrxnConfirmVM::class.java)
-    }
 
     override fun onClick(v: View?) {
         val id: Int = v?.id ?: -1
@@ -114,7 +96,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     rcvrMsg = msgEdtxtv.text.toString()
                     addUserDataToMap()
                     (activity as LoaderUiListener).showProgressDialog()
-                    ovoP2pTransferRequestViewModel.makeTransferRequestCall(trnsfrReqDataMap)
+                    walletDetailViewModel.makeTransferRequestCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_TRNSFR, "", AnalyticsUtil.EventAction.CLK_LNJKTN)
@@ -143,7 +125,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     //make transfer confirm request
                     if (activity?.isFinishing == false) alertDialog.dismiss()
                     (activity as LoaderUiListener).showProgressDialog()
-                    ovoP2pTrxnConfirmViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
+                    walletDetailViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
@@ -152,7 +134,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                 R.id.proceed_dlg_non_ovo -> {
                     if (activity?.isFinishing == false) alertDialog.dismiss()
                     (activity as LoaderUiListener).showProgressDialog()
-                    ovoP2pTrxnConfirmViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
+                    walletDetailViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
@@ -290,7 +272,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun createAndSubscribeTransferRequestVM() {
-                ovoP2pTransferRequestViewModel.transferReqBaseMutableLiveData.observe(
+        walletDetailViewModel.transferReqBaseMutableLiveData.observe(
                     viewLifecycleOwner,
                     getTransferReqObserver(activity as LoaderUiListener)
                 )
@@ -322,7 +304,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun createAndSubscribeTransferConfirmVM() {
-        ovoP2pTrxnConfirmViewModel.txnConfirmMutableLiveData.observe(
+        walletDetailViewModel.txnConfirmMutableLiveData.observe(
             viewLifecycleOwner,
             getTransferConfObserver(activity as LoaderUiListener)
         )
