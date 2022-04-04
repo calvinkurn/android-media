@@ -17,7 +17,7 @@ class GetWishlistV2UseCase @Inject constructor(graphqlRepository: GraphqlReposit
             val params = setParams(param)
             this.setTypeClass(GetWishlistV2Response::class.java)
             this.setRequestParams(params)
-            this.setGraphqlQuery(GetWishlistV2.GQL_QUERY)
+            this.setGraphqlQuery(GetWishlistV2())
             execute({
                 onSuccess(it)
             }, {

@@ -1,7 +1,7 @@
 package com.tokopedia.wishlistcommon.query
 
     const val GQL_WISHLIST_V2 = """
-    query WishlistV2(${'$'}params:WishlistV2Params) {
+        query WishlistV2(${'$'}params:WishlistV2Params) {
                 wishlist_v2(params:${'$'}params) {
                     page
                     limit
@@ -109,3 +109,31 @@ package com.tokopedia.wishlistcommon.query
                     error_message
                   }
                 }"""
+
+    const val GQL_WISHLIST_ADD_V2 = """
+         mutation WishlistAddV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger) {
+              wishlist_add_v2(productID:${'$'}productID, userID:${'$'}userID) {
+                id
+                success
+                message
+                button{
+                    text
+                    action
+                    url
+                }
+              }
+            }"""
+
+    const val GQL_WISHLIST_REMOVE_V2 = """
+         mutation WishlistRemoveV2(${'$'}productID: SuperInteger, ${'$'}userID: SuperInteger) {
+              wishlist_remove_v2(productID:${'$'}productID, userID:${'$'}userID) {
+                id
+                success
+                message
+                button {
+                    text
+                    action
+                    url
+                }
+              }
+            }"""
