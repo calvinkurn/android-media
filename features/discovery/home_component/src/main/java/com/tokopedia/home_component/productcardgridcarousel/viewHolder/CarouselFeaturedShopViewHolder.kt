@@ -73,9 +73,7 @@ class CarouselFeaturedShopViewHolder (
                         element.grid.imageUrl,
                         element.componentName)
             }
-            GlobalScope.launch {
-                element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
-            }
+            element.listener.onProductCardClicked(position = adapterPosition, channel = channels, channelGrid = element.grid, applink = element.applink)
         }
     }
 
