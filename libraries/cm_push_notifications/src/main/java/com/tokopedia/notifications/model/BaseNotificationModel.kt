@@ -156,14 +156,17 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "is_big_image")
         var isBigImage: Boolean = false,
 
-        @ColumnInfo(name = "payload_extra")
-        var payloadExtra: PayloadExtra = PayloadExtra(),
+        @ColumnInfo(name = "push_payload_extra")
+        var pushPayloadExtra: PushPayloadExtra = PushPayloadExtra(),
 
 
-) : Parcelable {
+        ) : Parcelable {
 
     fun webHookParamData(): String? {
         return webHookToJson(this.webHookParam)
     }
+        fun isReviewOn() : Boolean {
+                return pushPayloadExtra.isReviewNotif == true
+        }
 
 }

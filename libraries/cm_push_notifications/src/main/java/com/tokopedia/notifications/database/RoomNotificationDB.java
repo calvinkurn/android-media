@@ -10,7 +10,7 @@ import com.tokopedia.notifications.data.converters.NotificationStatusConverter;
 import com.tokopedia.notifications.data.converters.ProductInfoConverter;
 import com.tokopedia.notifications.data.converters.PushActionButtonConverter;
 import com.tokopedia.notifications.data.converters.PushPersistentButtonConvertor;
-import com.tokopedia.notifications.data.converters.ReviewConverter;
+import com.tokopedia.notifications.data.converters.PushPayloadExtraConverter;
 import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
@@ -42,7 +42,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         GridConverter.class,
         ProductInfoConverter.class,
         PushPersistentButtonConvertor.class,
-        ReviewConverter.class
+        PushPayloadExtraConverter.class
 })
 public abstract class RoomNotificationDB extends RoomDatabase {
 
@@ -116,7 +116,7 @@ public abstract class RoomNotificationDB extends RoomDatabase {
     private static final Migration MIGRATION_9_10 = new Migration(9, 10) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `payload_extra` TEXT");
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `push_payload_extra` TEXT");
         }
     };
 

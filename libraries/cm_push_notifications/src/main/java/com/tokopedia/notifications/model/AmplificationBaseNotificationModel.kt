@@ -243,7 +243,6 @@ data class AmplificationBaseNotificationModel(
 
         @Expose
         @SerializedName(IS_REVIEW)
-        @ColumnInfo(name = "isReviewNotif")
         var isReviewNotif: Boolean? = false,
 ) : Parcelable {
 

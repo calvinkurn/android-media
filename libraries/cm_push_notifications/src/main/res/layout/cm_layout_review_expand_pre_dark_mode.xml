@@ -91,19 +91,5 @@
                 android:src="@drawable/cm_ic_star_review_white"/>
 
         </LinearLayout>
-
     </RelativeLayout>
-
-<!--    <RelativeLayout-->
-<!--        android:id="@+id/push_image"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_centerVertical="true"-->
-<!--        android:layout_weight="0.44">-->
-
-<!--        -->
-
-<!--    </RelativeLayout>-->
-
 </LinearLayout>

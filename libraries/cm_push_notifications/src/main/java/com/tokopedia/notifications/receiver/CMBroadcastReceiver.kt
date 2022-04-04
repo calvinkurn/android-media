@@ -190,7 +190,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED -> {
                         val starNumber = intent.getStringExtra(ReviewStarNumber.STAR_NUMBER)
                         starNumber?.let {
-                            baseNotificationModel?.appLink = baseNotificationModel?.appLink + starNumber
+                            baseNotificationModel?.appLink = baseNotificationModel?.appLink + starNumber.orEmpty()
                             handleNotificationClick(context, intent, notificationId, baseNotificationModel)
                         }
                         }
@@ -557,25 +557,4 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         promoCodeAutoApplyUseCase.createObservable(requestParams)
         promoCodeAutoApplyUseCase.execute(null)
     }
-
-//    private fun handleReviewStar(starNumber: String) {
-//        when(starNumber) {
-//            ReviewStarNumber.ONE_STAR -> {
-//
-//                }
-//            ReviewStarNumber.TWO_STAR -> {
-//
-//            }
-//            ReviewStarNumber.THREE_STAR -> {
-//
-//            }
-//            ReviewStarNumber.FOUR_STAR -> {
-//
-//            }
-//            ReviewStarNumber.FIVE_STAR -> {
-//
-//            }
-//        }
-//    }
-
 }

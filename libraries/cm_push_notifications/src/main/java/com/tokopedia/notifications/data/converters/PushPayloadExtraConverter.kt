@@ -3,21 +3,20 @@ package com.tokopedia.notifications.data.converters
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.notifications.model.PayloadExtra
-import java.util.ArrayList
+import com.tokopedia.notifications.model.PushPayloadExtra
 
-class ReviewConverter {
+class PushPayloadExtraConverter {
 
     @TypeConverter
-    fun toPayloadExtra(value: String?): PayloadExtra? {
+    fun toPayloadExtra(value: String?): PushPayloadExtra? {
         if (value == null)
             return null
-        val listType = object : TypeToken<PayloadExtra>() {}.type
-        return Gson().fromJson<PayloadExtra>(value, listType)
+        val listType = object : TypeToken<PushPayloadExtra>() {}.type
+        return Gson().fromJson<PushPayloadExtra>(value, listType)
     }
 
     @TypeConverter
-    fun toJson(list: PayloadExtra?): String? {
+    fun toJson(list: PushPayloadExtra?): String? {
         if (list == null)
             return null
         val gson = Gson()
@@ -25,6 +24,6 @@ class ReviewConverter {
     }
 
     companion object{
-        val instances =  ReviewConverter()
+        val instances =  PushPayloadExtraConverter()
     }
 }
