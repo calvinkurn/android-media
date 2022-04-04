@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.ResponseEtalase
@@ -37,7 +38,10 @@ import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductEmptyView
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductItemViewModel
 import com.tokopedia.topads.edit.view.model.ProductAdsListViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.topads_edit_fragment_product_list.*
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.UnifyImageButton
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 private const val CLICK_BELUM_DIIKLANKAN = "click - belum diiklankan"
@@ -45,7 +49,17 @@ private const val CLICK_SUDAH_DIIKLANKAN = "click - sudah diiklankan"
 private const val CLICK_SORT = "click - sort"
 private const val CLICK_FILTER = "click - filter"
 private const val PRODUCT_EDIT_NAME = "android.topads_edit"
+
 class ProductAdsListFragment : BaseDaggerFragment() {
+
+    private var searchInputView: SearchBarUnify? = null
+    private var btnSort: UnifyImageButton? = null
+    private var btnFilter: UnifyImageButton? = null
+    private var notPromoted: ChipsUnify? = null
+    private var promoted: ChipsUnify? = null
+    private var swipeRefreshLayout: SwipeToRefresh? = null
+    private var btnNext: UnifyButton? = null
+    private var selectProductInfo: Typography? = null
 
     private lateinit var sortProductList: ProductSortSheetList
     private lateinit var filterSheetProductList: ProductFilterSheetList
@@ -74,8 +88,10 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProductAdsListViewModel::class.java)
-        productListAdapter = ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
+        viewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ProductAdsListViewModel::class.java)
+        productListAdapter =
+            ProductListAdapter(ProductListAdapterTypeFactoryImpl(this::onProductListSelected))
     }
 
     private fun getSelectedProduct(): MutableList<String> {
@@ -91,7 +107,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productID)
         }
-        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productID)
             }
@@ -108,7 +124,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productPrice)
         }
-        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productPrice)
             }
@@ -126,7 +142,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productName)
         }
-        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productName)
             }
@@ -143,7 +159,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         productListAdapter.getSelectedItems().forEach {
             list.add(it.productImage)
         }
-        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevPro.forEach {
                 list.add(it.productImage)
             }
@@ -163,9 +179,19 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         getComponent(TopAdsEditComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         val view = inflater.inflate(R.layout.topads_edit_fragment_product_list, container, false)
         recyclerView = view.findViewById(R.id.product_list)
+        searchInputView = view.findViewById(R.id.searchInputView)
+        btnSort = view.findViewById(R.id.btn_sort)
+        btnFilter = view.findViewById(R.id.btn_filter)
+        notPromoted = view.findViewById(R.id.not_promoted)
+        promoted = view.findViewById(R.id.promoted)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
+        btnNext = view.findViewById(R.id.btn_next)
+        selectProductInfo = view.findViewById(R.id.select_product_info)
         setAdapter()
         return view
     }
@@ -192,12 +218,12 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun fetchList() {
         viewModel.productList(getKeyword(),
-                getSelectedEtalaseId(),
-                getSelectedSortId(),
-                getPromoted(),
-                ROW,
-                START,
-                PRODUCT_EDIT_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
+            getSelectedEtalaseId(),
+            getSelectedSortId(),
+            getPromoted(),
+            ROW,
+            START,
+            PRODUCT_EDIT_NAME, this::onSuccessGetProductList, this::onEmptyProduct, this::onError)
     }
 
 
@@ -207,16 +233,16 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             sortProductList = ProductSortSheetList.newInstance()
             filterSheetProductList = ProductFilterSheetList.newInstance()
         }
-        btn_next.setOnClickListener {
+        btnNext?.setOnClickListener {
             val returnIntent = getPassingIntent()
             activity?.setResult(Activity.RESULT_OK, returnIntent)
             activity?.finish()
         }
-        btn_sort.setOnClickListener {
+        btnSort?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_SORT, "")
             sortProductList.show(childFragmentManager, "")
         }
-        btn_filter.setOnClickListener {
+        btnFilter?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_FILTER, "")
             if (filterSheetProductList.getSelectedFilter().isBlank()) {
                 fetchEtalase()
@@ -227,20 +253,22 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         }
         filterSheetProductList.onItemClick = { refreshProduct() }
         sortProductList.onItemClick = { refreshProduct() }
-        not_promoted.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_BELUM_DIIKLANKAN, "")
-            not_promoted.chipType = ChipsUnify.TYPE_SELECTED
-            promoted.chipType = ChipsUnify.TYPE_NORMAL
+        notPromoted?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_BELUM_DIIKLANKAN,
+                "")
+            notPromoted?.chipType = ChipsUnify.TYPE_SELECTED
+            promoted?.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()
         }
-        promoted.setOnClickListener {
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_SUDAH_DIIKLANKAN, "")
-            promoted.chipType = ChipsUnify.TYPE_SELECTED
-            not_promoted.chipType = ChipsUnify.TYPE_NORMAL
+        promoted?.setOnClickListener {
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_SUDAH_DIIKLANKAN,
+                "")
+            promoted?.chipType = ChipsUnify.TYPE_SELECTED
+            notPromoted?.chipType = ChipsUnify.TYPE_NORMAL
             refreshProduct()
         }
-        Utils.setSearchListener(searchInputView, context, view, ::refreshProduct)
-        swipe_refresh_layout.setOnRefreshListener {
+        searchInputView?.let { Utils.setSearchListener(it, context, view, ::refreshProduct) }
+        swipeRefreshLayout?.setOnRefreshListener {
             refreshProduct()
         }
     }
@@ -256,7 +284,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun refreshProduct() {
         START = 0
-        swipe_refresh_layout.isRefreshing = true
+        swipeRefreshLayout?.isRefreshing = true
         productListAdapter.initLoading()
         clearRefreshLoading()
         fetchList()
@@ -273,7 +301,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        not_promoted.chipType = ChipsUnify.TYPE_SELECTED
+        notPromoted?.chipType = ChipsUnify.TYPE_SELECTED
         refreshProduct()
     }
 
@@ -281,46 +309,47 @@ class ProductAdsListFragment : BaseDaggerFragment() {
 
     private fun getSelectedSortId() = sortProductList.getSelectedSortId()
 
-    private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
+    private fun getKeyword() = searchInputView?.searchBarTextField?.text.toString()
 
     private fun getPromoted(): String {
         return ALL
     }
 
     private fun onProductListSelected() {
-        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             selectedPrevNonPro = productListAdapter.getSelectedItems()
         } else {
             selectedPrevPro = productListAdapter.getSelectedItems()
         }
-        val count: Int = if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        val count: Int = if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             getSelectedProduct().size + selectedPrevPro.size
         } else {
             getSelectedProduct().size + selectedPrevNonPro.size
         }
 
-        select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
-        btn_next.isEnabled = count > 0
+        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        btnNext?.isEnabled = count > 0
     }
 
     private fun onEmptyProduct() {
         clearShimmerList()
-        btn_next.isEnabled = false
+        btnNext?.isEnabled = false
         productListAdapter.items = mutableListOf(ProductEmptyViewModel())
         productListAdapter.notifyDataSetChanged()
     }
 
     private fun onError(t: Throwable) {
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) { refreshProduct() }
+        NetworkErrorHelper.createSnackbarRedWithAction(activity,
+            t.localizedMessage) { refreshProduct() }
     }
 
     private fun onSuccessGetProductList(data: List<TopAdsProductModel>, eof: Boolean) {
         if (START == 0)
             clearShimmerList()
         prepareForNextFetch(eof)
-        btn_next.isEnabled = false
+        btnNext?.isEnabled = false
         data.forEach { result ->
-            if (promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+            if (promoted?.chipType == ChipsUnify.TYPE_SELECTED) {
                 if (result.adID.toFloat() > 0 && !ifExists(result.productID)) {
                     productListAdapter.items.add(ProductItemViewModel(result))
                 }
@@ -335,15 +364,15 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             productListAdapter.items.addAll(mutableListOf(ProductEmptyViewModel()))
         }
         productListAdapter.notifyDataSetChanged()
-        if (not_promoted.chipType == ChipsUnify.TYPE_SELECTED) {
+        if (notPromoted?.chipType == ChipsUnify.TYPE_SELECTED) {
             productListAdapter.setSelectedList(selectedPrevNonPro)
         } else {
             productListAdapter.setSelectedList(selectedPrevPro)
         }
         val count = selectedPrevNonPro.size + selectedPrevPro.size
 
-        select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
-        btn_next.isEnabled = count > 0
+        selectProductInfo?.text = String.format(getString(R.string.format_selected_produk), count)
+        btnNext?.isEnabled = count > 0
     }
 
     private fun prepareForNextFetch(eof: Boolean) {
@@ -359,13 +388,16 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun clearRefreshLoading() {
-        swipe_refresh_layout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
         items.clear()
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
-        data.forEachIndexed { index, result -> items.add(index + 1, EtalaseItemViewModel(false, result)) }
+        data.forEachIndexed { index, result ->
+            items.add(index + 1,
+                EtalaseItemViewModel(false, result))
+        }
         filterSheetProductList.updateData(items)
     }
 
