@@ -142,7 +142,6 @@ class DigitalPDPDataPlanFragment :
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
-    private var productDescBottomSheet: ProductDescBottomSheet? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var productDescBottomSheet: ProductDescBottomSheet
@@ -418,7 +417,6 @@ class DigitalPDPDataPlanFragment :
                 is RechargeNetworkResult.Success -> {
                     if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     hideLoadingDialog()
-                    onLoadingBuyWidget(false)
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -657,7 +655,7 @@ class DigitalPDPDataPlanFragment :
                             val filterPDPBottomsheet = FilterPDPBottomsheet.getInstance()
                             filterPDPBottomsheet.setTitleAndAction(getString(R.string.bottom_sheet_filter_title),
                                 getString(R.string.bottom_sheet_filter_reset))
-                            filterPDPBottomsheet.setFilterTagData(filterData)
+                            filterPDPBottomsheet.setFilterTagDataComponent(filterData)
                             filterPDPBottomsheet.setListener(this@DigitalPDPDataPlanFragment)
                             filterPDPBottomsheet.show(it, "")
                         }

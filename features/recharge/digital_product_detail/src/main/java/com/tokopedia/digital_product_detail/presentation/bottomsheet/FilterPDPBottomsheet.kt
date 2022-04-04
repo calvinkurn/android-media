@@ -31,17 +31,18 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
     private lateinit var initialFilterTagComponents: List<TelcoFilterTagComponent>
     private lateinit var listener: FilterBottomSheetListener
 
-    fun setTitleAndAction(titleBottomSheet: String, action: String){
+    fun setTitleAndAction(titleBottomSheet: String, action: String) {
         this.titleBottomSheet = titleBottomSheet
         this.action = action
     }
 
-    fun setFilterTagData(filterTagComponents: List<TelcoFilterTagComponent>) {
-        this.initialFilterTagComponents = filterTagComponents
+    fun setFilterTagDataComponent(initialFilterTagComponents: List<TelcoFilterTagComponent>) {
+        this.initialFilterTagComponents = initialFilterTagComponents
     }
 
     fun setListener(listener: FilterBottomSheetListener) {
         this.listener = listener
+    }
 
     var filterTagComponents = mutableListOf<TelcoFilterTagComponent>()
 
@@ -61,7 +62,8 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
                 action = manager.getString(SAVED_FILTER_ACTION) ?: ""
 
                 val type: Type = object : TypeToken<List<TelcoFilterTagComponent>>() {}.type
-                filterTagComponents = manager.get(SAVED_FILTER_TAG_COMPONENT, type) ?: emptyList<TelcoFilterTagComponent>()
+                filterTagComponents = manager.get(SAVED_FILTER_TAG_COMPONENT, type)
+                    ?: emptyList<TelcoFilterTagComponent>().toMutableList()
             }
         }
     }
@@ -71,7 +73,7 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setFilterTagData(initialFilterTagComponents)
+        setFilterTagData()
         initView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -108,18 +110,16 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
 
         binding = BottomSheetFilterBinding.inflate(LayoutInflater.from(context))
         binding?.run {
-            if (::filterTagComponents.isInitialized) {
-                adapterFilter.setChipList(filterTagComponents)
-                rvPdpFilter.adapter = adapterFilter
-                rvPdpFilter.layoutManager =
-                    LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                btnPdpFilter.setOnClickListener {
-                    dismiss()
-                }
+            adapterFilter.setChipList(filterTagComponents)
+            rvPdpFilter.adapter = adapterFilter
+            rvPdpFilter.layoutManager =
+                LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            btnPdpFilter.setOnClickListener {
+                dismiss()
             }
         }
         if (::titleBottomSheet.isInitialized) setTitle(titleBottomSheet)
-        if (::action.isInitialized){
+        if (::action.isInitialized) {
             setAction(action, {
                 resetFilter()
             })
@@ -133,7 +133,7 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
     }
 
     private fun onSaveFilter() {
-        if (::listener.isInitialized && ::filterTagComponents.isInitialized) {
+        if (::listener.isInitialized) {
             listener.onClickSaveFilter(
                 filterTagComponents,
                 initialSelectedCounter(filterTagComponents)
@@ -146,30 +146,30 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
         element: FilterTagDataCollection,
         position: Int
     ) {
-        if (::filterTagComponents.isInitialized) {
-            filterTagComponents.filter {
-                it.paramName.equals(tagComponent.paramName)
-            }.first().filterTagDataCollections.get(position).run {
-                isSelected = !isSelected
-            }
+        filterTagComponents.filter {
+            it.paramName.equals(tagComponent.paramName)
+        }.first().filterTagDataCollections.get(position).run {
+            isSelected = !isSelected
         }
     }
 
     override fun onChipActiveTracked(element: FilterTagDataCollection) {
-        if (::listener.isInitialized) { listener.onChipClicked(element.value) }
-    }
-
-    override fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent, position: Int) {
-        if (::filterTagComponents.isInitialized) {
-            val filterComponentChanged = filterTagComponents.toMutableList()
-            filterComponentChanged[position] = tagComponent
-            filterTagComponents = filterComponentChanged
-            adapterFilter.setChipList(filterTagComponents)
+        if (::listener.isInitialized) {
+            listener.onChipClicked(element.value)
         }
     }
 
+    override fun onCheckBoxAllFilterClicked(tagComponent: TelcoFilterTagComponent, position: Int) {
+        val filterComponentChanged = filterTagComponents.toMutableList()
+        filterComponentChanged[position] = tagComponent
+        filterTagComponents = filterComponentChanged
+        adapterFilter.setChipList(filterTagComponents)
+    }
+
     override fun onCheckBoxAllFilterActiveClicked(element: FilterTagDataCollection) {
-        if (::listener.isInitialized) { listener.onChipClicked(element.value) }
+        if (::listener.isInitialized) {
+            listener.onChipClicked(element.value)
+        }
     }
 
     override fun onSeeAllClicked(element: TelcoFilterTagComponent, position: Int) {
@@ -183,14 +183,12 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
     }
 
     private fun resetFilter() {
-        if (::filterTagComponents.isInitialized) {
-            filterTagComponents.forEach {
-                it.filterTagDataCollections.forEach {
-                    it.isSelected = false
-                }
+        filterTagComponents.forEach {
+            it.filterTagDataCollections.forEach {
+                it.isSelected = false
             }
-            adapterFilter.notifyDataSetChanged()
         }
+        adapterFilter.notifyDataSetChanged()
     }
 
     private fun initialSelectedCounter(filterTagComponents: List<TelcoFilterTagComponent>): Int {
@@ -210,15 +208,18 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
         return initialSelectedCounter
     }
 
-    private fun setFilterTagData(initialFilterTagComponents: List<TelcoFilterTagComponent>) {
+    private fun setFilterTagData() {
+        if (::initialFilterTagComponents.isInitialized) {
             initialFilterTagComponents.forEach {
                 val dataCollections = mutableListOf<FilterTagDataCollection>()
                 it.filterTagDataCollections.forEach {
                     dataCollections.add(FilterTagDataCollection(it.key, it.value, it.isSelected))
                 }
-                val filterTagComponent = TelcoFilterTagComponent(it.name, it.text, it.paramName, dataCollections)
+                val filterTagComponent =
+                    TelcoFilterTagComponent(it.name, it.text, it.paramName, dataCollections)
                 filterTagComponents.add(filterTagComponent)
             }
+        }
     }
 
     companion object {
