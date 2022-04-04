@@ -12,8 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
-import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
@@ -95,10 +94,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     lateinit var param: ParamCacheManager
 
     @Inject
-    lateinit var galleryAnalytics: GalleryAnalytics
-
-    @Inject
-    lateinit var cameraAnalytics: CameraAnalytics
+    lateinit var pickerAnalytics: PickerAnalytics
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -312,14 +308,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
     override fun onCloseClicked() {
         if (container.isFragmentActive(FragmentType.GALLERY)) {
-            galleryAnalytics.clickCloseButton()
+            pickerAnalytics.clickCloseButton()
         }
         finish()
     }
 
     override fun onContinueClicked() {
         if (container.isFragmentActive(FragmentType.GALLERY)) {
-            galleryAnalytics.clickNextButton()
+            pickerAnalytics.clickNextButton()
         }
 
         val intent = Intent(this, PickerPreviewActivity::class.java).apply {
@@ -337,14 +333,14 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         container.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         container.resetBottomNavMargin()
-        if (isDirectClick) galleryAnalytics.clickCameraTab()
+        if (isDirectClick) pickerAnalytics.clickCameraTab()
     }
 
     override fun onGalleryTabSelected(isDirectClick: Boolean) {
         container.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
         container.addBottomNavMargin()
-        if (isDirectClick) cameraAnalytics.clickGalleryTab()
+        if (isDirectClick) pickerAnalytics.clickGalleryTab()
     }
 
     override fun tabVisibility(isShown: Boolean) {
@@ -403,7 +399,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxMediaTotal()
         )
 
-        galleryAnalytics.galleryMaxPhotoLimit()
+        pickerAnalytics.galleryMaxPhotoLimit()
     }
 
     override fun onShowVideoLimitReachedGalleryToast() {
@@ -412,7 +408,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxVideoCount()
         )
 
-        galleryAnalytics.galleryMaxVideoLimit()
+        pickerAnalytics.galleryMaxVideoLimit()
     }
 
     override fun onShowMediaLimitReachedCameraToast() {
@@ -420,7 +416,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             R.string.picker_capture_limit_photo,
             param.get().maxMediaTotal()
         )
-        cameraAnalytics.maxPhotoLimit()
+        pickerAnalytics.maxPhotoLimit()
     }
 
     override fun onShowVideoLimitReachedCameraToast() {
@@ -428,7 +424,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
-        cameraAnalytics.maxVideoLimit()
+        pickerAnalytics.maxVideoLimit()
     }
 
     override fun onShowVideoMinDurationToast() {
@@ -437,7 +433,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().minVideoDuration().toSec()
         )
 
-        galleryAnalytics.minVideoDuration()
+        pickerAnalytics.minVideoDuration()
     }
 
     override fun onShowVideoMaxDurationToast() {
@@ -446,7 +442,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
         )
 
-        galleryAnalytics.maxVideoDuration()
+        pickerAnalytics.maxVideoDuration()
     }
 
     override fun onShowVideoMaxFileSizeToast() {
@@ -455,7 +451,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxVideoFileSize().toMb()
         )
 
-        galleryAnalytics.maxVideoSize()
+        pickerAnalytics.maxVideoSize()
     }
 
     override fun onShowImageMaxFileSizeToast() {
@@ -464,7 +460,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().maxImageFileSize().toMb()
         )
 
-        galleryAnalytics.maxImageSize()
+        pickerAnalytics.maxImageSize()
     }
 
     override fun onShowImageMinResToast() {
@@ -473,7 +469,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             param.get().minImageResolution()
         )
 
-        galleryAnalytics.minImageResolution()
+        pickerAnalytics.minImageResolution()
     }
 
     override fun onShowImageMaxResToast() {
@@ -495,7 +491,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             getString(R.string.picker_storage_fail_video_record),
             Toaster.TYPE_ERROR
         )
-        cameraAnalytics.recordLowStorage()
+        pickerAnalytics.recordLowStorage()
     }
 
     private fun onShowValidationToaster(messageId: Int, param: Any) {
