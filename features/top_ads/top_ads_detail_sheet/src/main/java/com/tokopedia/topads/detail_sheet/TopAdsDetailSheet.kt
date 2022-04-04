@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Switch
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +25,13 @@ import com.tokopedia.topads.detail_sheet.di.DaggerTopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.di.TopAdsSheetComponent
 import com.tokopedia.topads.detail_sheet.viewmodel.TopAdsSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_pdp_bottom_sheet_single_ad.*
 import javax.inject.Inject
 
 /**
@@ -34,7 +41,27 @@ import javax.inject.Inject
 const val CLICK_TOGGLE_ADS = "click-toggle ads"
 const val CLICK_ATUR_IKLAN = "click - Atur Iklan"
 const val CLICK_LIHAT_DASHBOARD_TOPADS = "click - Lihat Dashboard TopAds"
+
 class TopAdsDetailSheet : BottomSheetUnify() {
+
+    private var imgProduct: ImageUnify? = null
+    private var txtTitleProduct: Typography? = null
+    private var txtBudget: Typography? = null
+    private var btn_switch: SwitchUnify? = null
+    private var tickerInfo: Ticker? = null
+    private var autoads_widget: AutoAdsWidgetCommon? = null
+    private var adInfo: CardView? = null
+    private var tampil_count: Typography? = null
+    private var pengeluaran_count: Typography? = null
+    private var klik_count: Typography? = null
+    private var pendapatan_count: Typography? = null
+    private var persentase_klik_count: Typography? = null
+    private var produk_terjual_count: Typography? = null
+    private var createAd: Typography? = null
+    private var singleAd: CardUnify? = null
+    private var createGroupLayout: ConstraintLayout? = null
+    private var desc: Typography? = null
+    private var editAd: UnifyButton? = null
 
     private var groupId: String = "0"
     private val autoAdsWidget: AutoAdsWidgetCommon?
@@ -61,7 +88,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         context?.let {
             getComponent(it).inject(this)
         }
-        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory).get(TopAdsSheetViewModel::class.java)
+        viewModel = ViewModelProviders.of(context as BaseSimpleActivity, viewModelFactory)
+            .get(TopAdsSheetViewModel::class.java)
         setFragment()
         viewModel.autoAdsData.observe(viewLifecycleOwner, Observer {
             currentAutoAdsStatus = it.status
@@ -90,15 +118,9 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         btn_switch?.isChecked = action == ACTION_ACTIVATE
     }
 
-    fun show(
-            fragmentManager: FragmentManager,
-            adTye: String,
-            adId: String,
-            categoryType: Int
-    ) {
-
-        if(adId.isNotEmpty())
-        this.adId = adId
+    fun show(fragmentManager: FragmentManager, adTye: String, adId: String, categoryType: Int, ) {
+        if (adId.isNotEmpty())
+            this.adId = adId
         this.adType = adTye
         this.category = categoryType
 
@@ -124,29 +146,41 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             }
         }
 
-        editAd.setOnClickListener {
+        editAd?.setOnClickListener {
             if (category == TYPE_MANUAL) {
                 if (groupId == SINGLE_AD) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, SINGLE_USER_ADS)
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_ATUR_IKLAN,
+                        SINGLE_USER_ADS)
+                    val intent = RouteManager.getIntent(context,
+                        ApplinkConstInternalTopAds.TOPADS_EDIT_WITHOUT_GROUP).apply {
                         putExtra(GROUPID, adId)
                     }
                     startActivityForResult(intent, EDIT_WITHOUT_GROUP_REQUEST_CODE)
                 } else {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, GROUP_USER_ADS)
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
-                        putExtra(GROUPID, groupId)
-                    }
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_ATUR_IKLAN,
+                        GROUP_USER_ADS)
+                    val intent =
+                        RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)
+                            ?.apply {
+                                putExtra(GROUPID, groupId)
+                            }
                     startActivity(intent)
                 }
 
             } else if (category == TYPE_AUTO) {
                 if (adId.toInt() > 0 && adType == AD_TYPE_PRODUCT) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_ATUR_IKLAN, PRODUCT_ADVERTISED)
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_ATUR_IKLAN,
+                        PRODUCT_ADVERTISED)
+                    val intent = RouteManager.getIntent(context,
+                        ApplinkConstInternalTopAds.TOPADS_EDIT_AUTOADS)
                     startActivity(intent)
                 } else {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, PRODUCT_NOT_ADVERTISED)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_LIHAT_DASHBOARD_TOPADS,
+                        PRODUCT_NOT_ADVERTISED)
                     RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
                 }
             }
@@ -156,34 +190,42 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             if ((it as Switch).isChecked) {
                 sendToggleEvent(TOGGLE_BUTTON_ON)
                 viewModel.setProductAction(::onSuccessPost, ACTION_ACTIVATE,
-                        listOf(adId), resources, null)
+                    listOf(adId), resources, null)
             } else {
                 sendToggleEvent(TOGGLE_BUTTON_OFF)
                 viewModel.setProductAction(::onSuccessPost, ACTION_DEACTIVATE,
-                        listOf(adId), resources, null)
+                    listOf(adId), resources, null)
             }
 
         }
 
         createAd?.setOnClickListener {
-            if(category == TYPE_MANUAL) {
+            if (category == TYPE_MANUAL) {
                 if (groupId == SINGLE_AD) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, SINGLE_USER_ADS)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_LIHAT_DASHBOARD_TOPADS,
+                        SINGLE_USER_ADS)
                 } else {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, GROUP_USER_ADS)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                        CLICK_LIHAT_DASHBOARD_TOPADS,
+                        GROUP_USER_ADS)
                 }
-            } else if(category == TYPE_AUTO && adId.toInt() > 0){
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_LIHAT_DASHBOARD_TOPADS, PRODUCT_ADVERTISED)
+            } else if (category == TYPE_AUTO && adId.toInt() > 0) {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(
+                    CLICK_LIHAT_DASHBOARD_TOPADS,
+                    PRODUCT_ADVERTISED)
             }
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
         }
     }
 
     private fun sendToggleEvent(state: String) {
-        if(groupId == SINGLE_AD)
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS, "$state-$SINGLE_USER_ADS")
+        if (groupId == SINGLE_AD)
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS,
+                "$state-$SINGLE_USER_ADS")
         else
-            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS, "$state-$GROUP_USER_ADS")
+            TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent(CLICK_TOGGLE_ADS,
+                "$state-$GROUP_USER_ADS")
     }
 
     private fun isInProgress(): Boolean {
@@ -199,12 +241,14 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         }
         viewModel.getGroupProductData(groupId.toInt(), ::onSuccessProductInfo)
         if (groupId == SINGLE_AD && category != TYPE_AUTO) {
-            singleAd.visibility = View.VISIBLE
-            txtBudget.visibility = View.GONE
-            createGroupLayout.setOnClickListener {
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent("click-${desc.text}", "")
-                val intent =  RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
-                intent.putExtra(DIRECTED_FROM_MANAGE_OR_PDP,true)
+            singleAd?.visibility = View.VISIBLE
+            txtBudget?.visibility = View.GONE
+            createGroupLayout?.setOnClickListener {
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent("click-${desc?.text}",
+                    "")
+                val intent =
+                    RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                intent.putExtra(DIRECTED_FROM_MANAGE_OR_PDP, true)
                 startActivity(intent)
             }
         }
@@ -214,8 +258,8 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         data.forEachIndexed { index, it ->
             if (it.adId.toString() == adId) {
                 ImageHandler.LoadImage(imgProduct, data[index].productImageUri)
-                txtTitleProduct.text = data[index].productName
-                pendapatan_count.text = data[index].statTotalGrossProfit
+                txtTitleProduct?.text = data[index].productName
+                pendapatan_count?.text = data[index].statTotalGrossProfit
                 return@forEachIndexed
             }
         }
@@ -223,11 +267,11 @@ class TopAdsDetailSheet : BottomSheetUnify() {
 
     private fun onsuccessProductStats(data: List<WithoutGroupDataItem>) {
         data.firstOrNull().let {
-            tampil_count.text = it?.statTotalImpression
-            klik_count.text = it?.statTotalClick
-            persentase_klik_count.text = it?.statTotalCtr
-            pengeluaran_count.text = it?.statTotalSpent
-            produk_terjual_count.text = it?.statTotalConversion
+            tampil_count?.text = it?.statTotalImpression
+            klik_count?.text = it?.statTotalClick
+            persentase_klik_count?.text = it?.statTotalCtr
+            pengeluaran_count?.text = it?.statTotalSpent
+            produk_terjual_count?.text = it?.statTotalConversion
         }
     }
 
@@ -235,7 +279,7 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         private const val ACTION_ACTIVATE = "toggle_on"
         private const val ACTION_DEACTIVATE = "toggle_off"
         private const val TOGGLE_BUTTON_ON = "ON"
-        private const val TOGGLE_BUTTON_OFF= "OFF"
+        private const val TOGGLE_BUTTON_OFF = "OFF"
         private const val GROUPID = "groupId"
         private const val STATUS_ACTIVE = "1"
         private const val STATUS_TIDAK_TAMPIL = "2"
