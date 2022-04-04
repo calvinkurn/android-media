@@ -32,6 +32,7 @@ object ApplinkConstInternalMechant {
 
     // Product Service Widget
     const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle/{product_id}/"
+    const val MERCHANT_PRODUCT_BUNDLE_BOTTOMSHEET = "${INTERNAL_MERCHANT}/product-bundle-bottomsheet/{product_id}/"
     const val MERCHANT_GIFTING = "${INTERNAL_MERCHANT}/gifting/{addon_id}/"
 
     // Official Store Brandlist
