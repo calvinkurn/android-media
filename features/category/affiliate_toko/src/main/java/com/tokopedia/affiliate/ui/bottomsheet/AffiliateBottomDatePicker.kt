@@ -24,10 +24,10 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerM
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
 import java.util.*
 import javax.inject.Inject
 
@@ -94,7 +94,6 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         setTitle(getString(R.string.affiliate_date_picker_header))
         dateRV = contentView?.findViewById(R.id.date_picker_rv)
         tickerCv = contentView?.findViewById(R.id.affiliate_filter_announcement_ticker_cv)
-        setTicker()
         setData()
         initClickListener(contentView)
         setChild(contentView)
@@ -102,13 +101,26 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
 
     private fun initObserver() {
         affiliateDatePickerBottomSheetViewModel.getAffiliateFilterItems().observe(this,{list ->
-            adapter.submitList(list as List<Visitable<*>>?)
+            list?.let {
+                adapter.submitList(list as List<Visitable<*>>?)
+            }
         })
         affiliateDatePickerBottomSheetViewModel.getShimmerVisibility().observe(this,{shimmer ->
-            if(shimmer){
+            if(shimmer!=null && shimmer){
                 val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
                 repeat(4){ itemList.add(AffiliateShimmerViewModel()) }
                 adapter.submitList(itemList as List<Visitable<*>>?)
+            }
+        })
+        affiliateDatePickerBottomSheetViewModel.getTickerInfo().observe(this,{info ->
+            if(info?.isNotEmpty() == true && identifier == IDENTIFIER_HOME){
+                tickerCv?.show()
+                contentView?.findViewById<Ticker>(R.id.affiliate_filter_announcement_ticker)?.setTextDescription(info)
+            }
+        })
+        affiliateDatePickerBottomSheetViewModel.getError().observe(this,{isError ->
+            isError?.let { error ->
+                if(error)dismiss()
             }
         })
     }
@@ -119,16 +131,6 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         }
         affiliateDatePickerBottomSheetViewModel.identifier = identifier
         affiliateDatePickerBottomSheetViewModel.rangeSelected = rangeSelected
-    }
-
-    private fun setTicker() {
-        if(identifier == IDENTIFIER_HOME){
-            when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-                in 0..9 -> tickerCv?.show()
-                else -> tickerCv?.hide()
-            }
-        }
-
     }
 
     private fun initClickListener(contentView: View?) {

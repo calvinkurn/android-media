@@ -23,10 +23,11 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var tickerInformation = MutableLiveData<String>()
     private var affiliateFilterList = MutableLiveData<ArrayList<Visitable<AffiliateDateRangeTypeFactory>>>()
+    private var error = MutableLiveData<Boolean>()
+
     fun getAffiliateFilterData() {
         launchCatchError(block = {
             shimmerVisibility.value = true
-            delay(2000)
             affiliateUserPerformanceUseCase.getAffiliateFilter()?.let { response ->
                 response.data?.ticker?.let { ticker->
                     if(ticker.isNotEmpty()) tickerInformation.value = ticker.first()?.tickerDescription
@@ -35,6 +36,7 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
             }
             shimmerVisibility.value = false
         }, onError = {
+            error.value = true
             shimmerVisibility.value = false
             it.printStackTrace()
         })
@@ -65,5 +67,7 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
 
     fun getAffiliateFilterItems(): LiveData<ArrayList<Visitable<AffiliateDateRangeTypeFactory>>> = affiliateFilterList
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
+    fun getTickerInfo(): LiveData<String> = tickerInformation
+    fun getError(): LiveData<Boolean> = error
 
 }
