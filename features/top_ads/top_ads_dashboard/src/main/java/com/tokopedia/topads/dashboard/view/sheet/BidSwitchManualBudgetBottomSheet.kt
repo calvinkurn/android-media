@@ -29,8 +29,12 @@ class BidSwitchManualBudgetBottomSheet(
     private var tfRecommendasi: TextFieldUnify? = null
     private var btnSave: UnifyButton? = null
 
+    private var isDismissedAfterSave = false
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        isDismissedAfterSave = false
 
         if (!isWhiteListUser) {
             tfRecommendasi?.invisible()
@@ -48,11 +52,16 @@ class BidSwitchManualBudgetBottomSheet(
                 tfPencarian?.textFieldInput?.text.toString().removeCommaRawString(),
                 tfRecommendasi?.textFieldInput?.text.toString().removeCommaRawString()
             )
-            trackerListener?.manualBidBottomSheetLanjuktanClicked()
+            trackerListener?.bidChangeToManualLanjuktanClicked()
+
+            isDismissedAfterSave = true
             dismiss()
         }
 
-        setOnDismissListener { trackerListener?.manualBidBottomSheetDismissed() }
+        setOnDismissListener {
+            if(!isDismissedAfterSave)
+                trackerListener?.bidChangeToManualDismissed()
+        }
 
         tfPencarian?.addBidValidationListener(minBid, maxBid, suggestedBid) { isError ->
             btnSave?.isEnabled = !isError
@@ -94,8 +103,8 @@ class BidSwitchManualBudgetBottomSheet(
     }
 
     interface TrackerListener {
-        fun manualBidBottomSheetLanjuktanClicked()
-        fun manualBidBottomSheetDismissed()
+        fun bidChangeToManualLanjuktanClicked()
+        fun bidChangeToManualDismissed()
     }
 
 }

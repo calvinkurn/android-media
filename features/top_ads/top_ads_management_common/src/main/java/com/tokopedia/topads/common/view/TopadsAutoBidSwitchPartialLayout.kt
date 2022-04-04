@@ -53,9 +53,9 @@ class TopadsAutoBidSwitchPartialLayout(
                 tracker?.autoBidSwitchClicked(it.isChecked)
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                     context.showBidStateChangeConfirmationDialog(isBidAutomatic, {
+                        tracker?.bidChangeConfirmationDialogPositiveClick(it.isChecked)
                         it.isChecked = !it.isChecked
                         onCheckBoxStateChanged?.invoke(it.isChecked)
-                        tracker?.bidChangeConfirmationDialogPositiveClick(it.isChecked)
                     }, {
                         tracker?.bidChangeConfirmationDialogNegativeClick(it.isChecked)
                     })
