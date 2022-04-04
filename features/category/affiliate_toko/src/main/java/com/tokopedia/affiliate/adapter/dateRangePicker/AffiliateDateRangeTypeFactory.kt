@@ -4,4 +4,5 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 
 interface AffiliateDateRangeTypeFactory {
     fun type(viewModelShared: AffiliateDateRangePickerModel): Int
+    fun type(viewModelShared: AffiliateShimmerViewModel): Int
 }

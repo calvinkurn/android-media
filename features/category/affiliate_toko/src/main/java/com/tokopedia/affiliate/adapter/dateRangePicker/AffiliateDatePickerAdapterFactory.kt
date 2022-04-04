@@ -15,11 +15,16 @@ class AffiliateDatePickerAdapterFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             AffiliateDatePickerItemVH.LAYOUT -> AffiliateDatePickerItemVH(parent,dateClickedInterface)
+            AffiliateDatePickerShimmerItemVH.LAYOUT -> AffiliateDatePickerShimmerItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
 
     override fun type(viewModelShared: AffiliateDateRangePickerModel): Int {
         return  AffiliateDatePickerItemVH.LAYOUT
+    }
+
+    override fun type(viewModelShared: AffiliateShimmerViewModel): Int {
+        return AffiliateDatePickerShimmerItemVH.LAYOUT
     }
 }

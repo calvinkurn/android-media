@@ -83,6 +83,7 @@ class AffiliateHomeViewModel @Inject constructor(
                         filter.filterTitle?.let { selectedDateRange = it }
                     }
                 }
+                firstTime = false
             }
             var performanceList: AffiliateUserPerformaListItemData? = null
             if (page == PAGE_ZERO) {

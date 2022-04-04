@@ -87,4 +87,10 @@ abstract class AffiliateVMModule {
     @ViewModelKey(WithdrawalDetailViewModel::class)
     internal abstract fun affiliateWithdrawalDetailViewModel(viewModel: WithdrawalDetailViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliateDatePickerBottomSheetViewModel::class)
+    internal abstract fun affiliateDatePickerViewModel(viewModel: AffiliateDatePickerBottomSheetViewModel): ViewModel
+
 }

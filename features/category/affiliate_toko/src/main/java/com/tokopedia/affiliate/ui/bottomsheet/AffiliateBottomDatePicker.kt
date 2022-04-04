@@ -1,30 +1,35 @@
 package com.tokopedia.affiliate.ui.bottomsheet
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDatePickerAdapterFactory
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeAdapter
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeDiffcallback
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeTypeFactory
+import com.tokopedia.affiliate.di.AffiliateComponent
+import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
-import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
-import com.tokopedia.affiliate.utils.DateUtils
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerViewModel
+import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
 class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterface {
     private var contentView: View? = null
@@ -33,11 +38,30 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     private var rangeChangeInterface: AffiliateDatePickerRangeChangeInterface? = null
     private var identifier = IDENTIFIER_HOME
 
+    @Inject
+    lateinit var viewModelProvider: ViewModelProvider.Factory
+    private lateinit var affiliateDatePickerBottomSheetViewModel: AffiliateDatePickerBottomSheetViewModel
+
+    private fun initInject() {
+        getComponent().injectDateFilterBottomSheet(this)
+    }
+
+    private fun getComponent(): AffiliateComponent =
+        DaggerAffiliateComponent
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         init()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        initInject()
+        return super.onCreateDialog(savedInstanceState)
+    }
+
     companion object {
         const val TODAY = "Hari ini"
         const val YESTERDAY = "Kemarin"
@@ -46,10 +70,6 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         const val IDENTIFIER_HOME = "home_fragment"
         const val IDENTIFIER_WITHDRAWAL = "income_fragment"
         const val IDENTIFIER = "indentifier"
-        const val ZERO = "0"
-        const val ONE = "1"
-        const val SEVEN = "7"
-        const val THIRTY = "30"
         fun newInstance(selected: String,onRangeChangeInterface: AffiliateDatePickerRangeChangeInterface,identify: String = IDENTIFIER_WITHDRAWAL): AffiliateBottomDatePicker {
             return AffiliateBottomDatePicker().apply {
                 arguments = Bundle().apply {
@@ -63,7 +83,9 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     private var dateRV: RecyclerView? = null
     private var tickerCv: CardView? = null
     private fun init() {
+        affiliateDatePickerBottomSheetViewModel = ViewModelProvider(this, viewModelProvider).get(AffiliateDatePickerBottomSheetViewModel::class.java)
         setBundleData()
+        initObserver()
         rangeChangeInterface = (parentFragment as? AffiliateDatePickerRangeChangeInterface)
         showCloseIcon = true
         showKnob = false
@@ -78,10 +100,25 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         setChild(contentView)
     }
 
+    private fun initObserver() {
+        affiliateDatePickerBottomSheetViewModel.getAffiliateFilterItems().observe(this,{list ->
+            adapter.submitList(list as List<Visitable<*>>?)
+        })
+        affiliateDatePickerBottomSheetViewModel.getShimmerVisibility().observe(this,{shimmer ->
+            if(shimmer){
+                val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
+                repeat(4){ itemList.add(AffiliateShimmerViewModel()) }
+                adapter.submitList(itemList as List<Visitable<*>>?)
+            }
+        })
+    }
+
     private fun setBundleData() {
         arguments?.let {
             identifier = it.getString(IDENTIFIER, IDENTIFIER_WITHDRAWAL)
         }
+        affiliateDatePickerBottomSheetViewModel.identifier = identifier
+        affiliateDatePickerBottomSheetViewModel.rangeSelected = rangeSelected
     }
 
     private fun setTicker() {
@@ -96,9 +133,9 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
 
     private fun initClickListener(contentView: View?) {
         contentView?.findViewById<UnifyButton>(R.id.cnf_btn)?.setOnClickListener {
-            itemList.forEach { visitable ->
+            affiliateDatePickerBottomSheetViewModel.getItemList()?.forEach { visitable ->
                 if((visitable as AffiliateDateRangePickerModel).dateRange.isSelected){
-                    rangeChangeInterface?.rangeChanged((visitable as AffiliateDateRangePickerModel).dateRange)
+                    rangeChangeInterface?.rangeChanged(visitable.dateRange)
                     dismiss()
                 }
             }
@@ -114,15 +151,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     private fun setData() {
        dateRV?.layoutManager = LinearLayoutManager(context)
        dateRV?.adapter = adapter
-       getData()
-       adapter.submitList(itemList as List<Visitable<*>>?)
-    }
-    private val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
-    private fun getData() {
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(TODAY,rangeSelected == TODAY,ZERO,DateUtils().getMessage(TODAY,context),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(YESTERDAY, rangeSelected == YESTERDAY,ONE,DateUtils().getMessage(YESTERDAY,context),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(SEVEN_DAYS,rangeSelected == SEVEN_DAYS,SEVEN,DateUtils().getMessage(SEVEN_DAYS,context),identifier == IDENTIFIER_HOME)))
-        itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(THIRTY_DAYS,rangeSelected == THIRTY_DAYS,THIRTY,DateUtils().getMessage(THIRTY_DAYS,context),identifier == IDENTIFIER_HOME)))
+       affiliateDatePickerBottomSheetViewModel.getAffiliateFilterData()
     }
 
     override fun onDateRangeClicked(position: Int) {
@@ -131,8 +160,6 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
 
     private fun updateItem(position: Int) {
-        itemList.forEachIndexed { index, visitable ->
-            (visitable as AffiliateDateRangePickerModel).dateRange.isSelected = index == position
-        }
+        affiliateDatePickerBottomSheetViewModel.updateItem(position)
     }
 }
