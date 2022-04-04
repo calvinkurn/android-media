@@ -80,17 +80,17 @@ class QuizOptionView : ConstraintLayout {
 
                     root.background = ContextCompat.getDrawable(
                         context,
-                        if(value) R.drawable.bg_quiz_option
-                        else R.drawable.bg_quiz_option_selected
+                        if(value) R.drawable.bg_quiz_option_selected
+                        else R.drawable.bg_quiz_option
                     )
 
-                    etQuizOption.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            if(value) R.color.Unify_Static_White
-                            else R.color.Unify_NN950
-                        )
+                    val textColor = ContextCompat.getColor(
+                        context,
+                        if(value) R.color.Unify_Static_White
+                        else R.color.Unify_NN950
                     )
+
+                    etQuizOption.setTextColor(textColor)
                 }
 
             }

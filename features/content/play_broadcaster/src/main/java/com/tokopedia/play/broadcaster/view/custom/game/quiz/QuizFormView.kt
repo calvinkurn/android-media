@@ -26,6 +26,7 @@ import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.updatePadding
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Created By : Jonathan Darwin on March 30, 2022
@@ -66,7 +67,7 @@ class QuizFormView : ConstraintLayout {
 
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
         override fun onOptionChecked(order: Int) {
-            /** TODO: handle when user click */
+            eventBus.emit(Event.SelectQuizOption(order))
         }
     })
 
@@ -187,8 +188,8 @@ class QuizFormView : ConstraintLayout {
         }
     }
 
-    fun listen(): EventBus<Event> {
-        return eventBus
+    fun listen(): Flow<Event> {
+        return eventBus.subscribe()
     }
 
     fun applyQuizConfig(quizConfig: QuizConfigUiModel) {
@@ -231,6 +232,7 @@ class QuizFormView : ConstraintLayout {
         object Back: Event()
         object Next: Event()
         data class TitleChanged(val title: String): Event()
+        data class SelectQuizOption(val order: Int): Event()
         data class GiftChanged(val gift: String): Event()
         data class SelectDuration(val duration: Long): Event()
         object Submit: Event()

@@ -353,6 +353,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickBackOnQuiz -> handleClickBackOnQuiz()
             PlayBroadcastAction.ClickNextOnQuiz -> handleClickNextOnQuiz()
             is PlayBroadcastAction.InputQuizTitle -> handleInputQuizTitle(event.title)
+            is PlayBroadcastAction.SelectQuizOption -> handleSelectQuizOption(event.order)
             is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
@@ -957,6 +958,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleInputQuizTitle(title: String) {
         _quizFormData.setValue {
             copy(title = title)
+        }
+    }
+
+    private fun handleSelectQuizOption(order: Int) {
+        val options = _quizFormData.value.options
+
+        val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
+
+        if(currSelectedOrder == order) return
+
+        _quizFormData.setValue {
+            copy(options = options.map { it.copy(isSelected = it.order == order) })
         }
     }
 
