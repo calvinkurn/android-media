@@ -11,10 +11,10 @@ import com.tokopedia.unifyprinciples.Typography
 class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) :
     ProductViewHolder<ProductItemViewModel>(view) {
 
-    private var productImage: ImageUnify? = null
-    private var productName: Typography? = null
-    private var productPrice: Typography? = null
-    private var checkBox: CheckboxUnify? = null
+    private var productImage: ImageUnify = view.findViewById(R.id.product_image)
+    private var productName: Typography = view.findViewById(R.id.product_name)
+    private var productPrice: Typography = view.findViewById(R.id.product_price)
+    private var checkBox: CheckboxUnify = view.findViewById(R.id.checkBox)
 
     companion object {
         @LayoutRes
@@ -23,21 +23,19 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) :
 
     init {
         view.setOnClickListener {
-            checkBox?.let {
-                it.isChecked = !it.isChecked
-            }
+            checkBox.isChecked = !checkBox.isChecked
             actionChecked?.invoke()
         }
     }
 
     override fun bind(item: ProductItemViewModel) {
         item.let {
-            productName?.text = it.data.productName
-            productPrice?.text = it.data.productPrice
-            checkBox?.setOnCheckedChangeListener(null)
-            checkBox?.isChecked = item.isChecked
-            productImage?.setImageUrl(it.data.productImage)
-            checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
+            productName.text = it.data.productName
+            productPrice.text = it.data.productPrice
+            checkBox.setOnCheckedChangeListener(null)
+            checkBox.isChecked = item.isChecked
+            productImage.setImageUrl(it.data.productImage)
+            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
                 actionChecked?.invoke()
             }
