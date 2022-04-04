@@ -25,7 +25,7 @@ import com.tokopedia.ovop2p.view.viewStates.ThankYouErrPage
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
-import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
+import com.tokopedia.ovop2p.viewmodel.OvoP2PTransactionThankYouVM
 import javax.inject.Inject
 
 class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
@@ -48,10 +48,10 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
-    private val ovoP2pTxnThankYouOvoUsrVM: OvoP2pTxnThankYouOvoUsrVM by lazy(LazyThreadSafetyMode.NONE) {
+    private val ovoP2PTransactionThankYouVM: OvoP2PTransactionThankYouVM by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
             ViewModelProvider(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(OvoP2pTxnThankYouOvoUsrVM::class.java)
+        viewModelProvider.get(OvoP2PTransactionThankYouVM::class.java)
     }
 
 
@@ -109,7 +109,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
             var dataMap: HashMap<String, Any> = HashMap()
             dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
             (activity as LoaderUiListener).showProgressDialog()
-            ovoP2pTxnThankYouOvoUsrVM.makeThankyouDataCall(dataMap)
+            ovoP2PTransactionThankYouVM.makeThankyouDataCall(dataMap)
 
         }
     }
@@ -119,7 +119,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun createAndSubscribeToThankYouVM() =
-        ovoP2pTxnThankYouOvoUsrVM.transferThankyouLiveData.observe(
+        ovoP2PTransactionThankYouVM.transferThankyouLiveData.observe(
             viewLifecycleOwner,
             getThankYouObsvr(activity as LoaderUiListener)
         )

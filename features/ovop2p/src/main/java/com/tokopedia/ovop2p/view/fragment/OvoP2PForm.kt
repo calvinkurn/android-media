@@ -54,12 +54,9 @@ import com.tokopedia.ovop2p.view.viewStates.WalletError
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
-class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener, CoroutineScope {
+class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener {
 
     private lateinit var searchView: SearchView
     private lateinit var saldoTextView: TextView
@@ -107,10 +104,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
             ViewModelProvider(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(OvoP2pTrxnConfirmVM::class.java)
     }
-
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 
     override fun onClick(v: View?) {
         val id: Int = v?.id ?: -1

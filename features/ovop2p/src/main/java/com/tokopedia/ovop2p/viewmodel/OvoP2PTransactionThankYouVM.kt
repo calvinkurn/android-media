@@ -12,7 +12,7 @@ import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
 import javax.inject.Inject
 
-class OvoP2pTxnThankYouOvoUsrVM @Inject constructor(
+class OvoP2PTransactionThankYouVM @Inject constructor(
     private val ovoTrnxThankyouPageUseCase: OvoTrnxThankyouPageUseCase
 ) : ViewModel() {
 
