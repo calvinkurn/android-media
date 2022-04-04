@@ -527,16 +527,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     fun hideKeyboard() {
         navSearchBarController.etSearch?.clearFocus()
         val `in` = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        `in`.hideSoftInputFromWindow(navSearchBarController.etSearch.windowToken, 0)
+        `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
     }
 
     fun getCurrentSearchbarText(): String {
-        return navSearchBarController.etSearch.text?.toString() ?: ""
+        return navSearchBarController.etSearch?.text?.toString() ?: ""
     }
 
     fun clearSearchbarText() {
-        navSearchBarController.etSearch.text?.clear()
-        navSearchBarController.etSearch.clearFocus()
+        navSearchBarController.etSearch?.text?.clear()
+        navSearchBarController.etSearch?.clearFocus()
     }
 
     private fun applyStatusBarPadding() {
