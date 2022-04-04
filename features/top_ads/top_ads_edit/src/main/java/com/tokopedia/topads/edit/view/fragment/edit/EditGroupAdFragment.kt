@@ -33,15 +33,23 @@ import com.tokopedia.topads.edit.utils.Constants.MAXIMUM_LIMIT
 import com.tokopedia.topads.edit.utils.Constants.NAME_EDIT
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.topads_edit_activity_edit_form_ad.*
 import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
 
 private const val AUTOBID_DEFUALT_BUDGET = 16000
 private const val EDIT_GROUP = "android.edit_group"
+
 class EditGroupAdFragment : BaseDaggerFragment() {
+
+    private var progressbar: LoaderUnify? = null
+    private var txtGroupName: TextFieldUnify? = null
+    private var toggle: SwitchUnify? = null
+    private var dailyBudget: TextFieldUnify? = null
 
     private var btnState: Boolean = true
     private var buttonStateCallback: SaveButtonStateCallBack? = null
@@ -88,23 +96,25 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
     ): View? {
-        return inflater.inflate(
-            resources.getLayout(R.layout.topads_edit_activity_edit_form_ad),
-            container,
-            false
+        val view = inflater.inflate(
+            resources.getLayout(R.layout.topads_edit_activity_edit_form_ad), container, false
         )
+        progressbar = view.findViewById(R.id.progressbar)
+        txtGroupName = view.findViewById(R.id.group_name)
+        toggle = view.findViewById(R.id.toggle)
+        dailyBudget = view.findViewById(R.id.daily_budget)
+        return view
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
         groupName = data.groupName
-        group_name?.textFieldInput?.setText(data.groupName)
-        var bidSettingsList: MutableList<TopAdsBidSettingsModel> = mutableListOf<TopAdsBidSettingsModel>()
+        txtGroupName?.textFieldInput?.setText(data.groupName)
+        val bidSettingsList: MutableList<TopAdsBidSettingsModel> =
+            mutableListOf<TopAdsBidSettingsModel>()
         data?.bidSettings?.forEach {
-            var topAdsBidSettingsModel: TopAdsBidSettingsModel = TopAdsBidSettingsModel()
+            val topAdsBidSettingsModel: TopAdsBidSettingsModel = TopAdsBidSettingsModel()
             topAdsBidSettingsModel.bidType = it.bidType
             topAdsBidSettingsModel.priceBid = it.priceBid
             bidSettingsList.add(topAdsBidSettingsModel)
@@ -113,31 +123,31 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         priceDaily = data.daiyBudget
         if (priceDaily != 0.0F) {
             toggle?.isChecked = true
-            daily_budget?.visible()
+            dailyBudget?.visible()
             setCurrentDailyBudget((priceDaily).toInt().toString())
         } else {
-            daily_budget?.gone()
+            dailyBudget?.gone()
         }
         progressbar?.visibility = View.GONE
         saveInitialChoices()
     }
 
-    private fun getCurrentTitle() = group_name?.textFieldInput?.text?.toString()
+    private fun getCurrentTitle() = txtGroupName?.textFieldInput?.text?.toString()
 
     private fun getCurrentDailyBudget(): Int {
-        return daily_budget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
+        return dailyBudget?.textFieldInput?.text.toString().removeCommaRawString().toInt()
     }
 
     private fun setCurrentDailyBudget(data: String) {
-        daily_budget?.textFieldInput?.setText(data)
+        dailyBudget?.textFieldInput?.setText(data)
     }
 
     fun onSuccessGroupName(data: ResponseGroupValidateName.TopAdsGroupValidateName) {
         if (data.errors.isEmpty()) {
-            group_name?.setError(false)
+            txtGroupName?.setError(false)
             validation1 = true
             actionEnable()
-            group_name.setMessage("")
+            txtGroupName?.setMessage("")
         } else {
             onErrorGroupName(data.errors[0].detail)
         }
@@ -145,14 +155,14 @@ class EditGroupAdFragment : BaseDaggerFragment() {
 
     private fun onErrorGroupName(error: String) {
         if (getCurrentTitle() != groupName) {
-            group_name?.setError(true)
+            txtGroupName?.setError(true)
             validation1 = false
             actionEnable()
-            group_name?.setMessage(error)
+            txtGroupName?.setMessage(error)
             if (error == resources.getString(R.string.topads_edit_duplicate_group_name_error_wrong))
-                group_name?.setMessage(resources.getString(R.string.topads_edit_duplicate_group_name_error))
+                txtGroupName?.setMessage(resources.getString(R.string.topads_edit_duplicate_group_name_error))
             else
-                group_name?.setMessage(error)
+                txtGroupName?.setMessage(error)
         }
     }
 
@@ -163,17 +173,17 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        toggle?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (toggle?.isChecked == true) {
-                daily_budget?.visibility = View.VISIBLE
+                dailyBudget?.visibility = View.VISIBLE
             } else {
-                daily_budget?.visibility = View.GONE
+                dailyBudget?.visibility = View.GONE
                 validation3 = true
                 actionEnable()
             }
         }
-        group_name?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
-        group_name?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
+        txtGroupName?.textFieldInput?.imeOptions = EditorInfo.IME_ACTION_DONE
+        txtGroupName?.textFieldInput?.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 Utils.dismissKeyboard(context, view)
                 return@setOnEditorActionListener true
@@ -185,58 +195,59 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun setDailyBudgetWatcher() {
-        daily_budget?.textFieldInput?.addTextChangedListener(object :
-            NumberTextWatcher(daily_budget.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                when {
-                    number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
-                        daily_budget?.setError(true)
-                        daily_budget?.setMessage(
-                            String.format(
-                                getString(R.string.angarran_harrian_min_bid_error),
-                                Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
+        dailyBudget?.textFieldInput?.let {
+            it.addTextChangedListener(object : NumberTextWatcher(it, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    when {
+                        number < AUTOBID_DEFUALT_BUDGET && currentAutoBidState.isNotEmpty() -> {
+                            dailyBudget?.setError(true)
+                            dailyBudget?.setMessage(
+                                String.format(
+                                    getString(R.string.angarran_harrian_min_bid_error),
+                                    Utils.convertToCurrency(AUTOBID_DEFUALT_BUDGET.toLong())
+                                )
                             )
-                        )
-                        validation3 = false
-                        actionEnable()
-                    }
-                    number < currentBudget && currentAutoBidState.isEmpty() -> {
-                        daily_budget?.setError(true)
-                        daily_budget?.setMessage(
-                            String.format(
-                                getString(R.string.topads_common_minimum_daily_budget),
-                                currentBudget
+                            validation3 = false
+                            actionEnable()
+                        }
+                        number < currentBudget && currentAutoBidState.isEmpty() -> {
+                            dailyBudget?.setError(true)
+                            dailyBudget?.setMessage(
+                                String.format(
+                                    getString(R.string.topads_common_minimum_daily_budget),
+                                    currentBudget
+                                )
                             )
-                        )
-                        validation3 = false
-                        actionEnable()
-                    }
-                    number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
-                        daily_budget?.setError(true)
-                        daily_budget?.setMessage(
-                            String.format(
-                                getString(R.string.topads_common_maximum_daily_budget),
-                                MAXIMUM_LIMIT
+                            validation3 = false
+                            actionEnable()
+                        }
+                        number > MAXIMUM_LIMIT.removeCommaRawString().toDouble() -> {
+                            dailyBudget?.setError(true)
+                            dailyBudget?.setMessage(
+                                String.format(
+                                    getString(R.string.topads_common_maximum_daily_budget),
+                                    MAXIMUM_LIMIT
+                                )
                             )
-                        )
-                        validation3 = false
-                        actionEnable()
-                    }
-                    else -> {
-                        validation3 = true
-                        daily_budget?.setError(false)
-                        daily_budget?.setMessage("")
-                        actionEnable()
+                            validation3 = false
+                            actionEnable()
+                        }
+                        else -> {
+                            validation3 = true
+                            dailyBudget?.setError(false)
+                            dailyBudget?.setMessage("")
+                            actionEnable()
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun setGroupNameWatcher() {
 
-        group_name?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        txtGroupName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
