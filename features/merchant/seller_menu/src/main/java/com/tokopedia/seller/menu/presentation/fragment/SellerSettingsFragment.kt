@@ -59,10 +59,10 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
             val settingsList = SellerSettingsList.create(context)
             val adapter = SellerMenuAdapter(
                 SellerMenuAdapterTypeFactory(
-                this,
-                sellerMenuTracker = sellerMenuTracker,
-                userSession = userSession
-            )
+                    this,
+                    sellerMenuTracker = sellerMenuTracker,
+                    userSession = userSession
+                )
             )
 
             binding?.listSettings?.run {
