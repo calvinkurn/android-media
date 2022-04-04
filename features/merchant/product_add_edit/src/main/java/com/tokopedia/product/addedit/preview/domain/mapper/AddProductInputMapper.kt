@@ -1,20 +1,27 @@
 package com.tokopedia.product.addedit.preview.domain.mapper
 
 import android.net.Uri
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.PRICE_CURRENCY
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_GRAM_STRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.UNIT_KILOGRAM_SRING
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getActiveStatus
+import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getTimeUnitString
 import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
-import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import javax.inject.Inject
 
@@ -23,26 +30,6 @@ import javax.inject.Inject
  */
 
 class AddProductInputMapper @Inject constructor() {
-
-    companion object {
-        const val PRICE_CURRENCY = "IDR"
-        const val UNIT_GRAM = "GR"
-        const val UNIT_KILOGRAM = "KG"
-        const val UNIT_DAY = "DAY"
-        const val UNIT_WEEK = "WEEK"
-        const val UNIT_MONTH = "MONTH"
-        private const val IS_ACTIVE = 1
-        private const val IS_INACTIVE = 0
-        private const val IS_ACTIVE_STRING = "ACTIVE"
-        private const val IS_INACTIVE_STRING = "INACTIVE"
-
-        fun getActiveStatus(status: Int) =
-                when (status) {
-                    IS_INACTIVE -> IS_INACTIVE_STRING
-                    IS_ACTIVE -> IS_ACTIVE_STRING
-                    else -> IS_ACTIVE_STRING
-                }
-    }
 
     fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
@@ -175,7 +162,7 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapShipmentUnit(weightUnit: Int): String {
-        return if (weightUnit == 0) UNIT_GRAM else UNIT_KILOGRAM
+        return if (weightUnit == UNIT_GRAM) UNIT_GRAM_STRING else UNIT_KILOGRAM_SRING
     }
 
     private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
@@ -217,15 +204,11 @@ class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapPreorderParam(preorder: PreorderInputModel): Preorder {
-        if (preorder.duration == 0) return Preorder()
+        if (preorder.duration == Int.ZERO) return Preorder()
         return Preorder(
-                preorder.duration,
-                when (preorder.timeUnit) {
-                    0 -> UNIT_DAY
-                    1 -> UNIT_WEEK
-                    else -> UNIT_MONTH
-                },
-                preorder.isActive
+            preorder.duration,
+            getTimeUnitString(preorder.timeUnit),
+            preorder.isActive
         )
     }
 
