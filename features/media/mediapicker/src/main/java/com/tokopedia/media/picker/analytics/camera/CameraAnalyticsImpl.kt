@@ -15,7 +15,7 @@ class CameraAnalyticsImpl @Inject constructor(
 ) : CameraAnalytics {
 
     private val userId: String
-        get() = userSession.userId ?: ""
+        get() = userSession.userId ?: "0"
 
     private val shopId: String
         get() = userSession.shopId ?: ""
