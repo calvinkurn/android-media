@@ -187,13 +187,13 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun observeStartDateChange() {
         viewModel.startDate.observe(viewLifecycleOwner) { startDate ->
-            binding?.tfuStartDate?.textInputLayout?.editText?.setText(startDate.parseTo(DateConstant.DATE_MINUTE))
+            binding?.tfuStartDate?.textInputLayout?.editText?.setText(startDate.parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION))
         }
     }
 
     private fun observeEndDateChange() {
         viewModel.endDate.observe(viewLifecycleOwner) { endDate ->
-            binding?.tfuEndDate?.textInputLayout?.editText?.setText(endDate.parseTo(DateConstant.DATE_MINUTE))
+            binding?.tfuEndDate?.textInputLayout?.editText?.setText(endDate.parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION))
         }
     }
 

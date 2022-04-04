@@ -22,7 +22,7 @@
             android:layout_marginBottom="@dimen/unify_space_16">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tpgDiscountPeriod"
+                android:id="@+id/tpgInformation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -41,7 +41,7 @@
                 app:chipText="@string/sd_one_year_ahead"
                 app:chipType="selected"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tpgDiscountPeriod" />
+                app:layout_constraintTop_toBottomOf="@+id/tpgInformation" />
 
             <com.tokopedia.unifycomponents.ChipsUnify
                 android:id="@+id/chipSixMonthPeriod"
@@ -54,7 +54,7 @@
                 app:chipText="@string/sd_six_month_ahead"
                 app:chipType="normal"
                 app:layout_constraintStart_toEndOf="@id/chipOneYearPeriod"
-                app:layout_constraintTop_toBottomOf="@id/tpgDiscountPeriod" />
+                app:layout_constraintTop_toBottomOf="@id/tpgInformation" />
 
             <com.tokopedia.unifycomponents.ChipsUnify
                 android:id="@+id/chipOneMonthPeriod"
@@ -85,7 +85,7 @@
                 android:id="@+id/groupDiscountPeriod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tpgDiscountPeriod,chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection, tfuStartDate, tfuEndDate" />
+                app:constraint_referenced_ids="tpgInformation,chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection, tfuStartDate, tfuEndDate" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/tfuStartDate"

@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.utils.FragmentRouter
+import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import javax.inject.Inject
 
 class ProductManageActivity : AppCompatActivity() {
