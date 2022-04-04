@@ -78,6 +78,7 @@ import com.tokopedia.search.result.product.videowidget.InspirationVideoCarouselL
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
+import com.tokopedia.search.utils.networkmonitor.NetworkMonitor
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 
 @Suppress("LongParameterList")
@@ -102,6 +103,7 @@ class ProductListTypeFactoryImpl(
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
+    private val networkMonitor: NetworkMonitor,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -243,7 +245,8 @@ class ProductListTypeFactoryImpl(
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
-                    videoCarouselWidgetCoordinator
+                    videoCarouselWidgetCoordinator,
+                    networkMonitor
                 )
             SearchLoadingMoreViewHolder.LAYOUT -> SearchLoadingMoreViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)

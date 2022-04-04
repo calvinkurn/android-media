@@ -119,6 +119,7 @@ import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
+import com.tokopedia.search.utils.networkmonitor.DefaultNetworkMonitor
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -228,6 +229,7 @@ class ProductListFragment: BaseDaggerFragment(),
         VideoPlayerAutoplay(remoteConfig)
     }
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
+    private lateinit var networkMonitor : DefaultNetworkMonitor
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -236,6 +238,7 @@ class ProductListFragment: BaseDaggerFragment(),
         loadDataFromArguments()
         initTrackingQueue()
         initProductCardLifecycleObserver()
+        initNetworkMonitor()
     }
 
     private fun loadDataFromArguments() {
@@ -263,6 +266,10 @@ class ProductListFragment: BaseDaggerFragment(),
             productCardLifecycleObserver = it
             lifecycle.addObserver(it)
         }
+    }
+
+    private fun initNetworkMonitor() {
+        networkMonitor = DefaultNetworkMonitor(activity, this)
     }
 
     override fun initInjector() {
@@ -409,6 +416,7 @@ class ProductListFragment: BaseDaggerFragment(),
             violationListener = ViolationListenerDelegate(activity),
             videoCarouselListener = videoCarouselListenerDelegate,
             videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
+            networkMonitor = networkMonitor
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)

@@ -29,6 +29,12 @@ class VideoCarouselItemAdapter(
         listener?.onVideoCarouselItemImpressed(position)
     }
 
+    fun onWifiConnectionChange(isWifiConnected: Boolean) {
+        if(itemCount > 0) {
+            notifyItemRangeChanged(0, itemCount)
+        }
+    }
+
     fun setListener(listener: VideoCarouselItemListener?) {
         this.listener = listener
     }

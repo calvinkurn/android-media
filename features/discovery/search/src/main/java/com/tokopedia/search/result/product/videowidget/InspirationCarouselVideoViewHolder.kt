@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselVideoBinding
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
+import com.tokopedia.search.utils.networkmonitor.NetworkMonitor
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
@@ -14,14 +15,23 @@ import com.tokopedia.video_widget.carousel.VideoCarouselItemListener
 import com.tokopedia.video_widget.carousel.VideoCarouselItemModel
 import com.tokopedia.video_widget.carousel.VideoCarouselModel
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class InspirationCarouselVideoViewHolder(
+internal class InspirationCarouselVideoViewHolder(
     itemView: View,
     private val inspirationVideoCarouselListener: InspirationVideoCarouselListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
+    networkMonitor: NetworkMonitor,
 ) : AbstractViewHolder<InspirationCarouselVideoDataView>(itemView),
     VideoPlayerProvider,
-    VideoCarouselItemListener {
+    VideoCarouselItemListener,
+    CoroutineScope {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.search_inspiration_carousel_video
@@ -29,6 +39,18 @@ class InspirationCarouselVideoViewHolder(
 
     private var binding: SearchInspirationCarouselVideoBinding? by viewBinding()
     private var option: Option? = null
+
+    private val masterJob = SupervisorJob()
+    override val coroutineContext = masterJob + Dispatchers.Main
+
+    init {
+        launch {
+            networkMonitor.wifiConnectionState.cancellable()
+                .collect {
+                    binding?.videoCarousel?.onWifiConnectionChange(it)
+                }
+        }
+    }
 
     override fun bind(element: InspirationCarouselVideoDataView) {
         val data = element.data.options.getOrNull(0) ?: return
@@ -39,6 +61,7 @@ class InspirationCarouselVideoViewHolder(
     }
 
     override fun onViewRecycled() {
+        masterJob.cancelChildren()
         binding?.videoCarousel?.recycle()
         option = null
         super.onViewRecycled()

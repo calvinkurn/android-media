@@ -109,6 +109,10 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
         adapter.setListener(listener)
     }
 
+    fun onWifiConnectionChange(isConnectedToWifi: Boolean) {
+        adapter.onWifiConnectionChange(isConnectedToWifi)
+    }
+
     internal fun setWidgetInternalListener(internalListener: VideoCarouselInternalListener?) {
         this.internalListener = internalListener
     }
