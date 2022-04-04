@@ -14,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : ProductViewHolder<ProductItemViewModel>(view) {
 
-    private val checkBox : CheckboxUnify? = view.findViewById(R.id.checkBox)
+    private val checkBox : CheckboxUnify? = view.findViewById(R.id.checkBox_create_product)
     private val productName : Typography? = view.findViewById(R.id.product_name)
     private val productPrice : Typography? = view.findViewById(R.id.product_price)
     private val productImage : ImageUnify? = view.findViewById(R.id.product_image)

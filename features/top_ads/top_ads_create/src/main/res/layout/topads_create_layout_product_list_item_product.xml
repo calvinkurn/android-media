@@ -62,7 +62,7 @@
 
 
         <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-            android:id="@+id/checkBox"
+            android:id="@+id/checkBox_create_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
