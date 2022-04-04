@@ -6,10 +6,17 @@ import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.unifycomponents.Label
-import kotlinx.android.synthetic.main.topads_edit_layout_keyword_list_item.view.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 import java.lang.Exception
 
-class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: Int) -> Unit)?) : KeywordViewHolder<KeywordItemViewModel>(view) {
+class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: Int) -> Unit)?) :
+    KeywordViewHolder<KeywordItemViewModel>(view) {
+
+    private val keywordName: Typography = view.findViewById(R.id.keyword_name)
+    private val keywordCount: Typography = view.findViewById(R.id.keyword_count)
+    private val keywordCompetition: Label = view.findViewById(R.id.keywordCompetition)
+    private val checkBox: CheckboxUnify = view.findViewById(R.id.checkBox)
 
     companion object {
         const val LOW = "low"
@@ -22,39 +29,39 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
 
     init {
         view.setOnClickListener {
-            it.checkBox.isChecked = !it.checkBox.isChecked
+            checkBox.isChecked = !checkBox.isChecked
             actionSelected?.invoke(adapterPosition)
         }
     }
 
     override fun bind(item: KeywordItemViewModel) {
         item.data.let {
-            view.keyword_name.text = it.keyword
-            view.checkBox.setOnCheckedChangeListener(null)
-            view.checkBox.isChecked = item.isChecked
+            keywordName.text = it.keyword
+            checkBox.setOnCheckedChangeListener(null)
+            checkBox.isChecked = item.isChecked
             try {
-                view.keyword_count.text = Utils.convertToCurrencyString(it.totalSearch.toLong())
+                keywordCount.text = Utils.convertToCurrencyString(it.totalSearch.toLong())
             } catch (e: Exception) {
-                view.keyword_count.text = it.totalSearch
+                keywordCount.text = it.totalSearch
             }
-            view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
                 actionSelected?.invoke(adapterPosition)
             }
             when (it.competition) {
                 LOW -> {
-                    view.keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
-                    view.keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_low))
+                    keywordCompetition.setLabelType(Label.GENERAL_DARK_GREEN)
+                    keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_low))
                 }
 
                 MEDIUM -> {
-                    view.keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
-                    view.keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_moderation))
+                    keywordCompetition.setLabelType(Label.GENERAL_DARK_ORANGE)
+                    keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_moderation))
                 }
 
                 HIGH -> {
-                    view.keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
-                    view.keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_high))
+                    keywordCompetition.setLabelType(Label.GENERAL_DARK_RED)
+                    keywordCompetition.setLabel(view.resources.getString(R.string.topads_common_keyword_competition_high))
                 }
 
             }
