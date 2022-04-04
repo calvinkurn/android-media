@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.variant.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
 
@@ -11,9 +12,17 @@ data class VariantInputModel(
         var sizecharts: PictureVariantInputModel = PictureVariantInputModel(),
         var isRemoteDataHasVariant: Boolean = false // used for removing variant
 ) : Parcelable {
+        fun hasVariant() = products.isNotEmpty()
+
         fun getPrimaryVariantData(
                 defaultIfNotfound: ProductVariantInputModel = ProductVariantInputModel()
         ) = products.find { it.isPrimary } ?: defaultIfNotfound
+
+        fun getLowestPrice() = products.minByOrNull { it.price }?.price
+
+        fun getHighestPrice() = products.maxByOrNull { it.price }?.price
+
+        fun getTotalStock(): Int = products.sumOf { it.stock.orZero() }
 }
 
 @Parcelize

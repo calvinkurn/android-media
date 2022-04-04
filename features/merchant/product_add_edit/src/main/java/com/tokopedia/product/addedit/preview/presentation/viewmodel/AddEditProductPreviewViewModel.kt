@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -120,6 +121,24 @@ class AddEditProductPreviewViewModel @Inject constructor(
             is Fail -> {
                 true
             }
+        }
+    }
+
+    val priceRangeFormatted = Transformations.map(productInputModel) {
+        val highestPrice = it.variantInputModel.getHighestPrice().orZero()
+        val lowestPrice = it.variantInputModel.getLowestPrice().orZero()
+        if (lowestPrice == highestPrice) {
+            it.detailInputModel.price.getCurrencyFormatted()
+        } else {
+            "${lowestPrice.getCurrencyFormatted()} - ${highestPrice.getCurrencyFormatted()}"
+        }
+    }
+
+    val stockFormatted = Transformations.map(productInputModel) {
+        if (it.variantInputModel.hasVariant()) {
+            it.variantInputModel.getTotalStock().orZero()
+        } else {
+            it.detailInputModel.stock
         }
     }
 

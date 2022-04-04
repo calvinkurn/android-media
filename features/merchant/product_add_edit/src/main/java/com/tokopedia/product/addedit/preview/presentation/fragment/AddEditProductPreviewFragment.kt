@@ -501,6 +501,8 @@ class AddEditProductPreviewFragment :
         observeProductData()
         observeProductInputModel()
         observeProductVariant()
+        observePriceRangeFormatted()
+        observeStockFormatted()
         observeImageUrlOrPathList()
         observeIsLoading()
         observeValidationMessage()
@@ -1062,10 +1064,22 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeProductVariant() {
-        viewModel.isVariantEmpty.observe(viewLifecycleOwner, Observer {
+        viewModel.isVariantEmpty.observe(viewLifecycleOwner, {
             if ((isEditing() || isDrafting()) && it) {
-                showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.products?.size == 0)
+                showEmptyVariantState(it)
             }
+        })
+    }
+
+    private fun observePriceRangeFormatted() {
+        viewModel.priceRangeFormatted.observe(viewLifecycleOwner, {
+            productPriceView?.text = it
+        })
+    }
+
+    private fun observeStockFormatted() {
+        viewModel.stockFormatted.observe(viewLifecycleOwner, {
+            productStockView?.text = it.toString()
         })
     }
 
@@ -1259,7 +1273,6 @@ class AddEditProductPreviewFragment :
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
         val detailInputModel = productInputModel.detailInputModel
         productNameView?.text = detailInputModel.productName
-        productPriceView?.text = "Rp " + InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
         productDetailPreviewLayout?.animateExpand()
     }
