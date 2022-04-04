@@ -110,8 +110,30 @@ class TopAdsDetailSheet : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         val childView = View.inflate(context, R.layout.topads_pdp_bottom_sheet_single_ad, null)
         setChild(childView)
+        initView(childView)
         showCloseIcon = false
         setTitle(getString(R.string.detail_iklan))
+    }
+
+    private fun initView(childView: View) {
+        imgProduct = childView.findViewById(R.id.imgProduct)
+        txtTitleProduct = childView.findViewById(R.id.txtTitleProduct)
+        txtBudget = childView.findViewById(R.id.txtBudget)
+        btnSwitch = childView.findViewById(R.id.btn_switch)
+        tickerInfo = childView.findViewById(R.id.tickerInfo)
+        autoadsWidget = childView.findViewById(R.id.autoads_widget)
+        adInfo = childView.findViewById(R.id.adInfo)
+        tampilCount = childView.findViewById(R.id.tampil_count)
+        pengeluaranCount = childView.findViewById(R.id.pengeluaran_count)
+        klikCount = childView.findViewById(R.id.klik_count)
+        pendapatanCount = childView.findViewById(R.id.pendapatan_count)
+        persentaseKlikCount = childView.findViewById(R.id.persentase_klik_count)
+        produkTerjualCount = childView.findViewById(R.id.produk_terjual_count)
+        createAd = childView.findViewById(R.id.createAd)
+        singleAd = childView.findViewById(R.id.singleAd)
+        createGroupLayout = childView.findViewById(R.id.createGroupLayout)
+        desc = childView.findViewById(R.id.desc)
+        editAd = childView.findViewById(R.id.editAd)
     }
 
     private fun onSuccessPost(action: String) {
