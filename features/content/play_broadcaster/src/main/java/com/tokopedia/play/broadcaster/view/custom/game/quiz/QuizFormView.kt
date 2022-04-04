@@ -65,8 +65,8 @@ class QuizFormView : ConstraintLayout {
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
-        override fun onOptionChecked(textChoice: String) {
-
+        override fun onOptionChecked(order: Int) {
+            /** TODO: handle when user click */
         }
     })
 

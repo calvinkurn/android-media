@@ -40,7 +40,14 @@ class QuizOptionView : ConstraintLayout {
         set(value) {
             field = value
 
-            binding.tvQuizOptionChoice.text = textChoice
+            binding.tvQuizOptionChoice.text = value
+        }
+
+    var textHint: String = ""
+        set(value) {
+            field = value
+
+            binding.etQuizOption.hint = value
         }
 
     var maxLength: Int = 0

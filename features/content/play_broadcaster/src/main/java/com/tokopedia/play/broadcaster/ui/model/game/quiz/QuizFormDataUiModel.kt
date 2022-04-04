@@ -10,20 +10,18 @@ data class QuizFormDataUiModel(
     val duration: Long = 0,
 ) {
     data class Option(
-        val textChoice: String = "",
+        val order: Int = 0,
         val text: String = "",
         val isMandatory: Boolean = false,
         val isSelected: Boolean = false,
         val isEditable: Boolean = true,
     ) {
+        fun getTextChoice() = (INITIAL_CHOICE + order).toString()
+
         companion object {
-            fun create(textChoice: String, isMandatory: Boolean = false) = Option(
-                textChoice = textChoice,
-                isMandatory = isMandatory,
-            )
+            private const val INITIAL_CHOICE = 'A'
         }
     }
-
 
     fun isFormValid(): Boolean {
         return title.isNotEmpty() && isOptionsValid()

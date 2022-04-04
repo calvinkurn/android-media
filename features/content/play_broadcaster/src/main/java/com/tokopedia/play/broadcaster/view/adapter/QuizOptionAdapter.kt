@@ -21,7 +21,7 @@ class QuizOptionAdapter(
         oldItem: QuizFormDataUiModel.Option,
         newItem: QuizFormDataUiModel.Option
     ): Boolean {
-        return oldItem.textChoice == newItem.textChoice
+        return oldItem.order == newItem.order
     }
 
     override fun areContentsTheSame(

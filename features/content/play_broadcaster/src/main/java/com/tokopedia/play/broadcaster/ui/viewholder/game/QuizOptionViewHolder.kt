@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.viewholder.game
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ItemQuizOptionListBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 
@@ -17,13 +18,14 @@ class QuizOptionViewHolder private constructor(
     fun bind(item: QuizFormDataUiModel.Option) {
         binding.root.apply {
             text = item.text
-            textChoice = item.textChoice
+            textChoice = item.getTextChoice()
+            textHint = getString(R.string.play_bro_quiz_hint_text, item.order + 1)
             isCorrect = item.isSelected
             isEditable = item.isEditable
 
             /** TODO: Set maxLength */
 
-            setOnClickListener { listener.onOptionChecked(item.textChoice) }
+            setOnClickListener { listener.onOptionChecked(item.order) }
         }
     }
 
@@ -42,6 +44,6 @@ class QuizOptionViewHolder private constructor(
     }
 
     interface Listener {
-        fun onOptionChecked(textChoice: String)
+        fun onOptionChecked(order: Int)
     }
 }
