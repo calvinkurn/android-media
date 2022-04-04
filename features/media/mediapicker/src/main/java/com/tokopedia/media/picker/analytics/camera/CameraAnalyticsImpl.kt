@@ -15,10 +15,10 @@ class CameraAnalyticsImpl @Inject constructor(
 ) : CameraAnalytics {
 
     private val userId: String
-        get() = userSession.userId ?: "0"
+        get() = if (userSession.userId.isNullOrEmpty()) "0" else userSession.userId
 
     private val shopId: String
-        get() = userSession.shopId ?: ""
+        get() = if (userSession.shopId.isNullOrEmpty()) "0" else userSession.shopId
 
     private val sourcePage: String
         get() = paramCacheManager.get().pageSourceName()
