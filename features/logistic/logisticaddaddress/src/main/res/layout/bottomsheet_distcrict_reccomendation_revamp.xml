@@ -81,13 +81,43 @@
                 android:clipToPadding="false" />
 
         </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/layout_use_current_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_list_district"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
+            android:orientation="horizontal">
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                app:icon_name="TARGET"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_discom_current_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_current_location_text"
+                app:typographyType="body_2" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider_use_current_location"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="gone"
+            android:layout_below="@id/layout_use_current_loc"
+            android:background="@color/Unify_N100" />
 
         <LinearLayout
             android:id="@+id/ll_popular_city"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_below="@id/ll_list_district"
+            android:layout_below="@id/divider_use_current_location"
             android:gravity="bottom"
             android:layout_marginTop="20dp"
             android:visibility="visible">

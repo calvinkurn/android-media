@@ -1,8 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,24 +16,31 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
+import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
 import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.ZipCodeChipsAdapter
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.DiscomAdapterRevamp
 import com.tokopedia.logisticaddaddress.features.district_recommendation.adapter.PopularCityAdapter
+import com.tokopedia.logisticaddaddress.utils.AddAddressConstant
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
 class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private var isEdit: Boolean): BottomSheetUnify(),
@@ -66,6 +76,10 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     private var fm: FragmentManager? = null
+    // for edit revamp get user current loc
+    private var permissionCheckerHelper: PermissionCheckerHelper? = null
+    private var hasRequestedLocation: Boolean = false
+    private var fusedLocationClient: FusedLocationProviderClient? = null
 
     interface DiscomRevampListener {
         fun onGetDistrict(districtAddress: Address)
@@ -86,8 +100,16 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (isEdit) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fusedLocationClient = FusedLocationProviderClient(requireActivity())
         setViewListener()
     }
 
@@ -164,6 +186,11 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                 layoutManager = mLayoutManager
                 adapter = listDistrictAdapter
             }
+
+            if (isEdit) {
+                layoutUseCurrentLoc.visibility = View.VISIBLE
+                dividerUseCurrentLocation.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -237,6 +264,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                 dismiss()
             }
         }
+        viewBinding?.layoutUseCurrentLoc?.setOnClickListener {
+            requestPermissionLocation()
+        }
     }
 
     fun show(fm: FragmentManager?) {
@@ -279,6 +309,8 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             llPopularCity.visibility = View.GONE
             rvListDistrict.visibility = View.VISIBLE
             tvDescInputDistrict.visibility = View.VISIBLE
+            layoutUseCurrentLoc.visibility = View.GONE
+            dividerUseCurrentLocation.visibility = View.GONE
             tvDescInputDistrict.setText(R.string.hint_advice_search_address)
 
             if (mIsInitialLoading) {
@@ -305,6 +337,10 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     override fun showEmpty() {
         viewBinding?.run {
             tvDescInputDistrict.visibility = View.VISIBLE
+            if (isEdit) {
+                layoutUseCurrentLoc.visibility = View.VISIBLE
+                dividerUseCurrentLocation.visibility = View.VISIBLE
+            }
             tvDescInputDistrict.setText(R.string.hint_search_address_no_result)
             llPopularCity.visibility = View.VISIBLE
             rvListDistrict.visibility = View.GONE
@@ -312,11 +348,29 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     override fun setResultDistrict(data: Data, lat: Double, long: Double) {
-       //no-op
+        context?.let {
+            setTitle("Kode Pos")
+            isKodePosShown = true
+            val districtModel = Address()
+            districtModel.setDistrictId(data.districtId)
+            districtModel.setDistrictName(data.districtName)
+            districtModel.setCityId(data.cityId)
+            districtModel.setCityName(data.cityName)
+            districtModel.setProvinceId(data.provinceId)
+            districtModel.setProvinceName(data.provinceName)
+            districtModel.setZipCodes(arrayListOf(data.postalCode))
+            discomRevampListener?.onGetDistrict(districtModel)
+            setupRvZipCodeChips()
+            getDistrict(districtModel)
+        }
     }
 
-    override fun showToasterError() {
-        //no-op
+    override fun showToasterError(message: String) {
+        val toaster = Toaster
+        viewBinding?.root?.let { v ->
+            toaster.build(v, message, Toaster.LENGTH_SHORT,
+                Toaster.TYPE_ERROR, "").show()
+        }
     }
 
     override fun onDistrictItemRevampClicked(districtModel: Address) {
@@ -354,6 +408,8 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             tvDescInputDistrict.visibility = View.GONE
             rvListDistrict.visibility = View.GONE
             llPopularCity.visibility = View.GONE
+            layoutUseCurrentLoc.visibility = View.GONE
+            dividerUseCurrentLocation.visibility = View.GONE
 
             cardAddress.addressDistrict.text = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
             etKodepos.textFieldInput.apply {
@@ -402,10 +458,105 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             btnChooseZipcode.visibility = View.GONE
             searchPageInput.visibility = View.VISIBLE
             tvDescInputDistrict.visibility = View.VISIBLE
+            if (isEdit) {
+                layoutUseCurrentLoc.visibility = View.VISIBLE
+                dividerUseCurrentLocation.visibility = View.VISIBLE
+            }
             rvListDistrict.visibility = View.VISIBLE
             llPopularCity.visibility = View.VISIBLE
             isKodePosShown = false
         }
+    }
+
+    fun requestPermissionLocation() {
+        permissionCheckerHelper?.checkPermissions(this, getPermissions(),
+            object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+                    hasRequestedLocation = false
+                    showDialogAskGps()
+                }
+
+                override fun onNeverAskAgain(permissionText: String) {
+                    // no op
+                }
+
+                @SuppressLint("MissingPermission")
+                override fun onPermissionGranted() {
+                    getLocation()
+                }
+
+            }, getString(R.string.rationale_need_location))
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getLocation() {
+        if (AddNewAddressUtils.isGpsEnabled(context)) {
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
+                if (data != null) {
+                    presenter.autoFill(data.latitude, data.longitude)
+                } else {
+                    fusedLocationClient?.requestLocationUpdates(
+                        AddNewAddressUtils.getLocationRequest(),
+                        createLocationCallback(), null)
+                }
+            }
+        } else {
+            hasRequestedLocation = false
+            showDialogAskGps()
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionCheckerHelper?.onRequestPermissionsResult(context, requestCode, permissions, grantResults)
+    }
+
+
+    private fun showDialogAskGps() {
+        val bottomSheetLocUndefined = BottomSheetUnify()
+        val bottomsheetLocationUndefinedBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
+//        setupBottomSheetLocUndefined(viewBinding, isDontAskAgain)
+        bottomsheetLocationUndefinedBinding.apply {
+            imgLocUndefined.setImageUrl(AddAddressConstant.LOCATION_NOT_FOUND)
+            tvLocUndefined.text = getString(R.string.txt_location_not_detected)
+            tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
+            btnActivateLocation.setOnClickListener {
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        }
+        bottomSheetLocUndefined.apply {
+            setCloseClickListener {
+//                isPermissionAccessed = false
+//                AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
+                dismiss()
+            }
+            setChild(bottomsheetLocationUndefinedBinding.root)
+            setOnDismissListener {
+//                isPermissionAccessed = false
+                dismiss()
+            }
+        }
+
+        childFragmentManager.let {
+            bottomSheetLocUndefined.show(it, "")
+        }
+    }
+
+    fun createLocationCallback(): LocationCallback {
+        return object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                if (!hasRequestedLocation) {
+                    presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
+                    hasRequestedLocation = true
+                }
+            }
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
+            PermissionCheckerHelper.Companion.PERMISSION_ACCESS_COARSE_LOCATION)
     }
 
     companion object {
