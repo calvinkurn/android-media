@@ -81,10 +81,10 @@ class MCCMFlashSaleGridWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    fun clearSelectedProduct(){
+    fun clearSelectedProduct(position: Int){
         adapterDenomGrid.run {
             selectedProductIndex = null
-            notifyDataSetChanged()
+            notifyItemChanged(position)
         }
     }
 

@@ -45,10 +45,10 @@ class DenomGridWidget @JvmOverloads constructor(@NotNull context: Context, attrs
         }
     }
 
-    fun clearSelectedProduct(){
+    fun clearSelectedProduct(position: Int){
         adapterDenomGrid.run {
             selectedProductIndex = null
-            notifyDataSetChanged()
+            notifyItemChanged(position)
         }
     }
 

@@ -697,9 +697,9 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onClearSelectedDenomFull() {
+    private fun onClearSelectedDenomFull(position: Int) {
         binding?.let {
-            it.rechargePdpPaketDataDenomFullWidget.clearSelectedProduct()
+            it.rechargePdpPaketDataDenomFullWidget.clearSelectedProduct(position)
         }
     }
 
@@ -729,9 +729,9 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onClearSelectedMCCM() {
+    private fun onClearSelectedMCCM(position: Int) {
         binding?.let {
-            it.rechargePdpPaketDataPromoWidget.clearSelectedProduct()
+            it.rechargePdpPaketDataPromoWidget.clearSelectedProduct(position)
         }
     }
 
@@ -1296,7 +1296,9 @@ class DigitalPDPDataPlanFragment :
         isShowBuyWidget: Boolean
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
-            onClearSelectedDenomFull()
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FULL_TYPE)
+                onClearSelectedDenomFull(viewModel.selectedFullProduct.position)
+
             digitalPDPAnalytics.clickMCCMProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1308,6 +1310,9 @@ class DigitalPDPDataPlanFragment :
                 position
             )
         } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
+            if (viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_FULL_TYPE ||
+                viewModel.selectedFullProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_FULL_TYPE)
+                onClearSelectedMCCM(viewModel.selectedFullProduct.position)
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1317,7 +1322,6 @@ class DigitalPDPDataPlanFragment :
                 denomFull,
                 position
             )
-            onClearSelectedMCCM()
         }
 
         viewModel.selectedFullProduct = SelectedProduct(denomFull, layoutType, position)

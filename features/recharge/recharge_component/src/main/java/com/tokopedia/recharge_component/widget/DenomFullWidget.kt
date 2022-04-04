@@ -72,10 +72,10 @@ class DenomFullWidget @JvmOverloads constructor(
         }
     }
 
-    fun clearSelectedProduct(){
+    fun clearSelectedProduct(position: Int){
         adapterDenomFull.run {
             selectedProductIndex = null
-            notifyDataSetChanged()
+            notifyItemChanged(position)
         }
     }
 }

@@ -93,6 +93,7 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
 import javax.inject.Inject
 
 /**
@@ -309,14 +310,12 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         viewModel.observableDenomMCCMData.observe(viewLifecycleOwner, { denomData ->
             when (denomData) {
                 is RechargeNetworkResult.Success -> {
-
                     if (productId >= 0) {
                         viewModel.setAutoSelectedDenom(
                             denomData.data.denomWidgetModel.listDenomData,
                             productId.toString()
                         )
                     }
-
                     val selectedPositionDenom =
                         viewModel.getSelectedPositionId(denomData.data.denomWidgetModel.listDenomData)
                     val selectedPositionMCCM =
@@ -647,9 +646,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onClearSelectedDenomGrid() {
+    private fun onClearSelectedDenomGrid(position: Int) {
         binding?.let {
-            it.rechargePdpPulsaDenomGridWidget.clearSelectedProduct()
+            it.rechargePdpPulsaDenomGridWidget.clearSelectedProduct(position)
         }
     }
 
@@ -697,9 +696,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onClearSelectedMCCM() {
+    private fun onClearSelectedMCCM(position: Int) {
         binding?.let {
-            it.rechargePdpPulsaPromoWidget.clearSelectedProduct()
+            it.rechargePdpPulsaPromoWidget.clearSelectedProduct(position)
         }
     }
 
@@ -1089,7 +1088,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
         isShowBuyWidget: Boolean
     ) {
         if (layoutType == DenomWidgetEnum.MCCM_GRID_TYPE || layoutType == DenomWidgetEnum.FLASH_GRID_TYPE) {
-            onClearSelectedDenomGrid()
+            if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.GRID_TYPE)
+                onClearSelectedDenomGrid(viewModel.selectedGridProduct.position)
             digitalPDPAnalytics.clickMCCMProduct(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1101,6 +1101,9 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 position
             )
         } else if (layoutType == DenomWidgetEnum.GRID_TYPE) {
+            if (viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.MCCM_GRID_TYPE ||
+                viewModel.selectedGridProduct.denomWidgetEnum == DenomWidgetEnum.FLASH_GRID_TYPE)
+                onClearSelectedMCCM(viewModel.selectedGridProduct.position)
             digitalPDPAnalytics.clickProductCluster(
                 productListTitle,
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -1110,7 +1113,6 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 denomGrid,
                 position
             )
-            onClearSelectedMCCM()
         }
 
         viewModel.selectedGridProduct = SelectedProduct(denomGrid, layoutType, position)

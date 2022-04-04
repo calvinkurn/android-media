@@ -31,6 +31,7 @@ class DenomFullViewHolder(
     fun bind(denomFull: DenomData, denomType: DenomWidgetEnum,
              isSelectedItem: Boolean, isOnlyOneSize: Boolean, position: Int, isPlacebo: Boolean = false){
 
+        println("Hello : ${denomType}::: ${denomFull.title}")
         with(binding){
             tgDenomFullTitle.run {
                 if (!denomFull.title.isNullOrEmpty()){
