@@ -62,7 +62,6 @@ class VideoAnalyticHelper(
 
             val bufferEvent = PlayLiveRoomMetricsCommon.getBufferingEventData(bufferCount = bufferTrackingModel.bufferCount, timestamp = bufferTrackingModel.lastBufferMs)
             log.logBufferEvent(bufferingCount = bufferEvent.second, bufferingEvent = bufferEvent.first)
-            log.sendAll(channelData.id, (channelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl)
 
         } else if ((state is PlayViewerVideoState.Play || state is PlayViewerVideoState.Pause) && bufferTrackingModel.isBuffering) {
             if (bufferTrackingModel.shouldTrackNext) sendVideoBufferingAnalytic()
@@ -71,6 +70,10 @@ class VideoAnalyticHelper(
                     isBuffering = false,
                     shouldTrackNext = true
             )
+        }
+
+        if(bufferTrackingModel.bufferCount > 0 && watchDurationModel.cumulationDuration > 30){
+            log.sendAll(channelData.id, (channelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl)
         }
     }
 
