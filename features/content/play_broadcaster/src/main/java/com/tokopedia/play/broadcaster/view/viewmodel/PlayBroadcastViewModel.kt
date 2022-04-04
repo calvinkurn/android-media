@@ -353,6 +353,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             PlayBroadcastAction.ClickBackOnQuiz -> handleClickBackOnQuiz()
             PlayBroadcastAction.ClickNextOnQuiz -> handleClickNextOnQuiz()
             is PlayBroadcastAction.InputQuizTitle -> handleInputQuizTitle(event.title)
+            is PlayBroadcastAction.InputQuizOption -> handleInputQuizOption(event.order, event.text)
             is PlayBroadcastAction.SelectQuizOption -> handleSelectQuizOption(event.order)
             is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
@@ -961,6 +962,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleInputQuizOption(order: Int, text: String) {
+        /** TODO: handle */
+    }
+
     private fun handleSelectQuizOption(order: Int) {
         val options = _quizFormData.value.options
 
@@ -1012,7 +1017,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             initialOptions.add(
                 QuizFormDataUiModel.Option(
                     order = it,
-                    maxLength = 35, /** TODO: still make sure whether maxLength is configurable from BE or not */
+                    maxLength = quizConfig.maxChoiceLength,
                     isMandatory = true,
                 )
             )

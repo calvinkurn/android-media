@@ -55,6 +55,7 @@ data class QuizConfigUiModel(
         val maxChoicesCount: Int,
         val minChoicesCount: Int,
         val maxRewardLength: Int,
+        val maxChoiceLength: Int,
         val availableStartTimeInMs: List<Long>,
         val eligibleStartTimeInMs: List<Long>,
 ) {
@@ -65,6 +66,7 @@ data class QuizConfigUiModel(
                         maxChoicesCount = 0,
                         minChoicesCount = 0,
                         maxRewardLength = 0,
+                        maxChoiceLength = 0,
                         availableStartTimeInMs = emptyList(),
                         eligibleStartTimeInMs =  emptyList(),
                 )

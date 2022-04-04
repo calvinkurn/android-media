@@ -69,6 +69,10 @@ class QuizFormView : ConstraintLayout {
         override fun onOptionChecked(order: Int) {
             eventBus.emit(Event.SelectQuizOption(order))
         }
+
+        override fun onTextChanged(order: Int, text: String) {
+            eventBus.emit(Event.OptionChanged(order, text))
+        }
     })
 
     private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
@@ -232,6 +236,7 @@ class QuizFormView : ConstraintLayout {
         object Back: Event()
         object Next: Event()
         data class TitleChanged(val title: String): Event()
+        data class OptionChanged(val order: Int, val text: String): Event()
         data class SelectQuizOption(val order: Int): Event()
         data class GiftChanged(val gift: String): Event()
         data class SelectDuration(val duration: Long): Event()

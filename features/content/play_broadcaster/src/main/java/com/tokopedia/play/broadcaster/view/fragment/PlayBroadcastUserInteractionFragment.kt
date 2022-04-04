@@ -292,6 +292,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         QuizFormView.Event.Back -> PlayBroadcastAction.ClickBackOnQuiz
                         QuizFormView.Event.Next -> PlayBroadcastAction.ClickNextOnQuiz
                         is QuizFormView.Event.TitleChanged -> PlayBroadcastAction.InputQuizTitle(it.title)
+                        is QuizFormView.Event.OptionChanged -> PlayBroadcastAction.InputQuizOption(it.order, it.text)
                         is QuizFormView.Event.SelectQuizOption -> PlayBroadcastAction.SelectQuizOption(it.order)
                         is QuizFormView.Event.GiftChanged -> PlayBroadcastAction.InputQuizGift(it.gift)
                         is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)

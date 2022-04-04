@@ -332,6 +332,7 @@ class PlayBroadcastUiMapper(
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
                 maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
+                maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
                 availableStartTimeInMs = quizDurationInMs,
                 eligibleStartTimeInMs = quizDurationInMs,
             )

@@ -27,6 +27,7 @@ class QuizOptionViewHolder private constructor(
             /** TODO: Set maxLength */
 
             setOnClickListener { listener.onOptionChecked(item.order) }
+            setOnTextChanged { listener.onTextChanged(item.order, it) }
         }
     }
 
@@ -46,5 +47,6 @@ class QuizOptionViewHolder private constructor(
 
     interface Listener {
         fun onOptionChecked(order: Int)
+        fun onTextChanged(order: Int, text: String)
     }
 }

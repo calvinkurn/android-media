@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizOptionBinding
@@ -35,6 +36,14 @@ class QuizOptionView : ConstraintLayout {
         this,
         true,
     )
+
+    private var mTextOnChangedListener: ((String) -> Unit)? = null
+
+    init {
+        binding.etQuizOption.afterTextChanged {
+            mTextOnChangedListener?.invoke(it)
+        }
+    }
 
     var textChoice: String = ""
         set(value) {
@@ -84,15 +93,14 @@ class QuizOptionView : ConstraintLayout {
                         else R.drawable.bg_quiz_option
                     )
 
-                    val textColor = ContextCompat.getColor(
-                        context,
-                        if(value) R.color.Unify_Static_White
-                        else R.color.Unify_NN950
+                    etQuizOption.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            if(value) R.color.Unify_Static_White
+                            else R.color.Unify_NN950
+                        )
                     )
-
-                    etQuizOption.setTextColor(textColor)
                 }
-
             }
         }
 
@@ -101,4 +109,8 @@ class QuizOptionView : ConstraintLayout {
             field = value
             binding.etQuizOption.setText(value)
         }
+
+    fun setOnTextChanged(listener: (String) -> Unit) {
+        mTextOnChangedListener = listener
+    }
 }

@@ -25,6 +25,7 @@ sealed class PlayBroadcastAction {
     object ClickBackOnQuiz: PlayBroadcastAction()
     object ClickNextOnQuiz: PlayBroadcastAction()
     data class InputQuizTitle(val title: String): PlayBroadcastAction()
+    data class InputQuizOption(val order: Int, val text: String): PlayBroadcastAction()
     data class SelectQuizOption(val order: Int): PlayBroadcastAction()
     data class InputQuizGift(val text: String): PlayBroadcastAction()
     data class SelectQuizDuration(val duration: Long): PlayBroadcastAction()

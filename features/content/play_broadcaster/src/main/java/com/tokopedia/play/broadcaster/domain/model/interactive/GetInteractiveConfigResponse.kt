@@ -59,6 +59,9 @@ data class GetInteractiveConfigResponse(
         @SerializedName("maxRewardLength")
         val maxRewardLength: Int = 30,
 
+        @SerializedName("maxChoiceLength")
+        val maxChoiceLength: Int = 35,
+
         @SerializedName("quizDurationsInSecond")
         val quizDurationsInSecond: List<Int> = listOf(60, 120, 180, 3600, 3590),
     )
