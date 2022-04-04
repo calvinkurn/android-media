@@ -18,7 +18,11 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         binding.imgMore.setOnClickListener { onProductOptionClicked(product) }
         binding.btnUpdateDiscount.setOnClickListener { }
         binding.loader.isVisible = isLoading
+        handleProductType(product)
+        binding.tpgOriginalPrice.strikethrough()
+    }
 
+    private fun handleProductType(product: Product) {
         when (product.productType) {
             ProductType.SINGLE -> {
                 binding.labelDiscount.text = product.formattedDiscountMaxPercentage
@@ -86,6 +90,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 )
             }
     }
+
     private fun displayDiscountedPrice(product: Product) {
         binding.tpgDiscountedPrice.text =
             if (product.hasSameDiscountedPriceAmount) {
@@ -98,6 +103,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 )
             }
     }
+
     private fun displayOriginalPrice(product: Product) {
         binding.tpgOriginalPrice.text =
             if (product.hasSameOriginalPrice) {
@@ -109,7 +115,5 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                     product.formattedOriginalMaxPrice
                 )
             }
-        binding.tpgOriginalPrice.strikethrough()
     }
-
 }
