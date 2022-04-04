@@ -1464,15 +1464,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun showSuccessAddWishlist() {
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.make(
-                it,
-                getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.new_home_account_go_to_wishlist),
-                setOnClickSuccessAddWishlist()
-            )
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { setOnClickSuccessAddWishlist() }.show()
         }
     }
 

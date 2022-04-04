@@ -1036,12 +1036,10 @@ class OfficialHomeFragment :
     private fun showSuccessAddWishlist() {
         activity?.let { activity ->
             val view = activity.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(com.tokopedia.officialstore.R.string.msg_success_add_wishlist)
 
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                    .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
-                    .show()
-
+            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+            Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { RouteManager.route(activity, ApplinkConst.WISHLIST) }.show()
         }
     }
 

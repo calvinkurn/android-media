@@ -221,6 +221,7 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -2776,16 +2777,29 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             if (wishlistResult.isSuccess) {
                 recomWishlistItem?.isWishlist = !(recomWishlistItem?.isWishlist ?: false)
                 recomWishlistItem?.let { DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(it, viewModel.userSessionInterface.isLoggedIn, wishlistResult.isAddWishlist) }
+
+                val msg: String
+                val ctaText: String
+                val cta: () -> Unit
+
+                if (wishlistResult.isAddWishlist) {
+                    msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+                    ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
+                    cta = { goToWishlist() }
+                } else {
+                    msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+                    ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+                    cta = {}
+                }
+
                 view?.showToasterSuccess(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
-                        ctaText = getString(R.string.recom_go_to_wishlist),
-                        ctaListener = {
-                            goToWishlist()
-                        }
+                        message = msg,
+                        ctaText = ctaText,
+                        ctaListener = cta
                 )
             } else {
                 view?.showToasterError(
-                        if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist)
+                        if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
                 )
             }
         } else {

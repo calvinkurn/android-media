@@ -44,7 +44,6 @@
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="pdp_search_hint_tokonow">Cari "'"%s"'" di Tokopedia NOW!</string>
 
-    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="atc_done_add_product_success">Barang berhasil ditambahkan</string>
     <string name="atc_done_add_product_success_button">Berhasil ditambahkan</string>
     <string name="atc_done_see_cart">Lihat Keranjang</string>
