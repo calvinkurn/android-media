@@ -5,7 +5,7 @@ import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProduc
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 
 interface ShopDiscountProductDetailTypeFactory {
-    fun type(uiModel: ShopDiscountProductDetailUiModel): Int
+    fun type(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData): Int
     fun type(shopDiscountProductDetailShimmeringUiModel: ShopDiscountProductDetailShimmeringUiModel): Int
     fun type(shopDiscountProductDetailListGlobalErrorUiModel: ShopDiscountProductDetailListGlobalErrorUiModel): Int
 }

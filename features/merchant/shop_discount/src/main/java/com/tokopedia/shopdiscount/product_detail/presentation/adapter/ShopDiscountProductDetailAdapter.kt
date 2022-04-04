@@ -29,7 +29,7 @@ class ShopDiscountProductDetailAdapter(
         submitList(newList)
     }
 
-    fun addListProductDetailData(data: List<ShopDiscountProductDetailUiModel>) {
+    fun addListProductDetailData(data: List<ShopDiscountProductDetailUiModel.ProductDetailData>) {
         val newList = getNewVisitableItems()
         newList.addAll(data)
         submitList(newList)

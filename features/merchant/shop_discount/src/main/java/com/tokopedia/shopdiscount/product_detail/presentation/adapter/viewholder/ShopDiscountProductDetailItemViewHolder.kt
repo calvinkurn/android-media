@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 open class ShopDiscountProductDetailItemViewHolder(
     itemView: View,
     private val listener: Listener
-) : AbstractViewHolder<ShopDiscountProductDetailUiModel>(itemView) {
+) : AbstractViewHolder<ShopDiscountProductDetailUiModel.ProductDetailData>(itemView) {
     private var viewBinding: ShopDiscountProductDetailItemLayoutBinding? by viewBinding()
 
     companion object {
@@ -26,14 +26,14 @@ open class ShopDiscountProductDetailItemViewHolder(
     }
 
     interface Listener {
-        fun onClickEditProduct(model: ShopDiscountProductDetailUiModel)
+        fun onClickEditProduct(model: ShopDiscountProductDetailUiModel.ProductDetailData)
     }
 
-    override fun bind(uiModel: ShopDiscountProductDetailUiModel) {
+    override fun bind(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
         setProductDetailData(uiModel)
     }
 
-    private fun setProductDetailData(uiModel: ShopDiscountProductDetailUiModel) {
+    private fun setProductDetailData(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
         viewBinding?.apply {
             textProductName.text = uiModel.productName
             imgProduct.loadImage(uiModel.productImageUrl)
