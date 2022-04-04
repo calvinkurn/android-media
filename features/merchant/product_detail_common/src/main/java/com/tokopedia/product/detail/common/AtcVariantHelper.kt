@@ -31,6 +31,7 @@ object AtcVariantHelper {
 
     const val ATC_VARIANT_RESULT_CODE = 19202
     const val KEY_DISMISS_AFTER_ATC = "dismiss_after_atc"
+    const val KEY_EXT_PARAMS = "ext_params"
     const val KEY_SAVE_AFTER_CLOSE = "save_after_close"
 
     /**
@@ -116,6 +117,7 @@ object AtcVariantHelper {
                        isTokoNow: Boolean = false,
                        shopId: String,
                        trackerCdListName: String = "",
+                       extParams: String = "",
                        dismissAfterTransaction: Boolean = false,
                        saveAfterClose: Boolean = true,
                        startActivitResult: (Intent, Int) -> Unit) {
@@ -127,7 +129,17 @@ object AtcVariantHelper {
                 trackerCdListName)
         intent.putExtra(KEY_DISMISS_AFTER_ATC, dismissAfterTransaction)
         intent.putExtra(KEY_SAVE_AFTER_CLOSE, saveAfterClose)
+        intent.putExtra(KEY_EXT_PARAMS, extParams)
         startActivitResult(intent, ATC_VARIANT_RESULT_CODE)
+    }
+
+    /**
+     * Generate string extParams based on key value
+     * eg: "promoID=123&deviceID=123&source="search"
+     */
+    fun generateExtParams(keyValue: Map<String, String>): String {
+        val result = keyValue.map { "${it.key}=${it.value}" }
+        return result.joinToString(separator = "&")
     }
 
     private fun manipulateRestrictionFollowers(restrictionData: RestrictionInfoResponse?, isFavorite: Boolean): RestrictionInfoResponse {
@@ -185,4 +197,5 @@ enum class VariantPageSource(val source: String) {
     BUNDLING_PAGESOURCE("bundling page"),
     TOKONOW_PAGESOURCE("tokonow"),
     BNPL_PAGESOURCE("bnpl-v2"),
+    SHOP_COUPON_PAGESOURCE("shop-coupon-product")
 }

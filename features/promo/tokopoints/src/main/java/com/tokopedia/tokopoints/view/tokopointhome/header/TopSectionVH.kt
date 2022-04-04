@@ -57,6 +57,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.webview.KEY_TITLEBAR
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 
 class TopSectionVH(
     itemView: View,
@@ -535,7 +536,12 @@ class TopSectionVH(
             (progressBarWrapper.parent as ViewGroup).clipToPadding = false
             gravity = Gravity.CENTER_VERTICAL
             if (progressLast > 0 && progressLast > progressCurrent) {
-                setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                setProgressIcon(
+                    AppCompatResources.getDrawable(
+                        itemView.context,
+                        R.drawable.tp_tier_progress
+                    )
+                )
                 setValue(maxProgress, true)
             } else {
                 setProgressIcon(null)
@@ -560,7 +566,12 @@ class TopSectionVH(
                     if (progressCurrent == 0) {
                         progressBar?.setProgressIcon(null)
                     } else {
-                        progressBar?.setProgressIcon(itemView.resources.getDrawable(R.drawable.tp_tier_progress))
+                        progressBar?.setProgressIcon(
+                            AppCompatResources.getDrawable(
+                                itemView.context,
+                                R.drawable.tp_tier_progress
+                            )
+                        )
                     }
                     progressBarIconAnimation(
                         container

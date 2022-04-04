@@ -12,6 +12,8 @@ import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalyticImpl
 import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalyticImpl
+import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalytic
+import com.tokopedia.play.analytic.tagitem.PlayTagItemsAnalyticImpl
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
 import com.tokopedia.play.data.repository.*
@@ -69,6 +71,10 @@ abstract class PlayBindModule {
 
     @Binds
     @PlayScope
+    abstract fun bindSocketRepository(repo: PlayViewerSocketRepositoryImpl): PlayViewerSocketRepository
+
+    @Binds
+    @PlayScope
     abstract fun bindRepository(repo: PlayViewerRepositoryImpl): PlayViewerRepository
 
     /**
@@ -101,6 +107,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindCampaignAnalytic(analytic: PlayCampaignAnalyticImpl): PlayCampaignAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindTagItemsAnalyticFactory(factory: PlayTagItemsAnalyticImpl.Factory): PlayTagItemsAnalytic.Factory
 
     /**
      * Utils
