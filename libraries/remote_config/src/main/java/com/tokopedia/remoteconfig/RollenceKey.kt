@@ -64,4 +64,7 @@ object RollenceKey {
 
     // Fulfillment Rebranding
     const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
+
+    // Logistic
+    const val LCA_REFRESH = "android_lca_refresh"
 }
