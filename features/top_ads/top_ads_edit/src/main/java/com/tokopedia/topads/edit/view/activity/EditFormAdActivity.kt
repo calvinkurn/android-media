@@ -70,6 +70,8 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_base_edit_activity_layout)
+        initView()
+
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendViewFormEvent(VIEW_EDIT_FORM, "")
         renderTabAndViewPager()
         setupToolBar()
@@ -86,6 +88,15 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>,
             getDataFromChildFragments()
             saveChanges()
         }
+    }
+
+    private fun initView() {
+        root = findViewById(R.id.root)
+        toolbar = findViewById(R.id.toolbar)
+        backArrow = findViewById(R.id.backArrow)
+        btnSubmit = findViewById(R.id.btn_submit)
+        tabLayout = findViewById(R.id.tab_layout)
+        viewPager = findViewById(R.id.view_pager)
     }
 
     private fun getDataFromChildFragments() {
