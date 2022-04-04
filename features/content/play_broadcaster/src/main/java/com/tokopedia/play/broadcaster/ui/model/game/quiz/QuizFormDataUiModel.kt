@@ -10,15 +10,16 @@ data class QuizFormDataUiModel(
     val duration: Long = 0,
 ) {
     data class Option(
+        val textChoice: String = "",
         val text: String = "",
         val isMandatory: Boolean = false,
         val isSelected: Boolean = false,
+        val isEditable: Boolean = true,
     ) {
         companion object {
-            fun create(isMandatory: Boolean = false) = Option(
-                text = "",
+            fun create(textChoice: String, isMandatory: Boolean = false) = Option(
+                textChoice = textChoice,
                 isMandatory = isMandatory,
-                isSelected = false,
             )
         }
     }

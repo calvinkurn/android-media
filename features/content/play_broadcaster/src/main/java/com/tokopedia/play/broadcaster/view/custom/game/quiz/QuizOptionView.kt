@@ -36,6 +36,13 @@ class QuizOptionView : ConstraintLayout {
         true,
     )
 
+    var textChoice: String = ""
+        set(value) {
+            field = value
+
+            binding.tvQuizOptionChoice.text = textChoice
+        }
+
     var maxLength: Int = 0
         set(value) {
             if(field != value) {
