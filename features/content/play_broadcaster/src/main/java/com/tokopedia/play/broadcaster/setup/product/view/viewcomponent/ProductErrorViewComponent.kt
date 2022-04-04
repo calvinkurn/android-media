@@ -34,6 +34,13 @@ class ProductErrorViewComponent(
         }
     }
 
+    fun setConnectionError() {
+        view.setType(GlobalError.NO_CONNECTION)
+        view.setActionClickListener {
+            eventBus.emit(Event.RetryClicked)
+        }
+    }
+
     private fun GlobalError.productNotFoundState() {
         errorIllustration.loadImage(getString(R.string.img_search_product_empty))
         errorTitle.text = context.getString(R.string.play_product_not_found_title)

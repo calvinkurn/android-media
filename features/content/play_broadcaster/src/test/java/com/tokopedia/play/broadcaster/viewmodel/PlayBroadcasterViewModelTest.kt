@@ -7,7 +7,9 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -60,8 +62,10 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo
         )
 
-        robot.getConfig()
-        robot.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(countDown)
+        robot.use {
+            it.getConfig()
+            it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(countDown)
+        }
     }
 
     @Test
@@ -70,9 +74,10 @@ class PlayBroadcasterViewModelTest {
             dispatchers = testDispatcher
         )
 
-        val defaultCountDown = robot.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
-
-        robot.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(defaultCountDown)
+        robot.use {
+            val defaultCountDown = it.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
+            it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(defaultCountDown)
+        }
     }
 
     @Test
@@ -91,6 +96,28 @@ class PlayBroadcasterViewModelTest {
             }
 
             state.selectedProduct.assertEqualTo(mockProductTagSection)
+        }
+    }
+
+    @Test
+    fun `when user stop livestreaming and some error occur, it should emit error event`() {
+        val mockWebsocket = mockk<PlayWebSocket>(relaxed = true)
+        val mockException = uiModelBuilder.buildException()
+
+        coEvery { mockWebsocket.close() } throws mockException
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            playBroadcastWebSocket = mockWebsocket,
+        )
+
+        robot.use {
+            val event = robot.recordEvent {
+                it.getViewModel().stopLiveStream()
+            }
+
+            event.last().assertEqualTo(PlayBroadcastEvent.ShowError(mockException))
         }
     }
 }

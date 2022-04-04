@@ -35,7 +35,7 @@ object AddOnMapper {
         var unavailableBottomSheetData = UnavailableBottomSheetData()
 
         if (addOnBottomSheetType == AddOnsResponse.STATUS_SHOW_DISABLED_ADD_ON_BUTTON) {
-            bottomSheetType = AddOnProductData.ADD_ON_UNAVAILABLE_BOTTOM_SHEET
+            bottomSheetType = addOn.addOnsButtonModel.action
             val products = addOn.addOnsBottomSheetModel.products.map {
                 Product(
                         productName = it.productName,
@@ -48,7 +48,7 @@ object AddOnMapper {
                     tickerMessage = addOn.addOnsBottomSheetModel.ticker.text,
             )
         } else {
-            bottomSheetType = AddOnProductData.ADD_ON_BOTTOM_SHEET
+            bottomSheetType = addOn.addOnsButtonModel.action
             availableBottomSheetData = AvailableBottomSheetData(
                     defaultTo = defaultReceiver,
                     defaultFrom = userName,

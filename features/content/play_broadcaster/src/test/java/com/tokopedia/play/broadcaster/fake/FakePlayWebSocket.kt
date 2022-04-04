@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
+import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import kotlinx.coroutines.flow.*
 
@@ -34,6 +35,10 @@ class FakePlayWebSocket(
 
     fun fakeEmitMessage(text: String) {
         webSocketFlow.tryEmit(WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java)))
+    }
+
+    fun invokeFailure(throwable: Throwable) {
+        webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error(throwable)))
     }
 
     fun isOpen() = isOpen

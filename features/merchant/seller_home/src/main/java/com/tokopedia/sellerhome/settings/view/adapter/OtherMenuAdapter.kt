@@ -30,7 +30,7 @@ class OtherMenuAdapter(
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
-        private const val PRODUCT_COUPON_END_DATE = 1648573200000 // Wed Mar 30 2022 00:00:00
+        private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
     }
 
     private val settingList = listOf(
@@ -159,7 +159,8 @@ class OtherMenuAdapter(
     private fun getCentralizedPromoTag(): String {
         val expiredDateMillis = PRODUCT_COUPON_END_DATE
         val todayMillis = Date().time
-        return if (todayMillis < expiredDateMillis) {
+        val shouldShow = listener.getIsMVCProductEnabled() && todayMillis < expiredDateMillis
+        return if (shouldShow) {
             context?.getString(R.string.setting_new_tag).orEmpty()
         } else {
             SellerHomeConst.EMPTY_STRING
@@ -174,6 +175,7 @@ class OtherMenuAdapter(
     interface Listener {
         fun goToPrintingPage()
         fun goToSettings()
+        fun getIsMVCProductEnabled(): Boolean
     }
 
 }
