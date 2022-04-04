@@ -5,60 +5,81 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
-        android:id="@+id/read_review_header_rating"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerReviewRating"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/read_review_satisfaction_rate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:textColor="@color/Unify_N700_96"
-        app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"
-        tools:text="90% pembeli merasa puas" />
+        <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRating
+            android:id="@+id/read_review_header_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/read_review_rating_and_review_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl3"
-        android:textColor="@color/Unify_N700_68"
-        app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
-        app:layout_constraintTop_toBottomOf="@id/read_review_satisfaction_rate"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="20 rating, 10 ulasan" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/read_review_satisfaction_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_5"
+            app:typographyWeight="bold"
+            tools:text="90% pembeli merasa puas" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/read_review_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/review_gallery_header_see_all"
-        android:textColor="@color/Unify_G500"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/read_review_rating_and_review_count"
-        app:layout_constraintTop_toBottomOf="@id/read_review_rating_and_review_count"
-        app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/read_review_rating_and_review_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/read_review_header_rating"
+            app:layout_constraintTop_toBottomOf="@id/read_review_satisfaction_rate"
+            app:layout_constraintVertical_bias="0"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="20 rating, 10 ulasan" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/read_review_header_chevron_right"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        app:icon_name="CHEVRON_RIGHT"
-        app:layout_constraintBottom_toBottomOf="@id/read_review_satisfaction_rate"
-        app:layout_constraintStart_toEndOf="@id/read_review_satisfaction_rate" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/read_review_see_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/review_gallery_header_see_all"
+            android:textColor="@color/Unify_G500"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/read_review_rating_and_review_count"
+            app:layout_constraintTop_toBottomOf="@id/read_review_rating_and_review_count"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/read_review_header_chevron_right"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="4dp"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="@id/read_review_satisfaction_rate"
+            app:layout_constraintStart_toEndOf="@id/read_review_satisfaction_rate" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/readReviewShopChevron"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:visibility="gone"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
@@ -77,7 +98,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/read_review_highlighted_topic_guideline"
-        app:layout_constraintTop_toBottomOf="@id/read_review_rating_and_review_count"
+        app:layout_constraintTop_toBottomOf="@id/containerReviewRating"
         tools:visibility="visible" />
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHighlightedTopic
@@ -99,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="bottom"
-        app:constraint_referenced_ids="read_review_highlighted_topic_left, read_review_highlighted_topic_right, read_review_see_all, read_review_rating_and_review_count" />
+        app:constraint_referenced_ids="read_review_highlighted_topic_left, read_review_highlighted_topic_right, containerReviewRating" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/read_review_filter_divider"

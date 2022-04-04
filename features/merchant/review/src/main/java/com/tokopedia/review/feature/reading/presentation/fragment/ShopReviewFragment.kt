@@ -29,6 +29,7 @@ class ShopReviewFragment : ReadReviewFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hideRatingView()
+
+        showShopPageReviewHeader()
     }
 }

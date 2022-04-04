@@ -736,8 +736,8 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         goToReviewCredibility(userId)
     }
 
-    protected fun hideRatingView() {
-        reviewHeader?.hideRatingView()
+    protected fun showShopPageReviewHeader() {
+        reviewHeader?.showShopPageReviewHeader()
     }
 
     private fun getProductIdFromArguments() {
