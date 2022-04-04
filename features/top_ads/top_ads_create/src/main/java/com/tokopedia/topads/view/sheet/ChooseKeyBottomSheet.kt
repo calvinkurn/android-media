@@ -18,8 +18,8 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
 
     private var keySpecific: RadioButtonUnify? = null
     private var keyBroad: RadioButtonUnify? = null
-    private var desc_1: Typography? = null
-    private var desc_2: Typography? = null
+    private var desc1: Typography? = null
+    private var desc2: Typography? = null
     private var goToStaticSheet: Typography? = null
 
     var onSelect: ((type: String) -> Unit)? = null
@@ -35,6 +35,11 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     private fun initChildLayout() {
         val contentView = View.inflate(context, R.layout.topads_choose_key_bs, null)
         setChild(contentView)
+        keySpecific = contentView.findViewById(R.id.keySpecific)
+        keyBroad = contentView.findViewById(R.id.keyBroad)
+        desc1 = contentView.findViewById(R.id.desc_1)
+        desc2 = contentView.findViewById(R.id.desc_2)
+        goToStaticSheet = contentView.findViewById(R.id.goToStaticSheet)
         showCloseIcon = true
         setTitle(getString(R.string.topads_common_keyword_edit_info_sheet_sub_title))
     }
@@ -47,9 +52,9 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     private fun initView() {
         keySpecific?.setOnCheckedChangeListener(null)
         keyBroad?.setOnCheckedChangeListener(null)
-        desc_1?.text =
+        desc1?.text =
             MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc1))
-        desc_2?.text =
+        desc2?.text =
             MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_desc2))
         goToStaticSheet?.text =
             MethodChecker.fromHtml(getString(R.string.topads_common_choose_type_bs_extra))
@@ -61,11 +66,11 @@ class ChooseKeyBottomSheet : BottomSheetUnify() {
     }
 
     private fun handleClick() {
-        desc_1?.setOnClickListener {
+        desc1?.setOnClickListener {
             keyBroad?.isChecked = true
         }
 
-        desc_2?.setOnClickListener {
+        desc2?.setOnClickListener {
             keySpecific?.isChecked = true
         }
 
