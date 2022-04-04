@@ -44,6 +44,7 @@ object PayloadConverter {
         model.elementId = data.getString(ELEMENT_ID, "")
         model.tribeKey = data.getString(TRIBE_KEY, "")
         model.type = data.getString(NOTIFICATION_TYPE, "")
+        model.pushPayloadExtra.isReviewNotif = data.getBoolean(IS_REVIEW, false)
 
         setNotificationSound(model= model, extras = data)
 
