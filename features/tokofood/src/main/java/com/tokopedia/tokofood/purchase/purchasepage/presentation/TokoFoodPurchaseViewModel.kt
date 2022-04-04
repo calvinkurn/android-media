@@ -55,7 +55,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun loadData() {
-        // Todo : Load from API, if success then map to UiModel, if error show global error
+        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
         if (fragmentUiModel.value != null) {
             if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
