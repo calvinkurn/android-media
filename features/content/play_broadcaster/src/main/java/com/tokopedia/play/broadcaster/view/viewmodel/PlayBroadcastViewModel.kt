@@ -624,6 +624,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
             }
             else {
+                initQuizFormData(interactiveConfig.quizConfig)
                 handleActiveInteractive()
             }
         }) { }
@@ -991,6 +992,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     /**
      * Quiz
      */
+    private fun initQuizFormData(quizConfig: QuizConfigUiModel) {
+        val initialOptions = mutableListOf<QuizFormDataUiModel.Option>()
+        repeat(quizConfig.minChoicesCount) {
+            initialOptions.add(
+                QuizFormDataUiModel.Option.create(isMandatory = true)
+            )
+        }
+
+        _quizFormData.setValue {
+            copy(options = initialOptions)
+        }
+    }
+
     private fun updateQuizEligibleDuration() {
         val remainingDuration = livePusherMediator.remainingDurationInMillis
         val quizConfig = _gameConfig.value.quizConfig

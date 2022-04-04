@@ -13,7 +13,15 @@ data class QuizFormDataUiModel(
         val text: String = "",
         val isMandatory: Boolean = false,
         val isSelected: Boolean = false,
-    )
+    ) {
+        companion object {
+            fun create(isMandatory: Boolean = false) = Option(
+                text = "",
+                isMandatory = isMandatory,
+                isSelected = false,
+            )
+        }
+    }
 
 
     fun isFormValid(): Boolean {
