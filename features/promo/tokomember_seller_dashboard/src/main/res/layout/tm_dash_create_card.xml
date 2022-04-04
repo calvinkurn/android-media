@@ -107,6 +107,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tvTitleCardBg" />
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnContinueCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/unify_space_16"

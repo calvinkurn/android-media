@@ -28,6 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.tokopedia.tkpd.ErrorMessageActivity" />
+        <activity android:name="com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity"/>
+        <activity android:name="com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

@@ -1,6 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/headerProgram"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitle="Langkah 2 dari 4"
+        app:title="Buat Program" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerProgram"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Detail informasi" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDurasi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvDetail"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="Detail informasi" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipText="6 Bulan"
+        app:chipType="selected"
+        app:isDashed="false"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvDurasi"
+        app:showNewNotification="false" />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_8"
+        app:centerText="true"
+        app:chipSize="medium"
+        app:chipText="6 Bulan"
+        app:chipType="normal"
+        app:isDashed="false"
+        app:layout_constraintStart_toEndOf="@+id/chipOne"
+        app:layout_constraintTop_toBottomOf="@id/tvDurasi"
+        app:showNewNotification="false" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldDuration"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        app:layout_constraintTop_toBottomOf="@id/chipOne"
+        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_input_type="text|number"
+        app:unify_text_field_label="Kam, 12 Jan 2022"
+        app:unify_text_field_label_static="false"
+        app:unify_text_field_message="Program mulai pukul 00:00 WIB"
+        app:unify_text_field_prepend_text="Kam" />
+
+    <View
+        android:id="@+id/viewDivider"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldDuration" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvDetailLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        app:layout_constraintTop_toBottomOf="@id/viewDivider"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Skema level" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iconInfo"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="@dimen/unify_space_4"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/tvDetailLevel"
+        app:layout_constraintStart_toEndOf="@id/tvDetailLevel"
+        app:layout_constraintTop_toTopOf="@id/tvDetailLevel" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldTranskPremium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        app:layout_constraintTop_toBottomOf="@id/tvDetailLevel"
+        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_input_type="text|number"
+        app:unify_text_field_label="Kam, 12 Jan 2022"
+        app:unify_text_field_label_static="false"
+        app:unify_text_field_message="Program mulai pukul 00:00 WIB"
+        app:unify_text_field_prepend_text="Kam" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/textFieldTranskVip"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        app:layout_constraintTop_toBottomOf="@id/textFieldTranskPremium"
+        app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_input_type="text|number"
+        app:unify_text_field_label="Kam, 12 Jan 2022"
+        app:unify_text_field_label_static="false"
+        app:unify_text_field_message="Program mulai pukul 00:00 WIB"
+        app:unify_text_field_prepend_text="Kam" />
+
+    <View
+        android:id="@+id/viewDividerTwo"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldTranskVip" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:text="Buat Program"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonSize="large" />
 </androidx.constraintlayout.widget.ConstraintLayout>

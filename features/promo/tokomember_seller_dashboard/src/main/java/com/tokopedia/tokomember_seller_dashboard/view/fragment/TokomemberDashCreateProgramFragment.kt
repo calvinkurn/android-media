@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateCardViewModel
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
@@ -43,6 +45,20 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
+        tokomemberDashProgramViewmodel.tokomemberProgramResultLiveData.observe(viewLifecycleOwner,{
+            when(it){
+                is Success -> {
+                    renderProgramUI(it.data.membershipGetProgramForm)
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
+    private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+
 
     }
 

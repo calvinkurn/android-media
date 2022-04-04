@@ -1,6 +1,7 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
 import com.tokopedia.tokomember_seller_dashboard.model.ColorTemplateListItem
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetCardForm
+import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashCardColorAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashCardColorBgAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.decoration.TokomemberDashColorItemDecoration
@@ -135,6 +137,9 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment() {
         }
         tokomemberDashCardColorBgAdapter.cardColorList = membershipGetCardForm?.cardTemplateImageList as ArrayList<CardTemplateImageListItem>
         tokomemberDashCardColorBgAdapter.notifyDataSetChanged()
+        btnContinueCard?.setOnClickListener {
+            startActivity(Intent(this.context , TokomemberDashCreateProgramActivity::class.java))
+        }
     }
 
     companion object {
