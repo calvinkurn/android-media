@@ -21,3 +21,7 @@ fun Date.toCalendar(): Calendar {
     calendar.time = this
     return calendar
 }
+
+fun Long.unixToMs(): Long {
+    return this * 1000L
+}

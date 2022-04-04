@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/section_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.ticker.TickerViewPager
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
+        android:id="@+id/quota_source_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
+        android:id="@+id/quota_left_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
+        android:id="@+id/expiry_section"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <include
+        android:id="@+id/shimmering_layout"
+        layout="@layout/layout_bottom_sheet_shop_discount_seller_info_shimmering" />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        tools:globalerrors_type="SERVER_ERROR"
+        tools:visibility="visible" />
+</LinearLayout>

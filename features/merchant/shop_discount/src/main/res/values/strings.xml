@@ -29,4 +29,21 @@
     <string name="product_detail_stock_and_total_warehouse_format">Stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
     <string name="product_detail_start_date_end_date_format">%1s - %2s</string>
 
+    <!--  Seller Info Bottomsheet  -->
+    <string name="seller_info_bottom_sheet_title">Info dan kuota Diskon Toko</string>
+    <string name="seller_info_quota_source_quota_source_title">Sumber kuota</string>
+    <string name="seller_info_bottom_sheet_quota_source_description">Kamu punya 1 sumber lainnya</string>
+    <string name="seller_info_bottom_sheet_quota_source_content_format"><![CDATA[<b>%1s</b>]]></string>
+    <string name="seller_info_bottom_sheet_package_option_non_vps_description">Kuota tidak dibatasi • Tidak ada kedaluwarsa</string>
+    <string name="seller_info_bottom_sheet_package_option_vps_description_format">Sisa kuota %1d/%2d • Kedaluwarsa %3s</string>
+    <string name="seller_info_bottom_sheet_quota_left_title">Sisa kuota</string>
+    <string name="seller_info_bottom_sheet_quota_left_content_vps_format"><![CDATA[<b>$1d</b>]]> / %2d produk</string>
+    <string name="seller_info_bottom_sheet_quota_left_content_non_vps"><![CDATA[<b>Tidak dibatasi]]></string>
+    <string name="seller_info_bottom_sheet_quota_left_vps_description">Kuota dihitung dari jumlah Produk Utama dengan Diskon Toko</string>
+    <string name="seller_info_bottom_sheet_expiry_title">Kedaluwarsa</string>
+    <string name="seller_info_bottom_sheet_expiry_content_non_vps"><![CDATA[<b>Tidak ada</b>]]></string>
+    <string name="seller_info_bottom_sheet_expiry_description_non_vps">Keuntungan berlaku selama keanggotaan tokomu aktif</string>
+
+
+
 </resources>
