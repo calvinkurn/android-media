@@ -5,24 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_quiz_option"
-    android:paddingStart="@dimen/spacing_lvl5"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingEnd="@dimen/spacing_lvl5"
-    android:paddingBottom="@dimen/spacing_lvl3">
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
 
     <FrameLayout
         android:id="@+id/fl_quiz_option"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/play_bro_quiz_option_choice_size"
+        android:layout_height="@dimen/play_bro_quiz_option_choice_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_quiz_option_choice"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_game_option_choice"
             android:gravity="center"
             android:textColor="@color/Unify_NN300"
@@ -30,8 +30,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_quiz_option_checked"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
