@@ -35,8 +35,9 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 /**
@@ -44,6 +45,10 @@ import javax.inject.Inject
  */
 
 class EditNegativeKeywordsFragment : BaseDaggerFragment() {
+
+    private var keywordCount: Typography? = null
+    private var addImage: ImageUnify? = null
+    private var addKeyword: Typography? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -69,12 +74,22 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword, this::onAddKeyword, ::onStatusChange))
+        adapter =
+            EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword,
+                this::onAddKeyword, ::onStatusChange))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_edit_negative_keyword_layout), container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view =
+            inflater.inflate(resources.getLayout(R.layout.topads_edit_negative_keyword_layout),
+                container,
+                false)
         recyclerView = view.findViewById(R.id.keyword_list)
+        keywordCount = view.findViewById(R.id.keyword_count)
+        addImage = view.findViewById(R.id.add_image)
+        addKeyword = view.findViewById(R.id.add_keyword)
         setAdapter()
         return view
     }
@@ -137,7 +152,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
             dialog.setDescription(MethodChecker.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
-                    (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
+                (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
             dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
             dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
             dialog.setPrimaryCTAClickListener {
@@ -177,9 +192,10 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         updateItemCount()
         view?.let {
-            Toaster.build(it, getString(com.tokopedia.topads.common.R.string.topads_neg_keyword_common_del_toaster),
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL).show()
+            Toaster.build(it,
+                getString(com.tokopedia.topads.common.R.string.topads_neg_keyword_common_del_toaster),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL).show()
         }
     }
 
@@ -200,7 +216,9 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        keyword_count.text = String.format(getString(R.string.topads_edit_kata_kunci_negative_count), adapter.items.size)
+        keywordCount?.text =
+            String.format(getString(R.string.topads_edit_kata_kunci_negative_count),
+                adapter.items.size)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -211,8 +229,9 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         })
 
-        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
-        add_keyword.setOnClickListener {
+        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context,
+            com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
+        addKeyword?.setOnClickListener {
             onAddKeyword()
         }
     }
@@ -226,16 +245,17 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun setVisibilityOperation(visibility: Int) {
-        keyword_count.visibility = visibility
-        add_keyword.visibility = visibility
-        add_image.visibility = visibility
+        keywordCount?.visibility = visibility
+        addKeyword?.visibility = visibility
+        addImage?.visibility = visibility
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
-                val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
+                val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(
+                    SELECTED_KEYWORD)
                 restoreData = data?.getParcelableArrayListExtra(RESTORED_DATA)
                 if (selected?.size != 0)
                     addKeywords(selected)
