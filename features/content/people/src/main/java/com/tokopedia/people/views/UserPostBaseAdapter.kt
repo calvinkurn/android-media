@@ -26,7 +26,8 @@ open class UserPostBaseAdapter(
     private var userName: String = "",
     val userProfileTracker: UserProfileTracker?,
     val profileUserId: String,
-    val userId: String
+    val userId: String,
+    val reminderCallback: ReminderCallback
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var activityId = ""
@@ -312,11 +313,9 @@ open class UserPostBaseAdapter(
         channelId: String,
         isActive: Boolean
     ) {
-        viewModel.updatePostReminderStatus(channelId, isActive)
         val pos = getItemPosition(channelId)
+        reminderCallback.updatePostReminderStatus(channelId, isActive, pos)
         items[pos].configurations.reminder.isSet = isActive
-//        notifyDataSetChanged()
-        notifyItemChanged(pos)
     }
 
     private fun getItemPosition(channelId: String): Int {
@@ -370,3 +369,6 @@ open class UserPostBaseAdapter(
 
 }
 
+interface ReminderCallback{
+    fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
+}

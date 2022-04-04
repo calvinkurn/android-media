@@ -44,9 +44,7 @@
                     android:layout_marginTop="@dimen/unify_space_48"
                     android:background="@color/Unify_Background"
                     android:measureAllChildren="false"
-                    android:paddingStart="@dimen/unify_space_16"
                     android:paddingTop="@dimen/unify_space_8"
-                    android:paddingEnd="@dimen/unify_space_16"
                     android:paddingBottom="@dimen/unify_space_16"
                     android:visibility="visible">
 
@@ -56,6 +54,7 @@
                         android:layout_height="@dimen/up_live_circle_size"
                         android:background="@drawable/up_live_ring_bg"
                         android:visibility="invisible"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,7 +62,8 @@
                         android:id="@+id/img_profile_image"
                         android:layout_width="@dimen/unify_space_64"
                         android:layout_height="@dimen/unify_space_64"
-                        android:layout_margin="@dimen/unify_space_6"
+                        android:layout_marginTop="@dimen/unify_space_6"
+                        android:layout_marginBottom="@dimen/unify_space_6"
                         app:layout_constraintBottom_toBottomOf="@+id/view_profile_outer_ring"
                         app:layout_constraintEnd_toEndOf="@+id/view_profile_outer_ring"
                         app:layout_constraintLeft_toLeftOf="@+id/view_profile_outer_ring"
@@ -77,6 +77,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_64"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:background="@drawable/bg_up_live"
                         android:gravity="center"
                         android:paddingStart="@dimen/unify_space_4"
@@ -128,6 +129,7 @@
                         android:id="@+id/text_following_count"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/unify_space_16"
                         android:gravity="center"
                         android:textColor="@color/Unify_NN950"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -172,6 +174,7 @@
                         android:id="@+id/text_following_label"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/unify_space_16"
                         android:gravity="center"
                         android:text="@string/up_lb_following"
                         android:textColor="@color/Unify_NN600"
@@ -201,6 +204,7 @@
                         android:id="@+id/text_display_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginTop="@dimen/unify_space_12"
                         android:textColor="@color/Unify_NN950"
                         app:layout_constraintStart_toStartOf="parent"
@@ -213,6 +217,7 @@
                         android:id="@+id/text_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginTop="@dimen/cp_dp_2"
                         android:textColor="@color/Unify_NN600"
                         app:layout_constraintStart_toStartOf="parent"
@@ -225,6 +230,8 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_4"
+                        android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginEnd="@dimen/unify_space_16"
                         android:ellipsize="end"
                         android:gravity="left"
                         android:textColor="@color/Unify_NN950"
@@ -240,6 +247,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginEnd="@dimen/unify_space_16"
                         android:maxLines="3"
                         android:text="@string/up_link_see_more"
                         android:textColor="@color/Unify_GN500"
@@ -249,22 +258,38 @@
                         app:typographyType="body_2"
                         app:typographyWeight="bold" />
 
-                    <com.tokopedia.unifycomponents.UnifyButton
-                        android:id="@+id/btn_action_follow"
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/linear_button"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="0dp"
                         android:layout_marginTop="@dimen/unify_space_16"
-                        android:text="Ubah Profil"
-                        android:textColor="@color/Unify_NN300"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/text_see_more"
-                        app:unifyButtonSize="medium"
-                        app:unifyButtonType="transaction"
-                        app:unifyButtonVariant="ghost" />
+                        android:orientation="vertical">
 
+                    <com.tokopedia.unifycomponents.UnifyButton
+                        android:id="@+id/btn_action_follow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_NN300"
+                        android:layout_marginStart="@dimen/unify_space_16"
+                        android:layout_marginEnd="@dimen/unify_space_16"
+                        app:unifyButtonSize="small"
+                        app:unifyButtonVariant="text" />
+
+                    <View android:layout_height="1dp"
+                        android:layout_width="match_parent"
+                        android:background="#BFC9D9"
+                        android:layout_marginTop="@dimen/unify_space_16"
+                        android:id="@+id/view_line"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="0dp"/>
+                    </LinearLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -278,31 +303,16 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_action_follow">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <View android:layout_height="1dp"
-                    android:layout_width="match_parent"
-                    android:background="#BFC9D9"
-                    android:id="@+id/view_line"
-                    android:layout_marginStart="0dp"
-                    android:layout_marginEnd="0dp"/>
+            app:layout_constraintTop_toBottomOf="@+id/linear_button">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/unify_space_16"
-                    android:layout_marginTop="@dimen/unify_space_8"
                     android:layout_marginEnd="@dimen/unify_space_16"
                     android:clipToPadding="false"
                     tools:listitem="@layout/up_item_user_post" />
-
-            </LinearLayout>
 
             <include layout="@layout/up_shimmer_user_post" />
 

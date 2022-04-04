@@ -72,7 +72,8 @@ class UserProfileFragment : BaseDaggerFragment(),
     AdapterCallback,
     ShareBottomsheetListener,
     ScreenShotListener,
-    PermissionListener {
+    PermissionListener,
+    ReminderCallback{
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -114,6 +115,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             userProfileTracker,
             profileUserId,
             userId,
+            this
         )
     }
 
@@ -575,7 +577,6 @@ class UserProfileFragment : BaseDaggerFragment(),
                                 Toaster.LENGTH_LONG,
                                 Toaster.TYPE_NORMAL
                             ).show()
-                            mAdapter.notifyDataSetChanged()
                         }
                     }
                     is ErrorMessage -> {
@@ -641,7 +642,11 @@ class UserProfileFragment : BaseDaggerFragment(),
         appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
         if (data.profileHeader.profile.username.isNotBlank()) {
+            textUserName?.show()
             textUserName?.text = "@" + data.profileHeader.profile.username
+        }
+        else{
+            textUserName?.hide()
         }
 
         textDisplayName?.text = data.profileHeader.profile.name
@@ -666,6 +671,13 @@ class UserProfileFragment : BaseDaggerFragment(),
         profileUserId = data.profileHeader.profile.userID
         userWebLink = data.profileHeader.profile.sharelink.weblink
         textBio?.maxLines = MAX_LINE
+
+        if(data.profileHeader.profile.biography.isNullOrEmpty()){
+            textBio?.hide()
+        }
+        else{
+            textBio?.show()
+        }
 
         data.profileHeader.profile.biography = data.profileHeader.profile.biography.replace("\n", "<br />")
 
@@ -1076,6 +1088,20 @@ class UserProfileFragment : BaseDaggerFragment(),
             UniversalShareBottomSheet.CUSTOM_SHARE_SHEET ->{
                 userSession?.userId?.let { UserProfileTracker().clickCloseShareButton(it, profileUserId == it) }
             }
+        }
+    }
+
+    override fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int) {
+        if(userSession?.isLoggedIn == false){
+            startActivityForResult(
+                RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
+        }
+        else{
+
+            mPresenter.updatePostReminderStatus(channelId, isActive)
+            mAdapter.notifyItemChanged(pos)
         }
     }
 }

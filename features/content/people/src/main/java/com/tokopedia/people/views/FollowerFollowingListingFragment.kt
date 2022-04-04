@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.people.R
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
@@ -144,6 +145,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
 
             title = arguments?.getString(EXTRA_DISPLAY_NAME).toString()
             userId = arguments?.getString(UserProfileFragment.EXTRA_USER_ID).toString()
+            subheaderView?.gone()
 
             setNavigationOnClickListener {
                 activity?.onBackPressed()
