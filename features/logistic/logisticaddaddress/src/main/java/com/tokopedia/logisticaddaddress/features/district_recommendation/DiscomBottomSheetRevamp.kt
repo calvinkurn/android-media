@@ -229,6 +229,10 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                         viewBinding?.tvDescInputDistrict?.visibility = View.GONE
                         viewBinding?.llPopularCity?.visibility = View.VISIBLE
                         viewBinding?.rvListDistrict?.visibility = View.GONE
+                        if (isEdit) {
+                            viewBinding?.layoutUseCurrentLoc?.visibility = View.VISIBLE
+                            viewBinding?.dividerUseCurrentLocation?.visibility = View.VISIBLE
+                        }
                         popularCityAdapter.notifyDataSetChanged()
                     } else {
                         input = viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
@@ -348,21 +352,19 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     override fun setResultDistrict(data: Data, lat: Double, long: Double) {
-        context?.let {
-            setTitle("Kode Pos")
-            isKodePosShown = true
-            val districtModel = Address()
-            districtModel.setDistrictId(data.districtId)
-            districtModel.setDistrictName(data.districtName)
-            districtModel.setCityId(data.cityId)
-            districtModel.setCityName(data.cityName)
-            districtModel.setProvinceId(data.provinceId)
-            districtModel.setProvinceName(data.provinceName)
-            districtModel.setZipCodes(arrayListOf(data.postalCode))
-            discomRevampListener?.onGetDistrict(districtModel)
-            setupRvZipCodeChips()
-            getDistrict(districtModel)
-        }
+        setTitle("Kode Pos")
+        isKodePosShown = true
+        val districtModel = Address()
+        districtModel.setDistrictId(data.districtId)
+        districtModel.setDistrictName(data.districtName)
+        districtModel.setCityId(data.cityId)
+        districtModel.setCityName(data.cityName)
+        districtModel.setProvinceId(data.provinceId)
+        districtModel.setProvinceName(data.provinceName)
+        districtModel.setZipCodes(arrayListOf(data.postalCode))
+        discomRevampListener?.onGetDistrict(districtModel)
+        setupRvZipCodeChips()
+        getDistrict(districtModel)
     }
 
     override fun showToasterError(message: String) {
