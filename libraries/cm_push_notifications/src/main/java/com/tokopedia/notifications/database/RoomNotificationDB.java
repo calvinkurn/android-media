@@ -10,6 +10,7 @@ import com.tokopedia.notifications.data.converters.NotificationStatusConverter;
 import com.tokopedia.notifications.data.converters.ProductInfoConverter;
 import com.tokopedia.notifications.data.converters.PushActionButtonConverter;
 import com.tokopedia.notifications.data.converters.PushPersistentButtonConvertor;
+import com.tokopedia.notifications.data.converters.ReviewConverter;
 import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
@@ -30,7 +31,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 9)
+}, version = 10)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -40,7 +41,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CarouselConverter.class,
         GridConverter.class,
         ProductInfoConverter.class,
-        PushPersistentButtonConvertor.class
+        PushPersistentButtonConvertor.class,
+        ReviewConverter.class
 })
 public abstract class RoomNotificationDB extends RoomDatabase {
 
@@ -111,6 +113,13 @@ public abstract class RoomNotificationDB extends RoomDatabase {
         }
     };
 
+    private static final Migration MIGRATION_9_10 = new Migration(9, 10) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `payload_extra` TEXT");
+        }
+    };
+
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomNotificationDB.class) {
@@ -125,7 +134,8 @@ public abstract class RoomNotificationDB extends RoomDatabase {
                                     MIGRATION_5_6,
                                     MIGRATION_6_7,
                                     MIGRATION_7_8,
-                                    MIGRATION_8_9
+                                    MIGRATION_8_9,
+                                    MIGRATION_9_10
                             ).build();
                 }
             }

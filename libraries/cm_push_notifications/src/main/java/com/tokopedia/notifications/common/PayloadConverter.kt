@@ -118,6 +118,7 @@ object PayloadConverter {
         model.elementId = data.elementId
         model.tribeKey = data.tribeKey
         model.type = data.type
+        model.payloadExtra.isReviewNotif = data.isReviewNotif
 
         setNotificationSound(model, data)
 

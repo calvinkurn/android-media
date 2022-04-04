@@ -140,6 +140,7 @@ public interface CMConstant {
         String REVIEW_SCORE = "reviewScore";
         String REVIEW_NUMBER = "reviewNumber";
         String REVIEW_ICON = "reviewIcon";
+        String IS_REVIEW = "isReviewNotif";
 
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
@@ -205,6 +206,7 @@ public interface CMConstant {
 
         String ACTION_BANNER_CLICK ="com.tokopedia.notification.ACTION_BANNER_CLICK";
         String ACTION_NOTIFICATION_BLANK = "com.tokopedia.notification.action_notification_blank";
+        String ACTION_REVIEW_NOTIFICATION_STAR_CLICKED = "com.tokopedia.notification.STAR_CLICKED";
     }
 
     interface CouponCodeExtra {
@@ -230,6 +232,15 @@ public interface CMConstant {
         String SCREEN_NAME = "screenName";
         String SCREEN_NAME_VALUE = "CM Applink Handler";
         String UTM_GCLID = "gclid";
+    }
+
+    interface ReviewStarNumber {
+        String STAR_NUMBER = "starNumber";
+        String ONE_STAR = "1";
+        String TWO_STAR = "2";
+        String THREE_STAR = "3";
+        String FOUR_STAR = "4";
+        String FIVE_STAR = "5";
     }
 
 }

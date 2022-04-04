@@ -12,9 +12,11 @@ import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.BaseNotificationModel;
+import com.tokopedia.notifications.model.PayloadExtra;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author lalit.singh
@@ -41,7 +43,12 @@ public class CMNotificationFactory {
             case CMConstant.NotificationType.GENERAL:
             case CMConstant.NotificationType.BIG_IMAGE:
             case CMConstant.NotificationType.ACTION_BUTTONS: {
-                return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                Boolean isReviewOn = baseNotificationModel.getPayloadExtra().isReviewNotif();
+                if (isReviewOn != null && isReviewOn) {
+                    return new ReviewNotification(context.getApplicationContext(), baseNotificationModel);
+                } else {
+                    return new RichDefaultNotification(context.getApplicationContext(), baseNotificationModel);
+                }
             }
 
             case CMConstant.NotificationType.PERSISTENT:

@@ -239,7 +239,12 @@ data class AmplificationBaseNotificationModel(
 
         @SerializedName(NOTIFICATION_SOUND)
         @Expose
-        var notificationSound: String? = null
+        var notificationSound: String? = null,
+
+        @Expose
+        @SerializedName(IS_REVIEW)
+        @ColumnInfo(name = "isReviewNotif")
+        var isReviewNotif: Boolean? = false,
 ) : Parcelable {
 
     fun webHookParamData(): String? {
