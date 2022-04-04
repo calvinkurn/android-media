@@ -20,7 +20,11 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -84,13 +88,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
 
         val visitablesData = (viewModel.initialData.value as Success).data
@@ -127,13 +131,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", false)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify(inverse = true) {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), false)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
     }
 
@@ -142,13 +146,13 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         val aggregatorParams = generateParamsVariantFulfilled("2147818569", true, true)
 
         coEvery {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         } returns AggregatorMiniCartUiModel()
 
         viewModel.decideInitialValue(aggregatorParams, true)
 
         coVerify {
-            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true)
+            aggregatorMiniCartUseCase.executeOnBackground(any(), any(), any(), any(), any(), any(), true, any())
         }
 
         Assert.assertEquals(viewModel.getActivityResultData().shouldRefreshPreviousPage, true)
