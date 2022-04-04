@@ -3,12 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="@dimen/play_engagement_tools_width"
+    android:layout_width="104dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:layout_width="match_parent">
 
-    <!--Add alpha 0.7 to background-->
     <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/iv_engagement_tools"
         app:rImg_cornerRadius="@dimen/engagement_icon_radius"
@@ -51,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginBottom="20dp"
-            android:text="Berakhir:"
+            tools:text="@string/play_common_widget_timer_quiz_info"
             android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

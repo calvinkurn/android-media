@@ -16,4 +16,6 @@
 
     <!-- Game -->
     <string name="play_game_header_title_hint">Mau kasih pertanyan apa?</string>
+    <string name="play_common_widget_timer_quiz_info">Berakhir:</string>
+    <string name="play_common_widget_timer_taptap_info">Dimulai:</string>
 </resources>
