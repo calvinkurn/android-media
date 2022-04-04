@@ -34,12 +34,18 @@ import com.tokopedia.topads.edit.view.adapter.edit_product.EditProductListAdapte
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProductItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
-import kotlinx.android.synthetic.main.topads_edit_fragment_product_list_edit.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 private const val CLICK_TAMBAH_PRODUK = "click - tambah produk"
 private const val PRODUCT_EDIT_NAME = "android.topads_edit"
+
 class EditProductFragment : BaseDaggerFragment() {
+
+    private var productCount: Typography? = null
+    private var addImage: ImageUnify? = null
+    private var addProduct: Typography? = null
 
     private var buttonStateCallback: SaveButtonStateCallBack? = null
 
@@ -47,8 +53,10 @@ class EditProductFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var adapter: EditProductListAdapter
     private var originalIdList: MutableList<String> = arrayListOf()
-    private var deletedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
-    private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = mutableListOf()
+    private var deletedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
+        mutableListOf()
+    private var addedProducts: MutableList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
+        mutableListOf()
     private var btnState = true
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -81,10 +89,19 @@ class EditProductFragment : BaseDaggerFragment() {
         getComponent(TopAdsEditComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
 
-        val view = inflater.inflate(resources.getLayout(R.layout.topads_edit_fragment_product_list_edit), container, false)
+        val view =
+            inflater.inflate(resources.getLayout(R.layout.topads_edit_fragment_product_list_edit),
+                container, false)
         recyclerView = view.findViewById(R.id.product_list)
+        productCount = view.findViewById(R.id.product_count)
+        addImage = view.findViewById(R.id.add_image)
+        addProduct = view.findViewById(R.id.add_product)
         setAdapter()
         return view
     }
@@ -109,20 +126,31 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun fetchNextPage(page: Int) {
-        viewModel.getAds(page, arguments?.getString(GROUP_ID), PRODUCT_EDIT_NAME, this::onSuccessGetAds)
+        viewModel.getAds(page,
+            arguments?.getString(GROUP_ID),
+            PRODUCT_EDIT_NAME,
+            this::onSuccessGetAds)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditProductListAdapter(EditProductListAdapterTypeFactoryImpl(this::onProductListDeleted))
+        adapter =
+            EditProductListAdapter(EditProductListAdapterTypeFactoryImpl(this::onProductListDeleted))
         fetchData()
     }
 
     private fun fetchData() {
-        viewModel.getAds(currentPageNum, arguments?.getString(GROUP_ID), PRODUCT_EDIT_NAME, this::onSuccessGetAds)
+        viewModel.getAds(currentPageNum,
+            arguments?.getString(GROUP_ID),
+            PRODUCT_EDIT_NAME,
+            this::onSuccessGetAds)
     }
 
-    private fun onSuccessGetAds(data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>, total: Int, perPage: Int) {
+    private fun onSuccessGetAds(
+        data: List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>,
+        total: Int,
+        perPage: Int,
+    ) {
         totalCount = total
         totalPage = if (totalCount % perPage == 0) {
             totalCount / perPage
@@ -161,8 +189,8 @@ class EditProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
-        add_product.setOnClickListener {
+        addImage?.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.topads_plus_add_keyword))
+        addProduct?.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_TAMBAH_PRODUK, "")
             val intent = Intent(context, SelectProductActivity::class.java)
             intent.putStringArrayListExtra(EXISTING_IDS, adapter.getCurrentIds())
@@ -187,22 +215,25 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        product_count.text = String.format(getString(R.string.product_count), totalCount)
+        productCount?.text = String.format(getString(R.string.product_count), totalCount)
     }
 
     private fun setVisibilityOperation(visiblity: Int) {
         btnState = visiblity == View.VISIBLE
         buttonStateCallback?.setButtonState()
-        product_count.visibility = visiblity
-        add_product.visibility = visiblity
-        add_image.visibility = visiblity
+        productCount?.visibility = visiblity
+        addProduct?.visibility = visiblity
+        addImage?.visibility = visiblity
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_OK) {
             if (resultCode == Activity.RESULT_OK) {
-                createProduct(data?.getStringArrayListExtra(RESULT_PRICE), data?.getStringArrayListExtra(RESULT_PROUCT), data?.getStringArrayListExtra(RESULT_NAME), data?.getStringArrayListExtra(RESULT_IMAGE))
+                createProduct(data?.getStringArrayListExtra(RESULT_PRICE),
+                    data?.getStringArrayListExtra(RESULT_PROUCT),
+                    data?.getStringArrayListExtra(RESULT_NAME),
+                    data?.getStringArrayListExtra(RESULT_IMAGE))
                 sharedViewModel.setProductIds(getProductIds())
             }
         }
@@ -255,9 +286,9 @@ class EditProductFragment : BaseDaggerFragment() {
 
     private fun filterAddedProducts() {
         /// for the products which are added and removed
-        deletedProducts.forEach { deleted->
+        deletedProducts.forEach { deleted ->
             val iterator = addedProducts.iterator()
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 val key = iterator.next()
                 if (key.itemID == deleted.itemID) {
                     iterator.remove()
@@ -277,7 +308,8 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun getAddedArray(): List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> {
-        val list: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = arrayListOf()
+        val list: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
+            arrayListOf()
         addedProducts.forEach {
             list.add(it)
         }
@@ -285,7 +317,8 @@ class EditProductFragment : BaseDaggerFragment() {
     }
 
     private fun getDeletedArray(): List<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> {
-        val list: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = arrayListOf()
+        val list: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> =
+            arrayListOf()
         deletedProducts.forEach {
             list.add(it)
         }
