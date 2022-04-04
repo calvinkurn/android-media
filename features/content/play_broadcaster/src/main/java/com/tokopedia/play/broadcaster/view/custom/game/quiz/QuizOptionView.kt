@@ -47,21 +47,25 @@ class QuizOptionView : ConstraintLayout {
 
     var textChoice: String = ""
         set(value) {
-            field = value
+            needChange(field, value) {
+                field = value
 
-            binding.tvQuizOptionChoice.text = value
+                binding.tvQuizOptionChoice.text = value
+            }
         }
 
     var textHint: String = ""
         set(value) {
-            field = value
+            needChange(field, value) {
+                field = value
 
-            binding.etQuizOption.hint = value
+                binding.etQuizOption.hint = value
+            }
         }
 
     var maxLength: Int = 0
         set(value) {
-            if(field != value) {
+            needChange(field, value) {
                 field = value
 
                 binding.etQuizOption.filters = arrayOf(InputFilter.LengthFilter(maxLength))
@@ -70,18 +74,20 @@ class QuizOptionView : ConstraintLayout {
 
     var isEditable: Boolean = true
         set(value) {
-            field = value
+            needChange(field, value) {
+                field = value
 
-            binding.etQuizOption.apply {
-                isFocusable = value
-                isFocusableInTouchMode = value
-                isEnabled = value
+                binding.etQuizOption.apply {
+                    isFocusable = value
+                    isFocusableInTouchMode = value
+                    isEnabled = value
+                }
             }
         }
 
     var isCorrect: Boolean = false
         set(value) {
-            if(field != value) {
+            needChange(field, value) {
                 field = value
                 binding.apply {
                     tvQuizOptionChoice.showWithCondition(!value)
@@ -106,11 +112,18 @@ class QuizOptionView : ConstraintLayout {
 
     var text: String = ""
         set(value) {
-            field = value
-            binding.etQuizOption.setText(value)
+            needChange(binding.etQuizOption.text.toString(), value) {
+                field = value
+                binding.etQuizOption.setText(value)
+                binding.etQuizOption.setSelection(value.length)
+            }
         }
 
     fun setOnTextChanged(listener: (String) -> Unit) {
         mTextOnChangedListener = listener
+    }
+
+    private fun <T> needChange(prev: T, curr: T, block: () -> Unit) {
+        if(prev != curr) block()
     }
 }

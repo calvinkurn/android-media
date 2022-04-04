@@ -963,7 +963,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleInputQuizOption(order: Int, text: String) {
-        /** TODO: handle */
+        val options = _quizFormData.value.options
+
+        val isAutoSelectEligible = needToAutoSelectQuizOption(options, text)
+        _quizFormData.setValue {
+            copy(options = options.map {
+                it.copy(
+                    isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
+                    text = if(it.order == order) text else it.text
+                )
+            })
+        }
+
+        /** TODO: handle add new options or not */
     }
 
     private fun handleSelectQuizOption(order: Int) {
@@ -1039,6 +1051,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             )
         }
+    }
+
+    private fun needToAutoSelectQuizOption(options: List<QuizFormDataUiModel.Option>, text: String): Boolean {
+        val noSelectedChoice = options.firstOrNull { it.isSelected } == null
+        return noSelectedChoice && text.isNotEmpty()
     }
 
     /**
