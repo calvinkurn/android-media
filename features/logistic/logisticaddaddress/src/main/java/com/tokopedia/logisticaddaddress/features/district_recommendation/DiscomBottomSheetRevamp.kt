@@ -269,6 +269,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             }
         }
         viewBinding?.layoutUseCurrentLoc?.setOnClickListener {
+            EditAddressRevampAnalytics.onClickGunakanLokasiIni(userSession.userId)
             requestPermissionLocation()
         }
     }
