@@ -175,7 +175,7 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = PickerIntent.get(intent)
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
 

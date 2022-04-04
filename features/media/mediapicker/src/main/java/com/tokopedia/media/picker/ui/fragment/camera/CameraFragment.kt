@@ -112,6 +112,11 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onResume() {
         super.onResume()
         cameraView.open()
+
+        // show storage full toaster every single user open camera page
+        if (controller.isVideoMode() && listener?.isMinStorageThreshold() == true) {
+            listener?.onShowMinStorageThresholdToast()
+        }
     }
 
     override fun onPause() {
@@ -191,7 +196,17 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onVideoTaken(result: VideoResult) {
         val fileToModel = result.file.cameraToUiModel()
-        if (minVideoDurationValidation(fileToModel)) return
+
+        if (listener?.isMinStorageThreshold() == true) {
+            listener?.onShowFailToVideoRecordToast()
+            return
+        }
+
+        if (listener?.isMinVideoDuration(fileToModel) == true) {
+            listener?.onShowVideoMinDurationToast()
+            safeFileDelete(fileToModel.path)
+            return
+        }
 
         onShowMediaThumbnail(fileToModel)
     }
@@ -262,16 +277,6 @@ open class CameraFragment : BaseDaggerFragment()
         if (activeFlash != null) {
             controller.setFlashMode(activeFlash.ordinal)
         }
-    }
-
-    private fun minVideoDurationValidation(model: MediaUiModel): Boolean {
-        if (listener?.isMinVideoDuration(model) == true) {
-            listener?.onShowVideoMinDurationToast()
-            safeFileDelete(model.path)
-            return true
-        }
-
-        return false
     }
 
     private fun showShutterEffect(action: () -> Unit) {
