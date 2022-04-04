@@ -7,7 +7,11 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.product.detail.common.data.model.aggregator.AggregatorMiniCartUiModel
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.usecase.coroutines.UseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -32,8 +36,9 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
                                     pdpSession: String? = null,
                                     shopId: String,
                                     isLoggedIn: Boolean,
-                                    isTokoNow: Boolean): AggregatorMiniCartUiModel {
-        this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, shopId, warehouseId, pdpSession)
+                                    isTokoNow: Boolean,
+                                    extParams: String): AggregatorMiniCartUiModel {
+        this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, shopId, extParams, warehouseId, pdpSession)
         this.shopIds = listOf(shopId)
         this.isTokoNow = isTokoNow
         this.isLoggedIn = isLoggedIn
