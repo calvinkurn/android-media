@@ -2,10 +2,10 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.util.PatternsCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel
@@ -92,9 +92,9 @@ class AffiliatePortfolioItemVH(itemView: View,private val portfolioUrlTextUpdate
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
         return if(element?.portfolioItm?.regex != null){
             val regex = Regex(element.portfolioItm.regex!!, setOf(RegexOption.IGNORE_CASE))
-            regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
+            regex.matches(text) && PatternsCompat.WEB_URL.matcher(text).matches()
         } else{
-            Patterns.WEB_URL.matcher(text).matches()
+            PatternsCompat.WEB_URL.matcher(text).matches()
         }
     }
 

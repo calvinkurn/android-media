@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.viewmodel
 
-import android.util.Patterns
+import androidx.core.util.PatternsCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -49,9 +49,9 @@ class AffiliatePortfolioViewModel@Inject constructor(
     private fun isValidUrl(text: String, element: AffiliatePortfolioUrlModel?): Boolean {
         return if(element?.portfolioItm?.regex != null){
             val regex = Regex(element.portfolioItm.regex!!,setOf(RegexOption.IGNORE_CASE))
-            regex.matches(text) && Patterns.WEB_URL.matcher(text).matches()
+            regex.matches(text) && PatternsCompat.WEB_URL.matcher(text).matches()
         } else{
-            Patterns.WEB_URL.matcher(text).matches()
+            PatternsCompat.WEB_URL.matcher(text).matches()
         }
     }
 

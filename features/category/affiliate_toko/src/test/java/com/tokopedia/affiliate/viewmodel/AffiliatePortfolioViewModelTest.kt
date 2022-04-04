@@ -67,15 +67,23 @@ class AffiliatePortfolioViewModelTest{
     /**************************** CheckDataforAtleastOne *******************************************/
     @Test
     fun checkDataForAtleastOneTest(){
+        aff.createDefaultListForSm()
+        aff.updateList(1,"instagram.com/Piyu")
+        assertEquals(aff.checkDataForAtLeastOne(),true)
+        aff.updateList(2,"google.com")
         assertEquals(aff.checkDataForAtLeastOne(),false)
     }
 
     /**************************** UpdateItem *******************************************/
     @Test
     fun updateTest(){
+        aff.createDefaultListForSm()
         val position = 1
 
         aff.updateList(position,"")
+        aff.updateList(position,"insta")
+
+        assertEquals(aff.isError().value,true)
 
         aff.updateFocus(position,true)
         assertEquals(aff.getUpdateItemIndex().value,position)
@@ -90,13 +98,17 @@ class AffiliatePortfolioViewModelTest{
     /**************************** FindTextModel *******************************************/
     @Test
     fun findTextModelTest(){
-        val id = 16
-        assertEquals(aff.finEditTextModelWithId(id),null)
+        aff.createDefaultListForSm()
+        val item = AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram", INSTAGRAM_DEFAULT,"Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)
+        val id = 3
+        assertEquals(aff.finEditTextModelWithId(16),null)
+        assertEquals(Gson().toJson(aff.finEditTextModelWithId(id)),Gson().toJson(item))
     }
 
     /**************************** GetCurrentSocialIDs *******************************************/
     @Test
     fun getCurrentSocialIds(){
-        assertEquals(aff.getCurrentSocialIds().size,0)
+        aff.createDefaultListForSm()
+        assertEquals(aff.getCurrentSocialIds().size,3)
     }
 }
