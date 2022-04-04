@@ -48,6 +48,7 @@ import com.tokopedia.people.Success
 import com.tokopedia.people.UserProfileUtils
 import com.tokopedia.people.di.DaggerUserProfileComponent
 import com.tokopedia.people.di.UserProfileModule
+import com.tokopedia.people.itemDecoration.GridSpacingItemDecoration
 import com.tokopedia.people.model.Profile
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
@@ -198,9 +199,9 @@ class UserProfileFragment : BaseDaggerFragment(),
         recyclerviewPost = view?.findViewById(R.id.recycler_view)
         recyclerviewPost?.layoutManager = GridLayoutManager(activity, 2)
         if (recyclerviewPost?.itemDecorationCount == 0) {
-            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
+            context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl1)
                 ?.let {
-                    recyclerviewPost?.addItemDecoration(PostItemDecoration(it))
+                    recyclerviewPost?.addItemDecoration(GridSpacingItemDecoration(2, it, false))
                 }
         }
         recyclerviewPost?.adapter = mAdapter

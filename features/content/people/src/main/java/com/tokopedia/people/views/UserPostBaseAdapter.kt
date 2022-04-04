@@ -39,16 +39,6 @@ open class UserPostBaseAdapter(
         internal var playWidgetLargeView: PlayWidgetCardLargeChannelView =
             view.findViewById(R.id.play_widget_large_view)
 
-        //        internal var imgCover: ImageUnify = view.findViewById(R.id.img_banner)
-//        internal var textLiveCount: TextView = view.findViewById(R.id.text_live_view_count)
-//        internal var textName: TextView = view.findViewById(R.id.text_display_name)
-//        internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
-//        internal var textLive: TextView = view.findViewById(R.id.text_live)
-//        internal var textDate: TextView = view.findViewById(R.id.text_date)
-//        internal var btnReminder: AppCompatImageView = view.findViewById(R.id.btn_reminder)
-//        internal var textSpecialLabel: Label = view.findViewById(R.id.text_special_label)
-        var isVisited = false
-
         override fun bindView(item: PlayPostContentItem, position: Int) {
             setData(this, item, position)
         }
