@@ -34,6 +34,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -261,49 +262,54 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void checkAppUpdateAndInApp() {
+        WeakReference<BaseActivity> activityReference = new WeakReference<>(this);
         AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
             if (!isOnProgress) {
-                checkAppUpdateRemoteConfig();
+                checkAppUpdateRemoteConfig(activityReference);
             }
             return null;
         });
     }
 
-    private void checkAppUpdateRemoteConfig() {
-        ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(this);
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
-            @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isFinishing()) {
-                    AppUpdateDialogBuilder appUpdateDialogBuilder =
-                            new AppUpdateDialogBuilder(
-                                    BaseActivity.this,
-                                    detail,
-                                    new AppUpdateDialogBuilder.Listener() {
-                                        @Override
-                                        public void onPositiveButtonClicked(DetailUpdate detail) {
-                                            /* no op */
-                                        }
+    private void checkAppUpdateRemoteConfig(WeakReference<BaseActivity> activityReference) {
+        BaseActivity context = activityReference.get();
+        if (context != null) {
+            ApplicationUpdate appUpdate = new FirebaseRemoteAppForceUpdate(context);
+            appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+                @Override
+                public void onNeedUpdate(DetailUpdate detail) {
+                    BaseActivity activity = activityReference.get();
+                    if (!isFinishing() && activity != null) {
+                        AppUpdateDialogBuilder appUpdateDialogBuilder =
+                                new AppUpdateDialogBuilder(
+                                        activity,
+                                        detail,
+                                        new AppUpdateDialogBuilder.Listener() {
+                                            @Override
+                                            public void onPositiveButtonClicked(DetailUpdate detail) {
+                                                /* no op */
+                                            }
 
-                                        @Override
-                                        public void onNegativeButtonClicked(DetailUpdate detail) {
-                                            /* no op */
+                                            @Override
+                                            public void onNegativeButtonClicked(DetailUpdate detail) {
+                                                /* no op */
+                                            }
                                         }
-                                    }
-                            );
-                    appUpdateDialogBuilder.getAlertDialog().show();
+                                );
+                        appUpdateDialogBuilder.getAlertDialog().show();
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Exception e) {
-                Timber.d(e);
-            }
+                @Override
+                public void onError(Exception e) {
+                    Timber.d(e);
+                }
 
-            @Override
-            public void onNotNeedUpdate() {
-                /* no op */
-            }
-        });
+                @Override
+                public void onNotNeedUpdate() {
+                    /* no op */
+                }
+            });
+        }
     }
 }
