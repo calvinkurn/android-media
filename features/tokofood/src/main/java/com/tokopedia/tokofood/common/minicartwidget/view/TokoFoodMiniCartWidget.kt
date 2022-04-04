@@ -23,16 +23,14 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
     private var viewModel: MultipleFragmentsViewModel? = null
 
     // Function to initialize the widget
-    fun initialize(viewModel: MultipleFragmentsViewModel, lifecycleScope: LifecycleCoroutineScope) {
-        val viewBinding = LayoutWidgetPurchaseMiniCartBinding.inflate(LayoutInflater.from(context))
-        this.viewBinding = viewBinding
-        this.viewModel = viewModel
+    fun initialize(sharedViewModel: MultipleFragmentsViewModel, lifecycleScope: LifecycleCoroutineScope) {
+        viewModel = sharedViewModel
         lifecycleScope.launchWhenResumed {
-            viewModel.miniCartFlow.collect {
+            viewModel?.miniCartFlow?.collect {
                 renderTotalAmount(it)
             }
         }
-        viewModel.loadCartList()
+        viewModel?.loadCartList()
     }
 
     private fun renderTotalAmount(miniCartUiModel: MiniCartUiModel){
@@ -41,6 +39,16 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             setCtaText("Pesan ${miniCartUiModel.totalProductQuantity}")
             setLabelTitle(miniCartUiModel.shopName)
         }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        viewBinding = LayoutWidgetPurchaseMiniCartBinding.inflate(LayoutInflater.from(context))
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        viewBinding = null
     }
 
 }
