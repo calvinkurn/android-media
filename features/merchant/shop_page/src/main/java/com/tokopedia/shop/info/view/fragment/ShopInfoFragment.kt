@@ -17,10 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -62,6 +59,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
                 arguments = bundle
             }
         }
+
+        private const val EMPTY_DESCRIPTION = "-"
     }
 
     @Inject
@@ -293,16 +292,30 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     }
 
     private fun displayShopDescription(shopInfo: ShopInfoData) {
-        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoDescription?.apply {
-            if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
-                hide()
-            } else {
-                show()
-                text = MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.apply {
+            // shop description info
+            shopInfoDescription.apply {
+                if (TextUtils.isEmpty(shopInfo.tagLine) && TextUtils.isEmpty(shopInfo.description)) {
+                    hide()
+                } else {
+                    show()
+                    text = MethodChecker.fromHtmlPreserveLineBreak("${shopInfo.tagLine}<br/><br/>${shopInfo.description}")
+                }
             }
+
+            // go apotik info
+            goApotikInfoContainer.shouldShowWithAction(shopInfo.isGoApotik) {
+                tvSiaDescription.text = shopInfo.siaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                tvSipaDescription.text = shopInfo.sipaNumber.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+                tvApjDescription.text = shopInfo.apj.takeIf { it.isNotEmpty() } ?: EMPTY_DESCRIPTION
+            }
+
+            // shop location info
+            shopInfoLocation.text = shopInfo.location
+
+            // shop establishment info
+            shopInfoOpenSince?.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
         }
-        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoLocation?.text = shopInfo.location
-        fragmentShopInfoBinding?.layoutPartialShopInfoDescription?.shopInfoOpenSince?.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
     }
 
     private fun renderListNote(notes: List<ShopNoteUiModel>) {
