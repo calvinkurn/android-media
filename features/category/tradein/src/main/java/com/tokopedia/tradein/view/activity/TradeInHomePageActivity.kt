@@ -287,6 +287,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         startActivity(intent)
+        finish()
     }
 
     override fun onStart() {
