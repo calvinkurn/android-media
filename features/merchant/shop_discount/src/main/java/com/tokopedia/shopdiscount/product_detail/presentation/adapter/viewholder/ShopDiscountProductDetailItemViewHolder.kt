@@ -66,7 +66,7 @@ open class ShopDiscountProductDetailItemViewHolder(
 
     private fun getFormattedDate(dateString: String): String {
         return dateString.toDate(DateConstant.DATE_FORMAT_WITH_TIMEZONE)
-            .parseTo(DateConstant.DATE_MINUTE)
+            .parseTo(DateConstant.DATE_TIME_MINUTE_PRECISION)
     }
 
 }

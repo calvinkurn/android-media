@@ -29,7 +29,7 @@ data class GetSlashPriceProductListResponse(
             @SerializedName("discounted_percentage")
             val discountedPercentage: Int = 0,
             @SerializedName("discounted_price")
-            val discountedPrice: Int = 0,
+            val discountedPrice: Long = 0,
             @SerializedName("discounted_price_data")
             val discountedPriceData: DiscountedPriceData = DiscountedPriceData(),
             @SerializedName("end_date")
@@ -75,22 +75,22 @@ data class GetSlashPriceProductListResponse(
 
             data class DiscountedPriceData(
                 @SerializedName("max")
-                val max: Int = 0,
+                val max: Long = 0,
                 @SerializedName("max_formatted")
                 val maxFormatted: String = "",
                 @SerializedName("min")
-                val min: Int = 0,
+                val min: Long = 0,
                 @SerializedName("min_formatted")
                 val minFormatted: String = ""
             )
 
             data class Price(
                 @SerializedName("max")
-                val max: Int = 0,
+                val max: Long = 0,
                 @SerializedName("max_formatted")
                 val maxFormatted: String = "",
                 @SerializedName("min")
-                val min: Int = 0,
+                val min: Long = 0,
                 @SerializedName("min_formatted")
                 val minFormatted: String = ""
             )

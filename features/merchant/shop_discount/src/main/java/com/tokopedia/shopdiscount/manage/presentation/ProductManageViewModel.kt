@@ -5,10 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListMetaResponse
-import com.tokopedia.shopdiscount.manage.data.response.GetSlashPriceProductListResponse
+import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
+import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
+import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListMetaUseCase
-import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,37 +18,39 @@ import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSlashPriceProductListUseCase: GetSlashPriceProductListUseCase,
-    private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase
+    private val getSlashPriceProductListMetaUseCase: GetSlashPriceProductListMetaUseCase,
+    private val productListMetaMapper: ProductListMetaMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _products = MutableLiveData<Result<GetSlashPriceProductListResponse>>()
-    val products: LiveData<Result<GetSlashPriceProductListResponse>>
-        get() = _products
-
-    private val _productsMeta = MutableLiveData<Result<GetSlashPriceProductListMetaResponse>>()
-    val productsMeta: LiveData<Result<GetSlashPriceProductListMetaResponse>>
+    private val _productsMeta = MutableLiveData<Result<List<DiscountStatusMeta>>>()
+    val productsMeta: LiveData<Result<List<DiscountStatusMeta>>>
         get() = _productsMeta
-
-    fun getSlashPriceProducts() {
-        launchCatchError(block = {
-            val result = withContext(dispatchers.io) {
-                getSlashPriceProductListUseCase.execute(page = 1)
-            }
-            _products.value = Success(result)
-        }, onError = {
-            _products.value = Fail(it)
-        })
-    }
 
     fun getSlashPriceProductsMeta() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getSlashPriceProductListMetaUseCase.execute()
+                getSlashPriceProductListMetaUseCase.setRequestParams()
+                getSlashPriceProductListMetaUseCase.executeOnBackground()
             }
-            _productsMeta.value = Success(result)
+            val formattedProductMeta =
+                productListMetaMapper.map(result.getSlashPriceProductListMeta.data.tab)
+            _productsMeta.value = Success(formattedProductMeta)
+
         }, onError = {
             _productsMeta.value = Fail(it)
         })
+    }
+
+    fun findDiscountStatusCount(discountStatusMeta: List<DiscountStatusMeta>): List<PageTab> {
+        val tabs = listOf(
+            PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING),
+            PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED),
+            PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED)
+        )
+
+        return tabs.map { tab ->
+            val match = discountStatusMeta.find { meta -> tab.status == meta.id }
+            tab.copy(name = match?.name + "(${match?.productCount})")
+        }
     }
 }
