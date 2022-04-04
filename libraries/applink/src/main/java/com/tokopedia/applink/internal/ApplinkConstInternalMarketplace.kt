@@ -279,11 +279,11 @@ object ApplinkConstInternalMarketplace {
     /**
      * Go to chat list
      */
-    const val TOPCHAT = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/topchat"
+    const val TOPCHAT = "$INTERNAL_MARKETPLACE/topchat"
 
     /**
      * Go to chatroom with the provided {message_id}
      * If you want to use {shopId} to chatroom use external applink
      */
-    const val TOPCHAT_ROOM = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/topchat/{message_id}"
+    const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
 }
