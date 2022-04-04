@@ -34,6 +34,5 @@ class ReviewMediaThumbnailTypeFactory(
 
     interface Listener {
         fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int)
-        fun onRemoveMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int)
     }
 }

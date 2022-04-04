@@ -214,12 +214,5 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
                 )
             }
         }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
-        }
     }
 }

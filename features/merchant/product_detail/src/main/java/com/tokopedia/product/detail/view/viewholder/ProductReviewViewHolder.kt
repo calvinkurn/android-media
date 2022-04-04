@@ -251,12 +251,5 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 return@let
             }
         }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
-        }
     }
 }

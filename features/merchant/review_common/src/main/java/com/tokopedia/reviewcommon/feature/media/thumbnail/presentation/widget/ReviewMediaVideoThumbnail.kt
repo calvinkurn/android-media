@@ -97,7 +97,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
             this@ReviewMediaVideoThumbnail,
             true
         )
-        icReviewMediaVideoThumbnailRemove.showWithCondition(uiState.removable)
         icReviewMediaVideoThumbnailPlayButton.showWithCondition(
             uiState is ReviewMediaVideoThumbnailUiState.Showing && uiState.playable
         )
@@ -107,8 +106,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         uiState: ReviewMediaVideoThumbnailUiState.Showing
     ) {
         groupReviewMediaVideoThumbnailSeeMore.gone()
-        groupReviewMediaVideoThumbnailUploading.gone()
-        groupReviewMediaVideoThumbnailUploadFailed.gone()
         reviewMediaVideoThumbnailBrokenOverlay.gone()
         icReviewMediaVideoThumbnailBroken.gone()
         setupVideoThumbnail(uiState)
@@ -117,8 +114,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnailSeeMore(
         uiState: ReviewMediaVideoThumbnailUiState.ShowingSeeMore
     ) {
-        groupReviewMediaVideoThumbnailUploading.gone()
-        groupReviewMediaVideoThumbnailUploadFailed.gone()
         reviewMediaVideoThumbnailBrokenOverlay.gone()
         icReviewMediaVideoThumbnailBroken.gone()
         groupReviewMediaVideoThumbnailSeeMore.show()
@@ -126,28 +121,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
             append("+")
             append(uiState.totalImageCount)
         }
-        setupVideoThumbnail(uiState)
-    }
-
-    private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnailUploadingState(
-        uiState: ReviewMediaVideoThumbnailUiState.Uploading
-    ) {
-        groupReviewMediaVideoThumbnailSeeMore.gone()
-        groupReviewMediaVideoThumbnailUploadFailed.gone()
-        reviewMediaVideoThumbnailBrokenOverlay.gone()
-        icReviewMediaVideoThumbnailBroken.gone()
-        groupReviewMediaVideoThumbnailUploading.show()
-        setupVideoThumbnail(uiState)
-    }
-
-    private fun WidgetReviewMediaVideoThumbnailBinding.showVideoThumbnailUploadFailedState(
-        uiState: ReviewMediaVideoThumbnailUiState.UploadFailed
-    ) {
-        groupReviewMediaVideoThumbnailSeeMore.gone()
-        groupReviewMediaVideoThumbnailUploading.gone()
-        reviewMediaVideoThumbnailBrokenOverlay.gone()
-        icReviewMediaVideoThumbnailBroken.gone()
-        groupReviewMediaVideoThumbnailUploadFailed.show()
         setupVideoThumbnail(uiState)
     }
 
@@ -160,12 +133,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
             is ReviewMediaVideoThumbnailUiState.ShowingSeeMore -> {
                 binding.showVideoThumbnailSeeMore(uiState)
             }
-            is ReviewMediaVideoThumbnailUiState.Uploading -> {
-                binding.showVideoThumbnailUploadingState(uiState)
-            }
-            is ReviewMediaVideoThumbnailUiState.UploadFailed -> {
-                binding.showVideoThumbnailUploadFailedState(uiState)
-            }
         }
     }
 
@@ -177,9 +144,6 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
         var listener: Listener? = null
         override fun onClick(v: View?) {
             when (v) {
-                binding.icReviewMediaVideoThumbnailRemove -> {
-                    listener?.onRemoveMediaItemClicked()
-                }
                 binding.playerViewOverlayClickable -> {
                     listener?.onMediaItemClicked()
                 }
@@ -189,6 +153,5 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
 
     interface Listener {
         fun onMediaItemClicked()
-        fun onRemoveMediaItemClicked()
     }
 }

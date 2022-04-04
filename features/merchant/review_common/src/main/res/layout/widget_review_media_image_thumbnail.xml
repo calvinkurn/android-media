@@ -1,156 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_review_media_image_thumbnail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_margin="4dp"
+    app:card_type="clear">
 
-    <com.tokopedia.unifycomponents.CardUnify2
-        android:id="@+id/container_review_media_image_thumbnail"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="4dp"
-        app:card_type="clear">
+        android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iv_review_media_image_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/iv_review_media_image_thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <View
+            android:id="@+id/review_media_image_thumbnail_broken_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_review_media_broken_media_thumbnail"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
+            tools:visibility="visible" />
 
-            <View
-                android:id="@+id/review_media_image_thumbnail_broken_overlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_review_media_broken_media_thumbnail"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
-                tools:visibility="visible" />
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_review_media_image_thumbnail_broken"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="IMAGE_BROKEN"
+            app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
+            tools:visibility="visible" />
 
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_review_media_image_thumbnail_broken"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:visibility="gone"
-                app:icon_color_light_disabled="@color/Unify_Static_White"
-                app:icon_color_light_enable="@color/Unify_Static_White"
-                app:icon_color_night_disabled="@color/Unify_Static_White"
-                app:icon_color_night_enable="@color/Unify_Static_White"
-                app:icon_name="IMAGE_BROKEN"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
-                tools:visibility="visible" />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_review_media_image_thumbnail_see_more"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            app:constraint_referenced_ids="view_review_media_image_thumbnail_overlay_see_more,tv_review_media_image_thumbnail_see_more" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/group_review_media_image_thumbnail_see_more"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                app:constraint_referenced_ids="view_review_media_image_thumbnail_overlay_see_more,tv_review_media_image_thumbnail_see_more" />
+        <View
+            android:id="@+id/view_review_media_image_thumbnail_overlay_see_more"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.5"
+            android:background="@color/Unify_NN900"
+            app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
 
-            <View
-                android:id="@+id/view_review_media_image_thumbnail_overlay_see_more"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.5"
-                android:background="@color/Unify_NN900"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_review_media_image_thumbnail_see_more"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:padding="4dp"
-                android:textColor="@color/Unify_Static_White"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
-                app:typographyType="body_3"
-                app:typographyWeight="bold" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/group_review_media_image_thumbnail_uploading"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                app:constraint_referenced_ids="view_review_media_image_thumbnail_overlay_uploading,loader_review_media_image_thumbnail_upload_progress" />
-
-            <View
-                android:id="@+id/view_review_media_image_thumbnail_overlay_uploading"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0.5"
-                android:background="@color/Unify_NN900"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/loader_review_media_image_thumbnail_upload_progress"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:translationZ="1dp"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/group_review_media_image_thumbnail_upload_failed"
-                android:layout_width="1dp"
-                android:layout_height="1dp"
-                app:constraint_referenced_ids="view_review_media_image_thumbnail_overlay_failed, ic_review_media_image_thumbnail_upload_failed" />
-
-            <View
-                android:id="@+id/view_review_media_image_thumbnail_overlay_failed"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/Unify_NN900"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/ic_review_media_image_thumbnail_upload_failed"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:icon_color_light_disabled="@color/Unify_Static_White"
-                app:icon_color_light_enable="@color/Unify_Static_White"
-                app:icon_color_night_disabled="@color/Unify_Static_White"
-                app:icon_color_night_enable="@color/Unify_Static_White"
-                app:icon_name="IMAGE_BROKEN"
-                app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
-                app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.tokopedia.unifycomponents.CardUnify2>
-
-    <ImageView
-        android:id="@+id/ic_review_media_image_thumbnail_remove"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:elevation="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_widget_review_media_remove" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_review_media_image_thumbnail_see_more"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="4dp"
+            android:textColor="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/iv_review_media_image_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/iv_review_media_image_thumbnail"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

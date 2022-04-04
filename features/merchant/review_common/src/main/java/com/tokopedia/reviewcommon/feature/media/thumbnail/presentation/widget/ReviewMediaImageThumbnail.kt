@@ -27,7 +27,6 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
     private var uiState: ReviewMediaImageThumbnailUiState? = null
 
     init {
-        binding.icReviewMediaImageThumbnailRemove.setOnClickListener(listener)
         binding.ivReviewMediaImageThumbnail.setOnClickListener(listener)
         binding.ivReviewMediaImageThumbnail.onUrlLoaded = { success ->
             when (uiState) {
@@ -51,14 +50,11 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
         uiState: ReviewMediaImageThumbnailUiState
     ) {
         ivReviewMediaImageThumbnail.setImageUrl(uiState.uri)
-        icReviewMediaImageThumbnailRemove.showWithCondition(uiState.removable)
     }
 
     private fun WidgetReviewMediaImageThumbnailBinding.showImageThumbnail(
         uiState: ReviewMediaImageThumbnailUiState.Showing
     ) {
-        groupReviewMediaImageThumbnailUploading.gone()
-        groupReviewMediaImageThumbnailUploadFailed.gone()
         groupReviewMediaImageThumbnailSeeMore.gone()
         reviewMediaImageThumbnailBrokenOverlay.gone()
         icReviewMediaImageThumbnailBroken.gone()
@@ -68,8 +64,6 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaImageThumbnailBinding.showImageThumbnailSeeMore(
         uiState: ReviewMediaImageThumbnailUiState.ShowingSeeMore
     ) {
-        groupReviewMediaImageThumbnailUploading.gone()
-        groupReviewMediaImageThumbnailUploadFailed.gone()
         reviewMediaImageThumbnailBrokenOverlay.gone()
         icReviewMediaImageThumbnailBroken.gone()
         groupReviewMediaImageThumbnailSeeMore.show()
@@ -77,28 +71,6 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
             append("+")
             append(uiState.totalImageCount)
         }
-        setupImageThumbnail(uiState)
-    }
-
-    private fun WidgetReviewMediaImageThumbnailBinding.showImageThumbnailUploadingState(
-        uiState: ReviewMediaImageThumbnailUiState.Uploading
-    ) {
-        groupReviewMediaImageThumbnailUploadFailed.gone()
-        groupReviewMediaImageThumbnailSeeMore.gone()
-        reviewMediaImageThumbnailBrokenOverlay.gone()
-        icReviewMediaImageThumbnailBroken.gone()
-        groupReviewMediaImageThumbnailUploading.show()
-        setupImageThumbnail(uiState)
-    }
-
-    private fun WidgetReviewMediaImageThumbnailBinding.showImageThumbnailUploadFailedState(
-        uiState: ReviewMediaImageThumbnailUiState.UploadFailed
-    ) {
-        groupReviewMediaImageThumbnailUploading.gone()
-        groupReviewMediaImageThumbnailSeeMore.gone()
-        reviewMediaImageThumbnailBrokenOverlay.gone()
-        icReviewMediaImageThumbnailBroken.gone()
-        groupReviewMediaImageThumbnailUploadFailed.show()
         setupImageThumbnail(uiState)
     }
 
@@ -113,12 +85,6 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
             is ReviewMediaImageThumbnailUiState.ShowingSeeMore -> {
                 binding.showImageThumbnailSeeMore(uiState)
             }
-            is ReviewMediaImageThumbnailUiState.Uploading -> {
-                binding.showImageThumbnailUploadingState(uiState)
-            }
-            is ReviewMediaImageThumbnailUiState.UploadFailed -> {
-                binding.showImageThumbnailUploadFailedState(uiState)
-            }
         }
     }
 
@@ -130,9 +96,6 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
         var listener: Listener? = null
         override fun onClick(v: View?) {
             when(v) {
-                binding.icReviewMediaImageThumbnailRemove -> {
-                    listener?.onRemoveMediaItemClicked()
-                }
                 binding.ivReviewMediaImageThumbnail -> {
                     listener?.onMediaItemClicked()
                 }
@@ -142,6 +105,5 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
 
     interface Listener {
         fun onMediaItemClicked()
-        fun onRemoveMediaItemClicked()
     }
 }

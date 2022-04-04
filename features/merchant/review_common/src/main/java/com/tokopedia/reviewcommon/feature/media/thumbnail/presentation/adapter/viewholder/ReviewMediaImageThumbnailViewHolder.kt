@@ -40,11 +40,5 @@ class ReviewMediaImageThumbnailViewHolder(
                 listener?.onMediaItemClicked(it, adapterPosition)
             }
         }
-
-        override fun onRemoveMediaItemClicked() {
-            element?.let {
-                listener?.onRemoveMediaItemClicked(it, adapterPosition)
-            }
-        }
     }
 }

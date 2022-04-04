@@ -796,12 +796,5 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 )
             }
         }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
-        }
     }
 }

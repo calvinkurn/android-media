@@ -86,9 +86,5 @@ class ReviewMediaThumbnail @JvmOverloads constructor(
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             listener?.onMediaItemClicked(item, position)
         }
-
-        override fun onRemoveMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
-            listener?.onRemoveMediaItemClicked(item, position)
-        }
     }
 }

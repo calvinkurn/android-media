@@ -652,12 +652,5 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 }
             }
         }
-
-        override fun onRemoveMediaItemClicked(
-            item: ReviewMediaThumbnailVisitable,
-            position: Int
-        ) {
-            // noop
-        }
     }
 }
