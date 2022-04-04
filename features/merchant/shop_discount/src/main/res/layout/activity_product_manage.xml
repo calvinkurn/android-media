@@ -11,13 +11,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/globalError"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:globalerrors_type="SERVER_ERROR"
-        tools:visibility="visible" />
-
 </RelativeLayout>

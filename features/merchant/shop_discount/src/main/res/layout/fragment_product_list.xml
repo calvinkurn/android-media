@@ -14,7 +14,7 @@
         android:layout_marginStart="@dimen/unify_space_16"
         tools:text="80 Produk"
         android:textColor="@color/Unify_NN600"
-        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2" />

@@ -10,7 +10,10 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
@@ -115,11 +118,19 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.shimmer?.content?.gone()
+                    binding?.groupContent?.visible()
+                    binding?.globalError?.gone()
+
                     val formattedDiscountStatusMeta = viewModel.findDiscountStatusCount(it.data)
                     displayTabs(formattedDiscountStatusMeta)
                 }
                 is Fail -> {
-                    binding?.root showError it.throwable
+                    binding?.shimmer?.content?.gone()
+                    binding?.groupContent?.gone()
+                    binding?.globalError?.gone()
+
+                    displayError(it.throwable)
                 }
             }
         }
@@ -150,5 +161,15 @@ class ProductManageFragment : BaseDaggerFragment() {
 
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayError(throwable: Throwable) {
+        binding?.run {
+            globalError.visible()
+            globalError.setType(GlobalError.SERVER_ERROR)
+            globalError.setActionClickListener { viewModel.getSlashPriceProductsMeta() }
+            root showError throwable
+        }
+
     }
 }
