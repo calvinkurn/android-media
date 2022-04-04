@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.list
 
 import android.os.Bundle
 import android.view.LayoutInflater

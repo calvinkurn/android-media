@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.list
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible

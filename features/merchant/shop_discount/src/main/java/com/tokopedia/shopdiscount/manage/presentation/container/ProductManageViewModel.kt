@@ -1,11 +1,10 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.container
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab

@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

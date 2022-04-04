@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.container
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,6 +16,7 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter

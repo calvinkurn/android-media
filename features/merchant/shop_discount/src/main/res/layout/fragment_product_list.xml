@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:card_type="clear"
-    tools:context=".manage.presentation.ProductListFragment">
+    tools:context=".manage.presentation.list.ProductListFragment">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgTotalProduct"

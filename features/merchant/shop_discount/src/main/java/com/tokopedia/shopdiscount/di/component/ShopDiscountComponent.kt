@@ -5,9 +5,9 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
-import com.tokopedia.shopdiscount.manage.presentation.ProductListFragment
-import com.tokopedia.shopdiscount.manage.presentation.ProductManageActivity
-import com.tokopedia.shopdiscount.manage.presentation.ProductManageFragment
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import dagger.Component
 
