@@ -842,8 +842,10 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
             cbDefaultLoc.setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-                    if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaPositive(userSession.userId)
-                    else AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaNegative(userSession.userId)
+                    if (!isEdit) {
+                        if (isPositiveFlow) AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaPositive(userSession.userId)
+                        else AddNewAddressRevampAnalytics.onClickBoxJadikanAlamatUtamaNegative(userSession.userId)
+                    }
                     saveDataModel?.setAsPrimaryAddresss = true
                 } else saveDataModel?.setAsPrimaryAddresss = false
             }

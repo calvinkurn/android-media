@@ -529,13 +529,10 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         }
         bottomSheetLocUndefined.apply {
             setCloseClickListener {
-//                isPermissionAccessed = false
-//                AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
                 dismiss()
             }
             setChild(bottomsheetLocationUndefinedBinding.root)
             setOnDismissListener {
-//                isPermissionAccessed = false
                 dismiss()
             }
         }

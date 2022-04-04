@@ -57,7 +57,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.uimodel.DistrictCenterUiModel
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_PLACE_ID
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.IMAGE_OUTSIDE_INDONESIA
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FOUND
@@ -487,23 +486,32 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         binding?.run {
 
             bottomsheetLocation.btnInfo.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickIconQuestion(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickIconQuestion(userSession.userId)
+                }
                 bottomsheetLocation.root.hide()
                 showBottomSheetInfo()
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
                 if (isPositiveFlow) {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
+
+                    }
                     goToAddressForm()
                 } else {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                    }
                     setResultAddressFormNegative()
                 }
             }
 
             bottomsheetLocation.btnSecondary.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
+                }
                 if (isPositiveFlow) {
                     isPositiveFlow = false
                     viewModel.setAddress(SaveAddressDataModel())
@@ -593,7 +601,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         bottomSheetLocUndefined?.apply {
             setCloseClickListener {
                 isPermissionAccessed = false
-                AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickXOnBlockGpsPinpoint(userSession.userId)
+                }
                 dismiss()
             }
             setChild(viewBinding.root)
@@ -614,7 +624,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             tvLocUndefined.text = getString(R.string.txt_location_not_detected)
             tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
             btnActivateLocation.setOnClickListener {
-                AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickAktifkanLayananLokasiPinpoint(userSession.userId)
+                }
                 if (!isDontAskAgain) {
                     goToSettingLocationDevice()
                 } else {
@@ -747,14 +759,20 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
 
         if (isPolygon) {
             if (data.districtId != districtId) {
-                AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onViewToasterPinpointTidakSesuai(userSession.userId)
+                }
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, NOT_SUCCESS)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, NOT_SUCCESS)
+                    }
                 }
                 view?.let { view -> Toaster.build(view, getString(R.string.txt_toaster_pinpoint_unmatched), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
             } else {
                 binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                    AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                    if (!isEdit) {
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                    }
                     setResultAddressFormNegative()
                 }
                 val saveAddress = saveAddressMapper.map(data, zipCodes)
@@ -764,7 +782,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         } else {
             currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
             binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId, true)
+                if (isEdit) {
+                    EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId, true)
+                }
                 setResultAddressFormNegative()
             }
         }
@@ -817,8 +837,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         }
 
         binding?.bottomsheetLocation?.btnAnaNegative?.setOnClickListener {
-            if (type == BOTTOMSHEET_OUT_OF_INDO) AddNewAddressRevampAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
-            else AddNewAddressRevampAnalytics.onClickIsiAlamatManualUndetectedLocation(userSession.userId)
+            if (!isEdit) {
+                if (type == BOTTOMSHEET_OUT_OF_INDO) AddNewAddressRevampAnalytics.onClickIsiAlamatOutOfIndo(userSession.userId)
+                else AddNewAddressRevampAnalytics.onClickIsiAlamatManualUndetectedLocation(userSession.userId)
+            }
             isPositiveFlow = false
             goToAddressForm()
         }

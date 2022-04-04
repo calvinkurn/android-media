@@ -222,8 +222,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             } else {
                 activity?.run {
                     setResult(Activity.RESULT_OK, Intent().apply {
-//                        putExtra(LogisticConstant.EXTRA_ADDRESS_NEW, data)
-//                        putExtra(EXTRA_FROM_ADDRESS_FORM, isFromAddressForm)
                     })
                     finish()
                 }
