@@ -46,12 +46,16 @@ class OvoP2pTxnThankYouOvoUsrVM @Inject constructor(
                         }
                     }
                 } else {
-                    transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferThankyouBase)
+                    saveSuccessValue(ovoP2pTransferThankyouBase)
                 }
             } ?: kotlin.run {
-                transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferThankyouBase)
+                saveSuccessValue(ovoP2pTransferThankyouBase)
             }
         }
+    }
+
+    private fun saveSuccessValue(ovoP2pTransferThankyouBase: OvoP2pTransferThankyouBase) {
+        transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferThankyouBase)
     }
 
     private fun onFailThankYou(throwable: Throwable?) {
