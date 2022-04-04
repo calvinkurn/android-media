@@ -14,14 +14,12 @@ class ShopReviewFragment : ReadReviewFragment() {
 
         fun createNewInstance(
             productId: String = "",
-            shopId: String = "",
-            isProductReview: Boolean
+            shopId: String = ""
         ): ShopReviewFragment {
             return ShopReviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
                     putString(ReviewConstants.ARGS_SHOP_ID, shopId)
-                    putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
                 }
             }
         }
