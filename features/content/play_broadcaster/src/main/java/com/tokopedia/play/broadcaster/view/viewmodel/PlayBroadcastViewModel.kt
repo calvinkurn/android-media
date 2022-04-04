@@ -994,10 +994,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
      */
     private fun initQuizFormData(quizConfig: QuizConfigUiModel) {
         val initialOptions = mutableListOf<QuizFormDataUiModel.Option>()
+        var textChoice = 'A'
+
         repeat(quizConfig.minChoicesCount) {
             initialOptions.add(
-                QuizFormDataUiModel.Option.create(isMandatory = true)
+                QuizFormDataUiModel.Option.create(textChoice = textChoice.toString(),isMandatory = true)
             )
+            textChoice += 1
         }
 
         _quizFormData.setValue {

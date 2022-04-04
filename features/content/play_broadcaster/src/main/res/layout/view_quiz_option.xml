@@ -32,6 +32,7 @@
             android:id="@+id/ic_quiz_option_checked"
             android:layout_width="@dimen/layout_lvl4"
             android:layout_height="@dimen/layout_lvl4"
+            android:visibility="gone"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
             app:icon_name="CHECK_CIRCLE" />

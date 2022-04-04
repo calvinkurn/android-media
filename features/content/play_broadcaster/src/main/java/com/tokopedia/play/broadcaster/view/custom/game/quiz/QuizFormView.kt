@@ -13,10 +13,12 @@ import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
+import com.tokopedia.play.broadcaster.ui.viewholder.game.QuizOptionViewHolder
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.view.adapter.QuizOptionAdapter
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -61,6 +63,12 @@ class QuizFormView : ConstraintLayout {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
+    private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
+        override fun onOptionChecked(textChoice: String) {
+
+        }
+    })
+
     private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
         set(value) {
             field = value
@@ -72,6 +80,7 @@ class QuizFormView : ConstraintLayout {
         }
 
     init {
+        binding.rvQuizOption.adapter = adapter
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
         bottomSheetHeaderBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
@@ -125,7 +134,7 @@ class QuizFormView : ConstraintLayout {
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        scope.cancel()
+        job.cancel()
     }
 
     fun setFormData(quizFormData: QuizFormDataUiModel) {
@@ -133,6 +142,7 @@ class QuizFormView : ConstraintLayout {
         binding.viewGameHeader.title = quizFormData.title
 
         /** TODO: set options */
+        adapter.setItemsAndAnimateChanges(quizFormData.options)
 
         /** Set Gift */
         binding.viewQuizGift.gift = quizFormData.gift
