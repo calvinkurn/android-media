@@ -95,7 +95,12 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
             hideLoading()
             when (it) {
                 is Success -> {
-                    addListProductDetailData(it.data)
+                    if (!it.data.responseHeader.success) {
+                        val errorMessage = it.data.responseHeader.errorMessages.joinToString()
+                        showErrorState(Throwable(errorMessage))
+                    } else {
+                        addListProductDetailData(it.data.listProductDetailData)
+                    }
                 }
                 is Fail -> {
                     showErrorState(it.throwable)
@@ -108,7 +113,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         adapter.showGlobalErrorView(throwable)
     }
 
-    private fun addListProductDetailData(data: List<ShopDiscountProductDetailUiModel>) {
+    private fun addListProductDetailData(data: List<ShopDiscountProductDetailUiModel.ProductDetailData>) {
         adapter.addListProductDetailData(data)
     }
 
@@ -227,7 +232,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         productParentName = arguments?.getString(PARAM_PRODUCT_PARENT_NAME).orEmpty()
     }
 
-    override fun onClickEditProduct(model: ShopDiscountProductDetailUiModel) {
+    override fun onClickEditProduct(model: ShopDiscountProductDetailUiModel.ProductDetailData) {
 
     }
 

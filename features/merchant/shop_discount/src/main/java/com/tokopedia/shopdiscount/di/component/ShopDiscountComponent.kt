@@ -6,6 +6,7 @@ import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
 import com.tokopedia.shopdiscount.manage.presentation.ProductListFragment
+import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.presentation.ProductManageActivity
 import com.tokopedia.shopdiscount.manage.presentation.ProductManageFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
@@ -25,4 +26,5 @@ interface ShopDiscountComponent {
     fun inject(fragment: ProductManageFragment)
     fun inject(bottomSheet: ShopDiscountProductDetailBottomSheet)
     fun inject(fragment : ProductListFragment)
+    fun inject(bottomSheet: ShopDiscountSellerInfoBottomSheet)
 }

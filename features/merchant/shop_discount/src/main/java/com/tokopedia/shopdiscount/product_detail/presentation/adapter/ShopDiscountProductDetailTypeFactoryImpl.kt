@@ -15,7 +15,7 @@ class ShopDiscountProductDetailTypeFactoryImpl(
     private val shopDiscountProductDetailItemViewHolderListener: ShopDiscountProductDetailItemViewHolder.Listener,
     private val globalErrorListener: ShopDiscountProductDetailListGlobalErrorViewHolder.Listener
 ) : BaseAdapterTypeFactory(), ShopDiscountProductDetailTypeFactory {
-    override fun type(uiModel: ShopDiscountProductDetailUiModel): Int {
+    override fun type(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData): Int {
         return ShopDiscountProductDetailItemViewHolder.LAYOUT
     }
 

@@ -19,15 +19,15 @@ class ShopDiscountProductDetailBottomSheetViewModel @Inject constructor(
     private val getSlashPriceProductDetailUseCase: GetSlashPriceProductDetailUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
-    val productDetailListLiveData: LiveData<Result<List<ShopDiscountProductDetailUiModel>>>
+    val productDetailListLiveData: LiveData<Result<ShopDiscountProductDetailUiModel>>
         get() = _productDetailListLiveData
     private val _productDetailListLiveData =
-        MutableLiveData<Result<List<ShopDiscountProductDetailUiModel>>>()
+        MutableLiveData<Result<ShopDiscountProductDetailUiModel>>()
 
     fun getProductDetailListData(productId: String, status: Int) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = getSLashPriceProductDetailResponse(productId, status)
-            val mappedUiModel = ShopDiscountProductDetailMapper.mapToListShopDiscountProductDetailUiModel(
+            val mappedUiModel = ShopDiscountProductDetailMapper.mapToShopDiscountProductDetailUiModel(
                 response.getSlashPriceProductDetail
             )
             _productDetailListLiveData.postValue(Success(mappedUiModel))
