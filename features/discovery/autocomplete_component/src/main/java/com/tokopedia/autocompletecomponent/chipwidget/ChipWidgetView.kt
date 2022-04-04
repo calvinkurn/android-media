@@ -16,7 +16,7 @@ class ChipWidgetView: BaseCustomView {
             context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
             context.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
     )
-    private val autocompleteChipWidgetRecyclerView : RecyclerView by lazy {
+    private val autocompleteChipWidgetRecyclerView : RecyclerView? by lazy {
         findViewById(R.id.autocompleteChipWidgetRecyclerView)
     }
 
@@ -47,7 +47,7 @@ class ChipWidgetView: BaseCustomView {
     private fun initRecyclerView(listener: AutocompleteChipWidgetViewListener) {
         adapter = AutocompleteChipWidgetAdapter(listener)
 
-        autocompleteChipWidgetRecyclerView.let{
+        autocompleteChipWidgetRecyclerView?.let{
             it.layoutManager = createLayoutManager()
             it.isNestedScrollingEnabled = false
             it.adapter = adapter
