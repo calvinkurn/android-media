@@ -7,18 +7,22 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.topads.edit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_static_info_bs.*
+import com.tokopedia.unifycomponents.ImageUnify
 
 class StaticInfoBottomSheet : BottomSheetUnify() {
-    private var contentView: View? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    private var image: ImageUnify? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     private fun initChildLayout() {
-        contentView = View.inflate(context, R.layout.topads_static_info_bs, null)
+        val contentView = View.inflate(context, R.layout.topads_static_info_bs, null)
+        image = contentView.findViewById(R.id.image)
         showKnob = true
         isHideable = true
         showCloseIcon = false
@@ -38,7 +42,8 @@ class StaticInfoBottomSheet : BottomSheetUnify() {
     }
 
     fun show(
-            fragmentManager: FragmentManager) {
+        fragmentManager: FragmentManager,
+    ) {
         show(fragmentManager, TOPADS_BOTTOM_SHEET_ACTION_TAG)
     }
 
