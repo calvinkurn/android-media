@@ -35,9 +35,18 @@ class CreationOnboardingActivity : BaseActivity(), HasComponent<CreateAdsCompone
             (application as BaseMainApplication).baseAppComponent).build()
     }
 
+    private fun initView() {
+        header = findViewById(R.id.header)
+        viewPager = findViewById(R.id.view_pager)
+        btnSubmit = findViewById(R.id.btn_submit)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_create_onboarding_screen)
+
+        initView()
+
         renderTabAndViewPager()
         header?.setNavigationOnClickListener {
             onBackPressed()
