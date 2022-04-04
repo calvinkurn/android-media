@@ -37,7 +37,7 @@ import javax.inject.Inject
 class EntrypointFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val tagFragment = "TAG_FRAGMENT"
+        const val tagFragment = "TAG_FRAGMENT"
     }
 
     private var bundleId: Long = 0

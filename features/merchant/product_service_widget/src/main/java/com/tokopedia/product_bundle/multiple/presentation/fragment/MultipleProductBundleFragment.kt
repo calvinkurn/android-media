@@ -35,6 +35,8 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.common.util.Utility
+import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
@@ -374,7 +376,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun refreshPage() {
-        // testing
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
+            .commit()
     }
 
     private fun goToLoginPage() {

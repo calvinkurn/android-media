@@ -36,6 +36,8 @@ import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
+import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -401,7 +403,9 @@ class SingleProductBundleFragment(
     }
 
     private fun refreshPage() {
-        // testing
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
+            .commit()
     }
 
     companion object {
