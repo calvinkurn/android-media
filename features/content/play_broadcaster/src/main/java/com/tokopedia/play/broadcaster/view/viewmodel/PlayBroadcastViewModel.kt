@@ -999,6 +999,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             initialOptions.add(
                 QuizFormDataUiModel.Option(
                     order = it,
+                    maxLength = 35, /** TODO: still make sure whether maxLength is configurable from BE or not */
                     isMandatory = true,
                 )
             )

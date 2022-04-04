@@ -12,6 +12,7 @@ data class QuizFormDataUiModel(
     data class Option(
         val order: Int = 0,
         val text: String = "",
+        val maxLength: Int = 0,
         val isMandatory: Boolean = false,
         val isSelected: Boolean = false,
         val isEditable: Boolean = true,
