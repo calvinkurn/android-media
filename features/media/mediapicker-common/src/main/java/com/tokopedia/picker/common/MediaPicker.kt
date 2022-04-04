@@ -82,8 +82,8 @@ object MediaPicker {
      * `originalPaths` is a proper file path to upload.
      * `compressedImages` will hit the save-to-gallery on device.
      */
-    fun result(data: Intent?): List<String> {
-        return data?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
+    fun result(data: Intent?): PickerResult {
+        return data?.getParcelableExtra(RESULT_PICKER)?: PickerResult()
     }
 
 }
