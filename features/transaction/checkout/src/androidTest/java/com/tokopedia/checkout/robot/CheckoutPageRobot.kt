@@ -32,7 +32,7 @@ fun checkoutPage(func: CheckoutPageRobot.() -> Unit) = CheckoutPageRobot().apply
 class CheckoutPageRobot {
 
     fun waitForData() {
-        Thread.sleep(2001)
+        Thread.sleep(2000)
     }
 
     private fun scrollRecyclerViewToFirstOrder(activityRule: IntentsTestRule<ShipmentActivity>): Int {
