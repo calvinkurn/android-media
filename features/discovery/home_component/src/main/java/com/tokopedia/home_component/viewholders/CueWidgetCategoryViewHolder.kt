@@ -2,12 +2,15 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcCueCategoryBinding
+import com.tokopedia.home_component.decoration.CueWidgetCategoryItemDecoration
 import com.tokopedia.home_component.decoration.MerchantVoucherDecoration
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
@@ -18,6 +21,8 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.getTopadsString
+import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.viewholders.adapter.CueWidgetCategoryAdapter
 import com.tokopedia.home_component.viewholders.adapter.MerchantVoucherAdapter
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
 import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
@@ -26,15 +31,16 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class CueCategoryViewHolder (
+class CueWidgetCategoryViewHolder (
     itemView: View
 ) : AbstractViewHolder<CueCategoryDataModel>(itemView) {
     private var binding: GlobalDcCueCategoryBinding? by viewBinding()
-    private var adapter: MerchantVoucherAdapter? = null
+    private var adapter: CueWidgetCategoryAdapter? = null
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_cue_category
+        private const val TOTAL_SPAN_RECYCLER = 2
     }
 
     override fun bind(element: CueCategoryDataModel) {
@@ -59,8 +65,22 @@ class CueCategoryViewHolder (
 
     private fun mappingItem(channel: ChannelModel, visitables: MutableList<Visitable<*>>) {
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
-        adapter = MerchantVoucherAdapter(visitables, typeFactoryImpl)
-//        binding?.homeComponentMvcRv?.adapter = adapter
+        adapter = CueWidgetCategoryAdapter(channel)
+        binding?.run {
+            homeComponentCueCategoryRv.adapter = adapter
+//            homeComponentCueCategoryRv.layoutManager = GridLayoutManager(
+//                itemView.context,
+//                TOTAL_SPAN_RECYCLER,
+//                GridLayoutManager.HORIZONTAL,
+//                false
+//            )
+            val layoutManager = GridLayoutManager(itemView.context, 2)
+            homeComponentCueCategoryRv.layoutManager = layoutManager
+
+            if (homeComponentCueCategoryRv.itemDecorationCount == 0) {
+                homeComponentCueCategoryRv.addItemDecoration(CueWidgetCategoryItemDecoration(8f.toDpInt()))
+            }
+        }
 //        binding?.homeComponentMvcRv?.scrollToPosition(0)
     }
 
