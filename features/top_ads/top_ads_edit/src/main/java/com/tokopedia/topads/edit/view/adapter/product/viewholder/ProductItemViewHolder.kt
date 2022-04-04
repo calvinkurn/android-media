@@ -4,10 +4,17 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.product.viewmodel.ProductItemViewModel
-import kotlinx.android.synthetic.main.topads_edit_layout_product_list_item_product.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
+class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) :
+    ProductViewHolder<ProductItemViewModel>(view) {
 
-class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : ProductViewHolder<ProductItemViewModel>(view) {
+    private var productImage: ImageUnify? = null
+    private var productName: Typography? = null
+    private var productPrice: Typography? = null
+    private var checkBox: CheckboxUnify? = null
 
     companion object {
         @LayoutRes
@@ -16,19 +23,21 @@ class ProductItemViewHolder(val view: View, var actionChecked: (() -> Unit)?) : 
 
     init {
         view.setOnClickListener {
-            it.checkBox.isChecked = !it.checkBox.isChecked
+            checkBox?.let {
+                it.isChecked = !it.isChecked
+            }
             actionChecked?.invoke()
         }
     }
 
     override fun bind(item: ProductItemViewModel) {
         item.let {
-            view.product_name.text = it.data.productName
-            view.product_price.text = it.data.productPrice
-            view.checkBox.setOnCheckedChangeListener(null)
-            view.checkBox.isChecked = item.isChecked
-            view.product_image.setImageUrl(it.data.productImage)
-            view.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            productName?.text = it.data.productName
+            productPrice?.text = it.data.productPrice
+            checkBox?.setOnCheckedChangeListener(null)
+            checkBox?.isChecked = item.isChecked
+            productImage?.setImageUrl(it.data.productImage)
+            checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
                 item.isChecked = isChecked
                 actionChecked?.invoke()
             }
