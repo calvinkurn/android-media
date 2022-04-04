@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -144,6 +145,7 @@ class DigitalPDPDataPlanFragment :
     private var productDescBottomSheet: ProductDescBottomSheet? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
+    private lateinit var productDescBottomSheet: ProductDescBottomSheet
 
     override fun getScreenName(): String = ""
 
@@ -176,6 +178,14 @@ class DigitalPDPDataPlanFragment :
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is ProductDescBottomSheet) {
+            childFragment.setListener(this)
+        } else if (childFragment is FilterPDPBottomsheet) {
+            childFragment.setListener(this)
+        }
     }
 
     private fun setupKeyboardWatcher() {
@@ -406,7 +416,9 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
+                    if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     hideLoadingDialog()
+                    onLoadingBuyWidget(false)
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
                         DigitalPDPCategoryUtil.getCategoryName(categoryId),
@@ -641,12 +653,13 @@ class DigitalPDPDataPlanFragment :
                             getString(R.string.bottom_sheet_filter_title),
                             userSession.userId,
                         )
-                        fragmentManager?.let {
-                            FilterPDPBottomsheet(
-                                getString(R.string.bottom_sheet_filter_title),
-                                getString(R.string.bottom_sheet_filter_reset),
-                                filterData, this@DigitalPDPDataPlanFragment
-                            ).show(it, "")
+                        childFragmentManager?.let {
+                            val filterPDPBottomsheet = FilterPDPBottomsheet.getInstance()
+                            filterPDPBottomsheet.setTitleAndAction(getString(R.string.bottom_sheet_filter_title),
+                                getString(R.string.bottom_sheet_filter_reset))
+                            filterPDPBottomsheet.setFilterTagData(filterData)
+                            filterPDPBottomsheet.setListener(this@DigitalPDPDataPlanFragment)
+                            filterPDPBottomsheet.show(it, "")
                         }
                     }
 
@@ -1243,8 +1256,11 @@ class DigitalPDPDataPlanFragment :
             denom.slashPrice,
             userSession.userId
         )
-        fragmentManager?.let {
-            SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
+        childFragmentManager?.let {
+            val summaryTelcoBottomSheet = SummaryTelcoBottomSheet.getInstance()
+            summaryTelcoBottomSheet.setDenomData(denom)
+            summaryTelcoBottomSheet.setTitleBottomSheet(getString(R.string.summary_transaction))
+            summaryTelcoBottomSheet.show(it, "")
         }
     }
     //endregion
@@ -1360,10 +1376,13 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         layoutType: DenomWidgetEnum
     ) {
-        fragmentManager?.let {
-            productDescBottomSheet = ProductDescBottomSheet(denomFull, this)
-            productDescBottomSheet?.show(it, "")
+        childFragmentManager?.let {
+            productDescBottomSheet = ProductDescBottomSheet.getInstance()
+            productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setListener(this)
+            productDescBottomSheet.show(it, "")
         }
+
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.clickFullDenomChevron(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
