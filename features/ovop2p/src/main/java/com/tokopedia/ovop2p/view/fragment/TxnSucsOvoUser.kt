@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -23,7 +22,6 @@ import com.tokopedia.ovop2p.view.interfaces.ActivityListener
 import com.tokopedia.ovop2p.view.interfaces.LoaderUiListener
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrPage
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
-import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
 import com.tokopedia.ovop2p.viewmodel.OvoP2PTransactionThankYouVM
 import javax.inject.Inject
@@ -120,31 +118,25 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun createAndSubscribeToThankYouVM() =
         ovoP2PTransactionThankYouVM.transferThankyouLiveData.observe(
-            viewLifecycleOwner,
-            getThankYouObsvr(activity as LoaderUiListener)
-        )
-
-
-    private fun getThankYouObsvr(loaderUiListener: LoaderUiListener): Observer<ThankYouPageState> {
-        return Observer {
-            it?.let { pageState ->
-                loaderUiListener.hideProgressDialog()
-                when (pageState) {
-                    is ThankYouErrPage -> {
-                        gotoErrorPage(pageState.errMsg)
-                    }
-                    is ThankYouErrSnkBar -> {
-                        showErrorSnackBar(pageState.errMsg)
-                    }
-                    is ThankYouSucs -> {
-                        assignThankYouData(pageState.thankyouBase)
-                    }
-                }
+            viewLifecycleOwner){
+            when(it)
+            {
+                is ThankYouErrPage ->  gotoErrorPage(it.errMsg)
+                is ThankYouErrSnkBar ->  showErrorSnackBar(it.errMsg)
+                is ThankYouSucs ->  assignThankYouData(it.thankyouBase)
             }
         }
+
+
+    private fun hideLoader()
+    {
+        ( activity as LoaderUiListener).hideProgressDialog()
     }
 
+
+
     private fun gotoErrorPage(errMsg: String) {
+        hideLoader()
         var fragment: BaseDaggerFragment = TransferError.createInstance()
         var bundle = Bundle()
         bundle.putString(Constants.Keys.ERR_MSG_ARG, errMsg)
@@ -157,6 +149,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
+        hideLoader()
         thankYouDataCntnr = thankYouData
         date.text = thankYouData.ovoP2pTransferThankyou?.trnsfrDate
         val rpFormattedString = thankYouData.ovoP2pTransferThankyou?.amt?.toDouble()
@@ -222,6 +215,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun showErrorSnackBar(errMsg: String) {
+        hideLoader()
         activity?.let {
             errorSnackbar = OvoP2pUtil.createErrorSnackBar(it, this, errMsg)
             errorSnackbar.show()
