@@ -268,7 +268,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                                 ?: ""
                         )
                     ) {
-                        checkOutCart(totalCartPrice)
+                        checkOutCart()
                     }
                 }
             }
@@ -283,7 +283,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             showRepriceTag(cart)
                             renderRepricePrice(cart)
                         } else {
-                            showCheckBookingDetailPopUp(totalCartPrice)
+                            showCheckBookingDetailPopUp()
                         }
                     }
                 }
@@ -484,7 +484,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         } else tickerBookingPromo.visibility = View.GONE
 
         continueToPayButton.setOnClickListener {
-            showCheckBookingDetailPopUp(cart.configuration.price)
+            showCheckBookingDetailPopUp()
             bottomSheet.dismiss()
         }
 
@@ -498,7 +498,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showCheckBookingDetailPopUp(price: Int) {
+    private fun showCheckBookingDetailPopUp() {
         if (activity != null) {
             val dialog = DialogUnify(
                 activity as FlightBookingActivity,
@@ -512,7 +512,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                checkOutCart(price)
+                checkOutCart()
             }
 
             dialog.setSecondaryCTAClickListener { dialog.dismiss() }
@@ -838,10 +838,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun checkOutCart(totalPrice: Int) {
-        totalCartPrice = totalPrice
+    private fun checkOutCart() {
         showLoadingDialog()
-        bookingViewModel.checkOutCart(getCheckoutQuery(), totalPrice)
+        bookingViewModel.checkOutCart(getCheckoutQuery(), totalCartPrice)
     }
 
     private fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
@@ -1119,7 +1118,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                                 dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
                                 dialog.setPrimaryCTAClickListener {
                                     dialog.dismiss()
-                                    checkOutCart(totalCartPrice)
+                                    checkOutCart()
                                 }
                             }
                             FlightErrorConstant.FLIGHT_INVALID_USER -> {
