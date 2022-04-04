@@ -16,8 +16,12 @@ interface PickerActivityListener {
     fun isMaxImageSize(model: MediaUiModel): Boolean
     fun isMinStorageThreshold(): Boolean
 
-    fun onShowMediaLimitReachedToast()
-    fun onShowVideoLimitReachedToast()
+    fun onShowMediaLimitReachedGalleryToast()
+    fun onShowVideoLimitReachedGalleryToast()
+
+    fun onShowMediaLimitReachedCameraToast()
+    fun onShowVideoLimitReachedCameraToast()
+
     fun onShowVideoMinDurationToast()
     fun onShowVideoMaxDurationToast()
     fun onShowVideoMaxFileSizeToast()
@@ -25,6 +29,7 @@ interface PickerActivityListener {
     fun onShowImageMaxResToast()
     fun onShowImageMaxFileSizeToast()
     fun onShowMinStorageThresholdToast()
+    fun onShowFailToVideoRecordToast()
 
     fun onCameraThumbnailClicked()
     fun navigateToCameraPage()

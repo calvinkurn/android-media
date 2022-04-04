@@ -175,7 +175,7 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = PickerIntent.get(intent)
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
 
@@ -380,16 +380,30 @@ open class PickerActivity : BaseActivity()
         return viewModel.isDeviceStorageFull()
     }
 
-    override fun onShowMediaLimitReachedToast() {
+    override fun onShowMediaLimitReachedGalleryToast() {
         onShowValidationToaster(
             R.string.picker_selection_limit_message,
             param.get().maxMediaTotal()
         )
     }
 
-    override fun onShowVideoLimitReachedToast() {
+    override fun onShowVideoLimitReachedGalleryToast() {
         onShowValidationToaster(
             R.string.picker_selection_limit_video,
+            param.get().maxVideoCount()
+        )
+    }
+
+    override fun onShowMediaLimitReachedCameraToast() {
+        onShowValidationToaster(
+            R.string.picker_capture_limit_photo,
+            param.get().maxMediaTotal()
+        )
+    }
+
+    override fun onShowVideoLimitReachedCameraToast() {
+        onShowValidationToaster(
+            R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
     }
@@ -443,14 +457,21 @@ open class PickerActivity : BaseActivity()
         )
     }
 
+    override fun onShowFailToVideoRecordToast() {
+        onShowToaster(
+            getString(R.string.picker_storage_fail_video_record),
+            Toaster.TYPE_ERROR
+        )
+    }
+
     private fun onShowValidationToaster(messageId: Int, param: Any) {
         val content = getString(messageId, param)
         onShowToaster(content)
     }
 
-    private fun onShowToaster(message: String) {
+    private fun onShowToaster(message: String, type: Int = Toaster.TYPE_NORMAL) {
         container.container().let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT).show()
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, type).show()
         }
     }
 

@@ -232,18 +232,13 @@ class CameraControllerComponent(
     }
 
     private fun onTakeCamera() {
-        if (isVideoMode() && activityListener?.isMinStorageThreshold() == true) {
-            activityListener.onShowMinStorageThresholdToast()
-            return
-        }
-
         if (isVideoMode() && activityListener?.hasVideoLimitReached() == true) {
-            activityListener.onShowVideoLimitReachedToast()
+            activityListener.onShowVideoLimitReachedCameraToast()
             return
         }
 
         if (activityListener?.hasMediaLimitReached() == true) {
-            activityListener.onShowMediaLimitReachedToast()
+            activityListener.onShowMediaLimitReachedCameraToast()
             return
         }
 
