@@ -283,7 +283,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             showRepriceTag(cart)
                             renderRepricePrice(cart)
                         } else {
-                            showCheckBookingDetailPopUp(cart.configuration.price)
+                            showCheckBookingDetailPopUp(totalCartPrice)
                         }
                     }
                 }
