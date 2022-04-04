@@ -10,6 +10,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
+import com.tokopedia.play.broadcaster.ui.itemdecoration.QuizOptionItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
@@ -80,7 +81,9 @@ class QuizFormView : ConstraintLayout {
         }
 
     init {
+        binding.rvQuizOption.addItemDecoration(QuizOptionItemDecoration(context))
         binding.rvQuizOption.adapter = adapter
+
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
         bottomSheetHeaderBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
