@@ -457,7 +457,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         continueWithLocation = true
-        val savedModel = saveAddressMapper.map(getDistrictDataUiModel, zipCodes)
+        val savedModel = saveAddressMapper.map(getDistrictDataUiModel, zipCodes, saveAddressDataModel)
         presenter.setAddress(savedModel)
         with(getDistrictDataUiModel.errMessage) {
             if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {

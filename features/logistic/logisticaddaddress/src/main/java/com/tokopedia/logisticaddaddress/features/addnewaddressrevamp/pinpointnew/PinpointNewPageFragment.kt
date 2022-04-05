@@ -31,8 +31,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
@@ -451,7 +449,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
 
         currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
-        val savedModel = saveAddressMapper.map(data, zipCodes)
+        val savedModel = saveAddressMapper.map(data, zipCodes, saveAddressDataModel)
         viewModel.setAddress(savedModel)
         with(data.errMessage) {
             if (this != null && this.contains(GetDistrictUseCase.LOCATION_NOT_FOUND_MESSAGE)) {
@@ -789,7 +787,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
         }
 
-        val saveAddress = saveAddressMapper.map(data, zipCodes)
+        val saveAddress = saveAddressMapper.map(data, zipCodes, saveAddressDataModel)
         viewModel.setAddress(saveAddress)
         updateGetDistrictBottomSheet(saveAddress)
     }
