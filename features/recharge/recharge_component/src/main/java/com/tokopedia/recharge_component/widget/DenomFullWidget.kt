@@ -47,19 +47,6 @@ class DenomFullWidget @JvmOverloads constructor(
                     adapter = adapterDenomFull
                     layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 }
-                rvDenomFullCard.run {
-                    show()
-                    with(adapterDenomFull) {
-                        clearDenomFullData()
-                        setDenomFullList(denomData.listDenomData)
-                        listener = denomFullListener
-                        productTitleList = denomData.mainTitle
-                        selectedProductIndex = selectedProductPosition
-                        denomWidgetType = DenomWidgetEnum.FULL_TYPE
-                        adapter = adapterDenomFull
-                        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                    }
-                }
             }
         }
     }
