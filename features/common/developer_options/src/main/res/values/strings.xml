@@ -25,6 +25,7 @@
     <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
     <string name="pdp_page_source_edittext_placeholder">Page Source</string>
     <string name="pdp_true_false_atc_edittext_placeholder">true/false</string>
+    <string name="pdp_ext_params_placeholder">promoId=123&amp;deviceId=123</string>
 
     <string name="ab_test_rollence_start_button">List AB Test Rollence Keys</string>
     <string name="ab_test_rollence_edit_text_search_hint">Search key</string>

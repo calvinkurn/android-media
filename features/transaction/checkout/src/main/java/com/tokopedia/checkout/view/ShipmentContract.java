@@ -348,8 +348,6 @@ public interface ShipmentContract {
 
         CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
 
-        ShipmentDataConverter getShipmentDataConverter();
-
         void releaseBooking();
 
         void setLastApplyData(LastApplyUiModel lastApplyData);

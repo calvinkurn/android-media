@@ -12,6 +12,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.databinding.PartialNonProductBundleDetailBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
+import okhttp3.internal.toLongOrDefault
 
 class PartialSomDetailNonProductBundleDetailViewHolder(
     private var binding: PartialNonProductBundleDetailBinding?,
