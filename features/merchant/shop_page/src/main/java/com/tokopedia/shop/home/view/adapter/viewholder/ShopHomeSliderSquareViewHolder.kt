@@ -26,7 +26,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeSliderSquareViewHolder(
         itemView: View,
-        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
@@ -67,11 +66,6 @@ class ShopHomeSliderSquareViewHolder(
                             layoutParams.rightMargin,
                             layoutParams.bottomMargin
                     )
-                }
-                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
-                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
-                    }
                 }
             } else {
                 show()
