@@ -1,9 +1,9 @@
 package com.tokopedia.officialstore.official.presentation.listener
 
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.officialstore.analytics.OSSpecialReleaseTracking
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 
 /**
@@ -18,13 +18,14 @@ class OSSpecialReleaseComponentCallback(
         channelModel: ChannelModel,
         position: Int
     ) {
-//        SpecialReleaseTracking.sendSpecialReleaseItemImpression(
-//            trackingQueue = homeCategoryListener.getTrackingQueueObj(),
-//            channelModel = channelModel,
-//            channelGrid = grid,
-//            position = position,
-//            userId = homeCategoryListener.userId
-//        )
+        OSSpecialReleaseTracking.sendSpecialReleaseItemImpression(
+            trackingQueue = dcEventHandler.getTrackingObject()?.trackingQueueObj,
+            channelModel = channelModel,
+            channelGrid = grid,
+            position = position,
+            userId = dcEventHandler.getUserId(),
+            categoryName = dcEventHandler.getOSCategory()?.title?:""
+        )
     }
 
     override fun onSpecialReleaseItemClicked(
@@ -33,23 +34,24 @@ class OSSpecialReleaseComponentCallback(
         position: Int,
         applink: String
     ) {
-//        SpecialReleaseTracking.sendSpecialReleaseItemClick(
-//            channelModel = channelModel,
-//            channelGrid = grid,
-//            position = position,
-//            userId = homeCategoryListener.userId
-//        )
-//        RouteManager.route(context, applink)
+        OSSpecialReleaseTracking.sendSpecialReleaseItemClick(
+            channelModel = channelModel,
+            channelGrid = grid,
+            position = position,
+            userId = dcEventHandler.getUserId(),
+            categoryName = dcEventHandler.getOSCategory()?.title?:""
+        )
+        dcEventHandler.goToApplink(applink)
     }
 
     override fun onSpecialReleaseItemSeeAllClicked(channelModel: ChannelModel, applink: String) {
-//        SpecialReleaseTracking.sendSpecialReleaseSeeAllClick(channelModel)
-//        RouteManager.route(context, applink)
+        OSSpecialReleaseTracking.sendSpecialReleaseSeeAllClick(channelModel, dcEventHandler.getOSCategory()?.title?:"")
+        dcEventHandler.goToApplink(applink)
     }
 
     override fun onSpecialReleaseItemSeeAllCardClicked(channelModel: ChannelModel, applink: String) {
-//        SpecialReleaseTracking.sendSpecialReleaseSeeAllCardClick(channelModel)
-//        RouteManager.route(context, applink)
+        OSSpecialReleaseTracking.sendSpecialReleaseSeeAllCardClick(channelModel, dcEventHandler.getOSCategory()?.title?:"")
+        dcEventHandler.goToApplink(applink)
     }
 
     override fun onSpecialReleaseChannelImpressed(channelModel: ChannelModel, position: Int) {

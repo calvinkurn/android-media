@@ -65,7 +65,8 @@ object OfficialStoreDynamicChannelComponentMapper {
                         persona = channel.persona,
                         brandId = channel.brandId,
                         categoryPersona = channel.categoryPersona,
-                        campaignId = channel.campaignID.toString()
+                        campaignId = channel.campaignID.toString(),
+                        campaignType = channel.campaignType
                 ),
                 channelGrids = channel.grids.map {
                     ChannelGrid(

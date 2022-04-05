@@ -204,10 +204,12 @@ class OfficialHomeMapper (
                             officialStore
                         )
                     )
-                    DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING -> SpecialReleaseDataModel(
-                        OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
-                            officialStore.channel,
-                            position
+                    DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING -> views.add(
+                        SpecialReleaseDataModel(
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                officialStore.channel,
+                                position
+                            )
                         )
                     )
                 }
