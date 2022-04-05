@@ -401,6 +401,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             getString(R.string.sd_start_date),
             Date(),
             viewModel.getSelectedStartDate(),
+            viewModel.getSelectedEndDate(),
+            "",
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
                     viewModel.setSelectedStartDate(selectedDate)
@@ -418,6 +420,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             getString(R.string.sd_end_date),
             viewModel.getSelectedStartDate(),
             viewModel.getSelectedEndDate(),
+            viewModel.getSelectedEndDate(),
+            "",
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
                     viewModel.setSelectedEndDate(selectedDate)
