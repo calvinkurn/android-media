@@ -25,6 +25,7 @@ object FirstPromoDataSource {
 
     const val IS_MVC_FIRST_TIME = "is_mvc_first_time"
     const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
+    const val IS_TOKOPEDIA_PLAY_FIRST_TIME = "is_tokopedia_play_first_time"
 
     fun getFirstVoucherCashbackInfoItems() = listOf(
             FirstPromoUiModel(

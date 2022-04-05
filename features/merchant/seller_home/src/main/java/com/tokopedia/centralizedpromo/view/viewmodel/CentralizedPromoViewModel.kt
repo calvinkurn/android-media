@@ -100,6 +100,12 @@ class CentralizedPromoViewModel @Inject constructor(
                     true
                 )
             }
+            val isTokopediaPlayFirstTimeDeferred = async {
+                sharedPreferences.getBoolean(
+                    FirstPromoDataSource.IS_TOKOPEDIA_PLAY_FIRST_TIME,
+                    true
+                )
+            }
             val isProductCouponEnabledDeffered = async {
                 getIsProductCouponEnabled()
             }
@@ -122,6 +128,7 @@ class CentralizedPromoViewModel @Inject constructor(
             val isVoucherCashbackEligible = isVoucherCashbackEligibleDeferred.await()
             val isVoucherCashbackFirstTime = isVoucherCashbackFirstTimeDeferred.await()
             val isProductCouponFirstTime = isProductCouponFirstTimeDeferred.await()
+            val isTokopediaPlayFirstTime = isTokopediaPlayFirstTimeDeferred.await()
             val isProductCouponEnabled = isProductCouponEnabledDeffered.await()
             Success(
                 PromoCreationStaticData.provideStaticData(
@@ -133,6 +140,7 @@ class CentralizedPromoViewModel @Inject constructor(
                     isTopAdsOnBoardingEnable,
                     isVoucherCashbackFirstTime,
                     isProductCouponFirstTime,
+                    isTokopediaPlayFirstTime,
                     isProductCouponEnabled
                 )
             )

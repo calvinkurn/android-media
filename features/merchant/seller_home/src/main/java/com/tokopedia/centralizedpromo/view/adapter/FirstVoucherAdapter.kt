@@ -10,7 +10,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.centralizedpromo.view.model.FirstPromoUiModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstPromoItemLayoutBinding
 import timber.log.Timber
@@ -40,11 +42,13 @@ class FirstVoucherAdapter(private val itemList: List<FirstPromoUiModel>) :
                             firstPromoItemIcon.setImageDrawable(it)
                         }
                         firstPromoItemIconUnify.gone()
+                        firstPromoItemIcon.visible()
                     }
                     item.iconUnifyAndColorResPair != null -> {
                         val (iconId, iconColor) = item.iconUnifyAndColorResPair
                         firstPromoItemIconUnify.setupIconColor(root.context, iconId, iconColor)
-                        firstPromoItemIcon.gone()
+                        firstPromoItemIconUnify.visible()
+                        firstPromoItemIcon.invisible()
                     }
                 }
                 if (item.titleRes == null) {

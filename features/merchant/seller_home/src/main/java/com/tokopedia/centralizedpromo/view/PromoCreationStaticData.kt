@@ -22,6 +22,7 @@ object PromoCreationStaticData {
         isTopAdsOnBoardingEnable: Boolean,
         isVoucherCashbackFirstTime: Boolean,
         isProductCouponFirstTime: Boolean,
+        isTokopediaPlayFirstTime: Boolean,
         isProductCouponEnabled: Boolean,
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
@@ -30,7 +31,11 @@ object PromoCreationStaticData {
                 resourceProvider.getPromoCreationTitleTokopediaPlay(),
                 resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
                 "",
-                ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
+                if (isTokopediaPlayFirstTime) {
+                    getFirstTimeApplink(SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY)
+                } else {
+                    ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
+                }
             ),
             PromoCreationUiModel(
                 R.drawable.sh_ic_top_ads_color,
@@ -58,9 +63,7 @@ object PromoCreationStaticData {
                 "",
                 if (isVoucherCashbackEligible) {
                     if (isVoucherCashbackFirstTime) {
-                        Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
-                            .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
-                            .build().toString()
+                        getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
                     } else {
                         ApplinkConstInternalSellerapp.CREATE_VOUCHER
                     }
@@ -90,9 +93,7 @@ object PromoCreationStaticData {
         if (isProductCouponEnabled) {
             val productCouponApplink =
                 if (isProductCouponFirstTime) {
-                    Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
-                        .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT)
-                        .build().toString()
+                    getFirstTimeApplink(SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT)
                 } else {
                     ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT
                 }
@@ -112,4 +113,10 @@ object PromoCreationStaticData {
             errorMessage = ""
         )
     }
+
+    private fun getFirstTimeApplink(promoType: String): String =
+        Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
+            .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, promoType)
+            .build().toString()
+
 }
