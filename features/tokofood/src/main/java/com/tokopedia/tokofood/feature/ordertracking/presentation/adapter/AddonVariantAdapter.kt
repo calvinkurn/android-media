@@ -3,17 +3,11 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailVariantAddOnBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
 
 class AddonVariantAdapter(private val addOnVariantList: List<AddonVariantItemUiModel>) :
     RecyclerView.Adapter<AddonVariantAdapter.AddonVariantViewHolder>() {
-
-
-    fun setAddOnVariantList(isExpand: Boolean) {
-        val addOnVariantLimit = addOnVariantList.take(Int.ZERO)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddonVariantViewHolder {
         val binding = ItemTokofoodOrderDetailVariantAddOnBinding.inflate(

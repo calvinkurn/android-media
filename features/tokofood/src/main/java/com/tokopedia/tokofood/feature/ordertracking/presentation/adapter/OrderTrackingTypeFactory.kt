@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverS
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingHeaderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailShippingUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingDetailUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
@@ -13,10 +13,12 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingTickerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentGrandTotalUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StatusInfoHeaderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
@@ -32,7 +34,7 @@ interface OrderTrackingTypeFactory {
 
     fun type(shippingHeaderUiModel: ShippingHeaderUiModel): Int
 
-    fun type(orderDetailShippingUiModel: OrderDetailShippingUiModel): Int
+    fun type(shippingDetailUiModel: ShippingDetailUiModel): Int
 
     fun type(orderDetailHeaderUiModel: OrderDetailHeaderUiModel): Int
 
@@ -55,6 +57,10 @@ interface OrderTrackingTypeFactory {
     fun type(paymentMethodUiModel: PaymentMethodUiModel): Int
 
     fun type(paymentGrandTotalUiModel: PaymentGrandTotalUiModel): Int
+
+    fun type(paymentHeaderUiModel: PaymentHeaderUiModel): Int
+
+    fun type(temporaryFinishUiModel: TemporaryFinishUiModel): Int
 
     fun type(thickDividerUiModel: ThickDividerUiModel): Int
 

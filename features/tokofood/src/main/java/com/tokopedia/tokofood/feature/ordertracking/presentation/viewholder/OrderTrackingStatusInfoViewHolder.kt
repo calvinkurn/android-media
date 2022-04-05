@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.R
@@ -11,8 +12,10 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.Stepper
 import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderTrackingStatusInfoWidget
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 
-class OrderTrackingStatusInfoViewHolder(itemView: View) :
-    AbstractViewHolder<OrderTrackingStatusInfoUiModel>(itemView) {
+class OrderTrackingStatusInfoViewHolder(
+    itemView: View,
+    private val orderTrackingStatusInfoListener: Listener
+) : BaseOrderTrackingViewHolder<OrderTrackingStatusInfoUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,44 +30,59 @@ class OrderTrackingStatusInfoViewHolder(itemView: View) :
 
     private var stepperStatusAdapter: StepperStatusAdapter? = null
 
-    override fun bind(element: OrderTrackingStatusInfoUiModel?) {
-        if (element == null) return
+    override fun bind(element: OrderTrackingStatusInfoUiModel) {
         with(binding) {
             orderStatusInfoWidget.setupStatusInfoWidget(element)
             setupStepperStatusAdapter(element)
         }
     }
 
-    override fun bind(element: OrderTrackingStatusInfoUiModel?, payloads: MutableList<Any>) {
-        payloads.firstOrNull()?.let { payload ->
-            if (payload is Pair<*, *>) {
-                val (oldItem, newItem) = payload
+    override fun bindPayload(payloads: Pair<*, *>?) {
+        payloads?.let { payload ->
+            val (oldItem, newItem) = payload
 
-                if (oldItem is OrderTrackingStatusInfoUiModel && newItem is OrderTrackingStatusInfoUiModel) {
-                    updateStatusLottieUrl(oldItem, newItem)
-                    updateStatusTitle(oldItem, newItem)
-                    updateStatusSubTitle(oldItem, newItem)
-                }
+            if (oldItem is OrderTrackingStatusInfoUiModel && newItem is OrderTrackingStatusInfoUiModel) {
+                updateStatusLottieUrl(oldItem, newItem)
+                updateStatusTitle(oldItem, newItem)
+                updateStatusSubTitle(oldItem, newItem)
+                updateStepperStatus(oldItem, newItem)
             }
         }
-        super.bind(element, payloads)
     }
 
-    private fun updateStatusLottieUrl(oldItem: OrderTrackingStatusInfoUiModel, newItem: OrderTrackingStatusInfoUiModel) {
+    private fun updateStatusLottieUrl(
+        oldItem: OrderTrackingStatusInfoUiModel,
+        newItem: OrderTrackingStatusInfoUiModel
+    ) {
         if (oldItem.lottieUrl != newItem.lottieUrl) {
             binding.orderStatusInfoWidget.updateLottie(newItem.statusKey, newItem.lottieUrl)
         }
     }
 
-    private fun updateStatusTitle(oldItem: OrderTrackingStatusInfoUiModel, newItem: OrderTrackingStatusInfoUiModel) {
+    private fun updateStatusTitle(
+        oldItem: OrderTrackingStatusInfoUiModel,
+        newItem: OrderTrackingStatusInfoUiModel
+    ) {
         if (oldItem.orderStatusTitle != newItem.orderStatusTitle) {
             binding.orderStatusInfoWidget.setOrderTrackingStatusTitle(newItem.orderStatusTitle)
         }
     }
 
-    private fun updateStatusSubTitle(oldItem: OrderTrackingStatusInfoUiModel, newItem: OrderTrackingStatusInfoUiModel) {
+    private fun updateStatusSubTitle(
+        oldItem: OrderTrackingStatusInfoUiModel,
+        newItem: OrderTrackingStatusInfoUiModel
+    ) {
         if (oldItem.orderStatusSubTitle != newItem.orderStatusSubTitle) {
             binding.orderStatusInfoWidget.setOrderTrackingStatusTitle(newItem.orderStatusSubTitle)
+        }
+    }
+
+    private fun updateStepperStatus(
+        oldItem: OrderTrackingStatusInfoUiModel,
+        newItem: OrderTrackingStatusInfoUiModel
+    ) {
+        if (oldItem.stepperStatusList != newItem.stepperStatusList) {
+            stepperStatusAdapter?.setStepperList(newItem.stepperStatusList)
         }
     }
 
@@ -87,10 +105,18 @@ class OrderTrackingStatusInfoViewHolder(itemView: View) :
         }
 
         binding.rvOrderStatusStepper.run {
+            setHasFixedSize(true)
+            setRecycledViewPool(orderTrackingStatusInfoListener.getRecyclerViewPoolStatusInfo())
             layoutManager = gridLayoutManager
             adapter = stepperStatusAdapter
         }
 
         stepperStatusAdapter?.setStepperList(item.stepperStatusList)
     }
+
+    interface Listener {
+        fun getRecyclerViewPoolStatusInfo(): RecyclerView.RecycledViewPool
+    }
+
+
 }

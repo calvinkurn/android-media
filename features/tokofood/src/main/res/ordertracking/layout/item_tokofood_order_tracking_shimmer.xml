@@ -199,7 +199,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderOrderStatusMerchantLine3"
         android:layout_height="12dp"
-        android:layout_width="219dp"
+        android:layout_width="179dp"
         android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/loaderOrderStatusMerchantMask2"
         app:layout_constraintTop_toTopOf="@id/loaderOrderStatusMerchantMask2"
@@ -210,7 +210,7 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderOrderStatusMerchantLine4"
         android:layout_height="12dp"
-        android:layout_width="110dp"
+        android:layout_width="177dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantLine1"
         app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine3"
@@ -220,10 +220,90 @@
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loaderOrderStatusMerchantLine5"
         android:layout_height="12dp"
-        android:layout_width="110dp"
+        android:layout_width="234dp"
         android:layout_marginTop="10dp"
         app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantLine1"
         app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine4"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerLoader2"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine5"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine6"
+        android:layout_height="12dp"
+        android:layout_width="116dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantMask2"
+        app:layout_constraintTop_toBottomOf="@id/dividerLoader2"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine7"
+        android:layout_height="12dp"
+        android:layout_width="116dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantMask2"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine6"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine8"
+        android:layout_height="12dp"
+        android:layout_width="116dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine6"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine9"
+        android:layout_height="12dp"
+        android:layout_width="166dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantMask2"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine7"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine10"
+        android:layout_height="12dp"
+        android:layout_width="166dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantMask2"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine9"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine11"
+        android:layout_height="12dp"
+        android:layout_width="166dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantMask2"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine10"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderOrderStatusMerchantLine12"
+        android:layout_height="12dp"
+        android:layout_width="233dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/loaderOrderStatusMerchantMask2"
+        app:layout_constraintTop_toBottomOf="@id/loaderOrderStatusMerchantLine11"
         app:loader_corner_radius="8dp"
         app:loader_type="rect" />
 

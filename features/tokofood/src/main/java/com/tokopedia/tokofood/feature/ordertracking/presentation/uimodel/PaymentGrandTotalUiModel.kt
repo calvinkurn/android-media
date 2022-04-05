@@ -4,7 +4,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactory
 
 data class PaymentGrandTotalUiModel(
-    val quantity: String,
+    val grandTotalValue: String,
     val totalLabel: String
 ): BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {

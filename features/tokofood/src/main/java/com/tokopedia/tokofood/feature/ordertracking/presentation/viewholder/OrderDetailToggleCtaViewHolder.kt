@@ -12,13 +12,12 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 class OrderDetailToggleCtaViewHolder(
     view: View,
     private val orderTrackingListener: OrderTrackingListener
-) : AbstractViewHolder<OrderDetailToggleCtaUiModel>(view) {
+) : BaseOrderTrackingViewHolder<OrderDetailToggleCtaUiModel>(view) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_order_detail_toggle
 
-        const val PAYLOAD_UPDATE_TOGGLE = 859
         const val NO_ROTATION = 0F
         const val REVERSE_ROTATION = 180F
     }
@@ -27,51 +26,57 @@ class OrderDetailToggleCtaViewHolder(
 
     override fun bind(element: OrderDetailToggleCtaUiModel) {
         with(binding) {
-            setOrderDetailToggleTitle(element.isExpand)
-            setOrderDetailToggleIcon(element.isExpand)
+            setOrderDetailToggleTitle(element)
+            setOrderDetailToggleIcon(element)
         }
     }
 
-    private fun ItemTokofoodOrderTrackingOrderDetailToggleBinding.setOrderDetailToggleTitle(isExpand: Boolean) {
-        tvOrderDetailToggleTitle.text = if (isExpand)
+    private fun ItemTokofoodOrderTrackingOrderDetailToggleBinding.setOrderDetailToggleTitle(
+        element: OrderDetailToggleCtaUiModel
+    ) {
+        tvOrderDetailToggleTitle.text = if (element.isExpand)
             getString(R.string.order_detail_collapse_cta_label) else getString(R.string.order_detail_expand_cta_label)
 
         tvOrderDetailToggleTitle.setOnClickListener {
-            setToggleCtaListener(isExpand)
+            setToggleCtaListener(element)
         }
     }
 
-    private fun ItemTokofoodOrderTrackingOrderDetailToggleBinding.setOrderDetailToggleIcon(isExpand: Boolean) {
-        icOrderDetailToggle.rotation = if (isExpand) REVERSE_ROTATION else NO_ROTATION
+    private fun ItemTokofoodOrderTrackingOrderDetailToggleBinding.setOrderDetailToggleIcon(
+        element: OrderDetailToggleCtaUiModel
+    ) {
+        icOrderDetailToggle.rotation = if (element.isExpand) REVERSE_ROTATION else NO_ROTATION
         icOrderDetailToggle.setOnClickListener {
-            setToggleCtaListener(isExpand)
+            setToggleCtaListener(element)
         }
     }
 
-    private fun setToggleCtaListener(isExpand: Boolean) {
-        if (isExpand) {
-            orderTrackingListener.onToggleClicked(false)
+    private fun setToggleCtaListener(item: OrderDetailToggleCtaUiModel) {
+        if (item.isExpand) {
+            orderTrackingListener.onToggleClicked(item, false)
         } else {
-            orderTrackingListener.onToggleClicked(true)
+            orderTrackingListener.onToggleClicked(item, true)
         }
     }
 
-    override fun bind(element: OrderDetailToggleCtaUiModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-
-        if (payloads.isNullOrEmpty() || element == null) return
-
-        when (payloads.getOrNull(Int.ZERO) as? Int) {
-            PAYLOAD_UPDATE_TOGGLE -> {
-                binding.run {
-                    setOrderDetailToggleTitle(element.isExpand)
-                    setOrderDetailToggleIcon(element.isExpand)
+    override fun bindPayload(payloads: Pair<*, *>?) {
+        payloads?.let {
+            val (oldItem, newItem) = it
+            if (oldItem is OrderDetailToggleCtaUiModel && newItem is OrderDetailToggleCtaUiModel) {
+                if (oldItem != newItem) {
+                    binding.run {
+                        setOrderDetailToggleTitle(newItem)
+                        setOrderDetailToggleIcon(newItem)
+                    }
                 }
             }
         }
     }
 
     interface OrderDetailToggleCtaListener {
-        fun onToggleClicked(isExpandable: Boolean)
+        fun onToggleClicked(
+            orderDetailToggleCtaUiModel: OrderDetailToggleCtaUiModel,
+            isExpandable: Boolean
+        )
     }
 }

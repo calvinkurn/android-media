@@ -5,18 +5,19 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 
 
 data class DriverSectionUiModel(
-    val driverInformationList: List<DriverInformation> = emptyList(),
+    val driverInformationList: List<DriverInformationUiModel> = emptyList(),
     val name: String,
     val photoUrl: String,
     val phone: String,
-    val licensePlateNumber: String
+    val licensePlateNumber: String,
+    val isDisableCall: Boolean
 ): BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
-data class DriverInformation(
-    val iconInformation: String = "",
-    val informationName: String = ""
+data class DriverInformationUiModel(
+    val iconInformation: Int,
+    val informationName: String
 )

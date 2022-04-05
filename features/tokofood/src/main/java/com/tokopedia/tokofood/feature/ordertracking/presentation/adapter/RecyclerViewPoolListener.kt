@@ -1,0 +1,6 @@
+package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
+
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.FoodItemViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingStatusInfoViewHolder
+
+interface RecyclerViewPollerListener: FoodItemViewHolder.Listener, OrderTrackingStatusInfoViewHolder.Listener

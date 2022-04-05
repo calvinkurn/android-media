@@ -2,15 +2,20 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingFoodItemBinding
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.AddonVariantAdapter
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 
-class FoodItemViewHolder(view: View) : AbstractViewHolder<FoodItemUiModel>(view) {
+class FoodItemViewHolder(view: View,
+                         private val foodItemListener: Listener
+) : AbstractViewHolder<FoodItemUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -20,38 +25,19 @@ class FoodItemViewHolder(view: View) : AbstractViewHolder<FoodItemUiModel>(view)
     private val binding = ItemTokofoodOrderTrackingFoodItemBinding.bind(itemView)
 
     override fun bind(element: FoodItemUiModel) {
-
-    }
-
-    override fun bind(element: FoodItemUiModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-
-        if (payloads.isNullOrEmpty() || element == null) return
-
-
-    }
-
-    private fun ItemTokofoodOrderTrackingFoodItemBinding.setFoodName(element: FoodItemUiModel) {
-        tvFoodItemName.text = if (element.isExpand) {
-            element.foodName
-        } else {
-            if (element.addOnVariantList.isEmpty()) {
-                element.foodName
-            } else {
-                val nn600Color = com.tokopedia.unifyprinciples.R.color.Unify_NN600.toString()
-                MethodChecker.fromHtml(
-                    itemView.context.getString(
-                        R.string.order_detail_food_addon_item_value,
-                        element.foodName,
-                        nn600Color,
-                        element.addOnVariantList.size.toString()
-                    )
-                )
-            }
+        with(binding) {
+            setFoodName(element.foodName)
+            setPriceQuantity(element.quantity, element.priceStr)
+            setupAddonVariantAdapter(element.addOnVariantList)
+            setupNote(element.notes)
         }
     }
 
-    private fun ItemTokofoodOrderTrackingFoodItemBinding.setQuantityPrice(
+    private fun ItemTokofoodOrderTrackingFoodItemBinding.setFoodName(foodName: String) {
+        tvFoodItemName.text = foodName
+    }
+
+    private fun ItemTokofoodOrderTrackingFoodItemBinding.setPriceQuantity(
         quantity: String,
         price: String
     ) {
@@ -72,7 +58,23 @@ class FoodItemViewHolder(view: View) : AbstractViewHolder<FoodItemUiModel>(view)
         }
     }
 
-    private fun ItemTokofoodOrderTrackingFoodItemBinding.setupAddonVariantAdapter() {
+    private fun ItemTokofoodOrderTrackingFoodItemBinding.setupAddonVariantAdapter(
+        addOnVariantList: List<AddonVariantItemUiModel>
+    ) {
+        if (addOnVariantList.isNotEmpty()) {
+            rvVariantAddon.run {
+                show()
+                setHasFixedSize(true)
+                setRecycledViewPool(foodItemListener.getRecyclerViewPoolFoodItem())
+                layoutManager = LinearLayoutManager(context)
+                adapter = AddonVariantAdapter(addOnVariantList)
+            }
+        } else {
+            rvVariantAddon.hide()
+        }
+    }
 
+    interface Listener {
+        fun getRecyclerViewPoolFoodItem(): RecyclerView.RecycledViewPool
     }
 }
