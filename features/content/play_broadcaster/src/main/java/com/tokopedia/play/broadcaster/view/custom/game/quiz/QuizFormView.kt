@@ -265,7 +265,7 @@ class QuizFormView : ConstraintLayout {
         }.toMutableList()
 
         /** Auto Add */
-        val isAllOptionFilled = newOptions.any { it.text.isEmpty() } == null
+        val isAllOptionFilled = newOptions.firstOrNull { it.text.isEmpty() } == null
         val currentOption = newOptions.size
         val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
 
