@@ -824,6 +824,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if(prevConfigState != configState)
             quizForm.applyQuizConfig(configState.quizConfig)
 
+        if(prevState?.quizFormData != state.quizFormData)
+            quizForm.setFormData(state.quizFormData)
+
         if(prevState?.quizFormState != state.quizFormState) {
             when(state.quizFormState) {
                 QuizFormStateUiModel.Nothing -> {
@@ -840,9 +843,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
             quizForm.setFormState(state.quizFormState)
         }
-
-        if(prevState?.quizFormData != state.quizFormData)
-            quizForm.setFormData(state.quizFormData)
     }
 
     private fun isPinnedFormVisible(): Boolean {

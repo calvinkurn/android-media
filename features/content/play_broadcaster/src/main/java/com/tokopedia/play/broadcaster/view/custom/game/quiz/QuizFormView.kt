@@ -85,6 +85,39 @@ class QuizFormView : ConstraintLayout {
             timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
         }
 
+    private var quizFormState: QuizFormStateUiModel = QuizFormStateUiModel.Nothing
+        set(value) {
+            if(field != value) {
+                field = value
+
+                when(value) {
+                    QuizFormStateUiModel.Preparation -> {
+                        binding.groupActionBar.visibility = View.VISIBLE
+                        binding.viewGameHeader.isEditable = true
+                        binding.viewQuizGift.isEditable = true
+
+                        setOptionsEditable(true)
+
+                        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+                    }
+                    is QuizFormStateUiModel.SetDuration -> {
+                        binding.groupActionBar.visibility = View.GONE
+                        binding.viewGameHeader.isEditable = false
+                        binding.viewQuizGift.isEditable = false
+
+                        setOptionsEditable(false)
+
+                        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
+
+                        timePickerBinding.btnApply.apply {
+                            isLoading = value.isLoading
+                            isEnabled = !value.isLoading
+                        }
+                    }
+                }
+            }
+        }
+
     private var mQuizFormData: QuizFormDataUiModel = QuizFormDataUiModel()
 
     init {
@@ -176,27 +209,7 @@ class QuizFormView : ConstraintLayout {
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
-        when(quizFormState) {
-            QuizFormStateUiModel.Preparation -> {
-                binding.groupActionBar.visibility = View.VISIBLE
-                binding.viewGameHeader.isEditable = true
-                binding.viewQuizGift.isEditable = true
-
-                bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-            is QuizFormStateUiModel.SetDuration -> {
-                binding.groupActionBar.visibility = View.GONE
-                binding.viewGameHeader.isEditable = false
-                binding.viewQuizGift.isEditable = false
-
-                bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
-
-                timePickerBinding.btnApply.apply {
-                    isLoading = quizFormState.isLoading
-                    isEnabled = !quizFormState.isLoading
-                }
-            }
-        }
+        this.quizFormState = quizFormState
     }
 
     fun listen(): Flow<Event> {
@@ -212,6 +225,13 @@ class QuizFormView : ConstraintLayout {
             err = throwable,
             bottomMargin = timePickerBinding.btnApply.height + offset8
         )
+    }
+
+    private fun setOptionsEditable(isEditable: Boolean) {
+        val options = mQuizFormData.options
+        setFormData(mQuizFormData.copy(
+            options = options.map { it.copy(isEditable = isEditable) }
+        ))
     }
 
     private fun setupInsets() {
