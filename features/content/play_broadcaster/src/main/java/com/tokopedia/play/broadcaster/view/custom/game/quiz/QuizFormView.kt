@@ -67,11 +67,11 @@ class QuizFormView : ConstraintLayout {
 
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
         override fun onOptionChecked(order: Int) {
-//            eventBus.emit(Event.SelectQuizOption(order))
+            eventBus.emit(Event.SelectQuizOption(order))
         }
 
         override fun onTextChanged(order: Int, text: String) {
-//            eventBus.emit(Event.OptionChanged(order, text))
+            eventBus.emit(Event.OptionChanged(order, text))
         }
     })
 

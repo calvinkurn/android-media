@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.custom.game.quiz
 
 import android.content.Context
 import android.text.InputFilter
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -37,13 +38,19 @@ class QuizOptionView : ConstraintLayout {
         true,
     )
 
-    private var mTextOnChangedListener: ((String) -> Unit)? = null
+    private var mTextOnChangedListener: ((Int, String) -> Unit)? = null
 
     init {
-        binding.etQuizOption.afterTextChanged {
-            mTextOnChangedListener?.invoke(it)
+        binding.etQuizOption.apply {
+            setRawInputType(InputType.TYPE_CLASS_TEXT)
+
+            afterTextChanged {
+                mTextOnChangedListener?.invoke(order, it)
+            }
         }
     }
+
+    var order: Int = -1
 
     var textChoice: String = ""
         set(value) {
@@ -119,7 +126,7 @@ class QuizOptionView : ConstraintLayout {
             }
         }
 
-    fun setOnTextChanged(listener: (String) -> Unit) {
+    fun setOnTextChanged(listener: (Int, String) -> Unit) {
         mTextOnChangedListener = listener
     }
 

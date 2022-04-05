@@ -43,14 +43,14 @@
         android:id="@+id/et_quiz_option"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:background="@null"
+        android:imeOptions="actionNext"
         android:inputType="textCapWords|textMultiLine"
         android:minLines="2"
-        android:layout_marginStart="16dp"
-        app:layout_constraintStart_toEndOf="@id/fl_quiz_option"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/fl_quiz_option"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ class QuizOptionViewHolder private constructor(
 
     fun bind(item: QuizFormDataUiModel.Option) {
         binding.root.apply {
+            order = item.order
             text = item.text
             textChoice = item.getTextChoice()
             textHint = getString(R.string.play_bro_quiz_hint_text, item.order + 1)
@@ -24,10 +25,8 @@ class QuizOptionViewHolder private constructor(
             isCorrect = item.isSelected
             isEditable = item.isEditable
 
-            /** TODO: Set maxLength */
-
             setOnClickListener { listener.onOptionChecked(item.order) }
-            setOnTextChanged { listener.onTextChanged(item.order, it) }
+            setOnTextChanged { order, text -> listener.onTextChanged(order, text) }
         }
     }
 

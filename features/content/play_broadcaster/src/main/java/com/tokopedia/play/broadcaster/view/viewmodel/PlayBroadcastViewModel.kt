@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -963,17 +964,25 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleInputQuizOption(order: Int, text: String) {
+    private fun handleInputQuizOption(order: Int, newText: String) {
         val options = _quizFormData.value.options
+        val isAutoSelectEligible = needToAutoSelectQuizOption(options, newText)
 
-        val isAutoSelectEligible = needToAutoSelectQuizOption(options, text)
+        val newOptions = options.map {
+            it.copy(
+                isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
+                text = if(it.order == order) newText else it.text
+            )
+        }
+
+        Log.d("<LOG>", "order : $order")
+        Log.d("<LOG>", "newText : $newText")
+        Log.d("<LOG>", "old : $options")
+        Log.d("<LOG>", "new : $newOptions")
+        Log.d("<LOG>", "========================")
+
         _quizFormData.setValue {
-            copy(options = options.map {
-                it.copy(
-                    isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
-                    text = if(it.order == order) text else it.text
-                )
-            })
+            copy(options = newOptions)
         }
 
         /** TODO: handle add new options or not */
