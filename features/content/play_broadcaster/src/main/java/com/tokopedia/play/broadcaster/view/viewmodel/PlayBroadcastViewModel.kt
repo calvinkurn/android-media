@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -16,7 +17,9 @@ import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSoc
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
+import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.revamp.timer.PlayBroadcastTimer
+import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
@@ -42,7 +45,6 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.play_common.util.extension.combine
 import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
@@ -94,6 +96,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 else -> ""
             }
         }
+
+    val isUserLoggedIn: Boolean
+        get() = userSession.isLoggedIn
 
     val observableConfigInfo: LiveData<NetworkResult<ConfigurationUiModel>>
         get() = _observableConfigInfo
@@ -184,7 +189,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
-    private val _status = MutableStateFlow(BroadcastStatus.Idle)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -202,21 +206,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
         _schedule,
         _isExiting,
-        _status,
-    ) { channelState, pinnedMessage, productMap, schedule, isExiting, status ->
+    ) { channelState, pinnedMessage, productMap, schedule, isExiting ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             schedule = schedule,
             isExiting = isExiting,
-            status = status,
         )
     }.stateIn(
         viewModelScope,
@@ -229,9 +232,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _uiEvent
 
     val timerState = broadcastTimer.state
-
-    private val ingestUrl: String
-        get() = hydraConfigStore.getIngestUrl()
 
 //    private val liveViewStateListener = object : PlayLiveViewStateListener {
 //        override fun onLivePusherViewStateChanged(viewState: PlayLiveViewState) {
@@ -283,8 +283,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 //        }
 //    }
 
-//    private var isLiveStarted: Boolean = false
-
     private var socketJob: Job? = null
 
     private val gson by lazy { Gson() }
@@ -300,16 +298,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
         }
 
-        viewModelScope.launch(dispatcher.computation) {
-            _status.collectLatest {
-                if (it == BroadcastStatus.Start) {
-                    startWebSocket()
-                    getInteractiveConfig()
-                    getPinnedMessage()
-                }
-            }
-        }
-
         _observableChatList.value = mutableListOf()
 //        livePusherMediator.addListener(liveViewStateListener)
 //        livePusherMediator.addListener(liveChannelStateListener)
@@ -321,8 +309,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
-//        livePusherMediator.clearListener()
-//        livePusherMediator.destroy()
     }
 
     fun submitAction(event: PlayBroadcastAction) {
@@ -334,9 +320,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
-            is PlayBroadcastAction.DoResumeLive -> handleDoResumeLive()
-            is PlayBroadcastAction.ResumeLive -> handleResumeLive()
-            is PlayBroadcastAction.PauseLive -> handlePauseLive()
+            is BroadcastStateChanged -> handleBroadcastStateChanged(event.state)
         }
     }
 
@@ -357,13 +341,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _observableConfigInfo.value = NetworkResult.Success(configUiModel)
             } else {
                 // create channel when there are no channel exist
-                if (configUiModel.channelType == ChannelType.Unknown) createChannel()
+                if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
 
                 // get channel when channel status is paused
-                if (configUiModel.channelType == ChannelType.Pause
+                if (configUiModel.channelStatus == ChannelStatus.Pause
                     // also when complete draft is true
-                    || configUiModel.channelType == ChannelType.CompleteDraft
-                    || configUiModel.channelType == ChannelType.Draft) {
+                    || configUiModel.channelStatus == ChannelStatus.CompleteDraft
+                    || configUiModel.channelStatus == ChannelStatus.Draft) {
                     val deferredChannel = asyncCatchError(block = {
                             getChannelById(configUiModel.channelId)
                     }) { it }
@@ -445,95 +429,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    // todo: try to move this function to uiState?
-    fun updateChannelStatusToLive(
-        onSuccess: () -> Unit,
-        onError: (throwable: Throwable) -> Unit,
-    ) {
-        viewModelScope.launchCatchError(block = {
-            updateChannelStatus(PlayChannelStatusType.Live)
-            getChannelById(channelId)
-            onSuccess() // move to ui state
-            startWebSocket()
-            getPinnedMessage()
-            getInteractiveConfig()
-        }) {
-            onError(it)
-        }
-    }
-
-    fun updateChannelStatusToStop() {
-        viewModelScope.launchCatchError(block = {
-            closeWebSocket()
-            updateChannelStatus(PlayChannelStatusType.Stop)
-        }) {
-        }
-    }
-
-    fun doUpdateChannelStatus(status: PlayChannelStatusType) {
-        viewModelScope.launchCatchError(block = {
-            updateChannelStatus(status)
-        }) {
-            _uiEvent.emit(
-                PlayBroadcastEvent.ShowError(it) {
-                    doUpdateChannelStatus(status)
-                }
-            )
-        }
-    }
-
-    fun doGetChannelInfo() {
-        viewModelScope.launchCatchError(block = {
-
-        }) {
-
-        }
-    }
-
-    fun getChannelDetail(
-        onLoad: () -> Unit,
-        onSuccess: (channelInfo: ChannelInfoUiModel) -> Unit,
-        onError: (throwable: Throwable) -> Unit,
-    ) {
-        onLoad()
-        viewModelScope.launchCatchError(block = {
-            val err = getChannelById(channelId)
-            if (err != null) onError(err)
-            else {
-                val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
-                if (channelInfo == null) {
-                    onError(Throwable("this error not supposed to happen"))
-                } else {
-                    onSuccess(channelInfo)
-                }
-            }
-        }) {
-            onError(it)
-        }
-    }
-
     private suspend fun updateChannelStatus(status: PlayChannelStatusType): String {
         return withContext(dispatcher.io) {
             repo.updateChannelStatus(channelId, status)
         }
     }
-
-//    @Throws(IllegalAccessException::class)
-//    fun createStreamer(context: Context, handler: Handler) {
-//        livePusherMediator.init(context, handler)
-//    }
-//
-//    fun switchCamera() {
-//        livePusherMediator.switchCamera()
-//    }
-//
-//    fun startPreview(surfaceView: SurfaceAspectRatioView) {
-//        livePusherMediator.onCameraChanged(surfaceView)
-//    }
-//
-//    fun stopPreview() {
-//        livePusherMediator.onCameraDestroyed()
-//    }
 
 //    fun startLiveStream(withTimer: Boolean = true) {
 //        livePusherMediator.startLiveStreaming(ingestUrl, withTimer)
@@ -572,15 +472,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 //        reconnectJob()
 //    }
 
-//    fun startLiveTimer() {
-//        viewModelScope.launch {
-//            delay(START_LIVE_TIMER_DELAY)
-//            livePusherMediator.startLiveTimer()
-//        }
-//        // TODO("find the best way to trigger engagement tools")
-//        getInteractiveConfig()
-//    }
-
 //    fun continueLiveStream() {
 //        if (isLiveStarted) reconnectLiveStream()
 //        else startLiveStream()
@@ -609,12 +500,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             logger.sendAll(channelId)
         } catch (ignored: IllegalStateException) { }
     }
-
-//    private fun sendLivePusherState(state: PlayLiveViewState) {
-//        viewModelScope.launch(dispatcher.main) {
-//            _observableLiveViewState.value = state
-//        }
-//    }
 
     fun setInteractiveTitle(title: String) {
         getCurrentSetupDataStore().setSetupInteractiveTitle(title)
@@ -751,12 +636,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
         return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(sharedPref.isFirstInteractive()))
     }
-
-//    private fun sendLivePusherStats(stats: LivePusherStatistic) {
-//        viewModelScope.launch(dispatcher.main) {
-//            _observableLivePusherStats.value = stats
-//        }
-//    }
 
     private suspend fun getSocketCredential(): GetSocketCredentialResponse.SocketCredential = try {
         withContext(dispatcher.io) {
@@ -1021,51 +900,63 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleDoResumeLive() {
-        viewModelScope.launchCatchError(block = {
-            _uiEvent.emit(PlayBroadcastEvent.ShowLoading)
-            val err = getChannelById(channelId)
-            if (err != null) _uiEvent.emit(PlayBroadcastEvent.ShowError(err))
-            else {
-                val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
-                if (channelInfo == null) {
-                    _uiEvent.emit(PlayBroadcastEvent.ShowError(Throwable("this error not supposed to happen")))
-                } else {
-                    if (channelInfo.status == ChannelType.Pause
-                        || channelInfo.status == ChannelType.Active) {
-                        _status.value = BroadcastStatus.Start
-                    } else {
-                        broadcastTimer.stop()
-                        _status.value = BroadcastStatus.Stop
-                        _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-                    }
-                }
+    private fun handleBroadcastStateChanged(state: PlayBroadcasterState) {
+        when(state) {
+            is PlayBroadcasterState.Started -> handleBroadcasterStart()
+            is PlayBroadcasterState.Resume -> handleBroadcasterResume(state.startedBefore, state.shouldContinue)
+            PlayBroadcasterState.Paused -> handleBroadcasterPause()
+            is PlayBroadcasterState.Error -> {
+                Log.e("PLAY_BROADCASTER_NEW", "Error: ${state.cause.message.orEmpty()}")
             }
+            PlayBroadcasterState.Stopped -> {
+                Log.e("PLAY_BROADCASTER_NEW", "Stopped")
+            }
+        }
+    }
+
+    private fun handleBroadcasterStart() {
+        viewModelScope.launchCatchError(block = {
+            updateChannelStatus(PlayChannelStatusType.Live)
+            getChannelById(channelId)
+            _uiEvent.emit(PlayBroadcastEvent.BroadcastStarted)
+            startWebSocket()
+            getPinnedMessage()
+            getInteractiveConfig()
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it))
         }
     }
 
-    private fun handleResumeLive() {
-        viewModelScope.launchCatchError(block = {
-            if (broadcastTimer.isPastPauseDuration) {
+    private fun handleBroadcasterResume(startedBefore: Boolean, shouldContinue: Boolean) {
+        viewModelScope.launchCatchError(block =  {
+//            if (!startedBefore && !shouldContinue) {
+//                _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
+//            } else
+            if (!shouldContinue) {
                 _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
             } else {
-                _uiEvent.emit(PlayBroadcastEvent.ShowLoading)
-                val err = getChannelById(channelId)
-                if (err != null) _uiEvent.emit(PlayBroadcastEvent.ShowError(err))
-                else {
-                    val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
-                    if (channelInfo == null) {
-                        _uiEvent.emit(PlayBroadcastEvent.ShowError(Throwable("this error not supposed to happen")))
-                    } else {
-                        if (channelInfo.status == ChannelType.Pause
-                            || channelInfo.status == ChannelType.Active) {
-                            _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
+                if (startedBefore && broadcastTimer.isPastPauseDuration) {
+                    _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+                } else {
+                    _uiEvent.emit(PlayBroadcastEvent.ShowLoading)
+                    val err = getChannelById(channelId)
+                    if (err != null) _uiEvent.emit(PlayBroadcastEvent.ShowError(err))
+                    else {
+                        val channelInfo = (_observableChannelInfo.value as? NetworkResult.Success)?.data
+                        if (channelInfo == null) {
+                            _uiEvent.emit(PlayBroadcastEvent.ShowError(Throwable("this error not supposed to happen")))
                         } else {
-                            broadcastTimer.stop()
-                            _status.value = BroadcastStatus.Stop
-                            _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+                            if (channelInfo.status == ChannelStatus.Pause
+                                || channelInfo.status == ChannelStatus.Active) {
+                                if (!shouldContinue) {
+                                    _uiEvent.emit(PlayBroadcastEvent.ShowResumeLiveDialog)
+                                } else {
+                                    _uiEvent.emit(PlayBroadcastEvent.BroadcastReady(channelInfo.ingestUrl))
+                                }
+                            } else {
+                                broadcastTimer.stop()
+                                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
+                            }
                         }
                     }
                 }
@@ -1075,11 +966,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handlePauseLive() {
+    private fun handleBroadcasterPause() {
         viewModelScope.launchCatchError(block = {
             updateChannelStatus(PlayChannelStatusType.Pause)
             broadcastTimer.pause()
         }) {}
+    }
+
+    fun updateChannelStatusToStop() {
+        viewModelScope.launchCatchError(block = {
+            closeWebSocket()
+            updateChannelStatus(PlayChannelStatusType.Stop)
+        }) {
+        }
     }
 
     /**
@@ -1125,10 +1024,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         broadcastTimer.start()
     }
 
-    fun pauseTimer() {
-        broadcastTimer.pause()
-    }
-
     fun stopTimer() {
         broadcastTimer.stop()
     }
@@ -1139,8 +1034,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
-
-        private const val START_LIVE_TIMER_DELAY = 1000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
 

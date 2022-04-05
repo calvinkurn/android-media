@@ -9,7 +9,7 @@ import java.util.*
 data class ConfigurationUiModel(
         val streamAllowed: Boolean,
         val channelId: String,
-        val channelType: ChannelType,
+        val channelStatus: ChannelStatus,
         val durationConfig: DurationConfigUiModel,
         val productTagConfig: ProductTagConfigUiModel,
         val coverConfig: CoverConfigUiModel,

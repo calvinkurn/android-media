@@ -10,5 +10,5 @@ data class ChannelInfoUiModel(
         val description: String,
         val coverUrl: String,
         val ingestUrl: String,
-        val status: ChannelType
+        val status: ChannelStatus
 )

@@ -28,7 +28,9 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.pusher.revamp.PlayBroadcaster
-import com.tokopedia.play.broadcaster.ui.model.ChannelType
+import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
@@ -93,7 +95,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private var isRecreated = false
     private var isResultAfterAskPermission = false
-    private var channelType = ChannelType.Unknown
+    private var channelType = ChannelStatus.Unknown
 
     private var toasterBottomMargin = 0
 
@@ -112,12 +114,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private lateinit var pauseLiveDialog: DialogUnify
 
     private var surfaceHolder: SurfaceHolder? = null
-    private var mHandler: Handler? = null
-    private val broadcaster = broadcasterFactory.create(
-        activityContext = this,
-        handler = mHandler,
-        callback = this
-    )
+    private lateinit var broadcaster: PlayBroadcaster
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -128,7 +125,7 @@ class PlayBroadcastActivity : BaseActivity(),
         setContentView(R.layout.activity_play_broadcast)
         isRecreated = (savedInstanceState != null)
 
-        mHandler = Handler(Looper.getMainLooper())
+        initBroadcaster()
 
         initView()
         setupView()
@@ -144,6 +141,15 @@ class PlayBroadcastActivity : BaseActivity(),
         observeConfiguration()
     }
 
+    private fun initBroadcaster() {
+        val handler = Handler(Looper.getMainLooper())
+        broadcaster = broadcasterFactory.create(
+            activityContext = this,
+            handler = handler,
+            callback = this
+        )
+    }
+
     override fun onStart() {
         super.onStart()
         aspectFrameLayout.setAspectRatio(AspectFrameLayout.DEFAULT_RATION_WINDOW_SIZE)
@@ -153,20 +159,20 @@ class PlayBroadcastActivity : BaseActivity(),
         super.onResume()
         setLayoutFullScreen()
         lockOrientation()
-        createStreamer()
+        createBroadcaster()
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onPause() {
         super.onPause()
-        releaseStreamer()
+        releaseBroadcaster()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         viewModel.sendLogs()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        broadcaster.destroy()
+        destroyBroadcaster()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -244,7 +250,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 }
                 surfaceHolder = holder
                 // We got surface to draw on, start streamer creation
-                createStreamer()
+                createBroadcaster()
             }
 
             override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -253,7 +259,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
             override fun surfaceDestroyed(holder: SurfaceHolder) {
                 surfaceHolder = null
-                releaseStreamer()
+                releaseBroadcaster()
             }
         })
     }
@@ -262,17 +268,6 @@ class PlayBroadcastActivity : BaseActivity(),
         lifecycleScope.launchWhenResumed {
             viewModel.uiState.collectLatest { state ->
                 showTermsAndConditionBottomSheet(state.channel.canStream, state.channel.tnc)
-            }
-
-            observeBroadcastInitState()
-        }
-    }
-
-    private suspend fun observeBroadcastInitState() {
-        broadcaster.getBroadcastInitState().collectLatest {
-            when(it) {
-                is BroadcastInitState.Error -> showDialogWhenUnSupportedDevices()
-                else -> {}
             }
         }
     }
@@ -287,8 +282,9 @@ class PlayBroadcastActivity : BaseActivity(),
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
         channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
-            this.channelType = ChannelType.getByValue(it)
+            this.channelType = ChannelStatus.getByValue(it)
         }
+
     }
 
     private fun getFragmentByClassName(fragmentClass: Class<out Fragment>): Fragment {
@@ -323,11 +319,7 @@ class PlayBroadcastActivity : BaseActivity(),
                 is NetworkResult.Success -> {
                     showLoading(false)
                     if (!isRecreated) handleChannelConfiguration(result.data)
-
-                    /**
-                     * todo: revamp!
-                     */
-                    else if (result.data.channelType == ChannelType.Pause) showDialogContinueLiveStreaming()
+                    else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
                 }
                 is NetworkResult.Fail -> {
@@ -346,8 +338,8 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         if (config.streamAllowed) {
-            this.channelType = config.channelType
-            if (channelType == ChannelType.Active) {
+            this.channelType = config.channelStatus
+            if (channelType == ChannelStatus.Active) {
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
@@ -360,11 +352,21 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    private fun configureChannelType(channelType: ChannelType) {
+    private fun configureChannelType(channelStatus: ChannelStatus) {
         if (isRecreated) return
-        when (channelType) {
-            ChannelType.Pause -> openBroadcastActivePage()
-            else -> openBroadcastSetupPage()
+        if (!viewModel.isUserLoggedIn) {
+            globalErrorView.channelNotFound { this.finish() }
+            globalErrorView.show()
+            return
+        }
+        when (channelStatus) {
+            ChannelStatus.Pause, ChannelStatus.Active -> {
+                openBroadcastActivePage()
+                showDialogContinueLiveStreaming()
+            }
+            ChannelStatus.Draft,
+            ChannelStatus.CompleteDraft,
+            ChannelStatus.Unknown -> openBroadcastSetupPage()
         }
     }
 
@@ -375,7 +377,6 @@ class PlayBroadcastActivity : BaseActivity(),
                 permissionResultListener = object: PermissionResultListener {
                     override fun onRequestPermissionResult(): PermissionStatusHandler {
                         return {
-                            if (isGranted(Manifest.permission.CAMERA)) createStreamer()
                             if (isAllGranted()) doWhenResume { configureChannelType(channelType) }
                             else doWhenResume { showPermissionPage() }
                         }
@@ -470,8 +471,7 @@ class PlayBroadcastActivity : BaseActivity(),
         }
     }
 
-    // todo: revamp this dialog!
-    fun showDialogContinueLiveStreaming() {
+    private fun showDialogContinueLiveStreaming() {
         if (!::pauseLiveDialog.isInitialized) {
             pauseLiveDialog = getDialog(
                 actionType = DialogUnify.HORIZONTAL_ACTION,
@@ -480,13 +480,16 @@ class PlayBroadcastActivity : BaseActivity(),
                 primaryCta = getString(R.string.play_next),
                 primaryListener = { dialog ->
                     dialog.dismiss()
-//                    viewModel.continueLiveStream()
-                    analytic.clickDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
+                    analytic.clickDialogContinueBroadcastOnLivePage(
+                        viewModel.channelId,
+                        viewModel.channelTitle
+                    )
+                    broadcaster.resume(shouldContinue = true)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
-//                    viewModel.stopLiveStream(shouldNavigate = true)
+                    // todo: stop streaming
                 }
             )
         }
@@ -494,11 +497,6 @@ class PlayBroadcastActivity : BaseActivity(),
             pauseLiveDialog.show()
             analytic.viewDialogContinueBroadcastOnLivePage(viewModel.channelId, viewModel.channelTitle)
         }
-    }
-
-    fun isDialogContinueLiveStreamOpen(): Boolean {
-        return if(!::pauseLiveDialog.isInitialized) false
-        else pauseLiveDialog.isShowing
     }
 
     private fun showTermsAndConditionBottomSheet(
@@ -606,14 +604,21 @@ class PlayBroadcastActivity : BaseActivity(),
     /**
      * Larix
      */
-    private fun createStreamer() {
-        val holder = surfaceHolder ?: return
-        val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-        broadcaster.create(holder, surfaceSize)
+    private fun createBroadcaster() {
+        if (isRequiredPermissionGranted()) {
+            val holder = surfaceHolder ?: return
+            val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
+            broadcaster.create(holder, surfaceSize)
+        }
+        else showPermissionPage()
     }
 
-    private fun releaseStreamer() {
+    private fun releaseBroadcaster() {
         broadcaster.release()
+    }
+
+    private fun destroyBroadcaster() {
+        broadcaster.destroy()
     }
 
     /*
@@ -626,6 +631,14 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun updateAspectRatio(aspectRatio: Double) {
         aspectFrameLayout.setAspectRatio(aspectRatio)
+    }
+
+    override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
+        if (state is BroadcastInitState.Error) showDialogWhenUnSupportedDevices()
+    }
+
+    override fun onBroadcastStateChanged(state: PlayBroadcasterState) {
+        viewModel.submitAction(BroadcastStateChanged(state))
     }
 
     override fun getBroadcaster(): PlayBroadcaster {

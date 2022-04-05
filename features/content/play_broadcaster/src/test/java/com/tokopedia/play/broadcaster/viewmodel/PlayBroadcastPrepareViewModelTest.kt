@@ -86,7 +86,6 @@ class PlayBroadcastPrepareViewModelTest {
                 dispatcher = dispatcherProvider,
                 hydraConfigStore = mockHydraDataStore,
                 setupDataStore = mockBroadcastSetupDataStore,
-                userSession = userSession,
                 channelConfigStore = channelConfigStore,
                 createLiveStreamChannelUseCase = createLiveStreamChannelUseCase,
                 mDataStore = dataStore,

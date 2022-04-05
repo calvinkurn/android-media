@@ -145,7 +145,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
         return ConfigurationUiModel(
             streamAllowed = true,
-            channelType = ChannelType.Draft,
+            channelStatus = ChannelStatus.Draft,
             channelId = "10008", // 10008 prod, 10012 stag (status: draft)
             durationConfig = DurationConfigUiModel(
                 remainingDuration = (30 * 60 * 1000),
@@ -182,7 +182,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
                 coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
-                status = ChannelType.Draft
+                status = ChannelStatus.Draft
         )
     }
 

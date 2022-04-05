@@ -7,9 +7,7 @@ import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
+import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
 import javax.inject.Inject
 
 /**
@@ -35,15 +33,31 @@ class PlayBroadcaster(
         }
     }
 
-    private var isStarted = false
+    private var isStartedBefore = false
+
+    private val broadcastListener = object : Broadcaster.Listener {
+        override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
+            callback.onBroadcastInitStateChanged(state)
+        }
+
+        override fun onBroadcastStateChanged(state: BroadcastState) {
+            val newState = when(state) {
+                is BroadcastState.Error -> PlayBroadcasterState.Error(state.cause)
+                BroadcastState.Started -> PlayBroadcasterState.Started
+                else -> null
+            }
+            if (newState != null) callback.onBroadcastStateChanged(newState)
+        }
+    }
 
     init {
         broadcaster.init(activityContext, handler)
+        broadcaster.addListener(broadcastListener)
     }
 
     override fun start(rtmpUrl: String) {
         broadcaster.start(rtmpUrl)
-        isStarted = true
+        isStartedBefore = true
     }
 
     override fun create(holder: SurfaceHolder, surfaceSize: Broadcaster.Size) {
@@ -57,39 +71,26 @@ class PlayBroadcaster(
     }
 
     override fun stop() {
-        isStarted = false
+        isStartedBefore = false
         broadcaster.release()
     }
 
     override fun destroy() {
+        broadcaster.removeListener(broadcastListener)
         broadcaster.destroy()
     }
 
-    /**
-     * only return false when user manually click stop
-     */
-    fun isStartedBefore() = isStarted
-
-    fun getBroadcastState(): Flow<BroadcastState> = callbackFlow {
-        val listener = object : Broadcaster.Listener {
-            override fun onBroadcastStateChanged(state: BroadcastState) {
-                trySend(state)
-            }
-        }
-
-        addListener(listener)
-        awaitClose { removeListener(listener) }
+    fun resume(shouldContinue: Boolean) {
+        callback.onBroadcastStateChanged(
+            PlayBroadcasterState.Resume(
+                startedBefore = isStartedBefore,
+                shouldContinue = shouldContinue
+            )
+        )
     }
 
-    fun getBroadcastInitState(): Flow<BroadcastInitState> = callbackFlow {
-        val listener = object : Broadcaster.Listener {
-            override fun onBroadcastInitStateChanged(state: BroadcastInitState) {
-                trySend(state)
-            }
-        }
-
-        addListener(listener)
-        awaitClose { removeListener(listener) }
+    fun pause() {
+        callback.onBroadcastStateChanged(PlayBroadcasterState.Paused)
     }
 
     private fun updateAspectFrameSize() {
@@ -99,5 +100,7 @@ class PlayBroadcaster(
 
     interface Callback {
         fun updateAspectRatio(aspectRatio: Double)
+        fun onBroadcastInitStateChanged(state: BroadcastInitState)
+        fun onBroadcastStateChanged(state: PlayBroadcasterState)
     }
 }

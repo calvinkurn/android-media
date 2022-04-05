@@ -16,7 +16,6 @@ data class PlayBroadcastUiState(
     val selectedProduct: List<ProductTagSectionUiModel>,
     val schedule: ScheduleUiModel,
     val isExiting: Boolean,
-    val status: BroadcastStatus,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -32,7 +31,6 @@ data class PlayBroadcastUiState(
                 selectedProduct = emptyList(),
                 schedule = ScheduleUiModel.Empty,
                 isExiting = false,
-                status = BroadcastStatus.Idle,
             )
     }
 }
@@ -80,9 +78,6 @@ data class ScheduleConfigUiModel(
                 )
             }
     }
-}
-enum class BroadcastStatus {
-    Start, Stop, Idle
 }
 
 

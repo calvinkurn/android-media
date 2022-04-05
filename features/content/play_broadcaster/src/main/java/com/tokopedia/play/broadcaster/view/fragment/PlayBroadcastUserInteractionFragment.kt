@@ -11,16 +11,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
+import com.tokopedia.play.broadcaster.pusher.revamp.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
-import com.tokopedia.play.broadcaster.ui.model.ChannelType
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -42,7 +41,6 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageVie
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
-import com.tokopedia.play.broadcaster.pusher.revamp.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -200,10 +198,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupInsets()
         setupObserve()
 
-//        if((activity as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false &&
-//            (activity as? PlayBroadcastActivity)?.isRequiredPermissionGranted() == true)
-//            parentViewModel.startLiveTimer()
-
 //        if (GlobalConfig.DEBUG) setupDebugView(view)
     }
 
@@ -326,14 +320,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
-        observeBroadcastState()
         observeBroadcastTimerState()
     }
 
     override fun onResume() {
         super.onResume()
         if (isPausedFragment) {
-            handleResumeLive()
+            resumeBroadcast()
             isPausedFragment = false
         }
     }
@@ -341,7 +334,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isPausedFragment = true
-        handlePauseLive()
+        pauseBroadcast()
         productTagAnalyticHelper.sendTrackingProduct()
     }
 
@@ -465,7 +458,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         parentViewModel.channelId,
                         parentViewModel.channelTitle
                     )
-                    parentViewModel.submitAction(PlayBroadcastAction.DoResumeLive)
+                    broadcaster.resume(shouldContinue = true)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -710,8 +703,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
 
-
-
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
                     exitDialog.dialogSecondaryCTA.isLoading = state.isExiting
@@ -731,20 +722,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     PlayBroadcastEvent.ShowLiveEndedDialog -> showForceStopDialog()
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
-                }
-            }
-        }
-    }
-
-    private fun observeBroadcastState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            broadcaster.getBroadcastState().collectLatest {
-                when(it) {
-                    is BroadcastState.Error -> {
-                        showLoading(false)
-                        showErrorToaster(it.cause)
+                    is PlayBroadcastEvent.BroadcastReady -> {
+                        startBroadcast(event.ingestUrl)
+                        parentViewModel.startTimer()
                     }
-                    BroadcastState.Started -> updateChannelStatus()
                     else -> {}
                 }
             }
@@ -908,80 +889,17 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         leaderBoardBottomSheet.show(childFragmentManager)
     }
 
-    private fun handlePauseLive() {
-        parentViewModel.submitAction(PlayBroadcastAction.PauseLive)
-    }
-
-    private fun handleResumeLive() {
-        if (broadcaster.isStartedBefore()) {
-            parentViewModel.submitAction(PlayBroadcastAction.ResumeLive)
-        } else showDialogContinueLive()
-        // submit action continue broadcast
-//        if (broadcaster.isBroadcastStartedBefore()) {
-//            if (parentViewModel.isPastPauseDuration) {
-//                showDialogContinueLive()
-//            } else getChannelDetail()
-//        } else showDialogContinueLive()
-    }
-
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
     }
 
-    private fun updateChannelStatus() {
-        parentViewModel.updateChannelStatusToLive(
-            onSuccess = {
-                showLoading(false)
-                parentViewModel.startTimer()
-            },
-            onError = {
-                showLoading(false)
-                // todo: show error message and retry maybe?
-            }
-        )
+    private fun pauseBroadcast() {
+        broadcaster.pause()
     }
 
-    // todo: kurang lebih sama dengan function bawahnya
-    private fun onClickContinueLive() {
-        parentViewModel.getChannelDetail(
-            onLoad = { showLoading(true) },
-            onSuccess = {
-                if (it.status == ChannelType.Pause
-                    || it.status == ChannelType.Active) {
-                    startBroadcast(it.ingestUrl)
-                } else {
-                    showForceStopDialog()
-                    stopLive()
-                }
-            },
-            onError = {
-                showLoading(false)
-                // todo: show error message and retry maybe?
-            }
-        )
+    private fun resumeBroadcast() {
+        broadcaster.resume(shouldContinue = false)
     }
-
-    // todo: kurang lebih sama dengan function atasnya
-//    private fun getChannelDetail() {
-//        parentViewModel.getChannelDetail(
-//            onLoad = { showLoading(true) },
-//            onSuccess = {
-//                showLoading(false)
-//                if (it.status == ChannelType.Pause
-//                    || it.status == ChannelType.Active) {
-//                    showDialogContinueLive()
-//                } else {
-//                    stopLive {
-//                        navigateToSummary()
-//                    }
-//                }
-//            },
-//            onError = {
-//                showLoading(false)
-//                // todo: show error message and retry maybe?
-//            }
-//        )
-//    }
 
     private fun forceStopLive(navigateTo: () -> Unit = { }) {
         parentViewModel.updateChannelStatusToStop()

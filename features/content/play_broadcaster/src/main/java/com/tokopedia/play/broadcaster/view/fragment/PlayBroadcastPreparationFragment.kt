@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -262,7 +261,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             formCover.setListener(this@PlayBroadcastPreparationFragment)
 
             flBroStartLivestream.setOnClickListener {
-//                analytic.clickStartStreaming(parentViewModel.channelId)
+                analytic.clickStartStreaming(parentViewModel.channelId)
 
                 val schedule = parentViewModel.uiState.value.schedule.schedule
                 if (schedule is BroadcastScheduleUiModel.Scheduled) {
@@ -279,7 +278,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
             icBroPreparationSwitchCamera.setOnClickListener {
                 analytic.clickSwitchCameraOnPreparation()
-
                 broadcaster.flip()
             }
         }
@@ -306,7 +304,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeViewEvent()
-        observeBroadcastState()
     }
 
     private fun observeTitle() {
@@ -364,41 +361,42 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
     }
 
-    private fun observeBroadcastState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            broadcaster.getBroadcastState().collectLatest {
-                when(it) {
-                    is BroadcastState.Error -> {
-                        showLoading(false)
-                        toaster.showError(
-                            err = it.cause,
-                            customErrMessage = it.cause.message,
-                        )
-                    }
-                    BroadcastState.Started -> updateChannelStatus()
-                    else -> {}
-                }
-            }
-        }
-    }
-
     private fun startBroadcast(ingestUrl: String) {
         broadcaster.start(ingestUrl)
     }
 
-    private fun updateChannelStatus() {
-        parentViewModel.updateChannelStatusToLive(
-            onSuccess = {
-                showLoading(false)
-                openBroadcastLivePage()
-                parentViewModel.startTimer()
-            },
-            onError = {
-                showLoading(false)
-                // todo: show error message and retry maybe?
-            }
-        )
-    }
+//    private fun observeBroadcastState() {
+//        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+//            broadcaster.getBroadcastState().collectLatest {
+//                when(it) {
+//                    is BroadcastState.Error -> {
+//                        showLoading(false)
+//                        toaster.showError(
+//                            err = it.cause,
+//                            customErrMessage = it.cause.message,
+//                        )
+//                    }
+//                    BroadcastState.Started -> updateChannelStatus()
+//                    else -> {}
+//                }
+//            }
+//        }
+//    }
+
+
+//    private fun updateChannelStatus() {
+//        parentViewModel.updateChannelStatusToLive(
+//            onSuccess = {`
+//                showLoading(false)
+//                openBroadcastLivePage()
+//                parentViewModel.startTimer()
+//            },
+//            onError = {
+//                showLoading(false)
+//                // todo: show error message and retry maybe?
+//            }
+//        )
+//    }
 
 //    private fun observeLiveStreamState(){
 //        parentViewModel.observableLiveViewState.observe(viewLifecycleOwner) {
@@ -453,6 +451,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         toaster.showToaster(
                             message = getString(R.string.play_broadcast_schedule_deleted)
                         )
+                    }
+                    PlayBroadcastEvent.BroadcastStarted -> {
+                        openBroadcastLivePage()
+                        parentViewModel.startTimer()
                     }
                     else -> {}
                 }

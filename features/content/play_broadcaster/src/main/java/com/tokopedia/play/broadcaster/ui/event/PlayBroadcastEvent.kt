@@ -17,4 +17,7 @@ sealed interface PlayBroadcastEvent {
 
     data class SetScheduleSuccess(val isEdit: Boolean) : PlayBroadcastEvent
     object DeleteScheduleSuccess : PlayBroadcastEvent
+
+    object BroadcastStarted : PlayBroadcastEvent
+    data class BroadcastReady(val ingestUrl: String) : PlayBroadcastEvent
 }

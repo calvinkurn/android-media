@@ -152,7 +152,7 @@ class PlayBroadcastUiMapper(
     }
 
     override fun mapConfiguration(config: Config): ConfigurationUiModel {
-        val channelStatus = ChannelType.getChannelType(
+        val channelStatus = ChannelStatus.getChannelType(
                 config.activeLiveChannel,
                 config.pausedChannel,
                 config.draftChannel,
@@ -160,15 +160,15 @@ class PlayBroadcastUiMapper(
         )
 
         val remainingDuration = when(channelStatus.second) {
-            ChannelType.Active -> config.maxDuration - config.activeChannelRemainingDuration
-            ChannelType.Pause -> config.maxDuration - config.pausedChannelRemainingDuration
+            ChannelStatus.Active -> config.maxDuration - config.activeChannelRemainingDuration
+            ChannelStatus.Pause -> config.maxDuration - config.pausedChannelRemainingDuration
             else -> 0
         }
 
         return ConfigurationUiModel(
             streamAllowed = config.streamAllowed,
             channelId = channelStatus.first,
-            channelType = channelStatus.second,
+            channelStatus = channelStatus.second,
             durationConfig = DurationConfigUiModel(
                 remainingDuration = TimeUnit.SECONDS.toMillis(remainingDuration),
                 maxDuration = TimeUnit.SECONDS.toMillis(config.maxDuration),
@@ -202,7 +202,7 @@ class PlayBroadcastUiMapper(
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
-            status = ChannelType.getByValue(channel.basic.status.id)
+            status = ChannelStatus.getByValue(channel.basic.status.id)
     )
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {

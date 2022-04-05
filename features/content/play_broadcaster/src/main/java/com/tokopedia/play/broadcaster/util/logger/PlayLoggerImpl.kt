@@ -4,8 +4,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
-import com.tokopedia.play.broadcaster.ui.model.ChannelType
-import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import javax.inject.Inject
 
 
@@ -25,7 +24,7 @@ class PlayLoggerImpl @Inject constructor(
         ServerLogger.log(Priority.P2, TAG_SCALYR, messages)
     }
 
-    override fun logChannelStatus(channelStatus: ChannelType) {
+    override fun logChannelStatus(channelStatus: ChannelStatus) {
         collector.collect(
             Pair("channel", channelStatus.value)
         )

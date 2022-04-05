@@ -99,25 +99,25 @@ class PlayBroadcasterViewModelTest {
         }
     }
 
-    @Test
-    fun `when user stop livestreaming and some error occur, it should emit error event`() {
-        val mockWebsocket = mockk<PlayWebSocket>(relaxed = true)
-        val mockException = uiModelBuilder.buildException()
-
-        coEvery { mockWebsocket.close() } throws mockException
-
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-            playBroadcastWebSocket = mockWebsocket,
-        )
-
-        robot.use {
-            val event = robot.recordEvent {
-                it.getViewModel().stopLiveStream()
-            }
-
-            event.last().assertEqualTo(PlayBroadcastEvent.ShowError(mockException))
-        }
-    }
+//    @Test
+//    fun `when user stop livestreaming and some error occur, it should emit error event`() {
+//        val mockWebsocket = mockk<PlayWebSocket>(relaxed = true)
+//        val mockException = uiModelBuilder.buildException()
+//
+//        coEvery { mockWebsocket.close() } throws mockException
+//
+//        val robot = PlayBroadcastViewModelRobot(
+//            dispatchers = testDispatcher,
+//            channelRepo = mockRepo,
+//            playBroadcastWebSocket = mockWebsocket,
+//        )
+//
+//        robot.use {
+//            val event = robot.recordEvent {
+//                it.getViewModel().stopLiveStream()
+//            }
+//
+//            event.last().assertEqualTo(PlayBroadcastEvent.ShowError(mockException))
+//        }
+//    }
 }
