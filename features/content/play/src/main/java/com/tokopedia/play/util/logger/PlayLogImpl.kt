@@ -61,7 +61,7 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
     }
 
     companion object{
-        private const val PLAY_LOG_TAG = "PlayViewerMonitoring"
+        private const val PLAY_LOG_TAG = "PLAY_VIEWER_MONITORING"
         private const val LIMIT_LOG = 10
     }
 }
