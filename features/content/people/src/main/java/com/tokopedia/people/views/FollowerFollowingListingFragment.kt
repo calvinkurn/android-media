@@ -73,6 +73,22 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             tabLayout?.setupWithViewPager(this)
             tabLayout?.getUnifyTabLayout()?.setupWithViewPager(this)
         }
+        tabLayout?.getUnifyTabLayout()?.removeAllTabs()
+        tabLayout?.addNewTab(
+            arguments?.getString(
+                EXTRA_TOTAL_FOLLOWERS,
+                getString(com.tokopedia.people.R.string.up_lb_followers)
+            )
+                    + " " +
+                    getString(com.tokopedia.people.R.string.up_lb_followers)
+        )
+        tabLayout?.addNewTab(
+            arguments?.getString(EXTRA_TOTAL_FOLLOWINGS, getString(R.string.up_lb_following))
+                    + " " +
+                    getString(R.string.up_lb_following)
+        )
+
+
 
         if(tabLayout != null
             && tabLayout?.getUnifyTabLayout() != null

@@ -681,8 +681,14 @@ class UserProfileFragment : BaseDaggerFragment(),
         }
 
         data.profileHeader.profile.biography = data.profileHeader.profile.biography.replace("\n", "<br />")
+        val textBioString = context?.let {
+            HtmlLinkHelper(
+                it,
+                data.profileHeader.profile.biography
+            ).spannedString
+        } ?: ""
 
-        textBio?.postDelayed({
+        textBio?.let {
             textBio?.text = context?.let {
                 HtmlLinkHelper(
                     it,
@@ -690,7 +696,7 @@ class UserProfileFragment : BaseDaggerFragment(),
                 ).spannedString
             }
 
-            if (textBio?.lineCount > SEE_ALL_LINE) {
+            if (textBioString.lines().count() > SEE_ALL_LINE) {
                 if (isViewMoreClickedBio == true) {
                     textBio.maxLines = MAX_LINE
                     textSeeMore?.hide()
@@ -701,8 +707,8 @@ class UserProfileFragment : BaseDaggerFragment(),
             } else {
                 textSeeMore?.hide()
             }
+        }
 
-        }, 50)
 
         if (userSession?.isLoggedIn == false) {
             updateToUnFollowUi()

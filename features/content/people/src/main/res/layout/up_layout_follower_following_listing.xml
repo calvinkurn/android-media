@@ -37,7 +37,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:tabGravity="center"
             app:tabMode="fixed"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget">
+            app:tabTextAppearance="@style/UserProfileTabLayoutTextStyle">
 
         </com.tokopedia.unifycomponents.TabsUnify>
 
