@@ -438,7 +438,30 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productPrice = visitable.productPrice
                 }
 
-                if (miniCartItem.isError) {
+                if (visitable.isBundlingItem) {
+                    val bundleKey = MiniCartItemKey(visitable.bundleId, type = MiniCartItemType.BUNDLE)
+                    if (!miniCartItems.contains(bundleKey)) {
+                        if (miniCartItem.isError) {
+                            unavailableItemCount++
+                        }
+                        miniCartItems[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                                isError = miniCartItem.isError,
+                                bundleId = visitable.bundleId,
+//                                bundleGroupId = visitable.bundleGroupId,
+                                bundleTitle = visitable.bundleName,
+                                bundlePrice = visitable.bundlePrice,
+                                bundleSlashPriceLabel = visitable.slashPriceLabel,
+                                bundleOriginalPrice = visitable.bundleOriginalPrice,
+                                bundleQuantity = visitable.bundleQuantity,
+                                products = hashMapOf(key to miniCartItem)
+                        )
+                    } else {
+                        val currentBundleItem = miniCartItems[bundleKey] as MiniCartItem.MiniCartItemBundle
+                        val products = HashMap(currentBundleItem.products)
+                        products[key] = miniCartItem
+                        miniCartItems[bundleKey] = currentBundleItem.copy(products = products)
+                    }
+                } else if (miniCartItem.isError) {
                     unavailableItemCount++
                     if (!miniCartItems.contains(key)) {
                         miniCartItems[key] = miniCartItem
