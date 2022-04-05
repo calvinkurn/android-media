@@ -354,7 +354,7 @@
 
 
     <!--    Reschedule Pickup-->
-    <string name="label_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
+    <string name="title_reschedule_pickup_activity">Ubah Jadwal Pick-up</string>
     <string name="title_button_reschedule_pickup">Atur Ulang Jadwal Pick-up</string>
     <string name="label_detail_reason_reschedule_pickup">Detail Alasan Lainnya</string>
     <string name="label_reason_reschedule_pickup">Alasan Perubahan Jadwal</string>

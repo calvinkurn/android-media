@@ -140,7 +140,7 @@
         <activity
             android:name="com.tokopedia.sellerorder.reschedule_pickup.presentation.activity.ReschedulePickupActivity"
             android:exported="false"
-            android:label="@string/label_reschedule_pickup_activity"
+            android:label="@string/title_reschedule_pickup_activity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify" />
     </application>
