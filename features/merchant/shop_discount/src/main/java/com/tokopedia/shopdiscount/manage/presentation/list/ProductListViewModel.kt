@@ -32,6 +32,7 @@ class ProductListViewModel @Inject constructor(
         get() = _deleteDiscount
 
     private var totalProduct = 0
+    private var selectedProduct : Product? = null
 
     fun getSlashPriceProducts(page : Int, discountStatus : Int) {
         launchCatchError(block = {
@@ -58,7 +59,10 @@ class ProductListViewModel @Inject constructor(
     fun deleteDiscount(discountStatusId: Int, productId : String) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                deleteDiscountUseCase.setParams(discountStatusId = discountStatusId, productIds = listOf(productId))
+                deleteDiscountUseCase.setParams(
+                    discountStatusId = discountStatusId,
+                    productIds = listOf(productId)
+                )
                 deleteDiscountUseCase.executeOnBackground()
             }
 
@@ -75,5 +79,13 @@ class ProductListViewModel @Inject constructor(
 
     fun getTotalProduct(): Int {
         return this.totalProduct
+    }
+
+    fun setSelectedProduct(selectedProduct: Product) {
+        this.selectedProduct = selectedProduct
+    }
+
+    fun getSelectedProduct() : Product?  {
+        return selectedProduct
     }
 }

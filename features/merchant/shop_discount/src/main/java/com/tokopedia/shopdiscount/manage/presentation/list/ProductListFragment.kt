@@ -60,6 +60,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
+    private val productAdapter by lazy { ProductListAdapter(onProductClicked, onUpdateDiscountClicked, onOverflowMenuClicked) }
 
     override fun getScreenName() : String = ProductListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
@@ -150,26 +151,31 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         if (isDeletionSuccess) {
             binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
             onDiscountRemoved(discountStatusId, viewModel.getTotalProduct())
-            loadInitialData()
+            productAdapter.delete(viewModel.getSelectedProduct() ?: return)
+            val updatedTotalProduct = viewModel.getTotalProduct() - 1
+            binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
     }
 
     private val onProductClicked: (Product) -> Unit = { product ->
+        viewModel.setSelectedProduct(product)
     }
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
+        viewModel.setSelectedProduct(product)
     }
 
 
     private val onOverflowMenuClicked: (Product) -> Unit = { product ->
+        viewModel.setSelectedProduct(product)
         displayMoreMenuBottomSheet(product)
     }
 
 
     override fun createAdapter(): ProductListAdapter {
-        return ProductListAdapter(onProductClicked, onUpdateDiscountClicked, onOverflowMenuClicked)
+        return productAdapter
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {
