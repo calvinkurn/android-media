@@ -41,8 +41,8 @@ class CueWidgetCategoryViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.global_dc_cue_category
         private const val TOTAL_SPAN_RECYCLER = 2
-        const val CUE_WIDGET_TYPE_2x2 = 4
-        const val CUE_WIDGET_TYPE_3x2 = 6
+        const val CUE_WIDGET_TYPE_2x2 = 2
+        const val CUE_WIDGET_TYPE_3x2 = 3
     }
 
     override fun bind(element: CueCategoryDataModel) {
@@ -76,12 +76,22 @@ class CueWidgetCategoryViewHolder (
 //                GridLayoutManager.HORIZONTAL,
 //                false
 //            )
-            val layoutManager = GridLayoutManager(itemView.context, 2)
+            var spanCount = 2
+            var gridType = CUE_WIDGET_TYPE_2x2
+            val gridSize = channel.channelGrids.size
+            if (gridSize == 4 || gridSize == 5) {
+                spanCount = 2
+                gridType = CUE_WIDGET_TYPE_2x2
+            }
+            else if (gridSize >= 6) {
+                spanCount = 3
+                gridType = CUE_WIDGET_TYPE_3x2
+            }
+
+            val layoutManager = GridLayoutManager(itemView.context, spanCount)
             homeComponentCueCategoryRv.layoutManager = layoutManager
-            val gridType = if (channel.channelGrids.size <= CUE_WIDGET_TYPE_2x2) CUE_WIDGET_TYPE_2x2 else CUE_WIDGET_TYPE_3x2
             homeComponentCueCategoryRv.addItemDecoration(CueWidgetCategoryItemDecoration(8f.toDpInt(), gridType))
         }
-//        binding?.homeComponentMvcRv?.scrollToPosition(0)
     }
 
     private fun convertDataToMerchantVoucherData(channel: ChannelModel): List<CarouselMerchantVoucherDataModel> {
