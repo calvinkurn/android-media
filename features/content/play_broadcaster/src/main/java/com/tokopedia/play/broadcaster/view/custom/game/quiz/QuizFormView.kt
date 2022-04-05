@@ -72,7 +72,8 @@ class QuizFormView : ConstraintLayout {
         }
 
         override fun onTextChanged(order: Int, text: String) {
-            eventBus.emit(Event.OptionChanged(order, text))
+            onOptionTextChanged(order, text)
+//            eventBus.emit(Event.OptionChanged(order, text))
         }
     })
 
@@ -182,15 +183,16 @@ class QuizFormView : ConstraintLayout {
         job.cancel()
     }
 
-    fun setFormData(quizFormData: QuizFormDataUiModel) {
+    fun setFormData(quizFormData: QuizFormDataUiModel, needToUpdateOptions: Boolean = true) {
         if(mQuizFormData != quizFormData) {
             mQuizFormData = quizFormData
 
             /** Set Quiz Title */
             binding.viewGameHeader.title = quizFormData.title
 
-            /** TODO: set options */
-            adapter.setItemsAndAnimateChanges(quizFormData.options)
+            /** Set Options */
+            if(needToUpdateOptions)
+                adapter.setItemsAndAnimateChanges(quizFormData.options)
 
             /** Set Gift */
             binding.viewQuizGift.gift = quizFormData.gift
@@ -244,6 +246,22 @@ class QuizFormView : ConstraintLayout {
         setFormData(mQuizFormData.copy(
             options = options.map { it.copy(isSelected = it.order == order) }
         ))
+    }
+
+    private fun onOptionTextChanged(order: Int, newText: String) {
+        val options = mQuizFormData.options
+
+        val noSelectedChoice = options.firstOrNull { it.isSelected } == null
+        val isAutoSelectEligible = noSelectedChoice && newText.isNotEmpty()
+
+        val newOptions = options.map {
+            it.copy(
+                isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
+                text = if(it.order == order) newText else it.text
+            )
+        }
+
+        setFormData(mQuizFormData.copy(options = newOptions), isAutoSelectEligible)
     }
 
     private fun setupInsets() {
