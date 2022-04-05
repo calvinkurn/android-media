@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
@@ -25,6 +26,7 @@ import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
+import com.tokopedia.shopdiscount.utils.preference.SharedPreferenceDataStore
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -57,6 +59,9 @@ class ProductManageFragment : BaseDaggerFragment() {
     @Inject
     lateinit var router: FragmentRouter
 
+    @Inject
+    lateinit var preferenceDataStore: SharedPreferenceDataStore
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
 
@@ -85,7 +90,10 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun setupTicker() {
+        val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
+
         binding?.run {
+            ticker.isVisible = !isPreviouslyDismissed
             ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -93,7 +101,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                 }
 
                 override fun onDismiss() {
-
+                    preferenceDataStore.markTickerAsDismissed()
                 }
 
             })
@@ -103,7 +111,11 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun setupSearchBar() {
         binding?.run {
             searchBar.searchBarTextField.isFocusable = false
-            searchBar.searchBarTextField.setOnClickListener { SearchProductActivity.start(requireActivity()) }
+            searchBar.searchBarTextField.setOnClickListener {
+                SearchProductActivity.start(
+                    requireActivity()
+                )
+            }
             searchBar.setOnClickListener { SearchProductActivity.start(requireActivity()) }
         }
     }

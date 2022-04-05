@@ -94,15 +94,15 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     private fun handleEmptyState(totalProduct : Int) {
         if (totalProduct == 0 && discountStatusId == DiscountStatus.PAUSED) {
-            binding?.emptyState?.show()
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
             binding?.emptyState?.setTitle(getString(R.string.sd_no_paused_discount_title))
             binding?.emptyState?.setDescription(getString(R.string.sd_no_paused_discount_description))
-        } else {
             binding?.emptyState?.show()
+        } else {
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
             binding?.emptyState?.setTitle(getString(R.string.sd_no_discount_title))
             binding?.emptyState?.setDescription(getString(R.string.sd_no_discount_description))
+            binding?.emptyState?.show()
         }
     }
 

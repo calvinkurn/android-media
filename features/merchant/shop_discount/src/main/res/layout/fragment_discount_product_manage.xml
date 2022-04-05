@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
+        android:visibility="gone"
         app:closeButtonVisibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="ticker,tabsUnify,searchBar,viewPager,cardView" />
+        app:constraint_referenced_ids="tabsUnify,searchBar,viewPager,cardView" />
 
     <include
         android:id="@+id/shimmer"
