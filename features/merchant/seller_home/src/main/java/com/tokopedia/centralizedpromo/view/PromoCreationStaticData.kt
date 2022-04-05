@@ -2,6 +2,7 @@ package com.tokopedia.centralizedpromo.view
 
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
@@ -24,6 +25,13 @@ object PromoCreationStaticData {
         isProductCouponEnabled: Boolean,
     ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
+            PromoCreationUiModel(
+                R.drawable.ic_tokopedia_play,
+                resourceProvider.getPromoCreationTitleTokopediaPlay(),
+                resourceProvider.getPromoCreationDescriptionTokopediaPlay(),
+                "",
+                ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
+            ),
             PromoCreationUiModel(
                 R.drawable.sh_ic_top_ads_color,
                 resourceProvider.getPromoCreationTitleTopAds(),

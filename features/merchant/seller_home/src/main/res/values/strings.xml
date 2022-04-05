@@ -83,6 +83,8 @@
     <string name="centralized_promo_promo_creation_merchant_voucher_description">Tambah minat pembeli untuk berbelanja lebih di tokomu dengan cashback</string>
     <string name="centralized_promo_promo_creation_voucher_product_title">Kupon Produk</string>
     <string name="centralized_promo_promo_creation_voucher_product_description">Atur diskon khusus ke produk-produk tertentu agar semakin cepat laku.</string>
+    <string name="centralized_promo_promo_creation_tokopedia_play_title">Tokopedia Play</string>
+    <string name="centralized_promo_promo_creation_tokopedia_play_description">Tingkatkan penjualanmu sambil berinteraksi langsung dengan banyak penonton</string>
 
     <!-- First merchant voucher -->
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
