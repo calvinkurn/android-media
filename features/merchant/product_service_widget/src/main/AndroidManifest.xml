@@ -25,7 +25,6 @@
         <activity
             android:name="com.tokopedia.product_bundle.activity.ProductBundleBottomSheetActivity"
             android:label="@string/title_bundling_selection_page"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.Translucent"
             android:exported="false">
@@ -43,7 +42,6 @@
 
         <activity
             android:name="com.tokopedia.gifting.presentation.activity.GiftingBottomsheetActivity"
-            android:screenOrientation="portrait"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
             android:exported="false">
