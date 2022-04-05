@@ -3,6 +3,7 @@ package com.tokopedia.home_component.visitable
 import android.os.Bundle
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Created by dhaba
@@ -10,7 +11,7 @@ import com.tokopedia.home_component.model.ChannelModel
 class CueCategory2x2DataModel (
     val channelModel: ChannelModel,
     val isCache: Boolean = false
-): HomeComponentVisitable {
+): ImpressHolder(), HomeComponentVisitable {
     override fun visitableId(): String {
         return channelModel.id
     }

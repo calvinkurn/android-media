@@ -71,7 +71,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
                          private val specialReleaseComponentListener: SpecialReleaseComponentListener,
-                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+                         private val cueWidgetCategoryListener: CueWidgetCategoryListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -492,7 +493,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
-            CueWidgetCategory2x2ViewHolder.LAYOUT -> viewHolder = CueWidgetCategory2x2ViewHolder(view)
+            CueWidgetCategory2x2ViewHolder.LAYOUT -> viewHolder = CueWidgetCategory2x2ViewHolder(view, cueWidgetCategoryListener)
             CueWidgetCategory3x2ViewHolder.LAYOUT -> viewHolder = CueWidgetCategory3x2ViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
 

@@ -9,6 +9,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcCueCategory2x2Binding
 import com.tokopedia.home_component.decoration.CueWidgetCategoryItemDecoration
+import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.CueWidgetCategoryAdapter
@@ -19,7 +20,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by dhaba
  */
 class CueWidgetCategory2x2ViewHolder (
-    itemView: View
+    itemView: View,
+    private val cueWidgetCategoryListener: CueWidgetCategoryListener
 ) : AbstractViewHolder<CueCategory2x2DataModel>(itemView) {
     private var binding: GlobalDcCueCategory2x2Binding? by viewBinding()
     private var adapter: CueWidgetCategoryAdapter? = null
@@ -38,7 +40,7 @@ class CueWidgetCategory2x2ViewHolder (
 
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
-            adapter = CueWidgetCategoryAdapter(channel)
+            adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener)
             homeComponentCueCategory2x2Rv.adapter = adapter
             val layoutManager = StaggeredGridLayoutManager(SPAN_COUNT, LinearLayoutManager.VERTICAL)
             homeComponentCueCategory2x2Rv.layoutManager = layoutManager

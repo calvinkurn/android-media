@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.LayoutCueCategoryBinding
+import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.loadImageNormal
@@ -19,7 +20,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class CueWidgetCategoryAdapter(channels: ChannelModel) :
+class CueWidgetCategoryAdapter(
+    channels: ChannelModel,
+    private val cueWidgetCategoryListener: CueWidgetCategoryListener
+) :
     RecyclerView.Adapter<CueWidgetCategoryAdapter.CueWidgetCategoryItemViewHolder>() {
     companion object {
         private const val DEFAULT_RADIUS = 0
@@ -64,13 +68,14 @@ class CueWidgetCategoryAdapter(channels: ChannelModel) :
             }
             imageCategory.clipToOutline = true
             categoryName.text = grid.name
+            root.setOnClickListener {
+                cueWidgetCategoryListener.onClickCategory()
+            }
         }
     }
 
     class CueWidgetCategoryItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding: LayoutCueCategoryBinding? by viewBinding()
-        val context: Context
-            get() = itemView.context
     }
 }
 
