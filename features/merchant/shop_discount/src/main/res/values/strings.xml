@@ -44,6 +44,7 @@
     <string name="sd_delete">Hapus</string>
     <string name="sd_discount_deleted">Produk berhasil dihapus dari Diskon Toko.</string>
     <string name="sd_manage">Atur</string>
+    <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

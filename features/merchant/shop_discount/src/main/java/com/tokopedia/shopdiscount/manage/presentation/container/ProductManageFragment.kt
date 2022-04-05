@@ -14,15 +14,16 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
@@ -64,6 +65,12 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
+
+    private val tabs = listOf(
+        PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0),
+        PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED, 0),
+        PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED, 0)
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -136,7 +143,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
 
-                    val formattedDiscountStatusMeta = viewModel.findDiscountStatusCount(it.data)
+                    val formattedDiscountStatusMeta = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(formattedDiscountStatusMeta)
                 }
                 is Fail -> {
@@ -150,26 +157,45 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private val onDiscountRemoved = { viewModel.getSlashPriceProductsMeta() }
+    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
+        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+        val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
+
+        val meta = tabs.find { it.discountStatusId == discountStatusId }
+        val decreasedProductCount = totalProduct - 1
+        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
+
+        val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
+        previouslySelectedTab?.setCustomText(updatedTabName)
+        previouslySelectedTab?.select()
+    }
 
     private fun displayTabs(tabs: List<PageTab>) {
-        val pages = mutableListOf<Pair<String, Fragment>>()
-
-        tabs.forEach { tab ->
-            val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
-            pages.add(Pair(tab.name, fragment))
-        }
-
-        val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, pages)
+        val fragments = createFragments(tabs)
+        val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
 
         binding?.run {
             viewPager.adapter = pagerAdapter
             tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
-                tab.setCustomText(pages[position].first)
+                tab.setCustomText(fragments[position].first)
             }
         }
     }
+
+    private fun createFragments(tabs : List<PageTab>): List<Pair<String, Fragment>> {
+        val pages = mutableListOf<Pair<String, Fragment>>()
+
+        tabs.forEach { tab ->
+            val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
+            val tabName = "${tab.name} (${tab.count})"
+            pages.add(Pair(tabName, fragment))
+        }
+
+        return pages
+    }
+
     private fun showSellerInfoBottomSheet() {
         val bottomSheet = ShopDiscountSellerInfoBottomSheet.newInstance()
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

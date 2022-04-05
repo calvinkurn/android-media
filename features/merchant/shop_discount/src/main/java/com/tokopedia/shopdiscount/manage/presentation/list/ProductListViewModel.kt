@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
+import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
@@ -29,6 +30,8 @@ class ProductListViewModel @Inject constructor(
     private val _deleteDiscount = MutableLiveData<Result<Boolean>>()
     val deleteDiscount: LiveData<Result<Boolean>>
         get() = _deleteDiscount
+
+    private var totalProduct = 0
 
     fun getSlashPriceProducts(page : Int, discountStatus : Int) {
         launchCatchError(block = {
@@ -64,5 +67,13 @@ class ProductListViewModel @Inject constructor(
         }, onError = {
             _deleteDiscount.value = Fail(it)
         })
+    }
+
+    fun setTotalProduct(totalProduct : Int) {
+        this.totalProduct = totalProduct
+    }
+
+    fun getTotalProduct(): Int {
+        return this.totalProduct
     }
 }

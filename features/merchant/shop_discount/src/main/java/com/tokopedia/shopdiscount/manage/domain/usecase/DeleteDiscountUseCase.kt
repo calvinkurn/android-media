@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
-import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.manage.data.request.DeleteDiscountRequest
 import com.tokopedia.shopdiscount.manage.data.response.DeleteDiscountResponse
 import com.tokopedia.shopdiscount.utils.constant.CAMPAIGN

@@ -10,23 +10,26 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
-import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
-import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
-import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.shopdiscount.utils.extension.showToaster
 
 class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
 
@@ -36,7 +39,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
-        fun newInstance(discountStatusId : Int, onDiscountRemoved : () -> Unit = {}) : ProductListFragment {
+        fun newInstance(
+            discountStatusId: Int,
+            onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
+        ): ProductListFragment {
             val fragment = ProductListFragment()
             fragment.arguments = Bundle().apply {
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
@@ -53,7 +59,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
-    private var onDiscountRemoved : () -> Unit = {}
+    private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
 
     override fun getScreenName() : String = ProductListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
@@ -91,6 +97,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
             when (it) {
                 is Success -> {
                     handleProducts(it.data)
+                    viewModel.setTotalProduct(it.data.totalProduct)
                     binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
                 }
                 is Fail -> {
@@ -104,11 +111,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.deleteDiscount.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    val deleteSuccess = it.data
-                    if (deleteSuccess) {
-                        binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
-                        onDiscountRemoved()
-                    }
+                    handleDeleteDiscountResult(it.data)
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -118,7 +121,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     }
 
     private fun handleProducts(data: ProductData) {
-        if (data.totalProduct == 0) {
+        if (data.totalProduct == Int.ZERO) {
             val title = if (discountStatusId == DiscountStatus.PAUSED) {
                 getString(R.string.sd_no_paused_discount_title)
             } else {
@@ -143,12 +146,20 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         }
     }
 
-    private val onProductClicked : (Product) -> Unit = { product ->
-
+    private fun handleDeleteDiscountResult(isDeletionSuccess : Boolean) {
+        if (isDeletionSuccess) {
+            binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
+            onDiscountRemoved(discountStatusId, viewModel.getTotalProduct())
+            loadInitialData()
+        } else {
+            binding?.root showError getString(R.string.sd_error_delete_discount)
+        }
     }
 
-    private val onUpdateDiscountClicked : (Product) -> Unit = { product ->
+    private val onProductClicked: (Product) -> Unit = { product ->
+    }
 
+    private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
     }
 
 
