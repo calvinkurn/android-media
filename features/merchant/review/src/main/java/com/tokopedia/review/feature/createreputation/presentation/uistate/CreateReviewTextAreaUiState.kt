@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.uistate
 
-import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewStringRes
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 sealed interface CreateReviewTextAreaUiState {
     fun areContentTheSame(other: Any?): Boolean
@@ -14,8 +14,8 @@ sealed interface CreateReviewTextAreaUiState {
 
     data class Showing(
         val reviewTextAreaTextUiModel: CreateReviewTextAreaTextUiModel,
-        val hint: CreateReviewStringRes,
-        val helper: CreateReviewStringRes,
+        val hint: StringRes,
+        val helper: StringRes,
         val hasFocus: Boolean
     ) : CreateReviewTextAreaUiState {
         override fun areContentTheSame(other: Any?): Boolean {

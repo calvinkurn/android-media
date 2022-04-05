@@ -1,8 +1,8 @@
 package com.tokopedia.review.feature.createreputation.presentation.uistate
 
-import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewStringRes
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 sealed interface CreateReviewTextAreaTitleUiState {
     object Loading: CreateReviewTextAreaTitleUiState
-    data class Showing(val textRes: CreateReviewStringRes): CreateReviewTextAreaTitleUiState
+    data class Showing(val textRes: StringRes): CreateReviewTextAreaTitleUiState
 }

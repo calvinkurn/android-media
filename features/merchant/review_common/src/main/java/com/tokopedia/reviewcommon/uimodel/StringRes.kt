@@ -6,11 +6,7 @@ import androidx.annotation.StringRes
 data class StringRes(
     @StringRes val id: Int
 ) {
-    fun getStringValue(context: Context): String {
-        return try {
-            context.getString(id)
-        } catch (t: Throwable) {
-            ""
-        }
+    fun getStringValue(context: Context, vararg params: Any): String {
+        return try { context.getString(id, *params) } catch (_: Throwable) { "" }
     }
 }

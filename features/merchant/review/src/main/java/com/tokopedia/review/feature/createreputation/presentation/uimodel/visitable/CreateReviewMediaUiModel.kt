@@ -12,6 +12,8 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
 
     val uri: String
     val uploadId: String
+    val uploadBatchNumber: Int
+    val finishUploadTimestamp: Long
     val state: State
 
     fun areItemsTheSame(other: Any?): Boolean
@@ -21,6 +23,8 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
     data class Image(
         override val uri: String,
         override val uploadId: String = "",
+        override val uploadBatchNumber: Int,
+        override val finishUploadTimestamp: Long = 0L,
         override val state: State,
     ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
@@ -48,6 +52,8 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
     data class Video(
         override val uri: String,
         override val uploadId: String = "",
+        override val uploadBatchNumber: Int,
+        override val finishUploadTimestamp: Long = 0L,
         override val state: State
     ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
@@ -77,6 +83,10 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
             get() = ""
         override val uploadId: String
             get() = ""
+        override val uploadBatchNumber: Int
+            get() = 0
+        override val finishUploadTimestamp: Long
+            get() = 0L
         override val state: State
             get() = State.UPLOADED
 
@@ -102,6 +112,10 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
             get() = ""
         override val uploadId: String
             get() = ""
+        override val uploadBatchNumber: Int
+            get() = 0
+        override val finishUploadTimestamp: Long
+            get() = 0L
         override val state: State
             get() = State.UPLOADED
 

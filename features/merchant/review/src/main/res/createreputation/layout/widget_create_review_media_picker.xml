@@ -26,6 +26,16 @@
         tools:visibility="visible" />
 
     <include
+        android:id="@+id/layout_media_picker_waiting_state"
+        layout="@layout/partial_widget_create_review_media_picker_waiting_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/layout_media_picker"
+        tools:visibility="visible" />
+
+    <include
         android:id="@+id/layout_media_picker_loading"
         layout="@layout/partial_widget_create_review_media_picker_shimmer"
         android:layout_width="match_parent"

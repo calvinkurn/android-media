@@ -17,9 +17,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaBinding
-import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewStringRes
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 class CreateReviewTextArea @JvmOverloads constructor(
     context: Context,
@@ -97,13 +97,13 @@ class CreateReviewTextArea @JvmOverloads constructor(
         }
     }
 
-    private fun WidgetCreateReviewTextAreaBinding.setupHint(hint: CreateReviewStringRes) {
-        layoutTextArea.root.setPlaceholder(hint.getString(context))
+    private fun WidgetCreateReviewTextAreaBinding.setupHint(hint: StringRes) {
+        layoutTextArea.root.setPlaceholder(hint.getStringValue(context))
     }
 
-    private fun WidgetCreateReviewTextAreaBinding.setupHelper(helper: CreateReviewStringRes) {
+    private fun WidgetCreateReviewTextAreaBinding.setupHelper(helper: StringRes) {
         if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA) {
-            layoutTextArea.root.setMessage(helper.getString(context))
+            layoutTextArea.root.setMessage(helper.getStringValue(context))
         }
     }
 

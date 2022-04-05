@@ -31,7 +31,6 @@ import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.ol
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
-import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewStringRes
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
@@ -57,10 +56,13 @@ import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDoma
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
+import com.tokopedia.reviewcommon.extension.isMoreThanZero
+import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -68,6 +70,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -75,6 +78,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 typealias ReviewFormRequestState = RequestState<ProductRevGetForm, Nothing>
@@ -108,6 +112,7 @@ class CreateReviewViewModel @Inject constructor(
 
     companion object {
         private const val STATE_FLOW_TIMEOUT_MILLIS = 5000L
+        private const val UPDATE_POEM_INTERVAL = 1000L
         private const val MAX_MEDIA_COUNT = 5
         private const val GOOD_RATING_THRESHOLD = 2
 
@@ -225,10 +230,10 @@ class CreateReviewViewModel @Inject constructor(
     // region text area state
     private val textAreaHint = combine(
         rating, isOnlyBadRatingOtherCategorySelected, badRatingCategoriesUiState, ::mapTextAreaHint
-    ).toStateFlow(CreateReviewStringRes())
+    ).toStateFlow(StringRes(Int.ZERO))
     private val textAreaHelper = combine(
         reviewText, hasIncentive, hasOngoingChallenge, textAreaHasFocus, ::mapTextAreaHelper
-    ).toStateFlow(CreateReviewStringRes())
+    ).toStateFlow(StringRes(Int.ZERO))
     val textAreaUiState = combine(
         canRenderForm, reviewText, textAreaHint, textAreaHelper, textAreaHasFocus,
         ::mapTextAreaUiState
@@ -246,8 +251,17 @@ class CreateReviewViewModel @Inject constructor(
     private val mediaItems = combine(
         mediaUris, mediaUploadResults, mediaUploadJobs, ::mapMediaItems
     ).toStateFlow(emptyList())
+    private val poemUpdateSignal = flow {
+        while (true) {
+            delay(UPDATE_POEM_INTERVAL)
+            emit(Unit)
+        }
+    }
+    private val poem = combine(
+        canRenderForm, mediaItems, poemUpdateSignal, ::mapPoem
+    ).toStateFlow("" to StringRes(Int.ZERO))
     val mediaPickerUiState = combine(
-        canRenderForm, mediaItems, ::mapMediaPickerUiState
+        canRenderForm, mediaItems, poem, ::mapMediaPickerUiState
     ).toStateFlow(CreateReviewMediaPickerUiState.Loading)
     // endregion media picker state
 
@@ -294,6 +308,8 @@ class CreateReviewViewModel @Inject constructor(
 
     // endregion state whose it's value is determined by other states
 
+    private var uploadBatchNumber = Int.ZERO
+
     init {
         observeMediaUrisForUpload()
         observeMediaTemplatesToAppend()
@@ -337,8 +353,8 @@ class CreateReviewViewModel @Inject constructor(
         mediaUploadJobs: MediaUploadJobMap
     ): List<CreateReviewMediaUiModel> {
         return mutableListOf<CreateReviewMediaUiModel>().apply {
-            includeAddMediaUiModel(mediaUris)
             includeMediaItems(mediaUris, mediaUploadResults, mediaUploadJobs)
+            includeAddMediaUiModel(mediaUris)
         }
     }
 
@@ -388,14 +404,14 @@ class CreateReviewViewModel @Inject constructor(
         rating: Int,
         isOnlyBadRatingOtherCategorySelected: Boolean,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
-    ): CreateReviewStringRes {
+    ): StringRes {
         val badRatingCategoriesShowing = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return if (rating in CreateReviewFragment.RATING_1..CreateReviewFragment.RATING_2) {
             if (badRatingCategoriesShowing) {
                 if (isOnlyBadRatingOtherCategorySelected) {
-                    CreateReviewStringRes(R.string.review_form_bad_helper_must_fill)
+                    StringRes(R.string.review_form_bad_helper_must_fill)
                 } else {
-                    CreateReviewStringRes(R.string.review_form_bad_helper)
+                    StringRes(R.string.review_form_bad_helper)
                 }
             } else {
                 // for rating between 1 to 2 we expect bad rating categories to be showing but
@@ -403,9 +419,9 @@ class CreateReviewViewModel @Inject constructor(
                 textAreaHint.value
             }
         } else if (rating == CreateReviewFragment.RATING_3) {
-            CreateReviewStringRes(R.string.review_form_neutral_helper)
+            StringRes(R.string.review_form_neutral_helper)
         } else {
-            CreateReviewStringRes(R.string.review_form_good_helper)
+            StringRes(R.string.review_form_good_helper)
         }
     }
     private fun mapTextAreaHelper(
@@ -413,7 +429,7 @@ class CreateReviewViewModel @Inject constructor(
         hasIncentive: Boolean,
         hasOngoingChallenge: Boolean,
         textAreaHasFocus: Boolean
-    ): CreateReviewStringRes {
+    ): StringRes {
         val stringResId = if (textAreaHasFocus) {
             when {
                 reviewTextAreaTextUiModel.text.length in 1 until CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
@@ -429,7 +445,7 @@ class CreateReviewViewModel @Inject constructor(
         } else {
             Int.ZERO
         }
-        return CreateReviewStringRes(stringResId)
+        return StringRes(stringResId)
     }
 
     private fun mapProgressBarState(
@@ -439,7 +455,7 @@ class CreateReviewViewModel @Inject constructor(
         isAnyBadRatingCategorySelected: Boolean,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
     ): CreateReviewProgressBarState {
-        val mediaNotEmpty = mediaPickerUiState is CreateReviewMediaPickerUiState.Showing && mediaPickerUiState.mediaItems.size > 1
+        val mediaNotEmpty = mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload && mediaPickerUiState.mediaItems.size > 1
         val textAreaFilled = reviewTextAreaTextUiModel.text.isNotBlank()
         val badRatingCategoriesShowed = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return CreateReviewProgressBarState(
@@ -512,7 +528,7 @@ class CreateReviewViewModel @Inject constructor(
                 CreateReviewFragment.RATING_3 -> R.string.review_form_neutral_title
                 else -> R.string.review_create_best_title
             }
-            CreateReviewTextAreaTitleUiState.Showing(CreateReviewStringRes(stringResId))
+            CreateReviewTextAreaTitleUiState.Showing(StringRes(stringResId))
         } else CreateReviewTextAreaTitleUiState.Loading
     }
 
@@ -542,8 +558,8 @@ class CreateReviewViewModel @Inject constructor(
     private fun mapTextAreaUiState(
         canRenderForm: Boolean,
         textAreaTextAreaTextUiModel: CreateReviewTextAreaTextUiModel,
-        textAreaHint: CreateReviewStringRes,
-        textAreaHelper: CreateReviewStringRes,
+        textAreaHint: StringRes,
+        textAreaHelper: StringRes,
         textAreaHasFocus: Boolean
     ): CreateReviewTextAreaUiState {
         return if (canRenderForm) {
@@ -576,12 +592,81 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
+    private fun mapPoem(
+        canRenderForm: Boolean,
+        mediaItems: List<CreateReviewMediaUiModel>,
+        updateSignal: Unit
+    ): Pair<String, StringRes> {
+        val (nextMediaUri, stringResId) = if (canRenderForm) {
+            val filteredMediaItems = mediaItems.filter {
+                (it is CreateReviewMediaUiModel.Image || it is CreateReviewMediaUiModel.Video) &&
+                it.uploadBatchNumber == uploadBatchNumber
+            }
+            val uploadingMedia = filteredMediaItems.firstOrNull {
+                it.state == CreateReviewMediaUiModel.State.UPLOADING
+            }
+            val hasSucceedUpload = filteredMediaItems.any {
+                it.state == CreateReviewMediaUiModel.State.UPLOADED
+            }
+            val lastFinishedUploadMedia = filteredMediaItems.lastOrNull {
+                it.state != CreateReviewMediaUiModel.State.UPLOADING
+            }
+            if (uploadingMedia != null) {
+                if (lastFinishedUploadMedia == null || !hasSucceedUpload) {
+                    uploadingMedia.uri to R.string.review_form_waiting_upload_poem
+                } else {
+                    val timeDiffMillis = System.currentTimeMillis() - lastFinishedUploadMedia.finishUploadTimestamp
+                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > 5) {
+                        uploadingMedia.uri to R.string.review_form_waiting_upload_poem
+                    } else {
+                        uploadingMedia.uri to R.string.review_form_on_progress_upload_poem
+                    }
+                }
+            } else if (filteredMediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
+                poem.value.first to Int.ZERO
+            } else {
+                filteredMediaItems.lastOrNull()?.let { lastMediaItem ->
+                    val timeDiffMillis = System.currentTimeMillis() - lastMediaItem.finishUploadTimestamp
+                    if (TimeUnit.MILLISECONDS.toSeconds(timeDiffMillis) > 3 || lastMediaItem.uri != poem.value.first) {
+                        poem.value.first to Int.ZERO
+                    } else {
+                        poem.value.first to R.string.review_form_success_upload_poem
+                    }
+                } ?: (poem.value.first to Int.ZERO)
+            }
+        } else {
+            poem.value.first to Int.ZERO
+        }
+        return nextMediaUri to StringRes(stringResId)
+    }
+
     private fun mapMediaPickerUiState(
         canRenderForm: Boolean,
-        mediaItems: List<CreateReviewMediaUiModel>
+        mediaItems: List<CreateReviewMediaUiModel>,
+        poem: Pair<String, StringRes>
     ): CreateReviewMediaPickerUiState {
-        return if (canRenderForm) CreateReviewMediaPickerUiState.Showing(mediaItems)
-        else CreateReviewMediaPickerUiState.Loading
+        return if (canRenderForm) {
+            if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOADING }) {
+                val currentMediaPickerUiState = mediaPickerUiState.value
+                if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.Uploading) {
+                    currentMediaPickerUiState.copy(
+                        mediaItems = mediaItems,
+                        poem = poem.second,
+                        currentUploadBatchNumber = uploadBatchNumber
+                    )
+                } else {
+                    CreateReviewMediaPickerUiState.Uploading(
+                        mediaItems = mediaItems,
+                        poem = poem.second,
+                        currentUploadBatchNumber = uploadBatchNumber
+                    )
+                }
+            } else if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
+                CreateReviewMediaPickerUiState.FailedUpload(mediaItems)
+            } else {
+                CreateReviewMediaPickerUiState.SuccessUpload(mediaItems, poem.second)
+            }
+        } else CreateReviewMediaPickerUiState.Loading
     }
 
     private fun mapAnonymousUiState(
@@ -702,7 +787,7 @@ class CreateReviewViewModel @Inject constructor(
         return if (
             submitReviewResult is RequestState.Success &&
             submitReviewResult.result.productrevSuccessIndicator?.success == true &&
-            mediaPickerUiState is CreateReviewMediaPickerUiState.Showing &&
+            mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload &&
             incentiveOvo is RequestState.Success
         ) {
             val hasPendingIncentive = hasPendingIncentive()
@@ -731,7 +816,7 @@ class CreateReviewViewModel @Inject constructor(
         utmSource: String,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
     ): ProductrevSubmitReviewUseCase.SubmitReviewRequestParams? {
-        return if (sendingReview && mediaPickerUiState is CreateReviewMediaPickerUiState.Showing) {
+        return if (sendingReview && mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
             ProductrevSubmitReviewUseCase.SubmitReviewRequestParams(
                 reputationId = reputationId,
                 productId = productId,
@@ -766,36 +851,90 @@ class CreateReviewViewModel @Inject constructor(
         mediaUploadResults: MediaUploadResultMap,
         mediaUploadJobs: MediaUploadJobMap
     ) {
-        mediaUris.forEach {
-            val uploadResult = mediaUploadResults[it]
-            val uploadJob = mediaUploadJobs[it]
+        mediaUris.forEach { uri ->
+            val uploadResult = mediaUploadResults[uri]
+            val uploadJob = mediaUploadJobs[uri]
+            val existingMediaItems = mediaItems.value
             if (uploadJob?.isActive != true) {
                 when (uploadResult) {
                     is CreateReviewMediaUploadResult.Success -> {
-                        add(CreateReviewMediaUiModel.Image(
-                            uri = it,
+                        val mediaItem = existingMediaItems.find {
+                            it.uri == uri
+                        }?.let {
+                            if (it is CreateReviewMediaUiModel.Image) {
+                                it.copy(
+                                    uploadId = uploadResult.uploadId,
+                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
+                                        it.isMoreThanZero()
+                                    } ?: System.currentTimeMillis(),
+                                    state = CreateReviewMediaUiModel.State.UPLOADED
+                                )
+                            } else null
+                        } ?: CreateReviewMediaUiModel.Image(
+                            uri = uri,
                             uploadId = uploadResult.uploadId,
+                            uploadBatchNumber = uploadBatchNumber,
+                            finishUploadTimestamp = System.currentTimeMillis(),
                             state = CreateReviewMediaUiModel.State.UPLOADED
-                        ))
+                        )
+                        add(mediaItem)
                     }
                     is CreateReviewMediaUploadResult.Error -> {
-                        add(CreateReviewMediaUiModel.Image(
-                            uri = it,
+                        val mediaItem = existingMediaItems.find {
+                            it.uri == uri
+                        }?.let {
+                            if (it is CreateReviewMediaUiModel.Image) {
+                                it.copy(
+                                    finishUploadTimestamp = it.finishUploadTimestamp.takeIf {
+                                        it.isMoreThanZero()
+                                    } ?: System.currentTimeMillis(),
+                                    state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                                )
+                            } else null
+                        } ?: CreateReviewMediaUiModel.Image(
+                            uri = uri,
+                            uploadBatchNumber = uploadBatchNumber,
+                            finishUploadTimestamp = System.currentTimeMillis(),
                             state = CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                        ))
+                        )
+                        add(mediaItem)
                     }
                     else -> {
-                        add(CreateReviewMediaUiModel.Image(
-                            uri = it,
+                        val mediaItem = existingMediaItems.find {
+                            it.uri == uri
+                        }?.let {
+                            if (it is CreateReviewMediaUiModel.Image) {
+                                it.copy(
+                                    uploadBatchNumber = uploadBatchNumber,
+                                    finishUploadTimestamp = 0L,
+                                    state = CreateReviewMediaUiModel.State.UPLOADING
+                                )
+                            } else null
+                        } ?: CreateReviewMediaUiModel.Image(
+                            uri = uri,
+                            uploadBatchNumber = uploadBatchNumber,
                             state = CreateReviewMediaUiModel.State.UPLOADING
-                        ))
+                        )
+                        add(mediaItem)
                     }
                 }
             } else {
-                add(CreateReviewMediaUiModel.Image(
-                    uri = it,
+                val mediaItem = existingMediaItems.find {
+                    it.uri == uri
+                }?.let {
+                    if (it is CreateReviewMediaUiModel.Image) {
+                        it.copy(
+                            uploadBatchNumber = uploadBatchNumber,
+                            finishUploadTimestamp = 0L,
+                            state = CreateReviewMediaUiModel.State.UPLOADING
+                        )
+                    } else null
+                } ?: CreateReviewMediaUiModel.Image(
+                    uri = uri,
+                    uploadBatchNumber = uploadBatchNumber,
                     state = CreateReviewMediaUiModel.State.UPLOADING
-                ))
+                )
+                add(mediaItem)
             }
         }
     }
@@ -1197,6 +1336,7 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun retryUploadMedia() {
+        uploadBatchNumber++
         shouldResetFailedUploadStatus.value = true
     }
 
@@ -1254,7 +1394,7 @@ class CreateReviewViewModel @Inject constructor(
     fun isMediaEmpty(): Boolean {
         return mediaPickerUiState.value.let { mediaPickerUiState ->
             val isLoading = mediaPickerUiState is CreateReviewMediaPickerUiState.Loading
-            val containMedia = if (mediaPickerUiState is CreateReviewMediaPickerUiState.Showing) {
+            val containMedia = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
                 mediaPickerUiState.mediaItems.count { media ->
                     media is CreateReviewMediaUiModel.Image || media is CreateReviewMediaUiModel.Video
                 }.isZero()

@@ -137,7 +137,13 @@
     <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat hadiah dari ulasan, lho. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
     <string name="review_form_incentives_incomplete_dialog_body">Ayo lengkapi dulu karena kamu bisa dapat hadiah dari ulasan, lho!</string>
     <string name="review_form_media_add">Kasih liat foto/video barang</string>
-    <string name="review_form_media_picker_error_upload">Ada foto/videomu yang gagal diambil</string>
+    <string name="review_form_media_picker_error_upload">Oops, ada yang gagal di-upload. &lt;a href="#"&gt;Upload Ulang&lt;/a&gt;</string>
+
+    <!--  Review Form Poem  -->
+    <string name="review_form_waiting_upload_poem">Buah sawo buah pepaya, kita upload dulu ya…</string>
+    <string name="review_form_success_upload_poem">Pergi ke pasar beli pensil, semua upload berhasil!</string>
+    <string name="review_form_on_progress_upload_poem">Jalan santai di tepi pantai, %1$d upload selesai</string>
+    <string name="review_form_failed_upload_poem">Oops, ada yang gagal di-upload.</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>

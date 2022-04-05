@@ -2,21 +2,17 @@ package com.tokopedia.review.feature.createreputation.presentation.viewholder
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import androidx.transition.Fade
 import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.ItemCreateReviewMediaPreviewImageBinding
 import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewMediaAdapter
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
-import com.tokopedia.unifycomponents.toPx
 
 class CreateReviewMediaPreviewImageViewHolder(
     view: View,
@@ -24,8 +20,6 @@ class CreateReviewMediaPreviewImageViewHolder(
 ) : AbstractViewHolder<CreateReviewMediaUiModel.Image>(view) {
 
     companion object {
-        private const val MARGIN_START_FIRST_ITEM = 0
-        private const val MARGIN_START_NEXT_TO_FIRST_ITEM = 8
         private const val TRANSITION_DURATION = 300L
         val LAYOUT = R.layout.item_create_review_media_preview_image
     }
@@ -46,7 +40,6 @@ class CreateReviewMediaPreviewImageViewHolder(
     override fun bind(element: CreateReviewMediaUiModel.Image) {
         this.element = element
         with(binding) {
-            setupMargin()
             setupImageThumbnail(element.uri)
             setupImageState(element.state)
         }
@@ -59,19 +52,6 @@ class CreateReviewMediaPreviewImageViewHolder(
                 applyImageStateChange(it)
             }
         }
-    }
-
-    private fun ItemCreateReviewMediaPreviewImageBinding.setupMargin() {
-        val currentLayoutParams = root.layoutParams as ViewGroup.MarginLayoutParams
-        val leftMargin = if (adapterPosition == Int.ZERO) {
-            MARGIN_START_FIRST_ITEM
-        } else MARGIN_START_NEXT_TO_FIRST_ITEM
-        root.setMargin(
-            leftMargin.toPx(),
-            currentLayoutParams.topMargin,
-            currentLayoutParams.rightMargin,
-            currentLayoutParams.bottomMargin
-        )
     }
 
     private fun ItemCreateReviewMediaPreviewImageBinding.setupImageThumbnail(uri: String) {

@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewTextAreaTitleBinding
-import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewStringRes
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
+import com.tokopedia.reviewcommon.uimodel.StringRes
 
 class CreateReviewTextAreaTitle @JvmOverloads constructor(
     context: Context,
@@ -34,8 +34,8 @@ class CreateReviewTextAreaTitle @JvmOverloads constructor(
         setupTitle(uiState.textRes)
     }
 
-    private fun WidgetCreateReviewTextAreaTitleBinding.setupTitle(textRes: CreateReviewStringRes) {
-        layoutTextAreaTitle.root.text = context.getString(textRes.id)
+    private fun WidgetCreateReviewTextAreaTitleBinding.setupTitle(textRes: StringRes) {
+        layoutTextAreaTitle.root.text = textRes.getStringValue(context)
     }
 
     fun updateUi(uiState: CreateReviewTextAreaTitleUiState) {
