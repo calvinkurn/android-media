@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteract
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -28,6 +29,8 @@ import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.websocket.KEY_GROUP_CHAT_PREFERENCES
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -60,6 +63,11 @@ class PlayBroadcastModule {
     @Provides
     fun provideBroadcaster(): Broadcaster {
         return BroadcastManager()
+    }
+
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides
@@ -100,6 +108,7 @@ class PlayBroadcastModule {
         setupCoverAnalytic: PlayBroSetupCoverAnalytic,
         setupProductAnalytic: PlayBroSetupProductAnalytic,
         summaryAnalytic: PlayBroadcastSummaryAnalytic,
+        scheduleAnalytic: PlayBroScheduleAnalytic,
     ): PlayBroadcastAnalytic {
         return PlayBroadcastAnalytic(
             userSession,
@@ -109,6 +118,7 @@ class PlayBroadcastModule {
             setupCoverAnalytic,
             setupProductAnalytic,
             summaryAnalytic,
+            scheduleAnalytic,
         )
     }
 
