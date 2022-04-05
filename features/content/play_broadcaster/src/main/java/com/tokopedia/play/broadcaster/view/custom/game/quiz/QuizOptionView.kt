@@ -131,6 +131,6 @@ class QuizOptionView : ConstraintLayout {
     }
 
     private fun <T> needChange(prev: T, curr: T, block: () -> Unit) {
-        if(prev != curr) block()
+        if(prev != curr && isEditable) block()
     }
 }
