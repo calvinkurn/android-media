@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -34,6 +35,7 @@ import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvi
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.bottomsheet.TncAdminBottomSheet
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.model.AdminPermissionUiModel
+import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.util.FeatureAccessItemDecoration
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.viewmodel.AdminInvitationAcceptedViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -137,6 +139,9 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                 VERTICAL, false
             ) {
                 override fun canScrollVertically(): Boolean = false
+            }
+            if (itemDecorationCount.isZero()) {
+                addItemDecoration(FeatureAccessItemDecoration())
             }
             adapter = ItemFeatureAccessAdapter(featureAccessList)
         }

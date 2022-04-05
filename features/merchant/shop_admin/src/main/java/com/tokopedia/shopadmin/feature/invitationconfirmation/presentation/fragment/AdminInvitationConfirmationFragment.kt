@@ -90,13 +90,17 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userSession.email = ""
         observeAdminType()
         observeShopAdminInfo()
         observeConfirmationReg()
         observeValidationEmail()
         actionGlobalError()
-        loadAdminInfo()
+        checkAfterLogin()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkAfterLogin()
     }
 
     override fun initInjector() {
@@ -107,7 +111,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == InvitationConfirmationNavigator.REQUEST_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
-                handleAfterLogin()
+                checkAfterLogin()
             }
         } else if (requestCode == InvitationConfirmationNavigator.REQUEST_OTP) {
             if (resultCode == Activity.RESULT_OK) {
@@ -341,6 +345,8 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun setShopAdminInfo(shopAdminInfoUiModel: ShopAdminInfoUiModel) {
+        //will removed
+        userSession.email = ""
         invitationConfirmationParam.setShopName(shopAdminInfoUiModel.shopName)
         confirmationBinding?.run {
             imgAdminConfirmationInvitation.setImageUrl(
@@ -356,6 +362,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             if (userSession.email.isNullOrEmpty()) {
                 adminInvitationWithEmailSection.root.hide()
                 adminInvitationWithNoEmailSection.root.show()
+                setAccessAcceptedBtnDisabled()
                 emailTypingListener()
             } else {
                 adminInvitationWithEmailSection.root.show()
@@ -391,25 +398,17 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun handleAfterLogin() {
+    private fun checkAfterLogin() {
         if (userSession.isLoggedIn) {
-            getInvitationIsActive()
+            fetchInvitationIsActive()
         } else {
-            activity?.setResult(Activity.RESULT_CANCELED)
-            activity?.finish()
+            navigator.goToLogin()
         }
     }
 
-    private fun getInvitationIsActive() {
+    private fun fetchInvitationIsActive() {
         showLoading()
-        if (userSession.isLoggedIn) {
-            loadAdminInfo()
-        } else {
-            activity?.let {
-                val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                it.startActivityForResult(intent, InvitationConfirmationNavigator.REQUEST_LOGIN)
-            }
-        }
+        loadAdminInfo()
     }
 
     private fun showLoading() {
@@ -491,6 +490,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun actionGlobalError() {
         binding?.globalErrorConfirmationInvitation?.setActionClickListener {
+            showLoading()
             loadAdminInfo()
             hideGlobalError()
         }
