@@ -106,12 +106,22 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         }
     }
 
-    private val onProductClick : (Product) -> Unit = { product ->
+    private val onProductClicked : (Product) -> Unit = { product ->
 
     }
 
+    private val onUpdateDiscountClicked : (Product) -> Unit = { product ->
+
+    }
+
+
+    private val onOverflowMenuClicked : (Product) -> Unit = { product ->
+
+    }
+
+
     override fun createAdapter(): ProductListAdapter {
-        return ProductListAdapter(onProductClick)
+        return ProductListAdapter(onProductClicked, onUpdateDiscountClicked, onOverflowMenuClicked)
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {

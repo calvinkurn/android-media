@@ -12,11 +12,18 @@ import com.tokopedia.shopdiscount.utils.extension.strikethrough
 class ProductViewHolder(private val binding: SdItemProductBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(product: Product, onProductOptionClicked: (Product) -> Unit, isLoading: Boolean) {
+    fun bind(
+        product: Product,
+        onProductClicked: (Product) -> Unit,
+        onUpdateDiscountButtonClicked: (Product) -> Unit,
+        onOverflowMenuClicked: (Product) -> Unit,
+        isLoading: Boolean
+    ) {
         binding.imgProduct.loadImage(product.imageUrl)
         binding.tpgProductName.text = product.name
-        binding.imgMore.setOnClickListener { onProductOptionClicked(product) }
-        binding.btnUpdateDiscount.setOnClickListener { }
+        binding.imgMore.setOnClickListener { onOverflowMenuClicked(product) }
+        binding.btnUpdateDiscount.setOnClickListener { onUpdateDiscountButtonClicked(product) }
+        binding.root.setOnClickListener { onProductClicked(product) }
         binding.loader.isVisible = isLoading
         handleProductType(product)
         binding.tpgOriginalPrice.strikethrough()
