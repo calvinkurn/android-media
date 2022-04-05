@@ -23,8 +23,8 @@ object ReschedulePickupMapper {
         return RescheduleDetailModel(
             options = mapOrderDataToOptionModel(data.orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
             courierName = "${data.orderData.firstOrNull()?.shipperProductName ?: ""} - ${data.shipperName}",
-            invoice = data.orderData.firstOrNull()?.invoice ?: "",
-            errorMessage = data.orderData.firstOrNull()?.errorMessage ?: ""
+            invoice = data.orderData.first().invoice,
+            errorMessage = data.orderData.first().errorMessage
         )
     }
 
