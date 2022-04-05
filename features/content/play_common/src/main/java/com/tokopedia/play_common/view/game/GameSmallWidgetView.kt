@@ -70,9 +70,9 @@ class GameSmallWidgetView : LinearLayout {
 
     private fun setTimerType(){
         val (timerVariant, timerInfo) = when(type){
-            PlayGameType.Quiz -> Pair(TimerUnifySingle.VARIANT_MAIN, R.string.play_common_widget_timer_quiz_info)
-            PlayGameType.TapTap -> Pair(TimerUnifySingle.VARIANT_GENERAL, R.string.play_common_widget_timer_taptap_info)
-            else -> Pair(TimerUnifySingle.VARIANT_MAIN, R.string.play_common_widget_timer_quiz_info)
+            PlayGameType.Quiz -> Pair(TimerUnifySingle.VARIANT_MAIN, R.string.play_common_widget_interactive_end)
+            PlayGameType.TapTap -> Pair(TimerUnifySingle.VARIANT_GENERAL, R.string.play_common_widget_interactive_start)
+            else -> Pair(TimerUnifySingle.VARIANT_MAIN, R.string.play_common_widget_interactive_start)
         }
 
         binding.timerEngagementTools.timerVariant = timerVariant
