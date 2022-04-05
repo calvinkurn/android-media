@@ -9,8 +9,9 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannercarousel.BannerCarouselItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -36,7 +37,12 @@ class MyCouponViewHolder(itemView: View, private val fragment: Fragment) : Abstr
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         myCouponViewModel.getComponentList().observe(fragment.viewLifecycleOwner,  { item ->
-            discoveryRecycleAdapter.setDataList(item)
+            if(!item.isNullOrEmpty()) {
+                myCouponRecyclerView.show()
+                discoveryRecycleAdapter.setDataList(item)
+            }else{
+                myCouponRecyclerView.hide()
+            }
         })
     }
 

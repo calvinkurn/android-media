@@ -129,6 +129,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             productIndex = productIndex,
                             cartDetail = cartDetail,
                             shop = availableGroup.shop,
+                            cartStringId = availableGroup.cartString,
                             product = product,
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
@@ -169,6 +170,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                             productIndex = productIndex,
                             cartDetail = cartDetail,
                             shop = unavailableGroup.shop,
+                            cartStringId = unavailableGroup.cartString,
                             product = product,
                             shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
@@ -247,6 +249,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
         unavailableActionId: String = "",
         unavailableReason: String = "",
         notesLength: Int = 0,
+        cartStringId: String = "",
         lastCartItem: Boolean = false
     ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
@@ -262,6 +265,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             cartId = cartDetail.cartId
             productId = product.productId
             parentId = product.parentId
+            cartString = cartStringId
             productImageUrl = product.productImage.imageSrc100Square
             productName = product.productName
             productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
@@ -422,6 +426,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    cartString = visitable.cartString
                     campaignId = visitable.campaignId
                     attribution = visitable.attribution
                     productWeight = visitable.productWeight

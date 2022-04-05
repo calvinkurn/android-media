@@ -79,14 +79,14 @@ class StatisticCoachMarkHelper @Inject constructor(
         return null
     }
 
+    fun getIsTrafficInsightTab(title: String): Boolean {
+        return title == context.getString(R.string.stc_traffic) ||
+                title == context.getString(R.string.stc_traffic_coachmark_title)
+    }
+
     private fun getIsProductInsightTab(title: String): Boolean {
         return title == context.getString(R.string.stc_product) ||
                 title == context.getString(R.string.stc_product_coachmark_title)
-    }
-
-    private fun getIsTrafficInsightTab(title: String): Boolean {
-        return title == context.getString(R.string.stc_traffic) ||
-                title == context.getString(R.string.stc_traffic_coachmark_title)
     }
 
     private fun getIsOperationalInsightTab(title: String): Boolean {

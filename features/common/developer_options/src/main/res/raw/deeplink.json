@@ -427,7 +427,7 @@
      {
           "destination_activity": "com.tokopedia.liveness.view.activity.LivenessActivity", 
           "deeplink": "tokopedia-android-internal://global/liveness-detection", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.LIVENESS_DETECTION"
+          "deeplink_variable": ""
      }, 
      {
           "destination_activity": "com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity", 
@@ -918,6 +918,11 @@
           "destination_activity": "com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity", 
           "deeplink": "tokopedia-android-internal://payment/add-credit-card", 
           "deeplink_variable": "ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity", 
+          "deeplink": "tokopedia-android-internal://fintech/activate_gopay", 
+          "deeplink_variable": "ApplinkConstInternalFintech.ACTIVATE_GOPAY"
      }, 
      {
           "destination_activity": "com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity", 

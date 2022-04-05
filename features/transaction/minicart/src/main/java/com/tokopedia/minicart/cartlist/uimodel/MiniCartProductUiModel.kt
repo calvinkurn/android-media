@@ -10,6 +10,7 @@ data class MiniCartProductUiModel(
         var cartId: String = "",
         var productId: String = "",
         var parentId: String = "",
+        var cartString: String = "",
         var productImageUrl: String = "",
         var productName: String = "",
         var productVariantName: String = "",
