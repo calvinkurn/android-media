@@ -243,10 +243,10 @@ class PlayBottomSheetFragment @Inject constructor(
         closeVariantSheet()
     }
 
-    override fun onActionClicked(variant: PlayProductUiModel.Product, action: ProductAction) {
+    override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
-            if (action == ProductAction.Buy) BuyProductVariantAction(variant.id)
-            else AtcProductVariantAction(variant.id)
+            if (action == ProductAction.Buy) BuyProductVariantAction(variant.id, sectionInfo)
+            else AtcProductVariantAction(variant.id, sectionInfo)
         )
     }
 
