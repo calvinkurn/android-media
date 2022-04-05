@@ -2265,6 +2265,11 @@
           "deeplink_variable": "ApplinkConstInternalGlobal.BROWSER"
      }, 
      {
+          "destination_activity": "com.tokopedia.data_explorer.db_explorer.presentation.DataExplorerActivity", 
+          "deeplink": "tokopedia-android-internal://global/data-explorer", 
+          "deeplink_variable": "ApplinkConstInternalGlobal.DATA_EXPLORER"
+     }, 
+     {
           "destination_activity": "com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity", 
           "deeplink": "tokopedia-android-internal://global/image-picker", 
           "deeplink_variable": "ApplinkConstInternalGlobal.IMAGE_PICKER"
