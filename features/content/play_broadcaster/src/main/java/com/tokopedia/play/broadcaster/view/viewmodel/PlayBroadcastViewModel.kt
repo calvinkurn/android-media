@@ -978,22 +978,27 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         val newOptions = options.map {
             it.copy(
+                /** Auto Select */
                 isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
                 text = if(it.order == order) newText else it.text
             )
+        }.toMutableList()
+
+        /** Auto Add */
+        val quizConfig = _gameConfig.value.quizConfig
+        val isAllOptionFilled = newOptions.firstOrNull { it.text.isEmpty() } == null
+        val currentOption = newOptions.size
+        val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
+
+        if(isNeedAddNewField) {
+            newOptions.add(QuizFormDataUiModel.Option(
+                order = currentOption,
+                maxLength = quizConfig.maxChoiceLength,
+                isMandatory = false,
+            ))
         }
 
-        Log.d("<LOG>", "order : $order")
-        Log.d("<LOG>", "newText : $newText")
-        Log.d("<LOG>", "old : $options")
-        Log.d("<LOG>", "new : $newOptions")
-        Log.d("<LOG>", "========================")
-
-        _quizFormData.setValue {
-            copy(options = newOptions)
-        }
-
-        /** TODO: handle add new options or not */
+        _quizFormData.setValue { copy(options = newOptions) }
     }
 
     private fun handleSelectQuizOption(order: Int) {
