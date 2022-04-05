@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.sellerorder.reschedule_pickup.presentation.activity.ReschedulePickupActivity
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -39,18 +37,14 @@ class MainActivity : AppCompatActivity() {
             testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
         }
 
-        toggle_dark_mode.isChecked =
-            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        toggle_dark_mode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         toggle_dark_mode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
             AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
         }
 
         loginButton.setOnClickListener {
             if (!userSession.isLoggedIn) {
-                startActivityForResult(
-                    RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                    REQUEST_CODE_LOGIN
-                )
+                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
             } else {
                 Toast.makeText(this, "Already logged in", Toast.LENGTH_SHORT).show()
                 goTo()
@@ -59,10 +53,9 @@ class MainActivity : AppCompatActivity() {
 
         /* use mainapp login use case */
         logoutButton.setOnClickListener {
-            val logoutIntent =
-                RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT).apply {
-                    putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
-                }
+            val logoutIntent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.LOGOUT).apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
+            }
             startActivityForResult(logoutIntent, REQUEST_CODE_LOGOUT)
         }
 
@@ -100,9 +93,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginStatus() {
-        if (userSession.isLoggedIn) {
-            val identity =
-                if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+        if(userSession.isLoggedIn) {
+            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
             loginButton?.text = "Logged in as:\n${identity}"
             logoutButton.visibility = View.VISIBLE
         } else {
@@ -123,13 +115,10 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        startActivity(Intent(this, ReschedulePickupActivity::class.java).apply {
-            putExtra("ARGUMENTS_ORDER_ID", "1293802193")
-        })
-//        val appLink = etAppLink.text.toString()
-//        if(appLink.isNotBlank())
-//            RouteManager.route(this, appLink)
-//        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
