@@ -5,9 +5,9 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingTemporaryFinishBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
 
-class TemporaryFinishViewHolder(view: View) : AbstractViewHolder<TemporaryFinishUiModel>(view) {
+class TemporaryFinishOrderViewHolder(view: View) : AbstractViewHolder<TemporaryFinishOrderUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -16,7 +16,7 @@ class TemporaryFinishViewHolder(view: View) : AbstractViewHolder<TemporaryFinish
 
     private val binding = ItemTokofoodOrderTrackingTemporaryFinishBinding.bind(itemView)
 
-    override fun bind(element: TemporaryFinishUiModel) {
+    override fun bind(element: TemporaryFinishOrderUiModel) {
         with(binding) {
             setTemporaryFinishImage(element.temporaryFinishUrl)
         }

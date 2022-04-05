@@ -18,7 +18,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Payment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StatusInfoHeaderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
@@ -60,7 +60,7 @@ interface OrderTrackingTypeFactory {
 
     fun type(paymentHeaderUiModel: PaymentHeaderUiModel): Int
 
-    fun type(temporaryFinishUiModel: TemporaryFinishUiModel): Int
+    fun type(temporaryFinishOrderUiModel: TemporaryFinishOrderUiModel): Int
 
     fun type(thickDividerUiModel: ThickDividerUiModel): Int
 

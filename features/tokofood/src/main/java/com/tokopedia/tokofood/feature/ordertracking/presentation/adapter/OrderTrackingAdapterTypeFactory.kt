@@ -22,7 +22,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Payment
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StatusInfoHeaderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
@@ -44,7 +44,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.Rest
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailHeaderViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ShippingDetailViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.StatusInfoHeaderViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TemporaryFinishViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.TemporaryFinishOrderViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ThickDividerViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ThinDividerMarginViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.ThinDividerViewHolder
@@ -126,8 +126,8 @@ class OrderTrackingAdapterTypeFactory(
         return PaymentHeaderViewHolder.LAYOUT
     }
 
-    override fun type(temporaryFinishUiModel: TemporaryFinishUiModel): Int {
-        return TemporaryFinishViewHolder.LAYOUT
+    override fun type(temporaryFinishOrderUiModel: TemporaryFinishOrderUiModel): Int {
+        return TemporaryFinishOrderViewHolder.LAYOUT
     }
 
     override fun type(thickDividerUiModel: ThickDividerUiModel): Int {
@@ -162,7 +162,7 @@ class OrderTrackingAdapterTypeFactory(
             PaymentMethodViewHolder.LAYOUT -> PaymentMethodViewHolder(parent)
             PaymentGrandTotalViewHolder.LAYOUT -> PaymentGrandTotalViewHolder(parent)
             PaymentHeaderViewHolder.LAYOUT -> PaymentHeaderViewHolder(parent)
-            TemporaryFinishViewHolder.LAYOUT -> TemporaryFinishViewHolder(parent)
+            TemporaryFinishOrderViewHolder.LAYOUT -> TemporaryFinishOrderViewHolder(parent)
             ThickDividerViewHolder.LAYOUT -> ThickDividerViewHolder(parent)
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             ThinDividerMarginViewHolder.LAYOUT -> ThinDividerMarginViewHolder(parent)
