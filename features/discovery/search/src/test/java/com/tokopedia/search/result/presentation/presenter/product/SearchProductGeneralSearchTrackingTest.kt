@@ -47,13 +47,8 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         searchProductModel: SearchProductModel,
         expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel,
         previousKeyword: String = "",
-        filterParam: String = "",
     ) {
-        `Given Search Product Setup`(
-            searchProductModel,
-            previousKeyword,
-            filterParam
-        )
+        `Given Search Product Setup`(searchProductModel, previousKeyword)
 
         `When View is created`()
 
@@ -63,7 +58,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
     private fun `Given Search Product Setup`(
         searchProductModel: SearchProductModel,
         previousKeyword: String = "",
-        filterParam: String = "",
     ) {
         `Given Search Product API will return SearchProductModel`(searchProductModel)
         `Given View is first active tab`()
@@ -71,7 +65,6 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         `Given View reload data immediately calls load data`()
         `Given View getQueryKey will return the keyword`()
         `Given user is logged in`()
-        `Given view filter param`(filterParam)
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -103,15 +96,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         every { userSession.userId } returns userId
     }
 
-    private fun `Given view filter param`(filterParam: String) {
-        every { productListView.filterParamString } returns filterParam
-    }
-
     private fun `When View is created`() {
         productListPresenter.onViewCreated()
     }
 
-    private fun `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
+    private fun `Then verify general search tracking model is correct`(
+        expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel
+    ) {
         val generalSearchTrackingModelSlot = slot<GeneralSearchTrackingModel>()
 
         verify {
@@ -168,7 +159,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -199,7 +190,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -230,7 +221,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -262,7 +253,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "$previousKeyword - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -295,7 +286,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Fashion Pria,Fashion Wanita",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -330,7 +321,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                     "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
                     searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -364,7 +355,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "$previousKeyword - " +
                     searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -399,7 +390,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
                     "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
                     searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword },
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -432,7 +423,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Fashion Pria,Fashion Wanita",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -465,7 +456,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Fashion Pria,Fashion Wanita",
             relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -497,7 +488,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Fashion Pria,Fashion Wanita",
             relatedKeyword = "$NONE - $NONE",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -528,7 +519,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -559,7 +550,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -590,7 +581,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -631,7 +622,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -672,7 +663,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = pageSource,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -717,7 +708,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             relatedKeyword = "none - none",
             pageSource = "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
                     "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}",
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
@@ -758,46 +749,13 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
             categoryNameMapping = "Handphone & Tablet",
             relatedKeyword = "none - none",
             pageSource = searchRef,
-            searchFilter = "",
+            searchFilter = searchProductModel.backendFilters,
             componentId = searchProductModel.searchProduct.header.componentId,
         )
 
         `Test General Search Tracking`(
             searchProductModel,
             expectedGeneralSearchTrackingModel,
-        )
-    }
-
-    @Test
-    fun `General search tracking will track searchFilter taken from view`() {
-        val searchProductModel = commonResponse.jsonToObject<SearchProductModel>()
-        val filterParam = "official=true&instant_courier=true"
-        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
-            eventCategory = SearchEventTracking.Category.EVENT_TOP_NAV,
-            eventLabel = String.format(
-                SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
-                keyword,
-                searchProductModel.searchProduct.header.keywordProcess,
-                searchProductModel.searchProduct.header.responseCode,
-                NONE,
-                NONE,
-                NONE,
-                searchProductModel.searchProduct.header.totalData,
-            ),
-            userId = userId,
-            isResultFound = true.toString(),
-            categoryIdMapping = "65",
-            categoryNameMapping = "Handphone & Tablet",
-            relatedKeyword = "none - none",
-            pageSource = pageSource,
-            searchFilter = filterParam,
-            componentId = searchProductModel.searchProduct.header.componentId,
-        )
-
-        `Test General Search Tracking`(
-            searchProductModel,
-            expectedGeneralSearchTrackingModel,
-            filterParam = filterParam,
         )
     }
 }
