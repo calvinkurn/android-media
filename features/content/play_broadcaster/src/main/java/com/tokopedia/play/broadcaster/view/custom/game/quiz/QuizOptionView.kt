@@ -45,7 +45,6 @@ class QuizOptionView : ConstraintLayout {
             setRawInputType(InputType.TYPE_CLASS_TEXT)
 
             afterTextChanged {
-                this@QuizOptionView.text = it
                 mTextOnChangedListener?.invoke(order, it)
             }
         }
