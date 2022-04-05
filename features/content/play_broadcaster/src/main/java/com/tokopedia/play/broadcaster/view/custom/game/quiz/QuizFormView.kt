@@ -85,6 +85,8 @@ class QuizFormView : ConstraintLayout {
             timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
         }
 
+    private var mQuizFormData: QuizFormDataUiModel = QuizFormDataUiModel()
+
     init {
         binding.rvQuizOption.addItemDecoration(QuizOptionItemDecoration(context))
         binding.rvQuizOption.adapter = adapter
@@ -103,15 +105,21 @@ class QuizFormView : ConstraintLayout {
         }
 
         binding.viewGameHeader.setOnTextChangedListener {
-            eventBus.emit(Event.TitleChanged(it))
+            setFormData(mQuizFormData.copy(title = it))
+
+//            eventBus.emit(Event.TitleChanged(it))
         }
 
         binding.viewQuizGift.setOnTextChangeListener {
-            eventBus.emit(Event.GiftChanged(it))
+            setFormData(mQuizFormData.copy(gift = it))
+
+//            eventBus.emit(Event.GiftChanged(it))
         }
 
         binding.viewQuizGift.setOnRemoveGiftListener {
-            eventBus.emit(Event.GiftChanged(""))
+            setFormData(mQuizFormData.copy(gift = ""))
+
+//            eventBus.emit(Event.GiftChanged(""))
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
@@ -146,6 +154,8 @@ class QuizFormView : ConstraintLayout {
     }
 
     fun setFormData(quizFormData: QuizFormDataUiModel) {
+        mQuizFormData = quizFormData
+
         /** Set Quiz Title */
         binding.viewGameHeader.title = quizFormData.title
 
