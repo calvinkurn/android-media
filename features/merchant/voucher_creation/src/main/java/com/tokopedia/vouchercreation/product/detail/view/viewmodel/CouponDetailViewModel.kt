@@ -8,22 +8,21 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.vouchercreation.common.consts.ImageGeneratorConstant
 import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.mapper.CouponMapper
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponDetailWithMetadata
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponUiModel
 import com.tokopedia.vouchercreation.product.create.domain.usecase.GetCouponDetailFacadeUseCase
-import com.tokopedia.vouchercreation.product.share.domain.entity.CouponImageWithShop
-import com.tokopedia.vouchercreation.product.share.domain.usecase.GenerateImageWithStatisticsFacadeUseCase
+import com.tokopedia.vouchercreation.product.share.domain.entity.ShopWithTopProducts
+import com.tokopedia.vouchercreation.product.share.domain.usecase.GetShopAndTopProductsUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CouponDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getCouponDetailFacadeUseCase: GetCouponDetailFacadeUseCase,
-    private val generateImageFacadeUseCase: GenerateImageWithStatisticsFacadeUseCase,
+    private val getShopAndTopProductsUseCase: GetShopAndTopProductsUseCase,
     private val mapper: CouponMapper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -31,8 +30,8 @@ class CouponDetailViewModel @Inject constructor(
     val couponDetail: LiveData<Result<CouponDetailWithMetadata>>
         get() = _couponDetail
 
-    private val _couponImageWithShop = MutableLiveData<Result<CouponImageWithShop>>()
-    val couponImageWithShop: LiveData<Result<CouponImageWithShop>> = _couponImageWithShop
+    private val _shopWithTopProducts = MutableLiveData<Result<ShopWithTopProducts>>()
+    val shopWithTopProducts: LiveData<Result<ShopWithTopProducts>> = _shopWithTopProducts
 
     private var coupon: CouponUiModel? = null
     private var maxProductLimit: Int = 0
@@ -51,20 +50,19 @@ class CouponDetailViewModel @Inject constructor(
         )
     }
 
-    fun generateImage(coupon : CouponUiModel) {
+    fun getShopAndTopProducts(coupon : CouponUiModel) {
         launchCatchError(
             block = {
                 val result = withContext(dispatchers.io) {
-                    generateImageFacadeUseCase.execute(
+                    getShopAndTopProductsUseCase.execute(
                         this,
-                        ImageGeneratorConstant.IMAGE_TEMPLATE_COUPON_PRODUCT_SOURCE_ID,
                         coupon
                     )
                 }
-                _couponImageWithShop.value = Success(result)
+                _shopWithTopProducts.value = Success(result)
             },
             onError = {
-                _couponImageWithShop.setValue(Fail(it))
+                _shopWithTopProducts.setValue(Fail(it))
             }
         )
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -388,20 +389,12 @@ object DynamicProductDetailMapper {
         return if (affiliateUniqueString.isNotBlank()) AffiliateUIIDRequest(trackerID = uuid, uuid = affiliateUniqueString, irisSessionID = TrackApp.getInstance().gtm.irisSessionId) else null
     }
 
-    fun determineSelectedOptionIds(variantData: ProductVariant, selectedChild: VariantChild?): MutableMap<String, String> {
-        val isParent = selectedChild == null
-        return when {
-            isParent -> {
-                AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-            }
-            else -> {
-                if (selectedChild == null) {
-                    AtcVariantMapper.mapVariantIdentifierToHashMap(variantData)
-                } else {
-                    AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(variantData, selectedChild.optionIds)
-                }
-            }
-        }
+    fun determineSelectedOptionIds(variantData: ProductVariant,
+                                   selectedChild: VariantChild?): MutableMap<String, String> {
+        return AtcVariantMapper.mapVariantIdentifierWithDefaultSelectedToHashMap(
+                variantData,
+                selectedChild?.optionIds
+        )
     }
 
     fun generateProductShareData(productInfo: DynamicProductInfoP1, userId: String, shopUrl: String): ProductData {
@@ -439,6 +432,50 @@ object DynamicProductDetailMapper {
                         shopStatus = shopInfo?.statusInfo?.shopStatus
                 )
         )
+    }
+
+    fun removeUnusedComponent(productInfo: DynamicProductInfoP1?,
+                              variantData: ProductVariant?,
+                              isShopOwner: Boolean,
+                              initialLayoutData: MutableList<DynamicPdpDataModel>)
+            : MutableList<DynamicPdpDataModel> {
+
+        val isTradein = productInfo?.data?.isTradeIn == true
+        val hasWholesale = productInfo?.data?.hasWholesale == true
+        val isOfficialStore = productInfo?.data?.isOS == true
+        val isVariant = productInfo?.isProductVariant() ?: false
+        val isVariantEmpty = variantData == null || !variantData.hasChildren
+
+        val removedData = initialLayoutData.map {
+            if ((!isTradein || isShopOwner) && it.name() == ProductDetailConstant.TRADE_IN) {
+                it
+            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
+                it
+            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
+                it
+            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
+                it
+            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
+                it
+            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
+                it
+            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
+                it
+            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
+                it
+            } else if (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) {
+                it
+            } else if (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) {
+                it
+            } else {
+                null
+            }
+        }
+
+        if (removedData.isNotEmpty())
+            initialLayoutData.removeAll(removedData)
+
+        return initialLayoutData
     }
 
     private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {

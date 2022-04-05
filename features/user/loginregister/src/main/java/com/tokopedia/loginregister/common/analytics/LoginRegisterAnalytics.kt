@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.Patterns
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
@@ -771,15 +770,6 @@ class LoginRegisterAnalytics @Inject constructor(
                 ACTION_VIEW_BANNER,
                 label
         ))
-    }
-
-    fun logUnknownError(message: Throwable) {
-        try {
-            FirebaseCrashlytics.getInstance().recordException(message)
-        } catch (e: IllegalStateException) {
-            e.printStackTrace()
-        }
-
     }
 
     fun getLoginMethodMoengage(loginMethod: String?): String? {

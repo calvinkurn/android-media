@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".mvc_locked_to_product.view.activity.MvcLockedToProductPageActivity"
+            android:screenOrientation="portrait"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

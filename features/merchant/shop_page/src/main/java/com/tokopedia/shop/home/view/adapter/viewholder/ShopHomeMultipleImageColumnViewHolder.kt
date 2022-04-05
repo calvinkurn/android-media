@@ -58,6 +58,7 @@ class ShopHomeMultipleImageColumnViewHolder(
         }
 
         rvShopHomeMultiple?.apply {
+            isNestedScrollingEnabled = false
             layoutManager = gridLayoutManager
             if (itemDecorationCount == 0) {
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))

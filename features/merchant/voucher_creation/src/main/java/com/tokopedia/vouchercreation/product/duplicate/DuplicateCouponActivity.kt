@@ -37,6 +37,10 @@ class DuplicateCouponActivity : AppCompatActivity() {
         const val REQUEST_CODE_ADD_PRODUCT = 101
         const val REQUEST_CODE_MANAGE_PRODUCT = 102
 
+        // Quick fix for issue https://tokopedia.atlassian.net/browse/AN-34843
+        const val BUNDLE_KEY_BLOCK_ADD_PRODUCT = "blockAddProduct"
+        const val VALUE_BLOCK_ADD_PRODUCT = true
+
         @JvmStatic
         fun start(context: Context, couponId : Long) {
             val starter = Intent(context, DuplicateCouponActivity::class.java)
@@ -60,7 +64,8 @@ class DuplicateCouponActivity : AppCompatActivity() {
             {},
             ::onDuplicateCouponSuccess,
             couponId,
-            CouponPreviewFragment.Mode.DUPLICATE
+            CouponPreviewFragment.Mode.DUPLICATE,
+                true
         )
     }
 
@@ -115,12 +120,14 @@ class DuplicateCouponActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val addProductIntent = Intent(this, AddProductActivity::class.java).apply {
             putExtras(Bundle().apply {
-                putString(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
-                putInt(CreateCouponProductActivity.BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
-                putParcelable(CreateCouponProductActivity.BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
+                putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)
+                putParcelable(BUNDLE_KEY_COUPON_SETTINGS, couponSettings)
+                val selectedProductIds = couponPreviewFragment.getSelectedProductIds()
                 val selectedProducts = arrayListOf<ProductUiModel>()
+                selectedProducts.addAll(couponPreviewFragment.getSelectedProducts(selectedProductIds))
                 selectedProducts.addAll(couponPreviewFragment.getSelectedProducts())
-                putParcelableArrayList(CreateCouponProductActivity.BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
+                putParcelableArrayList(BUNDLE_KEY_SELECTED_PRODUCTS, selectedProducts)
             })
         }
         startActivityForResult(addProductIntent, CreateCouponProductActivity.REQUEST_CODE_ADD_PRODUCT)
@@ -131,6 +138,7 @@ class DuplicateCouponActivity : AppCompatActivity() {
         val maxProductLimit = couponPreviewFragment.getMaxAllowedProduct()
         val manageProductIntent = Intent(this, ManageProductActivity::class.java).apply {
             putExtras(Bundle().apply {
+                putBoolean(BUNDLE_KEY_BLOCK_ADD_PRODUCT, VALUE_BLOCK_ADD_PRODUCT)
                 putString(BUNDLE_KEY_SELECTED_WAREHOUSE_ID, couponPreviewFragment.getSelectedWarehouseId())
                 putBoolean(BUNDLE_KEY_IS_EDITING, true)
                 putInt(BUNDLE_KEY_MAX_PRODUCT_LIMIT, maxProductLimit)

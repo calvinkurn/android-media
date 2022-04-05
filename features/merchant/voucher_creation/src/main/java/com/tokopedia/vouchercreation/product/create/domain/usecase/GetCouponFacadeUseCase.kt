@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class GetCouponFacadeUseCase @Inject constructor(
     private val getCouponDetailUseCase: GetCouponDetailUseCase,
-    private val getProductsUseCase: GetProductsUseCase,
+    private val getMostSoldProductsUseCase: GetMostSoldProductsUseCase,
     private val userSession: UserSessionInterface,
     private val couponMapper: CouponMapper,
     private val initiateCouponUseCase: InitiateCouponUseCase
@@ -33,7 +33,7 @@ class GetCouponFacadeUseCase @Inject constructor(
         val couponDetail = couponDetailDeferred.await()
 
         val parentProductIds = couponDetail.products.map { it.parentProductId }
-        val productsDeferred = scope.async { getProducts(parentProductIds) }
+        val productsDeferred = scope.async { getMostSoldProducts(parentProductIds) }
         val products = productsDeferred.await()
 
         val voucher = initiateVoucherDeferred.await()
@@ -59,9 +59,9 @@ class GetCouponFacadeUseCase @Inject constructor(
     }
 
 
-    private suspend fun getProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
-        getProductsUseCase.params = GetProductsUseCase.createParams(userSession.shopId, productIds)
-        return getProductsUseCase.executeOnBackground()
+    private suspend fun getMostSoldProducts(productIds: List<Long>): GetProductsByProductIdResponse.GetProductListData {
+        getMostSoldProductsUseCase.params = GetMostSoldProductsUseCase.createParams(userSession.shopId, productIds)
+        return getMostSoldProductsUseCase.executeOnBackground()
     }
 
     private fun getCouponImageUrlAndSoldCount(

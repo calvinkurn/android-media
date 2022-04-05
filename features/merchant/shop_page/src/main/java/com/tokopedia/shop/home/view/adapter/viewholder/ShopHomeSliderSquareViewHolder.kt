@@ -42,6 +42,7 @@ class ShopHomeSliderSquareViewHolder(
         val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         shopHomeSliderSquareAdapter = ShopHomeSliderSquareAdapter(listener)
         rvCarouselShopPageHome?.apply {
+            isNestedScrollingEnabled = false
             layoutManager = linearLayoutManager
             if (itemDecorationCount == 0) {
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))

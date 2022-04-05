@@ -1,5 +1,7 @@
 package com.tokopedia.addongifting
 
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -18,6 +20,7 @@ class AddOnActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        adjustOrientation()
 
         intent.extras?.let {
             val addOnProductData = it.getParcelable(AddOnConstant.EXTRA_ADD_ON_PRODUCT_DATA)
@@ -36,6 +39,12 @@ class AddOnActivity : BaseSimpleActivity() {
                     finish()
                 }
             }
+        }
+    }
+
+    private fun adjustOrientation() {
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
     }
 }

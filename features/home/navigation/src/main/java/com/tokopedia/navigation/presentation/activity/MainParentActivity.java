@@ -965,7 +965,8 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdateAndInApp() {
+    @Override
+    public void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // if download finished or flexible update is in progress, we do not need to show the update dialog
             AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
@@ -1140,7 +1141,7 @@ public class MainParentActivity extends BaseActivity implements
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 

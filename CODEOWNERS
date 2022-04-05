@@ -41,6 +41,7 @@
 /features/common/nps                                	@tokopedia/android-core-dev
 /features/common/resources_common                   	@tokopedia/android-core-dev
 /features/common/qr_scanner                   	        @tokopedia/android-core-dev
+/features/common/feedback_form                          @tokopedia/android-core-dev
 
 /features/discovery/category_common/                	@tokopedia/android-minionstuart-dev
 /features/merchant/gold_merchant/                       @tokopedia/android-minionstuart-dev
@@ -81,7 +82,7 @@
 /features/merchant/voucher_creation/                    @tokopedia/android-minionken-dev
 /features/tokopedianow/                                 @tokopedia/android-minionken-dev
 /features/merchant/product_service_widget/              @tokopedia/android-minionken-dev
-/features/merchant/product_bundle/                      @tokopedia/android-minionken-dev
+/features/merchant/product_manage_item/                 @tokopedia/android-minionken-dev
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 
@@ -324,7 +325,7 @@
 /libraries/logger/										@tokopedia/android-core-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
-/libraries/network/                                     @tokopedia/android-minionkevin-dev
+/libraries/network/                                     @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
@@ -361,6 +362,7 @@
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev
+/dynamic-features-customerapp_pro/                      @tokopedia/android-core-dev
 /dynamic-features-sellerapp/                            @tokopedia/android-core-dev
 /tools/                                                 @tokopedia/android-core-dev
 
