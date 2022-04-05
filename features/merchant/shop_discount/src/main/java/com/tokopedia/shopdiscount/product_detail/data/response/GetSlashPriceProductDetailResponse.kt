@@ -3,6 +3,7 @@ package com.tokopedia.shopdiscount.product_detail.data.response
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
 @SuppressLint("Invalid Data Type")
 data class GetSlashPriceProductDetailResponse(
@@ -18,12 +19,6 @@ data class GetSlashPriceProductDetailResponse(
         @Expose
         var productList: List<ProductList> = listOf()
     ) {
-        data class ResponseHeader(
-            @SerializedName("status")
-            @Expose
-            var status: String = ""
-        )
-
         data class ProductList(
             @SerializedName("slash_price_product_id")
             @Expose

@@ -18,6 +18,7 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
@@ -88,11 +89,11 @@ class ProductManageFragment : BaseDaggerFragment() {
             ticker.setHtmlDescription(getString(R.string.sd_ticker_announcement_wording))
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    displayBulkApplyBottomSheet()
+                    showSellerInfoBottomSheet()
                 }
 
                 override fun onDismiss() {
-                    ticker.gone()
+
                 }
 
             })
@@ -112,7 +113,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             header.addCustomRightContent(shopIcon)
             header.setNavigationOnClickListener { activity?.finish() }
-            header.setOnClickListener { displayBulkApplyBottomSheet() }
+            header.setOnClickListener { showSellerInfoBottomSheet() }
         }
     }
 
@@ -166,10 +167,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun showSellerInfoBottomSheet() {
-        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
-        bottomSheet.setOnApplyClickListener { discountSettings ->
-
-        }
+        val bottomSheet = ShopDiscountSellerInfoBottomSheet.newInstance()
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 

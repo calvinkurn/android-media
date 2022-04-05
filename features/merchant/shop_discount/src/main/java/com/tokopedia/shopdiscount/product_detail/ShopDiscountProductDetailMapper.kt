@@ -35,11 +35,20 @@ object ShopDiscountProductDetailMapper {
         )
     }
 
-    fun mapToListShopDiscountProductDetailUiModel(
-        slashPriceProductDetailResponseData: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail
-    ): List<ShopDiscountProductDetailUiModel> {
-        return slashPriceProductDetailResponseData.productList.map {
-            ShopDiscountProductDetailUiModel(
+    fun mapToShopDiscountProductDetailUiModel(
+        response: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail
+    ): ShopDiscountProductDetailUiModel {
+        return ShopDiscountProductDetailUiModel(
+            responseHeader = response.responseHeader,
+            listProductDetailData = mapToListProductDetailData(response.productList)
+        )
+    }
+
+    private fun mapToListProductDetailData(
+        productList: List<GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList>
+    ): List<ShopDiscountProductDetailUiModel.ProductDetailData> {
+        return productList.map {
+            ShopDiscountProductDetailUiModel.ProductDetailData(
                 productId = it.productId,
                 productName = it.name,
                 productImageUrl = it.picture,
