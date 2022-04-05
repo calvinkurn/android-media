@@ -1,63 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/push_noti_background"
+    android:id="@+id/rlMainCollapsed"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/push_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textColor="@color/Unify_N700_96"
-            android:textSize="@dimen/cm_sp_13"
-            tools:text="Title" />
+    <TextView
+        android:id="@+id/tvReviewPushTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/cm_dp_16"
+        android:layout_toStartOf="@+id/ivProductIcon"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/cm_title_black_255"
+        android:textSize="@dimen/cm_sp_14"
+        tools:text="Content Title" />
 
-        <LinearLayout
-            android:orientation="horizontal"
+    <ImageView
+        android:id="@+id/ivProductIcon"
+        android:layout_width="@dimen/cm_dp_40"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
+
+    <LinearLayout
+        android:id="@+id/ll_review_star"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/cm_dp_16"
+        android:layout_toStartOf="@+id/ivProductIcon">
+
+        <include
+            android:id="@+id/ivReviewStarOne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/push_title"
-            android:layout_marginTop="8dp">
+            layout="@layout/cm_layout_star_unselected_small_item" />
 
-            <ImageView
-                android:id="@+id/ivStarReview_1"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:src="@drawable/cm_ic_star_review_white"/>
+        <include
+            android:id="@+id/ivReviewStarTwo"
+            layout="@layout/cm_layout_star_unselected_small_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cm_dp_6" />
 
-            <ImageView
-                android:id="@+id/ivStarReview_2"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginStart="6dp"
-                android:src="@drawable/cm_ic_star_review_white"/>
+        <include
+            android:id="@+id/ivReviewStarThree"
+            layout="@layout/cm_layout_star_unselected_small_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cm_dp_6" />
 
-            <ImageView
-                android:id="@+id/ivStarReview_3"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginStart="6dp"
-                android:src="@drawable/cm_ic_star_review_white"/>
+        <include
+            android:id="@+id/ivReviewStarFour"
+            layout="@layout/cm_layout_star_unselected_small_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cm_dp_6" />
 
-            <ImageView
-                android:id="@+id/ivStarReview_4"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginStart="6dp"
-                android:src="@drawable/cm_ic_star_review_white"/>
+        <include
+            android:id="@+id/ivReviewStarFive"
+            layout="@layout/cm_layout_star_unselected_small_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cm_dp_6" />
 
-            <ImageView
-                android:id="@+id/ivStarReview_5"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginStart="6dp"
-                android:src="@drawable/cm_ic_star_review_white"/>
 
-        </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

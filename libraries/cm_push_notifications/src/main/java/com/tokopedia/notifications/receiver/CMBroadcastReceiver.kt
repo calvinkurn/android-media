@@ -42,7 +42,7 @@ import org.json.JSONObject
 import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import com.tokopedia.notifications.common.CMConstant.ReviewStarNumber
+import com.tokopedia.notifications.factory.ReviewNotification
 
 
 /**
@@ -187,15 +187,10 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         clearProductImages(context.applicationContext)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
-                    CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED -> {
-                        val starNumber = intent.getStringExtra(ReviewStarNumber.STAR_NUMBER)
-                        starNumber?.let {
-                            baseNotificationModel?.appLink = baseNotificationModel?.appLink + starNumber.orEmpty()
-                            handleNotificationClick(context, intent, notificationId, baseNotificationModel)
-                        }
-                        }
-                    }
+                    CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED ->
+                        handleReviewStarClick(context,notificationId, intent, baseNotificationModel)
                 }
+            }
         } catch (e: Exception) {
             val messageMap: MutableMap<String, String> = HashMap()
             messageMap["type"] = "exception"
@@ -203,6 +198,19 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             messageMap["data"] = "$intent"
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
             e.printStackTrace()
+        }
+    }
+
+    private fun handleReviewStarClick(
+        context: Context, notificationId: Int,
+        intent: Intent, baseNotificationModel: BaseNotificationModel?
+    ) {
+        val updatedBaseNotificationModel = ReviewNotification
+            .updateReviewAppLink(intent, baseNotificationModel)
+        handleNotificationClick(context, intent, notificationId, updatedBaseNotificationModel)
+        baseNotificationModel?.let {
+            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
+                baseNotificationModel, CMConstant.NotificationType.GENERAL, baseNotificationModel.elementId)
         }
     }
 

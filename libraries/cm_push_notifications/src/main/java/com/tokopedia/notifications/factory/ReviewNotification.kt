@@ -2,6 +2,7 @@ package com.tokopedia.notifications.factory
 
 import android.app.Notification
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.widget.RemoteViews
@@ -25,6 +26,13 @@ class ReviewNotification internal constructor(
             RemoteViews(packageName, R.layout.cm_layout_review_collapsed)
         else RemoteViews(packageName, R.layout.cm_layout_review_collapsed_pre_dark_mode)
     }
+
+    private val headsUpView by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            RemoteViews(packageName, R.layout.cm_layout_headsup_review_collapsed)
+        else RemoteViews(packageName, R.layout.cm_layout_headsup_review_collapsed_pre_dark_mode)
+    }
+
     private val expandedView by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             RemoteViews(packageName, R.layout.cm_layout_review_expand)
@@ -34,16 +42,21 @@ class ReviewNotification internal constructor(
     override fun createNotification(): Notification? {
         val builder = builder
         setupUI(builder)
-        builder.setContentIntent(createMainPendingIntent(baseNotificationModel, requestCode))
-               .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-               .setCustomContentView(collapsedView)
-               .setCustomBigContentView(expandedView)
-               .setDeleteIntent(
-            createDismissPendingIntent(
-                baseNotificationModel.notificationId,
-                requestCode
+        setUpHeadsUpRemoteView()
+
+        builder.setLargeIcon(null)
+            .setCustomHeadsUpContentView(headsUpView)
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+            .setCustomContentView(collapsedView)
+            .setCustomBigContentView(expandedView)
+            .setContentIntent(createMainPendingIntent(baseNotificationModel, requestCode))
+            .setDeleteIntent(
+                createDismissPendingIntent(
+                    baseNotificationModel.notificationId,
+                    requestCode
+                )
             )
-        )
+        handleReview(headsUpView)
         handleReview(collapsedView)
         handleReview(expandedView)
         return builder.build()
@@ -52,21 +65,47 @@ class ReviewNotification internal constructor(
     private fun setupUI(builder: NotificationCompat.Builder) {
         builder.setLargeIcon(getBitmap(baseNotificationModel.media?.fallbackUrl))
         val expandedBitmap: Bitmap = getBitmap(baseNotificationModel.media?.highQuality)
-        expandedView.setImageViewBitmap(R.id.push_large_image, expandedBitmap)
-        collapsedView.setTextViewText(R.id.push_title, getSpannedTextFromStr(baseNotificationModel.title))
-        expandedView.setTextViewText(R.id.push_title, getSpannedTextFromStr(baseNotificationModel.title))
-        expandedView.setTextViewText(R.id.push_message, getSpannedTextFromStr(baseNotificationModel.detailMessage))
+        expandedView.setImageViewBitmap(R.id.ivProductLargeImage, expandedBitmap)
+        collapsedView.setImageViewBitmap(R.id.ivProductIcon, expandedBitmap)
+        collapsedView.setTextViewText(
+            R.id.tvReviewPushTitle,
+            getSpannedTextFromStr(baseNotificationModel.title)
+        )
+        expandedView.setTextViewText(
+            R.id.tvReviewPushTitle,
+            getSpannedTextFromStr(baseNotificationModel.title)
+        )
+        expandedView.setTextViewText(
+            R.id.tvReviewPushMessage,
+            getSpannedTextFromStr(baseNotificationModel.detailMessage?:baseNotificationModel.message)
+        )
+    }
+
+    /**
+     * Remote View for Collapsed Mode and will be displayed on Screen as Heads up view not in Notification Tray
+     **/
+    private fun setUpHeadsUpRemoteView() {
+        val expandedBitmap: Bitmap = getBitmap(baseNotificationModel.media?.highQuality)
+        headsUpView.setImageViewBitmap(R.id.ivProductIcon, expandedBitmap)
+        headsUpView.setTextViewText(
+            R.id.tvReviewPushTitle,
+            getSpannedTextFromStr(baseNotificationModel.title)
+        )
+        headsUpView.setOnClickPendingIntent(
+            R.id.push_noti_background,
+            createMainPendingIntent(baseNotificationModel, requestCode)
+        )
     }
 
     private fun handleReview(remoteView: RemoteViews) {
-        handleReviewStarClick(context, remoteView, ONE_STAR, R.id.ivStarReview_1)
-        handleReviewStarClick(context, remoteView, TWO_STAR, R.id.ivStarReview_2)
-        handleReviewStarClick(context, remoteView, THREE_STAR, R.id.ivStarReview_3)
-        handleReviewStarClick(context, remoteView, FOUR_STAR, R.id.ivStarReview_4)
-        handleReviewStarClick(context, remoteView, FIVE_STAR, R.id.ivStarReview_5)
+        setStarClickPendingIntent(context, remoteView, ONE_STAR, R.id.ivReviewStarOne)
+        setStarClickPendingIntent(context, remoteView, TWO_STAR, R.id.ivReviewStarTwo)
+        setStarClickPendingIntent(context, remoteView, THREE_STAR, R.id.ivReviewStarThree)
+        setStarClickPendingIntent(context, remoteView, FOUR_STAR, R.id.ivReviewStarFour)
+        setStarClickPendingIntent(context, remoteView, FIVE_STAR, R.id.ivReviewStarFive)
     }
 
-    private fun handleReviewStarClick(
+    private fun setStarClickPendingIntent(
         context: Context,
         remoteView: RemoteViews,
         starNumber: String,
@@ -75,8 +114,26 @@ class ReviewNotification internal constructor(
         val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = ACTION_REVIEW_NOTIFICATION_STAR_CLICKED
         intent.putExtra(STAR_NUMBER, starNumber)
-        remoteView.setOnClickPendingIntent(viewId,
-            getPendingIntent(context, intent, requestCode))
+        remoteView.setOnClickPendingIntent(
+            viewId,
+            getPendingIntent(context, intent, requestCode)
+        )
+    }
+
+    companion object {
+        private const val reviewRegex = "={{1-5}}"
+
+        fun updateReviewAppLink(
+            intent: Intent,
+            baseNotificationModel: BaseNotificationModel?
+        ): BaseNotificationModel? {
+            val starNumber = intent.getStringExtra(STAR_NUMBER)
+            val appLink = starNumber?.let {
+                baseNotificationModel?.appLink?.replace(reviewRegex, "=$starNumber") ?: ""
+            }
+            baseNotificationModel?.appLink = appLink ?: ""
+            return baseNotificationModel
+        }
     }
 
 }

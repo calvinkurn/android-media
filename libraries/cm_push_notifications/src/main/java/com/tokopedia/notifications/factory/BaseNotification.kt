@@ -133,6 +133,10 @@ abstract class BaseNotification internal constructor(
     internal val bitmapLargeIcon: Bitmap
         get() = createBitmap()
 
+    fun getApplicationName(context: Context): String {
+        return context.getString(context.applicationInfo.labelRes)
+    }
+
     override fun defaultIcon(): Bitmap {
         return bitmapLargeIcon
     }
