@@ -98,6 +98,10 @@ class GameSmallWidgetView : LinearLayout {
         binding.timerEngagementTools.timer?.cancel()
     }
 
+    fun setListener(listener: Listener?){
+        this.listener = listener
+    }
+
     interface Listener{
         fun onWidgetClicked(view: GameSmallWidgetView)
     }

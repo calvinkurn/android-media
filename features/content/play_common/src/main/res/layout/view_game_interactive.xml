@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="104dp"
+    android:layout_width="@dimen/engagement_tools_small_widget_width"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:layout_width="match_parent">
@@ -23,7 +23,7 @@
     <com.tokopedia.play_common.view.RoundedConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-14dp"
+        android:layout_marginTop="@dimen/engagement_tools_small_widget_marginTop"
         app:rcl_cornerRadius="@dimen/layout_lvl1"
         tools:background="@drawable/bg_quiz">
 
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="@dimen/engagement_tools_small_widget_timer_bottom"
             tools:text="@string/play_common_widget_timer_quiz_info"
             android:textColor="@color/Unify_N0"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -63,7 +63,7 @@
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/timer_engagement_tools"
         android:layout_gravity="center"
-        android:layout_marginTop="-16dp"
+        android:layout_marginTop="@dimen/engagement_tools_small_widget_timer_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:timer_unify_single_remainingMinutes="10"
