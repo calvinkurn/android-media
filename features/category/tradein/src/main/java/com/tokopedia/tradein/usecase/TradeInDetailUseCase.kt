@@ -21,22 +21,25 @@ class TradeInDetailUseCase @Inject constructor(
         laku6DeviceModel: Laku6DeviceModel,
         productPrice: Double,
         userAddressData: LocalCacheModel,
-        tradeInUniqueCode : String
+        tradeInUniqueCode : String,
+        shopID : String
     ): TradeInDetailModel {
-        return repository.getGQLData(GqlTradeInDetail.GQL_QUERY, TradeInDetailModel::class.java, createRequestParams(laku6DeviceModel, productPrice, userAddressData, tradeInUniqueCode))
+        return repository.getGQLData(GqlTradeInDetail.GQL_QUERY, TradeInDetailModel::class.java, createRequestParams(laku6DeviceModel, productPrice, userAddressData, tradeInUniqueCode, shopID))
     }
 
     private fun createRequestParams(
         laku6DeviceModel: Laku6DeviceModel,
         productPrice: Double,
         userAddressData: LocalCacheModel,
-        tradeInUniqueCode : String
+        tradeInUniqueCode : String,
+        shopID : String
     ): Map<String, Any> {
         return mapOf<String,Any>(PARAM_INPUT to
                 GetTradeInDetailInput(
                     sessionId = laku6DeviceModel.sessionId,
                     appDeviceId = userSession.deviceId,
                     traceId = laku6DeviceModel.traceId,
+                    shopID = shopID,
                     uniqueCode = tradeInUniqueCode,
                     deviceSignature = laku6DeviceModel.deviceSignature,
                     modelInfo = laku6DeviceModel.modelInfoBase64,

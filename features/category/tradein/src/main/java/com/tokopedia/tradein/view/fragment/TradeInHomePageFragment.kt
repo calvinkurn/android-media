@@ -182,7 +182,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             setUpLaku6Data(it)
             tradeInHomePageVM.data?.apply {
                 userAddressData?.let { address ->
-                    viewModel.getTradeInDetail(it, productPrice, address, tradeInHomePageVM.tradeInUniqueCode)
+                    viewModel.getTradeInDetail(it, productPrice, address, tradeInHomePageVM.tradeInUniqueCode, tradeInHomePageVM.data?.shopID ?: "")
                 }
             }
         })

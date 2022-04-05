@@ -14,6 +14,8 @@ data class GetTradeInDetailInput(
     var originalPrice: Double,
     @SerializedName("SessionId")
     var sessionId: String,
+    @SerializedName("ShopID")
+    var shopID: String,
     @SerializedName("TraceId")
     var traceId: String,
     @SerializedName("UniqueCode")
