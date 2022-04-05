@@ -158,7 +158,7 @@ class OtherMenuAdapter(
     }
 
     private fun getCentralizedPromoTag(): String {
-        val shouldShow = listener.getIsMVCProductEnabled() && !areDatesExpired()
+        val shouldShow = !areDatesExpired()
         return if (shouldShow) {
             context?.getString(R.string.setting_new_tag).orEmpty()
         } else {
@@ -189,7 +189,6 @@ class OtherMenuAdapter(
     interface Listener {
         fun goToPrintingPage()
         fun goToSettings()
-        fun getIsMVCProductEnabled(): Boolean
     }
 
 }
