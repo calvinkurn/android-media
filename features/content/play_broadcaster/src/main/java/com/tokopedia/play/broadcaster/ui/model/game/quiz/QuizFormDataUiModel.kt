@@ -29,11 +29,9 @@ data class QuizFormDataUiModel(
     }
 
     private fun isOptionsValid(): Boolean {
-        return true
-        /** TODO: gonna uncomment this */
-//        val isMandatoryFilled = options.none { it.isMandatory && it.text.isEmpty() }
-//        val isSelected = options.find { it.isSelected && it.text.isNotEmpty() } != null
-//
-//        return isMandatoryFilled && isSelected
+        val isMandatoryFilled = options.none { it.isMandatory && it.text.isEmpty() }
+        val isSelected = options.any { it.isSelected && it.text.isNotEmpty() }
+
+        return isMandatoryFilled && isSelected
     }
 }

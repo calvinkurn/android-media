@@ -986,7 +986,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         /** Auto Add */
         val quizConfig = _gameConfig.value.quizConfig
-        val isAllOptionFilled = newOptions.firstOrNull { it.text.isEmpty() } == null
+        val isAllOptionFilled = newOptions.none { it.text.isEmpty() }
         val currentOption = newOptions.size
         val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
 
@@ -1006,7 +1006,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
 
-        if(currSelectedOrder == order) return
+        if(currSelectedOrder == order || currSelectedOrder == -1) return
 
         _quizFormData.setValue {
             copy(options = options.map { it.copy(isSelected = it.order == order) })

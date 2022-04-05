@@ -242,7 +242,7 @@ class QuizFormView : ConstraintLayout {
         val options = mQuizFormData.options
 
         val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
-        if(currSelectedOrder == order) return
+        if(currSelectedOrder == order || currSelectedOrder == -1) return
 
         setFormData(mQuizFormData.copy(
             options = options.map { it.copy(isSelected = it.order == order) }
@@ -264,7 +264,7 @@ class QuizFormView : ConstraintLayout {
         }.toMutableList()
 
         /** Auto Add */
-        val isAllOptionFilled = newOptions.firstOrNull { it.text.isEmpty() } == null
+        val isAllOptionFilled = newOptions.none { it.text.isEmpty() }
         val currentOption = newOptions.size
         val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
 
