@@ -143,12 +143,15 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
             if (!validateEmailUiModel.isSuccess && validateEmailUiModel.message.isNotEmpty()) {
                 setMessage(validateEmailUiModel.message)
                 setError(true)
+                setAccessAcceptedBtnDisabled()
             } else if (!validateEmailUiModel.isSuccess && validateEmailUiModel.existsUser) {
                 setMessage(getString(R.string.error_message_email_has_been_registered))
                 setError(true)
+                setAccessAcceptedBtnDisabled()
             } else {
                 setMessage("")
                 setError(false)
+                setAccessAcceptedBtnActive()
             }
         }
     }
@@ -490,6 +493,20 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         binding?.globalErrorConfirmationInvitation?.setActionClickListener {
             loadAdminInfo()
             hideGlobalError()
+        }
+    }
+
+    private fun setAccessAcceptedBtnDisabled() {
+        confirmationBinding?.btnAccessAccept?.run {
+            isEnabled = false
+            isClickable = false
+        }
+    }
+
+    private fun setAccessAcceptedBtnActive() {
+        confirmationBinding?.btnAccessAccept?.run {
+            isEnabled = true
+            isClickable = true
         }
     }
 
