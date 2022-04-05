@@ -83,6 +83,16 @@
             app:typographyWeight="bold"
             tools:visibility="visible" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/product_out_of_stock_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/product_detail"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:text="@string/vg_product_label_out_of_stock"
+            android:visibility="gone"
+            app:labelType="highlight_light_grey"/>
+
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>
