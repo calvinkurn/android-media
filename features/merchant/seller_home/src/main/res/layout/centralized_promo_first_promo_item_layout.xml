@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/firstVoucherItemIcon"
+        android:id="@+id/firstPromoItemIcon"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/centralized_promo_first_voucher_bottomsheet_item_icon_margin"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
     
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/firstVoucherItemTitle"
+        android:id="@+id/firstPromoItemTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/centralized_promo_first_voucher_bottomsheet_item_title_margin_start"
@@ -25,12 +25,12 @@
         android:gravity="start"
         android:textAlignment="textStart"
         app:typographyType="heading_5"
-        app:layout_constraintStart_toEndOf="@id/firstVoucherItemIcon"
+        app:layout_constraintStart_toEndOf="@id/firstPromoItemIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/firstVoucherItemDescription"
+        android:id="@+id/firstPromoItemDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
@@ -38,9 +38,9 @@
         android:textAlignment="textStart"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
-        app:layout_constraintStart_toStartOf="@id/firstVoucherItemTitle"
+        app:layout_constraintStart_toStartOf="@id/firstPromoItemTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/firstVoucherItemTitle"
+        app:layout_constraintTop_toBottomOf="@id/firstPromoItemTitle"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

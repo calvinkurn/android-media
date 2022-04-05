@@ -58,8 +58,8 @@ object PromoCreationStaticData {
                 "",
                 if (isVoucherCashbackEligible) {
                     if (isVoucherCashbackFirstTime) {
-                        Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
-                            .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_CASHBACK)
+                        Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
+                            .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, SellerHomeApplinkConst.TYPE_VOUCHER_CASHBACK)
                             .build().toString()
                     } else {
                         ApplinkConstInternalSellerapp.CREATE_VOUCHER
@@ -90,8 +90,8 @@ object PromoCreationStaticData {
         if (isProductCouponEnabled) {
             val productCouponApplink =
                 if (isProductCouponFirstTime) {
-                    Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER).buildUpon()
-                        .appendQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE, SellerHomeApplinkConst.TYPE_PRODUCT)
+                    Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME).buildUpon()
+                        .appendQueryParameter(SellerHomeApplinkConst.PROMO_TYPE, SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT)
                         .build().toString()
                 } else {
                     ApplinkConst.SellerApp.CREATE_VOUCHER_PRODUCT

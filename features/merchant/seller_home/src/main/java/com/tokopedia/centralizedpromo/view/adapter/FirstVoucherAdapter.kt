@@ -8,19 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.centralizedpromo.view.model.FirstVoucherUiModel
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstVoucherItemLayoutBinding
+import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstPromoItemLayoutBinding
 
 class FirstVoucherAdapter(private val itemList: List<FirstVoucherUiModel>) :
     RecyclerView.Adapter<FirstVoucherAdapter.FirstVoucherViewHolder>() {
 
     class FirstVoucherViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val binding by lazy { CentralizedPromoFirstVoucherItemLayoutBinding.bind(view) }
+        val binding by lazy { CentralizedPromoFirstPromoItemLayoutBinding.bind(view) }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FirstVoucherViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.centralized_promo_first_voucher_item_layout, parent, false)
+            .inflate(R.layout.centralized_promo_first_promo_item_layout, parent, false)
         return FirstVoucherViewHolder(view)
     }
 
@@ -30,10 +30,10 @@ class FirstVoucherAdapter(private val itemList: List<FirstVoucherUiModel>) :
         itemList[position].let { item ->
             holder.binding.run {
                 ContextCompat.getDrawable(root.context, item.iconDrawableRes)?.let {
-                    firstVoucherItemIcon.setImageDrawable(it)
+                    firstPromoItemIcon.setImageDrawable(it)
                 }
-                firstVoucherItemTitle.text = root.context.getString(item.titleRes).toBlankOrString()
-                firstVoucherItemDescription.text =
+                firstPromoItemTitle.text = root.context.getString(item.titleRes).toBlankOrString()
+                firstPromoItemDescription.text =
                     root.context.getString(item.descriptionRes).toBlankOrString()
             }
         }

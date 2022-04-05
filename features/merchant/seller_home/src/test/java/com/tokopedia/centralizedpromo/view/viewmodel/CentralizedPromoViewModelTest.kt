@@ -11,7 +11,7 @@ import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataU
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.SellerHomeGetWhiteListedUserUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
-import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
+import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -342,7 +342,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
-            sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
+            sharedPref.getBoolean(FirstPromoDataSource.IS_MVC_FIRST_TIME, true)
         } returns true
 
         // When
@@ -375,7 +375,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
-            sharedPref.getBoolean(FirstVoucherDataSource.IS_MVC_FIRST_TIME, true)
+            sharedPref.getBoolean(FirstPromoDataSource.IS_MVC_FIRST_TIME, true)
         } returns false
 
         // When
@@ -408,7 +408,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
-            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns true
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
@@ -444,7 +444,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
-            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
@@ -480,7 +480,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
-            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
@@ -515,7 +515,7 @@ class CentralizedPromoViewModelTest {
             sellerHomeGetWhiteListedUserUseCase.executeQuery()
         } returns true
         coEvery {
-            sharedPref.getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            sharedPref.getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
         } returns false
         coEvery {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)

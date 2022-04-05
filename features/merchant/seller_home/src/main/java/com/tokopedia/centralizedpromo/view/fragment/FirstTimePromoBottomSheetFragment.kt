@@ -14,27 +14,27 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
-import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
+import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstVoucherBottomsheetLayoutBinding
+import com.tokopedia.sellerhome.databinding.CentralizedPromoFirstPromoBottomsheetLayoutBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
+class FirstTimePromoBottomSheetFragment : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun createInstance(voucherType: String,
-                           productId: String?) = FirstVoucherBottomSheetFragment().apply {
+        fun createInstance(promoType: String,
+                           productId: String?) = FirstTimePromoBottomSheetFragment().apply {
             val bundle = Bundle().apply {
-                putString(SellerHomeApplinkConst.VOUCHER_TYPE, voucherType)
+                putString(SellerHomeApplinkConst.PROMO_TYPE, promoType)
                 if (productId != null) {
                     putString(SellerHomeApplinkConst.PRODUCT_ID, productId)
                 }
@@ -47,9 +47,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     private val impressHolder: ImpressHolder = ImpressHolder()
-    private var binding by autoClearedNullable<CentralizedPromoFirstVoucherBottomsheetLayoutBinding>()
+    private var binding by autoClearedNullable<CentralizedPromoFirstPromoBottomsheetLayoutBinding>()
 
-    private var voucherType = ""
+    private var promoType = ""
     private var productId: String? = null
 
     @Inject
@@ -76,7 +76,7 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = CentralizedPromoFirstVoucherBottomsheetLayoutBinding.inflate(inflater)
+        binding = CentralizedPromoFirstPromoBottomsheetLayoutBinding.inflate(inflater)
         binding?.let {
             setChild(it.root)
         }
@@ -85,7 +85,7 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         view.addOnImpressionListener(impressHolder) {
-            if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+            if (promoType == SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT) {
                 CentralizedPromoTracking.sendFirstVoucherProductBottomSheetImpression(userSession.shopId)
             } else {
                 CentralizedPromoTracking.sendFirstVoucherBottomSheetImpression(userSession.userId)
@@ -109,7 +109,7 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     private fun initValues() {
-        voucherType = arguments?.getString(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+        promoType = arguments?.getString(SellerHomeApplinkConst.PROMO_TYPE).orEmpty()
         productId = arguments?.getString(SellerHomeApplinkConst.PRODUCT_ID)
     }
 
@@ -129,44 +129,44 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
     }
 
     private fun setupBottomSheetText() {
-        when (voucherType) {
-            SellerHomeApplinkConst.TYPE_PRODUCT -> {
-                binding?.firstVoucherBottomSheetTitle?.text =
+        when (promoType) {
+            SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT -> {
+                binding?.firstPromoBottomSheetTitle?.text =
                     context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_title)
-                binding?.firstVoucherButton?.text =
+                binding?.firstPromoButton?.text =
                     context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_next)
             }
             else -> {
-                binding?.firstVoucherBottomSheetTitle?.text =
+                binding?.firstPromoBottomSheetTitle?.text =
                     context?.getString(R.string.centralized_promo_bottomsheet_title)
-                binding?.firstVoucherButton?.text =
+                binding?.firstPromoButton?.text =
                     context?.getString(R.string.centralized_promo_bottomsheet_next)
             }
         }
     }
 
     private fun setupRecyclerView() {
-        binding?.firstVoucherRecyclerView?.run {
+        binding?.firstPromoRecyclerView?.run {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
             val itemList =
-                when (voucherType) {
-                    SellerHomeApplinkConst.TYPE_PRODUCT -> FirstVoucherDataSource.getFirstProductCouponInfoItems()
-                    else -> FirstVoucherDataSource.getFirstVoucherCashbackInfoItems()
+                when (promoType) {
+                    SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT -> FirstPromoDataSource.getFirstProductCouponInfoItems()
+                    else -> FirstPromoDataSource.getFirstVoucherCashbackInfoItems()
                 }
             adapter = FirstVoucherAdapter(itemList)
         }
     }
 
     private fun setupTicker() {
-        val isProductCoupon = voucherType == SellerHomeApplinkConst.TYPE_PRODUCT
-        binding?.firstVoucherTicker?.showWithCondition(!isProductCoupon)
+        val isProductCoupon = promoType == SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT
+        binding?.firstPromoTicker?.showWithCondition(!isProductCoupon)
     }
 
     private fun setupButtonClick() {
-        binding?.firstVoucherButton?.setOnClickListener {
+        binding?.firstPromoButton?.setOnClickListener {
             val voucherApplink =
-                if (voucherType == SellerHomeApplinkConst.TYPE_PRODUCT) {
+                if (promoType == SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT) {
                     CentralizedPromoTracking.sendFirstVoucherProductBottomSheetClick(userSession.shopId)
                     setVoucherProductSharedPrefValue()
                     if (productId == null) {
@@ -188,9 +188,9 @@ class FirstVoucherBottomSheetFragment : BottomSheetUnify() {
 
     private fun setVoucherProductSharedPrefValue() {
         sharedPref.run {
-            val isFirstTime = getBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
+            val isFirstTime = getBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, true)
             if (isFirstTime) {
-                edit().putBoolean(FirstVoucherDataSource.IS_PRODUCT_COUPON_FIRST_TIME, false)
+                edit().putBoolean(FirstPromoDataSource.IS_PRODUCT_COUPON_FIRST_TIME, false)
                     .apply()
             }
         }

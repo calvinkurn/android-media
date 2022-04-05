@@ -3,7 +3,7 @@ package com.tokopedia.centralizedpromo.view
 import com.tokopedia.centralizedpromo.view.model.FirstVoucherUiModel
 import com.tokopedia.sellerhome.R
 
-object FirstVoucherDataSource {
+object FirstPromoDataSource {
 
     private val INCREASE_SELLS_TITLE = R.string.centralized_promo_bottomsheet_increase_sell
     private val INCREASE_SELLS_DESCRIPTION = R.string.centralized_promo_bottomsheet_increase_sell_desc
