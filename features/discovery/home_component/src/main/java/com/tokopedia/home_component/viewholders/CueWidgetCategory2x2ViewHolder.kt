@@ -3,6 +3,8 @@ package com.tokopedia.home_component.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
@@ -43,7 +45,7 @@ class CueWidgetCategory2x2ViewHolder (
         binding?.run {
             adapter = CueWidgetCategoryAdapter(channel)
             homeComponentCueCategory2x2Rv.adapter = adapter
-            val layoutManager = GridLayoutManager(itemView.context, SPAN_COUNT)
+            val layoutManager = StaggeredGridLayoutManager(SPAN_COUNT, LinearLayoutManager.VERTICAL)
             homeComponentCueCategory2x2Rv.layoutManager = layoutManager
             if (homeComponentCueCategory2x2Rv.itemDecorationCount == 0) {
                 homeComponentCueCategory2x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())
