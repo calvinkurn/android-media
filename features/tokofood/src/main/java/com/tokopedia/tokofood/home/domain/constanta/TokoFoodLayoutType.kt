@@ -2,7 +2,9 @@ package com.tokopedia.tokofood.home.domain.constanta
 
 import androidx.annotation.StringDef
 
-
+/**
+ * Layout type will be changed this is only listing
+ */
 @Retention(AnnotationRetention.SOURCE)
 @StringDef(
     TokoFoodLayoutType.TABS_TOKOFOOD,
