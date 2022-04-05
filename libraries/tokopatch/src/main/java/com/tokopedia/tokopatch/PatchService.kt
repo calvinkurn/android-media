@@ -145,9 +145,9 @@ class PatchService(val context: Context) {
     }
 
     private fun decodeData(result: DataResponse.Result, patchList: MutableList<Patch>) {
-        val file = File.createTempFile(result.versionName, ".zip", context.cacheDir)
-        val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
         try {
+            val file = File.createTempFile(result.versionName, ".zip", context.cacheDir)
+            val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
             val decodedBytes = Decoder.decrypt(result.signature, result.data)
             decodedBytes?.let {
                 bufferedOutputStream.write(decodedBytes)
@@ -160,14 +160,13 @@ class PatchService(val context: Context) {
                 p.debug = !isProd
                 patchList.add(p)
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
             try {
                 bufferedOutputStream.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
