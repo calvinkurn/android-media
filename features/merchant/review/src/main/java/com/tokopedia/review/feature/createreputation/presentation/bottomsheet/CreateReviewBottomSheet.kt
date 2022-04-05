@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -40,6 +39,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.Create
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewIncentiveBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewBadRatingCategoryViewHolder
@@ -638,6 +638,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
 
     private inner class UiStateHandler {
 
+        private var createReviewBottomSheetUiStateCollectorJob: Job? = null
         private var productCardUiStateCollectorJob: Job? = null
         private var ratingUiStateCollectorJob: Job? = null
         private var tickerUiStateCollectorJob: Job? = null
@@ -670,6 +671,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         }
 
         fun collectUiStates() {
+            collectCreateReviewBottomSheet()
             collectProductCardUiState()
             collectRatingUiState()
             collectTickerUiState()
@@ -688,6 +690,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         }
 
         fun cancelUiStateCollectors() {
+            createReviewBottomSheetUiStateCollectorJob?.cancel()
             productCardUiStateCollectorJob?.cancel()
             ratingUiStateCollectorJob?.cancel()
             tickerUiStateCollectorJob?.cancel()
@@ -703,6 +706,24 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             textAreaBottomSheetUiStateCollectorJob?.cancel()
             postSubmitBottomSheetUiStateCollectorJob?.cancel()
             toasterQueueCollectorJob?.cancel()
+        }
+
+        private fun collectCreateReviewBottomSheet() {
+            createReviewBottomSheetUiStateCollectorJob = createReviewBottomSheetUiStateCollectorJob?.takeIf {
+                !it.isCompleted
+            } ?: launch {
+                viewModel.createReviewBottomSheetUiState.collectLatest {
+                    if (it is CreateReviewBottomSheetUiState.ShouldDismiss) {
+                        context?.let { context ->
+                            finishIfRoot(
+                                it.success,
+                                it.message.getStringValue(context),
+                                it.feedbackId
+                            )
+                        }
+                    }
+                }
+            }
         }
 
         private fun collectProductCardUiState() {

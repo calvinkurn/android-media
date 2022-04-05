@@ -40,6 +40,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.visita
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoryUiState
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewIncentiveBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewMediaPickerUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProductCardUiState
@@ -291,6 +292,37 @@ class CreateReviewViewModel @Inject constructor(
         isAnyBadRatingCategorySelected, badRatingCategoriesUiState, sendingReview, ::mapSubmitButtonUiState
     ).toStateFlow(CreateReviewSubmitButtonUiState.Loading)
     // endregion submit button state
+
+    // region create review bottom sheet state
+    val createReviewBottomSheetUiState = reviewForm.mapLatest(::mapCreateReviewBottomSheetUiState)
+        .toStateFlow(CreateReviewBottomSheetUiState.Showing)
+    // endregion create review bottom sheet state
+
+    private fun mapCreateReviewBottomSheetUiState(
+        reviewForm: ReviewFormRequestState
+    ): CreateReviewBottomSheetUiState {
+        return if (reviewForm is RequestState.Error) {
+            CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_toaster_page_error),
+                feedbackId = ""
+            )
+        } else if (reviewForm is RequestState.Success && !reviewForm.result.productrevGetForm.validToReview) {
+            CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_pending_invalid_to_review),
+                feedbackId = ""
+            )
+        } else if (reviewForm is RequestState.Success && reviewForm.result.productrevGetForm.productData.productStatus == 0) {
+            CreateReviewBottomSheetUiState.ShouldDismiss(
+                success = false,
+                message = StringRes(R.string.review_pending_deleted_product_error_toaster),
+                feedbackId = ""
+            )
+        } else {
+            createReviewBottomSheetUiState.value
+        }
+    }
 
     // region incentive bottom sheet state
     val incentiveBottomSheetUiState = combine(
@@ -1281,6 +1313,7 @@ class CreateReviewViewModel @Inject constructor(
         } catch (t: Throwable) {
             sendingReview.value = false
             submitReviewResult.value = RequestState.Error(t)
+            enqueueErrorSubmitReviewToaster()
         }
     }
 
@@ -1302,6 +1335,17 @@ class CreateReviewViewModel @Inject constructor(
                 actionText = StringRes(Int.ZERO),
                 duration = Toaster.LENGTH_SHORT,
                 type = Toaster.TYPE_NORMAL
+            )
+        )
+    }
+
+    private fun enqueueErrorSubmitReviewToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_create_fail_toaster),
+                actionText = StringRes(R.string.review_oke),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
             )
         )
     }
