@@ -81,7 +81,6 @@ class ProductTabFragment : BaseDaggerFragment() {
     private var itemList: MutableList<String> = mutableListOf()
     private lateinit var loader: LoaderUnify
     private var placementType: Int = 0
-    private var isWhiteListedUser: Boolean = false
 
     companion object {
         fun createInstance(bundle: Bundle): ProductTabFragment {
@@ -164,13 +163,11 @@ class ProductTabFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.placementType = arguments?.getInt("placementType", 0)!!
-        this.isWhiteListedUser = arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER)?:false
         fetchData()
         setPlacementTicker()
         btnFilter.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
             groupFilterSheet.onSubmitClick = {
                 changePlacementFilter?.getSelectedFilter(groupFilterSheet.getSelectedAdPlacementType())
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
@@ -216,7 +213,6 @@ class ProductTabFragment : BaseDaggerFragment() {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
             putExtra(TopAdsDashboardConstant.GROUP_STRATEGY, arguments?.getString(TopAdsDashboardConstant.GROUP_STRATEGY))
-            putExtra(ParamObject.ISWHITELISTEDUSER, isWhiteListedUser)
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_TAMBAH_PRODUK, "")
@@ -336,10 +332,7 @@ class ProductTabFragment : BaseDaggerFragment() {
     }
 
     private fun setPlacementTicker() {
-        placement_tiker.visibility = when(isWhiteListedUser) {
-            true -> View.VISIBLE
-            false -> View.GONE
-        }
+        placement_tiker.visibility = View.VISIBLE
         when(groupFilterSheet.getSelectedAdPlacementType()) {
             0 -> {
                 placement_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)

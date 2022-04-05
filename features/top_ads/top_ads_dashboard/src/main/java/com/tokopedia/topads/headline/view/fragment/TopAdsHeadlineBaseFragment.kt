@@ -148,7 +148,6 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loadStatisticsData()
         btnFilter.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         close_butt.setOnClickListener {

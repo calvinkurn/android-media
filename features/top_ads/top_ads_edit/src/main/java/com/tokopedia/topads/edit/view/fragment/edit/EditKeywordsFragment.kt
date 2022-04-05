@@ -189,15 +189,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         minSuggestedBidPencerian = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_pencerian)
         minSuggestedBidRekomendasi = view.findViewById(com.tokopedia.topads.common.R.id.min_suggested_bid_rekomendasi)
 
-        if(sharedViewModel?.getIsWhiteListedUser()) {
-            biayaRekomendasi.visibility = View.VISIBLE
-            budgetInputRekomendasi.visibility = View.VISIBLE
-            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
-        } else {
-            biayaRekomendasi.visibility = View.GONE
-            budgetInputRekomendasi.visibility = View.GONE
-            biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_create_bs_title2)
-        }
+        biayaRekomendasi.visibility = View.VISIBLE
+        budgetInputRekomendasi.visibility = View.VISIBLE
+        biayaPencerian.text = getString(com.tokopedia.topads.common.R.string.topads_group_detail_budget_pancarian)
 
         setAdapter()
         return view
@@ -651,12 +645,12 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         info2.setImageDrawable(getIconUnifyDrawable(view.context, IconUnify.INFORMATION))
         info1.setOnClickListener {
             InfoBottomSheet(
-                InfoBottomSheet.TYPE_DASAR, sharedViewModel.getIsWhiteListedUser()
+                InfoBottomSheet.TYPE_DASAR
             ).show(childFragmentManager)
         }
         info2.setOnClickListener {
             InfoBottomSheet(
-                InfoBottomSheet.TYPE_KATA_KUNCI, sharedViewModel.getIsWhiteListedUser()
+                InfoBottomSheet.TYPE_KATA_KUNCI
             ).show(childFragmentManager)
         }
         addKeyword.setOnClickListener {
@@ -845,15 +839,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         }
         bidTypeData?.clear()
         bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_SEARCH, getCurrentBid().toFloat()))
-        if(sharedViewModel.getIsWhiteListedUser()) {
-            bidTypeData?.add(
-                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
-            )
-        } else {
-            bidTypeData?.add(
-                TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentBid().toFloat())
-            )
-        }
+        bidTypeData?.add(
+            TopAdsBidSettingsModel(PRODUCT_BROWSE, getCurrentRekommendedBid().toFloat())
+        )
         bundle.putParcelableArrayList(BID_TYPE, bidTypeData)
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
         bundle.putParcelableArrayList(POSITIVE_DELETE, deletedKeywords)

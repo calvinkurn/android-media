@@ -17,12 +17,11 @@ import com.tokopedia.unifyprinciples.Typography
 
 class BidSwitchManualBudgetBottomSheet(
     private val maxBid: String, private val minBid: String, private val suggestedBid: String,
-    private val isWhiteListUser: Boolean, private val onSaveClicked: (String, String) -> Unit,
-    private val trackerListener: TrackerListener? = null,
+    private val onSaveClicked: (String, String) -> Unit, private val trackerListener: TrackerListener? = null,
 ) : BottomSheetUnify() {
 
     private val infoBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        InfoBottomSheet(InfoBottomSheet.TYPE_DASAR, true)
+        InfoBottomSheet(InfoBottomSheet.TYPE_DASAR)
     }
     private var txtRecommendasiTitle: Typography? = null
     private var tfPencarian: TextFieldUnify? = null
@@ -36,10 +35,6 @@ class BidSwitchManualBudgetBottomSheet(
 
         isDismissedAfterSave = false
 
-        if (!isWhiteListUser) {
-            tfRecommendasi?.invisible()
-            txtRecommendasiTitle?.invisible()
-        }
         tfRecommendasi?.textFieldInput?.setText(suggestedBid)
         tfPencarian?.textFieldInput?.setText(suggestedBid)
 

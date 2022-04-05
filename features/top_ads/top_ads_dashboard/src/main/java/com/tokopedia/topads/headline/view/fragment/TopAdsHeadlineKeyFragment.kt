@@ -136,9 +136,8 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         Utils.setSearchListener(context, view, ::fetchData)
         btnFilter?.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = {
-                var eventLabel = "{${userSession.shopId}}" + "-" + "{${groupFilterSheet?.getSelectedText(context)}}" + "-" + "{${groupFilterSheet?.getSelectedSortId()}}"
+                val eventLabel = "{${userSession.shopId}}" + "-" + "{${groupFilterSheet?.getSelectedText(context)}}" + "-" + "{${groupFilterSheet?.getSelectedSortId()}}"
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_TERAPKAN, eventLabel, userSession.userId)
                 fetchData()
             }

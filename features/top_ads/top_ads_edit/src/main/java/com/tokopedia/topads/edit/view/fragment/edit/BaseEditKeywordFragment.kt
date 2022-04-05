@@ -108,9 +108,6 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
         renderViewPager()
         chipKeyword?.chipType = ChipsUnify.TYPE_SELECTED
 
-        sharedViewModel.setIsWhiteListedUser(
-            arguments?.getBoolean(ParamObject.ISWHITELISTEDUSER) ?: false
-        )
         arguments?.getString(GROUP_STRATEGY, "")?.let { handleInitialAutoBidState(it) }
     }
 

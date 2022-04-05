@@ -26,7 +26,6 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -80,7 +79,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
     private var currentDateText: String = ""
-    private var isWhiteListedUser: Boolean = false
     private var isAutoBidToggleEnabled: Boolean = false
 
     override fun getLayoutId(): Int {
@@ -170,7 +168,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         loadData()
         btnFilter.setOnClickListener {
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(false)
             groupFilterSheet.onSubmitClick = { fetchData() }
         }
         swipe_refresh_layout.setOnRefreshListener {
@@ -221,7 +218,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
         response.data.forEach {
             when(it.featureId) {
-                TopAdsFeature.WHITE_LISTED_USER_ID -> isWhiteListedUser = true
                 TopAdsFeature.AUTO_BID_TOGGLE_ID -> isAutoBidToggleEnabled = true
             }
         }
@@ -243,7 +239,6 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun prepareBundle() : Bundle {
         val bundle = Bundle()
-        bundle.putBoolean(ISWHITELISTEDUSER, isWhiteListedUser)
         bundle.putBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED, isAutoBidToggleEnabled)
         return bundle
     }

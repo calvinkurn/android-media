@@ -16,7 +16,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
-import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
 import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
@@ -70,7 +69,6 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
     private var totalPage = 0
     private var currentPageNum = 1
     private var adIds: MutableList<String> = mutableListOf()
-    private var isWhiteListedUser: Boolean = false
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -184,12 +182,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        isWhiteListedUser = arguments?.getBoolean(ISWHITELISTEDUSER)?:false
         fetchData()
         btnFilter.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_FILTER, "")
             groupFilterSheet.show(childFragmentManager, "")
-            groupFilterSheet.showAdplacementFilter(isWhiteListedUser)
             groupFilterSheet.onSubmitClick = {
                 fetchData()
             }
@@ -375,11 +371,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
                 startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(), ::onSuccessResult, ::onEmptyResult)
 
-
-        non_group_tiker.visibility = when(isWhiteListedUser) {
-            true -> View.VISIBLE
-            false -> View.GONE
-        }
+        non_group_tiker.visibility = View.VISIBLE
         when(groupFilterSheet.getSelectedAdPlacementType()) {
             0 -> {
                 non_group_tiker.tickerTitle = getString(com.tokopedia.topads.common.R.string.ad_placement_ticket_title_semua)
