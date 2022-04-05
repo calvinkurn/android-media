@@ -44,6 +44,7 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
+import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -948,22 +949,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleClickBackOnQuiz() {
         _quizFormState.setValue { prev() }
+
+        setOptionEditable()
     }
 
     private fun handleClickNextOnQuiz() {
         if(_quizFormState.value.next() is QuizFormStateUiModel.SetDuration) {
             updateQuizEligibleDuration()
         }
-
-//        val isOptionEditable = _quizFormState.value.next() is QuizFormStateUiModel.SetDuration
-//        val options = _quizFormData.value.options
-//        _quizFormData.setValue {
-//            copy(
-//                options = options.map { it.copy(isEditable = isOptionEditable) }
-//            )
-//        }
-
         _quizFormState.setValue { next() }
+
+        setOptionEditable()
     }
 
     private fun handleInputQuizTitle(title: String) {
@@ -1068,6 +1064,19 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
+    private fun setOptionEditable() {
+        val isStateEditable = isQuizStateEditable()
+        val options = _quizFormData.value.options
+        _quizFormData.setValue {
+            copy(
+                options = options.map { it.copy(isEditable = isStateEditable) }
+            )
+        }
+    }
+
+    private fun isQuizStateEditable(): Boolean {
+        return _quizFormState.value !is QuizFormStateUiModel.SetDuration
+    }
     private fun updateQuizEligibleDuration() {
         val remainingDuration = livePusherMediator.remainingDurationInMillis
         val quizConfig = _gameConfig.value.quizConfig
