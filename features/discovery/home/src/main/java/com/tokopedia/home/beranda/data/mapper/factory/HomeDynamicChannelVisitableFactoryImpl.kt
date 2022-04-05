@@ -691,13 +691,16 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
         val gridSize = channel.grids.size
-        if (gridSize == 4 || gridSize == 5) {
+        val cueWidget2x2MinSize = 4
+        val cueWidget2x2MaxSize = 5
+        val cueWidget3x2Size = 6
+        if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
             visitableList.add(
                 mappingCueCategory2x2Component(
                     channel, isCache, verticalPosition
                 )
             )
-        } else if (gridSize >= 6) {
+        } else if (gridSize >= cueWidget3x2Size) {
             visitableList.add(
                 mappingCueCategory3x2Component(
                     channel, isCache, verticalPosition

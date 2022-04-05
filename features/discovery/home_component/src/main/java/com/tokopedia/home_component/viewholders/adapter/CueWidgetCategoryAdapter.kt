@@ -13,7 +13,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.LayoutCueCategoryBinding
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.*
+import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
