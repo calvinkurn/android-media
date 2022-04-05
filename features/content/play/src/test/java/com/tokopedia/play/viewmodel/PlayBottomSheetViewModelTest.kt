@@ -119,31 +119,4 @@ class PlayBottomSheetViewModelTest {
         Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
             .isEqualToComparingFieldByFieldRecursively(expectedResult)
     }
-
-    @Test
-    fun `when logged in, should be allowed to do user report action`() {
-        val eventUserReport = InteractionEvent.OpenUserReport
-        coEvery { userSession.isLoggedIn } returns true
-
-        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventUserReport))
-
-        playBottomSheetViewModel.doInteractionEvent(eventUserReport)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when not logged in, should not be allowed to do user report action`() {
-        val eventUserReport = InteractionEvent.OpenUserReport
-
-        coEvery { userSession.isLoggedIn } returns false
-
-        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventUserReport))
-
-        playBottomSheetViewModel.doInteractionEvent(eventUserReport)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
 }
