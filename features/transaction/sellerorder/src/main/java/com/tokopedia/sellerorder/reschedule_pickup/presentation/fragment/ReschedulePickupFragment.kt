@@ -67,6 +67,8 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
     private var toaster: Snackbar? = null
     private var loadingDialog: ReschedulePickupLoadingDialog? = null
     private var orderId: String = ""
+    private var day: RescheduleDayOptionModel? = null
+    private var time: RescheduleTimeOptionModel? = null
 
     override fun getScreenName(): String = ""
 
@@ -219,7 +221,16 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         val reason = if (chosenReason == OTHER_REASON_RESCHEDULE) {
             otherReason
         } else chosenReason
-        viewModel.saveReschedule(orderId, reason)
+        val dayChosen = day?.day
+        val timeChosen = time?.time
+        if (dayChosen != null && timeChosen != null) {
+            viewModel.saveReschedule(
+                orderId,
+                dayChosen,
+                timeChosen,
+                reason
+            )
+        }
     }
 
     private fun openDaySelectionBottomSheet(daysOption: List<RescheduleDayOptionModel>) {
@@ -348,7 +359,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         } else chosenReason.isNotEmpty()
 
         binding?.btnReschedulePickup?.isEnabled =
-            (viewModel.day != null) && (viewModel.time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
+            (day != null) && (time != null) && (chosenReason.isNotEmpty()) && (isReasonValid)
     }
 
     private fun showErrorToaster(
@@ -371,13 +382,13 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
 
     override fun onDayChosen(dayChosen: RescheduleDayOptionModel) {
         binding?.run {
-            viewModel.day = dayChosen
+            day = dayChosen
             etDay.editText.setText(dayChosen.formattedDay)
             etTime.editText.isEnabled = true
             if (etTime.editText.text.toString().isNotEmpty()) {
                 etTime.editText.setText("")
                 layoutRescheduleDetail.visibility = View.GONE
-                viewModel.time = null
+                time = null
             }
             etTime.editText.run {
                 inputType = InputType.TYPE_NULL
@@ -413,7 +424,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
 
     override fun onTimeChosen(timeChosen: RescheduleTimeOptionModel) {
         binding?.let {
-            viewModel.time = timeChosen
+            time = timeChosen
             it.etTime.editText.setText(timeChosen.formattedTime)
             setRescheduleDetailSummary(timeChosen.etaPickup)
             validateInput()
@@ -424,6 +435,9 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
         private const val OTHER_REASON_MIN_CHAR = 15
         private const val OTHER_REASON_MAX_CHAR = 160
+
+        // todo confirm this status code to BE
+        private const val STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER = "999"
         fun newInstance(bundle: Bundle): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {

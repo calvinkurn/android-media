@@ -6,9 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.reschedule_pickup.data.mapper.ReschedulePickupMapper
-import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDayOptionModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDetailModel
-import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleTimeOptionModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.SaveRescheduleModel
 import com.tokopedia.sellerorder.reschedule_pickup.domain.GetReschedulePickupUseCase
 import com.tokopedia.sellerorder.reschedule_pickup.domain.SaveReschedulePickupUseCase
@@ -30,8 +28,6 @@ class ReschedulePickupViewModel @Inject constructor(
         MutableLiveData<Result<SaveRescheduleModel>>()
     val saveRescheduleDetail: LiveData<Result<SaveRescheduleModel>>
         get() = _saveRescheduleDetail
-    var day: RescheduleDayOptionModel? = null
-    var time: RescheduleTimeOptionModel? = null
 
     fun getReschedulePickupDetail(orderId: String) {
         launchCatchError(
@@ -54,24 +50,20 @@ class ReschedulePickupViewModel @Inject constructor(
         )
     }
 
-    fun saveReschedule(orderId: String, reason: String) {
+    fun saveReschedule(orderId: String, date: String, time: String, reason: String) {
         launchCatchError(
             block = {
-                val dayParam = day?.day
-                val timeParam = time?.time
-                if (!dayParam.isNullOrEmpty() && !timeParam.isNullOrEmpty()) {
-                    _saveRescheduleDetail.postValue(
-                        Success(
-                            ReschedulePickupMapper.mapToSaveRescheduleModel(
-                                saveReschedulePickupUseCase.execute(
-                                    ReschedulePickupMapper.mapToSaveReschedulePickupParam(
-                                        orderId, dayParam, timeParam, reason
-                                    )
+                _saveRescheduleDetail.postValue(
+                    Success(
+                        ReschedulePickupMapper.mapToSaveRescheduleModel(
+                            saveReschedulePickupUseCase.execute(
+                                ReschedulePickupMapper.mapToSaveReschedulePickupParam(
+                                    orderId, date, time, reason
                                 )
                             )
                         )
                     )
-                }
+                )
             },
             onError = {
                 _saveRescheduleDetail.postValue(Fail(it))
