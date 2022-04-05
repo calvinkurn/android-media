@@ -21,7 +21,7 @@ object PlayLiveRoomMetricsCommon {
                 val networkCapabilities = connectivityManager.activeNetwork
                 val actNw = connectivityManager.getNetworkCapabilities(networkCapabilities)
                 val avgSpeed = (actNw?.linkDownstreamBandwidthKbps?.plus(actNw.linkUpstreamBandwidthKbps))?.div(2) ?: 0
-                avgSpeed
+                avgSpeed / 1000
             }else{
                 0
             }

@@ -7,6 +7,7 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
+import java.util.concurrent.TimeUnit
 import kotlin.math.abs
 
 /**
@@ -90,7 +91,8 @@ class VideoAnalyticHelper(
             )
         }
 
-        log.logWatchingDuration(watchDurationModel.cumulationDuration.toString())
+        val watchingDurationInSecond = TimeUnit.MILLISECONDS.toSeconds(watchDurationModel.cumulationDuration)
+        log.logWatchingDuration(watchingDurationInSecond.toString())
     }
 
     /**

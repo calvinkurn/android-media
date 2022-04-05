@@ -476,7 +476,8 @@ class PlayViewModel @AssistedInject constructor(
         override fun onPlaying() {
             if (videoLatencyPerformanceMonitoring.hasStarted) {
                 videoLatencyPerformanceMonitoring.stop()
-                playLog.logTimeToFirstByte(videoLatencyPerformanceMonitoring.totalDuration.toString())
+                val durationInSecond = TimeUnit.MILLISECONDS.toSeconds(videoLatencyPerformanceMonitoring.totalDuration)
+                playLog.logTimeToFirstByte(durationInSecond.toString())
             }
         }
 
@@ -2140,7 +2141,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
      fun handleInetSpeed(speedInMBps: Int){
-        playLog.logDownloadSpeed(speedInMBps.toString())
+        playLog.logDownloadSpeed("$speedInMBps MBps")
     }
 
     private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
