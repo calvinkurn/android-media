@@ -67,11 +67,11 @@ class QuizFormView : ConstraintLayout {
 
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
         override fun onOptionChecked(order: Int) {
-            eventBus.emit(Event.SelectQuizOption(order))
+//            eventBus.emit(Event.SelectQuizOption(order))
         }
 
         override fun onTextChanged(order: Int, text: String) {
-            eventBus.emit(Event.OptionChanged(order, text))
+//            eventBus.emit(Event.OptionChanged(order, text))
         }
     })
 
@@ -97,6 +97,7 @@ class QuizFormView : ConstraintLayout {
         bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
+            eventBus.emit(Event.SaveQuizData(mQuizFormData))
             eventBus.emit(Event.Next)
         }
 
@@ -106,20 +107,14 @@ class QuizFormView : ConstraintLayout {
 
         binding.viewGameHeader.setOnTextChangedListener {
             setFormData(mQuizFormData.copy(title = it))
-
-//            eventBus.emit(Event.TitleChanged(it))
         }
 
         binding.viewQuizGift.setOnTextChangeListener {
             setFormData(mQuizFormData.copy(gift = it))
-
-//            eventBus.emit(Event.GiftChanged(it))
         }
 
         binding.viewQuizGift.setOnRemoveGiftListener {
             setFormData(mQuizFormData.copy(gift = ""))
-
-//            eventBus.emit(Event.GiftChanged(""))
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
@@ -154,28 +149,30 @@ class QuizFormView : ConstraintLayout {
     }
 
     fun setFormData(quizFormData: QuizFormDataUiModel) {
-        mQuizFormData = quizFormData
+        if(mQuizFormData != quizFormData) {
+            mQuizFormData = quizFormData
 
-        /** Set Quiz Title */
-        binding.viewGameHeader.title = quizFormData.title
+            /** Set Quiz Title */
+            binding.viewGameHeader.title = quizFormData.title
 
-        /** TODO: set options */
-        adapter.setItemsAndAnimateChanges(quizFormData.options)
+            /** TODO: set options */
+            adapter.setItemsAndAnimateChanges(quizFormData.options)
 
-        /** Set Gift */
-        binding.viewQuizGift.gift = quizFormData.gift
+            /** Set Gift */
+            binding.viewQuizGift.gift = quizFormData.gift
 
-        /** Set Quiz Duration */
-        val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
-        if(timePickerBinding.puTimer.activeIndex != idx) {
-            timePickerBinding.puTimer.apply {
-                if(idx != -1) goToPosition(idx)
-                else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+            /** Set Quiz Duration */
+            val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
+            if(timePickerBinding.puTimer.activeIndex != idx) {
+                timePickerBinding.puTimer.apply {
+                    if(idx != -1) goToPosition(idx)
+                    else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+                }
             }
-        }
 
-        /** Validate Form */
-        binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
+            /** Validate Form */
+            binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
+        }
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
@@ -245,10 +242,11 @@ class QuizFormView : ConstraintLayout {
     sealed class Event {
         object Back: Event()
         object Next: Event()
-        data class TitleChanged(val title: String): Event()
-        data class OptionChanged(val order: Int, val text: String): Event()
-        data class SelectQuizOption(val order: Int): Event()
-        data class GiftChanged(val gift: String): Event()
+        data class TitleChanged(val title: String): Event() /** TODO: not used anymore */
+        data class OptionChanged(val order: Int, val text: String): Event() /** TODO: not used anymore */
+        data class SelectQuizOption(val order: Int): Event() /** TODO: not used anymore */
+        data class GiftChanged(val gift: String): Event() /** TODO: not used anymore */
+        data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event()
         data class SelectDuration(val duration: Long): Event()
         object Submit: Event()
     }

@@ -356,6 +356,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.InputQuizOption -> handleInputQuizOption(event.order, event.text)
             is PlayBroadcastAction.SelectQuizOption -> handleSelectQuizOption(event.order)
             is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
+            is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
         }
@@ -994,6 +995,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizFormData.setValue {
             copy(gift = text)
         }
+    }
+
+    private fun handleSaveQuizData(quizFormData: QuizFormDataUiModel) {
+        _quizFormData.setValue { quizFormData }
     }
 
     private fun handleSelectQuizDuration(duration: Long) {
