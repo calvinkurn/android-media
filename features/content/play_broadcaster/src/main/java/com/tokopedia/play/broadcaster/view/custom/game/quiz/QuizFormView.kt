@@ -277,7 +277,9 @@ class QuizFormView : ConstraintLayout {
             ))
         }
 
-        setFormData(mQuizFormData.copy(options = newOptions), isAutoSelectEligible || isNeedAddNewField)
+        /** Prevent updating adapter if only text is changed */
+        val needToUpdateAdapter = isAutoSelectEligible || isNeedAddNewField
+        setFormData(mQuizFormData.copy(options = newOptions), needToUpdateAdapter)
     }
 
     private fun setupInsets() {
