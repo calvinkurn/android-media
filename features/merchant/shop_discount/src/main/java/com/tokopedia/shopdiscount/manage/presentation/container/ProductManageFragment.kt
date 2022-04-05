@@ -78,7 +78,6 @@ class ProductManageFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupViews()
-        //displayBulkApplyBottomSheet()
         observeProductsMeta()
         viewModel.getSlashPriceProductsMeta()
     }
@@ -151,11 +150,13 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
+    private val onDiscountRemoved = { viewModel.getSlashPriceProductsMeta() }
+
     private fun displayTabs(tabs: List<PageTab>) {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
-            val fragment = ProductListFragment.newInstance(tab.discountStatusId)
+            val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
             pages.add(Pair(tab.name, fragment))
         }
 
@@ -169,15 +170,6 @@ class ProductManageFragment : BaseDaggerFragment() {
             }
         }
     }
-
-    private fun displayBulkApplyBottomSheet() {
-        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
-        bottomSheet.setOnApplyClickListener { discountSettings ->
-
-        }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
-    }
-
     private fun showSellerInfoBottomSheet() {
         val bottomSheet = ShopDiscountSellerInfoBottomSheet.newInstance()
         bottomSheet.show(childFragmentManager, bottomSheet.tag)

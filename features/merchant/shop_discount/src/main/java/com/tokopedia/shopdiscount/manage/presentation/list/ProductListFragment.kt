@@ -36,12 +36,15 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
-        fun newInstance(discountStatusId : Int) =
-            ProductListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
-                }
+        fun newInstance(discountStatusId : Int, onDiscountRemoved : () -> Unit = {}) : ProductListFragment {
+            val fragment = ProductListFragment()
+            fragment.arguments = Bundle().apply {
+                putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
             }
+            fragment.onDiscountRemoved = onDiscountRemoved
+            return fragment
+        }
+
     }
 
     private val discountStatusId by lazy { arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero() }
@@ -50,6 +53,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
+    private var onDiscountRemoved : () -> Unit = {}
 
     override fun getScreenName() : String = ProductListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
@@ -103,7 +107,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
                     val deleteSuccess = it.data
                     if (deleteSuccess) {
                         binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
-                        loadInitialData()
+                        onDiscountRemoved()
                     }
                 }
                 is Fail -> {
