@@ -13,18 +13,18 @@ object AdminConfirmationRegQuery : GqlQueryInterface {
     private const val USER_ID_KEY = "userId"
     private const val EMAIL_KEY = "email"
     private const val OTP_TOKEN_KEY = "otpToken"
-    private const val ACCEPT_BECOME_ADMIN_KEY = "accept_become_admin"
+    private const val ACCEPT_BECOME_ADMIN_KEY = "acceptBecomeAdmin"
     private const val SHOP_MANAGE_ID = "shopManageId"
 
     private val GQL_QUERY = """
-        mutation ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shopID: String!, ${'$'}userId: String!, ${'$'}email: String!, ${'$'}otpToken: String!, ${'$'}shopManageID: String!, ${'$'}accept_become_admin: Boolean!) {
+        mutation ${OPERATION_NAME}(${'$'}source: String!, ${'$'}shopID: String!, ${'$'}userId: String!, ${'$'}email: String!, ${'$'}otpToken: String!, ${'$'}shopManageID: String!, ${'$'}acceptBecomeAdmin: Boolean!) {
           adminConfirmationReg(input: {
             source: "adminConfirmationReg-android",
             shopID: ${'$'}shopID,
             userId: ${'$'}userId,
             email: ${'$'}email
             otpToken: ${'$'}otpToken,
-            accept_become_admin: ${'$'}accept_become_admin,
+            acceptBecomeAdmin: ${'$'}acceptBecomeAdmin,
             shopManageId: ${'$'}shopManageID
           }) {
               success

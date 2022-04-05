@@ -1,5 +1,6 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.domain.mapper
 
+import com.tokopedia.shopadmin.common.constants.AdminStatus
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.AdminConfirmationRegResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetAdminInfoResponse
 import com.tokopedia.shopadmin.feature.invitationconfirmation.domain.model.GetShopAdminInfoResponse
@@ -37,6 +38,6 @@ class AdminInvitationConfirmationMapper @Inject constructor() {
     fun mapToAdminTypeUiModel(adminInfoResponse: GetAdminInfoResponse): AdminTypeUiModel {
         val adminType = adminInfoResponse.getAdminType
 //        return AdminTypeUiModel(adminType.adminData.status, adminType.shopID)
-        return AdminTypeUiModel("2", adminType.shopID)
+        return AdminTypeUiModel(AdminStatus.WAITING_CONFIRMATION, adminType.shopID)
     }
 }

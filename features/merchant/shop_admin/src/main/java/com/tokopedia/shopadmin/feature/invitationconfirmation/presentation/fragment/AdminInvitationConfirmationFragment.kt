@@ -1,7 +1,6 @@
 package com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -10,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewStub
-import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
@@ -20,9 +18,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -46,13 +41,11 @@ import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.model
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.navigator.InvitationConfirmationNavigator
 import com.tokopedia.shopadmin.feature.invitationconfirmation.presentation.viewmodel.AdminInvitationConfirmationViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
@@ -74,7 +67,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private val navigator by lazy {
-        context?.let { InvitationConfirmationNavigator(it, invitationConfirmationParam) }
+        InvitationConfirmationNavigator(this, invitationConfirmationParam)
     }
 
     private var binding by autoClearedNullable<FragmentAdminInvitationConfirmationBinding>()
@@ -112,11 +105,11 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_LOGIN) {
+        if (requestCode == InvitationConfirmationNavigator.REQUEST_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
                 handleAfterLogin()
             }
-        } else if (requestCode == REQUEST_OTP) {
+        } else if (requestCode == InvitationConfirmationNavigator.REQUEST_OTP) {
             if (resultCode == Activity.RESULT_OK) {
                 showLoadingConfirmationCta()
                 invitationConfirmationParam.setOtpToken(
@@ -221,7 +214,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun redirectAfterConfirmReg(adminConfirmationRegUiModel: AdminConfirmationRegUiModel) {
         if (adminConfirmationRegUiModel.acceptBecomeAdmin) {
-            navigator?.goToInvitationAccepted()
+            navigator.goToInvitationAccepted()
         } else {
             inflateInvitationRejected()
         }
@@ -229,7 +222,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
 
     private fun showAdminType(adminStatus: String) {
         when (adminStatus) {
-            AdminStatus.ACTIVE -> navigator?.goToShopAccount()
+            AdminStatus.ACTIVE -> navigator.goToShopAccount()
             AdminStatus.WAITING_CONFIRMATION -> {
                 viewModel.getShopAdminInfo(invitationConfirmationParam.getShopId().toLongOrZero())
             }
@@ -272,7 +265,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 show()
 
                 binding?.headerInvitationConfirmation?.setOnClickListener {
-                    navigator?.goToHomeBuyer()
+                    navigator.goToHomeBuyer()
                 }
             }
         }
@@ -326,17 +319,20 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         expiredBinding?.run {
             imgInvitationExpires.setImageUrl(AdminImageUrl.IL_INVITATION_EXPIRES)
             btnInvitationExpires.setOnClickListener {
-                navigator?.goToHomeBuyer()
+                navigator.goToHomeBuyer()
             }
         }
     }
 
     private fun setInvitationRejected() {
         rejectedBinding?.run {
-            tvInvitationRejectedDesc.text = getString(R.string.desc_invitation_rejected, invitationConfirmationParam.getShopName())
+            tvInvitationRejectedDesc.text = getString(
+                R.string.desc_invitation_rejected,
+                invitationConfirmationParam.getShopName()
+            )
             imgInvitationRejected.setImageUrl(AdminImageUrl.IL_INVITATION_REJECTED)
             btnInvitationRejected.setOnClickListener {
-                navigator?.goToHomeBuyer()
+                navigator.goToHomeBuyer()
             }
         }
     }
@@ -378,14 +374,16 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                     start: Int,
                     count: Int,
                     after: Int
-                ) {}
+                ) {
+                }
 
                 override fun onTextChanged(
                     s: CharSequence,
                     start: Int,
                     before: Int,
                     count: Int
-                ) {}
+                ) {
+                }
             })
         }
     }
@@ -406,7 +404,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         } else {
             activity?.let {
                 val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                it.startActivityForResult(intent, REQUEST_LOGIN)
+                it.startActivityForResult(intent, InvitationConfirmationNavigator.REQUEST_LOGIN)
             }
         }
     }
@@ -438,28 +436,17 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
                 showRejectConfirmationDialog()
             }
             btnAccessAccept.setOnClickListener {
-                goToOtp()
+                navigator.goToOtp(getEmailFromTextField())
             }
-        }
-    }
-
-    private fun goToOtp() {
-        context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.COTP)
-            intent.apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, getEmailFromTextField())
-                putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_EMAIL)
-                putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_EMAIL)
-                putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-                putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-            }
-            startActivityForResult(intent, REQUEST_OTP)
         }
     }
 
     private fun getEmailFromTextField(): String {
-        return confirmationBinding?.adminInvitationWithNoEmailSection?.tfuAdminConfirmationEmail?.textFieldWrapper?.editText.toString()
-            .trim()
+        return confirmationBinding
+            ?.adminInvitationWithNoEmailSection
+            ?.tfuAdminConfirmationEmail
+            ?.textFieldWrapper
+            ?.editText.toString().trim()
     }
 
     private fun adminConfirmationReg(acceptBecomeAdmin: Boolean) {
@@ -536,11 +523,5 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
         fun newInstance(): AdminInvitationConfirmationFragment {
             return AdminInvitationConfirmationFragment()
         }
-
-        private const val REQUEST_LOGIN = 459
-        private const val REQUEST_OTP = 659
-        private const val MODE_EMAIL = "email"
-        private const val OTP_TYPE_EMAIL = 150
-        private const val ICON_SIZE = 24
     }
 }
