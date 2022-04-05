@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 
 class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
@@ -81,9 +82,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    handleEmptyState(it.data.totalProduct)
+                    handleProducts(it.data)
                     binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
-                    renderList(it.data.products, it.data.products.size == getPerPage())
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -92,17 +92,29 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         }
     }
 
-    private fun handleEmptyState(totalProduct : Int) {
-        if (totalProduct == 0 && discountStatusId == DiscountStatus.PAUSED) {
+    private fun handleProducts(data: ProductData) {
+        if (data.totalProduct == 0) {
+            val title = if (discountStatusId == DiscountStatus.PAUSED) {
+                getString(R.string.sd_no_paused_discount_title)
+            } else {
+                getString(R.string.sd_no_paused_discount_description)
+            }
+
+            val description = if (discountStatusId == DiscountStatus.PAUSED) {
+                getString(R.string.sd_no_discount_title)
+            } else {
+                getString(R.string.sd_no_discount_description)
+            }
+
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            binding?.emptyState?.setTitle(getString(R.string.sd_no_paused_discount_title))
-            binding?.emptyState?.setDescription(getString(R.string.sd_no_paused_discount_description))
-            binding?.emptyState?.show()
+            binding?.emptyState?.setTitle(title)
+            binding?.emptyState?.setDescription(description)
+
+            binding?.recyclerView?.gone()
+            binding?.tpgTotalProduct?.gone()
+            binding?.emptyState?.visible()
         } else {
-            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            binding?.emptyState?.setTitle(getString(R.string.sd_no_discount_title))
-            binding?.emptyState?.setDescription(getString(R.string.sd_no_discount_description))
-            binding?.emptyState?.show()
+            renderList(data.products, data.products.size == getPerPage())
         }
     }
 

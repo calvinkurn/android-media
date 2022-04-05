@@ -159,7 +159,7 @@ class ProductManageFragment : BaseDaggerFragment() {
             pages.add(Pair(tab.name, fragment))
         }
 
-        val pagerAdapter = TabPagerAdapter(requireActivity(), pages)
+        val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, pages)
 
         binding?.run {
             viewPager.adapter = pagerAdapter
