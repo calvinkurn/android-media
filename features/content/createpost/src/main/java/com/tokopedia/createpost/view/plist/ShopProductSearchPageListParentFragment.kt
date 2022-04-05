@@ -1,7 +1,6 @@
 package com.tokopedia.createpost.view.plist
 
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,37 +10,32 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.view.plist.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.view.listener.SearchCategoryBottomSheetListener
 import com.tokopedia.createpost.view.bottomSheet.SearchCategoryTypeBottomSheet
 import com.tokopedia.createpost.view.bottomSheet.SearchTypeData
+import com.tokopedia.createpost.view.listener.SearchCategoryBottomSheetListener
 import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SHOP_BADGE
 import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SHOP_ID
 import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SHOP_NAME
 import com.tokopedia.createpost.view.plist.ShopProductListActivity.Companion.PARAM_SOURCE
-import com.tokopedia.createpost.view.util.CreatePostPrefs
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_shop_plist_page.view.*
 import kotlinx.android.synthetic.main.layout_parent_product_list.*
 import javax.inject.Inject
 
-class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageListener,
+class ShopProductSearchPageListParentFragment : BaseDaggerFragment(), AdapterCallback, ShopPageListener,
     SearchCategoryBottomSheetListener {
 
     @Inject
@@ -49,8 +43,13 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     lateinit var sortListItems: List<ShopPagePListSortItem>
     lateinit var headerViewText: Typography
     lateinit var searchCategoryBottomSheet: SearchCategoryTypeBottomSheet
-    private val coachMarkItem = ArrayList<CoachMark2Item>()
-    private  lateinit var coachMark: CoachMark2
+    lateinit var contentViewPager: ViewPager
+    private lateinit var tabsUnify: TabsUnify
+
+    private val pagerAdapter: SearchResultPagerAdapter by lazy {
+        SearchResultPagerAdapter(childFragmentManager)
+    }
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -73,7 +72,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.layout_parent_product_list, container, false)
+        val view = inflater.inflate(R.layout.layout_parent_shop_product_search_page_list, container, false)
         initViews(view)
         return view
     }
@@ -96,14 +95,16 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
 
     private fun initViews(view: View) {
         headerViewText = view.findViewById(R.id.search_type_header)
+        contentViewPager = view.findViewById(R.id.content_creation_view_pager)
+        tabsUnify = view.findViewById(R.id.search_shop_product_tab_layout)
 
-        headerViewText.text = MethodChecker.fromHtml(String.format(getString(R.string.content_creation_tagging_page_header_text)," Tokopedia"))
+       headerViewText.text = MethodChecker.fromHtml(String.format(getString(R.string.content_creation_tagging_page_header_text)," Tokopedia"))
 
-        view.recycler_view.layoutManager = GridLayoutManager(activity, 2)
-        view.recycler_view.adapter = mAdapter
+//        view.recycler_view.layoutManager = GridLayoutManager(activity, 2)
+//        view.recycler_view.adapter = mAdapter
 
         mAdapter.resetAdapter()
-        view.sb_shop_product.searchBarIcon.setImageDrawable(null)
+//        view.sb_shop_product.searchBarIcon.setImageDrawable(null)
         presenter.getSortData()
         val shopName = arguments?.getString(PARAM_SHOP_NAME) ?: ""
         val shopBadge = arguments?.getString(PARAM_SHOP_BADGE) ?: ""
@@ -114,58 +115,32 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         view.search_type_header.setOnClickListener {
            openBottomSheet(shopName, shopBadge)
         }
+        setViewPagerAdapter()
 
-        view.sb_shop_product.searchBarPlaceholder = shopNamePlaceHolderText
-        view.cu_sort_chip.chip_container.setOnClickListener {
-            createPostAnalytics.eventClickOnSortButton()
-            getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this, sortListItems)
-            fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
-        }
-        view.cu_sort_chip.chip_right_icon.visible()
-        view.cu_sort_chip.setChevronClickListener {
-            createPostAnalytics.eventClickOnSortButton()
-            getImeiBS = ShopPListSortFilterBs.newInstance(presenter, this, sortListItems)
-            fragmentManager?.let { fm -> getImeiBS?.show(fm, "") }
-        }
+//        view.sb_shop_product.searchBarPlaceholder = shopNamePlaceHolderText
+//
+//        view.sb_shop_product.searchBarTextField.afterTextChanged {
+//            mAdapter.filter.filter(it)
+//        }
+//        view.sb_shop_product.searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
+//            if (hasFocus)
+//                createPostAnalytics.eventClickOnSearchBar()
+//
+//        }
+//        view.sb_shop_product.iconDrawable = null
+//        view.sb_shop_product.searchBarTextField.setOnClickListener {
+//            createPostAnalytics.eventClickOnSearchBar()
+//        }
 
-        view.sb_shop_product.searchBarTextField.afterTextChanged {
-            mAdapter.filter.filter(it)
-        }
-        view.sb_shop_product.searchBarTextField.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus)
-                createPostAnalytics.eventClickOnSearchBar()
-
-        }
-        view.sb_shop_product.iconDrawable = null
-        view.sb_shop_product.searchBarTextField.setOnClickListener {
-            RouteManager.route(it.context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
-            createPostAnalytics.eventClickOnSearchBar()
-        }
-
-        coachMark = CoachMark2(activity as Context)
-
-        coachMarkItem.add(
-            CoachMark2Item(
-                headerViewText,
-                getString(R.string.content_creation_search_coachmark_header),
-                getString(R.string.content_creation_search_coachmark_desc),
-                CoachMark2.POSITION_BOTTOM
-            )
-        )
-        if (CreatePostPrefs.getShouldShowCoachMarkValue(activity as Context))
-            showFabCoachMark()
 
     }
-    private fun showFabCoachMark() {
-        CreatePostPrefs.saveShouldShowCoachMarkValue(activity as Context)
-        if (::coachMark.isInitialized) {
-            coachMark.showCoachMark(coachMarkItem)
-        }
+    private fun setViewPagerAdapter() {
+        contentViewPager.adapter = pagerAdapter
+        tabsUnify.setupWithViewPager(contentViewPager)
     }
+
     private fun openBottomSheet(shopName: String, shopBadge: String) {
-        if (::coachMark.isInitialized) {
-            coachMark.hideCoachMark()
-        }
+
         searchCategoryBottomSheet = SearchCategoryTypeBottomSheet()
         context?.let {
             searchCategoryBottomSheet.show(
@@ -174,7 +149,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
             )
         }
     }
-    private fun addSortListObserver() = presenter.sortLiveData.observe(this, Observer {
+    private fun addSortListObserver() = presenter.sortLiveData.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -204,7 +179,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         addSortListObserver()
     }
 
-    private fun addListObserver() = presenter.productList.observe(this, Observer {
+    private fun addListObserver() = presenter.productList.observe(viewLifecycleOwner, Observer {
         it?.let {
             when (it) {
                 is Loading -> {
@@ -221,7 +196,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         }
     })
 
-    private fun addSortValObserver() = presenter.newSortValeLiveData.observe(this, Observer {
+    private fun addSortValObserver() = presenter.newSortValeLiveData.observe(viewLifecycleOwner, Observer {
         view?.cu_sort_chip?.chipText = it.name
         view?.cu_sort_chip?.chipType = ChipsUnify.TYPE_SELECTED
         presenter.getPageData(
@@ -234,7 +209,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
     )
 
     private fun addProductValObserver() =
-        presenter.newProductValLiveData.observe(this, Observer { product ->
+        presenter.newProductValLiveData.observe(viewLifecycleOwner, Observer { product ->
             activity?.let {
                 val data = Intent();
                 data.putExtra("product", product)
@@ -245,7 +220,7 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         )
 
     private fun addBsObserver() =
-        presenter.showBs.observe(this, Observer { product ->
+        presenter.showBs.observe(viewLifecycleOwner, Observer { product ->
             activity?.let {
                 getImeiBS?.dismiss()
             }
@@ -315,13 +290,13 @@ class ShopProductListFragment : BaseDaggerFragment(), AdapterCallback, ShopPageL
         private val CONTAINER_ERROR = 3
         private val SCREEN_NAME = "Product Tag Listing"
 
-        fun newInstance(shopId: String, source: String, shopName: String, shopBadge: String): ShopProductListFragment {
+        fun newInstance(shopId: String, source: String, shopName: String, shopBadge: String): ShopProductSearchPageListParentFragment {
             val bundle = Bundle()
             bundle.putString(PARAM_SHOP_ID, shopId)
             bundle.putString(PARAM_SOURCE, source)
             bundle.putString(PARAM_SHOP_NAME, shopName)
             bundle.putString(PARAM_SHOP_BADGE, shopBadge)
-            val fragment = ShopProductListFragment()
+            val fragment = ShopProductSearchPageListParentFragment()
             fragment.arguments = bundle
             return fragment
         }

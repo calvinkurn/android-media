@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
     }
 
     override fun getNewFragment(): Fragment? {
-        return ShopProductListFragment.newInstance(intent.getStringExtra(PARAM_SHOP_ID) ?: "",
+        return ShopProductSearchPageListParentFragment.newInstance(intent.getStringExtra(PARAM_SHOP_ID) ?: "",
             intent.getStringExtra(PARAM_SOURCE) ?: "",
             intent.getStringExtra(
                 PARAM_SHOP_NAME) ?: "",

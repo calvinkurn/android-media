@@ -20,6 +20,7 @@ class CreatorTypesBottomSheet : BottomSheetUnify() {
     private val createrListAdapter: ContentCreatorListAdapter by lazy {
         ContentCreatorListAdapter()
     }
+    //TODO add listner
 //    private var listener: CreateContentPostCommonListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

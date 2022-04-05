@@ -1,0 +1,90 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background"
+    tools:context="com.tokopedia.createpost.view.plist.ShopProductListActivity">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/search_type_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/feed_component_dp_10"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        android:gravity="center_vertical"
+        app:drawableRightCompat="@drawable/ic_arrow_down_black"
+        android:drawablePadding="@dimen/feed_component_dp_4"
+        android:drawableTint="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/content_creation_search_bs_header"/>
+
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/sb_shop_product"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_type_header"
+        app:search_bar_clearable="true"
+        app:search_bar_placeholder="Cari produk di Fellow Official" />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/search_shop_product_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_40"
+        android:theme="@style/ThemeOverlay.AppCompat.Light"
+        android:visibility="visible"
+        app:layout_scrollFlags="enterAlways"
+        app:tabGravity="fill"
+        android:paddingTop="@dimen/unify_space_12"
+        app:tabIndicatorColor="@color/Unify_GN500"
+        app:tabIndicatorHeight="@dimen/dp_1"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/Unify_GN500"
+        app:tabTextAppearance="@style/CreatePostTabLayoutTextStyle"
+        app:tabTextColor="@color/Unify_N700_32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sb_shop_product">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/content_creation_barang_text" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/content_creation_toko_text" />
+
+    </com.tokopedia.unifycomponents.TabsUnify>
+
+    <FrameLayout
+        android:id="@+id/search_result_frame_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/transparent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/search_shop_product_tab_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/content_creation_view_pager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,21 +2,37 @@ package com.tokopedia.createpost.view.plist
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.createpost.common.view.plist.*
+import com.tokopedia.createpost.data.non_seller_model.SearchShopModel
+import com.tokopedia.createpost.usecase.FeedSearchShopFirstPageUseCase
+import com.tokopedia.createpost.usecase.FeedSearchShopLoadMoreUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
-class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatchers.Main) {
+class ShopPageProductListViewModel @Inject constructor(
+    private val baseDispatcher: CoroutineDispatcher,
+    private val feedSearchShopLoadMoreUseCase: FeedSearchShopLoadMoreUseCase,
+    private val feedSearchShopFirstPageUseCase: FeedSearchShopFirstPageUseCase
+) : BaseViewModel(baseDispatcher) {
 
     val productList = MutableLiveData<Resources<GetShopProduct>>()
     val pageData = MutableLiveData<Resources<GetShopProduct>>()
     val sortLiveData = MutableLiveData<Resources<ShopPlIstSortingListBase>>()
     val newSortValeLiveData = MutableLiveData<ShopPagePListSortItem>()
     val newProductValLiveData = MutableLiveData<ShopPageProduct>()
+    val getShopFirstPageData = MutableLiveData<Result<SearchShopModel>>()
+    val getShopLoadMorePageData = MutableLiveData<Result<SearchShopModel>>()
+
     val showBs = MutableLiveData<Boolean>()
     private val gql = MultiRequestGraphqlUseCase()
     private val gqlSort = MultiRequestGraphqlUseCase()
@@ -44,6 +60,27 @@ class ShopPageProductListViewModel @Inject constructor() : BaseViewModel(Dispatc
         this.soruce = source
         productList.value = Loading()
         getList(1)
+    }
+
+    fun getInitialShopData(){
+        launchCatchError(block = {
+            val results = withContext(Dispatchers.IO) {
+                getShopFirstDataResult()
+            }
+
+            getShopFirstPageData.value = com.tokopedia.usecase.coroutines.Success(results)
+
+        }) {
+            getShopFirstPageData.value = Fail(it)
+        }
+    }
+    private suspend fun getShopFirstDataResult(): SearchShopModel {
+        try {
+            return feedSearchShopFirstPageUseCase.execute()
+        } catch (e: Throwable) {
+            Timber.e(e)
+            throw e
+        }
     }
 
     fun setNewSortValue(value: ShopPagePListSortItem, position: Int) {
