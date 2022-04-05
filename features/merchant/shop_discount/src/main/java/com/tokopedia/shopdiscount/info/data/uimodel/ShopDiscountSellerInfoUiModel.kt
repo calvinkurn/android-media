@@ -1,10 +1,10 @@
 package com.tokopedia.shopdiscount.info.data.uimodel
 
-import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitResponse
+import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
 
 data class ShopDiscountSellerInfoUiModel(
-    val responseHeader: GetSlashPriceBenefitResponse.GetSlashPriceBenefit.ResponseHeader = GetSlashPriceBenefitResponse.GetSlashPriceBenefit.ResponseHeader(),
+    val responseHeader: ResponseHeader = ResponseHeader(),
     val isUseVps: Boolean = false,
     val listSlashPriceBenefitData: List<SlashPriceBenefitData> = listOf()
 ) {

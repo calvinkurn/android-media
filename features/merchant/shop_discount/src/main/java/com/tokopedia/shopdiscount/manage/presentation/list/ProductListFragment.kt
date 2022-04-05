@@ -22,8 +22,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.extension.showToaster
 
 class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
 
@@ -70,6 +73,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         applyUnifyBackgroundColor()
         setupViews()
         observeProducts()
+        observeDeleteDiscount()
     }
 
     private fun setupViews() {
@@ -84,6 +88,23 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
                 is Success -> {
                     handleProducts(it.data)
                     binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                }
+                is Fail -> {
+                    binding?.root showError it.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeDeleteDiscount() {
+        viewModel.deleteDiscount.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val deleteSuccess = it.data
+                    if (deleteSuccess) {
+                        binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
+                        loadInitialData()
+                    }
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -127,8 +148,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     }
 
 
-    private val onOverflowMenuClicked : (Product) -> Unit = { product ->
-
+    private val onOverflowMenuClicked: (Product) -> Unit = { product ->
+        displayMoreMenuBottomSheet(product)
     }
 
 
@@ -188,6 +209,20 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
             root showError errorMessage
         }
 
+    }
+
+    private fun displayMoreMenuBottomSheet(product: Product) {
+        val bottomSheet = MoreMenuBottomSheet()
+        bottomSheet.setOnDeleteMenuClicked { displayDeleteConfirmationDialog(product) }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayDeleteConfirmationDialog(product: Product) {
+        val dialog = CancelDiscountDialog(requireContext())
+        dialog.setOnDeleteConfirmed {
+            viewModel.deleteDiscount(discountStatusId, product.id)
+        }
+        dialog.show()
     }
 
 }

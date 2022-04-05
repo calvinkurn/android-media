@@ -2,6 +2,7 @@ package com.tokopedia.shopdiscount.manage.data.response
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
 data class GetSlashPriceProductListMetaResponse(
     @SerializedName("GetSlashPriceProductListMeta")
@@ -26,20 +27,5 @@ data class GetSlashPriceProductListMetaResponse(
                 val value: Int = 0
             )
         }
-
-        data class ResponseHeader(
-            @SerializedName("error_code")
-            val errorCode: String = "",
-            @SerializedName("error_message")
-            val errorMessage: List<Any> = listOf(),
-            @SerializedName("process_time")
-            val processTime: Double = 0.0,
-            @SerializedName("reason")
-            val reason: String = "",
-            @SerializedName("status")
-            val status: String = "",
-            @SerializedName("success")
-            val success: Boolean = false
-        )
     }
 }

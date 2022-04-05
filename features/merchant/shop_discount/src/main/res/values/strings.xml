@@ -37,6 +37,13 @@
     <string name="sd_no_discount_description">Kamu belum punya produk dengan Diskon Toko. Tambah produk dulu, lalu pasang diskonnya, ya.</string>
     <string name="sd_no_paused_discount_title">Produk Diskon Toko-mu dialokasikan ke campaign lain</string>
     <string name="sd_no_paused_discount_description">Buat Diskon Toko baru untuk produk tokomu yang lain, yuk!</string>
+    <string name="sd_delete_confirmation_title">Yakin hapus produk dari Diskon Toko?</string>
+    <string name="sd_delete_confirmation_description">Produk-produk yang dihapus akan kembali ke harga normal.</string>
+    <string name="sd_positive_delete">Ya, Hapus</string>
+    <string name="sd_cancel">Batalkan</string>
+    <string name="sd_delete">Hapus</string>
+    <string name="sd_discount_deleted">Produk berhasil dihapus dari Diskon Toko.</string>
+    <string name="sd_manage">Atur</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

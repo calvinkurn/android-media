@@ -3,6 +3,7 @@ package com.tokopedia.shopdiscount.manage.domain.entity
 import com.tokopedia.shopdiscount.common.entity.ProductType
 
 data class Product(
+    val id : String,
     val name: String,
     val formattedOriginalMinPrice: String,
     val formattedOriginalMaxPrice: String,

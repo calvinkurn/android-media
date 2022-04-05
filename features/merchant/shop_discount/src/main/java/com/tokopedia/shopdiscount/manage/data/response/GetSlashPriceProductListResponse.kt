@@ -3,6 +3,7 @@ package com.tokopedia.shopdiscount.manage.data.response
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
 data class GetSlashPriceProductListResponse(
     @SerializedName("GetSlashPriceProductList")
@@ -16,13 +17,6 @@ data class GetSlashPriceProductListResponse(
         @SerializedName("total_product")
         val totalProduct: Int = 0
     ) {
-        data class ResponseHeader(
-            @SerializedName("status")
-            val status: String = "",
-            @SerializedName("success")
-            val success: Boolean = false
-        )
-
         data class SlashPriceProduct(
             @SerializedName("discount_percentage_data")
             val discountPercentageData: DiscountPercentageData = DiscountPercentageData(),
