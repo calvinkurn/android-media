@@ -36,17 +36,16 @@ class ReschedulePickupViewModel @Inject constructor(
     fun getReschedulePickupDetail(orderId: String) {
         launchCatchError(
             block = {
-                _reschedulePickupDetail.postValue(
-                    Success(
-                        ReschedulePickupMapper.mapToRescheduleDetailModel(
-                            getReschedulePickupUseCase.execute(
-                                ReschedulePickupMapper.mapToGetReschedulePickupParam(
-                                    listOf(orderId)
-                                )
-                            ).mpLogisticGetReschedulePickup.data.first()
-                        )
+                val response = getReschedulePickupUseCase.execute(
+                    ReschedulePickupMapper.mapToGetReschedulePickupParam(
+                        listOf(orderId)
                     )
                 )
+                if (response.mpLogisticGetReschedulePickup.data.isNotEmpty()) {
+                    _reschedulePickupDetail.postValue(Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup.data.first())))
+                } else {
+                    _reschedulePickupDetail.postValue(Fail(Throwable("Data Reschedule Pickup tidak ditemukan")))
+                }
             },
             onError = {
                 _reschedulePickupDetail.postValue(Fail(it))
@@ -59,7 +58,7 @@ class ReschedulePickupViewModel @Inject constructor(
             block = {
                 val dayParam = day?.day
                 val timeParam = time?.time
-                if (!dayParam.isNullOrEmpty() && !timeParam.isNullOrEmpty()) {
+                if (dayParam != null && timeParam != null) {
                     _saveRescheduleDetail.postValue(
                         Success(
                             ReschedulePickupMapper.mapToSaveRescheduleModel(
@@ -71,6 +70,8 @@ class ReschedulePickupViewModel @Inject constructor(
                             )
                         )
                     )
+                } else {
+                    _saveRescheduleDetail.postValue(Fail(Throwable("Isi hari dan waktu yang sesuai")))
                 }
             },
             onError = {
