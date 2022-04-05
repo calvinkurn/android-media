@@ -19,11 +19,15 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * Created by dhaba
  */
-class CueWidgetCategoryAdapter(channels: ChannelModel ) :
+class CueWidgetCategoryAdapter(channels: ChannelModel) :
     RecyclerView.Adapter<CueWidgetCategoryAdapter.CueWidgetCategoryItemViewHolder>() {
+    companion object {
+        private const val DEFAULT_RADIUS = 0
+        private const val CUE_WIDGET_3x2 = 6
+        private const val CUE_WIDGET_2x2 = 4
+    }
+
     private var grids: List<ChannelGrid> = channels.channelGrids
-
-
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,7 +39,7 @@ class CueWidgetCategoryAdapter(channels: ChannelModel ) :
     }
 
     override fun getItemCount(): Int {
-        return if (grids.size < 6) 4 else 6
+        return if (grids.size < CUE_WIDGET_3x2) CUE_WIDGET_2x2 else CUE_WIDGET_3x2
     }
 
     override fun onBindViewHolder(holder: CueWidgetCategoryItemViewHolder, position: Int) {
@@ -50,8 +54,8 @@ class CueWidgetCategoryAdapter(channels: ChannelModel ) :
                 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
                 override fun getOutline(view: View, outline: Outline?) {
                     outline?.setRoundRect(
-                        0,
-                        0,
+                        DEFAULT_RADIUS,
+                        DEFAULT_RADIUS,
                         view.width,
                         (view.height + curveRadius).toInt(),
                         curveRadius

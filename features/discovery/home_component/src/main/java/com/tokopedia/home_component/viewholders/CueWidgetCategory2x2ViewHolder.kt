@@ -2,7 +2,6 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -38,10 +37,6 @@ class CueWidgetCategory2x2ViewHolder (
     }
 
     private fun mappingView(channel: ChannelModel) {
-        mappingItem(channel)
-    }
-
-    private fun mappingItem(channel: ChannelModel) {
         binding?.run {
             adapter = CueWidgetCategoryAdapter(channel)
             homeComponentCueCategory2x2Rv.adapter = adapter
@@ -64,9 +59,11 @@ class CueWidgetCategory2x2ViewHolder (
     private fun setHeaderComponent(element: CueCategory2x2DataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-
+                //no op
             }
-            override fun onChannelExpired(channelModel: ChannelModel) {}
+            override fun onChannelExpired(channelModel: ChannelModel) {
+                //no op
+            }
         })
     }
 }
