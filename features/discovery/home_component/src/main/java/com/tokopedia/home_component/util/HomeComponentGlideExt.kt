@@ -112,6 +112,12 @@ fun ImageView.loadImageNoRounded(url: String, placeholder: Int = -1, listener: I
     }
 }
 
+fun ImageView.loadImageWithTopRadius(url: String, placeholder: Int = -1, topRadius: Int){
+    this.loadImage(url) {
+        setPlaceHolder(placeholder)
+    }
+}
+
 fun ImageView.loadImageNormal(url: String, placeholder: Int = -1){
     this.loadImage(url) {
         setPlaceHolder(placeholder)

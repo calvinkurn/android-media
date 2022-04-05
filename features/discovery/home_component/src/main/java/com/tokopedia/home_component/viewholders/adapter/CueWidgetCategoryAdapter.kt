@@ -2,16 +2,20 @@ package com.tokopedia.home_component.viewholders.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Outline
 import android.graphics.Typeface
+import android.os.Build
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.GlobalDcCueCategoryBinding
@@ -19,7 +23,7 @@ import com.tokopedia.home_component.databinding.LayoutCueCategoryBinding
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
+import com.tokopedia.home_component.util.*
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
@@ -52,7 +56,24 @@ class CueWidgetCategoryAdapter(private val channels: ChannelModel ) :
     override fun onBindViewHolder(holder: CueWidgetCategoryItemViewHolder, position: Int) {
         val grid = grids[position]
         holder.binding?.run {
-            imageCategory.loadImageWithoutPlaceholder(grid.imageUrl)
+            imageCategory.loadImageNormal(
+                grid.imageUrl,
+                com.tokopedia.home_component.R.drawable.placeholder_grey
+            )
+            val curveRadius = 20f
+            imageCategory.outlineProvider = object : ViewOutlineProvider() {
+                @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+                override fun getOutline(view: View, outline: Outline?) {
+                    outline?.setRoundRect(
+                        0,
+                        0,
+                        view.width,
+                        (view.height + curveRadius).toInt(),
+                        curveRadius
+                    )
+                }
+            }
+            imageCategory.clipToOutline = true
             categoryName.text = grid.name
         }
     }

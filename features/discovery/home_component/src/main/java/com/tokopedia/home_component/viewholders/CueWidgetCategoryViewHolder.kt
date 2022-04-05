@@ -41,6 +41,8 @@ class CueWidgetCategoryViewHolder (
         @LayoutRes
         val LAYOUT = R.layout.global_dc_cue_category
         private const val TOTAL_SPAN_RECYCLER = 2
+        const val CUE_WIDGET_TYPE_2x2 = 4
+        const val CUE_WIDGET_TYPE_3x2 = 6
     }
 
     override fun bind(element: CueCategoryDataModel) {
@@ -76,10 +78,8 @@ class CueWidgetCategoryViewHolder (
 //            )
             val layoutManager = GridLayoutManager(itemView.context, 2)
             homeComponentCueCategoryRv.layoutManager = layoutManager
-
-            if (homeComponentCueCategoryRv.itemDecorationCount == 0) {
-                homeComponentCueCategoryRv.addItemDecoration(CueWidgetCategoryItemDecoration(8f.toDpInt()))
-            }
+            val gridType = if (channel.channelGrids.size <= CUE_WIDGET_TYPE_2x2) CUE_WIDGET_TYPE_2x2 else CUE_WIDGET_TYPE_3x2
+            homeComponentCueCategoryRv.addItemDecoration(CueWidgetCategoryItemDecoration(8f.toDpInt(), gridType))
         }
 //        binding?.homeComponentMvcRv?.scrollToPosition(0)
     }
