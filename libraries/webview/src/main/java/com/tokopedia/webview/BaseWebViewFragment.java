@@ -3,6 +3,7 @@ package com.tokopedia.webview;
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
+import static com.tokopedia.webview.ConstantKt.GOOGLE_DOCS_PDF_URL;
 import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
@@ -13,6 +14,7 @@ import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
 import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
+import static com.tokopedia.webview.ext.UrlEncoderExtKt.decode;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 import android.annotation.TargetApi;
@@ -188,7 +190,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     private String getUrlFromArguments(Bundle args) {
         String defaultUrl = TokopediaUrl.Companion.getInstance().getWEB();
-        String url = UrlEncoderExtKt.decode(args.getString(KEY_URL, defaultUrl));
+        String url = decode(args.getString(KEY_URL, defaultUrl));
 
         if (!url.startsWith("http")) {
             return defaultUrl;
@@ -738,6 +740,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             e.printStackTrace();
         }
 
+        if (url.endsWith(".pdf")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
+                    , "application/pdf");
+            try {
+                getContext().startActivity(intent);
+                return true;
+            } catch (Exception e) {
+                //user does not have a pdf viewer installed
+                return loadGoogleDocsUrl(uri);
+            }
+        }
+
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
             routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText);
@@ -854,6 +869,30 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         } else {
             // change first url directly
             url = newUrl;
+            return false;
+        }
+    }
+
+    /**
+     * return true of webview success load.
+     */
+    private boolean loadGoogleDocsUrl(Uri uri) {
+        String googleDocsUrl;
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            googleDocsUrl = decode(uri.toString());
+        } else {
+            googleDocsUrl = GOOGLE_DOCS_PDF_URL + decode(uri.toString());
+        }
+        if (webView != null) {
+            if (uri.getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(googleDocsUrl, userSession);
+            } else {
+                webView.loadUrl(googleDocsUrl);
+            }
+            return true;
+        } else {
+            // change first url directly
+            url = googleDocsUrl;
             return false;
         }
     }
