@@ -22,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 
 class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
 
@@ -79,6 +80,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    handleEmptyState(it.data.totalProduct)
                     binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
                     renderList(it.data.products, it.data.products.size == getPerPage())
                 }
@@ -86,6 +88,18 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
                     binding?.root showError it.throwable
                 }
             }
+        }
+    }
+
+    private fun handleEmptyState(totalProduct : Int) {
+        if (totalProduct == 0 && discountStatusId == DiscountStatus.PAUSED) {
+            binding?.emptyState?.show()
+            binding?.emptyState?.setTitle(getString(R.string.sd_no_paused_discount_title))
+            binding?.emptyState?.setTitle(getString(R.string.sd_no_paused_discount_description))
+        } else {
+            binding?.emptyState?.show()
+            binding?.emptyState?.setTitle(getString(R.string.sd_no_discount_title))
+            binding?.emptyState?.setTitle(getString(R.string.sd_no_discount_description))
         }
     }
 

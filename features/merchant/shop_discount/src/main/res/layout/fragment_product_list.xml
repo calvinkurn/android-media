@@ -72,10 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unifyEmptyStateDescription="Coba ulangi pencarian dengan kata kunci atau filter lain, ya."
-        app:unifyEmptyStateImageUrl="https://ecs7.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
-        app:unifyEmptyStateOrientation="horizontal"
-        app:unifyEmptyStateTitle="Kupon yang kamu cari nggak ditemukan"
+        app:unifyEmptyStateOrientation="vertical"
         app:unifyEmptyStateType="section" />
 
 

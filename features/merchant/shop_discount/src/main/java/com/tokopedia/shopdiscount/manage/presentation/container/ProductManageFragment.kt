@@ -20,6 +20,7 @@ import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBindi
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
+import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
@@ -91,7 +92,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                 }
 
                 override fun onDismiss() {
-                    TODO("Not yet implemented")
+                    ticker.gone()
                 }
 
             })
@@ -101,7 +102,8 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun setupSearchBar() {
         binding?.run {
             searchBar.searchBarTextField.isFocusable = false
-            searchBar.setOnClickListener { displayBulkApplyBottomSheet() }
+            searchBar.searchBarTextField.setOnClickListener { SearchProductActivity.start(requireActivity()) }
+            searchBar.setOnClickListener { SearchProductActivity.start(requireActivity()) }
         }
     }
 
@@ -156,6 +158,14 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun displayBulkApplyBottomSheet() {
+        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
+        bottomSheet.setOnApplyClickListener { discountSettings ->
+
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showSellerInfoBottomSheet() {
         val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
         bottomSheet.setOnApplyClickListener { discountSettings ->
 

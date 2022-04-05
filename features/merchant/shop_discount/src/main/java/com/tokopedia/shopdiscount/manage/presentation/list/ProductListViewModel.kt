@@ -34,7 +34,7 @@ class ProductListViewModel @Inject constructor(
                 getSlashPriceProductListUseCase.executeOnBackground()
             }
             val formattedProduct = productMapper.map(result)
-            val productData = ProductData(result.getSlashPriceProductList.totalProduct, formattedProduct)
+            val productData = ProductData(result.getSlashPriceProductList.totalProduct, emptyList())
             _products.value = Success(productData)
         }, onError = {
             _products.value = Fail(it)
