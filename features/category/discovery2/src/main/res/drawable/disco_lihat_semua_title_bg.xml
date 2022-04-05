@@ -5,5 +5,5 @@
         android:bottomLeftRadius="@dimen/unify_space_12"
         android:topRightRadius="@dimen/dp_18"
         android:bottomRightRadius="@dimen/dp_18"/>
-    <solid android:color="@android:color/white" />
+    <solid android:color="@color/Unify_Static_White" />
 </shape>
