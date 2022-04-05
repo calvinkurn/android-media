@@ -157,7 +157,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), CoroutineScope {
                 viewModel.textAreaTitleUiState
                     .filterIsInstance<CreateReviewTextAreaTitleUiState.Showing>()
                     .collectLatest {
-                        context?.let { context -> setTitle(it.textRes.getString(context)) }
+                        context?.let { context -> setTitle(it.textRes.getStringValue(context)) }
                     }
             }
         }

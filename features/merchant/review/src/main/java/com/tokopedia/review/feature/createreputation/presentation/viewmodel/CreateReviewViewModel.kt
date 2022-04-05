@@ -32,6 +32,7 @@ import com.tokopedia.review.feature.createreputation.presentation.fragment.Creat
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewTextAreaTextUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewBadRatingCategoryUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
@@ -58,12 +59,14 @@ import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvo
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.uimodel.StringRes
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collect
@@ -169,6 +172,7 @@ class CreateReviewViewModel @Inject constructor(
     private val textAreaHasFocus = MutableStateFlow(false)
     private val reviewTemplatesAnimating = MutableStateFlow(false)
     private val shouldResetFailedUploadStatus = MutableStateFlow(false)
+    private val _toasterQueue = MutableSharedFlow<CreateReviewToasterUiModel>(extraBufferCapacity = 50)
     // endregion state that must not be saved nor restored
 
     // region state whose it's value is determined by other states
@@ -305,6 +309,9 @@ class CreateReviewViewModel @Inject constructor(
     val postSubmitBottomSheetUiState = postSubmitReviewResult.mapLatest(::mapPostSubmitUiState)
         .toStateFlow(PostSubmitUiState.Hidden)
     // endregion post submit bottom sheet state
+
+    val toasterQueue: Flow<CreateReviewToasterUiModel>
+        get() = _toasterQueue
 
     // endregion state whose it's value is determined by other states
 
@@ -646,8 +653,8 @@ class CreateReviewViewModel @Inject constructor(
         poem: Pair<String, StringRes>
     ): CreateReviewMediaPickerUiState {
         return if (canRenderForm) {
+            val currentMediaPickerUiState = mediaPickerUiState.value
             if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOADING }) {
-                val currentMediaPickerUiState = mediaPickerUiState.value
                 if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.Uploading) {
                     currentMediaPickerUiState.copy(
                         mediaItems = mediaItems,
@@ -656,15 +663,28 @@ class CreateReviewViewModel @Inject constructor(
                     )
                 } else {
                     CreateReviewMediaPickerUiState.Uploading(
+                        failedOccurrenceCount = currentMediaPickerUiState.failedOccurrenceCount,
                         mediaItems = mediaItems,
                         poem = poem.second,
                         currentUploadBatchNumber = uploadBatchNumber
                     )
                 }
             } else if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
-                CreateReviewMediaPickerUiState.FailedUpload(mediaItems)
+                if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
+                    currentMediaPickerUiState.copy(mediaItems = mediaItems)
+                } else {
+                    if (currentMediaPickerUiState.failedOccurrenceCount.isMoreThanZero()) {
+                        enqueueErrorUploadMediaToaster()
+                    }
+                    CreateReviewMediaPickerUiState.FailedUpload(
+                        failedOccurrenceCount = currentMediaPickerUiState.failedOccurrenceCount + 1,
+                        mediaItems = mediaItems
+                    )
+                }
             } else {
-                CreateReviewMediaPickerUiState.SuccessUpload(mediaItems, poem.second)
+                CreateReviewMediaPickerUiState.SuccessUpload(
+                    mediaItems = mediaItems, poem = poem.second
+                )
             }
         } else CreateReviewMediaPickerUiState.Loading
     }
@@ -1041,6 +1061,7 @@ class CreateReviewViewModel @Inject constructor(
 
     private fun startNewUploadMediaJob(uri: String): Job {
         return launchCatchError(block = {
+            delay(10_000L)
             val filePath = File(uri)
             val params = uploaderUseCase.createParams(
                 sourceId = CreateReviewViewModel.CREATE_REVIEW_SOURCE_ID,
@@ -1263,8 +1284,34 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
+    private fun enqueueErrorUploadMediaToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_media_picker_toaster_failed_upload_message),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_ERROR
+            )
+        )
+    }
+
+    private fun enqueueWaitForUploadMediaToaster() {
+        _toasterQueue.tryEmit(
+            CreateReviewToasterUiModel(
+                message = StringRes(R.string.review_form_media_picker_toaster_wait_for_upload_message),
+                actionText = StringRes(Int.ZERO),
+                duration = Toaster.LENGTH_SHORT,
+                type = Toaster.TYPE_NORMAL
+            )
+        )
+    }
+
     fun submitReview() {
-        sendingReview.value = true
+        when(mediaPickerUiState.value) {
+            is CreateReviewMediaPickerUiState.FailedUpload -> enqueueErrorUploadMediaToaster()
+            is CreateReviewMediaPickerUiState.Uploading -> enqueueWaitForUploadMediaToaster()
+            else ->sendingReview.value = true
+        }
     }
 
     // region MutableStateFlow updater

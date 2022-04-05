@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -56,16 +58,20 @@ import com.tokopedia.review.feature.ovoincentive.presentation.bottomsheet.Incent
 import com.tokopedia.review.feature.ovoincentive.presentation.model.IncentiveOvoBottomSheetUiModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -646,6 +652,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
         private var incentiveBottomSheetUiStateCollectorJob: Job? = null
         private var textAreaBottomSheetUiStateCollectorJob: Job? = null
         private var postSubmitBottomSheetUiStateCollectorJob: Job? = null
+        private var toasterQueueCollectorJob: Job? = null
 
         fun initUiState(savedInstanceState: Bundle?) {
             if (savedInstanceState == null) {
@@ -677,6 +684,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             collectIncentiveBottomSheetUiState()
             collectTextAreaBottomSheetUiState()
             collectPostSubmitBottomSheetUiState()
+            collectToasterQueue()
         }
 
         fun cancelUiStateCollectors() {
@@ -694,6 +702,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
             incentiveBottomSheetUiStateCollectorJob?.cancel()
             textAreaBottomSheetUiStateCollectorJob?.cancel()
             postSubmitBottomSheetUiStateCollectorJob?.cancel()
+            toasterQueueCollectorJob?.cancel()
         }
 
         private fun collectProductCardUiState() {
@@ -855,6 +864,36 @@ class CreateReviewBottomSheet : BottomSheetUnify(), CoroutineScope {
                         }
                     }
                 }
+        }
+
+        private fun collectToasterQueue() {
+            toasterQueueCollectorJob = toasterQueueCollectorJob?.takeIf { !it.isCompleted } ?: launch {
+                viewModel.toasterQueue.collect {
+                    suspendCoroutine { cont ->
+                        binding?.root?.let { view ->
+                            Toaster.build(
+                                view,
+                                it.message.getStringValue(view.context),
+                                it.duration,
+                                it.type,
+                                it.actionText.getStringValue(view.context)
+                            ) {}.run {
+                                anchorView = binding?.reviewFormProgressBarDivider
+                                addCallback(object: Snackbar.Callback() {
+                                    override fun onDismissed(
+                                        transientBottomBar: Snackbar?,
+                                        event: Int
+                                    ) {
+                                        removeCallback(this)
+                                        cont.resume(Unit)
+                                    }
+                                })
+                                show()
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -18,7 +18,7 @@ class CreateReviewExpandedTextAreaHelper @JvmOverloads constructor(
 
     fun updateUi(uiState: CreateReviewTextAreaUiState) {
         if (uiState is CreateReviewTextAreaUiState.Showing) {
-            val text = uiState.helper.getString(context)
+            val text = uiState.helper.getStringValue(context)
             if (text.isNotBlank()) {
                 binding.root.text = text
                 binding.root.show()
