@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.tokofood.example.FragmentA
-import com.tokopedia.tokofood.example.FragmentB
 import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
 
 object TokofoodRouteManager {
@@ -20,7 +18,7 @@ object TokofoodRouteManager {
             if (uri.path == "/home") { // tokopedia://tokofood/home
                 f = TokoFoodHomeFragment()
             } else if (uri.path == "/b") { // tokopedia://tokofood/b
-                f = FragmentB()
+
             }
             if (f != null) {
                 f.arguments = Bundle().apply {
