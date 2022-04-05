@@ -252,40 +252,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        activity?.finish()
-    }
-
-    private fun saveProductToDraft() {
-        viewModel.productInputModel.value?.let {
-            viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
-        }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
-    }
-
-    private fun isEditing(): Boolean {
-        return viewModel.isEditing.value ?: false
-    }
-
-    private fun isDrafting(): Boolean {
-        return viewModel.getDraftId() > 0L
-    }
-
-    private fun isAdding(): Boolean {
-        return viewModel.isAdding
-    }
-
-    private fun dataBackPressedLoss(): Boolean {
-        // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
-        // dataBackPressed is a sign of activity where data is obtained
-        if (dataBackPressed == null) {
-            return true
-        }
-        return false
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
@@ -343,6 +309,7 @@ class AddEditProductPreviewFragment :
         observeSaveShipmentLocationData()
         observeAdminPermission()
         observeProductLimitationData()
+        observeMustFillParentWeight()
 
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -511,22 +478,6 @@ class AddEditProductPreviewFragment :
 
     override fun stopRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
-    }
-
-    private fun onSuccessSetCashback() {
-        view?.let {
-            Toaster.make(it, getString(
-                    R.string.product_edit_set_cashback_success),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-        }
-    }
-
-    private fun onFailedSetCashback() {
-        view?.let {
-            Toaster.make(it, getString(
-                    R.string.product_edit_set_cashback_error),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
-        }
     }
 
     override fun getScreenName(): String {
@@ -830,7 +781,7 @@ class AddEditProductPreviewFragment :
                     val validateMessage = viewModel.validateProductInput(productInputModel.detailInputModel)
                     if (validateMessage.isEmpty()) {
                         startProductAddService(productInputModel)
-                        Handler().postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                        view?.postDelayed({ activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                     } else {
                         Toaster.build(requireView(), validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                     }
@@ -858,6 +809,22 @@ class AddEditProductPreviewFragment :
         })
     }
 
+    private fun onSuccessSetCashback() {
+        view?.let {
+            Toaster.make(it, getString(
+                R.string.product_edit_set_cashback_success),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
+    }
+
+    private fun onFailedSetCashback() {
+        view?.let {
+            Toaster.make(it, getString(
+                R.string.product_edit_set_cashback_error),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        }
+    }
+
     private fun checkEnableOrNot() {
         viewModel.productInputModel.value?.requestCode?.apply {
             val isDetailData = this[0] == DETAIL_DATA
@@ -877,6 +844,40 @@ class AddEditProductPreviewFragment :
                 disableShipmentEdit()
             }
         }
+    }
+
+    private fun moveToManageProduct() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    private fun saveProductToDraft() {
+        viewModel.productInputModel.value?.let {
+            viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
+        }
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+    }
+
+    private fun isEditing(): Boolean {
+        return viewModel.isEditing.value ?: false
+    }
+
+    private fun isDrafting(): Boolean {
+        return viewModel.getDraftId() > 0L
+    }
+
+    private fun isAdding(): Boolean {
+        return viewModel.isAdding
+    }
+
+    private fun dataBackPressedLoss(): Boolean {
+        // when stepper page has no data, dataBackPressed is null but if stepper page has data, dataBackPressed has data too
+        // dataBackPressed is a sign of activity where data is obtained
+        if (dataBackPressed == null) {
+            return true
+        }
+        return false
     }
 
     private fun updateProductInputModelOfCacheManagerId(bundle: Bundle) {
@@ -1241,6 +1242,20 @@ class AddEditProductPreviewFragment :
                 }
             }
         }
+    }
+
+    private fun observeMustFillParentWeight() {
+        viewModel.mustFillParentWeight.observe(viewLifecycleOwner, {
+            if (it) {
+                addEditProductShipmentButton?.text = getString(R.string.action_add)
+                addEditProductShipmentButton?.animateExpand()
+                addEditProductShipmentTitle?.setTextColor(
+                    ContextCompat.getColor(context ?: return@observe,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
+            } else {
+                enableShipmentEdit()
+            }
+        })
     }
 
     private fun removeObservers() {

@@ -566,6 +566,7 @@ class AddEditProductShipmentFragment:
             isMustInsurance = radioRequiredInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             cplModel.shipmentServicesIds = shipperServicesIds
+            isUsingParentWeight = binding.weightInputLayout.root.isVisible
         }
     }
 

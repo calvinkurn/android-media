@@ -142,6 +142,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    val mustFillParentWeight = Transformations.map(productInputModel) {
+        !it.shipmentInputModel.isUsingParentWeight && !it.variantInputModel.hasVariant()
+    }
+
     private val mImageUrlOrPathList = MutableLiveData<MutableList<String>>()
     val imageUrlOrPathList: LiveData<MutableList<String>> get() = mImageUrlOrPathList
 

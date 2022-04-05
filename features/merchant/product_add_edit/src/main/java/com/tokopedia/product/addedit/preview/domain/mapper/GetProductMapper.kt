@@ -22,6 +22,7 @@ import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConsta
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getYoutubeDelimiter
 import com.tokopedia.product.addedit.preview.domain.constant.ProductMapperConstants.getYoutubeHost
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.shipment.presentation.model.CPLModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
@@ -217,7 +218,9 @@ class GetProductMapper @Inject constructor() {
         return ShipmentInputModel(
             convertToGram(product.weight, product.weightUnit),
             UNIT_GRAM,
-            product.mustInsurance
+            product.mustInsurance,
+            CPLModel(),
+            product.variant.products.isEmpty()
         )
     }
 

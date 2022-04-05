@@ -14,7 +14,8 @@ data class ShipmentInputModel(
     var weight: Int = DEFAULT_WEIGHT_VALUE,
     var weightUnit: Int = DEFAULT_WEIGHT_UNIT,
     var isMustInsurance: Boolean = true,
-    var cplModel: CPLModel = CPLModel()
+    var cplModel: CPLModel = CPLModel(),
+    var isUsingParentWeight: Boolean = false
 ) : Parcelable
 
 @Parcelize
