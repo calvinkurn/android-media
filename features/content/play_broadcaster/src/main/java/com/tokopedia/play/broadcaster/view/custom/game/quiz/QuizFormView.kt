@@ -256,12 +256,26 @@ class QuizFormView : ConstraintLayout {
 
         val newOptions = options.map {
             it.copy(
+                /** Auto Select */
                 isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
                 text = if(it.order == order) newText else it.text
             )
+        }.toMutableList()
+
+        /** Auto Add */
+        val isAllOptionFilled = newOptions.any { it.text.isEmpty() } == null
+        val currentOption = newOptions.size
+        val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
+
+        if(isNeedAddNewField) {
+            newOptions.add(QuizFormDataUiModel.Option(
+                order = currentOption,
+                maxLength = quizConfig.maxChoiceLength,
+                isMandatory = false,
+            ))
         }
 
-        setFormData(mQuizFormData.copy(options = newOptions), isAutoSelectEligible)
+        setFormData(mQuizFormData.copy(options = newOptions), isAutoSelectEligible || isNeedAddNewField)
     }
 
     private fun setupInsets() {
