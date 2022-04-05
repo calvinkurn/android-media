@@ -628,7 +628,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
             }
             else {
-                initQuizFormData(interactiveConfig.quizConfig)
+                initQuizFormData()
                 handleActiveInteractive()
             }
         }) { }
@@ -1025,7 +1025,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             delay(2000)
 
             /** Reset Form */
-            _quizFormData.setValue { QuizFormDataUiModel() }
+            initQuizFormData()
             _quizFormState.setValue { QuizFormStateUiModel.Nothing }
         }) {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(false) }
@@ -1036,7 +1036,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     /**
      * Quiz
      */
-    private fun initQuizFormData(quizConfig: QuizConfigUiModel) {
+    private fun initQuizFormData() {
+        val quizConfig = _gameConfig.value.quizConfig
         val initialOptions = mutableListOf<QuizFormDataUiModel.Option>()
 
         repeat(quizConfig.minChoicesCount) {
@@ -1050,7 +1051,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         _quizFormData.setValue {
-            copy(options = initialOptions)
+            QuizFormDataUiModel(options = initialOptions)
         }
     }
 
