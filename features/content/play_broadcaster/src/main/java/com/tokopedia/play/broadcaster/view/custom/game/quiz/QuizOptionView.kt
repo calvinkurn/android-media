@@ -93,7 +93,6 @@ class QuizOptionView : ConstraintLayout {
                 binding.etQuizOption.apply {
                     isFocusable = value
                     isFocusableInTouchMode = value
-                    isEnabled = value
                 }
 
                 setFocus(value)
