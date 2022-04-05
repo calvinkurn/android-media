@@ -53,7 +53,8 @@ object ReschedulePickupMapper {
         return times.map {
             RescheduleTimeOptionModel(
                 time = it.time,
-                formattedTime = "${it.time} WIB"
+                formattedTime = "${it.time} WIB",
+                etaPickup = it.etaPickup
             )
         }
     }

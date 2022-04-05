@@ -346,9 +346,9 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         }
     }
 
-    private fun setRescheduleDetailSummary(day: String, time: String) {
+    private fun setRescheduleDetailSummary(etaPickup: String) {
         binding?.layoutRescheduleDetail?.visibility = View.VISIBLE
-        binding?.layoutRescheduleDetail?.setHtmlDescription(getString(R.string.template_reschedule_detail_summary, binding?.courierOrderDetail?.text, day, time))
+        binding?.layoutRescheduleDetail?.setHtmlDescription(etaPickup)
     }
 
     private fun validateInput() {
@@ -426,10 +426,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         binding?.let {
             time = timeChosen
             it.etTime.editText.setText(timeChosen.formattedTime)
-            setRescheduleDetailSummary(
-                it.etDay.editText.text.toString(),
-                timeChosen.formattedTime
-            )
+            setRescheduleDetailSummary(timeChosen.etaPickup)
             validateInput()
         }
     }

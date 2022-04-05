@@ -99,6 +99,10 @@ data class GetReschedulePickupResponse(
                             @Expose
                             @SerializedName("time")
                             val time: String = "",
+
+                            @Expose
+                            @SerializedName("eta_pickup")
+                            val etaPickup: String = "",
                         )
                     }
 

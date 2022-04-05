@@ -18,7 +18,8 @@ data class RescheduleReasonOptionModel(
 
 data class RescheduleTimeOptionModel(
     val time: String = "",
-    val formattedTime: String = ""
+    val formattedTime: String = "",
+    val etaPickup: String = ""
 )
 
 

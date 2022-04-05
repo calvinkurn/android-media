@@ -45,6 +45,7 @@ class GetReschedulePickupUseCase @Inject constructor(private val useCase: Graphq
                                 day
                                 choose_time{
                                     time
+                                    eta_pickup
                                 }
                             }
         	                choose_reason{
