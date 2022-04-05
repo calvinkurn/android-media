@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.analytic.PlayAnalytic2
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
@@ -71,6 +72,7 @@ import javax.inject.Inject
 class PlayBottomSheetFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
         private val analytic: PlayAnalytic,
+        private val newAnalytic: PlayAnalytic2
 ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
@@ -499,12 +501,27 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun observeUiEvent(){
-            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-                playViewModel.uiEvent.collect { event ->
-                    when (event) {
-                        is BuySuccessEvent -> {
-                            val bottomInsetsType = if (event.isVariant) {
+    private fun observeUiEvent() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            playViewModel.uiEvent.collect { event ->
+                when (event) {
+                    is BuySuccessEvent -> {
+                        val bottomInsetsType = if (event.isVariant) {
+                            BottomInsetsType.VariantSheet
+                        } else BottomInsetsType.ProductSheet //TEMPORARY
+
+                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                        newAnalytic.clickProductAction(
+                            product = event.product,
+                            cartId = event.cartId,
+                            productAction = ProductAction.AddToCart,
+                            bottomInsetsType = bottomInsetsType,
+                            shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                            sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                        )
+                    }
+                    is AtcSuccessEvent -> {
+                        val bottomInsetsType = if (event.isVariant) {
                             BottomInsetsType.VariantSheet
                         } else BottomInsetsType.ProductSheet //TEMPORARY
 
