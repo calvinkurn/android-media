@@ -22,7 +22,7 @@
         android:layout_below="@+id/tvReviewPushTitle"
         android:ellipsize="end"
         android:maxLines="3"
-        android:textColor="@color/cm_title_black_255"
+        android:textColor="@color/cm_light_grey_255"
         android:textSize="@dimen/cm_sp_13"
         tools:text="Content Text" />
 

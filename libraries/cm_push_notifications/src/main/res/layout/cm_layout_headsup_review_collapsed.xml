@@ -27,6 +27,7 @@
             android:id="@+id/ll_review_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/cm_dp_8"
             android:layout_marginEnd="@dimen/cm_dp_15"
             android:layout_below="@+id/tvReviewPushTitle"
             android:layout_toStartOf="@+id/ivProductIcon">

@@ -32,7 +32,7 @@
         android:layout_below="@+id/tvReviewPushTitle"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="@dimen/cm_dp_16"
-        android:layout_marginTop="@dimen/cm_dp_4"
+        android:layout_marginTop="@dimen/cm_dp_8"
         android:layout_toStartOf="@+id/ivProductIcon">
 
         <include
