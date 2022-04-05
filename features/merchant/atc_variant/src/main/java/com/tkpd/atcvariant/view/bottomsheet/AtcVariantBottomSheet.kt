@@ -410,7 +410,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             if (it is Success) {
                 if (it.data) {
                     //success add wishlist
-                    showToasterSuccess(getString(com.tokopedia.product.detail.common.R.string.toaster_success_add_wishlist_from_button))
+
+                    showToasterSuccess(
+                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                        ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+                        ctaListener = { goToWishlist() }
+                    )
                 }
             } else if (it is Fail) {
                 showToasterError(getErrorMessage(it.throwable))
