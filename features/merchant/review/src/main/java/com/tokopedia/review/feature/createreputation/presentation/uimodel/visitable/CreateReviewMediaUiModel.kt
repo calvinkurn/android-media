@@ -8,6 +8,7 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
 
     companion object {
         const val PAYLOAD_MEDIA_STATE = "payloadMediaState"
+        const val PAYLOAD_ADD_MEDIA_ENABLE_STATE = "payloadAddMediaEnableState"
     }
 
     val uri: String
@@ -78,28 +79,29 @@ sealed interface CreateReviewMediaUiModel : Visitable<CreateReviewMediaTypeFacto
         }
     }
 
-    object AddSmall : CreateReviewMediaUiModel {
-        override val uri: String
-            get() = ""
-        override val uploadId: String
-            get() = ""
-        override val uploadBatchNumber: Int
-            get() = 0
-        override val finishUploadTimestamp: Long
-            get() = 0L
-        override val state: State
-            get() = State.UPLOADED
-
+    data class AddSmall(
+        override val uri: String = "",
+        override val uploadId: String = "",
+        override val uploadBatchNumber: Int = 0,
+        override val finishUploadTimestamp: Long = 0L,
+        override val state: State = State.UPLOADED,
+        val enabled: Boolean
+    ) : CreateReviewMediaUiModel {
         override fun areItemsTheSame(other: Any?): Boolean {
             return other is AddSmall
         }
 
         override fun areContentsTheSame(other: Any?): Boolean {
-            return other is AddSmall
+            return other is AddSmall && enabled == other.enabled
         }
 
         override fun getChangePayload(other: Any?): Bundle {
-            return Bundle()
+            return Bundle().apply {
+                if (other !is AddSmall) return@apply
+                if (enabled != other.enabled) {
+                    putBoolean(PAYLOAD_ADD_MEDIA_ENABLE_STATE, other.enabled)
+                }
+            }
         }
 
         override fun type(typeFactory: CreateReviewMediaTypeFactory): Int {

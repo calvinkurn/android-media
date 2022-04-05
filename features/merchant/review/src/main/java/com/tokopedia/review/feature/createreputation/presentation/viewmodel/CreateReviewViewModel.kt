@@ -894,7 +894,11 @@ class CreateReviewViewModel @Inject constructor(
         if (mediaUris.isEmpty()) {
             add(CreateReviewMediaUiModel.AddLarge)
         } else if (mediaUris.size < MAX_MEDIA_COUNT) {
-            add(CreateReviewMediaUiModel.AddSmall)
+            add(
+                CreateReviewMediaUiModel.AddSmall(
+                    enabled = none { it.state == CreateReviewMediaUiModel.State.UPLOADING }
+                )
+            )
         }
     }
 
