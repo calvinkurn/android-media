@@ -1337,6 +1337,41 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
     }
 
+    @Test
+    fun `on success remove unused component when sellerapp`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productParams = ProductParams("", "", "", "", "", "")
+
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.count { it.type() == ProductDetailConstant.PRODUCT_LIST } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PLAY_CAROUSEL } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
+    }
+
     /**
      *  Variant Section
      */

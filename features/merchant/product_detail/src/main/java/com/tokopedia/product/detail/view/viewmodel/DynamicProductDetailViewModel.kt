@@ -66,6 +66,7 @@ import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
@@ -518,11 +519,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 //Create tradein params
                 assignTradeinParams()
 
-                //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout)
+                //Remove all component that can be remove by using p1 data
+                //So we don't have to inflate to UI
+                val processedList = DynamicProductDetailMapper.removeUnusedComponent(
+                        getDynamicProductInfoP1,
+                        variantData,
+                        isShopOwner(),
+                        it.listOfLayout
+                )
 
                 //Render initial data
-                _productLayout.postValue(it.listOfLayout.asSuccess())
+                _productLayout.postValue(processedList.asSuccess())
             }
             // Then update the following, it will not throw anything when error
             getProductP2(urlQuery)
@@ -651,41 +658,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _topAdsImageView.postValue(it.asFail())
         }
-    }
-
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>) {
-        val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
-        val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
-        val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
-        val isVariant = getDynamicProductInfoP1?.isProductVariant() ?: false
-        val isVariantEmpty = variantData == null || variantData?.hasChildren == false
-
-        val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
-                it
-            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
-                it
-            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner())) {
-                it
-            } else {
-                null
-            }
-        }
-
-        if (removedData.isNotEmpty())
-            initialLayoutData.removeAll(removedData)
     }
 
     fun toggleFavorite(shopID: String, isNplFollowerType: Boolean = false) {

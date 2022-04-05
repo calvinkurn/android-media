@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -27,6 +28,7 @@ import org.junit.Test
 /**
  * Created by fwidjaja on 06/11/20.
  */
+@CassavaTest
 class UohListTrackingTest {
 
     companion object {

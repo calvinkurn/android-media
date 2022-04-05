@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
@@ -97,7 +97,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
             setSecondaryCTAText(getString(R.string.open_shop_logout_button))
             setSecondaryCTAClickListener {
                 if (GlobalConfig.isSellerApp()) {
-                    RouteManager.route(exitDialog.context, ApplinkConstInternalGlobal.LOGOUT)
+                    RouteManager.route(exitDialog.context, ApplinkConstInternalUserPlatform.LOGOUT)
                 }
                 finish()
             }

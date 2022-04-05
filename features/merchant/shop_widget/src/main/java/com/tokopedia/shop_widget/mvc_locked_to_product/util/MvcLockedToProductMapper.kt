@@ -1,6 +1,8 @@
 package com.tokopedia.shop_widget.mvc_locked_to_product.util
 
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.productcard.ProductCardModel
@@ -29,7 +31,8 @@ object MvcLockedToProductMapper {
 
     fun mapToMvcLockedToProductLayoutUiModel(
         response: MvcLockedToProductResponse.ShopPageMVCProductLock,
-        selectedSortData: MvcLockedToProductSortUiModel
+        selectedSortData: MvcLockedToProductSortUiModel,
+        isSellerView:Boolean
     ): MvcLockedToProductLayoutUiModel {
         val hasNextPage = checkHasNextPage(response.nextPage)
         val mvcLockedToProductVoucherUiModel = mapToMvcVoucherUiModel(response.voucher)
@@ -39,7 +42,8 @@ object MvcLockedToProductMapper {
             selectedSortData
         )
         val mvcLockedToProductProductListUiModel = mapToMvcLockedToProductProductListUiModel(
-            response.productList
+            response.productList,
+            isSellerView
         )
         val mvcLockedToProductErrorUiModel = mapToMvcLockedToProductErrorUiModel(
             response.error.message,
@@ -73,10 +77,12 @@ object MvcLockedToProductMapper {
     }
 
     fun mapToMvcLockedToProductProductListUiModel(
-        productListResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList
+        productListResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList,
+        isSellerView: Boolean
+
     ): List<MvcLockedToProductGridProductUiModel> {
         return productListResponse.data.map {
-            mapToMvcProductUiModel(it)
+            mapToMvcProductUiModel(it, isSellerView)
         }
     }
 
@@ -85,16 +91,43 @@ object MvcLockedToProductMapper {
     }
 
     private fun mapToMvcProductUiModel(
-        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
+        isSellerView: Boolean
+
     ): MvcLockedToProductGridProductUiModel {
         return MvcLockedToProductGridProductUiModel(
             productResponse.productID,
             productResponse.finalPrice,
-            mapToProductCardModel(productResponse)
+            productResponse.childIDs,
+            productResponse.city,
+            productResponse.minimumOrder,
+            productResponse.stock,
+            MvcLockedToProductGridProductUiModel.ProductInCart(
+                productResponse.productInCart.productId,
+                productResponse.productInCart.qty
+            ),
+            productResponse.isVariant(),
+            mapToProductCardModel(productResponse, isSellerView)
         )
     }
 
     private fun mapToProductCardModel(
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
+        isSellerView: Boolean
+    ): ProductCardModel {
+        return if(!MvcLockedToProductUtil.isMvcPhase2()){
+            createProductCardModelPhase1(productResponse)
+        } else {
+            val model = createBaseProductCartModelPhase2(productResponse)
+            if (productResponse.isVariant() || isSellerView) {
+                createProductCardWithDefaultAtcModel(model)
+            } else {
+                createProductCardWithQuantityAtcModel(productResponse, model)
+            }
+        }
+    }
+
+    private fun createBaseProductCartModelPhase2(
         productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data
     ): ProductCardModel {
         return ProductCardModel(
@@ -114,6 +147,54 @@ object MvcLockedToProductMapper {
             labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
         )
     }
+
+    private fun createProductCardWithQuantityAtcModel(
+        productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data,
+        productCardModel: ProductCardModel
+    ): ProductCardModel {
+        val productInCart = productResponse.productInCart.qty
+        return if (productInCart.isZero()) {
+            productCardModel.copy(
+                nonVariant = null,
+                hasAddToCartButton = true
+            )
+        } else {
+            productCardModel.copy(
+                nonVariant = ProductCardModel.NonVariant(
+                    quantity = productInCart,
+                    minQuantity = Int.ONE,
+                    maxQuantity = productResponse.stock
+                ),
+                hasAddToCartButton = false
+            )
+        }
+    }
+
+    private fun createProductCardWithDefaultAtcModel(model: ProductCardModel): ProductCardModel {
+        return model.copy(
+            hasAddToCartButton = true
+        )
+    }
+
+    private fun createProductCardModelPhase1(productResponse: MvcLockedToProductResponse.ShopPageMVCProductLock.ProductList.Data): ProductCardModel {
+        return ProductCardModel(
+            productName = productResponse.name,
+            productImageUrl = productResponse.imageUrl,
+            formattedPrice = productResponse.displayPrice,
+            slashedPrice = productResponse.originalPrice,
+            discountPercentage = getProductCardDiscountPercentage(productResponse.discountPercentage),
+            freeOngkir = ProductCardModel.FreeOngkir(
+                productResponse.isShowFreeOngkir,
+                productResponse.freeOngkirPromoIcon
+            ),
+            isOutOfStock = productResponse.isSoldOut,
+            ratingCount = productResponse.rating,
+            countSoldRating = getProductCardRating(productResponse.averageRating),
+            reviewCount = productResponse.totalReview.toIntOrZero(),
+            labelGroupList = productResponse.labelGroups.map { mapToProductCardLabelGroup(it) }
+        )
+    }
+
 
     private fun getProductCardRating(averageRating: Double): String {
         return averageRating.toString().takeIf { averageRating != 0.0 }.orEmpty()
