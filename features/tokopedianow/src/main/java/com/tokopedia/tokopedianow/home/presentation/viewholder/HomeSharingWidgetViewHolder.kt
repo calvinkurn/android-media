@@ -8,8 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -66,21 +64,64 @@ class HomeSharingWidgetViewHolder(
     private fun setReferralData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
             iCloseSharingEducation.hide()
-            if (element.isSender) {
-                convertStringToLink(tpSharingEducation, itemView.context, R.string.tokopedianow_home_referral_widget_desc_sender, element.slug)
-                btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
-                iuSharingEducation.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_ic_sender_illustration))
-                ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_left))
-                ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_right))
-            } else {
-                tpSharingEducation.text = MethodChecker.fromHtml(itemView.resources.getString(R.string.tokopedianow_home_referral_widget_desc_receiver))
-                btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
-                iuSharingEducation.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_ic_receiver_illustration))
-                ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_left))
-                ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_right))
-            }
             btnSharingEducation.isLoading = element.isButtonLoading
         }
+
+        if (element.isSender) {
+            setSenderData(element)
+        } else {
+            setReceiverData()
+        }
+        shareReferralWidgetImpressed(element)
+    }
+
+    private fun setSenderData(element: HomeSharingReferralWidgetUiModel) {
+        binding?.apply {
+            convertStringToLink(
+                typography = tpSharingEducation,
+                context = itemView.context,
+                stringRes = R.string.tokopedianow_home_referral_widget_desc_sender,
+                slug = element.slug,
+                isSender = element.isSender,
+                campaignCode = element.campaignCode,
+                warehouseId = element.warehouseId
+            )
+            btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
+            iuSharingEducation.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_ic_sender_illustration))
+            ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_left))
+            ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_right))
+        }
+    }
+
+    private fun setReceiverData() {
+        binding?.apply {
+            tpSharingEducation.text = MethodChecker.fromHtml(itemView.resources.getString(R.string.tokopedianow_home_referral_widget_desc_receiver))
+            btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
+            iuSharingEducation.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_ic_receiver_illustration))
+            ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_left))
+            ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_right))
+        }
+    }
+
+    private fun shareReferralWidgetImpressed(element: HomeSharingReferralWidgetUiModel) {
+        if (!element.isDisplayed) {
+            if (element.isSender) {
+                listener?.onShareReferralSenderWidgetImpressed(
+                    element.slug,
+                    element.isSender,
+                    element.campaignCode,
+                    element.warehouseId
+                )
+            } else {
+                listener?.onShareReferralReceiverWidgetImpressed(
+                    element.slug,
+                    element.isSender,
+                    element.campaignCode,
+                    element.warehouseId
+                )
+            }
+        }
+        element.display()
     }
 
     private fun createVectorDrawableCompat(resId: Int): VectorDrawableCompat? {
@@ -91,9 +132,19 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             btnSharingEducation.setOnClickListener {
                 if (element.isSender) {
-                    listener?.onShareBtnSharingReferralClicked(element.slug, element.isSender)
+                    listener?.onShareBtnReferralSenderClicked(
+                        element.slug,
+                        element.isSender,
+                        element.campaignCode,
+                        element.warehouseId
+                    )
                 } else {
-                    goToInformationPage(REFERRAL_PAGE_URL+element.slug)
+                    listener?.onShareBtnReferralReceiverClicked(
+                        element.slug,
+                        element.isSender,
+                        element.campaignCode,
+                        element.warehouseId
+                    )
                 }
             }
         }
@@ -131,24 +182,32 @@ class HomeSharingWidgetViewHolder(
         }
     }
 
-    private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int, slug: String) {
+    private fun convertStringToLink(
+        typography: Typography,
+        context: Context,
+        stringRes: Int,
+        slug: String,
+        isSender: Boolean,
+        campaignCode: String,
+        warehouseId: String
+    ) {
         val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
         val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, REFERRAL_PAGE_URL+slug))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->
             link.onClick = {
-                goToInformationPage(link.linkUrl)
+                listener?.onMoreReferralClicked(slug, isSender, campaignCode, warehouseId, link.linkUrl)
             }
         }
     }
 
-    private fun goToInformationPage(linkUrl: String) {
-        RouteManager.route(itemView.context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
-    }
-
     interface HomeSharingListener {
-        fun onShareBtnSharingReferralClicked(slug: String, isSender: Boolean)
+        fun onMoreReferralClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String, linkUrl: String)
+        fun onShareBtnReferralSenderClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
+        fun onShareBtnReferralReceiverClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
+        fun onShareReferralSenderWidgetImpressed(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
+        fun onShareReferralReceiverWidgetImpressed(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
         fun onShareBtnSharingEducationalInfoClicked()
         fun onCloseBtnSharingEducationalInfoClicked(id: String)
     }

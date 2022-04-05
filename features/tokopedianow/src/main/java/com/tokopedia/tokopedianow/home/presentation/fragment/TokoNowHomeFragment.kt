@@ -513,9 +513,71 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    override fun onShareBtnSharingReferralClicked(slug: String, isSender: Boolean) {
+    override fun onMoreReferralClicked(
+        slug: String,
+        isSender: Boolean,
+        campaignCode: String,
+        warehouseId: String,
+        linkUrl: String
+    ) {
+        openWebView(linkUrl)
+
+        analytics.sendClickMoreSenderReferralWidget(
+            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            campaignCode = campaignCode,
+            warehouseId = warehouseId,
+        )
+    }
+
+    override fun onShareBtnReferralSenderClicked(
+        slug: String,
+        isSender: Boolean,
+        campaignCode: String,
+        warehouseId: String
+    ) {
         updateSharingReferral(true)
         viewModelTokoNow.getReferralSenderHome(slug)
+    }
+
+    override fun onShareBtnReferralReceiverClicked(
+        slug: String,
+        isSender: Boolean,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        openWebView(REFERRAL_PAGE_URL+slug)
+
+        analytics.sendClickCheckDetailReceiverReferralWidget(
+            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            campaignCode = campaignCode,
+            warehouseId = warehouseId,
+        )
+    }
+
+    override fun onShareReferralSenderWidgetImpressed(
+        slug: String,
+        isSender: Boolean,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        analytics.sendImpressSenderReferralWidget(
+            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            campaignCode = campaignCode,
+            warehouseId = warehouseId,
+        )
+    }
+
+    override fun onShareReferralReceiverWidgetImpressed(
+        slug: String,
+        isSender: Boolean,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        analytics.sendImpressReceiverReferralWidget(
+            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            campaignCode = campaignCode,
+            warehouseId = warehouseId,
+        )
     }
 
     override fun onShareBtnSharingEducationalInfoClicked() {
@@ -1016,6 +1078,14 @@ class TokoNowHomeFragment: Fragment(),
         val item = adapter.getItem(HomeSharingReferralWidgetUiModel::class.java)
         if (item is HomeSharingReferralWidgetUiModel) {
             viewModelTokoNow.updateSharingReferral(item, isButtonLoading)
+
+            if (!isButtonLoading) {
+                trackClickShareSenderReferralWidget(
+                    slug = item.slug,
+                    campaignCode = item.campaignCode,
+                    warehouseId = item.warehouseId,
+                )
+            }
         }
     }
 
@@ -1103,6 +1173,14 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun trackRepurchaseAddToCart(position: Int, quantity: Int, data: TokoNowProductCardUiModel) {
         analytics.onRepurchaseAddToCart(position, quantity, data)
+    }
+
+    private fun trackClickShareSenderReferralWidget(slug: String, campaignCode: String, warehouseId: String) {
+        analytics.sendClickShareSenderReferralWidget(
+            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            campaignCode = campaignCode,
+            warehouseId = warehouseId,
+        )
     }
 
     private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
@@ -1572,5 +1650,9 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun permissionAction(action: String, label: String) {
         analytics.trackClickAccessMediaAndFiles(label)
+    }
+
+    private fun openWebView(linkUrl: String) {
+        RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
     }
 }

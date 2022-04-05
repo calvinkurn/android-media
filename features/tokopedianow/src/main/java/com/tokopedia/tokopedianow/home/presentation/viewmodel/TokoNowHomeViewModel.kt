@@ -208,7 +208,13 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun updateSharingReferral(item: HomeSharingReferralWidgetUiModel, isButtonLoading: Boolean) {
         launchCatchError(block = {
-            homeLayoutItemList.mapSharingReferralData(item, item.isSender, isButtonLoading)
+            homeLayoutItemList.mapSharingReferralData(
+                item = item,
+                isSender = item.isSender,
+                isButtonLoading = isButtonLoading,
+                warehouseId = item.warehouseId,
+                isDisplayed = item.isDisplayed
+            )
             val data = HomeLayoutListUiModel(
                 items = getHomeVisitableList(),
                 state = TokoNowLayoutState.LOADED
@@ -510,7 +516,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is HomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel.warehouse_id).await()
-            is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item).await()
+            is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item, localCacheModel.warehouse_id).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -611,12 +617,17 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel): Deferred<Unit?> {
+    private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel, warehouseId: String): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = validateReferralUserUseCase.execute(item.slug)
             if(response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
                 val isSender = REFERRAL_SENDER == response.gamiReferralValidateUser.status
-                homeLayoutItemList.mapSharingReferralData(item, isSender)
+                homeLayoutItemList.mapSharingReferralData(
+                    item = item,
+                    isSender = isSender,
+                    warehouseId = warehouseId,
+                    isDisplayed = false
+                )
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }

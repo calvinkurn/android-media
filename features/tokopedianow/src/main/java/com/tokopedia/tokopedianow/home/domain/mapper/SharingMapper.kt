@@ -32,7 +32,7 @@ object SharingMapper {
             state = state,
             slug = response.widgetParam,
             isSender = isSender,
-            isButtonLoading = false
+            campaignCode = response.campaignCode,
         )
         return HomeLayoutItemUiModel(layout, state)
     }

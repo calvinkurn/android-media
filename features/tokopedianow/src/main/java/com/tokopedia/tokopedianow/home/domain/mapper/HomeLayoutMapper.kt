@@ -214,10 +214,21 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapSharingReferralData(
         item: HomeSharingReferralWidgetUiModel,
         isSender: Boolean,
-        isButtonLoading: Boolean = false
+        isButtonLoading: Boolean = false,
+        warehouseId: String,
+        isDisplayed: Boolean
     ) {
         updateItemById(item.visitableId) {
-            HomeLayoutItemUiModel(item.copy(state = HomeLayoutItemState.LOADED, isSender = isSender, isButtonLoading = isButtonLoading), HomeLayoutItemState.LOADED)
+            HomeLayoutItemUiModel(
+                layout = item.copy(
+                    state = HomeLayoutItemState.LOADED,
+                    isSender = isSender,
+                    isButtonLoading = isButtonLoading,
+                    warehouseId = warehouseId,
+                    isDisplayed = isDisplayed
+                ),
+                state = HomeLayoutItemState.LOADED
+            )
         }
     }
 

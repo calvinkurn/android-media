@@ -11,13 +11,20 @@ sealed class HomeSharingWidgetUiModel (
     data class HomeSharingReferralWidgetUiModel(
         override val id: String,
         override val state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
-        val slug: String,
-        val isSender: Boolean,
-        val isButtonLoading: Boolean
+        var slug: String = "",
+        var isSender: Boolean = false,
+        var isButtonLoading: Boolean = false,
+        var campaignCode: String = "",
+        var warehouseId: String = "0",
+        var isDisplayed: Boolean = false
     ): HomeSharingWidgetUiModel(
         id,
         state
-    )
+    ) {
+        fun display() {
+            isDisplayed = true
+        }
+    }
 
     data class HomeSharingEducationWidgetUiModel (
         override val id: String,
