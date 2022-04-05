@@ -68,11 +68,13 @@ class QuizFormView : ConstraintLayout {
 
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
         override fun onOptionChecked(order: Int) {
-            setCorrectOptions(order)
+            eventBus.emit(Event.SelectQuizOption(order))
+//            setCorrectOptions(order)
         }
 
         override fun onTextChanged(order: Int, text: String) {
-            onOptionTextChanged(order, text)
+            eventBus.emit(Event.OptionChanged(order, text))
+//            onOptionTextChanged(order, text)
         }
     })
 
@@ -97,7 +99,7 @@ class QuizFormView : ConstraintLayout {
                         binding.viewGameHeader.isEditable = true
                         binding.viewQuizGift.isEditable = true
 
-                        setOptionsEditable(true)
+//                        setOptionsEditable(true)
 
                         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
                     }
@@ -106,7 +108,7 @@ class QuizFormView : ConstraintLayout {
                         binding.viewGameHeader.isEditable = false
                         binding.viewQuizGift.isEditable = false
 
-                        setOptionsEditable(false)
+//                        setOptionsEditable(false)
 
                         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -131,7 +133,7 @@ class QuizFormView : ConstraintLayout {
         bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
-            eventBus.emit(Event.SaveQuizData(mQuizFormData))
+//            eventBus.emit(Event.SaveQuizData(mQuizFormData))
             eventBus.emit(Event.Next)
         }
 
@@ -140,15 +142,18 @@ class QuizFormView : ConstraintLayout {
         }
 
         binding.viewGameHeader.setOnTextChangedListener {
-            setFormData(mQuizFormData.copy(title = it), needToUpdateOptions = false)
+            eventBus.emit(Event.TitleChanged(it))
+//            setFormData(mQuizFormData.copy(title = it), needToUpdateOptions = false)
         }
 
         binding.viewQuizGift.setOnTextChangeListener {
-            setFormData(mQuizFormData.copy(gift = it), needToUpdateOptions = false)
+            eventBus.emit(Event.GiftChanged(it))
+//            setFormData(mQuizFormData.copy(gift = it), needToUpdateOptions = false)
         }
 
         binding.viewQuizGift.setOnRemoveGiftListener {
-            setFormData(mQuizFormData.copy(gift = ""), needToUpdateOptions = false)
+            eventBus.emit(Event.GiftChanged(""))
+//            setFormData(mQuizFormData.copy(gift = ""), needToUpdateOptions = false)
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
@@ -156,8 +161,8 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-//            val selectedDuration = quizConfig.availableStartTimeInMs[index]
-//            eventBus.emit(Event.SelectDuration(selectedDuration))
+            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+            eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
         timePickerBinding.btnApply.setOnClickListener {
