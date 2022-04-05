@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab

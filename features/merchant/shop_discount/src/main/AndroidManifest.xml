@@ -3,9 +3,13 @@
     package="com.tokopedia.shopdiscount">
 
     <application>
+
         <activity
             android:name=".search.presentation.SearchProductActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
         <activity
             android:name=".manage.presentation.container.ProductManageActivity"
             android:exported="false"
