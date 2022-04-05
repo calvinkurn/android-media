@@ -144,6 +144,16 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         updateNotifyMeState(dataItem?.notifyMe)
 
         setWishlist()
+        set3DotsWishlistWithAtc(dataItem)
+    }
+
+    private fun set3DotsWishlistWithAtc(dataItem: DataItem?) {
+        if(dataItem?.hasThreeDotsWishlist == true)
+        masterProductCardListView?.setThreeDotsWishlistOnClickListener {
+            showProductCardOptions(itemView.context as FragmentActivity,
+                masterProductCardItemViewModel.getThreeDotsWishlistOptionsModel()
+            )
+        }
     }
 
     private fun setWishlist() {

@@ -71,6 +71,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
+    //Product Card Single
+    ProductCardSingle(R.layout.disco_product_card_single, ComponentNames.ProductCardSingle.componentName),
+    ProductCardSingleItem(R.layout.master_product_card_item_list_layout, ComponentNames.ProductCardSingleItem.componentName),
+
     //Navigation Chips
     NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
     NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),

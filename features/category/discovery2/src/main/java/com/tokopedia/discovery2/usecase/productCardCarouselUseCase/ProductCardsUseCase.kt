@@ -192,6 +192,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMap.putAll(addAddressQueryMap(userAddressData))
         if (userAddressData?.warehouse_id?.isNotEmpty() == true)
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
+//      Todo::  get prod id from query param
+        queryParameterMap["rpc_ProductId"] = 15205211
         return queryParameterMap
     }
 

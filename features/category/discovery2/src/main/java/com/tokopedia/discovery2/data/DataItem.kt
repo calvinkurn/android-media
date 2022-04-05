@@ -482,6 +482,10 @@ data class DataItem(
 
         var hasThreeDots: Boolean = false,
 
+        var hasThreeDotsWishlist: Boolean = false,
+
+        var hasATCWishlist: Boolean = false,
+
         var isWishList: Boolean = false,
 
         var maxHeight : Int = 0,
