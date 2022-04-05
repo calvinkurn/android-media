@@ -32,22 +32,16 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.AtcProductAction
 import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
 import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
 import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
-import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
-import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
-import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
-import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
-import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
@@ -65,9 +59,6 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
@@ -153,7 +144,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
-        return ::loadingDialog.isInitialized && loadingDialog.isVisible
+        return getLoadingDialogFragment().isVisible
     }
 
     /**
@@ -290,7 +281,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
         observeBottomInsetsState()
-        observeBuyEvent()
 
         observeUiState()
         observeUiEvent()
@@ -395,6 +385,10 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
+    private fun doActionProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, productAction: ProductAction, type: BottomInsetsType) {
+        viewModel.addToCart(product, action = productAction, type = type, sectionInfo = sectionInfo)
+    }
+
     private fun openLoginPage() {
         openPageByApplink(ApplinkConst.LOGIN, requestCode = REQUEST_CODE_LOGIN)
     }
@@ -429,6 +423,7 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
+
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             val productSheetState = it[BottomInsetsType.ProductSheet]
@@ -474,46 +469,6 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
-    private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> showLoadingView()
-                is PlayResult.Success -> {
-                    hideLoadingView()
-                    val data = it.data.first.getContentIfNotHandled() ?: return@DistinctObserver
-
-                    if (data.isSuccess) {
-                        when (data.action) {
-                            ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                            ProductAction.AddToCart -> doShowToaster(
-                                    bottomSheetType = data.bottomInsetsType,
-                                    toasterType = Toaster.TYPE_NORMAL,
-                                    message = getString(R.string.play_add_to_cart_message_success),
-                                    actionText = getString(R.string.play_action_view),
-                                    actionClickListener = {
-                                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                                        analytic.clickSeeToasterAfterAtc()
-                                    }
-                            )
-                        }
-                        if (data.bottomInsetsType == BottomInsetsType.VariantSheet) {
-                            closeVariantSheet()
-                        }
-                        analytic.clickProductAction(product = data.product, cartId = data.cartId, productAction = data.action, bottomInsetsType = data.bottomInsetsType, shopInfo = playViewModel.latestCompleteChannelData.partnerInfo, sectionInfo = it.data.second)
-                    }
-                    else {
-                        val errMsg = ErrorHandler.getErrorMessage(requireContext(), data.errorMessage)
-                        doShowToaster(
-                                bottomSheetType = data.bottomInsetsType,
-                                toasterType = Toaster.TYPE_ERROR,
-                                message = errMsg
-                        )
-                    }
-                }
-            }
-        })
-    }
-
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             playViewModel.uiState.withCache().collectLatest { (prevState, state) ->
@@ -541,6 +496,11 @@ class PlayBottomSheetFragment @Inject constructor(
                 )
 
                 renderVoucherSheet(state.tagItems)
+
+                renderVariantSheet(state.selectedVariant)
+
+                if (state.isLoadingBuy) showLoadingView()
+                else hideLoadingView()
             }
         }
     }
@@ -549,6 +509,12 @@ class PlayBottomSheetFragment @Inject constructor(
             viewLifecycleOwner.lifecycleScope.launchWhenResumed {
                 playViewModel.uiEvent.collect { event ->
                     when (event) {
+                        is BuySuccessEvent -> {
+                            RouteManager.route(
+                                requireContext(),
+                                ApplinkConstInternalMarketplace.CART
+                            )
+                        }
                         is ShowInfoEvent -> {
                             doShowToaster(
                                 bottomSheetType = BottomInsetsType.ProductSheet,
@@ -563,6 +529,34 @@ class PlayBottomSheetFragment @Inject constructor(
                                 message = ErrorHandler.getErrorMessage(requireContext(), event.error)
                             )
                         }
+                        is AtcSuccessEvent -> {
+                            val bottomInsetsType = if (event.isVariant) {
+                                BottomInsetsType.VariantSheet
+                            } else BottomInsetsType.ProductSheet //TEMPORARY
+
+                            doShowToaster(
+                                bottomSheetType = bottomInsetsType,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = getString(R.string.play_add_to_cart_message_success),
+                                actionText = getString(R.string.play_action_view),
+                                actionClickListener = {
+                                    RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                    analytic.clickSeeToasterAfterAtc()
+                                }
+                            )
+
+                            if (event.isVariant) closeVariantSheet()
+
+                            analytic.clickProductAction(
+                                product = event.product,
+                                cartId = event.cartId,
+                                productAction = ProductAction.AddToCart,
+                                bottomInsetsType = bottomInsetsType,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                            )
+                        }
+                        else -> {}
                     }
                 }
             }
@@ -624,5 +618,23 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList
             )
         }
+    }
+
+    private fun renderVariantSheet(variant: NetworkResult<VariantUiModel>) {
+        when (variant) {
+            NetworkResult.Loading -> variantSheetView.showPlaceholder()
+            is NetworkResult.Success -> variantSheetView.setVariantSheet(variant.data)
+            is NetworkResult.Fail -> variantSheetView.showError(
+                isConnectionError = variant.error is ConnectException || variant.error is UnknownHostException,
+                onError = { }
+            )
+        }
+    }
+
+    private fun getLoadingDialogFragment(): PlayLoadingDialogFragment {
+        return PlayLoadingDialogFragment.get(
+            childFragmentManager,
+            requireActivity().classLoader
+        )
     }
 }
