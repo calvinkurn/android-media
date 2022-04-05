@@ -13,9 +13,9 @@ class SaveReschedulePickupUseCase @Inject constructor(private val useCase: Graph
         useCase.setTypeClass(SaveReschedulePickupResponse.Data::class.java)
     }
 
-    @GqlQuery(SaveReschedulePickupQuery, MP_LOGISTIC_INSERT_RESCHEDULE_PICKUP)
+    @GqlQuery(SaveReschedulePickupMutation, MP_LOGISTIC_INSERT_RESCHEDULE_PICKUP)
     suspend fun execute(param: SaveReschedulePickupParam): SaveReschedulePickupResponse.Data {
-        useCase.setGraphqlQuery(SaveReschedulePickupQuery())
+        useCase.setGraphqlQuery(SaveReschedulePickupMutation())
         useCase.setRequestParams(generateParam(param))
         return useCase.executeOnBackground()
     }
@@ -25,7 +25,7 @@ class SaveReschedulePickupUseCase @Inject constructor(private val useCase: Graph
     }
 
     companion object {
-        const val SaveReschedulePickupQuery = "SaveReschedulePickupQuery"
+        const val SaveReschedulePickupMutation = "SaveReschedulePickupMutation"
         const val MP_LOGISTIC_INSERT_RESCHEDULE_PICKUP = """
             mutation saveReschedulePickup(${'$'}input:MpLogisticInsertReschedulePickupInputs!){
                 mpLogisticInsertReschedulePickup(input:${'$'}input){
