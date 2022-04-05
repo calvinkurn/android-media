@@ -42,7 +42,8 @@ class PlayToaster(
         try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
     }
 
-    fun showError(
+    fun showErrorInView(
+        view: View,
         err: Throwable,
         customErrMessage: String? = null,
         duration: Int = Toaster.LENGTH_SHORT,
@@ -69,7 +70,8 @@ class PlayToaster(
             ).orEmpty()
         }
 
-        showToaster(
+        showToasterInView(
+            view,
             errMessage,
             Toaster.TYPE_ERROR,
             duration,
@@ -77,6 +79,38 @@ class PlayToaster(
             actionListener,
             bottomMargin
         )
+    }
+
+    fun showError(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_SHORT,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener {  },
+        bottomMargin: Int = 0,
+    ) {
+        val targetView = view ?: return
+        showErrorInView(targetView, err, customErrMessage, duration, actionLabel, actionListener, bottomMargin)
+    }
+
+    fun showToasterInView(
+        view: View,
+        message: String,
+        type: Int = Toaster.TYPE_NORMAL,
+        duration: Int = Toaster.LENGTH_SHORT,
+        actionLabel: String = "",
+        actionListener: View.OnClickListener = View.OnClickListener { },
+        bottomMargin: Int = 0
+    ) {
+        Toaster.toasterCustomBottomHeight = bottomMargin
+
+        Toaster.build(view,
+            text = message,
+            duration = duration,
+            type = type,
+            actionText = actionLabel,
+            clickListener = actionListener,
+        ).show()
     }
 
     fun showToaster(
@@ -87,15 +121,7 @@ class PlayToaster(
         actionListener: View.OnClickListener = View.OnClickListener { },
         bottomMargin: Int = 0
     ) {
-        Toaster.toasterCustomBottomHeight = bottomMargin
-
-        val view = this.view ?: return
-
-        Toaster.build(view,
-            text = message,
-            duration = duration,
-            type = type,
-            actionText = actionLabel,
-            clickListener = actionListener).show()
+        val targetView = view ?: return
+        showToasterInView(targetView, message, type, duration, actionLabel, actionListener, bottomMargin)
     }
 }

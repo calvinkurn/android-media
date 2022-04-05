@@ -3,10 +3,8 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myc
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.data.mycoupon.MyCoupon
 import com.tokopedia.discovery2.data.mycoupon.MyCouponsRequest
 import com.tokopedia.discovery2.usecase.HideSectionUseCase
 import com.tokopedia.discovery2.usecase.MyCouponUseCase
@@ -61,22 +59,23 @@ class MyCouponViewModel(val application: Application, val components: Components
         dataItem?.let { couponDataItem ->
             if (!couponDataItem.catalogSlug.isNullOrEmpty()) {
                 launchCatchError(block = {
-                    val myCouponResponse = myCouponUseCase.getMyCouponData(getMyCoupleBundle(couponDataItem))
-                    myCouponResponse.tokopointsCouponListStack?.let { myCouponRes ->
-                        if (!myCouponRes.coupons.isNullOrEmpty()) {
-                            componentList.value = mapCouponListToComponentList(myCouponRes.coupons!!,
-                                    ComponentNames.MyCouponItem.componentName,components.id)
-                        } else {
-                            hideIfPresentInSection()
-                        }
-                    } ?: kotlin.run {
-                        hideIfPresentInSection()
-                    }
+                    myCouponUseCase.getMyCouponData(components.id, components.pageEndPoint, getMyCoupleBundle(couponDataItem))
+                    setCouponsList()
                 }, onError = {
-                    hideIfPresentInSection()
+                    components.noOfPagesLoaded = 1
+                    it.printStackTrace()
                 })
+            }else{
+                componentList.value = null
             }
         }
+    }
+
+    private fun getCouponsList(): ArrayList<ComponentsItem>? {
+        components.getComponentsItem()?.let { couponList ->
+            return couponList as ArrayList<ComponentsItem>
+        }
+        return null
     }
 
     private fun hideIfPresentInSection() {
@@ -88,21 +87,14 @@ class MyCouponViewModel(val application: Application, val components: Components
         }
     }
 
-    private fun mapCouponListToComponentList(itemList: List<MyCoupon>, subComponentName: String = "",
-                                             compId : String = ""): ArrayList<ComponentsItem> {
-        val list = ArrayList<ComponentsItem>()
-        itemList.forEachIndexed { index, it ->
-            val componentsItem = ComponentsItem()
-            componentsItem.position = index
-            componentsItem.name = subComponentName
-            componentsItem.parentComponentName = components.name
-            componentsItem.parentComponentId = compId
-            val dataItem = mutableListOf<MyCoupon>()
-            dataItem.add(it)
-            componentsItem.myCouponList = itemList
-            list.add(componentsItem)
+    private fun setCouponsList() {
+        getCouponsList()?.let {
+            if (it.isNotEmpty()) {
+                componentList.value = it
+            }else{
+                componentList.value = null
+            }
         }
-        return list
     }
 
     private fun getMyCoupleBundle(dataItem: DataItem): MyCouponsRequest {

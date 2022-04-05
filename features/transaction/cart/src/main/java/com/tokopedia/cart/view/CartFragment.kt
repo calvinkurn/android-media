@@ -923,7 +923,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                        IconBuilder(IconBuilderFlag(pageSource = CART_PAGE))
                                 .addIcon(
                                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                                         disableDefaultGtmTracker = true,

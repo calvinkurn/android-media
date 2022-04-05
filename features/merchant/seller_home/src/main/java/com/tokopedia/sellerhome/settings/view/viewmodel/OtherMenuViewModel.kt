@@ -403,8 +403,6 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val userShopInfoWrapper = withContext(dispatcher.io) {
-                    getUserShopInfoUseCase.params =
-                        GetUserShopInfoUseCase.createRequestParams(userSession.shopId.toLongOrZero())
                     getUserShopInfoUseCase.executeOnBackground()
                 }
                 _userShopInfoLiveData.value = SettingResponseState.SettingSuccess(
