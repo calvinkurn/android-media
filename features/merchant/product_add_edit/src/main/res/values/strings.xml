@@ -516,7 +516,7 @@
     <string name="cpl_custom_agen">Antar ke Kantor Agen</string>
     <string name="cpl_custom_agen_button">Ubah</string>
 
-    <!-- Variant validation error message -->
+    <!-- IMS validation error message -->
     <string name="error_empty_price">Harga wajib diisi</string>
     <string name="error_minimum_price">Min. Rp%d</string>
     <string name="error_empty_stock">Stok wajib diisi</string>
@@ -527,5 +527,6 @@
     <string name="error_max_weight">Maks. %s g</string>
     <string name="wpv_coachmark_title">Atur berat per varian, yuk!</string>
     <string name="wpv_coachmark_message">Sekarang kamu bisa atur berat tiap varian.</string>
+    <string name="error_weight_not_filled">Isi detail pengiriman dulu, ya.</string>
 
 </resources>

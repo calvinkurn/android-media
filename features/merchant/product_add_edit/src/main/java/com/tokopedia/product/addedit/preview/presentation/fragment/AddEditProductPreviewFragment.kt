@@ -4,7 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -143,6 +141,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -729,9 +728,13 @@ class AddEditProductPreviewFragment :
             val validateMessage = viewModel.validateProductInput(viewModel.productInputModel.value?.detailInputModel
                 ?: DetailInputModel())
             val isAddingOrDuplicating = isAdding() || viewModel.isDuplicate
+            val mustFillParentWeight = viewModel.mustFillParentWeight.value.orFalse()
 
-            if (validateMessage.isNotEmpty()) {
-                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            if (mustFillParentWeight) {
+                Toaster.build(view, getString(R.string.error_weight_not_filled),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            } else if (validateMessage.isNotEmpty()) {
+                Toaster.build(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             } else if (isAddingOrDuplicating && !isProductLimitEligible) {
                 productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
                 productLimitationBottomSheet?.setIsSavingToDraft(true)
@@ -789,19 +792,19 @@ class AddEditProductPreviewFragment :
             }
             removeNavigationResult(REQUEST_KEY_ADD_MODE)
         })
-        getNavigationResult(REQUEST_KEY_DETAIL)?.observe(viewLifecycleOwner, Observer { bundle ->
+        getNavigationResult(REQUEST_KEY_DETAIL)?.observe(viewLifecycleOwner, { bundle ->
             bundle?.let {
                 updateProductInputModelOfCacheManagerId(it)
             }
             removeNavigationResult(REQUEST_KEY_DETAIL)
         })
-        getNavigationResult(REQUEST_KEY_DESCRIPTION)?.observe(viewLifecycleOwner, Observer { bundle ->
+        getNavigationResult(REQUEST_KEY_DESCRIPTION)?.observe(viewLifecycleOwner, { bundle ->
             bundle?.let {
                 updateProductInputModelOfCacheManagerId(it)
             }
             removeNavigationResult(REQUEST_KEY_DESCRIPTION)
         })
-        getNavigationResult(REQUEST_KEY_SHIPMENT)?.observe(viewLifecycleOwner, Observer { bundle ->
+        getNavigationResult(REQUEST_KEY_SHIPMENT)?.observe(viewLifecycleOwner, { bundle ->
             bundle?.let {
                 updateProductInputModelOfCacheManagerId(it)
             }
@@ -811,17 +814,19 @@ class AddEditProductPreviewFragment :
 
     private fun onSuccessSetCashback() {
         view?.let {
-            Toaster.make(it, getString(
-                R.string.product_edit_set_cashback_success),
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            Toaster.build(
+                it, getString(R.string.product_edit_set_cashback_success),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
     private fun onFailedSetCashback() {
         view?.let {
-            Toaster.make(it, getString(
-                R.string.product_edit_set_cashback_error),
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+            Toaster.build(
+                it, getString(R.string.product_edit_set_cashback_error),
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
@@ -998,7 +1003,7 @@ class AddEditProductPreviewFragment :
     private fun observeProductData() {
         // start PLT monitoring network
         startNetworkRequestPerformanceMonitoring()
-        viewModel.getProductResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.getProductResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     val isVariantEmpty = result.data.variant.products.isEmpty()
@@ -1097,13 +1102,13 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeImageUrlOrPathList() {
-        viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, Observer {
+        viewModel.imageUrlOrPathList.observe(viewLifecycleOwner, {
             productPhotoAdapter?.setProductPhotoPaths(it)
         })
     }
 
     private fun observeIsLoading() {
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+        viewModel.isLoading.observe(viewLifecycleOwner, { isLoading ->
             if (isLoading) {
                 showLoading()
             } else {
@@ -1114,7 +1119,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeValidationMessage() {
         viewModel.resetValidateResult() // reset old result when re-observe
-        viewModel.validationResult.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.validationResult.observe(viewLifecycleOwner, { result ->
             when (result.result) {
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
@@ -1131,7 +1136,7 @@ class AddEditProductPreviewFragment :
                         }
                     }
                     showLoading()
-                    Handler().postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
+                    view?.postDelayed( { activity?.finish() }, DELAY_CLOSE_ACTIVITY)
                 }
                 ValidationResultModel.Result.VALIDATION_ERROR -> {
                     showToasterFailed(result.exception)
@@ -1147,7 +1152,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun observeSaveProductDraft() {
-        viewModel.saveProductDraftResultLiveData.observe(viewLifecycleOwner, Observer {
+        viewModel.saveProductDraftResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
                 is Fail -> {
@@ -1320,57 +1325,53 @@ class AddEditProductPreviewFragment :
     }
 
     private fun showPhotoTips() {
-        fragmentManager?.let {
-            val tooltipBottomSheet = TooltipBottomSheet()
-            val tips: ArrayList<ImageTooltipModel> = ArrayList()
-            val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), PHOTO_TIPS_URL_1))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), PHOTO_TIPS_URL_2))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), PHOTO_TIPS_URL_3))
+        val tooltipBottomSheet = TooltipBottomSheet()
+        val tips: ArrayList<ImageTooltipModel> = ArrayList()
+        val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
+        tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), PHOTO_TIPS_URL_1))
+        tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), PHOTO_TIPS_URL_2))
+        tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), PHOTO_TIPS_URL_3))
 
-            tooltipBottomSheet.apply {
-                setTitle(tooltipTitle)
-                setItemMenuList(tips)
-                setDividerVisible(true)
-                show(it, null)
-            }
+        tooltipBottomSheet.apply {
+            setTitle(tooltipTitle)
+            setItemMenuList(tips)
+            setDividerVisible(true)
         }
+        tooltipBottomSheet.show(childFragmentManager, null)
     }
 
     private fun showVariantTips() {
-        fragmentManager?.let {
-            val tooltipBottomSheet = TooltipBottomSheet()
-            val tips: ArrayList<NumericTooltipModel> = ArrayList()
-            val tooltipTitle = getString(R.string.title_tooltip_variant_tips)
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_1)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_2)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_3)))
-            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_4)))
+        val tooltipBottomSheet = TooltipBottomSheet()
+        val tips: ArrayList<NumericTooltipModel> = ArrayList()
+        val tooltipTitle = getString(R.string.title_tooltip_variant_tips)
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_1)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_2)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_3)))
+        tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_4)))
 
-            tooltipBottomSheet.apply {
-                setTitle(tooltipTitle)
-                setItemMenuList(tips)
-                setDividerVisible(false)
-                show(it, null)
-            }
+        tooltipBottomSheet.apply {
+            setTitle(tooltipTitle)
+            setItemMenuList(tips)
+            setDividerVisible(false)
         }
+        tooltipBottomSheet.show(childFragmentManager, null)
     }
 
     private fun showGetProductErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage,
-                    type = Toaster.TYPE_ERROR,
-                    actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
-                    duration = Snackbar.LENGTH_INDEFINITE,
-                    clickListener = View.OnClickListener {
-                        viewModel.getProductData(viewModel.getProductId())
-                    })
+            Toaster.build(it, errorMessage,
+                duration = Snackbar.LENGTH_INDEFINITE,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
+                clickListener = {
+                    viewModel.getProductData(viewModel.getProductId())
+                }).show()
         }
     }
 
     private fun showMaxProductImageErrorToast(errorMessage: String) {
         view?.let {
-            Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -1689,7 +1690,7 @@ class AddEditProductPreviewFragment :
     private fun showAdminNotEligibleView() {
         adminRevampGlobalError?.run {
             val permissionGroup = SellerHomePermissionGroup.PRODUCT
-            ImageHandler.loadImageAndCache(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
+            ImageUtils.loadImage(errorIllustration, AdminPermissionUrl.ERROR_ILLUSTRATION)
             errorTitle.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_title, permissionGroup)
             errorDescription.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_desc, permissionGroup)
             errorAction.text = context?.getString(com.tokopedia.shop.common.R.string.admin_no_permission_action)
