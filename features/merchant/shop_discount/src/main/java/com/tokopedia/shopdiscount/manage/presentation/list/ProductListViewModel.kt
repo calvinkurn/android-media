@@ -31,11 +31,15 @@ class ProductListViewModel @Inject constructor(
                     page = page,
                     status = discountStatus
                 )
-                getSlashPriceProductListUseCase.executeOnBackground()
+                val response = getSlashPriceProductListUseCase.executeOnBackground()
+                val formattedProduct = productMapper.map(response)
+                Pair(response, formattedProduct)
             }
-            val formattedProduct = productMapper.map(result)
-            val productData = ProductData(result.getSlashPriceProductList.totalProduct, formattedProduct)
+
+            val (response, formattedProduct) = result
+            val productData = ProductData(response.getSlashPriceProductList.totalProduct, formattedProduct)
             _products.value = Success(productData)
+
         }, onError = {
             _products.value = Fail(it)
         })

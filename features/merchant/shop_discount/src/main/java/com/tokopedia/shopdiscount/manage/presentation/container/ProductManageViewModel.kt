@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
@@ -30,11 +31,11 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getSlashPriceProductListMetaUseCase.setRequestParams()
-                getSlashPriceProductListMetaUseCase.executeOnBackground()
+                val response = getSlashPriceProductListMetaUseCase.executeOnBackground()
+                productListMetaMapper.map(response.getSlashPriceProductListMeta.data.tab)
             }
-            val formattedProductMeta =
-                productListMetaMapper.map(result.getSlashPriceProductListMeta.data.tab)
-            _productsMeta.value = Success(formattedProductMeta)
+
+            _productsMeta.value = Success(result)
 
         }, onError = {
             _productsMeta.value = Fail(it)
