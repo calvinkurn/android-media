@@ -8,11 +8,22 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
+    <include
+        android:id="@+id/layout_bundle_header"
+        layout="@layout/layout_mini_cart_bundle_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/text_product_name"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_product"
         android:layout_width="69dp"
         android:layout_height="69dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="12dp"
+        app:layout_goneMarginStart="0dp"
+        app:layout_constraintLeft_toRightOf="@id/vertical_line"
         app:layout_constraintTop_toTopOf="@+id/text_product_name" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -20,12 +31,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        app:layout_goneMarginTop="9dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/image_product"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_bundle_header"
+        app:layout_constraintBottom_toTopOf="@id/text_qty_left"
         app:typographyType="body_2"
         tools:text="Tas organizerdfnlgjdhdfhn sepeda double container yang panjang" />
 
@@ -65,7 +78,7 @@
         android:layout_marginStart="16dp"
         android:gravity="center_vertical"
         android:visibility="gone"
-        app:labelType="general_dark_red"
+        app:labelType="general_light_red"
         app:layout_constraintBottom_toBottomOf="@+id/text_product_price"
         app:layout_constraintStart_toEndOf="@+id/image_product"
         app:layout_constraintTop_toTopOf="@+id/text_product_price"
@@ -80,7 +93,7 @@
         android:layout_alignBottom="@+id/text_product_price"
         android:gravity="center_vertical"
         android:paddingStart="4dp"
-        android:paddingEnd="0dp"
+        android:paddingEnd="4dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/text_product_price"
         app:layout_constraintStart_toEndOf="@+id/label_slash_price_percentage"
@@ -97,8 +110,6 @@
         android:layout_alignBottom="@+id/label_slash_price_percentage"
         android:layout_marginTop="8dp"
         android:gravity="center_vertical"
-        android:paddingStart="4dp"
-        android:paddingEnd="0dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toEndOf="@+id/text_slash_price"
         app:layout_constraintTop_toBottomOf="@+id/text_product_variant"
@@ -127,7 +138,7 @@
         android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/image_product"
         app:layout_constraintTop_toBottomOf="@+id/image_product"
         app:unify_text_field_label="@string/mini_cart_label_product_notes_editable"
         tools:layout_height="32dp"
@@ -145,7 +156,8 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
         app:layout_constraintEnd_toStartOf="@+id/button_delete_cart"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/image_product"
+        app:layout_constraintTop_toBottomOf="@id/image_product"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
         app:typographyType="body_3"
         tools:visibility="gone" />
@@ -161,7 +173,7 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/image_product"
         app:layout_constraintTop_toBottomOf="@+id/image_product"
         app:typographyType="body_3"
         tools:text="Jangan Jangan Jangan Jangan Jangan Jangan Jangan "
@@ -189,9 +201,11 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
         app:icon_name="DELETE"
+        android:visibility="invisible"
         app:icon_color_light_enable="@color/Unify_NN500"
         app:layout_constraintEnd_toStartOf="@+id/qty_editor_product"
-        app:layout_constraintTop_toBottomOf="@+id/text_notes_filled" />
+        app:layout_constraintTop_toBottomOf="@+id/text_notes_filled"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_product_unavailable_action"
@@ -214,9 +228,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_delete_cart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/button_delete_cart"
         tools:visibility="visible" />
 
+    <View
+        android:id="@+id/vertical_line"
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN50"
+        android:visibility="gone"
+        android:layout_marginTop="16dp"
+        app:layout_goneMarginTop="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/image_product"
+        app:layout_constraintTop_toBottomOf="@id/layout_bundle_header"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="9dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qty_editor_product" />
 </androidx.constraintlayout.widget.ConstraintLayout>
