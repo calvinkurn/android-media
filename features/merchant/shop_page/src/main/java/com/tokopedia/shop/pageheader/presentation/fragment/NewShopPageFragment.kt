@@ -271,6 +271,8 @@ class NewShopPageFragment :
     private val iconTabShowcaseActive: Int get() = IconUnify.CABINET_FILLED
     private val iconTabFeedInactive: Int get() = IconUnify.FEED
     private val iconTabFeedActive: Int get() = IconUnify.FEED_FILLED
+    private val iconTabReviewInactive: Int get() = IconUnify.STAR
+    private val iconTabReviewActive: Int get() = IconUnify.STAR_FILLED
 
     private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
@@ -1637,8 +1639,8 @@ class NewShopPageFragment :
         )
         listShopPageTabModel.add(ShopPageTabModel(
                 getString(R.string.shop_info_title_tab_review),
-                iconTabFeedInactive,
-                iconTabFeedActive,
+                iconTabReviewInactive,
+                iconTabReviewActive,
                 reviewTabFragment
         ))
         return listShopPageTabModel
