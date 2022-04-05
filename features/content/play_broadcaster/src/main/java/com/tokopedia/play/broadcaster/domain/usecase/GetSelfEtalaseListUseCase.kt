@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.usecase
 
 import com.tokopedia.play.broadcaster.type.EtalaseType
-import com.tokopedia.play.broadcaster.util.error.DefaultNetworkThrowable
+import com.tokopedia.play.broadcaster.util.error.DefaultNetworkException
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
@@ -37,7 +37,7 @@ class GetSelfEtalaseListUseCase @Inject constructor(
                 it.id == ALL_PRODUCTS_ID || EtalaseType.getByType(it.type, it.id) == EtalaseType.User
             }
         } catch (e: Throwable) {
-            throw if (e.hasCauseType(listOf(UnknownHostException::class.java, SocketTimeoutException::class.java))) DefaultNetworkThrowable()
+            throw if (e.hasCauseType(listOf(UnknownHostException::class.java, SocketTimeoutException::class.java))) DefaultNetworkException()
             else e
         }
     }

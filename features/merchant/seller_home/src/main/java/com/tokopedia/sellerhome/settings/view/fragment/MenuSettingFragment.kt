@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.common.InternalReviewUtils
@@ -29,7 +30,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
@@ -362,7 +363,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
                 val progressDialog = showProgressDialog()
                 dialogInterface.dismiss()
-                RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+                RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
                 progressDialog.dismiss()
                 activity?.finish()
             }
@@ -410,7 +411,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun startShopActiveService() {
         context?.let {
-            UpdateShopActiveService.startService(it)
+            UpdateShopActiveWorker.execute(it)
         }
     }
 

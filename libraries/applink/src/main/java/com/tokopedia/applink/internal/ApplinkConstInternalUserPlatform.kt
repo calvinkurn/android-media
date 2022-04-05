@@ -1,6 +1,7 @@
 package com.tokopedia.applink.internal
 
 import com.tokopedia.applink.constant.DeeplinkConstant
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME
 
 object ApplinkConstInternalUserPlatform {
 
@@ -15,6 +16,9 @@ object ApplinkConstInternalUserPlatform {
     const val METHOD_LOGIN_GOOGLE = "google"
     const val METHOD_LOGIN_FACEBOOK = "facebook"
     const val METHOD_LOGIN_FINGERPRINT = "fingerprint"
+
+    const val PARAM_IS_RETURN_HOME = "return_to_home"
+    const val PARAM_IS_CLEAR_DATA_ONLY = "is_clear_data_only"
 
     //LoginActivity
     const val LOGIN = "$INTERNAL_USER/login"
@@ -52,4 +56,20 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://global/explicit-profile
      **/
     const val EXPLICIT_PROFILE = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/explicit-profile"
+
+    /**
+     * LogoutActivity
+     * @applink : tokopedia-android-internal://user/logout
+     * @param   : [PARAM_IS_RETURN_HOME]
+     * default is 'true', set 'false' if you need the logout result
+     **/
+    const val LOGOUT = "${NEW_INTERNAL_USER}/logout"
+
+    // TwoFactorActivity
+    // tokopedia-android-internal://user/two-factor-register
+    const val TWO_FACTOR_REGISTER = "${NEW_INTERNAL_USER}/two-factor-register"
+
+    // LinkAccountReminderActivity
+    // tokopedia-android-internal://user/link-acc-reminder
+    const val LINK_ACC_REMINDER = "${NEW_INTERNAL_USER}/link-acc-reminder"
 }
