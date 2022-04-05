@@ -32,7 +32,7 @@ data class QuizFormDataUiModel(
         return true
         /** TODO: gonna uncomment this */
 //        val isMandatoryFilled = options.none { it.isMandatory && it.text.isEmpty() }
-//        val isSelected = options.find { it.isSelected } != null
+//        val isSelected = options.find { it.isSelected && it.text.isNotEmpty() } != null
 //
 //        return isMandatoryFilled && isSelected
     }
