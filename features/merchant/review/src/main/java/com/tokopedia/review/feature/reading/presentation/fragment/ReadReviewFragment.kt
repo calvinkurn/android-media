@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import com.google.android.play.core.splitcompat.SplitCompat
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -632,7 +631,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     }
 
     override fun onAttach(context: Context) {
-        SplitCompat.install(context)
         super.onAttach(context)
         reviewPerformanceMonitoringListener =
             castContextToTalkPerformanceMonitoringListener(context)

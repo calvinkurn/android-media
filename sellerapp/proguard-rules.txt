@@ -285,7 +285,7 @@
 
 # Keep fragment class name
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFragment
+-keepnames class com.tokopedia.review.feature.reading.presentation.fragment.ShopReviewFragment
 -keepnames class com.tokopedia.shop_showcase.shop_showcase_tab.presentation.fragment.ShopPageShowcaseFragment
 
 -keep class com.tokopedia.stability.**{*;}

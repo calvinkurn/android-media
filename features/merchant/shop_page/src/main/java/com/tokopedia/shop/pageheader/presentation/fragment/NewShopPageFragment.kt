@@ -226,6 +226,7 @@ class NewShopPageFragment :
         private const val MARGIN_BOTTOM_STICKY_LOGIN = 16
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
+        private const val ARGS_SHOP_ID_FOR_REVIEW_TAB = "ARGS_SHOP_ID"
 
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
@@ -1641,9 +1642,9 @@ class NewShopPageFragment :
 
         val reviewTabFragment = RouteManager.instantiateFragmentDF(
                 activity as AppCompatActivity,
-                FragmentConst.READ_REVIEW_FRAGMENT,
+                FragmentConst.SHOP_REVIEW_FRAGMENT,
                 Bundle().apply {
-                    putString("ARGS_SHOP_ID", shopId)
+                    putString(ARGS_SHOP_ID_FOR_REVIEW_TAB, shopId)
                 }
         )
         listShopPageTabModel.add(ShopPageTabModel(
