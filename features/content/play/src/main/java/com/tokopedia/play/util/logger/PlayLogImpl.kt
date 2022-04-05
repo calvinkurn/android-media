@@ -44,15 +44,13 @@ class PlayLogImpl @Inject constructor(private val logCollector: PlayLogCollector
     }
 
     override fun sendAll(channelId: String, streamingUrl: String) {
-        logCollector.getAll().chunked(LIMIT_LOG).forEach {
-            sendLog(
-                mapOf(
-                    "channel_id" to channelId,
-                    "url" to streamingUrl,
-                    "log_trace" to it.toString()
-                )
-            )
-            logCollector.getAll().removeAll(it)
+        val mapped = hashMapOf("channel_id" to channelId, "url" to streamingUrl)
+        logCollector.getAll().chunked(LIMIT_LOG).forEach { logs ->
+            logs.forEach {
+                mapped[it.first] = it.second.toString()
+            }
+            sendLog(mapped)
+            logCollector.getAll().removeAll(logs)
         }
     }
 
