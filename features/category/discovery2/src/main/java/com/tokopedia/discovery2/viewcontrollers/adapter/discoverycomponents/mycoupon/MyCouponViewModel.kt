@@ -28,7 +28,7 @@ private const val API_VERSION = "2.0.0"
 private const val IS_GET_PROMO_INFO = true
 private const val CLIENT_ID = "disco"
 
-class MyCouponViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class MyCouponViewModel(application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
     private val componentList = MutableLiveData<ArrayList<ComponentsItem>>()
     private val _hideSection = SingleLiveEvent<String>()
