@@ -558,19 +558,20 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     // User Interaction
 
-    fun updateProductQty(productId: String, newQty: Int) {
-        // TODO: BUNDLING NOW MINI CART
+    fun updateProductQty(element: MiniCartProductUiModel, newQty: Int) {
         val visitables = getVisitables()
         loop@ for (visitable in visitables) {
-            if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
-                visitable.productQty = newQty
+            val productId = element.productId
+            val bundleId = element.bundleId
+            if (visitable is MiniCartProductUiModel && (visitable.productId == productId || visitable.bundleId == bundleId) && !visitable.isProductDisabled) {
+                visitable.setQuantity(newQty)
                 break@loop
             }
         }
 
         val cartItems = getMiniCartItems()
         loop@ for (cartItem in cartItems) {
-            if (cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
+            if (cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == element.productId && !cartItem.isError) {
                 cartItem.quantity = newQty
                 break@loop
             }
@@ -677,11 +678,12 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         // Map of parent id - qty
         val productParentQtyMap = mutableMapOf<String, Int>()
         miniCartProductList.forEach { visitable ->
+            val productQty = visitable.getQuantity()
             if (productParentQtyMap.containsKey(visitable.parentId)) {
-                val newQty = (productParentQtyMap[visitable.parentId] ?: 0) + visitable.productQty
+                val newQty = (productParentQtyMap[visitable.parentId] ?: 0) + productQty
                 productParentQtyMap[visitable.parentId] = newQty
             } else {
-                productParentQtyMap[visitable.parentId] = visitable.productQty
+                productParentQtyMap[visitable.parentId] = productQty
             }
         }
 
@@ -695,31 +697,41 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         var totalValue = 0L
         var totalDiscount = 0L
         var totalWeight = 0
-        visitables.forEach { visitable ->
-            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+
+        val productList = visitables.filterIsInstance<MiniCartProductUiModel>()
+        val nonBundleProductList = productList.filter { !it.isBundlingItem }
+        val bundleProductList = productList.filter { it.isBundlingItem }
+            .distinctBy { it.bundleId }
+        val allProductList = nonBundleProductList + bundleProductList
+
+        allProductList.forEach { visitable ->
+            if (!visitable.isProductDisabled) {
+                val productQty = visitable.getQuantity()
+                val productPrice = visitable.getPrice()
+                val productOriginalPrice = visitable.getOriginalPrice()
+
                 if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
-                totalQty += visitable.productQty
-                val price =
-                        when {
-                            visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
-                            else -> visitable.productPrice
-                        }
-                totalPrice += visitable.productQty * price
-                sellerCashbackValue += (visitable.productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
+                totalQty += productQty
+                val price = when {
+                    visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
+                    else -> productPrice
+                }
+                totalPrice += productQty * price
+                sellerCashbackValue += (productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
                 val originalPrice =
                         when {
-                            visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice
+                            productOriginalPrice > 0 -> productOriginalPrice
                             visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
-                            else -> visitable.productPrice
+                            else -> productPrice
                         }
-                totalValue += visitable.productQty * originalPrice
+                totalValue += productQty * originalPrice
                 val discountValue =
                         when {
-                            visitable.productOriginalPrice > 0 -> visitable.productOriginalPrice - visitable.productPrice
+                            productOriginalPrice > 0 -> productOriginalPrice - productPrice
                             else -> 0
                         }
-                totalDiscount += visitable.productQty * discountValue
-                totalWeight += visitable.productQty * visitable.productWeight
+                totalDiscount += productQty * discountValue
+                totalWeight += productQty * visitable.productWeight
             }
         }
         miniCartListBottomSheetUiModel.value?.let {

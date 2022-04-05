@@ -28,7 +28,7 @@ class MiniCartListDecoration @Inject constructor() : RecyclerView.ItemDecoration
         }
 
         when (parent.getChildViewHolder(view)) {
-            is MiniCartProductViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, mediumMargin)
+            is MiniCartProductViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, noMargin)
             is MiniCartUnavailableHeaderViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, defaultMargin, mediumMargin)
             is MiniCartUnavailableReasonViewHolder -> setupOutRect(outRect, defaultMargin, defaultMargin, noMargin, defaultMargin)
             is MiniCartSeparatorViewHolder -> setupOutRect(outRect, noMargin, noMargin, noMargin, noMargin)

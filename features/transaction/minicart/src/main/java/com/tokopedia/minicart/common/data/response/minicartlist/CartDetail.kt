@@ -9,6 +9,8 @@ data class CartDetail(
         val selectedUnavailableActionLink: String = "",
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
-        @SerializedName("product")
-        val product: Product = Product()
+        @SerializedName("products")
+        val products: List<Product>? = emptyList(),
+        @SerializedName("bundle_detail")
+        val bundleDetail: BundleDetail = BundleDetail()
 )

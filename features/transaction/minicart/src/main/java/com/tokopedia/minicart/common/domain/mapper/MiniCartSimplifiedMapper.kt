@@ -1,7 +1,10 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
+import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
@@ -25,7 +28,15 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         var totalQty = 0
         miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
             availableGroup.cartDetails.forEach { cartDetail ->
-                totalQty += cartDetail.product.productQuantity
+                val bundleDetail = cartDetail.bundleDetail
+                val isBundlingItem = bundleDetail.isBundlingItem()
+                if(isBundlingItem) {
+                    totalQty += bundleDetail.bundleQty
+                } else {
+                    cartDetail.products.orEmpty().forEach { product ->
+                        totalQty += product.productQuantity
+                    }
+                }
             }
         }
         return MiniCartWidgetData().apply {
@@ -51,54 +62,56 @@ class MiniCartSimplifiedMapper @Inject constructor() {
 
         miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
             availableGroup.cartDetails.forEach { cartDetail ->
-                val item = MiniCartItem.MiniCartItemProduct().apply {
-                    isError = false
-                    cartId = cartDetail.cartId
-                    productId = cartDetail.product.productId
-                    productParentId = cartDetail.product.parentId
-                    quantity = if (cartDetail.product.productSwitchInvenage == 0) {
-                        cartDetail.product.productQuantity
-                    } else {
-                        min(cartDetail.product.productQuantity, cartDetail.product.productInvenageValue)
-                    }
-                    notes = cartDetail.product.productNotes
-                    campaignId = cartDetail.product.campaignId
-                    attribution = cartDetail.product.productTrackerData.attribution
-                    productWeight = cartDetail.product.productWeight
-                    productSlashPriceLabel = cartDetail.product.slashPriceLabel
-                    warehouseId = cartDetail.product.warehouseId
-                    shopId = availableGroup.shop.shopId
-                    shopName = availableGroup.shop.shopName
-                    shopType = availableGroup.shop.shopTypeInfo.titleFmt
-                    categoryId = cartDetail.product.categoryId
-                    freeShippingType =
+                cartDetail.products.orEmpty().forEach { product ->
+                    val item = MiniCartItem.MiniCartItemProduct().apply {
+                        isError = false
+                        cartId = cartDetail.cartId
+                        productId = product.productId
+                        productParentId = product.parentId
+                        quantity = if (product.productSwitchInvenage == 0) {
+                            product.productQuantity
+                        } else {
+                            min(product.productQuantity, product.productInvenageValue)
+                        }
+                        notes = product.productNotes
+                        campaignId = product.campaignId
+                        attribution = product.productTrackerData.attribution
+                        productWeight = product.productWeight
+                        productSlashPriceLabel = product.slashPriceLabel
+                        warehouseId = product.warehouseId
+                        shopId = availableGroup.shop.shopId
+                        shopName = availableGroup.shop.shopName
+                        shopType = availableGroup.shop.shopTypeInfo.titleFmt
+                        categoryId = product.categoryId
+                        freeShippingType =
                             if (availableGroup.shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
                             else if (availableGroup.shipmentInformation.freeShipping.eligible) "bebas ongkir"
                             else ""
-                    category = cartDetail.product.category
-                    productName = cartDetail.product.productName
-                    productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
-                    productPrice = cartDetail.product.productPrice
-                }
-                val key = MiniCartItemKey(cartDetail.product.productId)
-                miniCartSimplifiedDataList[key] = item
+                        category = product.category
+                        productName = product.productName
+                        productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
+                        productPrice = product.productPrice
+                    }
+                    val key = MiniCartItemKey(product.productId)
+                    miniCartSimplifiedDataList[key] = item
 
-                if (item.productParentId.isNotBlankOrZero()) {
-                    val parentKey = MiniCartItemKey(cartDetail.product.parentId, type = MiniCartItemType.PARENT)
-                    if (!miniCartSimplifiedDataList.contains(parentKey)) {
-                        miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
-                                parentId = cartDetail.product.parentId,
+                    if (item.productParentId.isNotBlankOrZero()) {
+                        val parentKey = MiniCartItemKey(product.parentId, type = MiniCartItemType.PARENT)
+                        if (!miniCartSimplifiedDataList.contains(parentKey)) {
+                            miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
+                                parentId = product.parentId,
                                 totalQuantity = item.quantity,
                                 products = hashMapOf(key to item)
-                        )
-                    } else {
-                        val currentParentItem = miniCartSimplifiedDataList[parentKey] as MiniCartItem.MiniCartItemParentProduct
-                        val products = HashMap(currentParentItem.products)
-                        products[key] = item
-                        val totalQuantity = currentParentItem.totalQuantity + item.quantity
-                        miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
-                                cartDetail.product.parentId, totalQuantity, products
-                        )
+                            )
+                        } else {
+                            val currentParentItem = miniCartSimplifiedDataList[parentKey] as MiniCartItem.MiniCartItemParentProduct
+                            val products = HashMap(currentParentItem.products)
+                            products[key] = item
+                            val totalQuantity = currentParentItem.totalQuantity + item.quantity
+                            miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
+                                product.parentId, totalQuantity, products
+                            )
+                        }
                     }
                 }
             }
@@ -111,34 +124,36 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val item = MiniCartItem.MiniCartItemProduct().apply {
-                        isError = true
-                        cartId = cartDetail.cartId
-                        productId = cartDetail.product.productId
-                        productParentId = cartDetail.product.parentId
-                        quantity = cartDetail.product.productQuantity
-                        notes = cartDetail.product.productNotes
-                    }
-                    val key = MiniCartItemKey(cartDetail.product.productId)
-                    if (!miniCartSimplifiedDataList.contains(key)) {
-                        miniCartSimplifiedDataList[key] = item
-                    }
-                    if (item.productParentId.isNotBlankOrZero()) {
-                        val parentKey = MiniCartItemKey(cartDetail.product.parentId, type = MiniCartItemType.PARENT)
-                        if (!miniCartSimplifiedDataList.contains(parentKey)) {
-                            miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
-                                    parentId = cartDetail.product.parentId,
+                    cartDetail.products.orEmpty().forEach { product ->
+                        val item = MiniCartItem.MiniCartItemProduct().apply {
+                            isError = true
+                            cartId = cartDetail.cartId
+                            productId = product.productId
+                            productParentId = product.parentId
+                            quantity = product.productQuantity
+                            notes = product.productNotes
+                        }
+                        val key = MiniCartItemKey(product.productId)
+                        if (!miniCartSimplifiedDataList.contains(key)) {
+                            miniCartSimplifiedDataList[key] = item
+                        }
+                        if (item.productParentId.isNotBlankOrZero()) {
+                            val parentKey = MiniCartItemKey(product.parentId, type = MiniCartItemType.PARENT)
+                            if (!miniCartSimplifiedDataList.contains(parentKey)) {
+                                miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
+                                    parentId = product.parentId,
                                     totalQuantity = item.quantity,
                                     products = hashMapOf(key to item)
-                            )
-                        } else {
-                            val currentParentItem = miniCartSimplifiedDataList[parentKey] as MiniCartItem.MiniCartItemParentProduct
-                            val products = HashMap(currentParentItem.products)
-                            products[key] = item
-                            val totalQuantity = currentParentItem.totalQuantity + item.quantity
-                            miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
-                                    cartDetail.product.parentId, totalQuantity, products
-                            )
+                                )
+                            } else {
+                                val currentParentItem = miniCartSimplifiedDataList[parentKey] as MiniCartItem.MiniCartItemParentProduct
+                                val products = HashMap(currentParentItem.products)
+                                products[key] = item
+                                val totalQuantity = currentParentItem.totalQuantity + item.quantity
+                                miniCartSimplifiedDataList[parentKey] = MiniCartItem.MiniCartItemParentProduct(
+                                    product.parentId, totalQuantity, products
+                                )
+                            }
                         }
                     }
                 }

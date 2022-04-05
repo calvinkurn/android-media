@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_bundle_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_bundle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_mini_cart_product_bundle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_bundle_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        app:layout_constraintBottom_toBottomOf="@id/image_bundle"
+        app:layout_constraintLeft_toRightOf="@id/image_bundle"
+        app:layout_constraintTop_toTopOf="@id/image_bundle"
+        app:typographyType="body_3"
+        tools:text="Jus Sehat" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_bundle_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_bundle"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Rp15.000" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/label_bundle_discount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:visibility="gone"
+        app:labelType="general_light_red"
+        app:layout_constraintBottom_toBottomOf="@id/text_bundle_price"
+        app:layout_constraintLeft_toRightOf="@id/text_bundle_price"
+        app:layout_constraintTop_toTopOf="@id/text_bundle_price"
+        tools:text="20%"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_bundle_slash_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/text_bundle_price"
+        app:layout_constraintLeft_toRightOf="@id/label_bundle_discount"
+        app:layout_constraintTop_toTopOf="@id/text_bundle_price"
+        app:typographyType="body_3"
+        tools:text="Rp10.000"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

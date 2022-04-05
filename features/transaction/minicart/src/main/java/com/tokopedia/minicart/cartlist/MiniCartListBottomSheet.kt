@@ -548,8 +548,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         }
     }
 
-    override fun onQuantityChanged(productId: String, newQty: Int) {
-        viewModel?.updateProductQty(productId, newQty)
+    override fun onQuantityChanged(element: MiniCartProductUiModel, newQty: Int) {
+        viewModel?.updateProductQty(element, newQty)
         calculateProduct()
         updateCart()
     }
