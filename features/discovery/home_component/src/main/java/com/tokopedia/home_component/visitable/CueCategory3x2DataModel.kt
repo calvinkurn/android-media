@@ -7,7 +7,7 @@ import com.tokopedia.home_component.model.ChannelModel
 /**
  * Created by dhaba
  */
-class CueCategoryDataModel (
+class CueCategory3x2DataModel  (
     val channelModel: ChannelModel,
     val isCache: Boolean = false
 ): HomeComponentVisitable {

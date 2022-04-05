@@ -23,5 +23,6 @@ interface HomeComponentTypeFactory {
     fun type(campaignWidgetDataModel: CampaignWidgetDataModel): Int = 0
     fun type(merchantVoucherDataModel: MerchantVoucherDataModel): Int = 0
     fun type(specialReleaseDataModel: SpecialReleaseDataModel): Int = 0
-    fun type(cueCategoryDataModel: CueCategoryDataModel): Int = 0
+    fun type(cueCategory2x2DataModel: CueCategory2x2DataModel): Int = 0
+    fun type(cueCategory3x2DataModel: CueCategory3x2DataModel): Int = 0
 }

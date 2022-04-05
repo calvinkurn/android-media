@@ -597,12 +597,26 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mappingCueCategoryComponent(
+    private fun mappingCueCategory2x2Component(
         channel: DynamicHomeChannel.Channels,
         isCache: Boolean,
         verticalPosition: Int
     ): Visitable<*> {
-        return CueCategoryDataModel(
+        return CueCategory2x2DataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
+    private fun mappingCueCategory3x2Component(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return CueCategory3x2DataModel(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
                 channel,
                 verticalPosition
@@ -676,9 +690,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
-        visitableList.add(mappingCueCategoryComponent(
-                channel, isCache, verticalPosition
-        ))
+        val gridSize = channel.grids.size
+        if (gridSize == 4 || gridSize == 5) {
+            visitableList.add(
+                mappingCueCategory2x2Component(
+                    channel, isCache, verticalPosition
+                )
+            )
+        } else if (gridSize >= 6) {
+            visitableList.add(
+                mappingCueCategory3x2Component(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList

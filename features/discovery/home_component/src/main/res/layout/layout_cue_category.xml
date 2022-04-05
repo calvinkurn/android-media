@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     app:card_type="border">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -47,6 +48,6 @@
                 tools:text="asdjfhl h ajlskdf alsdjkfh ljkasdfh" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </com.tokopedia.unifycomponents.CardUnify2>

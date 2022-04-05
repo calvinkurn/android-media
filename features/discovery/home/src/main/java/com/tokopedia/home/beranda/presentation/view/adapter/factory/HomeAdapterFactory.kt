@@ -301,8 +301,12 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
         return HomePayLaterWidgetViewHolder.LAYOUT
     }
 
-    override fun type(cueCategoryDataModel: CueCategoryDataModel): Int {
-        return CueWidgetCategoryViewHolder.LAYOUT
+    override fun type(cueCategory2x2DataModel: CueCategory2x2DataModel): Int {
+        return CueWidgetCategory2x2ViewHolder.LAYOUT
+    }
+
+    override fun type(cueCategory3x2DataModel: CueCategory3x2DataModel): Int {
+        return CueWidgetCategory3x2ViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -488,7 +492,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             )
             HomePayLaterWidgetViewHolder.LAYOUT -> viewHolder = HomePayLaterWidgetViewHolder(
                 view, homePayLaterWidgetListener)
-            CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view)
+            CueWidgetCategory2x2ViewHolder.LAYOUT -> viewHolder = CueWidgetCategory2x2ViewHolder(view)
+            CueWidgetCategory3x2ViewHolder.LAYOUT -> viewHolder = CueWidgetCategory3x2ViewHolder(view)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }
