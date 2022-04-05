@@ -63,7 +63,7 @@ class FilterPDPBottomsheet : BottomSheetUnify(),
 
                 val type: Type = object : TypeToken<List<TelcoFilterTagComponent>>() {}.type
                 filterTagComponents = manager.get(SAVED_FILTER_TAG_COMPONENT, type)
-                    ?: emptyList<TelcoFilterTagComponent>().toMutableList()
+                    ?: mutableListOf()
             }
         }
     }
