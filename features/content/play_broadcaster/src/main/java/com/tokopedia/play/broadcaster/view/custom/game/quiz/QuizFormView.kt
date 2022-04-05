@@ -141,15 +141,15 @@ class QuizFormView : ConstraintLayout {
         }
 
         binding.viewGameHeader.setOnTextChangedListener {
-            setFormData(mQuizFormData.copy(title = it))
+            setFormData(mQuizFormData.copy(title = it), needToUpdateOptions = false)
         }
 
         binding.viewQuizGift.setOnTextChangeListener {
-            setFormData(mQuizFormData.copy(gift = it))
+            setFormData(mQuizFormData.copy(gift = it), needToUpdateOptions = false)
         }
 
         binding.viewQuizGift.setOnRemoveGiftListener {
-            setFormData(mQuizFormData.copy(gift = ""))
+            setFormData(mQuizFormData.copy(gift = ""), needToUpdateOptions = false)
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
@@ -198,11 +198,13 @@ class QuizFormView : ConstraintLayout {
             binding.viewQuizGift.gift = quizFormData.gift
 
             /** Set Quiz Duration */
-            val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
-            if(timePickerBinding.puTimer.activeIndex != idx) {
-                timePickerBinding.puTimer.apply {
-                    if(idx != -1) goToPosition(idx)
-                    else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+            if(quizFormState is QuizFormStateUiModel.SetDuration) {
+                val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
+                if(timePickerBinding.puTimer.activeIndex != idx) {
+                    timePickerBinding.puTimer.apply {
+                        if(idx != -1) goToPosition(idx)
+                        else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+                    }
                 }
             }
 
