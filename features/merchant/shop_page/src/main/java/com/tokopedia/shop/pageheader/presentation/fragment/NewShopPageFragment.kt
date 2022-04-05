@@ -40,6 +40,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -260,28 +261,16 @@ class NewShopPageFragment :
     private var errorButton: View? = null
     private var shopPageFab: FloatingButtonUnify? = null
     private var isForceNotShowingTab: Boolean = false
-    private val iconTabHomeInactive: Int
-        get() = R.drawable.ic_shop_tab_home_inactive
 
-    private val iconTabHomeActive: Int
-        get() = R.drawable.ic_shop_tab_home_active
-
-    private val iconTabProductInactive: Int
-        get() = R.drawable.ic_shop_tab_product_inactive
-
-    private val iconTabProductActive: Int
-        get() = R.drawable.ic_shop_tab_product_active
-
-    private val iconTabShowcaseInactive: Int
-        get() = R.drawable.ic_shop_tab_showcase_inactive
-
-    private val iconTabShowcaseActive: Int
-        get() = R.drawable.ic_shop_tab_showcase_active
-    private val iconTabFeedInactive: Int
-        get() = R.drawable.ic_shop_tab_feed_inactive
-
-    private val iconTabFeedActive: Int
-        get() = R.drawable.ic_shop_tab_feed_active
+    // tab icons
+    private val iconTabHomeInactive: Int get() = IconUnify.SHOP
+    private val iconTabHomeActive: Int get() = IconUnify.SHOP_FILLED
+    private val iconTabProductInactive: Int get() = IconUnify.PRODUCT
+    private val iconTabProductActive: Int get() = IconUnify.PRODUCT_FILLED
+    private val iconTabShowcaseInactive: Int get() = IconUnify.CABINET
+    private val iconTabShowcaseActive: Int get() = IconUnify.CABINET_FILLED
+    private val iconTabFeedInactive: Int get() = IconUnify.FEED
+    private val iconTabFeedActive: Int get() = IconUnify.FEED_FILLED
 
     private var scrollToTopButton: FloatingButtonUnify? = null
     private val intentData: Intent = Intent()
@@ -1447,7 +1436,6 @@ class NewShopPageFragment :
                 view.setOnClickListener {
                     isTabClickByUser = true
                 }
-                setIcon(it.tabIconInactive)
             }?.let {
                 tabLayout?.addTab(it, false)
             }
