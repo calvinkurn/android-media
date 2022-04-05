@@ -87,7 +87,9 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                     when {
                         detail.isNotEmpty() -> {
                             show()
-                            setOnClickListener { listener.onDetailClicked(product) }
+                            setOnClickListener {
+                                if (status != STATUS_OUT_OF_STOCK) listener.onDetailClicked(product)
+                            }
                         }
                         hasMoreDetails -> invisible()
                         else -> hide()
@@ -105,6 +107,10 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                     layout_product.setOnClickListener {
                         adapter.setSelectedProduct(adapterPosition)
                         listener.onItemClicked(product, adapterPosition)
+                    }
+                } else {
+                    layout_product.setOnClickListener {
+                        // do nothing or disabled
                     }
                 }
             }
