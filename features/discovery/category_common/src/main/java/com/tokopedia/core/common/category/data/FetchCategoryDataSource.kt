@@ -4,6 +4,8 @@ import com.tokopedia.core.common.category.data.mapper.CategoryDataToDomainMapper
 import com.tokopedia.core.common.category.data.source.db.CategoryDataBase
 import com.tokopedia.core.common.category.data.source.db.CategoryDataManager
 import com.tokopedia.core.common.category.domain.model.CategoryLevelDomainModel
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.orZero
 import rx.Observable
 import rx.functions.Func1
 import java.util.ArrayList
@@ -29,9 +31,9 @@ class FetchCategoryDataSource(val categoryDataManager: CategoryDataManager) {
                 val categoryFromParent: List<CategoryDataBase> = getCategoryFromParent(parentId)
                 categoryLevelDomain.categoryModels =
                     CategoryDataToDomainMapper.mapDomainModels(categoryFromParent)
-                categoryLevelDomainModels.add(0, categoryLevelDomain)
+                categoryLevelDomainModels.add(Int.ZERO, categoryLevelDomain)
                 currentLevelSelected = parentId
-            } while (categoryLevelDomainModels[0].parentCategoryId != CategoryDataBase.LEVEL_ONE_PARENT.toLong())
+            } while (categoryLevelDomainModels[Int.ZERO].parentCategoryId != CategoryDataBase.LEVEL_ONE_PARENT.toLong())
             return categoryLevelDomainModels
         }
     }
@@ -41,8 +43,8 @@ class FetchCategoryDataSource(val categoryDataManager: CategoryDataManager) {
     }
 
     private fun getParentId(categoryId: Long): Long {
-        val (_, _, _, _, parentId) = categoryDataManager.fetchCategoryWithId(categoryId)
-        return parentId!!
+        val parentId = categoryDataManager.fetchCategoryWithId(categoryId).parentId.orZero()
+        return parentId
     }
 
     inner class GetStringListCategory :

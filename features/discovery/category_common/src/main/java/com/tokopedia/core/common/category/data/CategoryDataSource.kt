@@ -4,6 +4,7 @@ import com.tokopedia.core.common.category.data.mapper.CategoryServiceToDbMapper
 import com.tokopedia.core.common.category.data.source.cloud.CategoryCloud
 import com.tokopedia.core.common.category.data.source.db.CategoryDataBase
 import com.tokopedia.core.common.category.data.source.db.CategoryDataManager
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import rx.Observable
 import rx.functions.Func1
 import java.lang.RuntimeException
@@ -19,27 +20,29 @@ class CategoryDataSource(val categoryDataManager: CategoryDataManager,
             .onErrorResumeNext(fetchDataFromNetwork())
     }
 
+    fun getCategoryName(categoryId: Long): Observable<String> {
+        return categoryDataManager.getCategoryName(categoryId)
+    }
+
     private fun fetchDataFromNetwork(): Observable<Boolean> {
         return categoryCloud.fetchDataFromNetwork()
             .map(CategoryServiceToDbMapper())
             .map(StoreDataToDatabase())
     }
 
-    fun getCategoryName(categoryId: Long): Observable<String> {
-        return categoryDataManager.getCategoryName(categoryId)
-    }
+
 
     inner class CheckDatabaseNotNull :
         Func1<List<CategoryDataBase>?, Boolean> {
         override fun call(categoryDataBases: List<CategoryDataBase>?): Boolean {
             if (categoryDataBases == null || categoryDataBases.isEmpty()) {
-                throw RuntimeException("")
+                throw RuntimeException(String.EMPTY)
             }
             return true
         }
     }
 
-    inner class StoreDataToDatabase() :
+    inner class StoreDataToDatabase :
         Func1<List<CategoryDataBase>, Boolean> {
         override fun call(categoryDataBases: List<CategoryDataBase>): Boolean {
             categoryDataManager.storeData(categoryDataBases)
