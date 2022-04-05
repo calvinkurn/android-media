@@ -22,6 +22,7 @@ import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.view.adapter.QuizOptionAdapter
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
+import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.updatePadding
@@ -67,7 +68,7 @@ class QuizFormView : ConstraintLayout {
 
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
         override fun onOptionChecked(order: Int) {
-            eventBus.emit(Event.SelectQuizOption(order))
+            setCorrectOptions(order)
         }
 
         override fun onTextChanged(order: Int, text: String) {
@@ -231,6 +232,17 @@ class QuizFormView : ConstraintLayout {
         val options = mQuizFormData.options
         setFormData(mQuizFormData.copy(
             options = options.map { it.copy(isEditable = isEditable) }
+        ))
+    }
+
+    private fun setCorrectOptions(order: Int) {
+        val options = mQuizFormData.options
+
+        val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
+        if(currSelectedOrder == order) return
+
+        setFormData(mQuizFormData.copy(
+            options = options.map { it.copy(isSelected = it.order == order) }
         ))
     }
 
