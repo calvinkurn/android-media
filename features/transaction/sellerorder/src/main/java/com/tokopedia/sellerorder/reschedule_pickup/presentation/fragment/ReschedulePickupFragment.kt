@@ -435,9 +435,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         private const val OTHER_REASON_RESCHEDULE = "Lainnya (Isi Sendiri)"
         private const val OTHER_REASON_MIN_CHAR = 15
         private const val OTHER_REASON_MAX_CHAR = 160
-
-        // todo confirm this status code to BE
-        private const val STATUS_CODE_ALREADY_REQUEST_NEW_DRIVER = "999"
         fun newInstance(bundle: Bundle): ReschedulePickupFragment {
             return ReschedulePickupFragment().apply {
                 arguments = Bundle().apply {

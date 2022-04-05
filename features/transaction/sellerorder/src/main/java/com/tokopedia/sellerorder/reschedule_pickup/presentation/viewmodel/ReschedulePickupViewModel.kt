@@ -32,17 +32,16 @@ class ReschedulePickupViewModel @Inject constructor(
     fun getReschedulePickupDetail(orderId: String) {
         launchCatchError(
             block = {
-                _reschedulePickupDetail.postValue(
-                    Success(
-                        ReschedulePickupMapper.mapToRescheduleDetailModel(
-                            getReschedulePickupUseCase.execute(
-                                ReschedulePickupMapper.mapToGetReschedulePickupParam(
-                                    listOf(orderId)
-                                )
-                            ).mpLogisticGetReschedulePickup.data.first()
-                        )
+                val response = getReschedulePickupUseCase.execute(
+                    ReschedulePickupMapper.mapToGetReschedulePickupParam(
+                        listOf(orderId)
                     )
                 )
+                if (response.mpLogisticGetReschedulePickup.data.isNotEmpty()) {
+                    _reschedulePickupDetail.postValue(Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup.data.first())))
+                } else {
+                    _reschedulePickupDetail.postValue(Fail(Throwable("Data Reschedule Pickup tidak ditemukan")))
+                }
             },
             onError = {
                 _reschedulePickupDetail.postValue(Fail(it))

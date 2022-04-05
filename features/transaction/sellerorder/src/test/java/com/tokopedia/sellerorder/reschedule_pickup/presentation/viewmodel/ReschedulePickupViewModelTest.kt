@@ -42,12 +42,33 @@ class ReschedulePickupViewModelTest {
     fun `when get Reschedule Pickup Detail then returns success`() =
         coroutineTestRule.runBlockingTest {
             //given
-            coEvery { getReschedulePickupUseCase.execute(any()) } returns GetReschedulePickupResponse.Data()
-            //when
+            val response = GetReschedulePickupResponse.Data(
+                mpLogisticGetReschedulePickup = GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup(
+                    data = listOf(
+                        GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem()
+                    )
+                ))
+            coEvery { getReschedulePickupUseCase.execute(any()) } returns response
+             //when
             reschedulePickupViewModel.getReschedulePickupDetail("12345")
             // then
             assert(reschedulePickupViewModel.reschedulePickupDetail.value is Success)
         }
+
+    @Test
+    fun `when get Reschedule Pickup Detail Response data is empty then throws error`() =
+        coroutineTestRule.runBlockingTest {
+            //given
+            val response = GetReschedulePickupResponse.Data()
+            coEvery { getReschedulePickupUseCase.execute(any()) } returns response
+
+            //when
+            reschedulePickupViewModel.getReschedulePickupDetail("12345")
+            // then
+            assert(reschedulePickupViewModel.reschedulePickupDetail.value is Fail)
+        }
+
+
 
     @Test
     fun `when get Reschedule Pickup Detail then throws error`() =
