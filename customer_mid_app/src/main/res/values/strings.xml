@@ -223,4 +223,9 @@
     <string name="review_reminder_title">Pengingat Ulasan</string>
     <string name="review_gallery_title">Foto Pembeli</string>
     <string name="reputation_history_set_date">Atur Tanggal</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
+    <string name="title_admin_invitation_confirmation">Admin Invitation Confirmation</string>
+    <string name="title_admin_invitation_accepted">Admin Invitation Accepted</string>
 </resources>
