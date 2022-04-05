@@ -78,7 +78,6 @@ class Lego4AutoBannerViewHolder (itemView: View,
         adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition, isCacheData)
         adapter.addData(element)
         recyclerView.adapter = adapter
-        adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
