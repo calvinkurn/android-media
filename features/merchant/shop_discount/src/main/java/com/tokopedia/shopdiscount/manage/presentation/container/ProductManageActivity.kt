@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.container
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

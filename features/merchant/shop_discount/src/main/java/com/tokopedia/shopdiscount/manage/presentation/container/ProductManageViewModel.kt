@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.container
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,11 +30,11 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getSlashPriceProductListMetaUseCase.setRequestParams()
-                getSlashPriceProductListMetaUseCase.executeOnBackground()
+                val response = getSlashPriceProductListMetaUseCase.executeOnBackground()
+                productListMetaMapper.map(response.getSlashPriceProductListMeta.data.tab)
             }
-            val formattedProductMeta =
-                productListMetaMapper.map(result.getSlashPriceProductListMeta.data.tab)
-            _productsMeta.value = Success(formattedProductMeta)
+
+            _productsMeta.value = Success(result)
 
         }, onError = {
             _productsMeta.value = Fail(it)
@@ -50,7 +50,8 @@ class ProductManageViewModel @Inject constructor(
 
         return tabs.map { tab ->
             val match = discountStatusMeta.find { meta -> tab.status == meta.id }
-            tab.copy(name = match?.name + "(${match?.productCount})")
+            val tabName = "${match?.name} (${match?.productCount})"
+            tab.copy(name = tabName)
         }
     }
 }

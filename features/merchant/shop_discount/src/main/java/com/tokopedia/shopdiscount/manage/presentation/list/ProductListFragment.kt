@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,19 +14,22 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
-
+import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 
 class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>() {
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status"
         private const val PAGE_SIZE = 10
+        private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance(discountStatusId : Int) =
@@ -63,6 +66,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyUnifyBackgroundColor()
         setupViews()
         observeProducts()
     }
@@ -77,7 +81,9 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    renderList(it.data, it.data.size == getPerPage())
+                    handleEmptyState(it.data.totalProduct)
+                    binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    renderList(it.data.products, it.data.products.size == getPerPage())
                 }
                 is Fail -> {
                     binding?.root showError it.throwable
@@ -86,12 +92,36 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         }
     }
 
-    private val onProductClick : (Product) -> Unit = { product ->
+    private fun handleEmptyState(totalProduct : Int) {
+        if (totalProduct == 0 && discountStatusId == DiscountStatus.PAUSED) {
+            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+            binding?.emptyState?.setTitle(getString(R.string.sd_no_paused_discount_title))
+            binding?.emptyState?.setDescription(getString(R.string.sd_no_paused_discount_description))
+            binding?.emptyState?.show()
+        } else {
+            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+            binding?.emptyState?.setTitle(getString(R.string.sd_no_discount_title))
+            binding?.emptyState?.setDescription(getString(R.string.sd_no_discount_description))
+            binding?.emptyState?.show()
+        }
+    }
+
+    private val onProductClicked : (Product) -> Unit = { product ->
 
     }
 
+    private val onUpdateDiscountClicked : (Product) -> Unit = { product ->
+
+    }
+
+
+    private val onOverflowMenuClicked : (Product) -> Unit = { product ->
+
+    }
+
+
     override fun createAdapter(): ProductListAdapter {
-        return ProductListAdapter(onProductClick)
+        return ProductListAdapter(onProductClicked, onUpdateDiscountClicked, onOverflowMenuClicked)
     }
 
     override fun getRecyclerView(view: View): RecyclerView? {

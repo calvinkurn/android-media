@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
-import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,8 +20,8 @@ class ProductListViewModel @Inject constructor(
     private val productMapper: ProductMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _products = MutableLiveData<Result<List<Product>>>()
-    val products: LiveData<Result<List<Product>>>
+    private val _products = MutableLiveData<Result<ProductData>>()
+    val products: LiveData<Result<ProductData>>
         get() = _products
 
     fun getSlashPriceProducts(page : Int, discountStatus : Int) {
@@ -31,10 +31,15 @@ class ProductListViewModel @Inject constructor(
                     page = page,
                     status = discountStatus
                 )
-                getSlashPriceProductListUseCase.executeOnBackground()
+                val response = getSlashPriceProductListUseCase.executeOnBackground()
+                val formattedProduct = productMapper.map(response)
+                Pair(response, formattedProduct)
             }
-            val formattedProduct = productMapper.map(result)
-            _products.value = Success(formattedProduct)
+
+            val (response, formattedProduct) = result
+            val productData = ProductData(response.getSlashPriceProductList.totalProduct, formattedProduct)
+            _products.value = Success(productData)
+
         }, onError = {
             _products.value = Fail(it)
         })

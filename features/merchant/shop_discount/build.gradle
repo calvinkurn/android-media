@@ -58,7 +58,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.usersession)

@@ -28,6 +28,15 @@
     <string name="sd_total_stock_various_multiple_location">Total stok: %s di beberapa lokasi</string>
     <string name="sd_total_stock_multiple_location">Total stok: %s di %s lokasi</string>
     <string name="sd_total_stock">Total stok: %s</string>
+    <string name="sd_search">Cari produk atau pakai filter</string>
+    <string name="sd_total_product">%s Produk</string>
+    <string name="sd_multi_select">Pilih Sekaligus</string>
+    <string name="sd_create_discount">Buat Diskon</string>
+    <string name="sd_ticker_announcement_wording"><![CDATA[Cek info Diskon Toko selengkapnya <a href="http://tokopedia.com">di sini</a>]]></string>
+    <string name="sd_no_discount_title">Yuk, pasang Diskon Toko!</string>
+    <string name="sd_no_discount_description">Kamu belum punya produk dengan Diskon Toko. Tambah produk dulu, lalu pasang diskonnya, ya.</string>
+    <string name="sd_no_paused_discount_title">Produk Diskon Toko-mu dialokasikan ke campaign lain</string>
+    <string name="sd_no_paused_discount_description">Buat Diskon Toko baru untuk produk tokomu yang lain, yuk!</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

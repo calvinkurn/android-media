@@ -5,11 +5,12 @@ import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.di.module.ShopDiscountModule
 import com.tokopedia.shopdiscount.di.module.ShopDiscountViewModelModule
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
-import com.tokopedia.shopdiscount.manage.presentation.ProductListFragment
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
-import com.tokopedia.shopdiscount.manage.presentation.ProductManageActivity
-import com.tokopedia.shopdiscount.manage.presentation.ProductManageFragment
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageActivity
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
+import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import dagger.Component
 
 @ShopDiscountComponentScope
@@ -26,5 +27,6 @@ interface ShopDiscountComponent {
     fun inject(fragment: ProductManageFragment)
     fun inject(bottomSheet: ShopDiscountProductDetailBottomSheet)
     fun inject(fragment : ProductListFragment)
+    fun inject(activity : SearchProductActivity)
     fun inject(bottomSheet: ShopDiscountSellerInfoBottomSheet)
 }

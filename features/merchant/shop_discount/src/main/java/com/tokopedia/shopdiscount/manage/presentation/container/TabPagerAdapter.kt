@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.container
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
