@@ -45,19 +45,16 @@ class OvoDetailViewModel @Inject constructor(
     }
 
     private fun getSuccessWalletDetail(walletDataBase: WalletDataBase) {
-        walletDataBase.wallet?.let { walletObj ->
-            walletObj.errors?.let { errList ->
+            walletDataBase.wallet?.errors?.let { errList ->
                 if (errList.isNotEmpty()) {
                     onFailErrorMessage(errList[0].message)
                 } else {
-                    onSuccessGetWalletDetail(walletObj)
+                    onSuccessGetWalletDetail(walletDataBase.wallet)
                 }
             } ?: kotlin.run {
-                onSuccessGetWalletDetail(walletObj)
+                walletDataBase.wallet?.let { onSuccessGetWalletDetail(it) }
             }
-        } ?: kotlin.run {
-            onFailGeneralWalletDetail(null)
-        }
+
     }
 
     private fun onSuccessGetWalletDetail(walletObj: Wallet) {
@@ -82,7 +79,6 @@ class OvoDetailViewModel @Inject constructor(
             ::onFailConfirm,
             transferReqMap
         )
-        //   OvoP2pUtil.executeOvoP2pTransferConfirm(context, getTransferConfirmSubscriber(context), transferReqMap)
     }
 
     private fun onSuccessConfirm(ovoP2pTransferConfirmBase: OvoP2pTransferConfirmBase) {

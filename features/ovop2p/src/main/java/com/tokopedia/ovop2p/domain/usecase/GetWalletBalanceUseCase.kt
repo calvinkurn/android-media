@@ -21,7 +21,10 @@ class GetWalletBalanceUseCase @Inject constructor(graphqlRepository: GraphqlRepo
             this.setGraphqlQuery(WalletDetailQuery.GQL_QUERY)
             this.execute(
                 { result ->
-                    onSuccess(result)
+                    if(result.wallet != null)
+                        onSuccess(result)
+                    else
+                        onError(NullPointerException("Wallet Empty"))
                 }, { error ->
                     onError(error)
                 }
