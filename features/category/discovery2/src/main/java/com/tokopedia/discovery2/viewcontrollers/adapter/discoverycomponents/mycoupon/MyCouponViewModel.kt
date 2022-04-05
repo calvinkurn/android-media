@@ -63,10 +63,11 @@ class MyCouponViewModel(val application: Application, val components: Components
                     setCouponsList()
                 }, onError = {
                     components.noOfPagesLoaded = 1
-                    it.printStackTrace()
+                    hideIfPresentInSection()
                 })
-            }else{
+            } else {
                 componentList.value = null
+                hideIfPresentInSection()
             }
         }
     }
@@ -93,6 +94,7 @@ class MyCouponViewModel(val application: Application, val components: Components
                 componentList.value = it
             }else{
                 componentList.value = null
+                hideIfPresentInSection()
             }
         }
     }
