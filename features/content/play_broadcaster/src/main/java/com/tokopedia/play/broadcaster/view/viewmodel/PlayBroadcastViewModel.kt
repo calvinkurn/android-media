@@ -955,6 +955,14 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             updateQuizEligibleDuration()
         }
 
+//        val isOptionEditable = _quizFormState.value.next() is QuizFormStateUiModel.SetDuration
+//        val options = _quizFormData.value.options
+//        _quizFormData.setValue {
+//            copy(
+//                options = options.map { it.copy(isEditable = isOptionEditable) }
+//            )
+//        }
+
         _quizFormState.setValue { next() }
     }
 

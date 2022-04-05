@@ -73,7 +73,6 @@ class QuizFormView : ConstraintLayout {
 
         override fun onTextChanged(order: Int, text: String) {
             onOptionTextChanged(order, text)
-//            eventBus.emit(Event.OptionChanged(order, text))
         }
     })
 
@@ -157,8 +156,8 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-            val selectedDuration = quizConfig.availableStartTimeInMs[index]
-            eventBus.emit(Event.SelectDuration(selectedDuration))
+//            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+//            eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
         timePickerBinding.btnApply.setOnClickListener {
@@ -303,7 +302,7 @@ class QuizFormView : ConstraintLayout {
 
         val stringBuilder = StringBuilder()
         if (minute > 0) stringBuilder.append(context.getString(R.string.play_interactive_minute, minute))
-        if (second > 0) stringBuilder.append(context.getString(R.string.play_interactive_second, second))
+        if (second > 0) stringBuilder.append(" ").append(context.getString(R.string.play_interactive_second, second))
         return stringBuilder.toString()
     }
 

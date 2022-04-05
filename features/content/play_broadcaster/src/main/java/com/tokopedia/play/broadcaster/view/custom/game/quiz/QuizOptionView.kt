@@ -5,6 +5,7 @@ import android.text.InputFilter
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -39,8 +40,13 @@ class QuizOptionView : ConstraintLayout {
     )
 
     private var mTextOnChangedListener: ((Int, String) -> Unit)? = null
+    private var mOnCheckedListener: ((Int) -> Unit)? = null
 
     init {
+        binding.flQuizOption.setOnClickListener {
+            if(isEditable) mOnCheckedListener?.invoke(order)
+        }
+
         binding.etQuizOption.apply {
             setRawInputType(InputType.TYPE_CLASS_TEXT)
 
@@ -81,7 +87,7 @@ class QuizOptionView : ConstraintLayout {
 
     var isEditable: Boolean = true
         set(value) {
-            needChange(field, value) {
+            if(field != value) {
                 field = value
 
                 binding.etQuizOption.apply {
@@ -89,6 +95,8 @@ class QuizOptionView : ConstraintLayout {
                     isFocusableInTouchMode = value
                     isEnabled = value
                 }
+
+                setFocus(value)
             }
         }
 
@@ -126,8 +134,27 @@ class QuizOptionView : ConstraintLayout {
             }
         }
 
+    fun setFocus(isFocus: Boolean) {
+        binding.etQuizOption.apply {
+            if(isFocus) requestFocus()
+            else clearFocus()
+        }
+
+        showKeyboard(isFocus)
+    }
+
+    private fun showKeyboard(isShow: Boolean) {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (isShow) imm.showSoftInput(binding.etQuizOption, InputMethodManager.SHOW_IMPLICIT)
+        else imm.hideSoftInputFromWindow(binding.etQuizOption.windowToken, 0)
+    }
+
     fun setOnTextChanged(listener: (Int, String) -> Unit) {
         mTextOnChangedListener = listener
+    }
+
+    fun setOnCheckedListener(listener: (Int) -> Unit) {
+        mOnCheckedListener = listener
     }
 
     private fun <T> needChange(prev: T, curr: T, block: () -> Unit) {

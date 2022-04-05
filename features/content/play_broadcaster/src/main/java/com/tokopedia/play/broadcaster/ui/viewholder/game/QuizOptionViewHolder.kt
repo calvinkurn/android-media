@@ -26,7 +26,7 @@ class QuizOptionViewHolder private constructor(
             isCorrect = item.isSelected
             isEditable = item.isEditable
 
-            setOnClickListener { listener.onOptionChecked(item.order) }
+            setOnCheckedListener { listener.onOptionChecked(item.order) }
             setOnTextChanged { order, text -> listener.onTextChanged(order, text) }
         }
     }
