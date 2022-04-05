@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
@@ -530,7 +530,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             if (result is Success) {
                 result.data.let { isRoleEligible ->
                     if (!isRoleEligible) {
-                        RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
+                        RouteManager.route(this, ApplinkConstInternalUserPlatform.LOGOUT)
                         finish()
                     }
                 }

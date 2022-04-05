@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
     <dimen name="dp_3">3dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
     <dimen name="play_dp_14">14dp</dimen>
 
     <dimen name="play_placeholder_radius">8dp</dimen>
@@ -46,4 +47,8 @@
     <dimen name="engagement_icon_size">40dp</dimen>
     <dimen name="engagement_rounded_header_top">-20dp</dimen>
     <dimen name="engagement_title_header_top">28dp</dimen>
+    <dimen name="engagement_tools_small_widget_width">104dp</dimen>
+    <dimen name="engagement_tools_small_widget_marginTop">-14dp</dimen>
+    <dimen name="engagement_tools_small_widget_timer_bottom">-20dp</dimen>
+    <dimen name="engagement_tools_small_widget_timer_top">-16dp</dimen>
 </resources>

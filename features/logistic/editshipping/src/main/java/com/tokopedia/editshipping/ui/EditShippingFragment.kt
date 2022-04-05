@@ -432,8 +432,8 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
         val resultCode = availability.isGooglePlayServicesAvailable(activity)
         if (ConnectionResult.SUCCESS == resultCode) {
             val locationPass = LocationPass()
-            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty()!!
-                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty()!!) {
+            if (editShippingPresenter?.shopInformation?.shopLatitude?.isNotEmpty() ?: false
+                    && editShippingPresenter?.shopInformation?.shopLongitude?.isNotEmpty() ?: false) {
                 locationPass.latitude = editShippingPresenter?.shopInformation?.shopLatitude
                 locationPass.longitude = editShippingPresenter?.shopInformation?.shopLongitude
                 locationPass.generatedAddress = addressLayout?.googleMapAddressString
