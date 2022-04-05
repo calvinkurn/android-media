@@ -16,8 +16,8 @@ data class ProductrevGetReviewMedia(
 ) : Serializable
 
 data class ReviewMedia(
-    @SerializedName("imageID") @Expose val imageId: String = "",
-    @SerializedName("videoID") @Expose val videoId: String = "",
+    @SerializedName("imageID") @Expose val imageId: String = "0",
+    @SerializedName("videoID") @Expose val videoId: String = "0",
     @SerializedName("feedbackID") @Expose val feedbackId: String = "",
     @SerializedName("ImageSiblings") @Expose val mediaSiblings: List<String> = listOf(),
     @SerializedName("imageNumber") @Expose val mediaNumber: Int = 0,

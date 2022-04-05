@@ -20,6 +20,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.review.BuildConfig
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
@@ -44,6 +45,7 @@ import com.tokopedia.review.feature.reading.presentation.fragment.ReadReviewFrag
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewHeaderListener
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewHeader
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewStatisticsBottomSheet
+import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
@@ -309,14 +311,14 @@ class ReviewGalleryFragment :
 
     private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewMedia): List<ReviewGalleryMediaThumbnailUiModel> {
         return productrevGetReviewImage.reviewMedia.mapNotNull {
-            if (it.imageId.isNotBlank()) {
+            if (it.imageId.isNotBlank() && it.imageId.toLongOrZero().isMoreThanZero()) {
                 getReviewGalleryImageThumbnailUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
                     it.feedbackId,
                     it.imageId,
                     it.mediaNumber
                 )
-            } else if (it.videoId.isNotBlank()) {
+            } else if (it.videoId.isNotBlank() && it.videoId.toLongOrZero().isMoreThanZero()) {
                 getReviewGalleryVideoThumbnailUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
                     it.feedbackId,

@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uistate.AdapterUiState
@@ -182,14 +184,14 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         withContext(dispatchers.computation) {
             val mediaItems: MutableList<MediaItemUiModel> = response?.let { responseData ->
                 responseData.reviewMedia.mapIndexedNotNull { index, reviewMedia ->
-                    if (reviewMedia.imageId.isNotBlank()) {
+                    if (reviewMedia.imageId.isNotBlank() && reviewMedia.imageId.toLongOrZero().isMoreThanZero()) {
                         responseData.getReviewImageByID(
                             reviewMedia.imageId,
                             reviewMedia.mediaNumber,
                             showSeeMore && index == responseData.reviewMedia.size - 1,
                             totalMediaCount
                         )
-                    } else if (reviewMedia.videoId.isNotBlank()) {
+                    } else if (reviewMedia.videoId.isNotBlank() && reviewMedia.videoId.toLongOrZero().isMoreThanZero()) {
                         responseData.getReviewVideoByID(
                             reviewMedia.videoId,
                             reviewMedia.mediaNumber,
