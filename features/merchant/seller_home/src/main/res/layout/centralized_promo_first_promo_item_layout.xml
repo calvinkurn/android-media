@@ -14,6 +14,17 @@
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/firstPromoItemIconUnify"
+        android:layout_width="24dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/centralized_promo_first_voucher_bottomsheet_item_icon_margin"
+        android:layout_marginStart="@dimen/centralized_promo_first_voucher_bottomsheet_item_icon_margin"
+        android:visibility="gone"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/firstPromoItemTitle"

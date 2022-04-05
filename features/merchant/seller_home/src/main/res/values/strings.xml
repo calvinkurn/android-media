@@ -90,9 +90,11 @@
     <string name="centralized_promo_first_voucher_label">First Voucher</string>
     <string name="centralized_promo_bottomsheet_title">Yuk, buat Voucher Cashback!</string>
     <string name="centralized_promo_bottomsheet_product_coupon_title">Keuntungan pakai Kupon Produk!</string>
+    <string name="centralized_promo_bottomsheet_tokopedia_play_title">Live sekarang</string>
     <string name="centralized_promo_bottomsheet_detail">Berbagai keuntungan:</string>
     <string name="centralized_promo_bottomsheet_next">Buat Voucher</string>
     <string name="centralized_promo_bottomsheet_product_coupon_next">Buat Kupon</string>
+    <string name="centralized_promo_bottomsheet_tokopedia_play_next">Lanjut Live Sekarang</string>
     <string name="centralized_promo_bottomsheet_increase_sell">Tarik lebih banyak pelanggan</string>
     <string name="centralized_promo_bottomsheet_increase_sell_desc">Dengan tetap mempertahankan citra brand toko dan harga barang.</string>
     <string name="centralized_promo_bottomsheet_time">Kelola waktu aktif voucher</string>
@@ -106,6 +108,9 @@
     <string name="centralized_promo_bottomsheet_flexible_discount_desc">Pilih manfaat promosi yang cocok dengan produk-produk pilihanmu.</string>
     <string name="centralized_promo_bottomsheet_quick_sold_out">Stok produkmu cepat laris</string>
     <string name="centralized_promo_bottomsheet_quick_sold_out_desc">Pasang minimum pembelian ke produk pilihan yang banyak dicari.</string>
+    <string name="centralized_promo_bottomsheet_quick_live_desc">Bisa cepat nge-live dengan mudah</string>
+    <string name="centralized_promo_bottomsheet_interact_viewer_desc">Berinteraksi langsung dengan banyak penonton</string>
+    <string name="centralized_promo_bottomsheet_game_prize_desc">Bikin penonton betah dengan buat game hadiah</string>
     
     <!-- Other menu header revamp -->
     <string name="sah_new_other_shop_open">Toko Buka</string>

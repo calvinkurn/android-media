@@ -17,6 +17,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.FirstPromoDataSource
 import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sellerhome.R
@@ -116,6 +117,7 @@ class FirstTimePromoBottomSheetFragment : BottomSheetUnify() {
     private fun initView() {
         setupCloseClickListener()
         setupBottomSheetText()
+        setupDetailText()
         setupRecyclerView()
         setupTicker()
         setupButtonClick()
@@ -129,19 +131,37 @@ class FirstTimePromoBottomSheetFragment : BottomSheetUnify() {
     }
 
     private fun setupBottomSheetText() {
+        val bottomSheetTitle: String
+        val buttonText: String
         when (promoType) {
             SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT -> {
-                binding?.firstPromoBottomSheetTitle?.text =
+                bottomSheetTitle =
                     context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_title)
-                binding?.firstPromoButton?.text =
+                        .orEmpty()
+                buttonText =
                     context?.getString(R.string.centralized_promo_bottomsheet_product_coupon_next)
+                        .orEmpty()
+            }
+            SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY -> {
+                bottomSheetTitle =
+                    context?.getString(R.string.centralized_promo_bottomsheet_title).orEmpty()
+                buttonText =
+                    context?.getString(R.string.centralized_promo_bottomsheet_tokopedia_play_next).orEmpty()
             }
             else -> {
-                binding?.firstPromoBottomSheetTitle?.text =
-                    context?.getString(R.string.centralized_promo_bottomsheet_title)
-                binding?.firstPromoButton?.text =
-                    context?.getString(R.string.centralized_promo_bottomsheet_next)
+                bottomSheetTitle =
+                    context?.getString(R.string.centralized_promo_bottomsheet_title).orEmpty()
+                buttonText =
+                    context?.getString(R.string.centralized_promo_bottomsheet_next).orEmpty()
             }
+        }
+        binding?.firstPromoBottomSheetTitle?.text = bottomSheetTitle
+        binding?.firstPromoButton?.text = buttonText
+    }
+
+    private fun setupDetailText() {
+        if (promoType == SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY) {
+            binding?.firstPromoBottomSheetDetail?.gone()
         }
     }
 
@@ -152,6 +172,7 @@ class FirstTimePromoBottomSheetFragment : BottomSheetUnify() {
             val itemList =
                 when (promoType) {
                     SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT -> FirstPromoDataSource.getFirstProductCouponInfoItems()
+                    SellerHomeApplinkConst.TYPE_TOKOPEDIA_PLAY -> FirstPromoDataSource.getTokopediaPlayInfoItems()
                     else -> FirstPromoDataSource.getFirstVoucherCashbackInfoItems()
                 }
             adapter = FirstVoucherAdapter(itemList)
