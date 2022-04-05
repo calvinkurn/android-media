@@ -1,9 +1,10 @@
-package com.tokopedia.sellerorder.requestpickup.domain
+package com.tokopedia.sellerorder.requestpickup.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickup
 import com.tokopedia.sellerorder.requestpickup.data.model.SomConfirmReqPickupParam
+import com.tokopedia.sellerorder.requestpickup.domain.query.SomConfirmReqPickupQuery
 import javax.inject.Inject
 
 /**
@@ -15,8 +16,8 @@ class SomConfirmReqPickupUseCase @Inject constructor(private val useCase: Graphq
         useCase.setTypeClass(SomConfirmReqPickup.Data::class.java)
     }
 
-    suspend fun execute(query: String, param: SomConfirmReqPickupParam): SomConfirmReqPickup.Data {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(param: SomConfirmReqPickupParam): SomConfirmReqPickup.Data {
+        useCase.setGraphqlQuery(SomConfirmReqPickupQuery)
         useCase.setRequestParams(generateParam(param))
         return useCase.executeOnBackground()
     }

@@ -1,7 +1,8 @@
-package com.tokopedia.sellerorder.confirmshipping.domain
+package com.tokopedia.sellerorder.confirmshipping.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomConfirmShipping
+import com.tokopedia.sellerorder.confirmshipping.domain.query.SomGetConfirmShippingQuery
 import javax.inject.Inject
 
 /**
@@ -13,8 +14,9 @@ class SomGetConfirmShippingResultUseCase @Inject constructor(private val useCase
         useCase.setTypeClass(SomConfirmShipping.Data::class.java)
     }
 
-    suspend fun execute(query: String): SomConfirmShipping.Data.MpLogisticConfirmShipping {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(orderId: String, shippingRef: String): SomConfirmShipping.Data.MpLogisticConfirmShipping {
+        useCase.setRequestParams(SomGetConfirmShippingQuery.createParamGetConfirmShipping(orderId, shippingRef))
+        useCase.setGraphqlQuery(SomGetConfirmShippingQuery)
         return useCase.executeOnBackground().mpLogisticConfirmShipping
     }
 }

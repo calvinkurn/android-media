@@ -1,7 +1,8 @@
-package com.tokopedia.sellerorder.confirmshipping.domain
+package com.tokopedia.sellerorder.confirmshipping.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
+import com.tokopedia.sellerorder.confirmshipping.domain.query.SomGetCourierListQuery
 import javax.inject.Inject
 
 /**
@@ -13,10 +14,8 @@ class SomGetCourierListUseCase @Inject constructor(private val useCase: GraphqlU
         useCase.setTypeClass(SomCourierList.Data::class.java)
     }
 
-    suspend fun execute(
-        query: String
-    ): MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment> {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(): MutableList<SomCourierList.Data.MpLogisticGetEditShippingForm.DataShipment.Shipment> {
+        useCase.setGraphqlQuery(SomGetCourierListQuery)
         return useCase.executeOnBackground().mpLogisticGetEditShippingForm.dataShipment.listShipment.toMutableList()
     }
 }

@@ -1,7 +1,8 @@
-package com.tokopedia.sellerorder.confirmshipping.domain
+package com.tokopedia.sellerorder.confirmshipping.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomChangeCourier
+import com.tokopedia.sellerorder.confirmshipping.domain.query.SomChangeCourierQuery
 import javax.inject.Inject
 
 /**
@@ -13,8 +14,9 @@ class SomChangeCourierUseCase @Inject constructor(private val useCase: GraphqlUs
         useCase.setTypeClass(SomChangeCourier.Data::class.java)
     }
 
-    suspend fun execute(query: String): SomChangeCourier.Data {
-        useCase.setGraphqlQuery(query)
+    suspend fun execute(orderId: String, shippingRef: String, agencyId: Long, spId: Long): SomChangeCourier.Data {
+        useCase.setRequestParams(SomChangeCourierQuery.createParamChangeCourier(orderId, shippingRef, agencyId, spId))
+        useCase.setGraphqlQuery(SomChangeCourierQuery)
         return  useCase.executeOnBackground()
     }
 }
