@@ -151,6 +151,7 @@ class PlayUserInteractionFragment @Inject constructor(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
 
     /**
      * Interactive
@@ -588,6 +589,10 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
 
         setupFeaturedProductsFadingEdge(view)
+
+        //TODO("CODE FOR TESTING")
+        interactiveActiveView?.setQuiz()
+        interactiveActiveView?.show()
     }
 
     private fun setupInsets(view: View) {
