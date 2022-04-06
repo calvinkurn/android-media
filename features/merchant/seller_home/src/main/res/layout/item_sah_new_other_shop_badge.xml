@@ -28,8 +28,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:loader_type="rect"
-        app:loader_corner_radius="10dp" />
+        app:loader_type="line"
+        app:loader_corner_radius="@dimen/setting_shimmer_radius" />
 
     <include
         layout="@layout/partial_item_sah_new_other_failed"

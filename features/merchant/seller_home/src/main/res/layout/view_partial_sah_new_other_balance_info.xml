@@ -73,8 +73,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintVertical_bias="0.1"
-                app:loader_corner_radius="20dp"
-                app:loader_type="rect"/>
+                app:loader_type="line"
+                app:loader_corner_radius="@dimen/setting_shimmer_radius"/>
 
             <include
                 layout="@layout/partial_item_sah_new_other_failed"
@@ -127,7 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl3"
-                android:text="@string/setting_topads_credits"
+                android:text="@string/sah_new_other_topads_credit"
                 android:textColor="@color/Unify_NN600"
                 android:ellipsize="end"
                 android:lines="1"
@@ -159,8 +159,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintVertical_bias="0.1"
-                app:loader_type="rect"
-                app:loader_corner_radius="20dp" />
+                app:loader_type="line"
+                app:loader_corner_radius="@dimen/setting_shimmer_radius"/>
 
             <include
                 layout="@layout/partial_item_sah_new_other_failed"

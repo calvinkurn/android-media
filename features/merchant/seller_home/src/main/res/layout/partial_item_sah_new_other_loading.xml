@@ -12,8 +12,8 @@
         app:layout_constraintBottom_toTopOf="@id/shimmer_sah_new_other_shop_desc"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:loader_type="rect"
-        app:loader_corner_radius="20dp"/>
+        app:loader_type="line"
+        app:loader_corner_radius="@dimen/setting_shimmer_radius"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmer_sah_new_other_shop_desc"
@@ -24,7 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/shimmer_sah_new_other_shop_title"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:loader_type="rect"
-        app:loader_corner_radius="20dp"/>
+        app:loader_type="line"
+        app:loader_corner_radius="@dimen/setting_shimmer_radius"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
