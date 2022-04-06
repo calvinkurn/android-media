@@ -18,19 +18,14 @@ object ManageAddressAnalytics : BaseTrackerConst(){
     }
 
     fun sendClickButtonUbahAlamatEvent() {
-        sendEventCategoryActionLabel(EVENT_CLICK_LOGISTIC, CATEGORY_LIST_ADDRESS, ACTION_UBAH_ALAMAT, "")
-    }
-
-    private fun sendEventCategoryActionLabel(event: String, eventCategory: String,
-                                             eventAction: String, eventLabel: String) {
         getTracker().sendGeneralEvent(
             BaseTrackerBuilder()
-            .appendEvent(event)
-            .appendEventCategory(eventCategory)
-            .appendEventAction(eventAction)
-            .appendEventLabel(eventLabel)
-            .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-            .appendCurrentSite(CurrentSite.DEFAULT)
-            .build())
+                .appendEvent(EVENT_CLICK_LOGISTIC)
+                .appendEventCategory(CATEGORY_LIST_ADDRESS)
+                .appendEventAction(ACTION_UBAH_ALAMAT)
+                .appendEventLabel("")
+                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .build())
     }
 }
