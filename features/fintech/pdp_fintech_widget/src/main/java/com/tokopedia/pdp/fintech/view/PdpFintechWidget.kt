@@ -172,10 +172,14 @@ class PdpFintechWidget @JvmOverloads constructor(
                 else
                     getDetailFromApi(productID, fintechWidgetViewHolder)
             } else {
+
                 getDetailFromApi(productID, fintechWidgetViewHolder)
             }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
+        }
+        finally {
+            this.logInStatus = loggedIn
         }
     }
 
