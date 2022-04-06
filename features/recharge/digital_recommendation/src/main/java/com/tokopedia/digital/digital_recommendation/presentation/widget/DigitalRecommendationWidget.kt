@@ -43,11 +43,12 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     private lateinit var lifecycleOwner: LifecycleOwner
 
     private lateinit var digitalRecommendationViewModel: DigitalRecommendationViewModel
-    private lateinit var digitalRecommendationAnalytics: DigitalRecommendationAnalytics
 
     private var additionalTrackingData: DigitalRecommendationAdditionalTrackingData? = null
     private var page: DigitalRecommendationPage? = null
     private var trackers: List<DigitalRecommendationItemUnifyModel>? = null
+
+    private val digitalRecommendationAnalytics: DigitalRecommendationAnalytics by lazy(LazyThreadSafetyMode.NONE){ DigitalRecommendationAnalytics()}
 
     private val unifyListener = object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener{
         override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
@@ -168,8 +169,6 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         if (!::digitalRecommendationViewModel.isInitialized) {
             throw UninitializedPropertyAccessException("View Model is not Initialized")
         }
-
-        digitalRecommendationAnalytics = DigitalRecommendationAnalytics()
 
         showLoading()
         observeLivedata()
