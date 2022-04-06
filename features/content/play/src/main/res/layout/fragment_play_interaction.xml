@@ -303,6 +303,16 @@
         app:layout_constraintTop_toBottomOf="@id/view_partner_info"
         />
 
+    <com.tokopedia.play_common.view.game.GameSmallWidgetView
+        android:id="@+id/widget_game_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintTop_toTopOf="@id/view_stats_info"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quick_reply"
         android:layout_width="@dimen/layout_lvl0"
