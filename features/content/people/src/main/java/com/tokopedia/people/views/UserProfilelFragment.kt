@@ -1023,7 +1023,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             channel = shareModel.channel
             campaign = shareModel.campaign
             ogTitle = displayName
-            ogDescription = "$desc $totalFollowers Follower $totalFollowings Following"
+            ogDescription = "$totalFollowers Follower $totalFollowings Following"
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
