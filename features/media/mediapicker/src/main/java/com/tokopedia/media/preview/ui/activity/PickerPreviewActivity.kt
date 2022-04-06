@@ -26,7 +26,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PickerPreviewActivity : BaseActivity()

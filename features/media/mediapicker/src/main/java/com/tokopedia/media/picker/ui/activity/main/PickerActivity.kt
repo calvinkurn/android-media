@@ -43,45 +43,6 @@ import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalSt
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-/**
- * main applink:
- * tokopedia://media-picker
- * state -> camera, video, gallery, and multiple selection
- *
- * page:
- * camera -> camera page only
- * gallery -> gallery page only
- *
- * mode:
- * image -> image only (camera only and gallery only shown an image)
- * video -> video only (video only and gallery only shown an video)
- *
- * type:
- * single -> single selection
- * multiple -> multiple selection
- *
- * sample use-cases:
- * show camera page and only supported for image:
- * tokopedia://media-picker?page=camera&mode=image
- *
- * show camera page and only supported for video:
- * tokopedia://media-picker?page=camera&mode=video
- *
- * show gallery page and only supported for image:
- * tokopedia://media-picker?page=gallery&mode=image
- *
- * show gallery page and only supported for video:
- * tokopedia://media-picker?page=gallery&mode=video
- *
- * show camera and gallery but only supported for image:
- * tokopedia://media-picker?mode=image
- *
- * show camera and gallery but only supported for video:
- * tokopedia://media-picker?mode=video
- *
- * if you want to set between single or multiple selection, just add this query:
- * ...&type=single/multiple
- */
 open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
     , NavToolbarComponent.Listener
@@ -148,7 +109,13 @@ open class PickerActivity : BaseActivity()
 
             // exit picker
             data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
-                onFinishIntent(it)
+                val withEditor = data.getBooleanExtra(EXTRA_EDITOR_PICKER, false)
+
+                if (withEditor) {
+                    onEditorIntent(it)
+                } else {
+                    onFinishIntent(it)
+                }
             }
         }
     }
@@ -281,9 +248,7 @@ open class PickerActivity : BaseActivity()
         finish()
     }
 
-    private fun onEditorIntent(path: ArrayList<String>) {
-        // TODO
-    }
+    private fun onEditorIntent(data: PickerResult) {} // no-op
 
     override fun onPermissionGranted() {
         navigateByPageType()
