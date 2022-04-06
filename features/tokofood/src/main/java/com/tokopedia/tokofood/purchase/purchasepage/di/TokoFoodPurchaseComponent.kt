@@ -6,7 +6,7 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchas
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [TokoFoodPurchaseViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [TokoFoodPurchaseViewModelModule::class, TokoFoodPurchaseModule::class], dependencies = [BaseAppComponent::class])
 interface TokoFoodPurchaseComponent {
     fun inject(fragment: TokoFoodPurchaseFragment)
 }

@@ -25,13 +25,13 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
-    fun mapShippingUiModel(): TokoFoodPurchaseShippingTokoFoodPurchaseUiModel {
+    fun mapShippingUiModel(needPinpoint: Boolean = true): TokoFoodPurchaseShippingTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseShippingTokoFoodPurchaseUiModel().apply {
             shippingCourierName = "Gojek Instan (Rp0)"
             shippingEta = "Tiba dalam 30-60 menit"
             shippingLogoUrl = "https://1000logos.net/wp-content/uploads/2020/11/Gojek-Logo-1024x640.png"
             shippingPrice = 0
-            isNeedPinpoint = true
+            isNeedPinpoint = needPinpoint
             isShippingUnavailable = false
             isDisabled = isShippingUnavailable
         }

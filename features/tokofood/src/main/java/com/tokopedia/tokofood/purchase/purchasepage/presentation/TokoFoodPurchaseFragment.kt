@@ -259,6 +259,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
                 UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
+                UiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> loadData()
+                UiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
+                    // TODO: Show error
+                }
             }
         })
     }
@@ -361,7 +365,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             data?.let {
                 val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 locationPass?.let {
-                    viewModel.updateAddressPinpoint()
+                    viewModel.updateAddressPinpoint(locationPass.latitude, locationPass.longitude)
                 }
             }
         }

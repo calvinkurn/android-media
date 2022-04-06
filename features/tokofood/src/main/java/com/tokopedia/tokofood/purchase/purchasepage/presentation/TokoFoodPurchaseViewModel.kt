@@ -5,9 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
@@ -19,9 +20,12 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDispatchers)
+class TokoFoodPurchaseViewModel @Inject constructor(
+    private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
     private val _uiEvent = SingleLiveEvent<UiEvent>()
@@ -40,6 +44,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     // Temporary field to store collapsed unavailable products
     private var tmpCollapsedUnavailableItems = mutableListOf<Visitable<*>>()
 
+    // Dummy temporary field to store address data
+    private var tmpAddressData = "0" to false
+
     private fun getVisitablesValue(): MutableList<Visitable<*>> {
         return visitables.value ?: mutableListOf()
     }
@@ -55,39 +62,55 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun loadData() {
-        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
-        if (fragmentUiModel.value != null) {
-            if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
+
+        launch {
+            delay(3000) // Simulate hit API
+            val isSuccess = true
+            if (isSuccess) {
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = fragmentUiModel.value
-                _visitables.value = visitables.value
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
+                constructRecycleViewItem()
                 calculateTotal()
             } else {
+                // Todo : Set throwable from network
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = fragmentUiModel.value
-            }
-        } else {
-            launch {
-                delay(3000) // Simulate hit API
-                val isSuccess = true
-                if (isSuccess) {
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
-                    constructRecycleViewItem()
-                    calculateTotal()
-                } else {
-                    // Todo : Set throwable from network
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
-                }
+                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
             }
         }
+        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
+//        if (fragmentUiModel.value != null) {
+//            if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
+//                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+//                _fragmentUiModel.value = fragmentUiModel.value
+//                _visitables.value = visitables.value
+//                calculateTotal()
+//            } else {
+//                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+//                _fragmentUiModel.value = fragmentUiModel.value
+//            }
+//        } else {
+//            launch {
+//                delay(3000) // Simulate hit API
+//                val isSuccess = true
+//                if (isSuccess) {
+//                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+//                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
+//                    constructRecycleViewItem()
+//                    calculateTotal()
+//                } else {
+//                    // Todo : Set throwable from network
+//                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+//                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
+//                }
+//            }
+//        }
     }
 
     private fun constructRecycleViewItem() {
         // Todo : read API response, map to UiModel, below is example mapping using mock data
         val tmpData = mutableListOf<Visitable<*>>()
-        val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel()
+        val needPinpoint = !tmpAddressData.second
+        val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel(needPinpoint = needPinpoint)
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingUnavailable))
         tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapAddressUiModel())
@@ -384,10 +407,28 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         }
     }
 
-    fun updateAddressPinpoint() {
+    fun updateAddressPinpoint(latitude: String, longitude: String) {
         // Todo : hit API set address pinpoint, then reload purchase page if success
+        launchCatchError(
+            block = {
+                val isSuccess = withContext(dispatcher.io) {
+                    keroEditAddressUseCase.execute()
+                }
+                tmpAddressData = tmpAddressData.first to isSuccess
+                if (isSuccess) {
+                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                } else {
+                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                }
+            }, onError = {
+                tmpAddressData = tmpAddressData.first to false
+                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_EDIT_PINPOINT)
+            }
+        )
     }
 
-    private fun getAddressInfo() {}
+    private fun getAddressInfo() {
+
+    }
 
 }
