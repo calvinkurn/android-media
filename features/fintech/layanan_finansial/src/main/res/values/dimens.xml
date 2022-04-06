@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="sp_3">3sp</dimen>
+    <dimen name="lf_dp_1">1dp</dimen>
+    <dimen name="lf_dp_6">6dp</dimen>
+    <dimen name="lf_dp_10">10dp</dimen>
+    <dimen name="lf_dp_36">36dp</dimen>
+    <dimen name="lf_dp_58">58dp</dimen>
+    <dimen name="lf_dp_130">130dp</dimen>
+    <dimen name="lf_dp_160">160dp</dimen>
+
 </resources>
