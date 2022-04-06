@@ -22,9 +22,15 @@ import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.product_card_add_to_cart_button.view.*
+import kotlinx.android.synthetic.main.product_card_add_to_cart_wishlist_button.view.*
+import kotlinx.android.synthetic.main.product_card_add_variant_button.view.*
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+import kotlinx.android.synthetic.main.product_card_delete_product_button.view.*
 import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
+import kotlinx.android.synthetic.main.product_card_notify_button.view.*
+import kotlinx.android.synthetic.main.product_card_see_similar_product_wishlist_button.view.*
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -204,7 +210,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
      * Special cases for specific pages
      * */
     fun wishlistPage_hideCTAButton(isVisible: Boolean) {
-        buttonAddToCart?.showWithCondition(isVisible)
+        renderButtonAddToCart(isVisible)
         buttonRemoveFromWishlist?.showWithCondition(isVisible)
         progressBarStock?.showWithCondition(!isVisible)
         textViewStockLabel?.showWithCondition(!isVisible)
@@ -225,5 +231,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart?.isEnabled = false
         buttonAddToCart?.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
+    }
+
+    private fun renderButtonAddToCart(isVisible: Boolean) {
+        if (isVisible) {
+            buttonAddToCartStub?.inflate()
+        }
+
+        buttonAddToCart?.showWithCondition(isVisible)
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.productcard
 
 import android.view.View
+import android.view.ViewStub
 import android.widget.TextView
 import androidx.annotation.IdRes
 import com.tokopedia.iconunify.IconUnify
@@ -51,11 +52,15 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
         when {
-            productCardModel.shouldShowAddToCartNonVariantQuantity() ->
+            productCardModel.shouldShowAddToCartNonVariantQuantity() -> {
+                findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
+            }
 
-            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() ->
+            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() -> {
+                findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
                 buttonAddToCart?.configureButtonAddToCart()
+            }
 
             else ->
                 buttonAddToCart?.gone()
@@ -235,6 +240,9 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
+        if(productCardModel.hasVariant()) {
+            findView<ViewStub>(R.id.buttonAddVariantStub).inflate()
+        }
         buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
 
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {

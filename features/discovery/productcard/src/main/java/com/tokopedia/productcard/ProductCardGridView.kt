@@ -23,9 +23,13 @@ import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.product_card_add_to_cart_wishlist_button.view.*
+import kotlinx.android.synthetic.main.product_card_add_variant_button.view.*
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import kotlinx.android.synthetic.main.product_card_notify_button.view.*
+import kotlinx.android.synthetic.main.product_card_see_similar_product_wishlist_button.view.*
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 

@@ -7,26 +7,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonNotify"
-        android:contentDescription="@string/content_desc_notifyMe"
+    <ViewStub
+        android:id="@+id/buttonNotifyStub"
+        android:inflatedId="@+id/buttonNotify"
+        android:layout="@layout/product_card_notify_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_button_add_to_cart_height"
         android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
-        android:text="@string/product_card_text_notify_me"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"
-        android:textColor="@color/Unify_G500"
-        android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="small"
-        tools:text="@string/product_card_text_notify_me"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <FrameLayout
         android:id="@+id/buttonRemoveFromWishlist"
@@ -54,49 +44,34 @@
 
     </FrameLayout>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonAddToCart"
-        android:contentDescription="@string/content_desc_buttonAddToCart"
+    <ViewStub
+        android:id="@+id/buttonAddToCartStub"
+        android:inflatedId="@+id/buttonAddToCart"
+        android:layout="@layout/product_card_add_to_cart_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_button_add_to_cart_height"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
-        android:text="@string/product_card_text_add_to_cart_grid"
-        android:foreground="?attr/selectableItemBackground"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
         app:layout_constraintTop_toBottomOf="@id/buttonNotify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="small"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonSeeSimilarProduct"
-        android:contentDescription="@string/content_desc_buttonSeeSimilarProduct"
+    <ViewStub
+        android:id="@+id/buttonSeeSimilarProductStub"
+        android:inflatedId="@+id/buttonSeeSimilarProduct"
+        android:layout="@layout/product_card_see_similar_product_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_button_similar_product_height"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="@dimen/product_card_button_similar_product_margin_top"
-        android:text="@string/product_card_text_similar_product_grid"
-        android:foreground="?attr/selectableItemBackground"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
         app:layout_constraintTop_toBottomOf="@id/buttonNotify"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="small"
-        tools:visibility="gone" />
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/buttonDeleteCart"
@@ -135,27 +110,18 @@
         app:layout_constraintBottom_toBottomOf="@id/buttonAddVariant"
         tools:visibility="visible"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonAddVariant"
+    <ViewStub
+        android:id="@+id/buttonAddVariantStub"
+        android:inflatedId="@+id/buttonAddVariant"
+        android:layout="@layout/product_card_add_variant_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_button_add_variant_height"
         android:layout_marginStart="@dimen/product_card_button_add_variant_with_quantity_margin_start"
         android:layout_marginTop="@dimen/product_card_button_add_variant_margin_top"
         app:layout_goneMarginStart="@dimen/product_card_button_add_variant_margin_start"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?selectableItemBackground"
-        android:gravity="center"
-        android:text="@string/product_card_text_add_to_cart_grid"
-        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/textVariantQuantity"
         app:layout_constraintTop_toBottomOf="@id/quantityEditorNonVariant"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="heading_6"
-        app:unifyButtonSize="small"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="ghost"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <FrameLayout
         android:id="@+id/buttonThreeDotsWishlist"
@@ -194,57 +160,32 @@
         app:layout_constraintTop_toBottomOf="@id/buttonAddVariant"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/buttonAddToCartWishlist"
-            android:contentDescription="@string/content_desc_buttonAddToCart"
+        <ViewStub
+            android:id="@+id/buttonAddToCartWishlistStub"
+            android:inflatedId="@+id/buttonAddToCartWishlist"
+            android:layout="@layout/product_card_add_to_cart_wishlist_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/product_card_button_primary_height"
-            android:text="@string/product_card_text_add_to_cart_grid"
-            android:foreground="?attr/selectableItemBackground"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_goneMarginStart="0dp"
-            app:typographyType="heading_6"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="small"
-            tools:visibility="visible" />
+            app:layout_goneMarginStart="0dp"/>
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/buttonSeeSimilarProductWishlist"
-            android:contentDescription="@string/content_desc_buttonSeeSimilarProduct"
+        <ViewStub
+            android:id="@+id/buttonSeeSimilarProductWishlistStub"
+            android:inflatedId="@+id/buttonSeeSimilarProductWishlist"
+            android:layout="@layout/product_card_see_similar_product_wishlist_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/product_card_button_primary_height"
-            android:text="@string/product_card_text_similar_product_grid"
-            android:foreground="?attr/selectableItemBackground"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
-            app:typographyType="heading_6"
-            app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="small"
-            tools:visibility="visible" />
+            android:layout_height="@dimen/product_card_button_primary_height"/>
 
     </RelativeLayout>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonDeleteProduct"
+    <ViewStub
+        android:id="@+id/buttonDeleteProductStub"
+        android:inflatedId="@+id/buttonDeleteProduct"
+        android:layout="@layout/product_card_delete_product_button"
         android:layout_width="0dp"
         android:layout_height="@dimen/product_card_button_delete_product_height"
         android:layout_marginTop="@dimen/product_card_button_delete_product_margin_top"
-        android:text="@string/product_card_text_remove_product"
-        android:foreground="?attr/selectableItemBackground"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rlPrimaryButtonWishlist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost"
-        app:unifyButtonSize="medium"
-        tools:visibility="visible" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
