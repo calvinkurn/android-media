@@ -3,9 +3,9 @@ package com.tokopedia.minicart.cartlist.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.cartlist.adapter.MiniCartListAdapterTypeFactory
 import com.tokopedia.minicart.common.data.response.minicartlist.Action
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_DELETE
 import com.tokopedia.minicart.common.data.response.minicartlist.WholesalePrice
 
-// TODO: BUNDLING NOW MINI CART
 data class MiniCartProductUiModel(
         var cartId: String = "",
         var productId: String = "",
@@ -33,6 +33,22 @@ data class MiniCartProductUiModel(
         var maxNotesLength: Int = 0,
         var isProductDisabled: Boolean = false,
         var productCashbackPercentage: Int = 0,
+        var bundleId: String = "",
+        var bundleName: String = "",
+        var bundlePrice: Long = 0,
+        var bundlePriceFmt: String = "",
+        var bundleOriginalPrice: Long = 0,
+        var bundleOriginalPriceFmt: String = "",
+        var bundleMinOrder: Int = 0,
+        var bundleMaxOrder: Int = 0,
+        var bundleQty: Int = 0,
+        var bundleMultiplier: Int = 0,
+        var bundleIconUrl: String = "",
+        var slashPriceLabel: String = "",
+        var isBundlingItem: Boolean = false,
+        var showBundlingHeader: Boolean = false,
+        var showBottomDivider: Boolean = false,
+        var isLastProductItem: Boolean = false,
 
         // Fields below are for analytics purpose only
         var campaignId: String = "",
@@ -49,5 +65,98 @@ data class MiniCartProductUiModel(
 
     override fun type(typeFactory: MiniCartListAdapterTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    fun deepCopy(): MiniCartProductUiModel {
+        return MiniCartProductUiModel(
+                cartId = this.cartId,
+                productId = this.productId,
+                parentId = this.parentId,
+                productImageUrl = this.productImageUrl,
+                productName = this.productName,
+                productVariantName = this.productVariantName,
+                productQtyLeft = this.productQtyLeft,
+                productSlashPriceLabel = this.productSlashPriceLabel,
+                productOriginalPrice = this.productOriginalPrice,
+                productWholeSalePrice = this.productWholeSalePrice,
+                productInitialPriceBeforeDrop = this.productInitialPriceBeforeDrop,
+                productPrice = this.productPrice,
+                productInformation = this.productInformation,
+                productNotes = this.productNotes,
+                productQty = this.productQty,
+                productWeight = this.productWeight,
+                productMinOrder = this.productMinOrder,
+                productMaxOrder = this.productMaxOrder,
+                productActions = this.productActions,
+                selectedUnavailableActionId = this.selectedUnavailableActionId,
+                selectedUnavailableActionLink = this.selectedUnavailableActionLink,
+                wholesalePriceGroup = this.wholesalePriceGroup,
+                maxNotesLength = this.maxNotesLength,
+                isProductDisabled = this.isProductDisabled,
+                productCashbackPercentage = this.productCashbackPercentage,
+                campaignId = this.campaignId,
+                attribution = this.attribution,
+                warehouseId = this.warehouseId,
+                categoryId = this.categoryId,
+                category = this.category,
+                shopId = this.shopId,
+                shopName = this.shopName,
+                shopType = this.shopType,
+                freeShippingType = this.freeShippingType,
+                errorType = this.errorType
+        )
+    }
+
+    fun hasDeleteAction(): Boolean {
+            return productActions.find { it.id == ACTION_DELETE } != null
+    }
+
+    fun setQuantity(qty: Int) {
+            if(isBundlingItem) {
+                    bundleQty = qty
+                    productQty = bundleMultiplier * qty
+            } else {
+                    productQty = qty
+            }
+    }
+
+    fun getQuantity(): Int {
+            return if(isBundlingItem) {
+                    bundleQty
+            } else {
+                    productQty
+            }
+    }
+
+    fun getPrice(): Long {
+            return if(isBundlingItem) {
+                    bundlePrice
+            } else {
+                    productPrice
+            }
+    }
+
+    fun getOriginalPrice(): Long {
+            return if(isBundlingItem) {
+                    bundleOriginalPrice
+            } else {
+                    productOriginalPrice
+            }
+    }
+
+    fun getMaxOrder(): Int {
+            return if(isBundlingItem) {
+                    bundleMaxOrder
+            } else {
+                    productMaxOrder
+            }
+    }
+
+    fun getMinOrder(): Int {
+            return if(isBundlingItem) {
+                    bundleMinOrder
+            } else {
+                    productMinOrder
+            }
     }
 }

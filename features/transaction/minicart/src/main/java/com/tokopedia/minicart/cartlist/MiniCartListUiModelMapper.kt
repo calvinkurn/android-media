@@ -13,11 +13,14 @@ import com.tokopedia.minicart.cartlist.uimodel.MiniCartTickerWarningUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableHeaderUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartUnavailableReasonUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.Action
+import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_DELETE
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWLESS
 import com.tokopedia.minicart.common.data.response.minicartlist.Action.Companion.ACTION_SHOWMORE
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
+import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -117,16 +120,24 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
                 // Add available product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
-                availableGroup.cartDetails.forEach { cartDetail ->
-                    weightTotal += cartDetail.product.productWeight * cartDetail.product.productQuantity
-                    val miniCartProductUiModel = mapProductUiModel(
+                val cartItemsCount = availableGroup.cartDetails.count()
+                availableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
+                    val lastCartItem = cartIndex == cartItemsCount - 1
+                    cartDetail.products.forEachIndexed { productIndex, product ->
+                        weightTotal += product.productWeight * product.productQuantity
+                        val miniCartProductUiModel = mapProductUiModel(
+                            productIndex = productIndex,
                             cartDetail = cartDetail,
                             shop = availableGroup.shop,
+                            product = product,
                             cartStringId = availableGroup.cartString,
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
-                            notesLength = miniCartData.data.maxCharNote)
-                    miniCartProductUiModels.add(miniCartProductUiModel)
+                            notesLength = miniCartData.data.maxCharNote,
+                            lastCartItem = lastCartItem
+                        )
+                        miniCartProductUiModels.add(miniCartProductUiModel)
+                    }
                 }
                 miniCartAvailableSectionUiModels.addAll(miniCartProductUiModels)
             }
@@ -151,17 +162,25 @@ class MiniCartListUiModelMapper @Inject constructor() {
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartProductUiModel>()
-                unavailableGroup.cartDetails.forEach { cartDetail ->
-                    val miniCartProductUiModel = mapProductUiModel(
+                val cartItemsCount = unavailableGroup.cartDetails.count()
+                unavailableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
+                    val lastCartItem = cartIndex == cartItemsCount - 1
+                    cartDetail.products.forEachIndexed { productIndex, product ->
+                        val miniCartProductUiModel = mapProductUiModel(
+                            productIndex = productIndex,
                             cartDetail = cartDetail,
                             shop = unavailableGroup.shop,
+                            product = product,
                             cartStringId = unavailableGroup.cartString,
                             shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
                             unavailableActionId = unavailableSection.selectedUnavailableActionId,
-                            unavailableReason = unavailableSection.title)
-                    miniCartProductUiModels.add(miniCartProductUiModel)
+                            unavailableReason = unavailableSection.title,
+                            lastCartItem = lastCartItem
+                        )
+                        miniCartProductUiModels.add(miniCartProductUiModel)
+                    }
                 }
                 miniCartUnavailableSectionUiModels.addAll(miniCartProductUiModels)
             }
@@ -219,51 +238,68 @@ class MiniCartListUiModelMapper @Inject constructor() {
         }
     }
 
-    private fun mapProductUiModel(cartDetail: CartDetail,
-                                  shop: Shop,
-                                  shipmentInformation: ShipmentInformation,
-                                  action: List<Action>,
-                                  isDisabled: Boolean = false,
-                                  unavailableActionId: String = "",
-                                  unavailableReason: String = "",
-                                  notesLength: Int = 0,
-                                  cartStringId: String = ""): MiniCartProductUiModel {
+    private fun mapProductUiModel(
+        productIndex: Int,
+        cartDetail: CartDetail,
+        shop: Shop,
+        product: Product,
+        shipmentInformation: ShipmentInformation,
+        action: List<Action>,
+        isDisabled: Boolean = false,
+        unavailableActionId: String = "",
+        unavailableReason: String = "",
+        notesLength: Int = 0,
+        lastCartItem: Boolean = false,
+        cartStringId: String = ""
+    ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
+            val products = cartDetail.products
+            val productsCount = products.count()
+            val bundleDetail = cartDetail.bundleDetail
+            val bundlingItem = bundleDetail.isBundlingItem()
+
+            val productQuantity = product.productQuantity
+            val bundleQuantity = bundleDetail.bundleQty
+
+            val firstProductItem = productIndex == 0
+            val lastProductItem = productIndex == productsCount - 1
+            val actionList = removeBundleDeleteAction(bundleDetail, action, lastProductItem)
+
             cartId = cartDetail.cartId
-            productId = cartDetail.product.productId
-            parentId = cartDetail.product.parentId
+            productId = product.productId
+            parentId = product.parentId
             cartString = cartStringId
-            productImageUrl = cartDetail.product.productImage.imageSrc100Square
-            productName = cartDetail.product.productName
-            productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
-            productSlashPriceLabel = cartDetail.product.slashPriceLabel
-            productOriginalPrice = cartDetail.product.productOriginalPrice
+            productImageUrl = product.productImage.imageSrc100Square
+            productName = product.productName
+            productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
+            productSlashPriceLabel = product.slashPriceLabel
+            productOriginalPrice = product.productOriginalPrice
             productWholeSalePrice = 0
-            productInitialPriceBeforeDrop = cartDetail.product.initialPrice
-            productPrice = cartDetail.product.productPrice
-            productInformation = cartDetail.product.productInformation
-            productNotes = cartDetail.product.productNotes
-            productQty = if (cartDetail.product.productSwitchInvenage == 0) {
-                cartDetail.product.productQuantity
+            productInitialPriceBeforeDrop = product.initialPrice
+            productPrice = product.productPrice
+            productInformation = product.productInformation
+            productNotes = product.productNotes
+            productQty = if (product.productSwitchInvenage == 0) {
+                productQuantity
             } else {
-                min(cartDetail.product.productQuantity, cartDetail.product.productInvenageValue)
+                min(productQuantity, product.productInvenageValue)
             }
-            productWeight = cartDetail.product.productWeight
-            productMinOrder = cartDetail.product.productMinOrder
-            productMaxOrder = if (cartDetail.product.productSwitchInvenage == 0) {
-                cartDetail.product.productMaxOrder
+            productWeight = product.productWeight
+            productMinOrder = product.productMinOrder
+            productMaxOrder = if (product.productSwitchInvenage == 0) {
+                product.productMaxOrder
             } else {
-                min(cartDetail.product.productMaxOrder, cartDetail.product.productInvenageValue)
+                min(product.productMaxOrder, product.productInvenageValue)
             }
-            productActions = action
-            wholesalePriceGroup = cartDetail.product.wholesalePrice.asReversed()
+            productActions = actionList
+            wholesalePriceGroup = product.wholesalePrice.asReversed()
             isProductDisabled = isDisabled
             maxNotesLength = notesLength
-            campaignId = cartDetail.product.campaignId
-            attribution = cartDetail.product.productTrackerData.attribution
-            warehouseId = cartDetail.product.warehouseId
-            categoryId = cartDetail.product.categoryId
-            category = cartDetail.product.category
+            campaignId = product.campaignId
+            attribution = product.productTrackerData.attribution
+            warehouseId = product.warehouseId
+            categoryId = product.categoryId
+            category = product.category
             shopId = shop.shopId
             shopName = shop.shopName
             shopType = shop.shopTypeInfo.titleFmt
@@ -276,13 +312,50 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 selectedUnavailableActionId = unavailableActionId
                 selectedUnavailableActionLink = cartDetail.selectedUnavailableActionLink
             } else {
-                productQtyLeft = cartDetail.product.productWarningMessage
+                productQtyLeft = product.productWarningMessage
             }
-            productCashbackPercentage = cartDetail.product.productCashback
+            productCashbackPercentage = product.productCashback
                     .replace(" ", "")
                     .replace("%", "")
                     .toIntOrZero()
+            bundleId = bundleDetail.bundleId
+            bundleName = bundleDetail.bundleName
+            bundlePrice = bundleDetail.bundlePrice
+            bundlePriceFmt = bundleDetail.bundlePriceFmt
+            bundleOriginalPrice = bundleDetail.bundleOriginalPrice
+            bundleOriginalPriceFmt = bundleDetail.bundleOriginalPriceFmt
+            bundleMinOrder = bundleDetail.bundleMinOrder
+            bundleMaxOrder = bundleDetail.bundleMaxOrder
+            bundleQty = bundleQuantity
+            bundleIconUrl = bundleDetail.bundleIconUrl
+            slashPriceLabel = bundleDetail.slashPriceLabel
+            showBundlingHeader = firstProductItem && bundlingItem
+            showBottomDivider = (bundlingItem && !lastCartItem && lastProductItem) ||
+                (!bundlingItem && !lastCartItem)
+            isBundlingItem = bundlingItem
+            isLastProductItem = lastProductItem
+
+            if(bundlingItem) {
+                bundleMultiplier = productQuantity / bundleQuantity
+            }
         }
+    }
+
+    private fun removeBundleDeleteAction(
+        bundleDetail: BundleDetail,
+        action: List<Action>,
+        isLastItem: Boolean
+    ): List<Action> {
+        val actionList = action.toMutableList()
+        val isBundlingItem = bundleDetail.isBundlingItem()
+
+        if(isBundlingItem && !isLastItem) {
+            actionList.find { it.id == ACTION_DELETE }?.let {
+                actionList.remove(it)
+            }
+        }
+
+        return actionList
     }
 
     private fun mapSeparatorUiModel(separatorHeight: Int): MiniCartSeparatorUiModel {
