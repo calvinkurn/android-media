@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_campaign"
@@ -20,4 +20,4 @@
         android:scaleType="centerCrop"
         android:contentDescription="@string/content_desc_campaign_image" />
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify2>

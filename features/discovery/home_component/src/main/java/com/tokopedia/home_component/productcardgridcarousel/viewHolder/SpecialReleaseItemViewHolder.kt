@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -27,6 +28,7 @@ class SpecialReleaseItemViewHolder(
     private var binding: HomeComponentSpecialReleaseItemBinding? by viewBinding()
 
     override fun bind(element: CarouselSpecialReleaseDataModel?) {
+        binding?.cardCampaign?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         if (element != null) {
             view.addOnImpressionListener(element) {
                 element.listener.onProductCardImpressed(

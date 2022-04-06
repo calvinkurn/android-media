@@ -4,10 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="9dp"
-    app:cardElevation="0dp"
-    android:focusable="true"
     android:clickable="true"
+    android:focusable="true"
     android:background="@color/product_card_dms_card_background"
     app:cardBackgroundColor="@color/product_card_dms_card_background"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/card_container">
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/category_image"
             android:layout_width="120dp"
             android:layout_height="80dp"
