@@ -3,9 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.AFFILIATE_INSTAGRAM_REGEX
-import com.tokopedia.affiliate.AFFILIATE_TIKTOK_REGEX
-import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
 import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
@@ -56,9 +54,9 @@ class AffiliatePortfolioViewModelTest{
     fun listForSmTest(){
         val itemList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         itemList.add(AffiliateHeaderModel(AffiliateHeaderItemData(userSessionInterface.name,true)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram","","Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok","","Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
-        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube","","Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_YT_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram", INSTAGRAM_DEFAULT,"Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(9,"tiktok","Link Tiktok", TIKTOK_DEFAULT,"Contoh: tiktok.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_TIKTOK_REGEX)))
+        itemList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(13,"youtube","Link Youtube",YOUTUBE_DEFAULT,"Contoh: youtube.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_YT_REGEX)))
         itemList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE,UnifyButton.Variant.GHOST)))
 
         aff.createDefaultListForSm()
@@ -69,15 +67,23 @@ class AffiliatePortfolioViewModelTest{
     /**************************** CheckDataforAtleastOne *******************************************/
     @Test
     fun checkDataForAtleastOneTest(){
+        aff.createDefaultListForSm()
+        aff.updateList(1,"instagram.com/Piyu")
+        assertEquals(aff.checkDataForAtLeastOne(),true)
+        aff.updateList(2,"google.com")
         assertEquals(aff.checkDataForAtLeastOne(),false)
     }
 
     /**************************** UpdateItem *******************************************/
     @Test
     fun updateTest(){
+        aff.createDefaultListForSm()
         val position = 1
 
         aff.updateList(position,"")
+        aff.updateList(position,"insta")
+
+        assertEquals(aff.isError().value,true)
 
         aff.updateFocus(position,true)
         assertEquals(aff.getUpdateItemIndex().value,position)
@@ -92,13 +98,17 @@ class AffiliatePortfolioViewModelTest{
     /**************************** FindTextModel *******************************************/
     @Test
     fun findTextModelTest(){
-        val id = 16
-        assertEquals(aff.finEditTextModelWithId(id),null)
+        aff.createDefaultListForSm()
+        val item = AffiliatePortfolioUrlInputData(3,"instagram","Link Instagram", INSTAGRAM_DEFAULT,"Contoh: instagram.com/tokopedia","Link tidak valid.",false,regex = AFFILIATE_INSTAGRAM_REGEX)
+        val id = 3
+        assertEquals(aff.finEditTextModelWithId(16),null)
+        assertEquals(Gson().toJson(aff.finEditTextModelWithId(id)),Gson().toJson(item))
     }
 
     /**************************** GetCurrentSocialIDs *******************************************/
     @Test
     fun getCurrentSocialIds(){
-        assertEquals(aff.getCurrentSocialIds().size,0)
+        aff.createDefaultListForSm()
+        assertEquals(aff.getCurrentSocialIds().size,3)
     }
 }
