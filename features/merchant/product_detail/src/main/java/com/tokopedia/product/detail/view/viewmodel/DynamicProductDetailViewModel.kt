@@ -107,7 +107,9 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Lazy
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -270,6 +272,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _affiliateCookie = MutableLiveData<Result<Boolean>>()
     val affiliateCookie: LiveData<Result<Boolean>> = _affiliateCookie
+
+    private val _showNavigationTab = MutableLiveData<Boolean>()
+    val showNavigationTab: LiveData<Boolean> = _showNavigationTab
+
+    var someJob: Job? = null
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -1192,6 +1199,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             _playWidgetModel.value = Success(reversedToggleUi)
             _playWidgetReminderSwitch.value = Fail(it)
         })
+    }
+
+    fun startCountShowNavTab(){
+        someJob?.run { cancel() }
+        someJob = launch(dispatcher.io){
+            delay(3000)
+            _showNavigationTab.postValue(false)
+        }
     }
 
 }

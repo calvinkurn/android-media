@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabItem
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -65,7 +66,9 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -189,6 +192,7 @@ import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInstallmentBottomSheet
 import com.tokopedia.product.detail.view.widget.FtPDPInsuranceBottomSheet
+import com.tokopedia.product.detail.view.widget.ProductDetailNavigation
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest
 import com.tokopedia.product.estimasiongkir.view.bottomsheet.ProductDetailShippingBottomSheet
@@ -223,6 +227,7 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -402,6 +407,49 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     permissionListener = shareProductInstance?.universalSharePermissionListener
             )
         }
+
+
+
+//        view.findViewById<TabsUnify>(R.id.pdp_navigation_tab).getUnifyTabLayout().onTabSelected {
+//            val uiModel = when(it.position){
+//                0 -> pdpUiUpdater?.productDetailInfoData
+//                1 -> pdpUiUpdater?.shipmentData
+//                2 -> pdpUiUpdater?.productReviewMap
+//                else -> null
+//            }
+//
+//            val position = getComponentPosition(uiModel)
+//            scrollToPosition(position)
+//        }
+//        view.findViewById<TabItem>(R.id.pdp_navtab_item_1)?.setOnClickListener {
+//            val position = getComponentPosition(pdpUiUpdater?.productDetailInfoData)
+//            scrollToPosition(position)
+//        }
+//
+//        view.findViewById<TabItem>(R.id.pdp_navtab_item_2)?.setOnClickListener {
+//            val position = getComponentPosition(pdpUiUpdater?.shipmentData)
+//            scrollToPosition(position)
+//        }
+//
+//        view.findViewById<TabItem>(R.id.pdp_navtab_item_3)?.setOnClickListener {
+//            val position = getComponentPosition(pdpUiUpdater?.productReviewMap)
+//            scrollToPosition(position)
+//        }
+    }
+
+//    override fun onItemViewed(){
+//        view.findViewById<TabsUnify>(R.id.pdp_navigation_tab)
+//    }
+
+
+    private fun observeNavigationTab(){
+//        viewModel.showNavigationTab.observe(viewLifecycleOwner) {
+//            view?.findViewById<TabsUnify>(R.id.pdp_navigation_tab)?.showWithCondition(it)
+//        }
+    }
+
+    override fun showTemporary(view: View) {
+        viewModel.startCountShowNavTab()
     }
 
     override fun onSwipeRefresh() {
@@ -447,6 +495,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeDeleteCart()
         observePlayWidget()
         observeAffiliateCookie()
+        observeNavigationTab()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -2205,6 +2254,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         setupProductVideoCoordinator()
 
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
+
+        getRecyclerView()?.let {
+            val items = listOf(
+                ProductDetailNavigation.Item("Pengiriman") {
+                    getComponentPosition(pdpUiUpdater?.shipmentData)
+                },
+                ProductDetailNavigation.Item("Detail Info") {
+                    getComponentPosition(pdpUiUpdater?.productDetailInfoData)
+                },
+                ProductDetailNavigation.Item("Ulasan") {
+                    getComponentPosition(pdpUiUpdater?.productReviewMap)
+                }
+            )
+            binding?.pdpNavigationTab?.setup(it, items)
+        }
     }
 
     private fun setupProductVideoCoordinator() {
