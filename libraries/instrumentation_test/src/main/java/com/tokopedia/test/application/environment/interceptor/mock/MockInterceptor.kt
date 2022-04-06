@@ -1,8 +1,11 @@
 package com.tokopedia.test.application.environment.interceptor.mock
 
+import android.util.Log
 import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS_ALL
+import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS_ALL_REGEX
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -10,6 +13,7 @@ import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.StringBuilder
 
 class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
 
@@ -27,12 +31,13 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
 
                 var responseString = ""
                 responseConfig.getResponseList().forEach {
-                    if (it.value.findType == FIND_BY_CONTAINS) {
-                        if (requestString.contains(it.key)) {
-                            responseString = it.value.value
+                        Log.d("Emjay", "iterate : ${it.keys[0]}")
+                    if (it.findType == FIND_BY_CONTAINS) {
+                        if (requestString.contains(it.keys.first())) {
+                            responseString = it.value
                             return mockResponse(requestBody.newBuilder().build(), responseString)
                         }
-                    } else if (it.value.findType == FIND_BY_QUERY_NAME) {
+                    } else if (it.findType == FIND_BY_QUERY_NAME) {
                         val requestArray = JSONArray(requestString)
                         val requestObject: JSONObject = requestArray.getJSONObject(0)
                         val queryString = requestObject.getString("query")
@@ -42,8 +47,26 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                         val firstWord =
                             queryStringCopy.substringBefore(" ", "")
                                 .substringBefore("\n", "")
-                        if (firstWord == it.key) {
-                            responseString = it.value.value
+                        if (firstWord == it.keys.first()) {
+                            responseString = it.value
+                            return mockResponse(requestBody.newBuilder().build(), responseString)
+                        }
+                    } else if (it.findType == FIND_BY_CONTAINS_ALL) {
+                        /* Proto #1a & #2a */
+                        var isContainsAll = true
+                        it.keys.forEach { key ->
+                            isContainsAll = isContainsAll.and(requestString.contains(key))
+                        }
+                        if (isContainsAll) {
+                            responseString = it.value
+                            return mockResponse(requestBody.newBuilder().build(), responseString)
+                        }
+                    } else if (it.findType == FIND_BY_CONTAINS_ALL_REGEX) {
+                        /* Proto #1b & 2b */
+                        val regex = generateContainsAllRegex(it.keys).toRegex()
+                        val isContainsAll = regex.matches(requestString)
+                        if (isContainsAll) {
+                            responseString = it.value
                             return mockResponse(requestBody.newBuilder().build(), responseString)
                         }
                     }
@@ -58,6 +81,17 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
         }
 
         return chain.proceed(chain.request())
+    }
+
+    /* Proto #1b & 2b, will be moved to other place */
+    fun generateContainsAllRegex(keys: List<String>): String {
+        var stringBuilder = StringBuilder()
+        stringBuilder.append("^(?s)")
+        keys.forEach {
+            stringBuilder.append("(?=.*$it)")
+        }
+        stringBuilder.append(".*$")
+        return stringBuilder.toString()
     }
 
     private fun mockResponse(copy: Request, responseString: String): Response {
