@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.topads.common.CustomViewPager
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -35,13 +37,12 @@ import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsIns
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.viewmodel.TopAdsInsightViewModel
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
-import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 /**
@@ -53,6 +54,14 @@ const val CLICK_ANGARRAN_HARIAN = "click - anggaran harian"
 const val CLICK_IKLANKAN = "click - iklankan"
 
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
+
+    private var layoutAppBar: AppBarLayout? = null
+    private var changeAdType: ConstraintLayout? = null
+    private var txtSelectedAdType: Typography? = null
+    private var rvTabInsight: RecyclerView? = null
+    private var viewPager: CustomViewPager? = null
+    private var loaderRecomm: LoaderUnify? = null
+    private var emptyView: ConstraintLayout? = null
 
     private var mCurrentState = TopAdsProductIklanFragment.State.IDLE
     private var collapseStateCallBack: TopAdsHeadlineBaseFragment.AppBarActionHeadline? = null
@@ -69,8 +78,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countProduct = 0
     private var countBid = 0
     private var index = 0
-    private lateinit var emptyView: ConstraintLayout
-    private lateinit var loderRecom: LoaderUnify
 
     companion object {
         private const val ADTYPE_PRODUK = 0
@@ -105,15 +112,21 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(
-            R.layout.topads_dash_fragment_recommendation_layout,
-            container,
-            false
+            R.layout.topads_dash_fragment_recommendation_layout, container, false
         )
         emptyView = view.findViewById(R.id.empty_view)
-        loderRecom = view.findViewById(R.id.loderRecom)
+        loaderRecomm = view.findViewById(R.id.loderRecom)
+        layoutAppBar = view.findViewById(R.id.app_bar_layout)
+        changeAdType = view.findViewById(R.id.changeAdType)
+        txtSelectedAdType = view.findViewById(R.id.txtSelectedAdType)
+        rvTabInsight = view.findViewById(R.id.rvTabInsight)
+        viewPager = view.findViewById(R.id.view_pager)
+
+        emptyView?.findViewById<ImageUnify>(R.id.image_empty)
+            ?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         return view
     }
 
@@ -136,7 +149,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         initListener()
         setupSelectAdsTypeView(adTypeList[if (isAdTypeProdukSelected) ADTYPE_PRODUK else ADTYPE_TOKO])
         observeLiveData()
-        app_bar_layout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
+        layoutAppBar?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, offset ->
             when {
                 offset == 0 -> {
                     if (mCurrentState != TopAdsProductIklanFragment.State.EXPANDED) {
@@ -173,13 +186,13 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
-        changeAdType.setOnClickListener {
+        changeAdType?.setOnClickListener {
             adsTypeBottomSheet.show(childFragmentManager)
         }
     }
 
     fun loadShopData() {
-        loderRecom.visibility = View.VISIBLE
+        loaderRecomm?.visibility = View.VISIBLE
         viewModel.getShopKeywords(userSession.shopId, arrayOf())
     }
 
@@ -226,45 +239,55 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
-        loderRecom.visibility = View.GONE
+        loaderRecomm?.visibility = View.GONE
         rvTabInsight?.visibility = View.GONE
-        emptyView.visibility = View.VISIBLE
-        emptyView.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
-        view_pager?.visibility = View.GONE
+        emptyView?.visibility = View.VISIBLE
+        viewPager?.visibility = View.GONE
     }
 
     private fun showViews() {
         rvTabInsight?.visibility = View.VISIBLE
-        emptyView.visibility = View.GONE
-        view_pager?.visibility = View.VISIBLE
+        emptyView?.visibility = View.GONE
+        viewPager?.visibility = View.VISIBLE
     }
 
     private fun initInsightTabAdapter() {
         val tabLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        rvTabInsight.layoutManager = tabLayoutManager
+        rvTabInsight?.layoutManager = tabLayoutManager
         topAdsInsightTabAdapter?.setListener(object :
             TopAdsInsightTabAdapter.OnRecyclerTabItemClick {
             override fun onTabItemClick(position: Int) {
                 if (position == 0 && checkFragmentPosition(CONST_0, PRODUK)) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_PRODUK_BERPOTENSI, userSession.userId, userSession.userId)
-                } else if ((position == 1) && checkFragmentPosition(CONST_1, DAILY_BUDGET) || (position == 0) && checkFragmentPosition(CONST_0, DAILY_BUDGET)) {
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(CLICK_ANGARRAN_HARIAN, userSession.userId, userSession.userId)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(
+                        CLICK_PRODUK_BERPOTENSI,
+                        userSession.userId,
+                        userSession.userId)
+                } else if ((position == 1) && checkFragmentPosition(CONST_1,
+                        DAILY_BUDGET) || (position == 0) && checkFragmentPosition(CONST_0,
+                        DAILY_BUDGET)
+                ) {
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendInsightShopEvent(
+                        CLICK_ANGARRAN_HARIAN,
+                        userSession.userId,
+                        userSession.userId)
                 }
-                view_pager.currentItem = position
-                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)?.contains(PRODUK) == true && countProduct != 0) {
+                viewPager?.currentItem = position
+                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)
+                        ?.contains(PRODUK) == true && countProduct != 0
+                ) {
                     (activity as TopAdsDashboardActivity?)?.hideButton(false)
                 } else {
                     (activity as TopAdsDashboardActivity?)?.hideButton(true)
                 }
             }
         })
-        rvTabInsight.adapter = topAdsInsightTabAdapter
-        view_pager.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
+        rvTabInsight?.adapter = topAdsInsightTabAdapter
+        viewPager?.offscreenPageLimit = TopAdsDashboardConstant.OFFSCREEN_PAGE_LIMIT
     }
 
     private fun renderViewPager() {
-        loderRecom.visibility = View.GONE
-        view_pager.adapter = getViewPagerAdapter()
+        loaderRecomm?.visibility = View.GONE
+        viewPager?.adapter = getViewPagerAdapter()
         val page = arguments?.getInt(PARAM_CURRENT_TAB)
         if (ifPageAvailable(page)) {
             if (page == CONST_0)
@@ -284,9 +307,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                 }
             }
         }
-        view_pager?.currentItem = index
+        viewPager?.currentItem = index
         topAdsInsightTabAdapter?.setSelectedTitle(index)
-        view_pager.disableScroll(true)
+        viewPager?.disableScroll(true)
     }
 
     private fun ifPageAvailable(page: Int?): Boolean {
@@ -339,8 +362,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     fun setCount(count: Int, type: Int) {
         when (type) {
             CONST_0 -> topAdsInsightTabAdapter?.setTabTitles(resources, count, countBid, countKey)
-            CONST_1 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, count, countKey)
-            CONST_2 -> topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, count)
+            CONST_1 -> topAdsInsightTabAdapter?.setTabTitles(
+                resources, countProduct, count, countKey)
+            CONST_2 -> topAdsInsightTabAdapter?.setTabTitles(
+                resources, countProduct, countBid, count)
         }
     }
 
@@ -372,7 +397,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     fun setClick() {
-        val fragments = (view_pager?.adapter as? TopAdsDashboardBasePagerAdapter)?.getList()
+        val fragments = (viewPager?.adapter as? TopAdsDashboardBasePagerAdapter)?.getList()
         if (fragments != null) {
             for (frag in fragments) {
                 when (frag.fragment) {
@@ -403,7 +428,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     //methods for choosing ad type
     private fun setupSelectAdsTypeView(item: InsightAdObj) {
-        txtSelectedAdType.text = item.adName
+        txtSelectedAdType?.text = item.adName
         if (isAdTypeProdukSelected) loadProductData() else loadShopData()
     }
 
