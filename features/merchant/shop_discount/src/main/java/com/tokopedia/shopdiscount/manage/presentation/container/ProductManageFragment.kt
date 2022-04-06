@@ -43,6 +43,10 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
         private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
+        private const val ALPHA_VISIBLE = 1F
+        private const val ALPHA_INVISIBLE = 0F
+        private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
+
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
             arguments = Bundle()
@@ -236,8 +240,8 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun showTickerWithAnimation() {
         binding?.run {
             ticker.animate()
-                .translationY(0f)
-                .alpha(1f)
+                .translationY(BACK_TO_ORIGINAL_POSITION)
+                .alpha(ALPHA_VISIBLE)
                 .setDuration(ANIMATION_DURATION_IN_MILLIS)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
@@ -252,7 +256,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             ticker.animate()
                 .translationY(ticker.height.toFloat())
-                .alpha(0.0f)
+                .alpha(ALPHA_INVISIBLE)
                 .setDuration(ANIMATION_DURATION_IN_MILLIS)
                 .setListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {

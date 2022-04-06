@@ -44,6 +44,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         private const val DECELERATOR_FACTOR: Float = 2.0F
         private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
         private const val SCROLL_WIDGET_MARGIN = 24F
+        private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
 
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
@@ -297,6 +298,22 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     private fun showScrollButtonWithAnimation() {
         binding?.run {
+            imgScrollUp
+                .animate()
+                .translationY(BACK_TO_ORIGINAL_POSITION)
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setInterpolator(AccelerateInterpolator(DECELERATOR_FACTOR))
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        imgScrollUp.visible()
+                    }
+                }).start()
+        }
+    }
+
+    private fun hideScrollButtonWithAnimation() {
+        binding?.run {
             imgScrollUp.animate()
                 .translationY(imgScrollUp.height.toFloat() + SCROLL_WIDGET_MARGIN)
                 .setInterpolator(DecelerateInterpolator(DECELERATOR_FACTOR))
@@ -309,24 +326,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
                 })
                 .start()
         }
-
-    }
-
-    private fun hideScrollButtonWithAnimation() {
-        binding?.run {
-            imgScrollUp
-                .animate()
-                .translationY(0f)
-                .setDuration(ANIMATION_DURATION_IN_MILLIS)
-                .setInterpolator(AccelerateInterpolator(DECELERATOR_FACTOR))
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        imgScrollUp.visible()
-                    }
-                }).start()
-        }
-
     }
 
 }

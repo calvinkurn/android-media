@@ -22,7 +22,6 @@ class RecyclerViewScrollListener(
 
         if (RecyclerView.SCROLL_STATE_IDLE == newState) {
             if (scrollYDistance <= 0) {
-                scrollYDistance = 0
                 onScrollUp()
             } else {
                 scrollYDistance = 0
