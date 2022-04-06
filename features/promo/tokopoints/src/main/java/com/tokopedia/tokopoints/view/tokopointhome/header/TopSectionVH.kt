@@ -8,6 +8,8 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -99,6 +101,8 @@ class TopSectionVH(
     private var textLagi : Typography? = null
     private var containerProgressBar : FrameLayout ? = null
     private var isNextTier = false
+    val maxProgress = 100
+    val handler = Handler(Looper.getMainLooper())
 
     fun bind(model: TopSectionResponse) {
 
@@ -526,7 +530,6 @@ class TopSectionVH(
         val progressValues = getProgress(progressInfoList)
         val progressLast = progressValues.first ?: -1
         val progressCurrent = progressValues.second ?: -1
-        val maxProgress = 100
         progressBar?.apply {
             progressBarHeight = ProgressBarUnify.SIZE_LARGE
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
@@ -549,42 +552,44 @@ class TopSectionVH(
             }
         }
 
-        progressBar?.postDelayed(
-            {
-                if (progressBar?.getValue() == maxProgress) {
-                    progressBarIconAnimation(
-                        container
-                    ) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
-                        }
-                    }
-                } else {
-                    progressBar?.setValue(progressCurrent, true)
-                    if (progressCurrent == 0) {
-                        progressBar?.setProgressIcon(null)
-                    } else {
-                        progressBar?.setProgressIcon(
-                            AppCompatResources.getDrawable(
-                                itemView.context,
-                                R.drawable.tp_tier_progress
-                            )
-                        )
-                    }
-                    progressBarIconAnimation(
-                        container
-                    ) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
-                        }
-                    }
+        val runnableHandleProgress = Runnable {
+            if (progressBar?.getValue() == maxProgress) {
+                progressBarIconAnimation(container) {
+                    progressBar?.setProgressIcon(null)
+                    progressIconProgressCompletionHandle()
                 }
-            }, 1000L
-        )
+            } else {
+                progressBar?.setValue(progressCurrent, true)
+                if (progressCurrent == 0) {
+                    progressBar?.setProgressIcon(null)
+                } else {
+                    progressBar?.setProgressIcon(
+                        AppCompatResources.getDrawable(
+                            itemView.context,
+                            R.drawable.tp_tier_progress
+                        )
+                    )
+                }
+                progressBarIconAnimation(container) {
+                    progressBar?.setProgressIcon(null)
+                    progressIconProgressCompletionHandle()
+                }
+            }
+        }
+        try {
+            handler.postDelayed(
+                runnableHandleProgress, 1000L
+            )
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun progressIconProgressCompletionHandle(){
+        if (!isNextTier) {
+            topSectionData?.popupNotification = null
+            refreshOnTierUpgrade.refreshReward(popupNotification)
+        }
+        handler.removeCallbacksAndMessages(this)
     }
 
     private fun progressBarIconAnimation(container:FrameLayout? , completion: (() -> Unit)? = null){
