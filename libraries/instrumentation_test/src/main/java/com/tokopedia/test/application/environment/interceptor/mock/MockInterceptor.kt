@@ -5,7 +5,6 @@ import com.tokopedia.instrumentation.test.BuildConfig
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_QUERY_NAME
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS_ALL
-import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS_ALL_REGEX
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -13,7 +12,6 @@ import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.StringBuilder
 
 class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
 
