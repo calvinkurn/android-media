@@ -52,19 +52,11 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
                             return mockResponse(requestBody.newBuilder().build(), responseString)
                         }
                     } else if (it.findType == FIND_BY_CONTAINS_ALL) {
-                        /* Proto #1a & #2a */
+                        /* Proto #1 & #2 */
                         var isContainsAll = true
                         it.keys.forEach { key ->
                             isContainsAll = isContainsAll.and(requestString.contains(key))
                         }
-                        if (isContainsAll) {
-                            responseString = it.value
-                            return mockResponse(requestBody.newBuilder().build(), responseString)
-                        }
-                    } else if (it.findType == FIND_BY_CONTAINS_ALL_REGEX) {
-                        /* Proto #1b & 2b */
-                        val regex = generateContainsAllRegex(it.keys).toRegex()
-                        val isContainsAll = regex.matches(requestString)
                         if (isContainsAll) {
                             responseString = it.value
                             return mockResponse(requestBody.newBuilder().build(), responseString)
@@ -81,18 +73,6 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
         }
 
         return chain.proceed(chain.request())
-    }
-
-    /* Proto #1b & 2b, will be moved to other place
-    * ex result: ^(?s)(?=.*rechargeCatalogDynamicInput)(?=.*"operator": "6").*$ */
-    fun generateContainsAllRegex(keys: List<String>): String {
-        var stringBuilder = StringBuilder()
-        stringBuilder.append("^(?s)")
-        keys.forEach {
-            stringBuilder.append("(?=.*$it)")
-        }
-        stringBuilder.append(".*$")
-        return stringBuilder.toString()
     }
 
     private fun mockResponse(copy: Request, responseString: String): Response {

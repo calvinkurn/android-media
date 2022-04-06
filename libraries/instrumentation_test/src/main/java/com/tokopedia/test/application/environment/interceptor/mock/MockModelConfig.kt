@@ -6,10 +6,8 @@ abstract class MockModelConfig {
     companion object {
         const val FIND_BY_CONTAINS = 0
         const val FIND_BY_QUERY_NAME = 1
-        /* Proto #1a & #2a */
+        /* Proto #1 & #2 */
         const val FIND_BY_CONTAINS_ALL = 2
-        /* Proto #1b & 2b */
-        const val FIND_BY_CONTAINS_ALL_REGEX = 3
     }
 
     private val responseList = mutableListOf<MockModel>()

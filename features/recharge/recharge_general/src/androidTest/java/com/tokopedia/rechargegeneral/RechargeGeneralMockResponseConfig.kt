@@ -88,14 +88,14 @@ class RechargeGeneralMockResponseConfig(
                 variables = mapOf("operator" to "6")
             ),
             InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
-            FIND_BY_CONTAINS_ALL_REGEX)
+            FIND_BY_CONTAINS_ALL)
         addMockResponse(
             MockKey(
                 query = KEY_QUERY_CATALOG_DYNAMIC_INPUT,
                 variables = mapOf("operator" to "18")
             ),
             InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
-            FIND_BY_CONTAINS_ALL_REGEX)
+            FIND_BY_CONTAINS_ALL)
         /* -------- */
 
         addMockResponse(
