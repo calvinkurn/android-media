@@ -188,7 +188,7 @@ class DigitalRecommendationAnalytics {
             putString(DigitalRecommendationKeys.ITEM_ID, data.tracking.productId.ifEmpty { "0" })
             putString(DigitalRecommendationKeys.ITEM_NAME, data.unify.title)
             putString(DigitalRecommendationKeys.ITEM_VARIANT, data.unify.mediaUrl)
-            putString(DigitalRecommendationKeys.PRICE, "${data.unify.priceData.slashedPrice} - ${data.unify.priceData.price} - ${data.unify.campaign.text}")
+            putString(DigitalRecommendationKeys.PRICE, data.tracking.pricePlain)
         })
     }
 
