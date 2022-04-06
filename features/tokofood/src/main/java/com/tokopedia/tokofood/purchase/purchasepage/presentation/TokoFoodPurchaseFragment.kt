@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -336,10 +337,12 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
-        data?.let {
-            val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
-            locationPass?.let {
-                viewModel.updateAddressPinpoint()
+        if (resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
+                locationPass?.let {
+                    viewModel.updateAddressPinpoint()
+                }
             }
         }
     }

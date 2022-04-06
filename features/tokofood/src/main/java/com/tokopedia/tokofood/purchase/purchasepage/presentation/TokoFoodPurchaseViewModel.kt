@@ -485,4 +485,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         // Todo : hit API set address pinpoint, then reload purchase page if success
     }
 
+    private fun getAddressInfo() {}
+
 }
