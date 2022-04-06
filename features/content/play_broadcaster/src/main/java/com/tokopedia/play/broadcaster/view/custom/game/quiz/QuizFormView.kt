@@ -80,7 +80,6 @@ class QuizFormView : ConstraintLayout {
         set(value) {
             field = value
 
-            /** TODO: set config here */
             binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
             binding.viewQuizGift.maxLength = quizConfig.maxRewardLength
             timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
@@ -180,8 +179,14 @@ class QuizFormView : ConstraintLayout {
             /** Set Quiz Title */
             binding.viewGameHeader.title = quizFormData.title
 
-            /** Set Options */
-            adapter.setItemsAndAnimateChanges(quizFormData.options)
+            /** Set Options
+             *  cannot use diffutil bcs it gives a weird result.
+             *  the reason is we only update adapter when
+             *  theres a changing in number of field / option checked
+             *  so, oldItem and newItems comparison will give a weird result
+             */
+            adapter.setItems(quizFormData.options)
+            adapter.notifyDataSetChanged()
 
             /** Set Gift */
             binding.viewQuizGift.gift = quizFormData.gift
