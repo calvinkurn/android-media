@@ -8,8 +8,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -102,7 +100,6 @@ class TopSectionVH(
     private var containerProgressBar : FrameLayout ? = null
     private var isNextTier = false
     val maxProgress = 100
-    val handler = Handler(Looper.getMainLooper())
     private var TIME_DELAY_PROGRESS = 1000L
 
     fun bind(model: TopSectionResponse) {
@@ -552,7 +549,7 @@ class TopSectionVH(
                 setValue(progressLast, true)
             }
         }
-        handler.postDelayed(
+        progressBar?.postDelayed(
             {
                 handleDelayedProgress(container, progressCurrent)
             }, TIME_DELAY_PROGRESS
