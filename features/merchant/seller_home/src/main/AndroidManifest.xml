@@ -106,7 +106,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".adminrestriction.view.activity.AdminRestrictionActivity"
+            android:name=".view.activity.AdminRestrictionActivity"
             android:label="@string/sah_admin_restriction_label"
             android:theme="@style/SellerHomeTheme.Transparent"
             android:exported="false">
