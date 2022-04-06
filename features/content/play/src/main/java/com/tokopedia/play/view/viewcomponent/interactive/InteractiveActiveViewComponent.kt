@@ -3,8 +3,9 @@ package com.tokopedia.play.view.viewcomponent.interactive
 import android.view.ViewGroup
 import com.tokopedia.play.R
 import com.tokopedia.play_common.view.game.GameSmallWidgetView
-import com.tokopedia.play_common.view.game.setupGiveaway
+import com.tokopedia.play_common.view.game.setupOngoingGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
+import com.tokopedia.play_common.view.game.setupUpcomingGiveaway
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -16,11 +17,19 @@ class InteractiveActiveViewComponent(
 
     private val widget = rootView as GameSmallWidgetView
 
-    fun setGiveaway() {
+    fun setOngoingGiveaway() {
         //TODO("Stitch with real code")
-        widget.setupGiveaway(
+        widget.setupOngoingGiveaway(
             desc = "Kapan ulang tahun Rockbros Indonesia?",
-            timerInfo = "Berakhir",
+            durationInMs = 7000,
+            onDurationEnd = {},
+        )
+    }
+
+    fun setUpcomingGiveaway() {
+        //TODO("Stitch with real code")
+        widget.setupUpcomingGiveaway(
+            desc = "Kapan ulang tahun Rockbros Indonesia?",
             durationInMs = 7000,
             onDurationEnd = {},
         )
