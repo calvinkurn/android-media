@@ -1,76 +1,84 @@
 package com.tokopedia.shopdiscount.common.bottomsheet.datepicker
 
 import android.content.Context
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shopdiscount.R
+import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.toCalendar
+import com.tokopedia.utils.date.DateUtil
 import java.util.*
 
 object ShopDiscountDatePicker {
 
-//    private const val COUPON_START_DATE_OFFSET_IN_HOUR = 3
-    private const val EXTRA_DAYS_COUPON = 31
-//    private const val TIME_PICKER_TIME_INTERVAL_IN_MINUTE = 30
-
     interface Callback {
         fun onDatePickerSubmitted(selectedDate: Date)
-    }
-
-    private fun getCouponStartDate(): Calendar {
-        val calendar = Calendar.getInstance()
-        calendar.add(
-            Calendar.HOUR_OF_DAY,
-            Int.ZERO
-        )
-        return calendar
-    }
-
-    private fun getCouponEndDate(currentStartDate: Date): Calendar {
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = currentStartDate.time
-        calendar.add(
-            Calendar.DAY_OF_MONTH,
-            EXTRA_DAYS_COUPON
-        )
-        return calendar
     }
 
     fun show(
         context: Context,
         fragmentManager: FragmentManager,
         title: String,
-        minDate : Date,
         selectedDate: Date,
+        minDate: Date,
+        maxDate: Date,
+        vpsPackageName: String,
         callback: Callback
     ) {
-//        val formattedStartDate = getCouponStartDate().time.parseTo(DateTimeUtils.DATE_FORMAT)
-//        val info = "INFO"
-        val buttonText = "Pilih"
-
         val dateTimePicker = DateTimePickerUnify(
             context,
             minDate.toCalendar(),
             selectedDate.toCalendar(),
-            getCouponEndDate(selectedDate),
+            maxDate.toCalendar(),
             null,
             DateTimePickerUnify.TYPE_DATETIMEPICKER
         )
+        setupDateTimePicker(context, dateTimePicker, title, vpsPackageName, maxDate, callback)
+        dateTimePicker.show(fragmentManager, dateTimePicker.tag)
+    }
 
+    private fun setupDateTimePicker(
+        context: Context,
+        dateTimePicker: DateTimePickerUnify,
+        title: String,
+        vpsPackageName: String,
+        maxDate: Date,
+        callback: Callback
+    ) {
+        val applyText = context.getString(R.string.shop_discount_date_picker_button_apply_text)
+        val infoText = if (vpsPackageName.isNotEmpty()) {
+            String.format(
+                context.getString(R.string.shop_discount_date_picker_button_info_format),
+                vpsPackageName,
+                maxDate.parseTo(DateUtil.DEFAULT_VIEW_FORMAT)
+            )
+        } else {
+            ""
+        }
         dateTimePicker.apply {
             setTitle(title)
-//            setInfo(info)
+            if (infoText.isNotEmpty()) {
+                datePickerInfo.show()
+                datePickerInfo.setTextColor(
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                    )
+                )
+                setInfo(MethodChecker.fromHtml(infoText))
+            } else {
+                datePickerInfo.hide()
+            }
             setInfoVisible(true)
-            //setStyle(DialogFragment.STYLE_NORMAL, R.style.ShopDiscountDialogStyle)
-            datePickerButton.text = buttonText
+            datePickerButton.text = applyText
             datePickerButton.setOnClickListener {
                 callback.onDatePickerSubmitted(getDate().time)
                 dismiss()
             }
         }
-        dateTimePicker.show(fragmentManager, dateTimePicker.tag)
     }
 
 }

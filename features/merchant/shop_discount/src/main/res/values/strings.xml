@@ -67,6 +67,8 @@
     <string name="seller_info_bottom_sheet_expiry_content_non_vps"><![CDATA[<b>Tidak ada</b>]]></string>
     <string name="seller_info_bottom_sheet_expiry_description_non_vps">Keuntungan berlaku selama keanggotaan tokomu aktif</string>
 
-
+    <!--Shop discount datepicker-->
+    <string name="shop_discount_date_picker_button_apply_text">Pilih</string>
+    <string name="shop_discount_date_picker_button_info_format">Periode %1s berakhir pada <![CDATA[<b>%2s.</b>]]></string>
 
 </resources>
