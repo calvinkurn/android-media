@@ -4,7 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewStub
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.Space
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -21,22 +26,98 @@ import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.product_card_add_to_cart_button.view.*
-import kotlinx.android.synthetic.main.product_card_add_to_cart_wishlist_button.view.*
-import kotlinx.android.synthetic.main.product_card_add_variant_button.view.*
-import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_delete_product_button.view.*
-import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
-import kotlinx.android.synthetic.main.product_card_list_layout.view.*
-import kotlinx.android.synthetic.main.product_card_notify_button.view.*
-import kotlinx.android.synthetic.main.product_card_see_similar_product_wishlist_button.view.*
+import com.tokopedia.unifyprinciples.Typography
+import kotlin.LazyThreadSafetyMode.NONE
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: ProductCardVideo by lazy{
         ProductCardVideo(this)
+    }
+    private val cardViewProductCard: CardView? by lazy(NONE) {
+        findViewById(R.id.cardViewProductCard)
+    }
+    private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.constraintLayoutProductCard)
+    }
+    private val outOfStockOverlay: View? by lazy(NONE) {
+        findViewById(R.id.outOfStockOverlay)
+    }
+    private val labelProductStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelProductStatus)
+    }
+    private val textTopAds: Typography? by lazy(NONE) {
+        findViewById(R.id.textTopAds)
+    }
+    private val imageVideoIdentifier: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageVideoIdentifier)
+    }
+    private val progressBarStock: ProgressBarUnify? by lazy(NONE) {
+        findViewById(R.id.progressBarStock)
+    }
+    private val textViewStockLabel: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewStockLabel)
+    }
+    private val imageThreeDots: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageThreeDots)
+    }
+    private val labelCampaignBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelCampaignBackground)
+    }
+    private val textViewLabelCampaign: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewLabelCampaign)
+    }
+    private val labelBestSeller: Typography? by lazy(NONE) {
+        findViewById(R.id.labelBestSeller)
+    }
+    private val textCategorySide: Typography? by lazy(NONE) {
+        findViewById(R.id.textCategorySide)
+    }
+    private val textCategoryBottom: Typography? by lazy(NONE) {
+        findViewById(R.id.textCategoryBottom)
+    }
+    private val imageProduct: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageProduct)
+    }
+    private val buttonAddVariant: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddVariant)
+    }
+    private val buttonNotify: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonNotify)
+    }
+    private val buttonThreeDotsWishlist: FrameLayout? by lazy(NONE) {
+        findViewById(R.id.buttonThreeDotsWishlist)
+    }
+    private val buttonAddToCartWishlist: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCartWishlist)
+    }
+    private val buttonSeeSimilarProductWishlist: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeSimilarProductWishlist)
+    }
+    private val imageShopBadge: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageShopBadge)
+    }
+    private val imageFreeOngkirPromo: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageFreeOngkirPromo)
+    }
+    private val buttonAddToCart: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCart)
+    }
+    private val buttonDeleteProduct: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonDeleteProduct)
+    }
+    private val buttonRemoveFromWishlist: FrameLayout? by lazy(NONE) {
+        findViewById(R.id.buttonRemoveFromWishlist)
+    }
+    private val spaceCampaignBestSeller: Space? by lazy(NONE) {
+        findViewById(R.id.spaceCampaignBestSeller)
+    }
+    private val buttonAddToCartStub: ViewStub? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCartStub)
     }
 
     constructor(context: Context): super(context) {
@@ -217,20 +298,23 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     fun wishlistPage_enableButtonAddToCart(){
-        buttonAddToCart?.isEnabled = true
-        buttonAddToCart?.buttonVariant = UnifyButton.Variant.GHOST
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
+        val buttonAddToCart = buttonAddToCart ?: return
+        buttonAddToCart.isEnabled = true
+        buttonAddToCart.buttonVariant = UnifyButton.Variant.GHOST
+        buttonAddToCart.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_disableButtonAddToCart(){
-        buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.text = context.getString(R.string.product_card_text_add_to_cart_grid)
+        val buttonAddToCart = buttonAddToCart ?: return
+        buttonAddToCart.isEnabled = false
+        buttonAddToCart.text = context.getString(R.string.product_card_text_add_to_cart_grid)
     }
 
     fun wishlistPage_setOutOfStock(){
-        buttonAddToCart?.isEnabled = false
-        buttonAddToCart?.buttonVariant = UnifyButton.Variant.FILLED
-        buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
+        val buttonAddToCart = buttonAddToCart ?: return
+        buttonAddToCart.isEnabled = false
+        buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
+        buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
     }
 
     private fun renderButtonAddToCart(isVisible: Boolean) {

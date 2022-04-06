@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
@@ -57,6 +56,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.*
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -99,18 +99,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
-        val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
+        const val MAX_MULTI_SELECT_ALLOWED_VALUE = 5
 
-        val TITLE = "title"
-        val SUB_TITLE = "subtitle"
-        val TOOLBAR_ICON_RES = "icon_res"
-        val TOOLBAR_ICON_URL = "icon_url"
-        val MENU_TITLE = "menu_title"
-        val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
-        val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
-        val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
-        val APPLINK_FOR_BACK_NAVIGATION = "link_back"
-        val URIS = "ip_uris"
+        const val TITLE = "title"
+        const val SUB_TITLE = "subtitle"
+        const val TOOLBAR_ICON_URL = "icon_url"
+        const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
+        const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
+        const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -131,7 +128,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
-    val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
+    private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
 
     private val viewModel by lazy {
@@ -282,7 +279,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             if (!mInProgress) {
                 val isEditPost = activity?.intent?.getBooleanExtra(
                     PARAM_IS_EDIT_STATE, false) ?: false
-                postProgressUpdateView?.resetProgressBarState(isEditPost ?: false)
+                postProgressUpdateView?.resetProgressBarState(isEditPost)
                 if (!isEditPost) {
                     val mediaPath = activity?.intent?.getStringExtra(
                         PARAM_MEDIA_PREVIEW) ?: ""
@@ -533,6 +530,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun onSuccessGetTab(data: FeedTabs) {
         val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM || it.type == FeedTabs.TYPE_VIDEO }
 
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        feedData.forEach {
+            tab_layout?.addNewTab(it.title)
+        }
+
         pagerAdapter.setItemList(feedData)
         view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
         view_pager.offscreenPageLimit = pagerAdapter.count
@@ -589,8 +591,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 else -> View.INVISIBLE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
             }
             requestStatusBarDark()
         }
@@ -605,8 +607,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 else -> View.GONE
             }
             activity?.let {
-                tab_layout.setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tab_layout.setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             requestStatusBarLight()
         }
@@ -696,12 +698,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR, isLightThemeStatusBar)
+        outState.putBoolean(keyIsLightThemeStatusBar, isLightThemeStatusBar)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
+        isLightThemeStatusBar = savedInstanceState?.getBoolean(keyIsLightThemeStatusBar)
                 ?: false
     }
 
@@ -724,7 +726,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun swipeOnPostUpdate() {
         Toaster.build(requireView(),
-            getString(com.tokopedia.feedplus.R.string.feed_post_successful_toaster),
+            getString(R.string.feed_post_successful_toaster),
             Toaster.LENGTH_LONG,
             Toaster.TYPE_NORMAL).show()
         mInProgress = false

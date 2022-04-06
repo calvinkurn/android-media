@@ -82,7 +82,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     transactionReject
                     countSold
                     paymentVerified
-                    itemSoldPaymentVerified
+                    itemSoldFmt
                   }
                   stats {
                     countReview

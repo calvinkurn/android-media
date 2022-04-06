@@ -13,11 +13,13 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.pdpsimulation.R
 import com.tokopedia.pdpsimulation.common.analytics.PayLaterAnalyticsBase
+import com.tokopedia.pdpsimulation.common.analytics.PayLaterTenureClick
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_ID
 import com.tokopedia.pdpsimulation.common.constants.PARAM_PRODUCT_TENURE
 import com.tokopedia.pdpsimulation.common.di.component.PdpSimulationComponent
 import com.tokopedia.pdpsimulation.common.domain.model.GetProductV3
 import com.tokopedia.pdpsimulation.paylater.PdpSimulationCallback
+import com.tokopedia.pdpsimulation.paylater.domain.model.BasePayLaterWidgetUiModel
 import com.tokopedia.pdpsimulation.paylater.domain.model.Detail
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterArgsDescriptor
 import com.tokopedia.pdpsimulation.paylater.domain.model.PayLaterOptionInteraction
@@ -25,6 +27,7 @@ import com.tokopedia.pdpsimulation.paylater.domain.model.SimulationUiModel
 import com.tokopedia.pdpsimulation.paylater.helper.BottomSheetNavigator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterBundleGenerator
 import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper
+import com.tokopedia.pdpsimulation.paylater.helper.PayLaterHelper.extractDetailFromList
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterAdapterFactoryImpl
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationAdapter
 import com.tokopedia.pdpsimulation.paylater.presentation.adapter.PayLaterSimulationTenureAdapter
@@ -67,11 +70,27 @@ class PdpSimulationFragment : BaseDaggerFragment() {
         PayLaterSimulationAdapter(getAdapterTypeFactory())
     }
     private val tenureAdapter: PayLaterSimulationTenureAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PayLaterSimulationTenureAdapter { payLaterList ->
+        PayLaterSimulationTenureAdapter { payLaterList,position ->
+            sendTenureCLick(position,payLaterList)
             simulationAdapter.addAllElements(payLaterList)
             rvPayLaterOption.scrollToPosition(0)
         }
     }
+
+    private fun sendTenureCLick(tenure: Int, payLaterList: ArrayList<BasePayLaterWidgetUiModel>) {
+        val allStatusOfPartner = extractDetailFromList(payLaterList)
+        sendEvent(PayLaterTenureClick().apply {
+            productId = payLaterArgsDescriptor.productId
+            linkingStatus = allStatusOfPartner?.first?:""
+            userStatus = allStatusOfPartner?.second?:""
+            productPrice = payLaterViewModel.finalProductPrice.toString()
+            tenureOption = tenure
+            payLaterPartnerName = allStatusOfPartner?.third.toString()
+        })
+    }
+
+
+
 
     private fun getAdapterTypeFactory() = PayLaterAdapterFactoryImpl(
         interaction = PayLaterOptionInteraction(
@@ -105,7 +124,7 @@ class PdpSimulationFragment : BaseDaggerFragment() {
     private fun openInstallmentBottomSheet(detail: Detail) {
         bottomSheetNavigator.showBottomSheet(
             PayLaterInstallmentFeeInfo::class.java,
-            PayLaterBundleGenerator.getInstallmentBundle(detail.installementDetails)
+            PayLaterBundleGenerator.getInstallmentBundle(detail)
         )
     }
 

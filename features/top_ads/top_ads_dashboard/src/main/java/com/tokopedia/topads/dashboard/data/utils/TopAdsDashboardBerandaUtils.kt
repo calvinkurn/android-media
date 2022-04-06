@@ -124,7 +124,7 @@ internal object TopAdsDashboardBerandaUtils {
                 dismiss()
                 showCoachMark(
                     binding.layoutRingkasan.rvSummary,
-                    binding.layoutRingkasan.graphLayout, binding.layoutRecommendasi.root,
+                    binding.layoutRingkasan.graphLayoutBeranda, binding.layoutRecommendasi.root,
                     binding.layoutLatestReading.rvLatestReading, toolbarIcon
                 )
             }

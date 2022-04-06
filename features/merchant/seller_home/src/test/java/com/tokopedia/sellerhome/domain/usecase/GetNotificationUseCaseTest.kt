@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.utils.TestHelper
@@ -71,7 +71,7 @@ class GetNotificationUseCaseTest {
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        val actualNotification: NotificationUiModel? = getNotificationUseCase.executeOnBackground()
+        val actualNotification: NotificationUiModel = getNotificationUseCase.executeOnBackground()
 
         coVerify {
             gqlRepository.response(any(), any())

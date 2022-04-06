@@ -5,24 +5,25 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class RecommendationDataUiModel(
-        override var dataKey: String = "",
-        override var error: String = "",
-        override var isFromCache: Boolean = false,
-        override val showWidget: Boolean = true,
-        val ticker: RecommendationTickerUiModel? = null,
-        val progressLevel: RecommendationProgressUiModel? = null,
-        val progressBar: RecommendationProgressUiModel? = null,
-        val recommendation: RecommendationUiModel? = null
-) : BaseDataUiModel {
+    override var dataKey: String = "",
+    override var error: String = "",
+    override var isFromCache: Boolean = false,
+    override val showWidget: Boolean = false,
+    override val lastUpdated: LastUpdatedUiModel = LastUpdatedUiModel(),
+    val ticker: RecommendationTickerUiModel? = null,
+    val progressLevel: RecommendationProgressUiModel? = null,
+    val progressBar: RecommendationProgressUiModel? = null,
+    val recommendation: RecommendationUiModel? = null
+) : BaseDataUiModel, LastUpdatedDataInterface {
 
-    override fun shouldRemove(): Boolean {
-        return !isFromCache && !showWidget
+    override fun isWidgetEmpty(): Boolean {
+        return recommendation?.recommendations.isNullOrEmpty()
     }
 }
 
 data class RecommendationTickerUiModel(
-        val type: String,
-        val text: String
+    val type: String,
+    val text: String
 ) {
 
     companion object {
@@ -33,27 +34,27 @@ data class RecommendationTickerUiModel(
 }
 
 data class RecommendationProgressUiModel(
-        val isShown: Boolean,
-        val text: String,
-        val bar: ProgressBar
+    val isShown: Boolean,
+    val text: String,
+    val bar: ProgressBar
 ) {
 
     data class ProgressBar(
-            val value: Int,
-            val maxValue: Int,
-            val valueToDisplay: String
+        val value: Int,
+        val maxValue: Int,
+        val valueToDisplay: String
     )
 }
 
 data class RecommendationUiModel(
-        val title: String,
-        val recommendations: List<RecommendationItemUiModel>
+    val title: String,
+    val recommendations: List<RecommendationItemUiModel>
 )
 
 data class RecommendationItemUiModel(
-        val text: String,
-        val appLink: String,
-        val type: String
+    val text: String,
+    val appLink: String,
+    val type: String
 ) {
 
     companion object {
