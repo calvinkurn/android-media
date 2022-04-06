@@ -4,9 +4,12 @@ import android.os.Bundle
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.common.network.domain.RestRequestUseCase
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -35,12 +38,16 @@ import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_DELETE
 import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_EDIT
 import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_PHRASE
 import com.tokopedia.topads.common.data.internal.ParamObject.POSITIVE_SPECIFIC
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_BROWSE
+import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT_SEARCH
 import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
 import com.tokopedia.topads.common.data.internal.ParamObject.STRATEGIES
 import com.tokopedia.topads.common.data.raw.MANAGE_GROUP
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import rx.Subscriber
+import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -124,12 +131,14 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         }
         group?.status = PUBLISHED
         group?.strategies = strategy
-        group?.suggestionBidSettings = dataKeyword[ParamObject.SUGGESTION_BID_SETTINGS] as? List<GroupEditInput.Group.TopadsSuggestionBidSetting>?
+        group?.suggestionBidSettings =
+            dataKeyword[ParamObject.SUGGESTION_BID_SETTINGS] as? List<GroupEditInput.Group.TopadsSuggestionBidSetting>?
         if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
             group?.dailyBudget = dailyBudgetGroup
-        val bidSettingsList: MutableList<GroupEditInput.Group.TopadsGroupBidSetting> = mutableListOf()
+        val bidSettingsList: MutableList<GroupEditInput.Group.TopadsGroupBidSetting> =
+            mutableListOf()
         bidtypeData?.forEach {
             val bidType = GroupEditInput.Group.TopadsGroupBidSetting()
             bidType.bidType = it.bidType
@@ -261,5 +270,65 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                 .build()
         tempRequest.add(restReferralRequest)
         return tempRequest
+    }
+
+    fun executeQuery(
+        param: RequestParams?, block: (FinalAdResponse?) -> Unit,
+    ) {
+        execute(param, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as? DataResponse<FinalAdResponse>
+                block(response?.data)
+            }
+
+            override fun onCompleted() {}
+            override fun onError(e: Throwable?) {
+                ServerLogger.log(Priority.P1, javaClass.name, mapOf(
+                    TopAdsCommonConstant.ERROR to
+                            (e?.message ?: "error executing topadsManagePromoGroupProduct gql")
+                ))
+            }
+        })
+    }
+
+    fun setParam(
+        productIds: List<String>, currentGroupName: String, priceBid: Double,
+        suggestedBidValue: Double, dailyBudget: Double = 0.0,
+    ): RequestParams? {
+        val input = TopadsManagePromoGroupProductInput().apply {
+            shopID = userSession.shopId
+            source = ParamObject.PARAM_SOURCE_RECOM
+            groupInput.group = GroupEditInput.Group().also { group ->
+                group.adOperations = productIds.map { productId ->
+                    GroupEditInput.Group.AdOperationsItem(
+                        GroupEditInput.Group.AdOperationsItem.Ad(productId), action = ACTION_ADD
+                    )
+                }
+                group.name = currentGroupName
+                group.status = PUBLISHED
+                group.bidSettings = listOf(
+                    GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid.toFloat()),
+                    GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid.toFloat())
+                )
+                group.dailyBudget = dailyBudget
+                group.suggestionBidSettings = listOf(
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH,
+                        suggestedBidValue.toFloat()),
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE,
+                        suggestedBidValue.toFloat()),
+                )
+
+            }
+            groupInput.action = ACTION_CREATE
+            keywordOperation = listOf(KeywordEditInput(action = ACTION_CREATE))
+        }
+
+        val param = RequestParams.create()
+        val variable: HashMap<String, Any> = HashMap()
+        variable[INPUT] = input
+        param.putAll(variable)
+        return param
     }
 }

@@ -14,8 +14,11 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.*
@@ -72,7 +75,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
             private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel>,
             private val topAdsEditUseCase: TopAdsEditUseCase,
             private val validGroupUseCase: TopAdsGroupValidateNameUseCase,
-            private val createGroupUseCase: CreateGroupUseCase,
+            private val topAdsCreateUseCase: TopAdsCreateUseCase,
             private val bidInfoUseCase: BidInfoUseCase,
             private val groupInfoUseCase: GroupInfoUseCase,
             private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase,
@@ -446,17 +449,28 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 })
     }
 
-    fun createGroup(param: HashMap<String, Any>, onSuccess: ((ResponseCreateGroup.TopadsCreateGroupAds) -> Unit)) {
-        createGroupUseCase.setParams(param)
-        createGroupUseCase.executeQuerySafeMode(
-                {
-                    onSuccess(it)
+    fun createGroup(
+        productIds: List<String>, currentGroupName: String, priceBid: Double,
+        suggestedBidValue: Double, onSuccess: (error: String?) -> Unit
+    ) {
+        val param =
+            topAdsCreateUseCase.setParam(productIds, currentGroupName, priceBid, suggestedBidValue)
 
-                }, {
-            Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_CREATE_GROUP#%s", it.localizedMessage)
-
+        topAdsCreateUseCase.executeQuery(param) { response ->
+            response?.topadsManageGroupAds?.let {
+                if (it.groupResponse.errors.isNullOrEmpty() && it.keywordResponse.errors.isNullOrEmpty()
+                ) {
+                    onSuccess(null)
+                } else {
+                    val error = (it.groupResponse.errors?.firstOrNull()?.title ?: "") +
+                            (it.keywordResponse.errors?.firstOrNull()?.title ?: "")
+                    ServerLogger.log(Priority.P1, javaClass.name, mapOf(
+                        TopAdsCommonConstant.ERROR to "error executing topadsManagePromoGroupProduct -> $error"
+                    ))
+                    onSuccess(error)
+                }
+            }
         }
-        )
     }
 
     fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit)) {
@@ -521,7 +535,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         validGroupUseCase.cancelJobs()
         topAdsEditUseCase.unsubscribe()
         productRecomUseCase.cancelJobs()
-        createGroupUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         bidInfoUseCase.cancelJobs()
         groupInfoUseCase.cancelJobs()
