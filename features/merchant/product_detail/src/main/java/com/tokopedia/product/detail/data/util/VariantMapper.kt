@@ -137,7 +137,7 @@ object VariantMapper {
         }
 
         val newPrice = oldData.data.price.copy(
-                value = newData?.price ?: 0.0
+                value = newData?.price?.toDouble() ?: 0.0
         )
 
         val newStock = oldData.data.stock.copy(

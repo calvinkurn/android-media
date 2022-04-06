@@ -154,7 +154,7 @@ class VariantSheetViewComponent(
                                     discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                             )
                         } else {
-                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price)
+                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toDouble())
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,

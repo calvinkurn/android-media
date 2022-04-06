@@ -93,7 +93,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     private var reputationId: String = ""
     var orderId: String = ""
         private set
-    private var role: Int = 0
+    private var role = "0"
 
     override fun getScreenName(): String {
         return AppScreen.SCREEN_INBOX_REPUTATION_DETAIL
@@ -364,7 +364,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         return message
     }
 
-    override fun onGoToReportReview(shopId: Long, reviewId: String?) {
+    override fun onGoToReportReview(shopId: String, reviewId: String?) {
         startActivityForResult(
             InboxReputationReportActivity.getCallingIntent(
                 activity,
@@ -456,7 +456,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onGoToProfile(reviewerId: Long) {
+    override fun onGoToProfile(reviewerId: String) {
         startActivity(
             RouteManager.getIntent(
                 activity,
@@ -466,7 +466,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onGoToShopInfo(shopId: Long) {
+    override fun onGoToShopInfo(shopId: String) {
         val intent: Intent =
             RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId.toString())
         startActivity(intent)
@@ -502,13 +502,13 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onGoToShopDetail(shopId: Long) {
+    override fun onGoToShopDetail(shopId: String) {
         val intent: Intent =
             RouteManager.getIntent(activity, ApplinkConst.SHOP, shopId.toString())
         startActivity(intent)
     }
 
-    override fun onGoToPeopleProfile(userId: Long) {
+    override fun onGoToPeopleProfile(userId: String) {
         startActivity(
             RouteManager.getIntent(
                 activity,

@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.variant.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -19,9 +20,10 @@ data class Product (
     val isPrimary: Boolean,
     @SerializedName("isCampaign")
     val isCampaign: Boolean,
+
     @Expose
     @SerializedName("price")
-    val price: Double,
+    val price: java.lang.Double,
     @Expose
     @SerializedName("sku")
     val sku: String,

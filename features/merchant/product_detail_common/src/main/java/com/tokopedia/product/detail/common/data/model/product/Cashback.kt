@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.common.data.model.product
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
@@ -37,16 +38,16 @@ data class Wholesale(
 
         @SerializedName("price")
         @Expose
-        val price: Double = 0.0
+        val price: java.lang.Double = 0.0 as java.lang.Double
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
-        parcel.readDouble()) {
+        parcel.readDouble() as java.lang.Double) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(minQty)
-        parcel.writeDouble(price)
+        parcel.writeDouble(price.toDouble())
     }
 
     override fun describeContents(): Int {

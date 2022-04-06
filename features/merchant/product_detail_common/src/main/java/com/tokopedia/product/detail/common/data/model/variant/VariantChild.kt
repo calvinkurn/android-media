@@ -15,9 +15,10 @@ data class VariantChild(
         @Expose
         val productId: String = "", //ex: 15212348
 
+
         @SerializedName("price")
         @Expose
-        val price: Double = 0.0, //ex: 100000000
+        val price: java.lang.Double = (0.0 as java.lang.Double), //ex: 100000000
 
         @SerializedName("priceFmt")
         @Expose
@@ -73,9 +74,9 @@ data class VariantChild(
     val finalMainPrice: Double
         get() {
             return if (campaign?.isActive == true) {
-                campaign.originalPrice ?: 0.0
+                campaign.originalPrice ?: (0.0 as Double)
             } else {
-                price
+                price.toDouble()
             }
         }
 
@@ -84,7 +85,8 @@ data class VariantChild(
             return if (campaign?.isActive == true) {
                 campaign.discountedPrice ?: 0.0
             } else {
-                price
+                price.toDouble()
+
             }
         }
 

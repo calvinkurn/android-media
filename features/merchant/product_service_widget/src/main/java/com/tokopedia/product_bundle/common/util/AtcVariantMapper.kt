@@ -42,7 +42,7 @@ object AtcVariantMapper {
 
             VariantChild(
                 productId = it.productID.toString(),
-                price = it.bundlePrice,
+                price = it.bundlePrice as java.lang.Double,
                 stock =  VariantStock(
                     stock = it.stock,
                     isBuyable = it.isBuyable && it.stock.isMoreThanZero(),

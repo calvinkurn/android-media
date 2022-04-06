@@ -34,7 +34,7 @@ object ProductManageVariantMapper {
                 it.combination,
                 it.isPrimary,
                 it.isCampaign,
-                it.price,
+                it.price.toDouble(),
                 it.sku,
                 it.stock,
                 it.pictures,
