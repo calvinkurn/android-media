@@ -1120,7 +1120,7 @@ class PlayUserInteractionFragment @Inject constructor(
         return bottomSheet
     }
 
-    fun hideBottomSheet() {
+    private fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
         if (bottomSheet.isVisible) bottomSheet.dismiss()
     }
