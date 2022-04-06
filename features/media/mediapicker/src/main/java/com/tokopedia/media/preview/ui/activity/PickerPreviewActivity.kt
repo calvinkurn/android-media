@@ -32,7 +32,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PickerPreviewActivity : BaseActivity()
@@ -41,6 +40,9 @@ class PickerPreviewActivity : BaseActivity()
 
     @Inject
     lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
 
     @Inject
     lateinit var previewAnalytics: PreviewAnalytics
