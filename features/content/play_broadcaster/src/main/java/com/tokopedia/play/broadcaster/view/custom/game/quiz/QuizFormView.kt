@@ -140,10 +140,6 @@ class QuizFormView : ConstraintLayout {
             eventBus.emit(Event.GiftChanged(it))
         }
 
-        binding.viewQuizGift.setOnRemoveGiftListener {
-            eventBus.emit(Event.GiftChanged(""))
-        }
-
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
             eventBus.emit(Event.Back)
         }

@@ -37,7 +37,6 @@ class QuizGiftView : ConstraintLayout {
     )
 
     private var mOnChangedListener: ((String) -> Unit)? = null
-    private var mOnRemovedListener: (() -> Unit)? = null
 
     init {
         binding.clLabelView.setOnClickListener {
@@ -53,8 +52,7 @@ class QuizGiftView : ConstraintLayout {
             isEditable {
                 binding.clLabelView.show()
                 binding.clInputView.hide()
-
-                mOnRemovedListener?.invoke()
+                binding.etBroQuizGift.setText("")
             }
         }
 
@@ -95,10 +93,6 @@ class QuizGiftView : ConstraintLayout {
 
     fun setOnTextChangeListener(listener: (String) -> Unit) {
         mOnChangedListener = listener
-    }
-
-    fun setOnRemoveGiftListener(listener: () -> Unit) {
-        mOnRemovedListener = listener
     }
 
     private fun isEditable(fn: () -> Unit) {
