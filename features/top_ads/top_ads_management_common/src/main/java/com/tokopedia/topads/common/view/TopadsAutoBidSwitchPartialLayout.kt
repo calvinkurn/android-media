@@ -5,8 +5,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.R
+import com.tokopedia.topads.common.data.util.showBidStateChangeConfirmationDialog
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -21,6 +21,8 @@ class TopadsAutoBidSwitchPartialLayout(
         private set
     var ivBidInfoEditKeyword: ImageUnify? = null
         private set
+
+    var tracker: TrackerListener? = null
 
     var onInfoClicked: (() -> Unit)? = null
     var onCheckBoxStateChanged: ((Boolean) -> Unit)? = null     //true for automatic
@@ -48,11 +50,15 @@ class TopadsAutoBidSwitchPartialLayout(
 
         switchBidEditKeyword?.let {
             it.setOnTouchListener { view, motionEvent ->
+                tracker?.autoBidSwitchClicked(it.isChecked)
                 if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                    showChangeBidTypeConfirmationDialog(isBidAutomatic) {
+                    context.showBidStateChangeConfirmationDialog(isBidAutomatic, {
+                        tracker?.bidChangeConfirmationDialogPositiveClick(it.isChecked)
                         it.isChecked = !it.isChecked
                         onCheckBoxStateChanged?.invoke(it.isChecked)
-                    }
+                    }, {
+                        tracker?.bidChangeConfirmationDialogNegativeClick(it.isChecked)
+                    })
                 }
                 false
             }
@@ -66,26 +72,9 @@ class TopadsAutoBidSwitchPartialLayout(
         switchBidEditKeyword?.isClickable = false
     }
 
-    private fun showChangeBidTypeConfirmationDialog(
-        isSwitchedToAutomatic: Boolean, positiveClick: () -> Unit,
-    ) {
-        DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            if (isSwitchedToAutomatic) {
-                setTitle(context.resources.getString(R.string.topads_common_manual_dialog_title))
-                setDescription(context.resources.getString(R.string.topads_common_manual_dialog_description))
-            } else {
-                setTitle(context.resources.getString(R.string.topads_common_automatic_dialog_title))
-                setDescription(context.resources.getString(R.string.topads_common_automatic_dialog_description))
-            }
-            setPrimaryCTAText(context.resources.getString(R.string.topads_common_dialog_cta_text))
-            setSecondaryCTAText(context.resources.getString(R.string.topads_common_batal))
-            setSecondaryCTAClickListener {
-                dismiss()
-            }
-            setPrimaryCTAClickListener {
-                positiveClick()
-                dismiss()
-            }
-        }.show()
+    interface TrackerListener {
+        fun autoBidSwitchClicked(on: Boolean)
+        fun bidChangeConfirmationDialogPositiveClick(isAutomatic: Boolean)
+        fun bidChangeConfirmationDialogNegativeClick(isAutomatic: Boolean)
     }
 }

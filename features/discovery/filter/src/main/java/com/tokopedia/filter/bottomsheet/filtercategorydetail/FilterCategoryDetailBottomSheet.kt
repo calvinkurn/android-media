@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet.filtercategorydetail
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,8 +20,9 @@ import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.common.helper.setMargin
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.filter_category_detail_bottom_sheet.view.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 internal class FilterCategoryDetailBottomSheet :
         BottomSheetUnify(),
@@ -39,6 +41,19 @@ internal class FilterCategoryDetailBottomSheet :
     private var filterCategoryLevelOneAdapter: FilterCategoryLevelOneAdapter? = null
     private val filterCategoryLevelTwoAdapter = FilterCategoryLevelTwoAdapter(this)
     private var filterCategoryDetailViewModel: FilterCategoryDetailViewModel? = null
+
+    private val filterCategoryDetailHeaderRecyclerView: RecyclerView? by lazy(NONE) {
+        filterCategoryDetailBottomSheetView?.findViewById(R.id.filterCategoryDetailHeaderRecyclerView)
+    }
+    private val filterCategoryDetailContentRecyclerView: RecyclerView? by lazy(NONE) {
+        filterCategoryDetailBottomSheetView?.findViewById(R.id.filterCategoryDetailContentRecyclerView)
+    }
+    private val buttonApplyFilterCategoryDetailContainer: LinearLayout? by lazy(NONE) {
+        filterCategoryDetailBottomSheetView?.findViewById(R.id.buttonApplyFilterCategoryDetailContainer)
+    }
+    private val buttonApplyFilterCategoryDetail: UnifyButton? by lazy(NONE) {
+        filterCategoryDetailBottomSheetView?.findViewById(R.id.buttonApplyFilterCategoryDetail)
+    }
 
     private val itemTouchListener: RecyclerView.OnItemTouchListener = object : RecyclerView.SimpleOnItemTouchListener() {
         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
@@ -88,7 +103,7 @@ internal class FilterCategoryDetailBottomSheet :
     }
 
     private fun initHeaderView() {
-        filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView?.let {
+        filterCategoryDetailHeaderRecyclerView?.let {
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             val itemDecoration = createFilterDividerItemDecoration(it.context, layoutManager.orientation, 0)
 
@@ -101,7 +116,7 @@ internal class FilterCategoryDetailBottomSheet :
     }
 
     private fun initContentRecyclerView() {
-        filterCategoryDetailBottomSheetView?.filterCategoryDetailContentRecyclerView?.let {
+        filterCategoryDetailContentRecyclerView?.let {
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             val itemDecoration = createFilterDividerItemDecoration(it.context, layoutManager.orientation, 0)
 
@@ -113,7 +128,7 @@ internal class FilterCategoryDetailBottomSheet :
     }
 
     private fun initButtonApplyCategoryFilter() {
-        filterCategoryDetailBottomSheetView?.buttonApplyFilterCategoryDetail?.setOnClickListener {
+        buttonApplyFilterCategoryDetail?.setOnClickListener {
             callback?.onApplyButtonClicked(filterCategoryDetailViewModel?.selectedCategoryFilterValue ?: "")
             dismiss()
         }
@@ -163,14 +178,14 @@ internal class FilterCategoryDetailBottomSheet :
         })
 
         filterCategoryDetailViewModel?.isButtonSaveVisibleLiveData?.observe(viewLifecycleOwner, Observer {
-            filterCategoryDetailBottomSheetView?.buttonApplyFilterCategoryDetailContainer?.showWithCondition(it)
+            buttonApplyFilterCategoryDetailContainer?.showWithCondition(it)
         })
     }
 
     private fun processHeaderViewModelList(filterCategoryLevelOneViewModelList: List<FilterCategoryLevelOneViewModel>) {
         filterCategoryLevelOneAdapter?.setList(filterCategoryLevelOneViewModelList)
-        filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView?.post {
-            filterCategoryLevelOneAdapter?.scrollToSelected(filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView)
+        filterCategoryDetailHeaderRecyclerView?.post {
+            filterCategoryLevelOneAdapter?.scrollToSelected(filterCategoryDetailHeaderRecyclerView)
         }
     }
 
@@ -179,7 +194,7 @@ internal class FilterCategoryDetailBottomSheet :
 
         adapter.notifyItemChanged(position)
         adapter.scrollToSelectedIfNotFullyVisible(
-                filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView,
+                filterCategoryDetailHeaderRecyclerView,
                 position
         )
     }
