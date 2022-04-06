@@ -1,11 +1,11 @@
 package com.tokopedia.play.domain.interactive
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.data.interactive.AnswerQuizResponse
+import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import javax.inject.Inject
 
 /**
@@ -14,7 +14,7 @@ import javax.inject.Inject
 @GqlQuery(AnswerQuizUseCase.QUERY_NAME, AnswerQuizUseCase.QUERY)
 class AnswerQuizUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<AnswerQuizResponse>(graphqlRepository) {
+) : RetryableGraphqlUseCase<AnswerQuizResponse>(graphqlRepository) {
 
     init {
         setGraphqlQuery(AnswerQuizUseCaseQuery())
