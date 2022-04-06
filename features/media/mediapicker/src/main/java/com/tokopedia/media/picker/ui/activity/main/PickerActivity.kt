@@ -44,47 +44,11 @@ import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalSt
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-/**
- * main applink:
- * tokopedia://media-picker
- * state -> camera, video, gallery, and multiple selection
- *
- * page:
- * camera -> camera page only
- * gallery -> gallery page only
- *
- * mode:
- * image -> image only (camera only and gallery only shown an image)
- * video -> video only (video only and gallery only shown an video)
- *
- * type:
- * single -> single selection
- * multiple -> multiple selection
- *
- * sample use-cases:
- * show camera page and only supported for image:
- * tokopedia://media-picker?page=camera&mode=image
- *
- * show camera page and only supported for video:
- * tokopedia://media-picker?page=camera&mode=video
- *
- * show gallery page and only supported for image:
- * tokopedia://media-picker?page=gallery&mode=image
- *
- * show gallery page and only supported for video:
- * tokopedia://media-picker?page=gallery&mode=video
- *
- * show camera and gallery but only supported for image:
- * tokopedia://media-picker?mode=image
- *
- * show camera and gallery but only supported for video:
- * tokopedia://media-picker?mode=video
- *
- * if you want to set between single or multiple selection, just add this query:
- * ...&type=single/multiple
- */
-open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
-    NavToolbarComponent.Listener, PickerActivityListener, BottomNavComponent.Listener {
+open class PickerActivity : BaseActivity()
+    , PermissionFragment.Listener
+    , NavToolbarComponent.Listener
+    , PickerActivityListener
+    , BottomNavComponent.Listener {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -152,7 +116,13 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
             // exit picker
             data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
-                onFinishIntent(it)
+                val withEditor = data.getBooleanExtra(EXTRA_EDITOR_PICKER, false)
+
+                if (withEditor) {
+                    onEditorIntent(it)
+                } else {
+                    onFinishIntent(it)
+                }
             }
         }
     }
@@ -285,9 +255,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         finish()
     }
 
-    private fun onEditorIntent(path: ArrayList<String>) {
-        // TODO
-    }
+    private fun onEditorIntent(data: PickerResult) {} // no-op
 
     override fun onPermissionGranted() {
         navigateByPageType()
@@ -325,14 +293,20 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         container.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         container.resetBottomNavMargin()
-        if (isDirectClick) pickerAnalytics.clickCameraTab()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickCameraTab()
+        }
     }
 
     override fun onGalleryTabSelected(isDirectClick: Boolean) {
         container.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
         container.addBottomNavMargin()
-        if (isDirectClick) pickerAnalytics.clickGalleryTab()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickGalleryTab()
+        }
     }
 
     override fun tabVisibility(isShown: Boolean) {
@@ -408,6 +382,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             R.string.picker_capture_limit_photo,
             param.get().maxMediaTotal()
         )
+
         pickerAnalytics.maxPhotoLimit()
     }
 
@@ -416,6 +391,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
+
         pickerAnalytics.maxVideoLimit()
     }
 
@@ -476,6 +452,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
             getString(R.string.picker_storage_fail_video_record),
             Toaster.TYPE_ERROR
         )
+
         pickerAnalytics.recordLowStorage()
     }
 
