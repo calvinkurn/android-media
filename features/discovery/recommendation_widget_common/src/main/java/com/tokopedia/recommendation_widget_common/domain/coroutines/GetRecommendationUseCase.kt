@@ -29,7 +29,7 @@ constructor(private val context: Context, private val graphqlRepository: Graphql
     }
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
         val userSession = UserSession(context)
-        inputParameter.userId = userSession.userId
+        inputParameter.userId = userSession.userId.toIntOrNull() ?: 0
         val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()

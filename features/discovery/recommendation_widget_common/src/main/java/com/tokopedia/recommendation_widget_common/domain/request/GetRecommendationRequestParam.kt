@@ -13,7 +13,7 @@ data class GetRecommendationRequestParam(
         val location: String = "",
         val keywords: List<String> = listOf(),
         val isTokonow: Boolean = false,
-        var userId: String = ""
+        var userId: Int = 0
 
 ) {
     private val PAGE_NUMBER = "pageNumber"
@@ -32,7 +32,9 @@ data class GetRecommendationRequestParam(
         requestMap[PAGE_NUMBER] = pageNumber
         requestMap[QUERY_PARAM] = queryParam
         requestMap[PARAM_TOKONOW] = isTokonow
-        requestMap[USER_ID] = userId
+        if (userId != 0) {
+            requestMap[USER_ID] = userId
+        }
         if (productIds.isNotEmpty())
             requestMap[PRODUCT_IDS] = TextUtils.join(",", productIds)
         if (categoryIds.isNotEmpty())
