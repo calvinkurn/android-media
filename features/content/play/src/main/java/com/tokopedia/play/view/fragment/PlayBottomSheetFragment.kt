@@ -373,7 +373,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.sectionInfo, event.action, event.type)
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
         }
     }
@@ -383,10 +382,6 @@ class PlayBottomSheetFragment @Inject constructor(
             analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
-    }
-
-    private fun doActionProduct(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, productAction: ProductAction, type: BottomInsetsType) {
-        viewModel.addToCart(product, action = productAction, type = type, sectionInfo = sectionInfo)
     }
 
     private fun openLoginPage() {

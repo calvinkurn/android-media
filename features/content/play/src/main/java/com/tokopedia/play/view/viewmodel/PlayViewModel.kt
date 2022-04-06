@@ -650,7 +650,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun onShowKebabMenuSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestInset().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.ThreeDots] =
             BottomInsetsState.Shown(
@@ -662,7 +662,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun hideKebabMenuSheet() {
-        val insetsMap = getLatestInset().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.ThreeDots] =
             BottomInsetsState.Hidden(
@@ -696,7 +696,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun onShowUserReportSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestInset().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.UserReportList] =
             BottomInsetsState.Shown(
@@ -708,7 +708,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun hideUserReportSheet() {
-        val insetsMap = getLatestInset().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.UserReportList] =
             BottomInsetsState.Hidden(
@@ -719,7 +719,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestInset().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.UserReportSubmission] =
             BottomInsetsState.Shown(
@@ -731,7 +731,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     fun hideUserReportSubmissionSheet() {
-        val insetsMap = getLatestInset().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.UserReportSubmission] =
             BottomInsetsState.Hidden(
@@ -762,7 +762,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
 
-    private fun getLatestInset(): Map<KebabMenuType, BottomInsetsState> {
+    private fun getLatestKebabBottomInset(): Map<KebabMenuType, BottomInsetsState> {
         val currentValue = _observableKebabSheets.value ?: return getDefaultKebabInsets()
         currentValue.values.forEach {
             it.isPreviousStateSame = true
@@ -2224,7 +2224,7 @@ class PlayViewModel @AssistedInject constructor(
             if(isSuccess){
                 _userReportSubmission.value = ResultState.Success
             }else{
-                throw Throwable()
+                throw Exception()
             }
         }){ err ->
             _userReportSubmission.value = ResultState.Fail(err)
@@ -2312,8 +2312,8 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_USER_REPORT = 575
         private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
+        private const val REQUEST_CODE_USER_REPORT = 575
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }
