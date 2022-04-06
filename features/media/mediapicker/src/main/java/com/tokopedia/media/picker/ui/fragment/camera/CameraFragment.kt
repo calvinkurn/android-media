@@ -2,7 +2,6 @@ package com.tokopedia.media.picker.ui.fragment.camera
 
 import android.content.Context
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.view.GestureDetector
@@ -112,11 +111,6 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onResume() {
         super.onResume()
         cameraView.open()
-
-        // show storage full toaster every single user open camera page
-        if (controller.isVideoMode() && listener?.isMinStorageThreshold() == true) {
-            listener?.onShowMinStorageThresholdToast()
-        }
     }
 
     override fun onPause() {

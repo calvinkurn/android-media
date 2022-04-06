@@ -5,14 +5,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
-import com.tokopedia.picker.common.ParamCacheManager
-import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl
-import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.picker.data.repository.MediaRepositoryImpl
+import com.tokopedia.media.picker.data.repository.*
 import com.tokopedia.media.picker.di.scope.PickerScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.picker.common.ParamCacheManager
 import dagger.Module
 import dagger.Provides
 
@@ -42,6 +39,12 @@ class PickerModule {
         @ApplicationContext context: Context
     ): ParamCacheManager {
         return ParamCacheManager(context)
+    }
+
+    @Provides
+    @PickerScope
+    fun provideDeviceInfoRepository(): DeviceInfoRepository {
+        return DeviceInfoRepositoryImpl()
     }
 
     @Provides

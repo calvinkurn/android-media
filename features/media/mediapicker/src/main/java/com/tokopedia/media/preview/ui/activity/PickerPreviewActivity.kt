@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
@@ -14,21 +16,24 @@ import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.di.module.PreviewModule
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
-import com.tokopedia.picker.common.EXTRA_EDITOR
-import com.tokopedia.picker.common.ParamCacheManager
-import com.tokopedia.picker.common.RESULT_PICKER
+import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
     , DrawerSelectionWidget.Listener {
 
+    @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
 
     private val binding: ActivityPreviewBinding? by viewBinding()
@@ -36,6 +41,10 @@ class PickerPreviewActivity : BaseActivity()
 
     // variable for control index item to be rendered first
     private var drawerIndexSelected = 0
+
+    private val loaderDialog by lazy {
+        LoaderDialog(this)
+    }
 
     private val navToolbar by uiComponent {
         NavToolbarComponent(
@@ -51,7 +60,10 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     private val viewModel by lazy {
-        ViewModelProvider(this)[PreviewViewModel::class.java]
+        ViewModelProvider(
+            this,
+            factory
+        )[PreviewViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +71,7 @@ class PickerPreviewActivity : BaseActivity()
         setContentView(R.layout.activity_preview)
         restoreDataState(savedInstanceState)
         initInjector()
+        initObservable()
         initView()
     }
 
@@ -84,28 +97,6 @@ class PickerPreviewActivity : BaseActivity()
         }
     }
 
-    override fun onContinueClicked() {
-        val result = uiModel
-            .map { it.path }
-            .map {
-                viewModel.dispatchFileToPublic(
-                    context = applicationContext,
-                    filePath = it
-                )
-
-                it
-            }
-            .toList()
-
-        val resultArrayList = ArrayList(result)
-
-        if (param.get().withEditor()) {
-            onEditorIntent(resultArrayList)
-        } else {
-            onFinishIntent(resultArrayList)
-        }
-    }
-
     override fun onItemClicked(media: MediaUiModel) {
         val previousIndex = drawerIndexSelected
         drawerIndexSelected = pickerPager.moveToOf(media)
@@ -123,7 +114,7 @@ class PickerPreviewActivity : BaseActivity()
                     onBackPickerIntent()
                 }
 
-                if(removedIndex == drawerIndexSelected){
+                if (removedIndex == drawerIndexSelected) {
                     // move selected item on drawer if selected item is removed
                     drawerIndexSelected = pickerPager.getSelectedIndex()
                     binding?.drawerSelector?.post {
@@ -143,6 +134,36 @@ class PickerPreviewActivity : BaseActivity()
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(CACHE_LAST_SELECTION, uiModel)
+    }
+
+    override fun onContinueClicked() {
+        viewModel.files(uiModel)
+    }
+
+    private fun initObservable() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.result
+                .distinctUntilChanged()
+                .filter { it.originalPaths.isNotEmpty() }
+                .collectLatest {
+                    onFinishIntent(it, param.get().withEditor())
+                }
+        }
+
+        viewModel.isLoading.observe(this) {
+            onShowDialog(it)
+        }
+    }
+
+    private fun onShowDialog(isShown: Boolean) {
+        if (!isShown && loaderDialog.dialog.isShowing) {
+            loaderDialog.dialog.dismiss()
+            return
+        }
+
+        loaderDialog.dialog.setOverlayClose(false)
+        loaderDialog.setLoadingText("")
+        loaderDialog.show()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -241,16 +262,10 @@ class PickerPreviewActivity : BaseActivity()
         finish()
     }
 
-    private fun onFinishIntent(files: ArrayList<String>) {
+    private fun onFinishIntent(files: PickerResult, withEditor: Boolean) {
         val intent = Intent()
-        intent.putExtra(RESULT_PICKER, files)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
-    private fun onEditorIntent(files: ArrayList<String>) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_EDITOR, files)
+        intent.putExtra(EXTRA_RESULT_PICKER, files)
+        intent.putExtra(EXTRA_EDITOR_PICKER, withEditor)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
@@ -265,9 +280,6 @@ class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
-
-        const val EXTRA_INTENT_PREVIEW = "extra-intent-preview"
-        const val RESULT_INTENT_PREVIEW = "result-intent-preview"
     }
 
 }
