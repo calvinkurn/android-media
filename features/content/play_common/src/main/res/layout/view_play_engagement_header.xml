@@ -11,15 +11,16 @@
 
         <com.tokopedia.play_common.view.RoundedImageView
             android:id="@+id/iv_engagement"
-            app:rImg_cornerRadius="@dimen/engagement_icon_radius"
             android:layout_width="@dimen/engagement_icon_size"
             android:layout_height="@dimen/engagement_icon_size"
             android:layout_gravity="center"
             android:background="@color/Unify_N0"
             android:padding="@dimen/spacing_lvl3"
             android:translationZ="1dp"
+            app:rImg_cornerRadius="@dimen/interactive_icon_radius"
             tools:background="@color/Unify_Static_Black"
-            tools:src="@drawable/iconunify_badge_os" />
+            tools:src="@drawable/iconunify_badge_os"
+            />
 
         <com.tokopedia.play_common.view.RoundedConstraintLayout
             android:layout_width="match_parent"
