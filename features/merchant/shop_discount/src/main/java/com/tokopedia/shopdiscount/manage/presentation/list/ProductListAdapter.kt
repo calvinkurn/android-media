@@ -46,6 +46,14 @@ class ProductListAdapter(
         notifyDataSetChanged()
     }
 
+    fun delete(product: Product) {
+        val products = this.products.toMutableList()
+        val index = products.indexOf(product)
+        products.remove(product)
+        notifyItemRemoved(index)
+        notifyItemRangeChanged(index, itemCount)
+    }
+
     fun showLoading() {
         if (itemCount.isMoreThanZero()) {
             isLoading = true

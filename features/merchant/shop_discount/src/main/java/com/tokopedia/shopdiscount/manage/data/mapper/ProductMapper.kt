@@ -19,6 +19,7 @@ class ProductMapper @Inject constructor() {
         return input.getSlashPriceProductList.slashPriceProductList.map { product ->
             val productType = product.find()
             Product(
+                product.productId,
                 product.name,
                 product.price.minFormatted,
                 product.price.maxFormatted,

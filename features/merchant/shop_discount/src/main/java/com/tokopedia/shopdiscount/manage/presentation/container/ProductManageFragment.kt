@@ -1,5 +1,7 @@
 package com.tokopedia.shopdiscount.manage.presentation.container
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +16,16 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
-import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyBottomSheet
 import com.tokopedia.shopdiscount.databinding.FragmentDiscountProductManageBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
@@ -35,9 +38,15 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
+
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
+        private const val ALPHA_VISIBLE = 1F
+        private const val ALPHA_INVISIBLE = 0F
+        private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
+
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
             arguments = Bundle()
@@ -65,6 +74,12 @@ class ProductManageFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
 
+    private val tabs = listOf(
+        PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING, 0),
+        PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED, 0),
+        PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED, 0)
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,7 +93,6 @@ class ProductManageFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupViews()
-        //displayBulkApplyBottomSheet()
         observeProductsMeta()
         viewModel.getSlashPriceProductsMeta()
     }
@@ -133,14 +147,16 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.ticker?.visible()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
 
-                    val formattedDiscountStatusMeta = viewModel.findDiscountStatusCount(it.data)
-                    displayTabs(formattedDiscountStatusMeta)
+                    val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
+                    displayTabs(discountStatusWithCounter)
                 }
                 is Fail -> {
+                    binding?.ticker?.gone()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
@@ -151,31 +167,60 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun displayTabs(tabs: List<PageTab>) {
-        val pages = mutableListOf<Pair<String, Fragment>>()
+    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
+        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+        val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
 
-        tabs.forEach { tab ->
-            val fragment = ProductListFragment.newInstance(tab.discountStatusId)
-            pages.add(Pair(tab.name, fragment))
+        val meta = tabs.find { it.discountStatusId == discountStatusId }
+        val decreasedProductCount = totalProduct - 1
+        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
+
+        val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
+        previouslySelectedTab?.setCustomText(updatedTabName)
+        previouslySelectedTab?.select()
+    }
+
+    private val onRecyclerViewScrollDown: () -> Unit = {
+        hideTickerWithAnimation()
+        binding?.cardView?.visible()
+    }
+
+    private val onRecyclerViewScrollUp: () -> Unit = {
+        val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
+        val shouldShowTicker = !isPreviouslyDismissed
+        if (shouldShowTicker){
+            showTickerWithAnimation()
         }
+        binding?.cardView?.gone()
+    }
 
-        val pagerAdapter = TabPagerAdapter(requireActivity(), pages)
+    private fun displayTabs(tabs: List<PageTab>) {
+        val fragments = createFragments(tabs)
+        val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
 
         binding?.run {
             viewPager.adapter = pagerAdapter
             tabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
+
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
-                tab.setCustomText(pages[position].first)
+                tab.setCustomText(fragments[position].first)
             }
         }
     }
 
-    private fun displayBulkApplyBottomSheet() {
-        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
-        bottomSheet.setOnApplyClickListener { discountSettings ->
+    private fun createFragments(tabs : List<PageTab>): List<Pair<String, Fragment>> {
+        val pages = mutableListOf<Pair<String, Fragment>>()
 
+        tabs.forEach { tab ->
+            val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
+            fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
+            fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
+
+            val tabName = "${tab.name} (${tab.count})"
+            pages.add(Pair(tabName, fragment))
         }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+
+        return pages
     }
 
     private fun showSellerInfoBottomSheet() {
@@ -191,5 +236,34 @@ class ProductManageFragment : BaseDaggerFragment() {
             root showError throwable
         }
 
+    }
+    private fun showTickerWithAnimation() {
+        binding?.run {
+            ticker.animate()
+                .translationY(BACK_TO_ORIGINAL_POSITION)
+                .alpha(ALPHA_VISIBLE)
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        ticker.visible()
+                    }
+                })
+        }
+    }
+
+    private fun hideTickerWithAnimation() {
+        binding?.run {
+            ticker.animate()
+                .translationY(ticker.height.toFloat())
+                .alpha(ALPHA_INVISIBLE)
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        ticker.gone()
+                    }
+                })
+        }
     }
 }

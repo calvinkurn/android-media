@@ -33,6 +33,7 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -142,16 +143,17 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun handleShopBenefits(data: GetSlashPriceBenefitResponse) {
         val benefits = data.getSlashPriceBenefit.slashPriceBenefits
-        if (data.getSlashPriceBenefit.isUseVps && benefits.isNotEmpty()) {
-            //VPS
-            val vpsPackage = benefits[0]
-            val endDate = Date(vpsPackage.expiredAtUnix)
-            viewModel.setSelectedEndDate(endDate)
-            binding?.groupChipPeriod?.gone()
-            binding?.tfuEndDate?.isEnabled = false
-        } else {
-            //Membership
-            binding?.tfuEndDate?.isEnabled = true
+        val isUsingVps = data.getSlashPriceBenefit.isUseVps
+
+        if (benefits.isNotEmpty()) {
+            val benefit = benefits[0]
+            viewModel.setBenefitPackageName(benefit.packageName)
+
+            if (isUsingVps) {
+                val endDate = benefit.expiredAt.toDate(DateConstant.DATE_TIME)
+                viewModel.setSelectedEndDate(endDate)
+                binding?.groupChipPeriod?.gone()
+            }
         }
     }
 
@@ -402,7 +404,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             Date(),
             viewModel.getSelectedStartDate(),
             viewModel.getSelectedEndDate(),
-            "",
+            viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
                     viewModel.setSelectedStartDate(selectedDate)
@@ -418,10 +420,10 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             requireContext(),
             childFragmentManager,
             getString(R.string.sd_end_date),
+            viewModel.getSelectedEndDate(),
             viewModel.getSelectedStartDate(),
             viewModel.getSelectedEndDate(),
-            viewModel.getSelectedEndDate(),
-            "",
+            viewModel.getBenefitPackageName(),
             object : ShopDiscountDatePicker.Callback {
                 override fun onDatePickerSubmitted(selectedDate: Date) {
                     viewModel.setSelectedEndDate(selectedDate)
