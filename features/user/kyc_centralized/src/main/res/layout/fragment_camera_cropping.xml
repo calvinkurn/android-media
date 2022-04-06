@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerInParent="true"
-    android:background="@color/Unify_Static_White">
+    android:layout_centerInParent="true">
 
     <com.otaliastudios.cameraview.CameraView
         android:id="@+id/cameraView"
@@ -29,7 +28,7 @@
         android:id="@+id/cropBorder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/layout_lvl3"
         android:background="@drawable/id_card_frame"
         app:layout_constraintDimensionRatio="3:2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -45,7 +44,7 @@
         app:layout_constraintBottom_toTopOf="@id/cropBorder"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/transparent_green_nob" />
+        android:background="@color/kyc_dms_background_camera" />
 
     <View
         android:id="@+id/left_crop"
@@ -55,7 +54,7 @@
         app:layout_constraintBottom_toBottomOf="@id/cropBorder"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/cropBorder"
-        android:background="@color/transparent_green_nob" />
+        android:background="@color/kyc_dms_background_camera" />
 
     <View
         android:id="@+id/right_crop"
@@ -65,7 +64,7 @@
         app:layout_constraintBottom_toBottomOf="@id/cropBorder"
         app:layout_constraintLeft_toRightOf="@id/cropBorder"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/transparent_green_nob" />
+        android:background="@color/kyc_dms_background_camera" />
 
     <View
         android:id="@+id/bottom_crop"
@@ -75,14 +74,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/transparent_green_nob" />
+        android:background="@color/kyc_dms_background_camera" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imagePreview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/layout_lvl3"
         android:visibility="gone"
         app:layout_constraintDimensionRatio="3:2"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -117,17 +116,16 @@
         android:id="@+id/subtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl6"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        android:gravity="start"
-        android:textAlignment="viewStart"
-        android:textColor="#ffffff"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/layout_lvl9"
+        android:textColor="@color/Unify_N0"
+        android:paddingStart="@dimen/layout_lvl3"
+        android:paddingEnd="@dimen/layout_lvl3"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="@string/camera_ktp_subtitle" />
 
     <FrameLayout
