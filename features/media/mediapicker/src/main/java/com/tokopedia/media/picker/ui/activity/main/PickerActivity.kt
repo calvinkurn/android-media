@@ -28,7 +28,6 @@ import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
@@ -147,20 +146,13 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            data.getParcelableArrayListExtra<MediaUiModel>(
-                PickerPreviewActivity.RESULT_INTENT_PREVIEW
-            )?.toList()?.let {
+            data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
                 stateOnChangePublished(it)
             }
 
-            // exit Picker
-            data.getStringArrayListExtra(RESULT_PICKER)?.let {
+            // exit picker
+            data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
                 onFinishIntent(it)
-            }
-
-            // goto Editor
-            data.getStringArrayListExtra(EXTRA_EDITOR)?.let {
-                onEditorIntent(it)
             }
         }
     }
@@ -179,7 +171,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = PickerIntent.get(intent)
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
 
@@ -286,9 +278,9 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         }
     }
 
-    private fun onFinishIntent(path: ArrayList<String>) {
+    private fun onFinishIntent(data: PickerResult) {
         val intent = Intent()
-        intent.putExtra(RESULT_PICKER, path)
+        intent.putExtra(EXTRA_RESULT_PICKER, data)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
@@ -476,13 +468,6 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         onShowValidationToaster(
             R.string.picker_image_res_max_limit,
             param.get().maxImageResolution()
-        )
-    }
-
-    override fun onShowMinStorageThresholdToast() {
-        onShowValidationToaster(
-            R.string.picker_storage_threshold_message,
-            param.get().minStorageThreshold().toMb()
         )
     }
 
