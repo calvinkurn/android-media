@@ -61,9 +61,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation (rootProject.ext.firebase.crashlytics) {
-        transitive = true
-    }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck

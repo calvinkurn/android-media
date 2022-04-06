@@ -337,10 +337,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
-        return dataCheckoutRequestList;
-    }
-
     @Override
     public void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel) {
         this.egoldAttributeModel = egoldAttributeModel;
@@ -2152,12 +2148,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             campaignTimer.setGtmUserId(userSessionInterface.getUserId());
             return campaignTimer;
         }
-    }
-
-    @NotNull
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
     }
 
     @Override
