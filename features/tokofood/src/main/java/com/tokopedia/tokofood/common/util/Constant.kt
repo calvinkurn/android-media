@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.example
+package com.tokopedia.tokofood.common.util
 
 object Constant {
     val DATA_KEY = "data"

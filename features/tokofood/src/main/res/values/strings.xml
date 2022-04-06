@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">tokofood</string>
-    
-    
+    <string name="tokofood_title">Tokofood</string>
+
+    <!-- Home -->
+    <string name="home_usp_powered_by">Powered by</string>
+
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
     <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
