@@ -2,9 +2,9 @@ package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,21 +20,33 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
 
+private const val ARG_OPEN_BS = "openBS"
+
 class TokomemberDashIntroFragment : BaseDaggerFragment() {
 
     private var rootView: RelativeLayout? = null
     private var viewFlipperIntro : ViewFlipper?=null
+    private var openBS: Boolean = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private val tokomemberIntroViewmodel: TokomemberDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TokomemberDashIntroViewModel::class.java)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        arguments?.getBoolean(ARG_OPEN_BS)?.let {
+            openBS = it
+        }
     }
 
     override fun onCreateView(
@@ -64,9 +76,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
         tokomemberIntroViewmodel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    tokomemberIntroViewmodel.getIntroInfo(
-                        it.data.userShopInfo?.info?.shopId?.toInt()?:0
-                    )
+                    tokomemberIntroViewmodel.getIntroInfo(6553698)
                 }
                 is Fail -> {
                 }
@@ -87,40 +97,46 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     }
 
     private fun populateUI(membershipGetSellerOnboarding: MembershipGetSellerOnboarding?) {
+
+        if(openBS){
+            var bottomSheet = BottomSheetUnify()
+            fragmentManager?.let { bottomSheet.show(it,"BottomSheet Tag") }
+//            val bottomsheet = TokomemberIntroBottomsheet()
+//            fragmentManager?.let { bottomsheet.show(it, "") }
+        }
+
         tvTitle.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.title?.get(0)
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.title?.firstOrNull()
                 ?: ""
         tvSubtitle.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.subTitle?.get(0)
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.subTitle?.firstOrNull()
                 ?: ""
         tvSectionOne.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-                0
-            )?.benefit
+            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.firstOrNull()?.benefit
                 ?: ""
-        tvSectionTwo.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-                1
-            )?.benefit
-                ?: ""
-        tvSectionThree.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-                2
-            )?.benefit
-                ?: ""
-        tvSectionFour.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-                3
-            )?.benefit
-                ?: ""
-
-        if (!layoutVideo.isPlaying) {
-            layoutVideo.setVideoURI(Uri.parse("https://vod.tokopedia.com/view/adaptive.m3u8?id=bb4a5fb8790f4d8a95e75ca9c5bcf53"))
-            layoutVideo.setOnPreparedListener { mp ->
-               //  mp.isLooping =  true
-            }
-            layoutVideo.start()
-        }
+//        tvSectionTwo.text =
+//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+//                1
+//            )?.benefit
+//                ?: ""
+//        tvSectionThree.text =
+//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+//                2
+//            )?.benefit
+//                ?: ""
+//        tvSectionFour.text =
+//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
+//                3
+//            )?.benefit
+//                ?: ""
+//
+//        if (!layoutVideo.isPlaying) {
+//            layoutVideo.setVideoURI(Uri.parse("https://vod.tokopedia.com/view/adaptive.m3u8?id=bb4a5fb8790f4d8a95e75ca9c5bcf53"))
+//            layoutVideo.setOnPreparedListener { mp ->
+//               //  mp.isLooping =  true
+//            }
+//            layoutVideo.start()
+//        }
 
         btnContinue.setOnClickListener {
             startActivity(Intent(requireActivity() , TokomemberDashCreateCardActivity::class.java))
@@ -183,8 +199,12 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(): TokomemberDashIntroFragment {
-            return TokomemberDashIntroFragment()
+        fun newInstance(openBS: Boolean?) = TokomemberDashIntroFragment().apply {
+            if (openBS != null) {
+                arguments = Bundle().apply {
+                    putBoolean(ARG_OPEN_BS, openBS)
+                }
+            }
         }
     }
 }
