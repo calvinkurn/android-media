@@ -62,24 +62,24 @@ class RechargeGeneralMockResponseConfig(
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_operator_select_group_listrik),
                 FIND_BY_CONTAINS)
         /* Current */
-        addMockResponse(
-            KEY_CONTAIN_OPERATOR_ID_TOKEN_LISTRIK,
-            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
-            FIND_BY_CONTAINS)
-        addMockResponse(
-            KEY_CONTAIN_OPERATOR_ID_TAGIHAN_LISTRIK,
-            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
-            FIND_BY_CONTAINS)
+//        addMockResponse(
+//            KEY_CONTAIN_OPERATOR_ID_TOKEN_LISTRIK,
+//            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
+//            FIND_BY_CONTAINS)
+//        addMockResponse(
+//            KEY_CONTAIN_OPERATOR_ID_TAGIHAN_LISTRIK,
+//            InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
+//            FIND_BY_CONTAINS)
         /* -------- */
         /* Proto #1 */
-        addMockResponse(
-                listOf(KEY_QUERY_CATALOG_DYNAMIC_INPUT, KEY_CONTAIN_OPERATOR_ID_TOKEN_LISTRIK),
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
-                FIND_BY_CONTAINS_ALL)
-        addMockResponse(
-                listOf(KEY_QUERY_CATALOG_DYNAMIC_INPUT, KEY_CONTAIN_OPERATOR_ID_TAGIHAN_LISTRIK),
-                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
-                FIND_BY_CONTAINS_ALL)
+//        addMockResponse(
+//                listOf(KEY_QUERY_CATALOG_DYNAMIC_INPUT, KEY_CONTAIN_OPERATOR_ID_TOKEN_LISTRIK),
+//                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
+//                FIND_BY_CONTAINS_ALL)
+//        addMockResponse(
+//                listOf(KEY_QUERY_CATALOG_DYNAMIC_INPUT, KEY_CONTAIN_OPERATOR_ID_TAGIHAN_LISTRIK),
+//                InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
+//                FIND_BY_CONTAINS_ALL)
         /* -------- */
         /* Proto #2 */
         addMockResponse(
@@ -88,14 +88,14 @@ class RechargeGeneralMockResponseConfig(
                 variables = mapOf("operator" to "6")
             ),
             InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_token),
-            FIND_BY_CONTAINS_ALL)
+            FIND_BY_CONTAINS_ALL_REGEX)
         addMockResponse(
             MockKey(
                 query = KEY_QUERY_CATALOG_DYNAMIC_INPUT,
                 variables = mapOf("operator" to "18")
             ),
             InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_dynamic_input_listrik_tagihan),
-            FIND_BY_CONTAINS_ALL)
+            FIND_BY_CONTAINS_ALL_REGEX)
         /* -------- */
 
         addMockResponse(

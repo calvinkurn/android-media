@@ -14,6 +14,7 @@ data class MockKey(
         variables.forEach {
             keys.add("\"${it.key}\": \"${it.value}\"")
         }
+
         return keys
     }
 }
