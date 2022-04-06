@@ -24,6 +24,13 @@ class AnswerQuizUseCase @Inject constructor(
         setTypeClass(AnswerQuizResponse::class.java)
     }
 
+    fun createParam(interactiveId: String, choiceId: String): HashMap<String, Any> {
+        return hashMapOf(
+            INTERACTIVE_ID to interactiveId,
+            CHOICE_ID to choiceId
+        )
+    }
+
     companion object {
         private const val INTERACTIVE_ID = "interactiveID"
         private const val CHOICE_ID = "quizChoiceID"
@@ -41,12 +48,5 @@ class AnswerQuizUseCase @Inject constructor(
                 }
             }
         """
-
-        fun createParam(interactiveId: String, choiceId: String): HashMap<String, Any> {
-            return hashMapOf(
-                INTERACTIVE_ID to interactiveId,
-                CHOICE_ID to choiceId
-            )
-        }
     }
 }
