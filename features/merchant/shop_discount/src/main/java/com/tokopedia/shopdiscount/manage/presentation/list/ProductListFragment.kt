@@ -204,6 +204,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     private val onProductClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
+        showProductDetailBottomSheet(product)
     }
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
