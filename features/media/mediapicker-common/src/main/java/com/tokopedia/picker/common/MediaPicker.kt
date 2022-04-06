@@ -83,7 +83,7 @@ object MediaPicker {
      * `compressedImages` will hit the save-to-gallery on device.
      */
     fun result(data: Intent?): PickerResult {
-        return data?.getParcelableExtra(RESULT_PICKER)?: PickerResult()
+        return data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
     }
 
 }

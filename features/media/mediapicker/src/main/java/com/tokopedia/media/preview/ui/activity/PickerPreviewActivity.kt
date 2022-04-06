@@ -16,10 +16,7 @@ import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
 import com.tokopedia.media.preview.di.module.PreviewModule
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
-import com.tokopedia.picker.common.EXTRA_EDITOR
-import com.tokopedia.picker.common.ParamCacheManager
-import com.tokopedia.picker.common.PickerResult
-import com.tokopedia.picker.common.RESULT_PICKER
+import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
@@ -28,7 +25,8 @@ import com.tokopedia.picker.common.utils.safeFileDelete
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class PickerPreviewActivity : BaseActivity()
@@ -144,32 +142,28 @@ class PickerPreviewActivity : BaseActivity()
 
     private fun initObservable() {
         lifecycleScope.launchWhenResumed {
-            launch {
-                viewModel.result
-                    .distinctUntilChanged()
-                    .collectLatest {
-                        if (it.originalPaths.isNotEmpty()) {
-                            if (param.get().withEditor()) {
-                                //onEditorIntent(resultArrayList)
-                            } else {
-                                onFinishIntent(it)
-                            }
-                        }
-                    }
-            }
+            viewModel.result
+                .distinctUntilChanged()
+                .filter { it.originalPaths.isNotEmpty() }
+                .collectLatest {
+                    onFinishIntent(it, param.get().withEditor())
+                }
         }
 
         viewModel.isLoading.observe(this) {
-            with(loaderDialog) {
-                if (it) {
-                    dialog.setOverlayClose(false)
-                    setLoadingText("")
-                    show()
-                } else {
-                    dialog.dismiss()
-                }
-            }
+            onShowDialog(it)
         }
+    }
+
+    private fun onShowDialog(isShown: Boolean) {
+        if (!isShown && loaderDialog.dialog.isShowing) {
+            loaderDialog.dialog.dismiss()
+            return
+        }
+
+        loaderDialog.dialog.setOverlayClose(false)
+        loaderDialog.setLoadingText("")
+        loaderDialog.show()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -268,16 +262,10 @@ class PickerPreviewActivity : BaseActivity()
         finish()
     }
 
-    private fun onFinishIntent(files: PickerResult) {
+    private fun onFinishIntent(files: PickerResult, withEditor: Boolean) {
         val intent = Intent()
-        intent.putExtra(RESULT_PICKER, files)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
-    private fun onEditorIntent(files: ArrayList<String>) {
-        val intent = Intent()
-        intent.putExtra(EXTRA_EDITOR, files)
+        intent.putExtra(EXTRA_RESULT_PICKER, files)
+        intent.putExtra(EXTRA_EDITOR_PICKER, withEditor)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
@@ -292,9 +280,6 @@ class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
-
-        const val EXTRA_INTENT_PREVIEW = "extra-intent-preview"
-        const val RESULT_INTENT_PREVIEW = "result-intent-preview"
     }
 
 }

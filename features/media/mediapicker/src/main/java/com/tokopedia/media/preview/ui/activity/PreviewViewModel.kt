@@ -24,38 +24,32 @@ class PreviewViewModel @Inject constructor(
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     // get all files
-    private val originalFiles: SharedFlow<List<String>> =
-        _files.transform { files ->
-            val paths = files.map { it.path }
-
-            emit(paths)
-        }.shareIn(viewModelScope, SharingStarted.Lazily)
+    private val originalFiles: Flow<List<String>> =
+        _files.map { files ->
+            files.map { it.path }
+        }
 
     // get files only video comes from camera picker
-    private val videoCameraFiles: SharedFlow<List<String>> =
-        _files.transform { files ->
-            val videos = files
+    private val videoCameraFiles: Flow<List<String>> =
+        _files.map { files ->
+            files
                 .filter { isVideoFormat(it.path) && it.isFromPickerCamera }
                 .map { it.path }
-
-            emit(videos)
-        }.shareIn(viewModelScope, SharingStarted.Lazily)
+        }
 
     // get files only image comes from camera picker
-    private val imageCameraFiles: SharedFlow<List<String>> =
-        _files.transform { files ->
-            val images = files
+    private val imageCameraFiles: Flow<List<String>> =
+        _files.map { files ->
+            files
                 .filter { !isVideoFormat(it.path) && it.isFromPickerCamera }
                 .map { it.path }
-
-            emit(images)
-        }.shareIn(viewModelScope, SharingStarted.Lazily)
+    }
 
     // get compressed images
-    private val compressedImages: SharedFlow<List<String>> =
+    private val compressedImages: Flow<List<String>> =
         imageCameraFiles.transform {
             emitAll(imageCompressor.compress(it))
-        }.shareIn(viewModelScope, SharingStarted.Lazily)
+        }
 
     val result = combine(
         originalFiles,
@@ -77,7 +71,10 @@ class PreviewViewModel @Inject constructor(
             originalPaths = originalFiles,
             compressedImages = compressedImages
         )
-    }
+    }.shareIn(
+        viewModelScope,
+        SharingStarted.Lazily
+    )
 
     fun files(files: List<MediaUiModel>) {
         _isLoading.value = true

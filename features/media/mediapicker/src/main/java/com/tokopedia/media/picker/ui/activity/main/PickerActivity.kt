@@ -143,20 +143,13 @@ open class PickerActivity : BaseActivity()
 
         // get data from preview if user had an updated the media elements
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            data.getParcelableArrayListExtra<MediaUiModel>(
-                PickerPreviewActivity.RESULT_INTENT_PREVIEW
-            )?.toList()?.let {
+            data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
                 stateOnChangePublished(it)
             }
 
-            // exit Picker
-            data.getParcelableExtra<PickerResult>(RESULT_PICKER)?.let {
+            // exit picker
+            data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
                 onFinishIntent(it)
-            }
-
-            // goto Editor
-            data.getStringArrayListExtra(EXTRA_EDITOR)?.let {
-                onEditorIntent(it)
             }
         }
     }
@@ -284,7 +277,7 @@ open class PickerActivity : BaseActivity()
 
     private fun onFinishIntent(data: PickerResult) {
         val intent = Intent()
-        intent.putExtra(RESULT_PICKER, data)
+        intent.putExtra(EXTRA_RESULT_PICKER, data)
         setResult(Activity.RESULT_OK, intent)
         finish()
     }
