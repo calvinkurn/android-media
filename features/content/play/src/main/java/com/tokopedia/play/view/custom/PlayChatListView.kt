@@ -47,6 +47,8 @@ class PlayChatListView : ConstraintLayout {
 
     private val chatListOnLayoutChangeListener: View.OnLayoutChangeListener
 
+    private val itemDecoration = ChatListItemDecoration(context)
+
     init {
         val view = View.inflate(context, R.layout.view_chat_list, this)
 
@@ -94,7 +96,7 @@ class PlayChatListView : ConstraintLayout {
 
             rvChatList.apply {
                 addOnScrollListener(scrollListener)
-                addItemDecoration(ChatListItemDecoration(context))
+                addItemDecoration(itemDecoration)
                 addOnLayoutChangeListener(chatListOnLayoutChangeListener)
             }
         } catch (ignored: java.lang.IllegalStateException) {}
@@ -107,7 +109,7 @@ class PlayChatListView : ConstraintLayout {
 
             rvChatList.apply {
                 removeOnScrollListener(scrollListener)
-                removeItemDecoration(ChatListItemDecoration(context))
+                removeItemDecoration(itemDecoration)
                 removeOnLayoutChangeListener(chatListOnLayoutChangeListener)
             }
         } catch (ignored: IllegalStateException) {}

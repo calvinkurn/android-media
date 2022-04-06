@@ -199,6 +199,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var isOpened = false
     private var portraitInsets: WindowInsets? = null
+    private var hasInvalidateChat = false
 
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
@@ -308,6 +309,8 @@ class PlayUserInteractionFragment @Inject constructor(
         videoBoundsProvider = null
         dynamicLayoutManager = null
         chatListHeightManager = null
+
+        hasInvalidateChat = false
 
         cancelAllAnimations()
 
@@ -739,7 +742,8 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             chatListView?.showNewChat(it)
 
-            if (!playViewModel.observableChatList.value.isNullOrEmpty()) {
+            if (!hasInvalidateChat) {
+                hasInvalidateChat = true
                 viewLifecycleOwner.lifecycleScope.launch {
                     invalidateChatListBounds(shouldForceInvalidate = true)
                 }
