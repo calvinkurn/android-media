@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.adminrestriction.view.bottomsheet
+package com.tokopedia.sellerhome.view.bottomsheet
 
 import android.content.Context
 import android.os.Bundle

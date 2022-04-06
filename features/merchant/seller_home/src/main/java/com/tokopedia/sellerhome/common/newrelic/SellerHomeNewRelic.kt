@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.newrelic
+package com.tokopedia.sellerhome.common.newrelic
 
 import android.app.Application
 import android.content.Context

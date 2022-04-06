@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.adminrestriction.view.activity
+package com.tokopedia.sellerhome.view.activity
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.adminrestriction.view.bottomsheet.AdminRestrictionBottomSheet
+import com.tokopedia.sellerhome.view.bottomsheet.AdminRestrictionBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class AdminRestrictionActivity: BaseSimpleActivity() {
