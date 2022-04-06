@@ -50,15 +50,6 @@ class PlayBroadcastModule {
         return UpdateChannelUseCase(graphqlRepository)
     }
 
-//    @Provides
-//    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
-//        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
-//            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
-//        } else {
-//            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
-//        }
-//    }
-
     @ActivityRetainedScope
     @Provides
     fun provideBroadcaster(): Broadcaster {
@@ -132,11 +123,6 @@ class PlayBroadcastModule {
     @Provides
     fun providePlayBroadcastMapper(htmlTextTransformer: HtmlTextTransformer): PlayBroadcastMapper {
         return PlayBroadcastUiMapper(htmlTextTransformer)
-
-        /**
-         * If you want mock
-         */
-//        return PlayBroadcastMockMapper()
     }
 
     @ActivityRetainedScope

@@ -27,8 +27,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
-import com.tokopedia.play.broadcaster.pusher.revamp.PlayBroadcaster
-import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel

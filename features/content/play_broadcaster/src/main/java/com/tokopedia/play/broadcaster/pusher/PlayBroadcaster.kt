@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher.revamp
+package com.tokopedia.play.broadcaster.pusher
 
 import android.content.Context
 import android.os.Handler
@@ -7,7 +7,7 @@ import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
-import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import javax.inject.Inject
 
 /**

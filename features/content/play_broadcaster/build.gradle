@@ -112,8 +112,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.icons
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
-
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk

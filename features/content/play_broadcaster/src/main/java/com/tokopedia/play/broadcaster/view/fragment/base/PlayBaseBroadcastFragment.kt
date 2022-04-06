@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.view.fragment.base
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.play.broadcaster.pusher.revamp.PlayBroadcaster
+import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.contract.PlayBroadcasterContract
 

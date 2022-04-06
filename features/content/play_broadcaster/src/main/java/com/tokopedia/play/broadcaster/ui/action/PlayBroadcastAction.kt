@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.action
 
-import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import java.util.*

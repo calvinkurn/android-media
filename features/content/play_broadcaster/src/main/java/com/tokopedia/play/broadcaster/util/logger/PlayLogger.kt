@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.util.logger
 
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 
 
@@ -15,7 +15,7 @@ interface PlayLogger {
     )
 
     fun logPusherState(
-        pusherState: PlayLivePusherMediatorState
+        pusherState: PlayBroadcasterState
     )
 
     fun logSocketType(

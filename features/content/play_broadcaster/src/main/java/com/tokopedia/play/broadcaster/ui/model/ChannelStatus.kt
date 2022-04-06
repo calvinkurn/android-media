@@ -7,9 +7,10 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 enum class ChannelStatus(val value: String) {
     Draft("0"),
-    Live("2"),
     Active("1"),
+    Live("2"),
     Pause("3"),
+    Stop("4"),
     CompleteDraft("-2"),
     Unknown("-1");
 

@@ -1,6 +1,6 @@
 package com.tokopedia.play.broadcaster.view.contract
 
-import com.tokopedia.play.broadcaster.pusher.revamp.PlayBroadcaster
+import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 
 /**
  * Created by meyta.taliti on 03/03/22.

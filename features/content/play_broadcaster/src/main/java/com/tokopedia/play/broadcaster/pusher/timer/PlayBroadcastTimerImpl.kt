@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.pusher.revamp.timer
+package com.tokopedia.play.broadcaster.pusher.timer
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.util.countup.PlayCountUp

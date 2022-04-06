@@ -5,7 +5,6 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -19,7 +18,6 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.Selectable
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -258,19 +256,6 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             "1",
             "Giveaway Tesla",
             60 * 1000L
-        )
-    }
-
-    override fun mapLiveInfo(
-        activeIngestUrl: String,
-        config: LivePusherConfig
-    ): PlayLiveLogState {
-        return PlayLiveLogState.Init(
-            "rtmp://tkpd.com",
-            config.videoWidth,
-            config.videoHeight,
-            config.fps,
-            config.videoBitrate
         )
     }
 

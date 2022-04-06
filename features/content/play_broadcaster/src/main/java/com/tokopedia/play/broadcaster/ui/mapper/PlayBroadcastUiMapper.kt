@@ -5,7 +5,6 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -19,7 +18,6 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiMo
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_BROADCAST_SCHEDULE
 import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
@@ -329,19 +327,6 @@ class PlayBroadcastUiMapper(
             response.interactiveSellerCreateSession.data.interactiveId,
             title,
             durationInMs
-        )
-    }
-
-    override fun mapLiveInfo(
-        activeIngestUrl: String,
-        config: LivePusherConfig
-    ): PlayLiveLogState {
-        return PlayLiveLogState.Init(
-            activeIngestUrl,
-            config.videoWidth,
-            config.videoHeight,
-            config.fps,
-            config.videoBitrate
         )
     }
 

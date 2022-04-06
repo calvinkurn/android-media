@@ -1,14 +1,15 @@
 package com.tokopedia.play.broadcaster.logger
 
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.play.broadcaster.domain.model.Banned
 import com.tokopedia.play.broadcaster.domain.model.Freeze
 import com.tokopedia.play.broadcaster.domain.model.LiveDuration
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorState
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.util.assertEqualTo
-import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.logger.PlayLoggerCollector
 import com.tokopedia.play.broadcaster.util.logger.PlayLoggerImpl
-import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.FixMethodOrder
@@ -28,65 +29,57 @@ class PlayLoggerTest {
 
     @Test
     fun testCollectLogs() {
-        logger.logChannelStatus(PlayChannelStatusType.Live)
-        logger.logChannelStatus(PlayChannelStatusType.Pause)
-        logger.logChannelStatus(PlayChannelStatusType.Stop)
-        logger.logPusherState(PlayLivePusherMediatorState.Idle)
-        logger.logPusherState(PlayLivePusherMediatorState.Connecting)
-        logger.logPusherState(PlayLivePusherMediatorState.Started)
-        logger.logPusherState(PlayLivePusherMediatorState.Resume(true))
-        logger.logPusherState(PlayLivePusherMediatorState.Resume(false))
-        logger.logPusherState(PlayLivePusherMediatorState.Recovered)
-        logger.logPusherState(PlayLivePusherMediatorState.Paused)
-        logger.logPusherState(PlayLivePusherMediatorState.Stopped)
-        logger.logPusherState(PlayLivePusherMediatorState.Error(PlayLivePusherException("unknown")))
+        logger.logChannelStatus(ChannelStatus.Live)
+        logger.logChannelStatus(ChannelStatus.Pause)
+        logger.logChannelStatus(ChannelStatus.Stop)
+        logger.logPusherState(PlayBroadcasterState.Started)
+        logger.logPusherState(PlayBroadcasterState.Resume(true, true))
+        logger.logPusherState(PlayBroadcasterState.Resume(false, false))
+        logger.logPusherState(PlayBroadcasterState.Recovered)
+        logger.logPusherState(PlayBroadcasterState.Paused)
+        logger.logPusherState(PlayBroadcasterState.Stopped)
+        logger.logPusherState(PlayBroadcasterState.Error(BroadcasterException(BroadcasterErrorType.StreamFailed)))
         logger.logSocketType(Freeze())
         logger.logSocketType(Banned())
         logger.logSocketType(LiveDuration())
-        logger.logChannelStatus(PlayChannelStatusType.Live)
-        logger.logChannelStatus(PlayChannelStatusType.Pause)
-        logger.logChannelStatus(PlayChannelStatusType.Stop)
-        logger.logPusherState(PlayLivePusherMediatorState.Idle)
-        logger.logPusherState(PlayLivePusherMediatorState.Connecting)
-        logger.logPusherState(PlayLivePusherMediatorState.Started)
-        logger.logPusherState(PlayLivePusherMediatorState.Resume(true))
-        logger.logPusherState(PlayLivePusherMediatorState.Resume(false))
-        logger.logPusherState(PlayLivePusherMediatorState.Recovered)
-        logger.logPusherState(PlayLivePusherMediatorState.Paused)
-        logger.logPusherState(PlayLivePusherMediatorState.Stopped)
-        logger.logPusherState(PlayLivePusherMediatorState.Error(PlayLivePusherException("unknown")))
+        logger.logChannelStatus(ChannelStatus.Live)
+        logger.logChannelStatus(ChannelStatus.Pause)
+        logger.logChannelStatus(ChannelStatus.Stop)
+        logger.logPusherState(PlayBroadcasterState.Started)
+        logger.logPusherState(PlayBroadcasterState.Resume(true, true))
+        logger.logPusherState(PlayBroadcasterState.Resume(false, false))
+        logger.logPusherState(PlayBroadcasterState.Recovered)
+        logger.logPusherState(PlayBroadcasterState.Paused)
+        logger.logPusherState(PlayBroadcasterState.Stopped)
+        logger.logPusherState(PlayBroadcasterState.Error(BroadcasterException(BroadcasterErrorType.StreamFailed)))
         logger.logSocketType(Freeze())
         logger.logSocketType(Banned())
         logger.logSocketType(LiveDuration())
 
         val expectedValue = ConcurrentLinkedQueue<Pair<String, String>>().apply {
-            add(Pair("channel", PlayChannelStatusType.Live.value))
-            add(Pair("channel", PlayChannelStatusType.Pause.value))
-            add(Pair("channel", PlayChannelStatusType.Stop.value))
-            add(Pair("pusher", PlayLivePusherMediatorState.Idle.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Connecting.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Started.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Resume(true).tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Resume(false).tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Recovered.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Paused.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Stopped.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Error(PlayLivePusherException("unknown")).tag))
+            add(Pair("channel", ChannelStatus.Live.value))
+            add(Pair("channel", ChannelStatus.Pause.value))
+            add(Pair("channel", ChannelStatus.Stop.value))
+            add(Pair("pusher", PlayBroadcasterState.Started.tag))
+            add(Pair("pusher", PlayBroadcasterState.Resume(true, true).tag))
+            add(Pair("pusher", PlayBroadcasterState.Resume(false, false).tag))
+            add(Pair("pusher", PlayBroadcasterState.Recovered.tag))
+            add(Pair("pusher", PlayBroadcasterState.Paused.tag))
+            add(Pair("pusher", PlayBroadcasterState.Stopped.tag))
+            add(Pair("pusher", PlayBroadcasterState.Error(BroadcasterException(BroadcasterErrorType.StreamFailed)).tag))
             add(Pair("socket", Freeze().type.value))
             add(Pair("socket", Banned().type.value))
             add(Pair("socket", LiveDuration().type.value))
-            add(Pair("channel", PlayChannelStatusType.Live.value))
-            add(Pair("channel", PlayChannelStatusType.Pause.value))
-            add(Pair("channel", PlayChannelStatusType.Stop.value))
-            add(Pair("pusher", PlayLivePusherMediatorState.Idle.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Connecting.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Started.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Resume(true).tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Resume(false).tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Recovered.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Paused.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Stopped.tag))
-            add(Pair("pusher", PlayLivePusherMediatorState.Error(PlayLivePusherException("unknown")).tag))
+            add(Pair("channel", ChannelStatus.Live.value))
+            add(Pair("channel", ChannelStatus.Pause.value))
+            add(Pair("channel", ChannelStatus.Stop.value))
+            add(Pair("pusher", PlayBroadcasterState.Started.tag))
+            add(Pair("pusher", PlayBroadcasterState.Resume(true, true).tag))
+            add(Pair("pusher", PlayBroadcasterState.Resume(false, false).tag))
+            add(Pair("pusher", PlayBroadcasterState.Recovered.tag))
+            add(Pair("pusher", PlayBroadcasterState.Paused.tag))
+            add(Pair("pusher", PlayBroadcasterState.Stopped.tag))
+            add(Pair("pusher", PlayBroadcasterState.Error(BroadcasterException(BroadcasterErrorType.StreamFailed)).tag))
             add(Pair("socket", Freeze().type.value))
             add(Pair("socket", Banned().type.value))
             add(Pair("socket", LiveDuration().type.value))

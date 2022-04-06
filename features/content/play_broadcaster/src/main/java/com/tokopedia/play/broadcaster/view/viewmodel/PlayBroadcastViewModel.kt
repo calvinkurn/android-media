@@ -16,8 +16,8 @@ import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSoc
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
-import com.tokopedia.play.broadcaster.pusher.revamp.state.PlayBroadcasterState
-import com.tokopedia.play.broadcaster.pusher.revamp.timer.PlayBroadcastTimer
+import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
+import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
