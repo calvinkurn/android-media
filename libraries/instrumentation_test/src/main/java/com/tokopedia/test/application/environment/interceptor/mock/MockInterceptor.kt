@@ -83,7 +83,8 @@ class MockInterceptor(val responseConfig: MockModelConfig) : Interceptor {
         return chain.proceed(chain.request())
     }
 
-    /* Proto #1b & 2b, will be moved to other place */
+    /* Proto #1b & 2b, will be moved to other place
+    * ex result: ^(?s)(?=.*rechargeCatalogDynamicInput)(?=.*"operator": "6").*$ */
     fun generateContainsAllRegex(keys: List<String>): String {
         var stringBuilder = StringBuilder()
         stringBuilder.append("^(?s)")
