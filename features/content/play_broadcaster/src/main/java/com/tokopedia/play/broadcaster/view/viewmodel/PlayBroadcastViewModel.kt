@@ -233,7 +233,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             quizFormState = quizFormState,
             isNeedToUpdateUI = quizIsNeedToUpdateUI,
         )
-    }.flowOn(dispatcher.computation)
+    }
 
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
