@@ -1,9 +1,10 @@
 package com.tokopedia.review.feature.reading.presentation.fragment
 
 import android.os.Bundle
-import android.view.MotionEvent
+import android.view.LayoutInflater
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
+import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
 
 /**
@@ -27,28 +28,19 @@ class ShopReviewFragment : ReadReviewFragment() {
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_shop_read_review, container, false)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        disablePullToRefresh()
         showShopPageReviewHeader()
     }
 
-    private fun disablePullToRefresh() {
-        view?.let {
-            val recyclerView = getRecyclerView(it) ?: return
-            recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
-                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    swipeToRefresh.isEnabled = e.action == MotionEvent.ACTION_UP
-                    return false
-                }
-
-                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
-                }
-
-                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
-                }
-            })
-        }
-    }
+    override fun hasInitialSwipeRefresh(): Boolean = false
 }
