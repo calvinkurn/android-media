@@ -824,8 +824,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if(prevConfigState != configState)
             quizForm.applyQuizConfig(configState.quizConfig)
 
-        if(prevState?.quizFormData != state.quizFormData || state.isNeedToUpdateUI)
-            quizForm.setFormData(state.quizFormData, state.isNeedToUpdateUI)
+        quizForm.setFormData(state.quizFormData, state.isNeedToUpdateUI)
 
         if(prevState?.quizFormState != state.quizFormState) {
             when(state.quizFormState) {

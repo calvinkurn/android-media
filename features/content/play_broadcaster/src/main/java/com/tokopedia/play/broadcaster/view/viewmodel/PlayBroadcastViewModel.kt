@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -951,18 +950,21 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleClickBackOnQuiz() {
-        _quizFormState.setValue { prev() }
-
-        updateOptionsState()
+        needUpdateQuizForm(true) {
+            _quizFormState.setValue { prev() }
+            updateOptionsState()
+        }
     }
 
     private fun handleClickNextOnQuiz() {
-        if(_quizFormState.value.next() is QuizFormStateUiModel.SetDuration) {
-            updateQuizEligibleDuration()
-        }
-        _quizFormState.setValue { next() }
+        needUpdateQuizForm(true) {
+            _quizFormState.setValue { next() }
+            updateOptionsState()
 
-        updateOptionsState()
+            if(_quizFormState.value is QuizFormStateUiModel.SetDuration) {
+                updateQuizEligibleDuration()
+            }
+        }
     }
 
     private fun handleInputQuizTitle(title: String) {
@@ -1078,7 +1080,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun updateOptionsState() {
         val options = _quizFormData.value.options.toMutableList()
         val isStateEditable = isQuizStateEditable()
-//        val isStateEditable = isEditable
 
         val newOptions = if(isStateEditable) {
             /** Add new options if needed */
@@ -1101,10 +1102,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             options.filterNot { !it.isMandatory && it.text.isEmpty() }
         }
 
-        needUpdateQuizForm(true) {
-            _quizFormData.setValue {
-                copy(options = newOptions.map { it.copy(isEditable = isStateEditable) })
-            }
+        _quizFormData.setValue {
+            copy(options = newOptions.map { it.copy(isEditable = isStateEditable) })
         }
     }
 
@@ -1131,6 +1130,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun needUpdateQuizForm(isNeedUpdate: Boolean, block: () -> Unit) {
+        _quizIsNeedToUpdateUI.value = false
         block()
         _quizIsNeedToUpdateUI.value = isNeedUpdate
     }
