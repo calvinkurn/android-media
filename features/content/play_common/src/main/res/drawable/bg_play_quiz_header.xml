@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape android:shape="rectangle" xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:topLeftRadius="@dimen/layout_lvl2"
+        android:topRightRadius="@dimen/layout_lvl2" />
+    <gradient
+        android:startColor="@color/play_bro_quiz_header_gradient_start"
+        android:endColor="@color/play_bro_quiz_header_gradient_end" />
+</shape>

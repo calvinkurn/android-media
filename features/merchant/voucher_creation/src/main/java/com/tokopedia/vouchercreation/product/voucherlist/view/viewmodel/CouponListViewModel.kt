@@ -38,7 +38,6 @@ class CouponListViewModel @Inject constructor(
     private val _couponList = MutableLiveData<Result<List<VoucherUiModel>>>()
     private val _cancelCoupon = MutableLiveData<Result<Int>>()
     private val _stopCoupon = MutableLiveData<Result<Int>>()
-    private val _shopBasicData = MutableLiveData<Result<ShopBasicDataResult>>()
     private val _selectedFilterType = NonNullLiveData(CouponFilterBottomSheet.FilterType.NOT_SELECTED)
     private val _selectedFilterTarget = NonNullLiveData(CouponFilterBottomSheet.FilterTarget.NOT_SELECTED)
     private var _couponStatusFilter: String = VoucherStatus.NOT_STARTED_AND_ONGOING
@@ -51,8 +50,6 @@ class CouponListViewModel @Inject constructor(
         get() = _cancelCoupon
     val stopCoupon: LiveData<Result<Int>>
         get() = _stopCoupon
-    val shopBasicData: LiveData<Result<ShopBasicDataResult>>
-        get() = _shopBasicData
     val selectedFilterType: LiveData<CouponFilterBottomSheet.FilterType>
         get() = _selectedFilterType
     val selectedFilterTarget: LiveData<CouponFilterBottomSheet.FilterTarget>

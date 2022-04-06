@@ -13,4 +13,9 @@
 
     <!--Play Custom Message Error Handler-->
     <string name="play_custom_error_handler_msg">%s. Kode Error: (%s)</string>
+
+    <!-- Game -->
+    <string name="play_game_header_title_hint">Mau kasih pertanyan apa?</string>
+    <string name="play_common_widget_interactive_end">Berakhir:</string>
+    <string name="play_common_widget_interactive_start">Dimulai:</string>
 </resources>
