@@ -198,6 +198,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _quizFormData = MutableStateFlow(QuizFormDataUiModel())
     private val _quizFormState = MutableStateFlow<QuizFormStateUiModel>(QuizFormStateUiModel.Nothing)
+    private val _quizIsNeedToUpdateUI = MutableStateFlow(true)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -225,11 +226,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private val _quizFormUiState = combine(
-        _quizFormData, _quizFormState
-    ) { quizFormData, quizFormState ->
+        _quizFormData, _quizFormState, _quizIsNeedToUpdateUI,
+    ) { quizFormData, quizFormState, quizIsNeedToUpdateUI, ->
         QuizFormUiState(
             quizFormData = quizFormData,
             quizFormState = quizFormState,
+            isNeedToUpdateUI = quizIsNeedToUpdateUI,
         )
     }.flowOn(dispatcher.computation)
 
@@ -940,6 +942,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         setSelectedProduct(productSectionList)
     }
 
+    /** Handle Game Action */
     private fun handleClickGameOption(gameType: GameType) {
         when(gameType) {
             GameType.Taptap -> { /** TODO: will handle it soon */ }
@@ -963,8 +966,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleInputQuizTitle(title: String) {
-        _quizFormData.setValue {
-            copy(title = title)
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { copy(title = title) }
         }
     }
 
@@ -994,7 +997,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             ))
         }
 
-        _quizFormData.setValue { copy(options = newOptions) }
+        needUpdateQuizForm(isAutoSelectEligible || isNeedAddNewField) {
+            _quizFormData.setValue { copy(options = newOptions) }
+        }
     }
 
     private fun handleSelectQuizOption(order: Int) {
@@ -1004,25 +1009,29 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         if(currSelectedOrder == order || currSelectedOrder == -1) return
 
-        _quizFormData.setValue {
-            copy(options = options.map { it.copy(isSelected = it.order == order) })
+        needUpdateQuizForm(true) {
+            _quizFormData.setValue {
+                copy(options = options.map { it.copy(isSelected = it.order == order) })
+            }
         }
     }
 
     private fun handleInputQuizGift(text: String) {
-        _quizFormData.setValue {
-            copy(gift = text)
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { copy(gift = text) }
         }
     }
 
     private fun handleSaveQuizData(quizFormData: QuizFormDataUiModel) {
-        _quizFormData.setValue { quizFormData }
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { quizFormData }
+        }
     }
 
     private fun handleSelectQuizDuration(duration: Long) {
         updateQuizEligibleDuration()
-        _quizFormData.setValue {
-            copy(duration = duration)
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { copy(duration = duration) }
         }
     }
 
@@ -1046,37 +1055,42 @@ class PlayBroadcastViewModel @AssistedInject constructor(
      * Quiz
      */
     private fun initQuizFormData() {
-        val quizConfig = _gameConfig.value.quizConfig
-        val initialOptions = mutableListOf<QuizFormDataUiModel.Option>()
+        needUpdateQuizForm(true) {
+            val quizConfig = _gameConfig.value.quizConfig
+            val initialOptions = mutableListOf<QuizFormDataUiModel.Option>()
 
-        repeat(quizConfig.minChoicesCount) {
-            initialOptions.add(
-                QuizFormDataUiModel.Option(
-                    order = it,
-                    maxLength = quizConfig.maxChoiceLength,
-                    isMandatory = true,
+            repeat(quizConfig.minChoicesCount) {
+                initialOptions.add(
+                    QuizFormDataUiModel.Option(
+                        order = it,
+                        maxLength = quizConfig.maxChoiceLength,
+                        isMandatory = true,
+                    )
                 )
-            )
-        }
+            }
 
-        _quizFormData.setValue {
-            QuizFormDataUiModel(options = initialOptions)
+            _quizFormData.setValue {
+                QuizFormDataUiModel(options = initialOptions)
+            }
         }
     }
 
     private fun setOptionEditable() {
-        val isStateEditable = isQuizStateEditable()
-        val options = _quizFormData.value.options
-        _quizFormData.setValue {
-            copy(
-                options = options.map { it.copy(isEditable = isStateEditable) }
-            )
+        needUpdateQuizForm(true) {
+            val isStateEditable = isQuizStateEditable()
+            val options = _quizFormData.value.options
+            _quizFormData.setValue {
+                copy(
+                    options = options.map { it.copy(isEditable = isStateEditable) }
+                )
+            }
         }
     }
 
     private fun isQuizStateEditable(): Boolean {
         return _quizFormState.value !is QuizFormStateUiModel.SetDuration
     }
+
     private fun updateQuizEligibleDuration() {
         val remainingDuration = livePusherMediator.remainingDurationInMillis
         val quizConfig = _gameConfig.value.quizConfig
@@ -1093,6 +1107,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun needToAutoSelectQuizOption(options: List<QuizFormDataUiModel.Option>, text: String): Boolean {
         val noSelectedChoice = options.firstOrNull { it.isSelected } == null
         return noSelectedChoice && text.isNotEmpty()
+    }
+
+    private fun needUpdateQuizForm(isNeedUpdate: Boolean, block: () -> Unit) {
+        _quizIsNeedToUpdateUI.value = isNeedUpdate
+        block()
     }
 
     /**

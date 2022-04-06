@@ -40,4 +40,5 @@ data class GameConfigUiState(
 data class QuizFormUiState(
     val quizFormData: QuizFormDataUiModel,
     val quizFormState: QuizFormStateUiModel,
+    val isNeedToUpdateUI: Boolean,
 )

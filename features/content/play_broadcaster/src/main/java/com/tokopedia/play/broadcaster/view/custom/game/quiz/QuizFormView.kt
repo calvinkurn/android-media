@@ -187,16 +187,13 @@ class QuizFormView : ConstraintLayout {
         job.cancel()
     }
 
-    fun setFormData(quizFormData: QuizFormDataUiModel, needToUpdateOptions: Boolean = true) {
-        if(mQuizFormData != quizFormData) {
-            mQuizFormData = quizFormData
-
+    fun setFormData(quizFormData: QuizFormDataUiModel, needToUpdateUI: Boolean = true) {
+        if(needToUpdateUI) {
             /** Set Quiz Title */
             binding.viewGameHeader.title = quizFormData.title
 
             /** Set Options */
-            if(needToUpdateOptions)
-                adapter.setItemsAndAnimateChanges(quizFormData.options)
+            adapter.setItemsAndAnimateChanges(quizFormData.options)
 
             /** Set Gift */
             binding.viewQuizGift.gift = quizFormData.gift
@@ -211,10 +208,10 @@ class QuizFormView : ConstraintLayout {
                     }
                 }
             }
-
-            /** Validate Form */
-            binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
         }
+
+        /** Validate Form */
+        binding.tvBroQuizFormNext.isEnabled = quizFormData.isFormValid()
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
