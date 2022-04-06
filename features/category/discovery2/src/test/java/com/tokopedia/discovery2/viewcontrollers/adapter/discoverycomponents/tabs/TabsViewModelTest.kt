@@ -57,7 +57,7 @@ class TabsViewModelTest {
     @Test
     fun `test for reInitTabComponentData`(){
         viewModel.reInitTabComponentData()
-        coVerify { viewModel.reInitTabComponentData() }
+        assert(viewModel.reInitTabComponentData() == componentsItem.reInitComponentItems())
     }
 
     @Test
@@ -65,7 +65,7 @@ class TabsViewModelTest {
         viewModel.dynamicTabsUseCase = dynamicTabsUseCase
         coEvery { dynamicTabsUseCase.updateTargetProductComponent(any(),any()) } returns true
         viewModel.reInitTabTargetComponents()
-        coVerify { viewModel.reInitTabTargetComponents() }
+        assert(dynamicTabsUseCase.updateTargetProductComponent(componentsItem.id, componentsItem.pageEndPoint))
     }
 
 

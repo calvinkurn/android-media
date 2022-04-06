@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import io.mockk.*
@@ -50,6 +51,11 @@ class LoadMoreViewModelTest {
     }
 
     @Test
+    fun `test for application`(){
+        assert(viewModel.application === application)
+    }
+
+    @Test
     fun `test for productCardUseCase`() {
         val viewModel: LoadMoreViewModel =
                 spyk(LoadMoreViewModel(application, componentsItem, 99))
@@ -70,7 +76,7 @@ class LoadMoreViewModelTest {
     }
 
     @Test
-    fun `get Component Orientation`(){
+    fun `get Component Orientation`() {
         every { componentsItem.loadForHorizontal } returns true
         assert(viewModel.getViewOrientation())
 
@@ -79,34 +85,66 @@ class LoadMoreViewModelTest {
     }
 
     @Test
-    fun `test for onAttachViewHolder`(){
+    fun `test for onAttachViewHolder`() {
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         every { componentsItem.loadForHorizontal } returns false
         every { componentsItem.parentComponentName } returns ComponentNames.MerchantVoucherList.componentName
-        runBlocking {
-            coEvery {
-                merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.syncData.value, true)
 
-            coEvery {
-                merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint) } returns true
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.syncData.value, true)
+        coEvery {
+            merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+        viewModel.onAttachToViewHolder()
+        verify { getComponent(componentsItem.id, componentsItem.pageEndPoint) }
+        TestCase.assertEquals(viewModel.syncData.value, true)
+
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        coEvery {
+            merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.onAttachToViewHolder()
+        TestCase.assertEquals(viewModel.syncData.value, true)
+
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        coEvery {
+            merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+        viewModel.onAttachToViewHolder()
+        TestCase.assertEquals(viewModel.syncData.value, false)
+
+        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
+        every { componentsItem.loadForHorizontal } returns true
+        coEvery {
+            merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.onAttachToViewHolder()
+        verify { viewModel.getViewOrientation() }
 
 
-            every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
-            coEvery {
-                productCardUseCase.getProductCardsUseCase(
-                        componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.syncData.value, true)
+        viewModel.productCardUseCase = productCardUseCase
+        every { componentsItem.loadForHorizontal } returns false
+        every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
+        coEvery {
+            productCardUseCase.getProductCardsUseCase(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+        viewModel.onAttachToViewHolder()
+        verify { getComponent(componentsItem.id, componentsItem.pageEndPoint) }
+        TestCase.assertEquals(viewModel.syncData.value, true)
 
-            coEvery {
-                productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint) } returns true
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.syncData.value, true)
+        viewModel.productCardUseCase = productCardUseCase
+        coEvery {
+            productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.onAttachToViewHolder()
+        TestCase.assertEquals(viewModel.syncData.value, true)
 
-        }
+        viewModel.productCardUseCase = productCardUseCase
+        coEvery {
+            productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+        viewModel.onAttachToViewHolder()
+        TestCase.assertEquals(viewModel.syncData.value, false)
+
     }
 
 }

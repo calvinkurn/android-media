@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lih
 
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -49,7 +50,15 @@ class LihatSemuaViewModelTest {
 
     @Test
     fun `text for startTimer`(){
+        mockkObject(Utils)
+        every { viewModel.getStartDate() } returns "2021-11-01T10:00:00+07:00"
+        every { Utils.isFutureSale(any(),any()) } returns true
         viewModel.startTimer(mockedTimerUnifySingleItem)
+        verify { Utils.parseData(any(), any()) }
+
+        every { Utils.parseData(any(), any()) } returns null
+        viewModel.startTimer(mockedTimerUnifySingleItem)
+        unmockkObject(Utils)
     }
 
     @Test

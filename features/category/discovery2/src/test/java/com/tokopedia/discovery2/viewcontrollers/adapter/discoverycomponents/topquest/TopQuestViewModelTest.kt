@@ -36,12 +36,25 @@ class TopQuestViewModelTest {
     }
 
     @Test
-    fun `test for onResume`(){
-        every { viewModel.shouldUpdate } returns true
-        every { viewModel.loggedInUpdate } returns true
+    fun `test for application`(){
+        assert(viewModel.application === application)
+    }
 
+    @Test
+    fun `test for components passed`(){
+        assert(viewModel.components === componentsItem)
+    }
+
+    @Test
+    fun `test for onResume`(){
+        viewModel.shouldUpdate = true
+        viewModel.loggedInUpdate = true
         viewModel.onResume()
-        coVerify { viewModel.onResume() }
+        assert(viewModel.updateQuestData.value == true)
+
+        viewModel.loggedInUpdate = true
+        viewModel.onResume()
+        assert(!viewModel.loggedInUpdate)
 
     }
 

@@ -65,6 +65,7 @@ class YouTubeViewViewModelTest {
         verify { componentsItem.autoPlayController?.autoPlayNext(componentsItem.id) }
 
         every { componentsItem.autoPlayController } returns null
+        viewModel.autoPlayNext()
         verify { componentsItem.autoPlayController?.autoPlayNext(componentsItem.id) }
     }
 
@@ -79,9 +80,16 @@ class YouTubeViewViewModelTest {
 
     @Test
     fun `test for disableAutoplay`(){
+        componentsItem.autoPlayController?.isAutoPlayEnabled = false
         viewModel.disableAutoplay()
         TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == false, true)
+
+        componentsItem.autoPlayController?.isAutoPlayEnabled = true
+        viewModel.disableAutoplay()
+        TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == false, true)
+
         every { componentsItem.autoPlayController } returns null
+        viewModel.disableAutoplay()
         TestCase.assertEquals(componentsItem.autoPlayController == null, true)
     }
 
