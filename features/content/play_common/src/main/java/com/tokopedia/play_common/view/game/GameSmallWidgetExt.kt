@@ -10,7 +10,9 @@ import com.tokopedia.play_common.R
  */
 fun GameSmallWidgetView.setupGiveaway(
     desc: String,
-    timerInfo: String
+    timerInfo: String,
+    durationInMs: Long,
+    onDurationEnd: (GameSmallWidgetView) -> Unit,
 ) {
     getIconUnifyDrawable(
         context = context,
@@ -20,13 +22,15 @@ fun GameSmallWidgetView.setupGiveaway(
 
     setContentBackground(MethodChecker.getDrawable(context, R.drawable.bg_play_giveaway_header))
     setTimerInfo(timerInfo)
-    setTimer(70000) {}
+    setTimer(durationInMs) { onDurationEnd(this) }
     description = desc
 }
 
 fun GameSmallWidgetView.setupQuiz(
     question: String,
-    timerInfo: String
+    timerInfo: String,
+    durationInMs: Long,
+    onDurationEnd: (GameSmallWidgetView) -> Unit,
 ) {
     getIconUnifyDrawable(
         context = context,
@@ -36,6 +40,6 @@ fun GameSmallWidgetView.setupQuiz(
 
     setContentBackground(MethodChecker.getDrawable(context, R.drawable.bg_play_quiz_header))
     setTimerInfo(timerInfo)
-    setTimer(70000) {}
+    setTimer(durationInMs) { onDurationEnd(this) }
     description = question
 }

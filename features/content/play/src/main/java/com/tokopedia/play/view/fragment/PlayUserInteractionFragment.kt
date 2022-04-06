@@ -589,10 +589,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
 
         setupFeaturedProductsFadingEdge(view)
-
-        //TODO("CODE FOR TESTING")
-        interactiveActiveView?.setQuiz()
-        interactiveActiveView?.show()
     }
 
     private fun setupInsets(view: View) {

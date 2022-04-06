@@ -17,16 +17,22 @@ class InteractiveActiveViewComponent(
     private val widget = rootView as GameSmallWidgetView
 
     fun setGiveaway() {
+        //TODO("Stitch with real code")
         widget.setupGiveaway(
             desc = "Kapan ulang tahun Rockbros Indonesia?",
             timerInfo = "Berakhir",
+            durationInMs = 7000,
+            onDurationEnd = {},
         )
     }
 
     fun setQuiz() {
+        //TODO("Stitch with real code")
         widget.setupQuiz(
             question = "Kapan ulang tahun Rockbros Indonesia?",
             timerInfo = "Berakhir",
+            durationInMs = 7000,
+            onDurationEnd = {},
         )
     }
 }
