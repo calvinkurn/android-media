@@ -22,6 +22,8 @@
     <string name="content_desc_shop_rating">Shop rating star</string>
     <string name="content_desc_shop_location_icon">Shop location icon</string>
 
+    <string name="content_desc_home_category_widget">Category widget</string>
+
     <string name="content_desc_featured_brand_icon">featured brand icon</string>
     <string name="content_desc_featured_brand_image">featured brand image</string>
     <string name="content_desc_merchant_background">Background merchant voucher</string>
@@ -37,4 +39,5 @@
 
     <string name="special_release_item_tag_special_release">Rilisan Spesial mulai</string>
     <string name="special_release_item_tag_fs_toko">Flash Sale s.d.</string>
+
 </resources>

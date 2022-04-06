@@ -27,6 +27,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.*
 import com.tokopedia.home_component.viewholders.*
+import com.tokopedia.home_component.viewholders.CategoryWidgetV2ViewHolder
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
@@ -71,7 +72,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val cmHomeWidgetCallback: CMHomeWidgetCallback,
                          private val homePayLaterWidgetListener: HomePayLaterWidgetListener,
                          private val specialReleaseComponentListener: SpecialReleaseComponentListener,
-                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener
+                         private val merchantVoucherComponentListener: MerchantVoucherComponentListener,
+                         private val categoryWidgetV2Listener: CategoryWidgetV2Listener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -167,6 +169,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     }
 
     //Home-Component
+    override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
+        return CategoryWidgetV2ViewHolder.LAYOUT
+    }
+
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return DynamicLegoBannerViewHolder.LAYOUT
     }
@@ -378,7 +384,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
-            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, listener)
+            CategoryWidgetV2ViewHolder.LAYOUT -> viewHolder = CategoryWidgetV2ViewHolder(view, categoryWidgetV2Listener)
             BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
