@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:card_type="clear"
+    android:layout_height="match_parent"
     tools:context=".manage.presentation.list.ProductListFragment">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -17,7 +16,7 @@
         android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_2" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgMultiSelect"
@@ -75,5 +74,16 @@
         app:unifyEmptyStateOrientation="vertical"
         app:unifyEmptyStateType="section" />
 
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imgScrollUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_scroll_up"
+        android:visibility="gone"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

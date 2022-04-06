@@ -1,9 +1,13 @@
 package com.tokopedia.shopdiscount.manage.presentation.list
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -20,11 +24,12 @@ import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
+import com.tokopedia.shopdiscount.utils.extension.smoothSnapToPosition
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,7 +41,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status"
         private const val PAGE_SIZE = 10
-        private const val EMPTY_STATE_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
+        private const val DECELERATOR_FACTOR: Float = 2.0F
+        private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
+        private const val SCROLL_WIDGET_MARGIN = 24F
+
+        private const val EMPTY_STATE_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance(
@@ -53,16 +63,27 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     }
 
-    private val discountStatusId by lazy { arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero() }
+    private val discountStatusId by lazy {
+        arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
+    }
     private var binding by autoClearedNullable<FragmentProductListBinding>()
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
-    private val productAdapter by lazy { ProductListAdapter(onProductClicked, onUpdateDiscountClicked, onOverflowMenuClicked) }
+    private val productAdapter by lazy {
+        ProductListAdapter(
+            onProductClicked,
+            onUpdateDiscountClicked,
+            onOverflowMenuClicked
+        )
+    }
+    private var onScrollDown: () -> Unit = {}
+    private var onScrollUp: () -> Unit = {}
 
-    override fun getScreenName() : String = ProductListFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ProductListFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
@@ -81,15 +102,30 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        applyUnifyBackgroundColor()
-        setupViews()
+        setupScrollListener()
+        setupView()
         observeProducts()
         observeDeleteDiscount()
     }
 
-    private fun setupViews() {
-        binding?.run {
+    private fun setupScrollListener() {
+        binding?.recyclerView?.addOnScrollListener(
+            RecyclerViewScrollListener(
+                onScrollDown = {
+                    showScrollButtonWithAnimation()
+                    onScrollDown()
+                },
+                onScrollUp = {
+                    hideScrollButtonWithAnimation()
+                    onScrollUp()
+                }
+            )
+        )
+    }
 
+    private fun setupView() {
+        binding?.run {
+            imgScrollUp.setOnClickListener { recyclerView.smoothSnapToPosition(0) }
         }
     }
 
@@ -99,9 +135,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
                 is Success -> {
                     handleProducts(it.data)
                     viewModel.setTotalProduct(it.data.totalProduct)
-                    binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    binding?.tpgTotalProduct?.text =
+                        String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    binding?.swipeRefresh?.isRefreshing = false
                 }
                 is Fail -> {
+                    binding?.swipeRefresh?.isRefreshing = false
                     binding?.root showError it.throwable
                 }
             }
@@ -147,13 +186,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         }
     }
 
-    private fun handleDeleteDiscountResult(isDeletionSuccess : Boolean) {
+    private fun handleDeleteDiscountResult(isDeletionSuccess: Boolean) {
         if (isDeletionSuccess) {
             binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
             onDiscountRemoved(discountStatusId, viewModel.getTotalProduct())
             productAdapter.delete(viewModel.getSelectedProduct() ?: return)
             val updatedTotalProduct = viewModel.getTotalProduct() - 1
-            binding?.tpgTotalProduct?.text = String.format(getString(R.string.sd_total_product), updatedTotalProduct)
+            binding?.tpgTotalProduct?.text =
+                String.format(getString(R.string.sd_total_product), updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
@@ -222,7 +262,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         displayError(message)
     }
 
-    private fun displayError(errorMessage : String) {
+    private fun displayError(errorMessage: String) {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
@@ -244,6 +284,49 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
             viewModel.deleteDiscount(discountStatusId, product.id)
         }
         dialog.show()
+    }
+
+    fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
+        this.onScrollDown = onScrollDown
+    }
+
+    fun setOnScrollUpListener(onScrollUp: () -> Unit = {}) {
+        this.onScrollUp = onScrollUp
+    }
+
+
+    private fun showScrollButtonWithAnimation() {
+        binding?.run {
+            imgScrollUp.animate()
+                .translationY(imgScrollUp.height.toFloat() + SCROLL_WIDGET_MARGIN)
+                .setInterpolator(DecelerateInterpolator(DECELERATOR_FACTOR))
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        imgScrollUp.gone()
+                    }
+                })
+                .start()
+        }
+
+    }
+
+    private fun hideScrollButtonWithAnimation() {
+        binding?.run {
+            imgScrollUp
+                .animate()
+                .translationY(0f)
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setInterpolator(AccelerateInterpolator(DECELERATOR_FACTOR))
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        imgScrollUp.visible()
+                    }
+                }).start()
+        }
+
     }
 
 }

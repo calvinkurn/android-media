@@ -1,5 +1,7 @@
 package com.tokopedia.shopdiscount.manage.presentation.container
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,9 +38,11 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
+
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
             arguments = Bundle()
@@ -139,14 +143,16 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    binding?.ticker?.visible()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
 
-                    val formattedDiscountStatusMeta = viewModel.findDiscountStatusCount(tabs, it.data)
-                    displayTabs(formattedDiscountStatusMeta)
+                    val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
+                    displayTabs(discountStatusWithCounter)
                 }
                 is Fail -> {
+                    binding?.ticker?.gone()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
@@ -170,6 +176,20 @@ class ProductManageFragment : BaseDaggerFragment() {
         previouslySelectedTab?.select()
     }
 
+    private val onRecyclerViewScrollDown: () -> Unit = {
+        hideTickerWithAnimation()
+        binding?.cardView?.visible()
+    }
+
+    private val onRecyclerViewScrollUp: () -> Unit = {
+        val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
+        val shouldShowTicker = !isPreviouslyDismissed
+        if (shouldShowTicker){
+            showTickerWithAnimation()
+        }
+        binding?.cardView?.gone()
+    }
+
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
@@ -189,6 +209,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
         tabs.forEach { tab ->
             val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
+            fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
+            fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
+
             val tabName = "${tab.name} (${tab.count})"
             pages.add(Pair(tabName, fragment))
         }
@@ -209,5 +232,34 @@ class ProductManageFragment : BaseDaggerFragment() {
             root showError throwable
         }
 
+    }
+    private fun showTickerWithAnimation() {
+        binding?.run {
+            ticker.animate()
+                .translationY(0f)
+                .alpha(1f)
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        ticker.visible()
+                    }
+                })
+        }
+    }
+
+    private fun hideTickerWithAnimation() {
+        binding?.run {
+            ticker.animate()
+                .translationY(ticker.height.toFloat())
+                .alpha(0.0f)
+                .setDuration(ANIMATION_DURATION_IN_MILLIS)
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        ticker.gone()
+                    }
+                })
+        }
     }
 }
