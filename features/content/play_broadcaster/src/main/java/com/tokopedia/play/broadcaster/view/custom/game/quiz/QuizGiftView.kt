@@ -96,7 +96,7 @@ class QuizGiftView : ConstraintLayout {
             }
         }
 
-    var isShowCoachmark: Boolean = false
+    var isShowCoachmark: Boolean = true
 
     fun setOnTextChangeListener(listener: (String) -> Unit) {
         mOnChangedListener = listener

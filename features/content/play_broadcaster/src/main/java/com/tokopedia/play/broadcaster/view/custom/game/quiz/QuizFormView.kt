@@ -83,43 +83,10 @@ class QuizFormView : ConstraintLayout {
             if(field != value) {
                 field = value
 
-                binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
-                binding.viewQuizGift.maxLength = quizConfig.maxRewardLength
-                binding.viewQuizGift.isShowCoachmark = quizConfig.showPrizeCoachmark
+                binding.viewGameHeader.maxLength = value.maxTitleLength
+                binding.viewQuizGift.maxLength = value.maxRewardLength
+                binding.viewQuizGift.isShowCoachmark = value.showPrizeCoachmark
                 timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
-            }
-        }
-
-    private var quizFormState: QuizFormStateUiModel = QuizFormStateUiModel.Nothing
-        set(value) {
-            if(field != value) {
-                field = value
-
-                when(value) {
-                    QuizFormStateUiModel.Preparation -> {
-                        binding.groupActionBar.visibility = View.VISIBLE
-                        binding.viewGameHeader.isEditable = true
-                        binding.viewQuizGift.isEditable = true
-
-                        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
-                    }
-                    is QuizFormStateUiModel.SetDuration -> {
-                        binding.groupActionBar.visibility = View.GONE
-                        binding.viewGameHeader.isEditable = false
-                        binding.viewQuizGift.apply {
-                            isEditable = false
-                            hideGiftTextFieldIfEmpty()
-                            hideCoackmark()
-                        }
-
-                        bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
-
-                        timePickerBinding.btnApply.apply {
-                            isLoading = value.isLoading
-                            isEnabled = !value.isLoading
-                        }
-                    }
-                }
             }
         }
 
@@ -215,7 +182,31 @@ class QuizFormView : ConstraintLayout {
     }
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
-        this.quizFormState = quizFormState
+        when(quizFormState) {
+            QuizFormStateUiModel.Preparation -> {
+                binding.groupActionBar.visibility = View.VISIBLE
+                binding.viewGameHeader.isEditable = true
+                binding.viewQuizGift.isEditable = true
+
+                bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+            is QuizFormStateUiModel.SetDuration -> {
+                binding.groupActionBar.visibility = View.GONE
+                binding.viewGameHeader.isEditable = false
+                binding.viewQuizGift.apply {
+                    isEditable = false
+                    hideGiftTextFieldIfEmpty()
+                    hideCoackmark()
+                }
+
+                bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
+
+                timePickerBinding.btnApply.apply {
+                    isLoading = quizFormState.isLoading
+                    isEnabled = !quizFormState.isLoading
+                }
+            }
+        }
     }
 
     fun listen(): Flow<Event> {
