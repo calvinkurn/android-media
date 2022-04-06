@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_fintech" translatable="false">fintech</string>
+    <string name="host_ovo" translatable="false">ovo</string>
     <string name="host_layanan_finansial" translatable="false">layanan-finansial</string>
     <!--
         If the link is Ended with {id}, must end with "/"
