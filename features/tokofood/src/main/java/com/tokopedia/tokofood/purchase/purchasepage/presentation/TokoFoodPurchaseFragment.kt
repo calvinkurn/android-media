@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
+import android.content.Context
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -35,6 +36,8 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchaseBinding
 import com.tokopedia.tokofood.example.ExampleTokofoodActivity
+import com.tokopedia.tokofood.example.HasViewModel
+import com.tokopedia.tokofood.example.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.purchase.purchasepage.di.DaggerTokoFoodPurchaseComponent
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapter
@@ -47,17 +50,24 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.TokoFoo
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
+@FlowPreview
 @ExperimentalCoroutinesApi
 class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchaseAdapterTypeFactory>(),
         TokoFoodPurchaseActionListener, TokoFoodPurchaseToolbarListener, IBaseMultiFragment {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private var parentActivity: HasViewModel<MultipleFragmentsViewModel>? = null
+
+    private val activityViewModel: MultipleFragmentsViewModel?
+        get() = parentActivity?.viewModel()
 
     private var viewBinding by autoClearedNullable<LayoutFragmentPurchaseBinding>()
     private val viewModel by lazy {
@@ -78,6 +88,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewBinding = LayoutFragmentPurchaseBinding.inflate(inflater, container, false)
         val view = viewBinding?.root
@@ -93,7 +108,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         observeList()
         observeFragmentUiModel()
         observeUiEvent()
-        loadData(0)
+        loadData()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -139,6 +154,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun loadData(page: Int) {
+
+    }
+
+    private fun loadData() {
         viewBinding?.layoutGlobalErrorPurchase?.gone()
         viewBinding?.recyclerViewPurchase?.show()
         adapter.clearAllElements()
@@ -229,6 +248,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
+                    // Todo : update cart data on shared viewmodel
                 }
                 UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()

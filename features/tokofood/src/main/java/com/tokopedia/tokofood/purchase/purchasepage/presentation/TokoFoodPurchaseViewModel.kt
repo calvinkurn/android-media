@@ -7,6 +7,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductByProductId
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getTickerErrorShopLevelUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -37,115 +44,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         return visitables.value ?: mutableListOf()
     }
 
-    private fun getAddressUiModel(): Pair<Int, TokoFoodPurchaseAddressTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseAddressTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getProductByProductId(productId: String): Pair<Int, TokoFoodPurchaseProductTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.id == productId -> {
-                    return Pair(index, data)
-                }
-                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
-                    break@loop
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getAccordionUiModel(): Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-                is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
-                    break@loop
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getSummaryTransactionUiModel(): Pair<Int, TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getTotalAmountUiModel(): Pair<Int, TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-                is TokoFoodPurchaseProductTokoFoodPurchaseUiModel -> {
-                    break@loop
-                }
-            }
-        }
-        return null
-    }
-
-    private fun getUnavailableReasonUiModel(): Pair<Int, TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel>? {
-        val dataList = getVisitablesValue()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            if (data is TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel) {
-                return Pair(index, data)
-            }
-        }
-        return null
-    }
-
-    private fun getAllUnavailableProducts(): Pair<Int, List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>> {
-        val dataList = getVisitablesValue()
-        var firstItemIndex = -1
-        val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isUnavailable -> {
-                    if (firstItemIndex == -1) firstItemIndex = index
-                    unavailableProducts.add(data)
-                }
-                data is TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
-                    break@loop
-                }
-            }
-        }
-        return Pair(firstItemIndex, unavailableProducts)
-    }
-
     fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         val dataList = getVisitablesValue()
         val from = currentIndex + 1
@@ -157,7 +55,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun loadData() {
-        // Todo : Load from API, if success then map to UiModel, if error show global error
+        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
         if (fragmentUiModel.value != null) {
             if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
@@ -187,6 +85,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     private fun constructRecycleViewItem() {
+        // Todo : read API response, map to UiModel, below is example mapping using mock data
         val tmpData = mutableListOf<Visitable<*>>()
         val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel()
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingUnavailable))
@@ -233,7 +132,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
     fun deleteProduct(productId: String) {
         // Todo : hit API to remove product, once it's success, perform below code to remove local data
-        val toBeDeletedProduct = getProductByProductId(productId)
+        val toBeDeletedProduct = getVisitablesValue().getProductByProductId(productId)
         if (toBeDeletedProduct != null) {
             val toBeDeleteItems = mutableListOf<Visitable<*>>()
             val dataList = getVisitablesValue()
@@ -241,7 +140,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
 
             if (isLastAvailableProduct()) {
                 var from = toBeDeletedProduct.first - 2
-                val tickerShopErrorData = getTickerErrorShopLevelUiModel()
+                val tickerShopErrorData = getVisitablesValue().getTickerErrorShopLevelUiModel()
                 if (tickerShopErrorData != null) {
                     from = toBeDeletedProduct.first - 3
                 }
@@ -288,10 +187,11 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun validateBulkDelete() {
-        val unavailableProducts = getAllUnavailableProducts()
+        val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
+        val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
         _uiEvent.value = UiEvent(
                 state = UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
-                data = unavailableProducts.second.size
+                data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
         )
     }
 
@@ -300,7 +200,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val dataList = getVisitablesValue()
         val unavailableSectionItems = mutableListOf<Visitable<*>>()
 
-        val unavailableProducts = getAllUnavailableProducts()
+        val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
         var indexOfUnavailableHeaderDivider = unavailableProducts.first - 3
         var indexOfFirstUnavailableProduct = unavailableProducts.first
         if (indexOfUnavailableHeaderDivider < 0) indexOfUnavailableHeaderDivider = 0
@@ -308,19 +208,21 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         val unavailableSectionDividerHeaderAndReason = dataList.subList(indexOfUnavailableHeaderDivider, indexOfFirstUnavailableProduct)
         unavailableSectionItems.addAll(unavailableSectionDividerHeaderAndReason)
         unavailableSectionItems.addAll(unavailableProducts.second)
-        val accordionUiModel = getAccordionUiModel()
+        val accordionUiModel = getVisitablesValue().getAccordionUiModel()
         accordionUiModel?.let {
             val accordionDivider = dataList.get(accordionUiModel.first - 1)
             unavailableSectionItems.add(accordionDivider)
             unavailableSectionItems.add(it.second)
         }
+        val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
+        unavailableSectionItems.addAll(tmpCollapsedUnavailableItems.toMutableList())
+        deleteProducts(unavailableSectionItems, unavailableProducts.second.size + collapsedUnavailableProducts.second.size)
         tmpCollapsedUnavailableItems.clear()
-        deleteProducts(unavailableSectionItems, unavailableProducts.second.size)
     }
 
     fun toggleUnavailableProductsAccordion() {
         val dataList = getVisitablesValue()
-        val accordionData = getAccordionUiModel()
+        val accordionData = dataList.getAccordionUiModel()
         accordionData?.let { mAccordionData ->
             val newAccordionUiModel = accordionData.second.copy()
 
@@ -339,7 +241,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
                                             mAccordionData: Pair<Int, TokoFoodPurchaseAccordionTokoFoodPurchaseUiModel>) {
         newAccordionUiModel.isCollapsed = true
         dataList[mAccordionData.first] = newAccordionUiModel
-        val unavailableReasonData = getUnavailableReasonUiModel()
+        val unavailableReasonData = getVisitablesValue().getUnavailableReasonUiModel()
         unavailableReasonData?.let { mUnavailableReasonData ->
             var from = mUnavailableReasonData.first + 2
             var to = mAccordionData.first - 1
@@ -357,7 +259,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
         newAccordionUiModel.isCollapsed = false
         dataList[mAccordionData.first] = newAccordionUiModel
         val index = mAccordionData.first - 1
-        dataList.addAll(index, tmpCollapsedUnavailableItems)
+        dataList.addAll(index, tmpCollapsedUnavailableItems.toMutableList())
+        tmpCollapsedUnavailableItems.clear()
     }
 
     fun scrollToUnavailableItem() {
@@ -379,7 +282,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun updateNotes(product: TokoFoodPurchaseProductTokoFoodPurchaseUiModel, notes: String) {
-        val productData = getProductByProductId(product.id)
+        val productData = getVisitablesValue().getProductByProductId(product.id)
         productData?.let {
             val dataList = getVisitablesValue()
             val newProductData = it.second.copy()
@@ -469,7 +372,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(val dispatcher: CoroutineDis
     }
 
     fun validateSetPinpoint() {
-        val addressData = getAddressUiModel()
+        val addressData = getVisitablesValue().getAddressUiModel()
         addressData?.let {
             _uiEvent.value = UiEvent(
                     state = UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT,

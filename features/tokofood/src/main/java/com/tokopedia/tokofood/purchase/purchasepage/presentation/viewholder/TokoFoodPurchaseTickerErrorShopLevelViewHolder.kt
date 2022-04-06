@@ -29,7 +29,7 @@ class TokoFoodPurchaseTickerErrorShopLevelViewHolder(private val viewBinding: It
                 }
             })
 
-            itemView.renderAlpha(element)
+            tickerErrorShopLevel.renderAlpha(element)
         }
     }
 

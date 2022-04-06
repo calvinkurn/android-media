@@ -144,6 +144,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 }
             }
             textNotesOrVariantAction.show()
+            textNotes.renderAlphaProductItem(element)
+            textNotesOrVariantAction.renderAlphaProductItem(element)
 
             setNotesConstraint(viewBinding, element)
         }
@@ -204,6 +206,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 } else false
             }
             qtyEditorProduct.editText.clearFocus()
+
+            qtyEditorProduct.renderAlphaProductItem(element)
         }
     }
 
@@ -218,6 +222,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             buttonDeleteProduct.setOnClickListener {
                 listener.onIconDeleteProductClicked(element)
             }
+
+            buttonDeleteProduct.renderAlphaProductItem(element)
         }
     }
 }

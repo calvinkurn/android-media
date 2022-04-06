@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
@@ -30,6 +31,7 @@ import com.tokopedia.tokofood.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
 import com.tokopedia.tokofood.purchase.promopage.presentation.uimodel.TokoFoodPromoFragmentUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbar
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.toolbar.TokoFoodPromoToolbarListener
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
@@ -56,6 +58,9 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     private var toolbar: TokoFoodPromoToolbar? = null
 
     companion object {
+        const val HAS_ELEVATION = 6
+        const val NO_ELEVATION = 0
+
         const val REQUEST_CODE_KYC = 1111
 
         fun createInstance(): TokoFoodPromoFragment {
@@ -77,6 +82,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         super.onViewCreated(view, savedInstanceState)
         setBackground()
         initializeToolbar(view)
+        initializeRecyclerViewScrollListener()
         observeList()
         observeFragmentUiModel()
         observeUiEvent()
@@ -157,6 +163,16 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
                 it.setContentInsetsAbsolute(0, 0);
                 (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchasePromo)
             }
+
+            setToolbarShadowVisibility(false)
+        }
+    }
+
+    private fun setToolbarShadowVisibility(show: Boolean) {
+        if (show) {
+            viewBinding?.appBarLayout?.elevation = TokoFoodPurchaseFragment.HAS_ELEVATION.toFloat()
+        } else {
+            viewBinding?.appBarLayout?.elevation = TokoFoodPurchaseFragment.NO_ELEVATION.toFloat()
         }
     }
 
@@ -164,6 +180,22 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
         activity?.let {
             it.window.decorView.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         }
+    }
+
+    private fun initializeRecyclerViewScrollListener() {
+        getRecyclerView(view)?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                // No-op
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.canScrollVertically(-1)) {
+                    setToolbarShadowVisibility(true)
+                } else {
+                    setToolbarShadowVisibility(false)
+                }
+            }
+        })
     }
 
     private fun observeList() {
@@ -174,14 +206,6 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
     private fun observeFragmentUiModel() {
         viewModel.fragmentUiModel.observe(viewLifecycleOwner, {
-            if (it.tabs.isNotEmpty() && viewBinding?.tabsPromoTokofood?.tabLayout?.tabCount == 0) {
-                it.tabs.forEach {
-                    viewBinding?.tabsPromoTokofood?.addNewTab(it.title)
-                }
-                viewBinding?.tabsPromoTokofood?.show()
-            } else {
-                viewBinding?.tabsPromoTokofood?.gone()
-            }
             renderTotalAmount(it)
         })
     }
