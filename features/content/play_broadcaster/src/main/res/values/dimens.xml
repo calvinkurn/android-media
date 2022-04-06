@@ -122,4 +122,8 @@
     <!-- Summary Report -->
     <dimen name="play_bro_summary_metric_divider_height">1dp</dimen>
     <dimen name="play_bro_summary_divider_height">2dp</dimen>
+
+    <!-- Tag Recommendation -->
+    <dimen name="play_bro_tag_placeholder_height">40dp</dimen>
+    <dimen name="play_tag_placeholder_radius">16dp</dimen>
 </resources>

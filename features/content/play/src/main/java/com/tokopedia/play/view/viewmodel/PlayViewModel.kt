@@ -47,6 +47,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
@@ -54,6 +55,7 @@ import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.dto.interactive.isScheduled
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -66,9 +68,11 @@ import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.variant_common.util.VariantCommonMapper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -87,9 +91,7 @@ class PlayViewModel @AssistedInject constructor(
     videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
     channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
     videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
-    private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
     private val getReportSummariesUseCase: GetReportSummariesUseCase,
-    private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
     private val playSocketToModelMapper: PlaySocketToModelMapper,
     private val playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -165,6 +167,10 @@ class PlayViewModel @AssistedInject constructor(
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _tagItems = MutableStateFlow(TagItemUiModel.Empty)
     private val _quickReply = MutableStateFlow(PlayQuickReplyInfoUiModel.Empty)
+    private val _selectedVariant = MutableStateFlow<NetworkResult<VariantUiModel>>(
+        NetworkResult.Loading
+    )
+    private val _loadingBuy = MutableStateFlow(false)
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -261,9 +267,11 @@ class PlayViewModel @AssistedInject constructor(
         _status,
         _quickReply,
         _kebabMenuUiState.distinctUntilChanged(),
+        _selectedVariant,
+        _loadingBuy,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
-        status, quickReply, kebabMenu ->
+        status, quickReply, kebabMenu, selectedVariant, isLoadingBuy ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactiveView = interactive,
@@ -278,6 +286,8 @@ class PlayViewModel @AssistedInject constructor(
             status = status,
             quickReply = quickReply,
             kebabMenu = kebabMenu,
+            selectedVariant = selectedVariant,
+            isLoadingBuy = isLoadingBuy,
         )
     }.flowOn(dispatchers.computation)
 
@@ -821,6 +831,11 @@ class PlayViewModel @AssistedInject constructor(
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
             is SendUpcomingReminder -> handleSendReminder(action.section, false)
+            is BuyProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.Buy)
+            is BuyProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.Buy)
+            is AtcProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.AddToCart)
+            is AtcProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.AddToCart)
+            is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
         }
     }
 
@@ -1134,7 +1149,7 @@ class PlayViewModel @AssistedInject constructor(
     private suspend fun getSocketCredential(): SocketCredential = try {
         withContext(dispatchers.io) {
             require(userSession.isLoggedIn)
-            return@withContext getSocketCredentialUseCase.executeOnBackground()
+            return@withContext repo.getSocketCredential()
         }
     } catch (e: Throwable) {
         SocketCredential()
@@ -1281,8 +1296,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
         if(shouldTrack) {
             viewModelScope.launchCatchError(dispatchers.io, block = {
-                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId, sourceType))
-                trackVisitChannelBroadcasterUseCase.executeOnBackground()
+                repo.trackVisitChannel(channelId, PlaySource.getBySource(sourceType))
             }) { }
         }
         _channelReport.setValue { copy(shouldTrack = true) }
@@ -1976,6 +1990,93 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     /**
+     * Handle buying product
+     * @param productId the id of the product
+     */
+    private fun handleBuyProduct(
+        sectionInfo: ProductSectionUiModel.Section,
+        product: PlayProductUiModel.Product,
+        action: ProductAction
+    ) {
+        if (product.isVariantAvailable) openVariantDetail(product, action)
+        else {
+            needLogin {
+                addProductToCart(product) { cartId ->
+                    _uiEvent.emit(
+                        if (action == ProductAction.Buy) BuySuccessEvent(product, false, cartId, sectionInfo)
+                        else AtcSuccessEvent(product, false, cartId, sectionInfo)
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle buying product variant
+     * @param productId the id of the product
+     */
+    private fun handleBuyProductVariant(productId: String, action: ProductAction) = needLogin {
+        val selectedVariant = _selectedVariant.value
+        if (selectedVariant !is NetworkResult.Success ||
+            selectedVariant.data.variantDetail.id != productId) return@needLogin
+
+        addProductToCart(selectedVariant.data.variantDetail) { cartId ->
+            _uiEvent.emit(
+                if (action == ProductAction.Buy) BuySuccessEvent(selectedVariant.data.variantDetail, true, cartId)
+                else AtcSuccessEvent(selectedVariant.data.variantDetail, true, cartId)
+            )
+        }
+    }
+
+    /**
+     * Handle selecting variant option from available variant
+     */
+    private fun handleSelectVariantOption(option: VariantOptionWithAttribute) {
+        val selectedVariant = _selectedVariant.value
+        if (selectedVariant !is NetworkResult.Success) return
+
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            _selectedVariant.value = NetworkResult.Success(
+                repo.selectVariantOption(
+                    variant = selectedVariant.data,
+                    selectedOption = option
+                )
+            )
+        }) {
+            //Ignore for now since there shouldn't be any error (no network call)
+            //and since there was never error handling for this
+        }
+    }
+
+    /**
+     * Adding product to cart
+     * @param product product to be added
+     */
+    private fun addProductToCart(
+        product: PlayProductUiModel.Product,
+        onSuccess: suspend (String) -> Unit,
+    ) {
+        _loadingBuy.value = true
+        viewModelScope.launchCatchError(dispatchers.io, block = {
+            val cartId = repo.addProductToCart(
+                id = product.id,
+                name = product.title,
+                shopId = product.shopId,
+                minQty = product.minQty,
+                price = when (product.price) {
+                    is OriginalPrice -> product.price.priceNumber
+                    is DiscountedPrice -> product.price.discountedPriceNumber
+                },
+            )
+            _loadingBuy.value = false
+            onSuccess(cartId)
+        }) {
+            _uiEvent.emit(ShowErrorEvent(it))
+            _loadingBuy.value = false
+        }
+    }
+
+    /**
      * Utility Function
      */
     private fun needLogin(requestCode: Int? = null, fn: () -> Unit) {
@@ -2081,6 +2182,21 @@ class PlayViewModel @AssistedInject constructor(
 
     fun sendUpcomingReminderImpression(sectionUiModel: ProductSectionUiModel.Section){
         playAnalytic.impressUpcomingReminder(sectionUiModel, channelId, channelType)
+    }
+
+    /**
+     * Variant Util
+     */
+    private fun openVariantDetail(
+        product: PlayProductUiModel.Product,
+        action: ProductAction,
+    ) {
+        _selectedVariant.value = NetworkResult.Loading
+        viewModelScope.launchCatchError(block = {
+            _selectedVariant.value = NetworkResult.Success(repo.getVariant(product))
+        }) {
+            _selectedVariant.value = NetworkResult.Fail(it)
+        }
     }
 
     companion object {
