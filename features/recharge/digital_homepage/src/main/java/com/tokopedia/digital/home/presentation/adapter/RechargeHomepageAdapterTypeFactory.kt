@@ -58,6 +58,7 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
+import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
@@ -147,6 +148,10 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(customLastItem: RechargeHomepageProductCardCustomLastItemModel): Int =
         RechargeHomepageProductCardCustomLastItemViewHolder.LAYOUT
+
+    override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
+        return 0
+    }
 
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT

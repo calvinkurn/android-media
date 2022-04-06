@@ -142,6 +142,10 @@ class OfficialHomeAdapterTypeFactory(
         return OfficialTopAdsHeadlineViewHolder.LAYOUT
     }
 
+    override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
+        return 0
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             OfficialTopAdsHeadlineViewHolder.LAYOUT -> OfficialTopAdsHeadlineViewHolder(view, onTopAdsHeadlineClicked)
