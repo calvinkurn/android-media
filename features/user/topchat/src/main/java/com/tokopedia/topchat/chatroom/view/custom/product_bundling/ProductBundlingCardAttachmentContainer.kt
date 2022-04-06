@@ -166,6 +166,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             bindLayoutStyle(element)
             bindPrice(element)
             bindCtaClick(element)
+            listener.onSeenProductBundling(element)
         }
     }
 

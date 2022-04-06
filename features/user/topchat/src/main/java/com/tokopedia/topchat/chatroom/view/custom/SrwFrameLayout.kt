@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResp
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.SrwItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -256,9 +257,17 @@ class SrwFrameLayout : FrameLayout {
                         )
                         coachMark2.showCoachMark(step = coachMarkItems)
                         CoachMarkPreference.setShown(context, TAG, true)
+                        trackOnBoarding(coachMark2)
                     }
                 }
             }
+        }
+    }
+
+    private fun trackOnBoarding(coachMark2: CoachMark2) {
+        TopChatAnalyticsKt.eventViewSrwOnBoarding()
+        coachMark2.setOnDismissListener {
+            TopChatAnalyticsKt.eventClickCloseSrwOnBoarding()
         }
     }
 

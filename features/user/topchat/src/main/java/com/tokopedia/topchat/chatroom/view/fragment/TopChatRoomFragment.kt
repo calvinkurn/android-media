@@ -217,6 +217,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var seenAttachedProduct = HashSet<String>()
     private var seenAttachedBannedProduct = HashSet<String>()
     private var seenAttachmentVoucher = HashSet<String>()
+    private var seenAttachmentProductBundling = HashSet<String>()
     private val reviewRequest = Stack<ReviewRequestResult>()
     private var composeMsgArea: ComposeMessageAreaConstraintLayout? = null
     private var orderProgress: TransactionOrderProgressLayout? = null
@@ -2928,6 +2929,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         startActivity(intent)
     }
 
+    override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
+        TopChatAnalyticsKt.eventClickProductBundlingCta(
+            element.productBundling.bundleItem.first().productId,
+            element.productBundling.bundleId
+        )
+    }
+
+    override fun onSeenProductBundling(element: ProductBundlingUiModel) {
+        if (seenAttachmentProductBundling.add(element.productBundling.bundleId)) {
+            TopChatAnalyticsKt.eventViewProductBundling(
+                element.productBundling.bundleItem.first().productId,
+                element.productBundling.bundleId
+            )
+        }
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -2959,20 +2976,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 arguments = bundle
             }
         }
-    }
-
-    override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
-        Log.d("PRODBUNDLING", element.productBundling.buttonAndroidLink)
-    }
-
-    override fun onSeenProductBundling(element: ProductBundlingUiModel) {
-    }
-
-    override fun onClickCtaMultipleProductBundling(element: MultipleProductBundlingUiModel) {
-//        Log.d("MULTIPRODBUNDLING", element.listBundling.first().buttonAndroidLink)
-    }
-
-    override fun onSeenMultipleProductBundling(element: MultipleProductBundlingUiModel) {
     }
 
     private fun setupDummy() {
