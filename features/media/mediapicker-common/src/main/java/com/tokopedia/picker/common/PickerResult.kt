@@ -10,6 +10,4 @@ data class PickerResult(
 
     // the collection of images (only) has compressed
     val compressedImages: List<String> = emptyList()
-) : Parcelable {
-
-}
+) : Parcelable
