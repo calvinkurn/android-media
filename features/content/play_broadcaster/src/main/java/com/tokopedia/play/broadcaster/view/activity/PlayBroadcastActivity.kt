@@ -20,6 +20,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.broadcaster.revamp.util.view.AspectFrameLayout
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
@@ -639,6 +640,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onBroadcastStateChanged(state: PlayBroadcasterState) {
         viewModel.submitAction(BroadcastStateChanged(state))
+    }
+
+    override fun onBroadcastStatisticUpdate(metric: BroadcasterMetric) {
+        viewModel.sendBroadcasterLog(metric)
     }
 
     override fun getBroadcaster(): PlayBroadcaster {

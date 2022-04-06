@@ -6,6 +6,7 @@ import android.view.SurfaceHolder
 import com.tokopedia.broadcaster.revamp.Broadcaster
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.di.ActivityRetainedScope
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import javax.inject.Inject
@@ -50,6 +51,10 @@ class PlayBroadcaster(
             }
             if (newState != null) callback.onBroadcastStateChanged(newState)
         }
+
+        override fun onBroadcastStatisticUpdate(metric: BroadcasterMetric) {
+            callback.onBroadcastStatisticUpdate(metric)
+        }
     }
 
     inner class RetryRunnable : Runnable {
@@ -61,6 +66,7 @@ class PlayBroadcaster(
     init {
         broadcaster.init(activityContext, handler)
         broadcaster.addListener(broadcastListener)
+        broadcaster.enableStatistic(3000) // todo: get from firebase
     }
 
     /**
@@ -124,6 +130,7 @@ class PlayBroadcaster(
         fun updateAspectRatio(aspectRatio: Double)
         fun onBroadcastInitStateChanged(state: BroadcastInitState)
         fun onBroadcastStateChanged(state: PlayBroadcasterState)
+        fun onBroadcastStatisticUpdate(metric: BroadcasterMetric)
     }
 
     companion object {

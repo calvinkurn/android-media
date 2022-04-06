@@ -1,11 +1,13 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -84,4 +86,10 @@ interface PlayBroadcastMapper {
     fun mapPinnedMessageSocket(
         response: PinnedMessageSocketResponse
     ): PinnedMessageUiModel
+
+    fun mapBroadcasterMetric(
+        metric: BroadcasterMetric,
+        authorId: String,
+        channelId: String,
+    ): PlayBroadcasterMetric
 }

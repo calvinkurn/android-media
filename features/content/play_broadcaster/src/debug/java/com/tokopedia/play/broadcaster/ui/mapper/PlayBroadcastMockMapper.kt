@@ -5,12 +5,14 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
@@ -273,6 +275,24 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
+
+    override fun mapBroadcasterMetric(
+        metric: BroadcasterMetric,
+        authorId: String,
+        channelId: String
+    ) = PlayBroadcasterMetric(
+        authorId = authorId,
+        channelId = channelId,
+        videoBitrate = 0,
+        audioBitrate = 0,
+        resolution = "",
+        traffic = 0,
+        bandwidth = 0,
+        fps = 0.0,
+        packetLossIncreased = false,
+        videoBufferTimestamp = 0,
+        audioBufferTimestamp = 0,
+    )
 
     companion object {
         const val LOCAL_RTMP_URL: String = "rtmp://192.168.0.110:1935/stream/"

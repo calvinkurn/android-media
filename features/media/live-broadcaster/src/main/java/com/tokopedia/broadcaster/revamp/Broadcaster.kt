@@ -5,7 +5,7 @@ import android.os.Handler
 import android.view.SurfaceHolder
 import com.tokopedia.broadcaster.revamp.state.BroadcastInitState
 import com.tokopedia.broadcaster.revamp.state.BroadcastState
-import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 
 /**
  * Created by meyta.taliti on 01/03/22.
@@ -15,8 +15,6 @@ interface Broadcaster {
     fun addListener(listener: Listener)
 
     fun removeListener(listener: Listener)
-
-    fun setLogger(logger: BroadcasterLogger)
 
     fun init(activityContext: Context, handler: Handler?)
 
@@ -38,6 +36,8 @@ interface Broadcaster {
 
     fun snapShot()
 
+    fun enableStatistic(interval: Long)
+
     val broadcastState: BroadcastState
 
     val broadcastInitState: BroadcastInitState
@@ -52,6 +52,8 @@ interface Broadcaster {
         fun onBroadcastStateChanged(state: BroadcastState) {}
 
         fun onBroadcastInitStateChanged(state: BroadcastInitState) {}
+
+        fun onBroadcastStatisticUpdate(metric: BroadcasterMetric) {}
     }
 
     data class Size(

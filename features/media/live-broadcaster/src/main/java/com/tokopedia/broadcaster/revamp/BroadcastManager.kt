@@ -15,9 +15,8 @@ import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCamera
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCameraManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
-import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
-import com.tokopedia.broadcaster.revamp.util.log.DefaultBroadcasterLogger
-import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatisticManager
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatistic
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.wmspanel.libstream.*
 import com.wmspanel.libstream.Streamer.VERSION_NAME
@@ -28,7 +27,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 /**
  * Created by meyta.taliti on 01/03/22.
  */
-class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatisticManager.Listener {
+class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitrate.Listener, BroadcasterStatistic.Listener {
 
     override val broadcastState: BroadcastState
         get() = mState
@@ -54,8 +53,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mAdaptiveBitrate: BroadcasterAdaptiveBitrate? = null
 
-    private var mStatisticManager: BroadcasterStatisticManager? = null
+    private var mIsStatisticEnabled: Boolean = false
+    private var mStatisticTimerInterval: Long = 3000
+    private var mStatistic: BroadcasterStatistic? = null
     private var mStatisticTimer: Timer? = null
+    private var mMetric: BroadcasterMetric = BroadcasterMetric.Empty
 
     private var mContext: Context? = null
     private var mHandler: Handler? = null
@@ -63,8 +65,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     private var mInitState: BroadcastInitState = BroadcastInitState.Uninitialized
     private var mState: BroadcastState = BroadcastState.Unprepared
-
-    private var mLogger: BroadcasterLogger = DefaultBroadcasterLogger()
 
     private var mBroadcastOn = false
 
@@ -91,10 +91,6 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     override fun removeListener(listener: Broadcaster.Listener) {
         mListeners.remove(listener)
-    }
-
-    override fun setLogger(logger: BroadcasterLogger) {
-        mLogger = logger
     }
 
     override fun init(activityContext: Context, handler: Handler?) {
@@ -283,6 +279,14 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             setListener(this@BroadcastManager)
         }
 
+        mMetric = mMetric.copy(
+            audioBitrate = audioConfig.bitRate.toLong(),
+            videoBitrate = videoConfig.bitRate.toLong(),
+            fps = videoConfig.fps.toDouble(),
+            resolutionWidth = videoConfig.videoSize.width.toLong(),
+            resolutionHeight = videoConfig.videoSize.height.toLong(),
+        )
+
         broadcastInitStateChanged(BroadcastInitState.Initialized)
     }
 
@@ -420,6 +424,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
        // TODO("Not yet implemented")
     }
 
+    override fun enableStatistic(interval: Long) {
+        mIsStatisticEnabled = true
+        mStatisticTimerInterval = interval
+    }
+
     override fun getHandler(): Handler? {
         return mHandler
     }
@@ -442,7 +451,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             -> {
             }
             Streamer.CONNECTION_STATE.CONNECTED -> {
-                mStatisticManager?.start(connectionId)
+                mStatistic?.start(connectionId)
                 if (mState is BroadcastState.Error) broadcastStateChanged(BroadcastState.Recovered)
             }
             Streamer.CONNECTION_STATE.IDLE -> {
@@ -558,6 +567,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     override fun changeBitrate(bitrate: Int) {
         mStreamer?.changeBitRate(bitrate)
+        mMetric = mMetric.copy(
+            videoBitrate = bitrate.toLong()
+        )
     }
 
     override fun changeFpsRange(fpsRange: Streamer.FpsRange) {
@@ -592,7 +604,9 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
     }
 
     private fun startTracking(connectionId: Int) {
-        mStatisticManager = BroadcasterStatisticManager(this)
+        if (!mIsStatisticEnabled) return
+
+        mStatistic = BroadcasterStatistic(this)
 
         mStatisticTimer = Timer()
         mStatisticTimer?.schedule(object : TimerTask() {
@@ -600,17 +614,23 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 val connectionState = mConnectionState ?: return
                 if (connectionState != Streamer.CONNECTION_STATE.RECORD) return
 
-                val statisticManager = mStatisticManager ?: return
-                statisticManager.update(connectionId)
-                // mListener?.onStatisticInfoChanged(statisticManager.getStatistic())
+                val statistic = mStatistic ?: return
+                statistic.update(connectionId)
+                mMetric = mMetric.copy(
+                    traffic = statistic.getTraffic(),
+                    bandwidth = statistic.getBandwidth(),
+                    fps = statistic.getFps(),
+                    packetLossIncreased = statistic.isPacketLossIncreased()
+                )
+                broadcastStatisticUpdate()
             }
-        }, STATISTIC_TIMER_DELAY, STATISTIC_TIMER_INTERVAL)
+        }, STATISTIC_TIMER_DELAY, mStatisticTimerInterval)
     }
 
     private fun stopTracking() {
         mStatisticTimer?.cancel()
         mStatisticTimer = null
-        mStatisticManager = null
+        mStatistic = null
     }
 
     private fun broadcastStateChanged(state: BroadcastState) {
@@ -623,8 +643,11 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         mListeners.forEach { it.onBroadcastInitStateChanged(initState) }
     }
 
+    private fun broadcastStatisticUpdate() {
+        mListeners.forEach { it.onBroadcastStatisticUpdate(mMetric) }
+    }
+
     companion object {
         private const val STATISTIC_TIMER_DELAY = 1000L
-        private const val STATISTIC_TIMER_INTERVAL = 1000L
     }
 }

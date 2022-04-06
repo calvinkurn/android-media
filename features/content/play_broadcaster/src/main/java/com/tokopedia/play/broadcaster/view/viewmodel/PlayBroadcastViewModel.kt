@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -932,6 +933,16 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     fun stopTimer() {
         broadcastTimer.stop()
+    }
+
+    fun sendBroadcasterLog(metric: BroadcasterMetric) {
+        logger.sendBroadcasterLog(
+            playBroadcastMapper.mapBroadcasterMetric(
+                metric = metric,
+                authorId = userSession.userId,
+                channelId = channelId
+            )
+        )
     }
 
     companion object {

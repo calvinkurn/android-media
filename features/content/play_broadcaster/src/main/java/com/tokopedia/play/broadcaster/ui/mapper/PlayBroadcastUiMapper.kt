@@ -5,6 +5,7 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
+import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -12,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -351,6 +353,24 @@ class PlayBroadcastUiMapper(
             editStatus = PinnedMessageEditStatus.Nothing,
         )
     }
+
+    override fun mapBroadcasterMetric(
+        metric: BroadcasterMetric,
+        authorId: String,
+        channelId: String
+    ) = PlayBroadcasterMetric(
+        authorId = authorId,
+        channelId = channelId,
+        videoBitrate = metric.videoBitrate,
+        audioBitrate = metric.audioBitrate,
+        resolution = "${metric.resolutionWidth}x${metric.resolutionHeight}",
+        traffic = metric.traffic,
+        bandwidth = metric.bandwidth,
+        fps = metric.fps,
+        packetLossIncreased = metric.packetLossIncreased,
+        videoBufferTimestamp = metric.videoBufferTimestamp,
+        audioBufferTimestamp = metric.audioBufferTimestamp,
+    )
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"
