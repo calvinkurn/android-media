@@ -80,8 +80,10 @@ class PayLaterWidget @JvmOverloads constructor(
             layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
 
             initListner(payLaterWidgetData)
-
-
+        }
+        else
+        {
+            payLaterWidgetListener?.onClosePayLaterWidget()
         }
 
     }
