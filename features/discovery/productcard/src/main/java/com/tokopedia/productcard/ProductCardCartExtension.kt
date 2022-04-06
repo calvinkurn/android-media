@@ -53,13 +53,13 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     private fun renderButtonAddToCart(productCardModel: ProductCardModel) {
         when {
             productCardModel.shouldShowAddToCartNonVariantQuantity() -> {
-                findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
+                findView<ViewStub?>(R.id.buttonAddToCartStub)?.inflate()
                 val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
             }
 
             productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() -> {
-                findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
+                findView<ViewStub?>(R.id.buttonAddToCartStub)?.inflate()
                 val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCart()
             }
@@ -129,7 +129,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun deleteCartClick(productCardModel: ProductCardModel) {
-        findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
+        findView<ViewStub?>(R.id.buttonAddToCartStub)?.inflate()
         val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
         buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
@@ -246,7 +246,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
 
     private fun renderChooseVariant(productCardModel: ProductCardModel) {
         if(productCardModel.hasVariant()) {
-            findView<ViewStub>(R.id.buttonAddVariantStub).inflate()
+            findView<ViewStub?>(R.id.buttonAddVariantStub)?.inflate()
         }
         buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
 
