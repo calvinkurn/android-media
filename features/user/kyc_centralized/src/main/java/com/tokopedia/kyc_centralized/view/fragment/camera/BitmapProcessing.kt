@@ -21,7 +21,7 @@ import kotlin.math.roundToInt
 
 interface BitmapProcessingListener {
     fun onBitmapReady(bitmap: Bitmap)
-    fun onFailed(throwable: Throwable)
+    fun onFailed(originalBitmap: Bitmap, throwable: Throwable)
 }
 
 class BitmapCroppingAndCompression constructor(
@@ -36,7 +36,7 @@ class BitmapCroppingAndCompression constructor(
     override val coroutineContext: CoroutineContext
         get() = localScope.coroutineContext
 
-    fun doCropping(bitmap: Bitmap, frame: View, padding: Int = DEFAULT_PADDING, listener: BitmapProcessingListener) {
+    fun doCropping(bitmap: Bitmap, frame: View, listener: BitmapProcessingListener) {
         launchCatchError(coroutineContext, block = {
             val startTime = System.currentTimeMillis()
             val bitmapCropped = doCroppingWithFrame(bitmap, frame)
@@ -57,7 +57,7 @@ class BitmapCroppingAndCompression constructor(
             }
         }, onError = {
             withContext(coroutineDispatchers.main) {
-                listener.onFailed(it)
+                listener.onFailed(bitmap, it)
                 sendLog(isSuccess = false, throwable = it)
             }
         })
@@ -89,7 +89,7 @@ class BitmapCroppingAndCompression constructor(
             }
         }, onError = {
             withContext(coroutineDispatchers.main) {
-                listener.onFailed(it)
+                listener.onFailed(bitmap, it)
                 sendLog(isSuccess = false, throwable = it)
             }
         })
@@ -130,7 +130,7 @@ class BitmapCroppingAndCompression constructor(
         }, {
             withContext(coroutineDispatchers.main) {
                 sendLog(isSuccess = false, throwable = it)
-                listener.onFailed(it)
+                listener.onFailed(bitmap, it)
             }
         })
     }
