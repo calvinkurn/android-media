@@ -620,13 +620,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
-            val interactiveConfig = repo.getInteractiveConfig()
-            _gameConfig.value = interactiveConfig
+            val gameConfig = repo.getInteractiveConfig()
+            _gameConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 
             /** TODO: should save config on flow instead */
-            setInteractiveDurations(interactiveConfig.tapTapConfig.availableStartTimeInMs)
+            setInteractiveDurations(gameConfig.tapTapConfig.availableStartTimeInMs)
 
-            if(interactiveConfig.isNoGameActive()) {
+            if(gameConfig.isNoGameActive()) {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
             }
             else {
@@ -634,6 +634,15 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 handleActiveInteractive()
             }
         }) { }
+    }
+
+    private fun mergeInteractiveConfigWithPreference(gameConfig: GameConfigUiModel): GameConfigUiModel {
+        val quizConfig = gameConfig.quizConfig
+        return gameConfig.copy(
+            quizConfig = quizConfig.copy(
+                showPrizeCoachmark = sharedPref.isFirstQuizPrice()
+            )
+        )
     }
 
     private fun updateCurrentInteractiveStatus() {
@@ -1051,6 +1060,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             )
 
             /** Reset Form */
+            sharedPref.setNotFirstQuizPrice()
             initQuizFormData()
             _quizFormState.setValue { QuizFormStateUiModel.Nothing }
         }) {

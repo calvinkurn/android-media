@@ -335,6 +335,7 @@ class PlayBroadcastUiMapper(
                 maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
                 availableStartTimeInMs = quizDurationInMs,
                 eligibleStartTimeInMs = quizDurationInMs,
+                showPrizeCoachmark = true,
             )
         )
     }

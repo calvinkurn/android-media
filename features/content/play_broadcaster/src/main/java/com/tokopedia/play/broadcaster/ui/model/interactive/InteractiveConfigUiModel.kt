@@ -58,6 +58,7 @@ data class QuizConfigUiModel(
         val maxChoiceLength: Int,
         val availableStartTimeInMs: List<Long>,
         val eligibleStartTimeInMs: List<Long>,
+        val showPrizeCoachmark: Boolean,
 ) {
         companion object {
                 fun empty() = QuizConfigUiModel(
@@ -69,6 +70,7 @@ data class QuizConfigUiModel(
                         maxChoiceLength = 0,
                         availableStartTimeInMs = emptyList(),
                         eligibleStartTimeInMs =  emptyList(),
+                        showPrizeCoachmark = true,
                 )
         }
 }

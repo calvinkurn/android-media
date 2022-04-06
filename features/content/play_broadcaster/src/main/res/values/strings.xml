@@ -271,4 +271,5 @@
     <string name="play_bro_quiz_gift_hint">Mau kasih apa?</string>
     <string name="play_bro_quiz_hint_text">Pilihan %d</string>
     <string name="play_bro_quiz_hint_add_new_option">Tambah Pilihan</string>
+    <string name="play_bro_quiz_prize_coachmark">Hadiah &amp; ongkirnya (jika ada) akan ditanggung Seller.</string>
 </resources>

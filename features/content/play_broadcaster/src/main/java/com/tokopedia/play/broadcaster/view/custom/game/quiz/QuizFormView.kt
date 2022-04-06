@@ -80,11 +80,14 @@ class QuizFormView : ConstraintLayout {
 
     private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
         set(value) {
-            field = value
+            if(field != value) {
+                field = value
 
-            binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
-            binding.viewQuizGift.maxLength = quizConfig.maxRewardLength
-            timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
+                binding.viewGameHeader.maxLength = quizConfig.maxTitleLength
+                binding.viewQuizGift.maxLength = quizConfig.maxRewardLength
+                binding.viewQuizGift.isShowCoachmark = quizConfig.showPrizeCoachmark
+                timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
+            }
         }
 
     private var quizFormState: QuizFormStateUiModel = QuizFormStateUiModel.Nothing
@@ -103,8 +106,11 @@ class QuizFormView : ConstraintLayout {
                     is QuizFormStateUiModel.SetDuration -> {
                         binding.groupActionBar.visibility = View.GONE
                         binding.viewGameHeader.isEditable = false
-                        binding.viewQuizGift.isEditable = false
-                        binding.viewQuizGift.hideGiftTextFieldIfEmpty()
+                        binding.viewQuizGift.apply {
+                            isEditable = false
+                            hideGiftTextFieldIfEmpty()
+                            hideCoackmark()
+                        }
 
                         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
 

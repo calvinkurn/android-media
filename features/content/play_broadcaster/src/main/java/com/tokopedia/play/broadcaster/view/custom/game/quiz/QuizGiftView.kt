@@ -6,9 +6,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
 
 /**
@@ -38,12 +42,17 @@ class QuizGiftView : ConstraintLayout {
 
     private var mOnChangedListener: ((String) -> Unit)? = null
 
+    private val coachMark: CoachMark2 = CoachMark2(context)
+
     init {
         binding.clLabelView.setOnClickListener {
             isEditable {
                 binding.clLabelView.hide()
                 binding.clInputView.show()
-
+                if(isShowCoachmark) {
+                    isShowCoachmark = false
+                    showCoachmark()
+                }
                 setFocus(true)
             }
         }
@@ -87,6 +96,8 @@ class QuizGiftView : ConstraintLayout {
             }
         }
 
+    var isShowCoachmark: Boolean = false
+
     fun setOnTextChangeListener(listener: (String) -> Unit) {
         mOnChangedListener = listener
     }
@@ -98,6 +109,25 @@ class QuizGiftView : ConstraintLayout {
                 binding.clInputView.hide()
             }
         }
+    }
+
+    fun hideCoackmark() {
+        isShowCoachmark = false
+        coachMark.dismissCoachMark()
+    }
+
+    private fun showCoachmark() {
+        coachMark.isDismissed = false
+        coachMark.showCoachMark(
+            arrayListOf(
+                CoachMark2Item(
+                    this,
+                    "",
+                    context.getString(R.string.play_bro_quiz_prize_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        )
     }
 
     private fun isEditable(fn: () -> Unit) {
