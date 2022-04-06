@@ -2,45 +2,55 @@ package com.tokopedia.kyc_centralized.view.fragment.camera
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.*
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
+import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.databinding.FragmentCameraCroppingBinding
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
+import com.tokopedia.media.loader.clearImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import java.io.File
-
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kyc_centralized.databinding.FragmentCameraCroppingBinding
-import com.tokopedia.media.loader.clearImage
-import com.tokopedia.media.loader.loadImage
-import kotlin.math.roundToInt
-import com.otaliastudios.cameraview.CameraView
+import java.io.IOException
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author  : @rival [Rivaldy Firmansyah]
  * @team    : @android-minionkevin-dev
  * @since   : 3/01/2022
  * */
-class CameraWithCroppingFragment : BaseDaggerFragment() {
+class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     private var viewBinding by autoClearedNullable<FragmentCameraCroppingBinding>()
-
-    private var viewMode = 0
     private var imagePath: String = ""
+    private var bitmapProcessing: BitmapCroppingAndCompression? = null
+
+    private var isUseCropping: Boolean = false
+    private var isUseCompression: Boolean = false
 
     private val isCameraVisible: Boolean
         get() = viewBinding?.cameraView != null &&
                 viewBinding?.cameraView?.visibility == View.VISIBLE
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + SupervisorJob()
 
     override fun getScreenName(): String = ""
 
@@ -55,12 +65,27 @@ class CameraWithCroppingFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        arguments?.let {
+            isUseCropping = it.getBoolean(EXTRA_USE_CROPPING).orFalse()
+            isUseCompression = it.getBoolean(EXTRA_USE_COMPRESSION).orFalse()
+        }
+
         setupView()
         showCameraView()
+
+        viewBinding?.let {
+            bitmapProcessing = context?.let { context ->
+                BitmapCroppingAndCompression(context, it.cameraView)
+            }
+        }
     }
 
     private fun setupView() {
         viewBinding?.apply {
+            title.text = getString(R.string.camera_ktp_title)
+            subtitle.text = getString(R.string.camera_ktp_subtitle)
+
             imageButtonShutter.setOnClickListener {
                 hideCameraButtonAndShowLoading()
                 cameraView.takePicture()
@@ -97,26 +122,6 @@ class CameraWithCroppingFragment : BaseDaggerFragment() {
                     it.finish()
                 }
             }
-
-            populateViewByViewMode()
-        }
-    }
-
-    private fun populateViewByViewMode() {
-        when (viewMode) {
-            PARAM_VIEW_MODE_KTP -> {
-                viewBinding?.apply {
-                    title.text = getString(R.string.camera_ktp_title)
-                    subtitle.text = getString(R.string.camera_ktp_subtitle)
-                }
-            }
-            PARAM_VIEW_MODE_FACE -> {
-                viewBinding?.apply {
-                    title.text = getString(R.string.camera_face_title)
-                    subtitle.text = getString(R.string.camera_face_subtitle)
-                    toggleCamera()
-                }
-            }
         }
     }
 
@@ -140,6 +145,8 @@ class CameraWithCroppingFragment : BaseDaggerFragment() {
 
     private fun showImagePreview() {
         viewBinding?.apply {
+            subtitle.text = getString(R.string.camera_ktp_subtitle_preview)
+
             cameraView.apply {
                 close()
                 hide()
@@ -181,33 +188,105 @@ class CameraWithCroppingFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessCaptureImage(pictureResult: PictureResult) {
-        pictureResult.toBitmap {
-            if (it != null) {
-                try {
-                    saveToFile(it)
-                    saveToFile(doCroppingWithTemplate(it))
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        try {
+            pictureResult.toBitmap { bitmap ->
+                if (bitmap != null) {
+                    if (isUseCropping && isUseCompression) {
+                        viewBinding?.cropBorder?.let {
+                            doCropAndCompress(bitmap, it)
+                        }
+                    } else if (isUseCropping && !isUseCompression) {
+                        viewBinding?.cropBorder?.let {
+                            doCropping(bitmap, it)
+                        }
+                    } else if (!isUseCropping && isUseCompression) {
+                        doCompression(bitmap)
+                    } else {
+                        saveToFile(bitmap)
+                    }
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    private fun saveToFile(bitmap: Bitmap) {
-        val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG, FILE_NAME_KYC)
-        if (cameraResultFile?.exists() == true) {
-            viewBinding?.imagePreview?.apply {
-                clearImage()
-                loadImage(cameraResultFile.absolutePath) {
-                    useCache(false)
-                    setPlaceHolder(-1)
+    private fun doCropping(bitmap: Bitmap, frame: View) {
+        try {
+            bitmapProcessing?.doCropping(bitmap, frame, object : BitmapProcessingListener {
+                override fun onBitmapReady(bitmap: Bitmap) {
+                    val file = saveToFile(bitmap)
+                    onSuccessSaveFile(file)
                 }
-            }
-            imagePath = cameraResultFile.absolutePath
-            showImagePreview()
-        } else {
-            Toast.makeText(context, getString(R.string.error_upload_image_kyc), Toast.LENGTH_LONG).show()
+
+                override fun onFailed(originalBitmap: Bitmap, throwable: Throwable) {
+                    throwable.printStackTrace()
+
+                    val file = saveToFile(bitmap)
+                    onSuccessSaveFile(file)
+                }
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+    }
+
+    private fun doCompression(bitmap: Bitmap) {
+        try {
+            bitmapProcessing?.doCompression(bitmap, object : BitmapProcessingListener {
+                override fun onBitmapReady(bitmap: Bitmap) {
+                    val file = saveToFile(bitmap)
+                    onSuccessSaveFile(file)
+                }
+
+                override fun onFailed(originalBitmap: Bitmap, throwable: Throwable) {
+                    throwable.printStackTrace()
+
+                    val file = saveToFile(bitmap)
+                    onSuccessSaveFile(file)
+                }
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun doCropAndCompress(bitmap: Bitmap, frame: View) {
+        try {
+            bitmapProcessing?.doCropAndCompress(bitmap, frame, object : BitmapProcessingListener {
+                override fun onBitmapReady(bitmap: Bitmap) {
+                    val file = saveToFile(bitmap)
+                    onSuccessSaveFile(file)
+                }
+
+                override fun onFailed(originalBitmap: Bitmap, throwable: Throwable) {
+                    throwable.printStackTrace()
+
+                    val file = saveToFile(bitmap)
+                    onSuccessSaveFile(file)
+                }
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun saveToFile(bitmap: Bitmap): File {
+        val file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG, FILE_NAME_KYC)
+        if (file?.exists() == true) return file
+        else throw IOException("Failed save file")
+    }
+
+    private fun onSuccessSaveFile(file: File) {
+        viewBinding?.imagePreview?.apply {
+            clearImage()
+            loadImage(file.absolutePath) {
+                useCache(false)
+                setPlaceHolder(-1)
+            }
+        }
+        imagePath = file.absolutePath
+        showImagePreview()
     }
 
     override fun onStop() {
@@ -227,8 +306,11 @@ class CameraWithCroppingFragment : BaseDaggerFragment() {
 
     private fun isFileSizeQualified(filePath: String): Boolean {
         val file = File(filePath)
-        val fileSize = (file.length() / DEFAULT_ONE_MEGABYTE).toString().toInt()
-        return fileSize <= MAX_FILE_SIZE
+        return getFileSizeInMb(file) <= MAX_FILE_SIZE
+    }
+
+    private fun getFileSizeInMb(file: File): Int {
+        return (file.length() / DEFAULT_ONE_MEGABYTE).toString().toInt()
     }
 
     private fun listenerOnPictureTaken(result: (PictureResult) -> Unit): CameraListener {
@@ -239,70 +321,16 @@ class CameraWithCroppingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun doCroppingWithTemplate(bitmap: Bitmap): Bitmap {
-        val framePadding = 100
-
-        val bitmapW = bitmap.width.toFloat()
-        val bitmapH = bitmap.height.toFloat()
-
-        val camera = viewBinding?.cameraView as CameraView
-        val cameraW = camera.width.toFloat()
-        val cameraH = camera.height.toFloat()
-        val cameraLeft = camera.left.toFloat()
-        val cameraTop = camera.top.toFloat()
-
-        val diffScaleW = cameraW / bitmapW
-        val diffScaleH = cameraH / bitmapH
-
-        val frame = viewBinding?.cropBorder as View
-        var frameW = frame.width.toFloat()
-        frameW = if (frameW > bitmapW) bitmapW else frameW
-        var frameH = frame.height.toFloat()
-        frameH = if (frameH > bitmapH) bitmapH else frameH
-
-        var frameLeft = frame.left.toFloat()
-        frameLeft = if (frameLeft < 0) 0F else frameLeft
-        var frameTop = frame.top.toFloat()
-        frameTop = if (frameTop < 0) 0F else frameTop
-
-        var offsetX: Float = (frameLeft / diffScaleW) - (cameraLeft / diffScaleW) - framePadding
-        offsetX = if (offsetX > bitmapW) frameLeft else offsetX
-        var offsetY: Float = (frameTop / diffScaleH) - (cameraTop / diffScaleH) - framePadding
-        offsetY = if (offsetY > bitmapH) frameTop else offsetY
-
-        var newW: Float = (frameW / diffScaleW) + (framePadding * 2).toFloat() // 2 (add padding on left & right)
-        newW = when {
-            newW > bitmapW -> bitmapW
-            newW + offsetX > bitmapW -> newW - offsetX
-            else -> newW
-        }
-        var newH: Float = (frameH / diffScaleH) + (framePadding * 2).toFloat() // 2 (add padding on top & bottom)
-        newH = when {
-            newH > bitmapH -> bitmapH
-            newH + offsetY > bitmapH -> newH - offsetY
-            else -> newH
-        }
-
-        return Bitmap.createBitmap(
-                bitmap,
-                offsetX.roundToInt(),
-                offsetY.roundToInt(),
-                newW.roundToInt(),
-                newH.roundToInt()
-        )
-    }
-
     companion object {
-        private const val ARG_VIEW_MODE = "view_mode"
-        private const val PARAM_VIEW_MODE_KTP = 1
-        private const val PARAM_VIEW_MODE_FACE = 2
         private const val DEFAULT_ONE_MEGABYTE: Long = 1024
         private const val MAX_FILE_SIZE = 15360
 
-        fun createInstance(viewMode: Int): Fragment = CameraWithCroppingFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_VIEW_MODE, viewMode)
-            }
+        // Bundle values :
+        // viewMode: Int,
+        // useCropping: Boolean = false,
+        // useCompression: Boolean = false
+        fun createInstance(bundle: Bundle): Fragment = CameraKtpFragment().apply {
+            arguments = bundle
         }
     }
 }
