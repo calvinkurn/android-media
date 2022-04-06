@@ -52,9 +52,6 @@ object FeatureRecommendationMapper {
         var index = 0
         val shopParams = ArrayList<MembershipOrderData>()
         var amount: Float
-        var sectionTitle = ""
-        var sectionSubTitle = ""
-        var isFirstElement = false
         var shopId = 0
 
         thanksPageData.shopOrder.forEach {
@@ -66,28 +63,11 @@ object FeatureRecommendationMapper {
             shopParams.add(index, MembershipOrderData(shopId, amount))
             index++
         }
-        if (!engineData.featureEngineItem.isNullOrEmpty()) {
-            engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
-                try {
-                    val jsonObject = JSONObject(featureEngineItem.detail)
-                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
-                        if (i == 0){
-                            isFirstElement = true
-                        }
-                        sectionTitle = jsonObject[KEY_TITLE].toString()
-                        sectionSubTitle = jsonObject[KEY_SUBTITLE].toString()
-                    }
-                } catch (e: Exception) { }
-            }
-        }
         return TokoMemberRequestParam (
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
             paymentID = thanksPageData.paymentID,
             orderData = shopParams,
-            sectionSubtitle = sectionSubTitle,
-            sectionTitle = sectionTitle,
-            isFirstElement = isFirstElement,
             shopID = shopId
         )
     }
