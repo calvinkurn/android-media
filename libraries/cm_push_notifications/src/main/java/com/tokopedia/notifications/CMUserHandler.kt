@@ -148,7 +148,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
             if (CMNotificationUtils.isTokenExpired(CMNotificationCacheHandler(mContext), token, userId, gAdId, appVersionName)) {
                 val requestParams = HashMap<String, Any>()
 
-                requestParams["macAddress"] = ""
+                requestParams[MAC_ADDRESS] = CMNotificationUtils.getWifiMacAddress(mContext)
                 requestParams[SOURCE] = SOURCE_ANDROID
                 requestParams[FCM_TOKEN] = token
                 requestParams[APP_ID] = CMNotificationUtils.getUniqueAppId(mContext)
@@ -234,6 +234,7 @@ class CMUserHandler(private val mContext: Context) : CoroutineScope {
         private val SDK_VERSION = "sdkVersion"
         private val APP_VERSION = "appVersion"
         private val REQUEST_TIMESTAMP = "requestTimestamp"
+        private val MAC_ADDRESS = "macAddress"
 
         private val SOURCE_ANDROID = "android"
         private val USER_STATE = "loggedStatus"

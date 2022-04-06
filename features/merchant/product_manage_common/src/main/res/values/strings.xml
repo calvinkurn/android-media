@@ -16,6 +16,7 @@
     <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
 
     <string name="product_manage_quick_edit_stock_success">Ketersediaan produk \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_quick_edit_price_ticker_info">Kamu akan mengubah harga lokasi utama saja. Untuk mengubah harga lokasi lain, akses Tokopedia Seller melalui desktop.</string>
 
     <string name="product_manage_campaign_stock_success_toast">Jumlah stok \"%1$s\" berhasil diubah.</string>
     <string name="product_manage_campaign_status_success_toast">Status \"%1$s\" berhasil diubah.</string>
@@ -28,8 +29,8 @@
 
     <string name="product_manage_stock_warning_ticker_description">Varian produk yang memiliki jumlah stok 0 tidak akan ditampilkan di tokomu.</string>
     <string name="product_manage_stock_ticker_description"><![CDATA[<b>1.</b> Hanya menampilkan stok di lokasi utama. Atur alokasi stok di lokasi lain lewat desktop. <br><br> <b>2.</b> Perubahan status berlaku untuk semua lokasi.]]></string>
-    <string name="product_manage_closable_stock_ticker_description">Untuk lihat jumlah dan alokasi stok produk di tiap lokasi, akses Seller Dashboard di desktopmu, ya.</string>
-    <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan stok lokasi utama</string>
+    <string name="product_manage_closable_stock_ticker_description">Untuk melihat harga, jumlah, dan alokasi stok produk di tiap lokasi, akses Tokopedia Seller melalui Desktop, ya.</string>
+    <string name="product_manage_closable_stock_ticker_title">Hanya menampilkan harga dan stok lokasi utama</string>
     <string name="product_manage_single_location_stock_no_access_description">Kamu tidak punya akses untuk atur stok produk.</string>
 
     <string name="product_manage_campaign_stock_open_campaign">Untuk mengubah stok campaign, pergi ke seller.tokopedia.com melalui laptop, ya.</string>

@@ -37,6 +37,17 @@
             android:background="@color/Unify_N75" />
     </LinearLayout>
 
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iu_msg_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginEnd="@dimen/unify_space_2"
+        android:padding="@dimen/unify_space_4"
+        android:visibility="gone"
+        tools:src="@tools:sample/avatars"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMessage"
         android:layout_width="wrap_content"

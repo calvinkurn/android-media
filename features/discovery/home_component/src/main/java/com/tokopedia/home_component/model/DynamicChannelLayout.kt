@@ -11,7 +11,6 @@ object DynamicChannelLayout {
     const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
     const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
     const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
-    const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
     const val LAYOUT_BU_WIDGET: String = "bu_widget"
     const val LAYOUT_TOPADS: String = "topads"
     const val LAYOUT_SPOTLIGHT: String = "spotlight"
@@ -31,4 +30,6 @@ object DynamicChannelLayout {
     const val LAYOUT_FEATURED_BRAND = "featured_brand"
     const val LAYOUT_FEATURED_SHOP = "shop_widget"
     const val LAYOUT_BEST_SELLING = "best_selling"
+    const val LAYOUT_MERCHANT_VOUCHER = "merchant_voucher"
+    const val LAYOUT_CAMPAIGN_FEATURING: String = "campaign_featuring"
 }

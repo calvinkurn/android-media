@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -1115,11 +1116,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
-            if (!shopProductAdapter.isLoading) {
+            if (!shopProductAdapter.isLoading && getSelectedFragment() != this) {
                 shopProductFilterParameter = it
                 changeSortData(sortId)
             }
         })
+    }
+
+    private fun getSelectedFragment(): Fragment? {
+        return (parentFragment as? NewShopPageFragment)?.getSelectedFragmentInstance()
     }
 
     override fun onPause() {
@@ -1556,7 +1561,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         ))
         shopProductAdapter.refreshSticky()
         initialProductListData = null
-        if(!isOnViewCreated) {
+        if(!isOnViewCreated && shopProductAdapter.shopProductUiModelList.isNotEmpty()) {
             shopProductAdapter.clearProductList()
             loadNewProductData()
         }

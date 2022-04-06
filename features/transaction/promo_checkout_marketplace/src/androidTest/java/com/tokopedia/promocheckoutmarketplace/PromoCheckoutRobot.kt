@@ -5,7 +5,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.swipeDown
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -13,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoInputViewHolder
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoListItemViewHolder
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoRecommendationViewHolder
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifyprinciples.Typography
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
@@ -60,7 +59,7 @@ fun onPromoListItemViewHolderWithTitle(title: String): BaseMatcher<AbstractViewH
 
         override fun matches(item: Any?): Boolean {
             if (item is PromoListItemViewHolder) {
-                return item.itemView.findViewById<Typography>(R.id.label_promo_item_title).text == title
+                return item.itemView.findViewById<Typography>(R.id.text_promo_item_title).text == title
             }
             return false
         }
@@ -137,7 +136,7 @@ fun typePromoCodeInPromoInputViewHolder(promoCode: String) = object : ViewAction
     }
 
     override fun perform(uiController: UiController?, view: View?) {
-        view?.findViewById<TextFieldUnify>(R.id.text_field_input_promo)!!.textFieldInput.setText(promoCode)
+        view?.findViewById<TextFieldUnify2>(R.id.text_field_input_promo)!!.editText.setText(promoCode)
     }
 }
 

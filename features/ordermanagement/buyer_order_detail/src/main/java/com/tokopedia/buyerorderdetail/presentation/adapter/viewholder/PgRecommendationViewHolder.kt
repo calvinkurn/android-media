@@ -33,7 +33,8 @@ open class PgRecommendationViewHolder(
                     productIds = element.productIdList,
                     adapterPosition = adapterPosition,
                     basicListener = this@PgRecommendationViewHolder,
-                    tokonowPageNameListener = null
+                    tokonowPageNameListener = null,
+                    tempHeaderName = getString(R.string.bom_recommendation_lbl)
                 )
             }
         }
@@ -86,6 +87,9 @@ open class PgRecommendationViewHolder(
 
     override fun onWidgetFail(pageName: String, e: Throwable) {
         buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
+    }
+
+    override fun onShowError(pageName: String, e: Throwable) {
     }
 
     interface BuyerOrderDetailBindRecomWidgetListener {

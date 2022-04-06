@@ -10,8 +10,6 @@ import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneOnboar
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.InactivePhoneWithPinTracker
-import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneCaptureSelfieFragment
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
@@ -53,10 +51,7 @@ abstract class BaseInactivePhoneOnboardingFragment : BaseDaggerFragment() {
     }
 
     fun updateImageHeader(url: String) {
-        viewBinding?.imgHeader?.apply {
-            ImageUtils.clearImage(this)
-            setImageUrl(url)
-        }
+        viewBinding?.imgHeader?.setImageUrl(url, isSkipCache = true)
     }
 
     fun updateTitle(title: String) {

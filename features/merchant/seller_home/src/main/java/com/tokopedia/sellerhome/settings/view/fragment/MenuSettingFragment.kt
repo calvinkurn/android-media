@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -20,6 +22,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.common.InternalReviewUtils
@@ -27,6 +30,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoClickTracking
 import com.tokopedia.seller.menu.common.analytics.sendSettingShopInfoImpressionTracking
@@ -38,6 +42,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.databinding.FragmentMenuSettingBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.adapter.MenuSettingAdapter
+import com.tokopedia.sellerhome.settings.view.bottomsheet.SocialMediaLinksBottomSheet
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.OtherSettingsUiModel
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -175,9 +180,15 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         openGlobalFeedback()
     }
 
+    override fun onOpenSocialMediaLinks() {
+
+        openSocialMediaLinksBottomSheet()
+    }
+
     override fun onNoAccess() {
         showToasterError(
-            context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty()
+            context?.getString(R.string.sah_admin_restriction_message)
+                .orEmpty()
         )
     }
 
@@ -255,6 +266,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         setupLogoutView()
         setupExtraSettingView()
+        startShopActiveService()
     }
 
     private fun setupLogoutView() {
@@ -335,6 +347,12 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
     }
 
+    private fun openSocialMediaLinksBottomSheet() {
+        if (isActivityResumed()) {
+            SocialMediaLinksBottomSheet.createInstance().show(childFragmentManager)
+        }
+    }
+
     private fun showLogoutDialog() {
         var dialogBuilder: AlertDialog.Builder? = null
         context?.let { dialogBuilder = AlertDialog.Builder(it) }
@@ -345,7 +363,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
             setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
                 val progressDialog = showProgressDialog()
                 dialogInterface.dismiss()
-                RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
+                RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
                 progressDialog.dismiss()
                 activity?.finish()
             }
@@ -383,6 +401,17 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun showToasterError(errorMessage: String) {
         view?.let {
             Toaster.build(it, errorMessage, type = Toaster.TYPE_ERROR).show()
+        }
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
+    }
+
+    private fun startShopActiveService() {
+        context?.let {
+            UpdateShopActiveWorker.execute(it)
         }
     }
 

@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.SHARING_WIDGET_RESOURCE_ID
+import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeFormattedCopy
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSharingEducationWidgetBinding
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducationWidgetUiModel
@@ -30,7 +32,7 @@ class HomeSharingEducationWidgetViewHolder(
         binding?.apply {
             if (element.state == HomeLayoutItemState.LOADED) {
                 cvSharingEducation.show()
-                setupUi()
+                setupUi(element.serviceType)
                 btnSharingEducation.setOnClickListener {
                     listener?.onShareBtnSharingEducationClicked()
                 }
@@ -41,10 +43,17 @@ class HomeSharingEducationWidgetViewHolder(
         }
     }
 
-    private fun setupUi() {
+    private fun setupUi(serviceType: String) {
         binding?.apply {
+            tpSharingEducation.text = MethodChecker.fromHtml(
+                getServiceTypeFormattedCopy(
+                    context = root.context,
+                    key = SHARING_WIDGET_RESOURCE_ID,
+                    serviceType = serviceType
+                )
+            )
+
             iuSharingEducation.setImageUrl(IMG_SHARING_EDUCATION)
-            tpSharingEducation.text = MethodChecker.fromHtml(getString(R.string.tokopedianow_home_sharing_education_title))
             iCloseSharingEducation.setImage(IconUnify.CLOSE)
             iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
         }

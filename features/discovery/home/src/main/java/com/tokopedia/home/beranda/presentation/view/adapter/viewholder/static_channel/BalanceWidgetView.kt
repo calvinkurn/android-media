@@ -70,14 +70,7 @@ class BalanceWidgetView: FrameLayout {
     }
 
     private fun renderWidget(element: HomeBalanceModel) {
-        if (element.isGopayEligible == null) {
-            viewBalanceCoachmark?.visibility = View.GONE
-            viewBalanceCoachmarkNew?.visibility = View.GONE
-        }
-        if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == false) {
-            viewBalanceCoachmark?.visibility = View.INVISIBLE
-            viewBalanceCoachmarkNew?.visibility = View.GONE
-        } else if (element.balanceType == TYPE_STATE_2 && element.isGopayEligible == true) {
+        if (element.balanceType == TYPE_STATE_2) {
             viewBalanceCoachmark?.visibility = View.GONE
             viewBalanceCoachmarkNew?.visibility = View.INVISIBLE
         } else {

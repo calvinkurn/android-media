@@ -13,15 +13,18 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
+private const val KEY_IRIS_SESSION_ID = "iris_session_id"
 open class TopAdsRepository {
 
     protected open val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
-    suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
+    suspend fun getImageData(queryParams: MutableMap<String, Any>, sessionId: String): ArrayList<TopAdsImageViewModel> {
 
         val response = this.getRestData<TopAdsmageViewResponse>(getTopAdsImageViewUrl(),
                 object : TypeToken<TopAdsmageViewResponse>() {}.type,
-                queryMap = queryParams)
+                queryMap = queryParams,
+                sessionId = sessionId
+        )
 
         return mapToListOfTopAdsImageViewModel(response, queryParams)
 
@@ -31,11 +34,13 @@ open class TopAdsRepository {
                                               typeOf: Type,
                                               requestType: RequestType = RequestType.GET,
                                               queryMap: MutableMap<String, Any> = RequestParams.EMPTY.parameters,
+                                              sessionId: String,
                                               cacheType: com.tokopedia.common.network.data.model.CacheType = com.tokopedia.common.network.data.model.CacheType.ALWAYS_CLOUD): T {
         try {
             val restRequest = RestRequest.Builder(url, typeOf)
                     .setRequestType(requestType)
                     .setQueryParams(queryMap)
+                    .setHeaders(mapOf(KEY_IRIS_SESSION_ID to sessionId))
                     .setCacheStrategy(RestCacheStrategy.Builder(cacheType).build())
                     .build()
             return restRepository.getResponse(restRequest).getData()

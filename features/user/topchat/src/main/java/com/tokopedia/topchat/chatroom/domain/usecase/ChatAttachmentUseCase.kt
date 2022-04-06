@@ -1,93 +1,27 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
-import androidx.collection.ArrayMap
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import kotlinx.coroutines.*
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 open class ChatAttachmentUseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<ChatAttachmentResponse>,
-        private val mapper: ChatAttachmentMapper,
-        private var dispatchers: CoroutineDispatchers
-) : CoroutineScope {
+    private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+): CoroutineUseCase<ChatAttachmentUseCase.Param, ChatAttachmentResponse>(dispatcher.io) {
 
-    override val coroutineContext: CoroutineContext get() = dispatchers.main + SupervisorJob()
-
-    fun safeCancel() {
-        if (coroutineContext.isActive) {
-            gqlUseCase.cancelJobs()
-            cancel()
-        }
-    }
-
-    fun getAttachments(
-        msgId: Long,
-        replyIDs: String,
-        userLocation: LocalCacheModel,
-        onSuccess: (ArrayMap<String, Attachment>) -> Unit,
-        onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
-    ) {
-        launchCatchError(dispatchers.io,
-                {
-                    val params = generateParams(msgId, replyIDs, userLocation)
-                    val response = gqlUseCase.apply {
-                        setTypeClass(ChatAttachmentResponse::class.java)
-                        setRequestParams(params)
-                        setGraphqlQuery(query)
-                    }.executeOnBackground()
-                    val mapAttachment = mapper.map(response)
-                    withContext(dispatchers.main) {
-                        onSuccess(mapAttachment)
-                    }
-                },
-                {
-                    val mapErrorAttachment = mapper.mapError(replyIDs)
-                    withContext(dispatchers.main) {
-                        onError(it, mapErrorAttachment)
-                    }
-                }
-        )
-    }
-
-    private fun generateParams(
-        msgId: Long,
-        replyIDs: String,
-        userLocation: LocalCacheModel
-    ): Map<String, Any> {
-        val addressId = userLocation.address_id.toLongOrZero()
-        val districtId = userLocation.district_id.toLongOrZero()
-        val postalCode = userLocation.postal_code
-        val latlon = if (userLocation.lat.isEmpty() || userLocation.long.isEmpty()) {
-            ""
-        } else {
-            "${userLocation.lat},${userLocation.long}"
-        }
-        return mapOf(
-                paramMsgId to msgId,
-                paramReplyIDs to replyIDs,
-                paramAddressId to addressId,
-                paramDistrictId to districtId,
-                paramPostalCode to postalCode,
-                paramLatLon to latlon,
-        )
-    }
-
-    val query = """
+    override fun graphqlQuery(): String = """
         query chatAttachments(
-            $$paramMsgId: Int!, $$paramReplyIDs: String, $$paramAddressId: Int,
-            $$paramDistrictId: Int, $$paramPostalCode: String, $$paramLatLon: String
+            $$PARAM_MSG_ID: Int!, $$PARAM_REPLY_IDS: String, $$PARAM_ADDRESS_ID: Int,
+            $$PARAM_DISTRICT_ID: Int, $$PARAM_POSTAL_CODE: String, $$PARAM_LAT_LON: String
         ) {
           chatAttachments(
-            msgId: $$paramMsgId, ReplyIDs: $$paramReplyIDs, addressID: $$paramAddressId,
-            districtID: $$paramDistrictId, postalCode: $$paramPostalCode, latlon: $$paramLatLon
+            msgId: $$PARAM_MSG_ID, ReplyIDs: $$PARAM_REPLY_IDS, addressID: $$PARAM_ADDRESS_ID,
+            districtID: $$PARAM_DISTRICT_ID, postalCode: $$PARAM_POSTAL_CODE, latlon: $$PARAM_LAT_LON
           ) {
             list {
              id
@@ -103,12 +37,36 @@ open class ChatAttachmentUseCase @Inject constructor(
         }
     """.trimIndent()
 
+    override suspend fun execute(params: Param): ChatAttachmentResponse {
+        return repository.request(graphqlQuery(), params)
+    }
+
+    data class Param (
+        @SerializedName(PARAM_MSG_ID)
+        var msgId: Long = 0,
+
+        @SerializedName(PARAM_REPLY_IDS)
+        var replyIDs: String = "",
+
+        @SerializedName(PARAM_ADDRESS_ID)
+        var addressId: Long = 0,
+
+        @SerializedName(PARAM_DISTRICT_ID)
+        var districtId: Long = 0,
+
+        @SerializedName(PARAM_POSTAL_CODE)
+        var postalCode: String = "",
+
+        @SerializedName(PARAM_LAT_LON)
+        var latlon: String = ""
+    ): GqlParam
+
     companion object {
-        private val paramMsgId = "msgId"
-        private val paramReplyIDs = "ReplyIDs"
-        private val paramAddressId = "addressID"
-        private val paramDistrictId = "districtID"
-        private val paramPostalCode = "postalCode"
-        private val paramLatLon = "latlon"
+        const val PARAM_MSG_ID = "msgId"
+        const val PARAM_REPLY_IDS = "ReplyIDs"
+        const val PARAM_ADDRESS_ID = "addressID"
+        const val PARAM_DISTRICT_ID = "districtID"
+        const val PARAM_POSTAL_CODE = "postalCode"
+        const val PARAM_LAT_LON = "latlon"
     }
 }

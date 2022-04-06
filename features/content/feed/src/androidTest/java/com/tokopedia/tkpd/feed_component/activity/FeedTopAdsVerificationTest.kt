@@ -8,6 +8,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
@@ -60,6 +61,7 @@ class FeedTopAdsVerificationTest {
             scrollRecyclerViewToPosition(feedRecyclerView, i)
             checkProductOnDynamicChannel(feedRecyclerView, i)
         }
+        waitForData()
         topAdsAssertion?.assert()
     }
 
@@ -68,12 +70,12 @@ class FeedTopAdsVerificationTest {
             is TopadsShopViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, com.tokopedia.topads.sdk.R.id.recommendationRv, 0)
             }
-            is TopAdsHeadlineViewHolder -> {
+            is TopAdsHeadlineV2ViewHolder -> {
                 //currently we have click impressions only for products in headline ads so we are not counting the click impressions
                 //for products in headline ads so that the test can pass
                 waitForData()
-                onView(withId(com.tokopedia.feedplus.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<TopAdsHeadlineViewHolder>(
-                        i, CommonActions.clickChildViewWithId(com.tokopedia.topads.sdk.R.id.shop_detail)))
+                onView(withId(com.tokopedia.feedplus.R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<TopAdsHeadlineV2ViewHolder>(
+                        i, CommonActions.clickChildViewWithId(com.tokopedia.feedcomponent.R.id.shop_badge)))
             }
         }
     }

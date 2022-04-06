@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.changename.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
@@ -14,7 +15,6 @@ import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -24,8 +24,8 @@ class ChangeNameViewModel @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<ChangeNamePojo>,
         private val userProfileRoleUseCase: GraphqlUseCase<UserProfileRoleData>,
         private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     private val mutableChangeNameResponse = MutableLiveData<Result<ChangeNameResult>>()
     val changeNameResponse: LiveData<Result<ChangeNameResult>>
@@ -59,16 +59,12 @@ class ChangeNameViewModel @Inject constructor(
 
     private fun onSuccessMutateChangeName(fullname: String): (ChangeNamePojo) -> Unit {
         return {
-            try {
-                val errorMessage = it.data.errors
-                val isSuccess = it.data.isSuccess
-                if (errorMessage.size == 0 && isSuccess == 1) {
-                    mutableChangeNameResponse.postValue(Success(ChangeNameResult(it.data, fullname)))
-                } else if (!errorMessage[0].isBlank()) {
-                    mutableChangeNameResponse.postValue(Fail(MessageErrorException(errorMessage[0])))
-                }
-            } catch (e: Exception) {
-                mutableChangeNameResponse.postValue(Fail(MessageErrorException(e.message)))
+            val errorMessage = it.data.errors
+            val isSuccess = it.data.isSuccess
+            if (errorMessage.size == 0 && isSuccess == 1) {
+                mutableChangeNameResponse.postValue(Success(ChangeNameResult(it.data, fullname)))
+            } else if (errorMessage.isNotEmpty()) {
+                mutableChangeNameResponse.postValue(Fail(MessageErrorException(errorMessage[0])))
             }
         }
     }
@@ -84,11 +80,5 @@ class ChangeNameViewModel @Inject constructor(
                 })
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        graphqlUseCase.cancelJobs()
-        userProfileRoleUseCase.cancelJobs()
     }
 }

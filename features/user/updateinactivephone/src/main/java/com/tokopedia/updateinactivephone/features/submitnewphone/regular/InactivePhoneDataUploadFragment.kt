@@ -21,7 +21,7 @@ import com.tokopedia.updateinactivephone.common.utils.getValidEmail
 import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
 import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataModel
 import com.tokopedia.updateinactivephone.features.imagepicker.InactivePhoneImagePickerActivity
-import com.tokopedia.updateinactivephone.features.onboarding.withpin.InactivePhoneWithPinActivity
+import com.tokopedia.updateinactivephone.features.onboarding.regular.InactivePhoneRegularActivity
 import com.tokopedia.updateinactivephone.features.submitnewphone.BaseInactivePhoneSubmitDataFragment
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -192,7 +192,9 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
         context?.let {
             val path = filePath(it, type)
             if (path.isNotEmpty())
-                imageView.setImage(path)
+                imageView.apply {
+                    setImage(path)
+                }
         }
     }
 
@@ -220,7 +222,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
     open fun gotoOnboardingPage() {
         activity?.let {
             inactivePhoneUserDataModel?.let { _inactivePhoneUserDataModel ->
-                startActivity(InactivePhoneWithPinActivity.createIntent(it, _inactivePhoneUserDataModel))
+                startActivity(InactivePhoneRegularActivity.createIntent(it, _inactivePhoneUserDataModel))
             }
 
             it.finish()

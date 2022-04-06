@@ -154,20 +154,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrierReplyMasking" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/replyKebab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
-        android:layout_marginRight="@dimen/layout_lvl2"
         android:visibility="gone"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="@id/replyDisplayName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/replyDisplayName"
         app:layout_goneMarginTop="12dp"
-        app:srcCompat="@drawable/talk_ic_kebab"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        app:icon_color_light_enable="@color/Unify_N200"
         tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier

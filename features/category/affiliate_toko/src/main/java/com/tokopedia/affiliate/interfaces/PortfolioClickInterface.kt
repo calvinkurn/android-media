@@ -4,5 +4,4 @@ interface PortfolioClickInterface {
 
     fun addSocialMediaButtonClicked()
 
-    fun nextButtonClicked()
 }

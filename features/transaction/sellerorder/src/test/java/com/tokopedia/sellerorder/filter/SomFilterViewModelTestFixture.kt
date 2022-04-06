@@ -62,7 +62,7 @@ abstract class SomFilterViewModelTestFixture {
 
     protected fun List<SomFilterUiModel>.getRequestCancelFilter(): SomFilterChipsUiModel? {
         return find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData
-                ?.find { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }
+                ?.find { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST.toLong() }
     }
 
     protected fun getMockSomFilterList(): List<BaseSomFilter> {

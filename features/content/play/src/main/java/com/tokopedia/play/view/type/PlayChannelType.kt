@@ -6,6 +6,7 @@ package com.tokopedia.play.view.type
 enum class PlayChannelType(val value: String) {
     Live("live"),
     VOD("vod"),
+    Upcoming("upcoming"),
     Unknown("unknown");
 
     val isLive: Boolean

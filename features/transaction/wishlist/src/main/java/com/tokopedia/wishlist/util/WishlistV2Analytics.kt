@@ -110,6 +110,14 @@ object WishlistV2Analytics {
     private const val IMPRESSION_EMPTY_LIST = "/wishlist - rekomendasi untuk anda - empty_wishlist - %s"
     private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
     private const val IMPRESSION_LIST_RECOMMENDATION = "/wishlist - rekomendasi untuk anda - %s%s"
+    private const val CLICK_COMMUNICATION = "clickCommunication"
+    private const val VIEW_COMMUNICATION_IRIS = "viewCommunicationIris"
+    private const val CLICK_SHARE_BUTTON = "click - share button"
+    private const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
+    private const val CLICK_SHARING_CHANNEL = "click - sharing channel"
+    private const val VIEW_ON_SHARING_CHANNEL = "view on sharing channel"
+    private const val SHARING_EXPERIENCE = "sharingexperience"
+    private const val PRODUCT_ID = "productId"
 
     fun submitSearchFromCariProduk(keyword: String) {
         val event = TrackAppUtils.gtmData(
@@ -292,6 +300,7 @@ object WishlistV2Analytics {
                 EVENT_LABEL, "${wishlistItem.id} - ${if (wishlistItem.available) "available" else "unavailable"}",
                 CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
                 USER_ID, userId,
+                WISHLIST_ID, wishlistItem.id,
                 BUSINESS_UNIT, PURCHASE_PLATFORM,
                 ECOMMERCE, DataLayer.mapOf(
                 CURRENCY_CODE, IDR,
@@ -307,7 +316,11 @@ object WishlistV2Analytics {
                 ITEM_BRAND, "",
                 ITEM_VARIANT, "",
                 ITEM_CATEGORY, "",
-                INDEX, position
+                INDEX, position,
+                DIMENSION_38, "",
+                DIMENSION_40, WISHLIST,
+                DIMENSION_79, wishlistItem.shop.id,
+                DIMENSION_83, ""
         ))
     }
 
@@ -326,7 +339,7 @@ object WishlistV2Analytics {
             putString(ITEM_ID, wishlistItem.id)
             putString(ITEM_CATEGORY, "")
             putString(PRICE, wishlistItem.price)
-            putString(QUANTITY, "1")
+            putString(QUANTITY, wishlistItem.minOrder)
             putString(SHOP_ID, wishlistItem.shop.id)
             putString(SHOP_NAME, wishlistItem.shop.name)
             putString(SHOP_TYPE, "")
@@ -597,6 +610,66 @@ object WishlistV2Analytics {
                             )
                         )
                 )
+        )
+    }
+
+    fun clickShareLinkProduct(wishlistId: String, productId: String, userId: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, CLICK_COMMUNICATION,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, CLICK_SHARE_BUTTON,
+                        EVENT_LABEL, wishlistId,
+                        BUSINESS_UNIT, SHARING_EXPERIENCE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        PRODUCT_ID, productId,
+                        USER_ID, userId,
+                        WISHLIST_ID, wishlistId)
+        )
+    }
+
+    fun clickCloseShareBottomSheet(wishlistId: String, productId: String, userId: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, CLICK_COMMUNICATION,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, CLICK_CLOSE_SHARE_BOTTOM_SHEET,
+                        EVENT_LABEL, wishlistId,
+                        BUSINESS_UNIT, SHARING_EXPERIENCE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        PRODUCT_ID, productId,
+                        USER_ID, userId,
+                        WISHLIST_ID, wishlistId)
+        )
+    }
+
+    fun clickSharingChannel(wishlistId: String, productId: String, userId: String, channel: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, CLICK_COMMUNICATION,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, CLICK_SHARING_CHANNEL,
+                        EVENT_LABEL, "$channel - $wishlistId",
+                        BUSINESS_UNIT, SHARING_EXPERIENCE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        PRODUCT_ID, productId,
+                        USER_ID, userId,
+                        WISHLIST_ID, wishlistId)
+        )
+    }
+
+    fun viewOnSharingChannel(wishlistId: String, productId: String, userId: String){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, VIEW_COMMUNICATION_IRIS,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, VIEW_ON_SHARING_CHANNEL,
+                        EVENT_LABEL, wishlistId,
+                        BUSINESS_UNIT, SHARING_EXPERIENCE,
+                        CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                        PRODUCT_ID, productId,
+                        USER_ID, userId,
+                        WISHLIST_ID, wishlistId)
         )
     }
 }

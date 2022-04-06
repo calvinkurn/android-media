@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
@@ -54,6 +55,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
+    private static final int REQUEST_CODE_LIVENESS = 1235;
     public static final String CUST_OVERLAY_URL = "imgurl";
     private static final String CUST_HEADER = "header_text";
 
@@ -244,6 +246,9 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
                     routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText);
                     return true;
+                } else if (url.startsWith(ApplinkConst.KYC_FORM_NO_PARAM)) {
+                    gotoAlaCarteKyc(uri);
+                    return true;
                 } else {
                     returnVal = false;
                 }
@@ -260,11 +265,22 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         }
     }
 
+    private void gotoAlaCarteKyc(Uri uri) {
+        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+
+        Intent intent  = RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.KYC_FORM_ONLY, projectId, kycRedirectionUrl);
+        startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
             webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        } else if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            mWebView.loadUrl(kycRedirectionUrl);
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath);

@@ -9,6 +9,7 @@ import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderResult
 import com.tokopedia.profilecompletion.changegender.viewmodel.ChangeGenderViewModel
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -16,7 +17,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.hamcrest.CoreMatchers.instanceOf
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -35,8 +35,6 @@ class ChangeGenderViewModelTest {
     val graphqlUseCase = mockk<GraphqlUseCase<ChangeGenderPojo>>(relaxed = true)
     val context = mockk<Context>(relaxed = true)
 
-    private val testDispatcher = TestCoroutineDispatcher()
-
     private var observer = mockk<Observer<Result<ChangeGenderResult>>>(relaxed = true)
     lateinit var viewModel: ChangeGenderViewModel
 
@@ -47,7 +45,7 @@ class ChangeGenderViewModelTest {
     fun setUp() {
         viewModel = ChangeGenderViewModel(
                 graphqlUseCase,
-                testDispatcher
+                CoroutineTestDispatchersProvider
         )
         viewModel.mutateChangeGenderResponse.observeForever(observer)
     }
@@ -81,6 +79,21 @@ class ChangeGenderViewModelTest {
         verify { observer.onChanged(any()) }
         assertThat(viewModel.mutateChangeGenderResponse.value, instanceOf(Success::class.java))
         assertEquals(gender, (viewModel.mutateChangeGenderResponse.value as Success<ChangeGenderResult>).data.selectedGender)
+    }
+
+    @Test
+    fun `on mutateChangeGender get error`() {
+        changeGenderPojo.data.isSuccess = false
+
+        val mockThrowable = mockk<Throwable>(relaxed = true)
+        every { graphqlUseCase.execute(any(), any()) } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+
+        viewModel.mutateChangeGender(context, gender)
+
+        /* Then */
+        verify { observer.onChanged(Fail(mockThrowable)) }
     }
 
     @Test

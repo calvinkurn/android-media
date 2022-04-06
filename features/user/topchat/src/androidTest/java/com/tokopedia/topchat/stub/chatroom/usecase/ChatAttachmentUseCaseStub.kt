@@ -6,22 +6,20 @@ import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.ChatAttachmentUseCase
 import com.tokopedia.topchat.common.*
-import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import javax.inject.Inject
 
 class ChatAttachmentUseCaseStub @Inject constructor(
-    private val gqlUseCase: GraphqlUseCaseStub<ChatAttachmentResponse>,
-    mapper: ChatAttachmentMapper,
-    dispatchers: CoroutineDispatchers
-) : ChatAttachmentUseCase(gqlUseCase, mapper, dispatchers) {
+    private val repository: GraphqlRepositoryStub,
+    dispatcher: CoroutineDispatchers
+) : ChatAttachmentUseCase(repository, dispatcher) {
 
-    var response = ChatAttachmentResponse()
+    var response: ChatAttachmentResponse = ChatAttachmentResponse()
         set(value) {
-            gqlUseCase.response = value
+            repository.createMapResult(response::class.java, value)
             field = value
         }
 

@@ -20,19 +20,19 @@
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.tokopedia.analyticsdebugger.cassava.validator.MainValidatorActivity"
+            android:name=".cassava.ui.MainValidatorActivity"
             android:label="Analytics Validator"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".debugger.ui.activity.TopAdsDebuggerActivity"
-            android:launchMode="singleTask"
             android:label="Topads Verificator"
+            android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".cassava.debugger.AnalyticsDebuggerActivity"
+            android:name="com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerActivity"
             android:label="Analytics Debugger"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
@@ -60,13 +60,26 @@
             android:theme="@style/Theme.Green" />
         <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
-            android:theme="@style/Theme.Green"/>
-
-        <activity android:name=".sse.ui.activity.SSELoggingActivity"
+            android:theme="@style/Theme.Green" />
+        <activity
+            android:name=".sse.ui.activity.SSELoggingActivity"
             android:label="SSE Logging"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
+        <activity
+            android:name=".websocket.ui.activity.WebSocketLoggingActivity"
+            android:label="Web Socket Logging"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".serverlogger.presentation.activity.ServerLoggerActivity"
+            android:exported="false"
+            android:label="Server Logger"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
+
 </manifest>

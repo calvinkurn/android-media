@@ -63,11 +63,6 @@ data class AmplificationBaseNotificationModel(
         var icon: String? = null,
 
         @Expose
-        @SerializedName(SOUND)
-        @ColumnInfo(name = "soundFileName")
-        var soundFileName: String? = null,
-
-        @Expose
         @SerializedName(TRIBE_KEY)
         @ColumnInfo(name = "tribeKey")
         var tribeKey: String? = null,
@@ -98,10 +93,6 @@ data class AmplificationBaseNotificationModel(
         @ColumnInfo(name = "type")
         var type: String? = null,
 
-        @Expose
-        @SerializedName(CHANNEL)
-        @ColumnInfo(name = "channelName")
-        var channelName: String? = null,
 
         @Expose
         @SerializedName(PERSISTENT_DATA)
@@ -219,6 +210,11 @@ data class AmplificationBaseNotificationModel(
         var shopId: String? = null,
 
         @Expose
+        @SerializedName(IS_BIG_IMAGE)
+        @ColumnInfo(name = "is_big_image")
+        var isBigImage: Boolean? = false,
+
+        @Expose
         @SerializedName(BLAST_ID)
         @ColumnInfo(name = "notifcenterBlastId")
         var blastId: String? = null,
@@ -235,8 +231,15 @@ data class AmplificationBaseNotificationModel(
 
         @SerializedName("is_amplification")
         @ColumnInfo(name = "is_amplification")
-        var isAmplification: Boolean? = false
+        var isAmplification: Boolean? = false,
 
+        @SerializedName(NOTIFICATION_CHANNEL)
+        @Expose
+        var notificationChannel: String? = null,
+
+        @SerializedName(NOTIFICATION_SOUND)
+        @Expose
+        var notificationSound: String? = null
 ) : Parcelable {
 
     fun webHookParamData(): String? {

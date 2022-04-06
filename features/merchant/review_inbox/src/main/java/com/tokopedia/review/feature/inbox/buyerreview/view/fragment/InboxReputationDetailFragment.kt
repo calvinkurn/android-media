@@ -14,6 +14,7 @@ import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
@@ -30,6 +31,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingIntent
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.common.util.ClipboardHandler
 import com.tokopedia.review.common.util.ReviewErrorHandler.getErrorMessage
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen
@@ -47,7 +50,10 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.I
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
+import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -77,6 +83,12 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var reputationTracking: ReputationTracking
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val inboxReputationDetailViewModel: InboxReputationDetailViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(InboxReputationDetailViewModel::class.java)
+    }
 
     private var reputationId: String = ""
     var orderId: String = ""
@@ -204,6 +216,8 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         } else {
             activity?.finish()
         }
+        observeInsertReviewReply()
+        observeDeleteReviewReply()
     }
 
     override fun showLoading() {
@@ -376,19 +390,15 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onDeleteReviewResponse(element: InboxReputationDetailItemUiModel) {
-        presenter.deleteReviewResponse(
-            element.reviewId,
-            element.productId,
-            element.shopId.toString(),
-            element.reputationId.toString()
-        )
+        showLoadingDialog()
+        inboxReputationDetailViewModel.deleteReviewResponse(element.reviewId)
     }
 
-    override fun onErrorDeleteReviewResponse(errorMessage: String?) {
+    private fun onErrorDeleteReviewResponse(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessDeleteReviewResponse() {
+    private fun onSuccessDeleteReviewResponse() {
         refreshPage()
     }
 
@@ -396,17 +406,15 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         element: InboxReputationDetailItemUiModel,
         replyReview: String
     ) {
-        presenter.sendReplyReview(
-            element.reputationId, element.productId,
-            element.shopId, element.reviewId, replyReview
-        )
+        showLoadingDialog()
+        inboxReputationDetailViewModel.insertReviewReply(element.reviewId, replyReview)
     }
 
-    override fun onErrorReplyReview(errorMessage: String?) {
+    private fun onErrorReplyReview(errorMessage: String?) {
         NetworkErrorHelper.showSnackbar(activity, errorMessage)
     }
 
-    override fun onSuccessReplyReview() {
+    private fun onSuccessReplyReview() {
         refreshPage()
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.reply_response_send))
     }
@@ -555,6 +563,52 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
+    }
+
+    private fun observeInsertReviewReply() {
+        inboxReputationDetailViewModel.insertReviewReplyResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    finishLoadingDialog()
+                    if (it.data.success) {
+                        onSuccessReplyReview()
+                    } else {
+                        val message = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(getString(R.string.review_reply_unknown_error))
+                        )
+                        onErrorReplyReview(message)
+                    }
+                }
+                is Fail -> {
+                    finishLoadingDialog()
+                    onErrorReplyReview(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+            }
+        })
+    }
+
+    private fun observeDeleteReviewReply() {
+        inboxReputationDetailViewModel.deleteReviewReplyResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    finishLoadingDialog()
+                    if (it.data.success) {
+                        onSuccessDeleteReviewResponse()
+                    } else {
+                        val message = ErrorHandler.getErrorMessage(
+                            context,
+                            MessageErrorException(getString(R.string.review_delete_unknown_error))
+                        )
+                        onErrorDeleteReviewResponse(message)
+                    }
+                }
+                is Fail -> {
+                    finishLoadingDialog()
+                    onErrorDeleteReviewResponse(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
+            }
+        })
     }
 
     companion object {

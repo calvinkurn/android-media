@@ -4,10 +4,9 @@
     <color name="play_dms_background_overlay_82">@color/Unify_N0_68</color>
 
     <color name="play_dms_top_gradient_darker">#80000000</color>
-    <color name="play_dms_top_gradient_neutral">#417D7D7D</color>
     <color name="play_dms_top_gradient_lighter">#00000000</color>
 
-    <color name="play_dms_bottom_gradient_lighter">#00000000</color>
+    <color name="play_dms_bottom_gradient_lighter">#002E3137</color>
     <color name="play_dms_bottom_gradient_darker">#B331353B</color>
 
     <color name="play_dms_bottom_sheet_background">#FFFFFF</color>
@@ -31,4 +30,11 @@
     <color name="play_dms_winner_ring_g1">#EF7E08</color>
     <color name="play_dms_winner_ring_g2">#F1C53E</color>
 
+    <!--Chat-->
+    <color name="play_dms_chat_user_color">#FFDD7F</color>
+
+    <!-- Product Tag -->
+    <color name="play_dms_discount_badge">#FFEAEF</color>
+    <color name="play_dms_product_tag_stock_bg">#B331353B</color>
+    <color name="play_dms_product_tag_empty_stock_bg">#6631353B</color>
 </resources>

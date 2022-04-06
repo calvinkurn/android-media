@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_actionbar_live"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="@color/Unify_Static_Black">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_end_stream"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_bro_shop_icon"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_end_stream"
+        app:layout_constraintStart_toEndOf="@id/ic_bro_end_stream"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_end_stream"
+        app:unify_image_placeholder="@color/Unify_N50"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bro_channel_title"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_end_stream"
+        app:layout_constraintEnd_toStartOf="@id/ic_bro_switch_camera"
+        app:layout_constraintStart_toEndOf="@id/iv_bro_shop_icon"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_end_stream"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="@string/play_bro_mock_room_title" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_switch_camera"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:adjustViewBounds="true"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CAMERA_SWITCH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,7 @@
         android:id="@+id/ec_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/divider_color"
+        android:background="@color/Unify_N75"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ec_divider"
         app:typographyType="heading_4"

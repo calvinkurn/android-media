@@ -3,7 +3,6 @@ package com.tokopedia.quest_widget.view
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.quest_widget.constants.GQLQueryQuestWidget.IO
-import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
 import com.tokopedia.quest_widget.domain.RetrieveQuestData
@@ -15,7 +14,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 const val ERROR_NULL_RESPONSE = "Response is null"
-const val LOCATION_NOT_ALLOWED = "Location not allowed"
+const val EMPTY_LOCATION = "page is empty"
 
 class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: CoroutineDispatcher, val questWidgetUseCase: QuestWidgetUseCase): BaseViewModel(workerDispatcher) {
 
@@ -26,14 +25,14 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
 
         if(userSession.isLoggedIn) {
             this.page = page
-            if(page != "" && (page == QuestWidgetLocations.HOME_PAGE || page == QuestWidgetLocations.MY_REWARD ||page == QuestWidgetLocations.DISCO)) {
+            if(page != "") {
                 getQuestWidgetData(channel, channelSlug, page)
             }
             else {
                 questWidgetListLiveData.postValue(
                     LiveDataResult.error(
                         Exception(
-                            LOCATION_NOT_ALLOWED
+                            EMPTY_LOCATION
                         )
                     )
                 )

@@ -17,14 +17,17 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
-import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
-import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
+import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
+import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
+import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
 import com.tokopedia.officialstore.extension.selectTabAtPosition
+import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
@@ -39,6 +42,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.reflect.KClass
 
 /**
  * Created by Lukas on 1/11/21.
@@ -50,6 +54,8 @@ class OfficialStoreAnalyticsTest {
         private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME =
             "tracker/official_store/official_store_page.json"
 
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER =
+            "tracker/official_store/merchant_voucher_os.json"
         private const val ADDRESS_1_ID = "0"
         private const val ADDRESS_1_CITY_ID = "228"
         private const val ADDRESS_1_DISTRICT_ID = "3171"
@@ -59,6 +65,8 @@ class OfficialStoreAnalyticsTest {
         private const val ADDRESS_1_POSTAL_CODE = ""
         private const val ADDRESS_1_SHOP_ID = "11530573"
         private const val ADDRESS_1_WAREHOUE_ID = "0"
+        private val ADDRESS_1_WAREHOUSES = listOf(LocalWarehouseModel(warehouse_id = 12345, service_type = "2h"), LocalWarehouseModel(warehouse_id = 0, service_type = "15m"))
+        private const val ADDRESS_1_SERVICE_TYPE = "15m"
     }
     private var osRecyclerViewIdlingResource: OSRecyclerViewIdlingResource? = null
 
@@ -102,7 +110,9 @@ class OfficialStoreAnalyticsTest {
                 label = ADDRESS_1_LABEL,
                 postalCode = ADDRESS_1_POSTAL_CODE,
                 shopId = ADDRESS_1_SHOP_ID,
-                warehouseId = ADDRESS_1_WAREHOUE_ID
+                warehouseId = ADDRESS_1_WAREHOUE_ID,
+                warehouses = ADDRESS_1_WAREHOUSES,
+                serviceType = ADDRESS_1_SERVICE_TYPE
         )
     }
 
@@ -118,6 +128,10 @@ class OfficialStoreAnalyticsTest {
 
     private fun addDebugEnd() {
         Thread.sleep(5000)
+    }
+
+    private fun waitForLoadCassavaAssert() {
+        Thread.sleep(2000)
     }
 
     private fun doActivityTest() {
@@ -150,6 +164,7 @@ class OfficialStoreAnalyticsTest {
                 onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
                         .perform(ViewActions.swipeUp())
             }
+            Thread.sleep(2500)
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
@@ -165,6 +180,32 @@ class OfficialStoreAnalyticsTest {
     private fun logTestMessage(message: String) {
         TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
         Log.d(TAG, message)
+    }
+
+    private fun endActivityTest() {
+        activityRule.activity.moveTaskToBack(true)
+        logTestMessage("Done UI Test")
+        waitForLoadCassavaAssert()
+    }
+    private fun <T: Any> doActivityTestByModelClass(
+        delayBeforeRender: Long = 2000L,
+        dataModelClass : KClass<T>,
+        predicate: (T?) -> Boolean = {true},
+        isTypeClass: (viewHolder: RecyclerView.ViewHolder, itemClickLimit: Int)-> Unit) {
+        val officialHomeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
+        val officialHomeAdapter = officialHomeRecyclerView.adapter as? OfficialHomeAdapter
+
+        val visitableList = officialHomeAdapter?.currentList?: listOf()
+        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName && predicate.invoke(it as? T) }
+        val targetModelIndex = visitableList.indexOf(targetModel)
+
+        targetModelIndex.let { targetModelIndex->
+            scrollRecyclerViewToPosition(officialHomeRecyclerView, targetModelIndex)
+            if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
+            val targetModelViewHolder = officialHomeRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
+            targetModelViewHolder?.let { targetModelViewHolder-> isTypeClass.invoke(targetModelViewHolder, targetModelIndex) }
+        }
+        endActivityTest()
     }
 
     private fun checkProductOnDynamicChannel(officialStoreRecyclerView: RecyclerView, i: Int) {
@@ -189,9 +230,6 @@ class OfficialStoreAnalyticsTest {
             }
             is DynamicChannelSprintSaleViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_sprintsale_rv,0)
-            }
-            is DynamicChannelLegoViewHolder -> {
-                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dc_lego_rv,0)
             }
             is DynamicChannelThematicViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(
@@ -228,6 +266,19 @@ class OfficialStoreAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+        }
+    }
+
+    @Test
+    fun testComponentMerchantVoucherWidget() {
+        OSCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnMerchantVoucherWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER)
         }
     }
 }

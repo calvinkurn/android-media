@@ -17,7 +17,8 @@
       "sessionIris": ".+",
       "pageSource": ".*",
       "searchFilter": ".*",
-      "androidId": ".*"
+      "androidId": ".*",
+      "component": ".+"
     },
     {
       "event": "view_item_list",

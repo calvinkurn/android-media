@@ -77,7 +77,6 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                 case ACTION_WATERMARK:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_logo_watermark));
                     tvEdit.setText(context.getString(R.string.watermark));
-                    txtLabel.setVisibility(View.VISIBLE);
                     break;
                 case ACTION_CROP_ROTATE:
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_crop_rotate));
@@ -92,6 +91,11 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     setImageViewFromUnify(ivEdit,
                             com.tokopedia.iconunify.R.drawable.iconunify_contrast);
                     tvEdit.setText(context.getString(R.string.contrast));
+                    break;
+                case ACTION_REMOVE_BACKGROUND:
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_menu_remove_background));
+                    tvEdit.setText(context.getString(R.string.remove_background));
+                    txtLabel.setVisibility(View.VISIBLE);
                     break;
             }
             view.setOnClickListener(this);

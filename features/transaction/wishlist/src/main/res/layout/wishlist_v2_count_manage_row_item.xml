@@ -47,24 +47,19 @@
         android:layout_width="1dp"
         android:layout_height="24dp"
         android:layout_toStartOf="@id/wishlist_manage_label"
-        android:layout_alignTop="@id/wishlist_manage_label"
-        android:layout_alignBottom="@id/wishlist_manage_label"
         android:background="@color/Unify_N75"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:visibility="gone"/>
+        android:layout_alignBottom="@id/wishlist_manage_label"/>
 
     <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/wishlist_type_layout_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toStartOf="@id/wishlist_divider"
         app:icon_name="VIEW_LIST"
-        android:layout_marginEnd="8dp"
-        android:layout_alignTop="@id/wishlist_manage_label"
-        android:layout_alignBottom="@id/wishlist_manage_label"
+        android:layout_marginEnd="6dp"
         android:layout_marginTop="12dp"
-        android:layout_marginBottom="12dp"
-        android:visibility="gone"/>
+        android:layout_alignBottom="@id/wishlist_manage_label"/>
 
 </RelativeLayout>

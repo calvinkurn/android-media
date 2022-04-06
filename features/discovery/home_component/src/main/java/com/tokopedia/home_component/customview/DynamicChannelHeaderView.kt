@@ -93,7 +93,7 @@ class DynamicChannelHeaderView: FrameLayout {
             channelTitle?.visibility = View.VISIBLE
             channelTitle?.setTextColor(
                     if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelTitleContainer.visibility = View.GONE
@@ -117,7 +117,7 @@ class DynamicChannelHeaderView: FrameLayout {
             channelSubtitle?.visibility = View.VISIBLE
             channelSubtitle?.setTextColor(
                     if (channel.channelHeader.textColor.isNotEmpty()) Color.parseColor(channel.channelHeader.textColor).invertIfDarkMode(itemView?.context)
-                    else ContextCompat.getColor(context, R.color.Unify_N700).invertIfDarkMode(itemView?.context)
+                    else ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700).invertIfDarkMode(itemView?.context)
             )
         } else {
             channelSubtitle?.visibility = View.GONE
@@ -142,10 +142,10 @@ class DynamicChannelHeaderView: FrameLayout {
             handleSubtitlePosition(channelSubtitleName, channel, channelTitleContainer)
 
             if(channel.style == ChannelStyle.ChannelHome){
-                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             } else if(channel.style == ChannelStyle.ChannelOS){
                 seeAllButton?.setTypeface(null, Typeface.NORMAL)
-                seeAllButton?.setTextColor(ContextCompat.getColor(context, R.color.Unify_P600))
+                seeAllButton?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
             }
 
             seeAllButton?.show()

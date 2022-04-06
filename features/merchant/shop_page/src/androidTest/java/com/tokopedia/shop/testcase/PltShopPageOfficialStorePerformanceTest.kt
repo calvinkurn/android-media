@@ -37,10 +37,6 @@ class PltShopPageOfficialStorePerformanceTest {
 
     @Before
     fun init() {
-        RemoteConfigInstance.getInstance().abTestPlatform.setString(
-                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB,
-                RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
-        )
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
             setupGraphqlMockResponse(ShopPageMockResponseConfig())

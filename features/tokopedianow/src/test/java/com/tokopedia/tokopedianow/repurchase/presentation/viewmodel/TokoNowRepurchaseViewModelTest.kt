@@ -15,6 +15,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
+import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.data.*
 import com.tokopedia.tokopedianow.data.createChooseAddressLayout
@@ -88,6 +90,24 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
     @Test
     fun `when showing empty state ooc layout should run and give the success result`() {
+        val serviceType = "2h"
+        val localCacheModel = LocalCacheModel(
+            service_type = serviceType
+        )
+
+        viewModel.setLocalCacheModel(localCacheModel)
+        viewModel.showEmptyState(EMPTY_STATE_OOC)
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = createEmptyStateLayout(EMPTY_STATE_OOC, serviceType),
+            state = TokoNowLayoutState.EMPTY
+        )
+
+        verifyEmptyStateOocLayoutSuccess(layout)
+    }
+
+    @Test
+    fun `given localCacheModel not set when showEmptyState should add empty state to layout list`() {
         viewModel.showEmptyState(EMPTY_STATE_OOC)
 
         val layout = RepurchaseLayoutUiModel(
@@ -156,7 +176,7 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         viewModel.showEmptyState(EMPTY_STATE_NO_RESULT)
 
         val layout = RepurchaseLayoutUiModel(
-            layoutList = createCategoryGridLayout(),
+            layoutList = createCategoryGridLayout("1"),
             state = TokoNowLayoutState.SHOW
         )
 
@@ -325,6 +345,22 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
         onGetMiniCart_thenReturn(response)
         onGetUserLoggedIn_thenReturn(isLoggedIn = true)
 
+        viewModel.getMiniCart(listOf("1"), "1")
+
+        verifyGetMiniCartUseCaseCalled()
+
+        viewModel.miniCart
+            .verifySuccessEquals(Success(response))
+    }
+
+    @Test
+    fun `when getMiniCart twice should set miniCart value success`() {
+        val response = MiniCartSimplifiedData()
+
+        onGetMiniCart_thenReturn(response)
+        onGetUserLoggedIn_thenReturn(isLoggedIn = true)
+
+        viewModel.getMiniCart(listOf("1"), "1")
         viewModel.getMiniCart(listOf("1"), "1")
 
         verifyGetMiniCartUseCaseCalled()
@@ -1495,5 +1531,182 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.loadMore
             .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 15m when switchService success should switch service to 2h`() {
+        val currentServiceType = "15m"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreference.SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.setLocalCacheModel(localCacheModel)
+        viewModel.switchService()
+
+        val expectedResult = Success(
+            SetUserPreference.SetUserPreferenceData(
+                shopId = "1",
+                warehouseId = "2",
+                serviceType = "2h",
+                warehouses = listOf(
+                    WarehouseData(
+                        warehouseId = "2",
+                        serviceType = "2h"
+                    )
+                )
+            )
+        )
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType OOC when switchService success should switch service to 2h`() {
+        val currentServiceType = "ooc"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreference.SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "2h",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "2h"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.setLocalCacheModel(localCacheModel)
+        viewModel.switchService()
+
+        val expectedResult = Success(
+            SetUserPreference.SetUserPreferenceData(
+                shopId = "1",
+                warehouseId = "2",
+                serviceType = "2h",
+                warehouses = listOf(
+                    WarehouseData(
+                        warehouseId = "2",
+                        serviceType = "2h"
+                    )
+                )
+            )
+        )
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "2h"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given current serviceType 2h when switchService success should switch service to 15m`() {
+        val currentServiceType = "2h"
+
+        val localCacheModel = LocalCacheModel(
+            service_type = currentServiceType
+        )
+
+        val userPreferenceData = SetUserPreference.SetUserPreferenceData(
+            shopId = "1",
+            warehouseId = "2",
+            serviceType = "15m",
+            warehouses = listOf(
+                WarehouseData(
+                    warehouseId = "2",
+                    serviceType = "15m"
+                )
+            )
+        )
+
+        onSetUserPreference_thenReturn(userPreferenceData)
+
+        viewModel.setLocalCacheModel(localCacheModel)
+        viewModel.switchService()
+
+        val expectedResult = Success(
+            SetUserPreference.SetUserPreferenceData(
+                shopId = "1",
+                warehouseId = "2",
+                serviceType = "15m",
+                warehouses = listOf(
+                    WarehouseData(
+                        warehouseId = "2",
+                        serviceType = "15m"
+                    )
+                )
+            )
+        )
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `given localCacheModel null when switchService error should not call set user preference use case`() {
+        viewModel.switchService()
+
+        verifySetUserPreferenceUseCaseNotCalled()
+
+        viewModel.setUserPreference
+            .verifyValueEquals(null)
+    }
+
+    @Test
+    fun `when switchService error should set live data value fail`() {
+        val localCacheModel = LocalCacheModel(
+            service_type = "2h"
+        )
+        val error = NullPointerException()
+
+        onSetUserPreference_thenReturn(error)
+
+        viewModel.setLocalCacheModel(localCacheModel)
+        viewModel.switchService()
+
+        val expectedResult = Fail(NullPointerException())
+
+        verifySetUserPreferenceUseCaseCalled(
+            localCacheModel = localCacheModel,
+            serviceType = "15m"
+        )
+
+        viewModel.setUserPreference
+            .verifyErrorEquals(expectedResult)
     }
 }

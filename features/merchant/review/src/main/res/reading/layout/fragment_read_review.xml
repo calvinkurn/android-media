@@ -4,7 +4,7 @@
     android:id="@+id/read_review_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Background">
+    android:background="@color/Unify_NN0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/read_review_app_bar_layout"

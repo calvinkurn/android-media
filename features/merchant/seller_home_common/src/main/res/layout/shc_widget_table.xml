@@ -103,42 +103,55 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTableWidgetTitle"
                 app:typographyType="body_3" />
 
+            <View
+                android:id="@+id/horLineShcTableBtm"
+                android:layout_width="0dp"
+                android:layout_height="0.1dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/barrierShcTable"
+                tools:layout_constraintTop_toBottomOf="@+id/shcTableView" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrierShcTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="btnShcTableEmpty, shcTableView, tvShcTableOnEmpty" />
+
+            <com.tokopedia.sellerhomecommon.presentation.view.customview.LastUpdatedView
+                android:id="@+id/luvShcTable"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcTableBtm"
+                app:layout_constraintEnd_toStartOf="@+id/btnTableCta"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/horLineShcTableBtm" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/btnTableCta"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl2"
-                android:layout_marginLeft="@dimen/layout_lvl2"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl2"
+                android:layout_marginEnd="8dp"
                 android:gravity="end"
                 android:paddingStart="@dimen/layout_lvl0"
-                android:paddingLeft="@dimen/layout_lvl0"
                 android:paddingEnd="@dimen/spacing_lvl2"
-                android:paddingRight="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/fontSize_lvl3"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/icTableCta"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/shcTableView"
-                app:typographyType="body_2"
-                app:typographyWeight="reguler" />
-
-            <ImageView
-                android:id="@+id/icTableCta"
-                android:layout_width="@dimen/layout_lvl2"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl1"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"
-                android:contentDescription="@string/shc_content_desc_button_lihat_selengkapnya"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@id/btnTableCta"
+                app:layout_constraintBottom_toBottomOf="@+id/horLineShcTableBtm"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/btnTableCta"
-                app:srcCompat="@drawable/ic_arrow_right_default" />
+                app:layout_constraintTop_toTopOf="@+id/horLineShcTableBtm"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
+                tools:text="Selengkapnya"
+                tools:visibility="visible" />
 
             <include
                 android:id="@+id/shcTableErrorStateView"

@@ -1,7 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.autocompletecomponent.complete
 import com.tokopedia.autocompletecomponent.initialstate.TestException
 import com.tokopedia.autocompletecomponent.jsonToObject
 import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetDataView
@@ -10,17 +9,25 @@ import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubl
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineWithoutImageDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.productline.SuggestionProductLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
-import com.tokopedia.usecase.UseCase
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.CapturingSlot
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
 import org.junit.Before
-import rx.Subscriber
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 internal open class SuggestionPresenterTestFixtures {
     protected val suggestionView = mockk<SuggestionContract.View>(relaxed = true)
 
     protected val getSuggestionUseCase = mockk<UseCase<SuggestionUniverse>>(relaxed = true)
-    protected val suggestionTrackerUseCase = mockk<UseCase<Void?>>(relaxed = true)
+    protected val suggestionTrackerUseCase = mockk<RxUseCase<Void?>>(relaxed = true)
+    protected val topAdsUrlHitter = mockk<TopAdsUrlHitter>(relaxed = true)
 
     protected val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -36,6 +43,7 @@ internal open class SuggestionPresenterTestFixtures {
         suggestionPresenter = SuggestionPresenter(
             getSuggestionUseCase,
             suggestionTrackerUseCase,
+            { topAdsUrlHitter },
             userSession,
         )
 
@@ -55,9 +63,14 @@ internal open class SuggestionPresenterTestFixtures {
         `Given view already get suggestion`(searchParameter)
     }
 
-    private fun `Given Suggestion API will return SuggestionUniverse`(suggestionUniverse: SuggestionUniverse) {
-        every { getSuggestionUseCase.execute(any(), any()) }.answers {
-            secondArg<Subscriber<SuggestionUniverse>>().complete(suggestionUniverse)
+    protected fun `Given Suggestion API will return SuggestionUniverse`(
+        suggestionUniverse: SuggestionUniverse,
+        requestParamSlot: CapturingSlot<RequestParams> = slot(),
+    ) {
+        every {
+            getSuggestionUseCase.execute(any(), any(), capture(requestParamSlot))
+        } answers {
+            firstArg<(SuggestionUniverse) -> Unit>().invoke(suggestionUniverse)
         }
     }
 
@@ -95,4 +108,8 @@ internal open class SuggestionPresenterTestFixtures {
 
     protected fun List<Visitable<*>>.findChip(): SuggestionChipWidgetDataView =
         this.filterIsInstance<SuggestionChipWidgetDataView>().first()
+
+    protected fun List<Visitable<*>>.findShopAds(): SuggestionDoubleLineDataDataView =
+        this.filterIsInstance<SuggestionDoubleLineDataDataView>()
+            .find { it.data.shopAdsDataView != null }!!
 }

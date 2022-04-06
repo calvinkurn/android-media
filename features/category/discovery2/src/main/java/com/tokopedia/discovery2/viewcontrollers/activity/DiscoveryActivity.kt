@@ -35,6 +35,7 @@ import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
 
@@ -231,6 +232,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), Fold
                 getPageIdentifier(),
                 getCampaignCode(),
                 getSourceIdentifier(),
+                UserSession(this),
                 trackingQueue)
     }
 

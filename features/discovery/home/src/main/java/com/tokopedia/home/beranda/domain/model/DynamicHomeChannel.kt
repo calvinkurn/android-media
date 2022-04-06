@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import java.util.*
 import kotlin.collections.ArrayList
 
 data class DynamicHomeChannel(
@@ -37,6 +36,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("layout")
             val layout: String = "",
+            @Expose
+            @SerializedName("campaignType")
+            val campaignType: Int = -1,
             @Expose
             @SerializedName("name")
             val name: String = "",
@@ -73,22 +75,34 @@ data class DynamicHomeChannel(
             @SerializedName("banner")
             val banner: Banner = Banner(),
             @SerializedName("promoName")
+            @Expose
             var promoName: String = "",
             @SerializedName("homeAttribution")
+            @Expose
             val homeAttribution: String = "",
             @SerializedName("has_close_button")
+            @Expose
             val hasCloseButton: Boolean = false,
             @SerializedName("isAutoRefreshAfterExpired")
+            @Expose
             val isAutoRefreshAfterExpired: Boolean = false,
             @SerializedName("contextualInfo")
+            @Expose
             val contextualInfo: Int = 0,
             @SerializedName("widgetParam")
+            @Expose
             val widgetParam: String = "",
             @SerializedName("token")
+            @Expose
             var token: String = "",
             @SerializedName("dividerType")
+            @Expose
             val dividerType: Int = DIVIDER_NO_DIVIDER,
+            @SerializedName("timestamp")
+            @Expose
             var timestamp: String = "",
+            @SerializedName("isCache")
+            @Expose
             var isCache: Boolean = true
     ) : ImpressHolder() {
 
@@ -148,47 +162,6 @@ data class DynamicHomeChannel(
             ),
                     "attribution", getHomeAttribution(position + 1, grids[position].id)
             )
-        }
-
-        fun getEnhanceClickSprintSaleCarouselHomePage(position: Int, countDown: String?, label: String?): Map<String, Any> {
-            return DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "sprint sale banner click",
-                    "eventLabel", String.format("%s - %s", countDown, label),
-                    channelId, id,
-                    "ecommerce", DataLayer.mapOf(
-                    "promoClick", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    DataLayer.mapOf(
-                            "id", grids[position].id,
-                            "name", "/ - p2 - sprint sale banner",
-                            "position", (position + 1).toString(),
-                            "creative", grids[position].name,
-                            "creative_url", grids[position].imageUrl
-                    )
-            )
-            )
-            ),
-                    "attribution", getHomeAttribution(position + 1, grids[position].id)
-            )
-        }
-
-        fun convertProductEnhanceSprintSaleCarouselDataLayerForCombination(): List<Any> {
-            val list: MutableList<Any> = ArrayList()
-
-            for (i in grids.indices) {
-                val grid: Grid = grids[i]
-                list.add(
-                        DataLayer.mapOf(
-                                "id", grid.id,
-                                "name", "/ - p2 - sprint sale banner",
-                                "creative", grid.name,
-                                "position", (i + 1).toString())
-                )
-            }
-
-            return list
         }
 
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
@@ -321,7 +294,6 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
             const val LAYOUT_LEGO_4_AUTO: String = "4_banners_auto"
-            const val LAYOUT_SPRINT_CAROUSEL: String = "sprint_carousel"
             const val LAYOUT_TOPADS: String = "topads"
             const val LAYOUT_SPOTLIGHT: String = "spotlight"
             const val LAYOUT_HOME_WIDGET: String = "home_widget"
@@ -349,12 +321,13 @@ data class DynamicHomeChannel(
             const val LAYOUT_LEGO_6_AUTO: String = "6_image_auto"
             const val LAYOUT_QUESTWIDGET = "quest_widget"
             const val LAYOUT_CAMPAIGN_WIDGET: String = "campaign_widget"
+            const val LAYOUT_CAMPAIGN_FEATURING: String = "campaign_featuring"
+            const val LAYOUT_CM_HOME_TO_DO: String = "home_todo"
+            const val LAYOUT_MERCHANT_VOUCHER: String = "merchant_voucher"
+            const val LAYOUT_PAYLATER_CICIL: String = "gpl_cicil"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0
-            const val DIVIDER_TOP = 1
-            const val DIVIDER_BOTTOM = 2
-            const val DIVIDER_TOP_AND_BOTTOM = 3
         }
     }
 
@@ -476,7 +449,10 @@ data class DynamicHomeChannel(
             val campaignCode: String = "",
             @Expose
             @SerializedName("badges")
-            val badges: Array<HomeBadges> = arrayOf()
+            val badges: Array<HomeBadges> = arrayOf(),
+            @Expose
+            @SerializedName("expiredTime")
+            val expiredTime: String = ""
     )
 
     data class HomeBadges(
@@ -607,6 +583,18 @@ data class DynamicHomeChannel(
         val shopId: String = "",
         @Expose
         @SerializedName("city")
-        val city: String = ""
+        val city: String = "",
+        @Expose
+        @SerializedName("name")
+        val name: String = "",
+        @Expose
+        @SerializedName("imageUrl")
+        val imageUrl: String = "",
+        @Expose
+        @SerializedName("url")
+        val url: String = "",
+        @Expose
+        @SerializedName("applink")
+        val applink: String = ""
     )
 }

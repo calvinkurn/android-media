@@ -7,6 +7,7 @@ import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.robot.play.PlayViewModelRobot2
+import com.tokopedia.play.util.share.PlayShareExperience
 import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
@@ -35,6 +36,7 @@ class PlayUpcomingViewModelRobot(
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
+    playShareExperience: PlayShareExperience = mockk(relaxed = true)
 ): Closeable {
 
     val viewModel = PlayUpcomingViewModel(
@@ -47,6 +49,7 @@ class PlayUpcomingViewModelRobot(
         playAnalytic = playAnalytic,
         playChannelSSE = playChannelSSE,
         repo = repo,
+        playShareExperience = playShareExperience,
     )
 
     suspend fun submitAction(action: PlayUpcomingAction) = act {
@@ -125,6 +128,7 @@ fun createPlayUpcomingViewModelRobot(
     playAnalytic: PlayNewAnalytic  = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE  = mockk(relaxed = true),
     repo: PlayViewerRepository  = mockk(relaxed = true),
+    playShareExperience: PlayShareExperience = mockk(relaxed = true),
     fn: PlayUpcomingViewModelRobot.() -> Unit = {}
 ): PlayUpcomingViewModelRobot {
     return PlayUpcomingViewModelRobot(
@@ -137,5 +141,6 @@ fun createPlayUpcomingViewModelRobot(
         playAnalytic = playAnalytic,
         playChannelSSE = playChannelSSE,
         repo = repo,
+        playShareExperience = playShareExperience,
     ).apply(fn)
 }

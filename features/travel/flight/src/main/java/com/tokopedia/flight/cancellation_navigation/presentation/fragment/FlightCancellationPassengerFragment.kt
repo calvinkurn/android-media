@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
+import com.tokopedia.flight.cancellation.data.FlightCancellationResponseEntity
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent
 import com.tokopedia.flight.cancellation.presentation.adapter.FlightCancellationAdapterTypeFactory
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationViewHolder
@@ -23,7 +24,6 @@ import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWr
 import com.tokopedia.flight.cancellation.presentation.viewmodel.FlightCancellationPassengerViewModel
 import com.tokopedia.flight.cancellation_navigation.presentation.fragment.FlightCancellationReasonFragment.Companion.EXTRA_CANCELLATION_MODEL
 import com.tokopedia.flight.databinding.FragmentFlightCancellationBinding
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -42,7 +42,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
 
     private var isFirstRelationCheck: Boolean = false
     private var invoiceId: String = ""
-    private lateinit var flightCancellationJourneyList: List<FlightCancellationJourney>
+    private lateinit var flightCancellationJourneyList: List<FlightCancellationResponseEntity>
     private var flightCancellationWrapperModel: FlightCancellationWrapperModel = FlightCancellationWrapperModel()
     private lateinit var passengerRelationMap: Map<String, FlightCancellationPassengerModel>
 

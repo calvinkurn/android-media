@@ -12,8 +12,8 @@ import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.flight.R
 import com.tokopedia.flight.detail.view.model.SimpleModel
-import com.tokopedia.flight.orderlist.R
 import java.util.*
 
 /**
@@ -55,7 +55,8 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_simple_view, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_flight_simple_view, parent, false)
         return ViewHolder(view)
     }
 
@@ -140,7 +141,8 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
         private val titleTextView = itemView.findViewById<View>(R.id.tv_title) as TextView
         private val contentTextView = itemView.findViewById<View>(R.id.tv_content) as TextView
         private val arrowImageView = itemView.findViewById<View>(R.id.iv_arrow) as ImageView
-        private val containerLinearLayout = itemView.findViewById<View>(R.id.container) as LinearLayout
+        private val containerLinearLayout =
+            itemView.findViewById<View>(R.id.container) as LinearLayout
 
         fun bind(viewModel: SimpleModel) {
             val layoutParams = titleTextView.layoutParams as LinearLayout.LayoutParams
@@ -169,10 +171,10 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 layoutParams.weight = 0f
                 layoutParams.setMargins(
-                        PARAM_EMPTY_MARGIN,
-                        PARAM_EMPTY_MARGIN,
-                        10,
-                        PARAM_EMPTY_MARGIN
+                    PARAM_EMPTY_MARGIN,
+                    PARAM_EMPTY_MARGIN,
+                    10,
+                    PARAM_EMPTY_MARGIN
                 )
                 titleTextView.layoutParams = layoutParams
                 titleTextView.minWidth = 150
@@ -186,20 +188,23 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
                 }
             }
             if (isClickable) {
-                containerLinearLayout.background = MethodChecker.getDrawable(itemView.context, com.tokopedia.abstraction.R.drawable.selectable_background_tokopedia)
+                containerLinearLayout.background = MethodChecker.getDrawable(
+                    itemView.context,
+                    com.tokopedia.abstraction.R.drawable.selectable_background_tokopedia
+                )
             } else {
                 containerLinearLayout.background = null
             }
             val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
             )
             val resources = itemView.context.resources
             params.setMargins(
-                    convertToPixel(resources, marginLeftDp),
-                    convertToPixel(resources, marginTopDp),
-                    convertToPixel(resources, marginRightDp),
-                    convertToPixel(resources, marginBottomDp)
+                convertToPixel(resources, marginLeftDp),
+                convertToPixel(resources, marginTopDp),
+                convertToPixel(resources, marginRightDp),
+                convertToPixel(resources, marginBottomDp)
             )
             containerLinearLayout.layoutParams = params
         }
@@ -208,9 +213,9 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
 
     private fun convertToPixel(resources: Resources, dp: Float): Int {
         return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_PX,
-                dp,
-                resources.displayMetrics
+            TypedValue.COMPLEX_UNIT_PX,
+            dp,
+            resources.displayMetrics
         ).toInt()
     }
 

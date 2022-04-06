@@ -12,18 +12,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.databinding.FragmentBaseAddNameBinding
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.listener.BaseAddNameListener
-import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.fragment_base_add_name.*
+import kotlinx.android.synthetic.main.fragment_base_add_name.view.*
+
 
 /**
  * Created by Yoris Prayogo on 16/11/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 abstract class BaseAddNameFragment: BaseDaggerFragment() {
-
-    private val binding: FragmentBaseAddNameBinding? by viewBinding()
 
     var baseAddNameListener: BaseAddNameListener? = null
 
@@ -38,41 +37,41 @@ abstract class BaseAddNameFragment: BaseDaggerFragment() {
     }
 
     fun startButtonLoading(){
-        binding?.baseAddNameButtonNext?.isLoading = true
+        base_add_name_button_next?.isLoading = true
     }
 
     fun stopButtonLoading(){
-        binding?.baseAddNameButtonNext?.isLoading = false
+        base_add_name_button_next?.isLoading = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setTitle(context?.getString(R.string.title_external_register_add_name) ?: "")
         setBottomText()
-        binding?.baseAddNameButtonNext?.setOnClickListener {
-            if(binding?.baseAddNameTextfield?.textFieldInput?.text?.toString()?.isNotEmpty() == true) {
+        base_add_name_button_next?.setOnClickListener {
+            if(view.base_add_name_textfield?.textFieldInput?.text?.toString()?.isNotEmpty() == true) {
                 baseAddNameListener?.onNextButtonClicked()
             }
             else {
-                binding?.baseAddNameTextfield?.setMessage(getString(R.string.base_add_name_error_empty))
-                binding?.baseAddNameTextfield?.setError(true)
+                view.base_add_name_textfield?.setMessage(getString(R.string.base_add_name_error_empty))
+                view.base_add_name_textfield?.setError(true)
             }
         }
 
-        binding?.baseAddNameTextfield?.textFieldInput?.afterTextChanged {
+        view.base_add_name_textfield?.textFieldInput?.afterTextChanged {
             if(it.length == 1) {
-                binding?.baseAddNameTextfield?.setMessage("")
-                binding?.baseAddNameTextfield?.setError(false)
+                view.base_add_name_textfield?.setMessage("")
+                view.base_add_name_textfield?.setError(false)
             }
         }
 
         initObserver()
     }
 
-    fun getInputText(): String = binding?.baseAddNameTextfield?.textFieldInput?.text?.toString() ?: ""
+    fun getInputText(): String = view?.base_add_name_textfield?.textFieldInput?.text?.toString() ?: ""
 
     fun setTitle(title: String){
-        binding?.baseAddNameTitle?.text = title
+        base_add_name_title?.text = title
     }
 
     fun setBottomText() {
@@ -98,7 +97,7 @@ abstract class BaseAddNameFragment: BaseDaggerFragment() {
             }
         }, 0, privacy.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        binding?.baseAddNameTncText?.apply {
+        base_add_name_tnc_text?.apply {
             append(normal)
             append(tnc)
             append(" serta ")

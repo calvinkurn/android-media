@@ -8,7 +8,7 @@ import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUse
 import rx.Observable
 import javax.inject.Inject
 
-class GetPostDetailWishlistedUseCase @Inject constructor(private val detailUseCase: GetPostDetailUseCase,
+class GetPostDetailWishlistedUseCase @Inject constructor(private val detailUseCase: GetPostDetailUseCaseSeller,
                                                          private val isProductWishlistedUseCase: GetProductIsWishlistedUseCase)
     : UseCase<PostDetailViewModel>() {
 

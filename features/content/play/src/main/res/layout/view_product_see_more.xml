@@ -18,10 +18,9 @@
         android:textColor="@color/play_dms_product_count_color"
         android:background="@drawable/bg_play_product_count"
         android:paddingTop="@dimen/spacing_lvl1"
-        android:paddingBottom="@dimen/spacing_lvl1"
         android:paddingStart="@dimen/spacing_lvl3"
         android:paddingEnd="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
         android:text="@string/play_zero"
         app:layout_constraintEnd_toEndOf="@id/ic_play_product_see_more"
         app:layout_constraintStart_toStartOf="@id/ic_play_product_see_more"
@@ -35,8 +34,8 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ic_play_product_see_more"
-        android:layout_width="@dimen/layout_lvl3"
-        android:layout_height="@dimen/layout_lvl3"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
         app:srcCompat="@drawable/ic_product_icon"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"

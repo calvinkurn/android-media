@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        >
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/withdrawalProgress"
+            android:layout_width="@dimen/unify_space_32"
+            android:layout_height="@dimen/unify_space_32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/saldoWithdrawalDetailGlobalError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="@dimen/unify_space_16"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="gone" />
+
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/saldoTicker"
+            app:tickerType="error"
+            app:closeButtonVisibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvWithdrawalAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/saldoTicker"
+            app:typographyType="heading_2"
+            app:typographyWeight="bold"
+            tools:text="Rp600.00" />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/withdrawalStatusLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:labelTitle="Berhasil"
+            app:labelType="general_light_green"
+            app:layout_constraintBottom_toBottomOf="@+id/tvWithdrawalAmount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvWithdrawalAmount" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvBankName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="@+id/tvWithdrawalAmount"
+            app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalAmount"
+            app:typographyType="body_2"
+            tools:text="PT. BCA (Bank Central Asia)" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvAccountName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="@+id/tvWithdrawalAmount"
+            app:layout_constraintTop_toBottomOf="@+id/tvBankName"
+            app:typographyType="body_2"
+            tools:text="012345678762 - Rachel Kurniawan" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvWithdrawalDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintStart_toStartOf="@+id/tvWithdrawalAmount"
+            app:layout_constraintTop_toBottomOf="@+id/tvAccountName"
+            app:typographyType="body_3"
+            tools:text="22 Des 2020, 10:30 WIB" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/detailSeparator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintTop_toBottomOf="@id/tvWithdrawalDate" />
+
+        <com.tokopedia.affiliate.ui.custom.AffiliateWithdrawalDetailsList
+            android:id="@+id/llWithdrawalDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detailSeparator" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/withdrawalStatusSeparator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_16"
+            app:layout_constraintTop_toBottomOf="@id/llWithdrawalDetail" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvWithdrawalStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/withdrawalStatusSeparator"
+            app:typographyType="heading_4"
+            android:text="@string/affiliate_saldo_withdrawal_balance_status" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvWithdrawalStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/unify_space_24"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvWithdrawalStatus"
+            app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalStatus"
+            tools:listitem="@layout/affiliate_saldo_withdrawal_status_item_view"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/dataGroup"
+            app:constraint_referenced_ids="rvWithdrawalStatus, tvWithdrawalStatus,
+            withdrawalStatusSeparator,llWithdrawalDetail, detailSeparator,
+            tvAccountName, tvBankName, withdrawalStatusLabel,tvWithdrawalAmount"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

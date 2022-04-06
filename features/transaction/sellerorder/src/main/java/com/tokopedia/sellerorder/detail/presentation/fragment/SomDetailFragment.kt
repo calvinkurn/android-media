@@ -17,10 +17,11 @@ import android.view.*
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
@@ -56,10 +57,6 @@ import com.tokopedia.sellerorder.common.presenter.model.SomPendingAction
 import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
-import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
@@ -87,8 +84,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
-import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.setUserNotAllowedToViewSom
+import com.tokopedia.sellerorder.common.util.Utils.updateShopActive
 import com.tokopedia.sellerorder.databinding.DialogAcceptOrderFreeShippingSomBinding
 import com.tokopedia.sellerorder.databinding.FragmentSomDetailBinding
 import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMonitoring
@@ -98,15 +95,14 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailLogisticInfoActivity
 import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
-import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.factory.SomDetailAdapterFactoryImpl
+import com.tokopedia.sellerorder.detail.presentation.adapter.viewholder.SomDetailAddOnViewHolder
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
-import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
+import com.tokopedia.sellerorder.detail.presentation.mapper.SomDetailMapper
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
-import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
-import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.Toaster
@@ -129,11 +125,12 @@ import javax.inject.Inject
  * Created by fwidjaja on 2019-09-30.
  */
 open class SomDetailFragment : BaseDaggerFragment(),
-        RefreshHandler.OnRefreshHandlerListener,
-        SomBottomSheetRejectOrderAdapter.ActionListener,
-        SomDetailAdapter.ActionListener,
-        SomBottomSheetRejectReasonsAdapter.ActionListener,
-        SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener, SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
+    RefreshHandler.OnRefreshHandlerListener,
+    SomBottomSheetRejectOrderAdapter.ActionListener,
+    SomDetailAdapterFactoryImpl.ActionListener,
+    SomBottomSheetRejectReasonsAdapter.ActionListener,
+    SomBaseRejectOrderBottomSheet.SomRejectOrderBottomSheetListener,
+    SomBottomSheetSetDelivered.SomBottomSheetSetDeliveredListener,
     SomOrderEditAwbBottomSheet.SomOrderEditAwbBottomSheetListener,
     SomOrderRequestCancelBottomSheet.SomOrderRequestCancelBottomSheetListener {
 
@@ -151,9 +148,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
     private var successEditAwbResponse = SomEditRefNumResponse.Data()
     private var failEditAwbResponse = SomEditRefNumResponse.Error()
-    private var listDetailData: ArrayList<SomDetailData> = arrayListOf()
     private var somDetailLoadTimeMonitoring: SomDetailLoadTimeMonitoring? = null
-    private lateinit var somDetailAdapter: SomDetailAdapter
+    private var recyclerViewSharedPool = RecyclerView.RecycledViewPool()
+    private var somDetailAdapter = BaseAdapter(getAdapterTypeFactory())
+
     private var refreshHandler: RefreshHandler? = null
     private var pendingAction: SomPendingAction? = null
 
@@ -225,22 +223,27 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     private fun goToAskBuyer() {
         val orderId = orderId.takeIf { it.isNotBlank() } ?: getOrderIdExtra()
-        val intent = RouteManager.getIntent(activity,
-                ApplinkConst.TOPCHAT_ASKBUYER,
-                detailResponse?.customer?.id.orEmpty(), "",
-                PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image).apply {
+        val firstProduct = detailResponse?.getFirstProduct()
+        val intent = RouteManager.getIntent(
+            activity,
+            ApplinkConst.TOPCHAT_ASKBUYER,
+            detailResponse?.customer?.id.orEmpty(), "",
+            PARAM_SOURCE_ASK_BUYER, detailResponse?.customer?.name, detailResponse?.customer?.image
+        ).apply {
             putExtra(ApplinkConst.Chat.INVOICE_ID, orderId) // it's actually require the id of the order
             putExtra(ApplinkConst.Chat.INVOICE_CODE, detailResponse?.invoice)
-
-            if (detailResponse?.listProduct?.isNotEmpty() == true) {
-                putExtra(ApplinkConst.Chat.INVOICE_TITLE, detailResponse?.listProduct?.firstOrNull()?.name.orEmpty())
-                putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, detailResponse?.listProduct?.firstOrNull()?.thumbnail.orEmpty())
+            if (firstProduct != null) {
+                putExtra(ApplinkConst.Chat.INVOICE_TITLE, firstProduct.name)
+                putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, firstProduct.thumbnail)
             }
             putExtra(ApplinkConst.Chat.INVOICE_DATE, detailResponse?.paymentDate)
             putExtra(ApplinkConst.Chat.INVOICE_URL, detailResponse?.invoiceUrl)
             putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, detailResponse?.statusCode?.toString())
             putExtra(ApplinkConst.Chat.INVOICE_STATUS, detailResponse?.statusText)
-            putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, dynamicPriceResponse?.paymentData?.value)
+            putExtra(
+                ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT,
+                dynamicPriceResponse?.paymentData?.value
+            )
         }
         startActivity(intent)
     }
@@ -279,6 +282,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
         observeOrderExtensionRequestInfo()
     }
 
+    override fun onResume() {
+        super.onResume()
+        doOnResume()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         connectionMonitor?.end()
@@ -297,9 +305,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun doSetDelivered(receiverName: String) {
-        val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
         setLoadingIndicator(true)
-        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverName)
+        somDetailViewModel.setDelivered(orderId, receiverName)
     }
 
     override fun onEditAwbButtonClicked(cancelNotes: String) {
@@ -337,9 +344,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun prepareLayout() {
         refreshHandler = RefreshHandler(binding?.swipeRefreshLayout, this)
         refreshHandler?.setPullEnabled(true)
-        somDetailAdapter = SomDetailAdapter().apply {
-            setActionListener(this@SomDetailFragment)
-        }
         binding?.rvDetail?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somDetailAdapter
@@ -351,6 +355,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 checkUserRole()
             }
         }
+        recyclerViewSharedPool.setMaxRecycledViews(SomDetailAddOnViewHolder.RES_LAYOUT, SomDetailAddOnViewHolder.MAX_RECYCLED_VIEWS)
     }
 
     protected open fun loadDetail() {
@@ -358,9 +363,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         if (connectionMonitor?.isConnected == true) {
             activity?.let {
                 SomAnalytics.sendScreenName(SomConsts.DETAIL_ORDER_SCREEN_NAME + orderId)
-                it.resources?.let { r ->
-                    somDetailViewModel.loadDetailOrder(orderId)
-                }
+                somDetailViewModel.loadDetailOrder(orderId)
             }
         } else {
             showErrorState(GlobalError.NO_CONNECTION)
@@ -374,18 +377,25 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingDetail() {
-        somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
+        somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, {
             somDetailLoadTimeMonitoring?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
                     isDetailChanged = if (detailResponse == null) false else detailResponse != it.data.getSomDetail
                     detailResponse = it.data.getSomDetail
                     dynamicPriceResponse = it.data.somDynamicPriceResponse
-                    renderDetail()
+                    renderDetail(it.data.getSomDetail, it.data.somDynamicPriceResponse)
                 }
                 is Fail -> {
                     it.throwable.showGlobalError()
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_DETAIL)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_ORDER_DETAIL_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     stopLoadTimeMonitoring()
                 }
             }
@@ -393,7 +403,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingAcceptOrder() {
-        somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner, Observer {
+        somDetailViewModel.acceptOrderResult.observe(viewLifecycleOwner, {
             binding?.btnPrimary?.isLoading = false
             when (it) {
                 is Success -> {
@@ -407,20 +417,34 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_ACCEPTING_ORDER)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.ACCEPT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                     SomAnalytics.eventClickAcceptOrderPopup(false)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                 }
             }
         })
     }
 
     private fun observingRejectReasons() {
-        somDetailViewModel.rejectReasonResult.observe(viewLifecycleOwner, Observer {
+        somDetailViewModel.rejectReasonResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessRejectReason(it.data)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_ORDER_REJECT_REASONS)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.GET_REJECT_REASON_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -431,13 +455,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingSetDelivered() {
-        somDetailViewModel.setDelivered.observe(viewLifecycleOwner, Observer {
+        somDetailViewModel.setDelivered.observe(viewLifecycleOwner, {
             setLoadingIndicator(false)
             when (it) {
                 is Success -> onSuccessSetDelivered(it.data.setDelivered)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_WHEN_SET_DELIVERED)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    it.throwable.showErrorToaster()
                     bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
                 }
             }
@@ -445,7 +469,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingUserRoles() {
-        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, Observer { result ->
+        somDetailViewModel.somDetailChatEligibility.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     result.data.let { (isSomDetailEligible, isReplyChatEligible) ->
@@ -460,7 +484,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, String.format(SomConsts.ERROR_GET_USER_ROLES, PAGE_NAME))
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    result.throwable.showErrorToaster()
                     result.throwable.showGlobalError()
                 }
             }
@@ -468,7 +492,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeRejectCancelOrder() {
-        somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        somDetailViewModel.rejectCancelOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     if (result.data.rejectCancelRequest.success == 1) {
@@ -478,7 +502,14 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(result.throwable, SomConsts.ERROR_REJECT_CANCEL_ORDER)
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_CANCEL_REQUEST_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                    result.throwable.showErrorToaster()
                 }
             }
         })
@@ -510,163 +541,20 @@ open class SomDetailFragment : BaseDaggerFragment(),
         activity?.finish()
     }
 
-    protected open fun renderDetail() {
+    protected open fun renderDetail(
+        somDetail: SomDetailOrder.Data.GetSomDetail?,
+        somDynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice?
+    ) {
         showSuccessState()
-        listDetailData = arrayListOf()
-        somDetailAdapter.listDataDetail = arrayListOf()
-        renderHeader()
-        renderProducts()
-        renderShipment()
-        renderPayment()
         renderButtons()
-
-        somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         binding?.rvDetail?.addOneTimeGlobalLayoutListener {
             stopLoadTimeMonitoring()
         }
-        somDetailAdapter.notifyDataSetChanged()
-    }
-
-    private fun renderHeader() {
-        // header
-        detailResponse?.run {
-            val dataHeader = SomDetailHeader(
-                    statusCode,
-                    statusText,
-                    statusIndicatorColor,
-                    buyerRequestCancel.isRequestCancel,
-                    invoice,
-                    invoiceUrl,
-                    paymentDate,
-                    customer.name,
-                    deadline.text,
-                    deadline.color,
-                    listLabelInfo,
-                    orderId,
-                    shipment.awbUploadUrl,
-                    shipment.awbUploadProofText,
-                    bookingInfo.onlineBooking.bookingCode,
-                    bookingInfo.onlineBooking.state,
-                    bookingInfo.onlineBooking.barcodeType,
-                    warehouse.fullFillBy,
-                    flagOrderMeta.isWareHouse,
-                    tickerInfo)
-            listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
-        }
-    }
-
-    private fun renderProducts() {
-        detailResponse?.run {
-            val bundleDetailList = mutableListOf<BaseProductUiModel>()
-            bundleDetailList.addAll(getProductBundleList(bundleDetail?.bundle.orEmpty()))
-            bundleDetailList.addAll(getProductNonBundleList(haveProductBundle, bundleDetail?.nonBundle.orEmpty(), listProduct))
-            val dataProducts = SomDetailProducts(bundleDetailList, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
-            listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
-        }
-    }
-
-    private fun getProductNonBundleList(
-            haveProductBundle: Boolean,
-            nonBundle: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleDetailProduct>,
-            listProduct: List<SomDetailOrder.Data.GetSomDetail.Products>
-    ): List<BaseProductUiModel> {
-        return if (haveProductBundle) {
-            nonBundle.map {
-                NonProductBundleUiModel(
-                        product = SomDetailOrder.Data.GetSomDetail.Products(
-                                id = it.id,
-                                orderDetailId = it.orderDetailId,
-                                name = it.name,
-                                thumbnail = it.thumbnail,
-                                priceText = it.priceText,
-                                quantity = it.quantity,
-                                note = it.note
-                        )
-                )
-            }
-        } else {
-            listProduct.map {
-                NonProductBundleUiModel(it)
-            }
-        }
-    }
-
-    private fun getProductBundleList(
-            bundleList: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleProduct>
-    ): List<ProductBundleUiModel> {
-        return bundleList.map { bundle ->
-            return@map ProductBundleUiModel(
-                    bundleId = bundle.bundleId,
-                    bundleName = bundle.bundleName,
-                    bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
-                    bundleSubTotal = Utils.parseRupiah(bundle.bundleSubTotal),
-                    orderDetail = bundle.orderDetail.map {
-                        SomDetailOrder.Data.GetSomDetail.Products(
-                                id = it.id,
-                                orderDetailId = it.orderDetailId,
-                                name = it.name,
-                                thumbnail = it.thumbnail,
-                                priceText = it.priceText,
-                                quantity = it.quantity,
-                                note = it.note
-                        )
-                    }
+        somDetailAdapter.setElements(
+            SomDetailMapper.mapSomGetOrderDetailResponseToVisitableList(
+                somDetail, somDynamicPriceResponse
             )
-        }
-    }
-
-    private fun renderShipment() {
-        // shipping
-        detailResponse?.run {
-            val dataShipping = SomDetailShipping(
-                    shipment.name + " - " + shipment.productName,
-                    receiverName = receiver.name,
-                    receiverPhone = receiver.phone,
-                    receiverStreet = receiver.street,
-                    receiverDistrict = receiver.district + ", " + receiver.city + " " + receiver.postal,
-                    receiverProvince = receiver.province,
-                    isFreeShipping = flagOrderMeta.flagFreeShipping,
-                    driverPhoto = bookingInfo.driver.photo,
-                    driverName = bookingInfo.driver.name,
-                    driverPhone = bookingInfo.driver.phone,
-                    dropshipperName = dropshipper.name,
-                    dropshipperPhone = dropshipper.phone,
-                    driverLicense = bookingInfo.driver.licenseNumber,
-                    onlineBookingCode = bookingInfo.onlineBooking.bookingCode,
-                    onlineBookingState = bookingInfo.onlineBooking.state,
-                    onlineBookingMsg = bookingInfo.onlineBooking.message,
-                    onlineBookingMsgArray = bookingInfo.onlineBooking.messageArray,
-                    onlineBookingType = bookingInfo.onlineBooking.barcodeType,
-                    isRemoveAwb = onlineBooking.isRemoveInputAwb,
-                    awb = shipment.awb,
-                    awbTextColor = shipment.awbTextColor,
-                    isShippingPrinted = flagOrderMeta.isShippingPrinted,
-                    logisticInfo = logisticInfo
-            )
-            listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
-        }
-
-    }
-
-    private fun renderPayment() {
-        val paymentData = SomDetailPayments.PaymentDataUiModel(
-                label = dynamicPriceResponse?.paymentData?.label.orEmpty(),
-                value = dynamicPriceResponse?.paymentData?.value.orEmpty())
-
-        val paymentMethodList = mutableListOf<SomDetailPayments.PaymentMethodUiModel>()
-        dynamicPriceResponse?.paymentMethod?.map {
-            paymentMethodList.add(SomDetailPayments.PaymentMethodUiModel(label = it.label, value = it.value))
-        }
-
-        val pricingList = mutableListOf<SomDetailPayments.PricingData>()
-        dynamicPriceResponse?.pricingData?.map {
-            pricingList.add(SomDetailPayments.PricingData(label = it.label, value = it.value))
-        }
-
-        val dataPayments = SomDetailPayments(paymentDataUiModel = paymentData,
-                paymentMethodUiModel = paymentMethodList, pricingData = pricingList)
-
-        listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
+        )
     }
 
     private fun renderButtons() {
@@ -936,7 +824,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRejectOrder() {
-        somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
+        somDetailViewModel.getRejectReasons()
     }
 
     private fun doEditAwb(shippingRef: String) {
@@ -944,7 +832,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingEditAwb() {
-        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner, Observer {
+        somDetailViewModel.editRefNumResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     successEditAwbResponse = it.data
@@ -962,8 +850,15 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     if (failEditAwbResponse.message.isNotEmpty()) {
                         showToaster(failEditAwbResponse.message, view, TYPE_ERROR)
                     } else {
-                        it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                        it.throwable.showErrorToaster()
                     }
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.CHANGE_AWB_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
                 }
             }
         })
@@ -1024,10 +919,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         openWebview(awbUploadUrl)
     }
 
-    override fun onSeeInvoice(url: String, invoice: String) {
+    override fun onSeeInvoice(invoiceUrl: String, invoice: String) {
         SomAnalytics.eventClickViewInvoice(detailResponse?.statusCode?.toString().orEmpty(), detailResponse?.statusText.orEmpty())
         Intent(activity, SomSeeInvoiceActivity::class.java).apply {
-            putExtra(KEY_URL, url)
+            putExtra(KEY_URL, invoiceUrl)
             putExtra(PARAM_INVOICE, invoice)
             putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
             putExtra(PARAM_ORDER_CODE, detailResponse?.statusCode.toString())
@@ -1047,6 +942,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
+    override fun onCopyAddOnDescription(label: String, description: CharSequence) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, description))
+        showCommonToaster(getString(R.string.som_detail_add_on_description_copied_message))
+    }
+
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
@@ -1055,12 +956,19 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingRejectOrder() {
-        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, Observer {
+        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
                     SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_REJECT_ORDER)
-                    it.throwable.showErrorToaster(binding?.containerBtnDetail)
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = it.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.REJECT_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                    it.throwable.showErrorToaster()
                 }
             }
         })
@@ -1099,7 +1007,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickProduct(orderDetailId: Int) {
+    override fun onClickProduct(orderDetailId: Long) {
         val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
         val intent = RouteManager.getIntent(activity, appLinkSnapShot)
         intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
@@ -1135,7 +1043,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         showErrorState(type)
     }
 
-    private fun Throwable.showErrorToaster(anchorView: View?) {
+    protected fun Throwable.showErrorToaster() {
         if (this is UnknownHostException || this is SocketTimeoutException) {
             showNoInternetConnectionToaster()
         } else {
@@ -1279,22 +1187,34 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeValidateOrder() {
-        somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner, Observer { result ->
+        somDetailViewModel.validateOrderResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> onSuccessValidateOrder(result.data)
-                is Fail -> onFailedValidateOrder()
+                is Fail -> {
+                    onFailedValidateOrder()
+                    SomErrorHandler.logExceptionToServer(
+                        errorTag = SomErrorHandler.SOM_TAG,
+                        throwable = result.throwable,
+                        errorType =
+                        SomErrorHandler.SomMessage.VALIDATE_ORDER_ERROR,
+                        deviceId = userSession.deviceId.orEmpty()
+                    )
+                }
             }
         })
     }
 
     protected open fun observeOrderExtensionRequestInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
-            if (result.message.isNotBlank()) {
+            if (result.message.isNotBlank() || result.throwable != null) {
                 if (result.success) {
                     showCommonToaster(result.message)
-                }
-                else {
-                    showErrorToaster(result.message)
+                } else {
+                    if (result.throwable == null) {
+                        showErrorToaster(result.message)
+                    } else {
+                        result.throwable?.showErrorToaster()
+                    }
                 }
             }
             if (result.completed && result.refreshOnDismiss) {
@@ -1396,5 +1316,13 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 toasterError.build(v, message, LENGTH_SHORT, type, action).show()
             }
         }
+    }
+
+    protected open fun doOnResume() {
+        updateShopActive()
+    }
+
+    protected fun getAdapterTypeFactory(): SomDetailAdapterFactoryImpl {
+        return SomDetailAdapterFactoryImpl(this, recyclerViewSharedPool)
     }
 }
