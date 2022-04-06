@@ -15,5 +15,5 @@ fun LocalCacheModel.toQueryParam(queryParam: String, userId: String = ""): Strin
     val warehouse_ids = "warehouse_ids=" + this.warehouse_id
     val userID = "userID=$userId"
     return (if(queryParam.isEmpty()) "" else "$queryParam&") +
-            "%s&%s&%s&%s&%s&%s&%s%s".format(addressId, cityId, districtId, lat, long, postCode, warehouse_ids, userID)
+            "%s&%s&%s&%s&%s&%s&%s&%s".format(addressId, cityId, districtId, lat, long, postCode, warehouse_ids, userID)
 }
