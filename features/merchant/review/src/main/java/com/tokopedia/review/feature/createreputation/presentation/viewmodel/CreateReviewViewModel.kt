@@ -494,12 +494,11 @@ class CreateReviewViewModel @Inject constructor(
         isAnyBadRatingCategorySelected: Boolean,
         badRatingCategoriesUiState: CreateReviewBadRatingCategoriesUiState
     ): CreateReviewProgressBarState {
-        val mediaNotEmpty = mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload && mediaPickerUiState.mediaItems.size > 1
         val textAreaFilled = reviewTextAreaTextUiModel.text.isNotBlank()
         val badRatingCategoriesShowed = badRatingCategoriesUiState is CreateReviewBadRatingCategoriesUiState.Showing
         return CreateReviewProgressBarState(
             isGoodRating = isGoodRating,
-            isPhotosFilled = mediaNotEmpty,
+            isPhotosFilled = !isMediaEmpty(),
             isTextAreaFilled = textAreaFilled,
             isBadRatingReasonSelected = badRatingCategoriesShowed && isAnyBadRatingCategorySelected
         )
