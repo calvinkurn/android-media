@@ -273,9 +273,7 @@ class DigitalPDPPulsaViewModel @Inject constructor(
         var selectedProductPositionId : Int? = null
         listDenomData.forEachIndexed { index, denomData ->
             if (denomData.id.equals(selectedGridProduct.denomData.id, false)
-                && selectedGridProduct.denomData.id.isNotEmpty()) {
-                    selectedProductPositionId = index
-            }
+                && selectedGridProduct.denomData.id.isNotEmpty()) selectedProductPositionId = index
         }
         return selectedProductPositionId
     }

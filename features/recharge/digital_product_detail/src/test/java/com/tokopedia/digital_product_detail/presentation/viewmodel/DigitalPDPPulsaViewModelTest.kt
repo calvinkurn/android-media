@@ -304,6 +304,15 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
     }
 
     @Test
+    fun `given selectedFullProduct position default when updateSelectedPositionId should update position `() {
+        viewModel.selectedGridProduct = SelectedProduct()
+        val newPosition = 2
+
+        viewModel.updateSelectedPositionId(newPosition)
+        verifyUpdateSelectedPositionIdTrue(newPosition)
+    }
+
+    @Test
     fun `given layoutType is not match & other condition fulfilled when call isAutoSelectedProduct should return false`() {
         onGetSelectedGridProduct_thenReturn(dataFactory.getSelectedProduct())
 

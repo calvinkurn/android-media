@@ -343,6 +343,10 @@ abstract class DigitalPDPPulsaViewModelTestFixture {
         Assert.assertFalse(isAutoSelect)
     }
 
+    protected fun verifyUpdateSelectedPositionIdTrue(expectedValue: Int) {
+        Assert.assertTrue(viewModel.selectedGridProduct.position == expectedValue)
+    }
+
     protected fun verifyCatalogProductJobIsNull() {
         Assert.assertNull(viewModel.catalogProductJob)
     }

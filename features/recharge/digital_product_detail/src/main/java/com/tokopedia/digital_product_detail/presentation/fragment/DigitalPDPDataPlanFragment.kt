@@ -664,6 +664,7 @@ class DigitalPDPDataPlanFragment :
         binding?.let {
             var selectedInitialPosition = selectedPosition
             if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.FULL_TYPE)) {
+                viewModel.updateSelectedPositionId(selectedPosition)
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
                 selectedInitialPosition = null
@@ -707,6 +708,7 @@ class DigitalPDPDataPlanFragment :
         binding?.let {
             var selectedInitialPosition = selectedPosition
             if (viewModel.isAutoSelectedProduct(DenomWidgetEnum.MCCM_FULL_TYPE)) {
+                viewModel.updateSelectedPositionId(selectedPosition)
                 onShowBuyWidget(viewModel.selectedFullProduct.denomData)
             } else {
                 selectedInitialPosition = null

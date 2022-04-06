@@ -332,6 +332,15 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     }
 
     @Test
+    fun `given selectedFullProduct position default when updateSelectedPositionId should update position `() {
+        viewModel.selectedFullProduct = SelectedProduct()
+        val newPosition = 2
+
+        viewModel.updateSelectedPositionId(newPosition)
+        verifyUpdateSelectedPositionIdTrue(newPosition)
+    }
+
+    @Test
     fun `given layoutType is not match & other condition fulfilled when call isAutoSelectedProduct should return false`() {
         onGetSelectedFullProduct_thenReturn(dataFactory.getSelectedProduct())
 
