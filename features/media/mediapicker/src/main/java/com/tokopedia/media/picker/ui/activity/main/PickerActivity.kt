@@ -27,7 +27,6 @@ import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
 import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
-import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity.Companion.EXTRA_INTENT_PREVIEW
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
