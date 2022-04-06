@@ -30,7 +30,7 @@ object GqlGetNotification : GqlQueryInterface {
 
     override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
 
-    override fun getQuery(): String =QUERY
+    override fun getQuery(): String = QUERY
 
     override fun getTopOperationName(): String = TOP_OPERATION_NAME
 }
