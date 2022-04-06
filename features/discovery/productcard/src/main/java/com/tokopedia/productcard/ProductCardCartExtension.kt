@@ -54,11 +54,13 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         when {
             productCardModel.shouldShowAddToCartNonVariantQuantity() -> {
                 findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
+                val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
             }
 
             productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() -> {
                 findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
+                val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
                 buttonAddToCart?.configureButtonAddToCart()
             }
 
@@ -127,7 +129,10 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     }
 
     private fun deleteCartClick(productCardModel: ProductCardModel) {
+        findView<ViewStub>(R.id.buttonAddToCartStub).inflate()
+        val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
         buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
+
         buttonDeleteCart?.gone()
         quantityEditorNonVariant?.gone()
 

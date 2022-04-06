@@ -321,7 +321,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         if (isVisible) {
             buttonAddToCartStub?.inflate()
         }
-
+        val buttonAddToCart = findViewById<UnifyButton>(R.id.buttonAddToCart)
         buttonAddToCart?.showWithCondition(isVisible)
     }
 }
