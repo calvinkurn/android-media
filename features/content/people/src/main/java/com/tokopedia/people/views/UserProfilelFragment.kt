@@ -131,6 +131,8 @@ class UserProfileFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userSession = UserSession(context)
+        userId = userSession?.userId?:""
         container = view.findViewById(R.id.container)
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
@@ -144,7 +146,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             activity?.finish()
         }
 
-        userSession = UserSession(context)
+
 
         view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
@@ -628,7 +630,6 @@ class UserProfileFragment : BaseDaggerFragment(),
     }
 
     private fun setMainUi(data: ProfileHeaderBase) {
-        userId = data.profileHeader.profile.userID
 
         val textBio = view?.findViewById<TextView>(R.id.text_bio)
         val textSeeMore = view?.findViewById<TextView>(R.id.text_see_more)
@@ -961,7 +962,7 @@ class UserProfileFragment : BaseDaggerFragment(),
                 setUtmCampaignData(
                     PAGE_NAME_PROFILE,
                     it,
-                    userName,
+                    profileUserId,
                     FEATURE_SHARE
                 )
             }
@@ -975,7 +976,7 @@ class UserProfileFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        const val PAGE_NAME_PROFILE = "Profile"
+        const val PAGE_NAME_PROFILE = "UserProfile"
         const val FEATURE_SHARE = "share"
         const val VAL_FEEDS_PROFILE = "feeds-profile"
         const val VAL_SOURCE_BUYER = "buyer"
