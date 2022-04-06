@@ -259,10 +259,15 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                     AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, NOT_SUCCESS)
                 } else {
                     EditAddressRevampAnalytics.onViewErrorToaster(userSession.userId)
+                    EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, false)
                 }
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
-                if (!isEdit) { AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS) }
+                if (!isEdit) {
+                    AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                } else {
+                    EditAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, true)
+                }
                 viewBinding?.etKodepos?.textFieldInput?.text?.let { input -> this.postalCode = input.toString() }
                 districtAddressData?.let { data -> discomRevampListener?.onChooseZipcode(data, postalCode, isPinpoint) }
                 dismiss()
