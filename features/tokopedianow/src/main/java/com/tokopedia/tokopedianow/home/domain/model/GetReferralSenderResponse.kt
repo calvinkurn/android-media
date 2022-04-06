@@ -13,8 +13,8 @@ data class GetReferralSenderHomeResponse(
         @SerializedName("resultStatus")
         val resultStatus: ResultStatus,
         @Expose
-        @SerializedName("status")
-        val sharingMetaData: SharingMetaData
+        @SerializedName("sharingMetadata")
+        val sharingMetaData: SharingMetadata
     ) {
         data class ResultStatus(
             @Expose
@@ -27,7 +27,7 @@ data class GetReferralSenderHomeResponse(
             @SerializedName("reason")
             val reason: String
         )
-        data class SharingMetaData(
+        data class SharingMetadata(
             @Expose
             @SerializedName("sharingURL")
             val sharingUrl: String
