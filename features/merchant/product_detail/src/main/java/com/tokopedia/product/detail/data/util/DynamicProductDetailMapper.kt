@@ -294,7 +294,7 @@ object DynamicProductDetailMapper {
             null
         } else {
             data.map {
-                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, (it.price.value as java.lang.Double ))
+                com.tokopedia.product.detail.common.data.model.product.Wholesale(it.minQty, it.price.value)
             }
         }
     }
@@ -482,7 +482,7 @@ object DynamicProductDetailMapper {
         return if (productInfo.data.variant.isVariant && variantData != null) {
             variantData.maxFinalPrice.toDouble()
         } else {
-            productInfo.finalPrice.toDouble()
+            productInfo.finalPrice
         }
     }
 }

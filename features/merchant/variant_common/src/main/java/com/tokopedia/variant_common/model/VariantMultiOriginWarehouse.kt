@@ -1,6 +1,5 @@
 package com.tokopedia.variant_common.model
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
@@ -30,7 +29,7 @@ data class VariantMultiOriginWarehouse(
 
         @SerializedName("price")
         @Expose
-        val price: java.lang.Double = (0.0 as java.lang.Double),
+        val price: Double = 0.0,
 
         @SerializedName("warehouse_info")
         @Expose
