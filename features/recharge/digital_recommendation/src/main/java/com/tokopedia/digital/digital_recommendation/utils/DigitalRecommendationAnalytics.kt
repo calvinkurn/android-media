@@ -125,7 +125,7 @@ class DigitalRecommendationAnalytics {
             putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.VIEW_ITEM_LIST)
             putString(DigitalRecommendationKeys.EVENT_ACTION, DigitalRecommendationActions.IMPRESSION_THANKYOU_PAGE)
             putString(DigitalRecommendationKeys.EVENT_CATEGORY, getEventCategoryThankYouPage(page))
-            putString(DigitalRecommendationKeys.EVENT_LABEL,getEventLabelThankYouPageImpression(
+            putString(DigitalRecommendationKeys.EVENT_LABEL,getEventLabelThankYouPage(
                 userType = additionalTrackingData.userType,
                 data = digitalRecommendationModel,
                 index = index
@@ -138,6 +138,32 @@ class DigitalRecommendationAnalytics {
         }
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.VIEW_ITEM_LIST, data)
+    }
+
+    fun clickDigitalRecommendationThankYouPageItem(
+        digitalRecommendationModel: DigitalRecommendationItemUnifyModel,
+        additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
+        index: Int,
+        userId: String,
+        page: DigitalRecommendationPage?
+    ){
+        val data = Bundle().apply {
+            putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.VIEW_ITEM_LIST)
+            putString(DigitalRecommendationKeys.EVENT_ACTION, DigitalRecommendationActions.CLICK_THANKYOU_PAGE)
+            putString(DigitalRecommendationKeys.EVENT_CATEGORY, getEventCategoryThankYouPage(page))
+            putString(DigitalRecommendationKeys.EVENT_LABEL,getEventLabelThankYouPage(
+                userType = additionalTrackingData.userType,
+                data = digitalRecommendationModel,
+                index = index
+            ))
+            putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
+            putString(DigitalRecommendationKeys.CURRENT_SITE, DigitalRecommendationValues.CURRENT_SITE)
+            putString(DigitalRecommendationKeys.ITEM_LIST, getItemListThankYouPage(digitalRecommendationModel.tracking.itemType))
+            putParcelableArrayList(DigitalRecommendationKeys.ITEMS, getItemImpressionsThankYouPage(index, digitalRecommendationModel))
+            putString(DigitalRecommendationKeys.USER_ID, userId)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.SELECT_CONTENT, data)
     }
 
     private fun getItemListThankYouPage(recommendationLogic: String): String{
@@ -155,7 +181,7 @@ class DigitalRecommendationAnalytics {
     /**
      * pattern : {user_loyalty} - {recommendation logic} - {slot_widget_card} - {category_id} - {operator_id} - {product_id} - {price_before} - {price_after} - {campaign_type}
      */
-    private fun getEventLabelThankYouPageImpression(
+    private fun getEventLabelThankYouPage(
         index: Int,
         userType: String,
         data: DigitalRecommendationItemUnifyModel): String{
@@ -177,7 +203,7 @@ class DigitalRecommendationAnalytics {
         return arrayListOf(Bundle().apply {
             putInt(DigitalRecommendationKeys.INDEX, index + 1)
             putString(DigitalRecommendationKeys.ITEM_BRAND, data.tracking.productId.ifEmpty { "0" })
-            putString(DigitalRecommendationKeys.ITEM_CATEGORY, data.tracking.categoryId)
+            putString(DigitalRecommendationKeys.ITEM_CATEGORY, data.tracking.categoryId.ifEmpty { "0" })
             putString(DigitalRecommendationKeys.ITEM_ID, data.tracking.productId.ifEmpty { "0" })
             putString(DigitalRecommendationKeys.ITEM_NAME, data.unify.title)
             putString(DigitalRecommendationKeys.ITEM_VARIANT, data.tracking.itemType)
@@ -218,6 +244,7 @@ class DigitalRecommendationActions {
     companion object {
         const val IMPRESSION_THANKYOU_PAGE = "impression on widget recommendation"
         const val IMPRESSION = "impression on widget recommendation dgu"
+        const val CLICK_THANKYOU_PAGE = "click on widget recommendation"
         const val CLICK = "click on widget recommendation dgu"
     }
 }
