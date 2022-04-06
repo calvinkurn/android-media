@@ -58,7 +58,6 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
