@@ -15,7 +15,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: Callback,val activity: Activity) : LifecycleObserver {
+class FoldableSupportManager(
+    private val windowInfoRepo: WindowInfoRepo,
+    private val callback: Callback,
+    val activity: Activity,
+    private val activateRotationForTablets: Boolean = false
+) : LifecycleObserver {
 
     private var layoutUpdatesJob: Job? = null
 
@@ -27,8 +32,7 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     open fun onCreate() {
-//        Todo:: Establish check for user's choice for tablet orientation
-        if (DeviceScreenInfo.isTablet(activity)) {
+        if (activateRotationForTablets && DeviceScreenInfo.isTablet(activity)) {
             val isAccelerometerRotationEnabled = Settings.System.getInt(
                 activity.contentResolver,
                 Settings.System.ACCELEROMETER_ROTATION,
@@ -57,16 +61,14 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     open fun onResume() {
-        //        Todo:: Establish check for user's choice for tablet orientation
-        if (DeviceScreenInfo.isTablet(activity)) {
+        if (activateRotationForTablets && DeviceScreenInfo.isTablet(activity)) {
             accelerometerOrientationListener.register()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     open fun onPause() {
-        //        Todo:: Establish check for user's choice for tablet orientation
-        if (DeviceScreenInfo.isTablet(activity)) {
+        if (activateRotationForTablets && DeviceScreenInfo.isTablet(activity)) {
             accelerometerOrientationListener.unregister()
         }
     }
@@ -77,7 +79,7 @@ class FoldableSupportManager(val windowInfoRepo: WindowInfoRepo, val callback: C
     }
 
     private fun onAccelerometerOrientationSettingChange(isEnabled: Boolean) {
-        if (DeviceScreenInfo.isTablet(activity)) {
+        if (activateRotationForTablets && DeviceScreenInfo.isTablet(activity)) {
             activity.requestedOrientation =
                 if (isEnabled) ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR else ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
