@@ -35,6 +35,8 @@
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
+    <string name="setting_menu_performance">Performa Toko</string>
+    <string name="setting_menu_setting">Pengaturan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
     <string name="setting_menu_statistic">Statistik</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
@@ -62,6 +64,11 @@
     <string name="setting_topads_status_inactive">belum</string>
     <string name="setting_topads_description_active">Nggak perlu khawatir kehabisan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
     <string name="setting_topads_description_inactive">Dengan mengaktifkan, kredit TopAds akan otomatis ditambahkan dari Saldo Penghasilan setiap kreditmu menipis.</string>
+
+    <!-- Free Shipping -->
+    <string name="settings_free_shipping_title">Bebas Ongkir Aktif</string>
+    <string name="settings_free_shipping_detail">Detail Bebas Ongkir</string>
+    <string name="settings_free_shipping_description">Status Bebas Ongkir aktif untuk kurir **SiCepat** dan **Anteraja**</string>
 
     <!--  Centralized Promo  -->
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
@@ -117,6 +124,8 @@
     <string name="sah_new_other_operational_shop_closed">Toko Libur</string>
     <string name="sah_new_other_operational_shop_weekly_closed">Toko Libur Rutin</string>
     <string name="sah_new_other_status_upgrade">Upgrade!</string>
+    <string name="sah_new_other_follower">Follower</string>
+    <string name="sah_new_other_topads_credit">Kredit TopAds</string>
     <string name="sah_new_other_status_pm_pro_title">Power Merchant PRO</string>
     <string name="sah_new_other_status_pm_pro_advanced">Advanced</string>
     <string name="sah_new_other_status_pm_pro_expert">Expert</string>
@@ -159,6 +168,7 @@
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
     <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
+    <string name="sah_admin_restriction_message">Oops, kamu tidak punya izin untuk mengakses halaman ini</string>
     
     <!-- Social Media Links -->
     <string name="sah_social_menu_title">Media Sosial Tokopedia Seller</string>
