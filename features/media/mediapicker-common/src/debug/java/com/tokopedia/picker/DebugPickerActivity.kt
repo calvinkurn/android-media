@@ -8,11 +8,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import com.tokopedia.picker.common.PickerParam
-import com.tokopedia.picker.common.R
+import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
-import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
-import com.tokopedia.picker.common.RESULT_PICKER
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.widget.drawerselector.DebugDrawerActionType
@@ -46,8 +43,8 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_PICKER_CODE && resultCode == Activity.RESULT_OK) {
-            val elements = data?.getStringArrayListExtra(RESULT_PICKER)?: arrayListOf()
-            val uiModels = elements.map { File(it).toUiModel() }
+            val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
+            val uiModels = elements.originalPaths.map { File(it).toUiModel() }
             binding?.drawerSelector?.addAllData(uiModels)
         }
     }

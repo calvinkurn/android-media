@@ -2,7 +2,6 @@ package com.tokopedia.media.picker.ui.fragment.camera
 
 import android.content.Context
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
 import android.view.GestureDetector
