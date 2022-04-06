@@ -656,11 +656,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun goToCreateProductCoupon(product: ProductUiModel?) {
         val firstTimeLink =
             if (checkProductCouponFirstTime()) {
-                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)
+                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME)
                     .buildUpon()
                     .appendQueryParameter(
-                        SellerHomeApplinkConst.VOUCHER_TYPE,
-                        SellerHomeApplinkConst.TYPE_PRODUCT
+                        SellerHomeApplinkConst.PROMO_TYPE,
+                        SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT
                     )
                     .appendQueryParameter(
                         SellerHomeApplinkConst.PRODUCT_ID,

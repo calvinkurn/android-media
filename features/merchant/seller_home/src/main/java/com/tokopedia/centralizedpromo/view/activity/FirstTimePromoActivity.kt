@@ -7,14 +7,14 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.sellerhome.SellerHomeApplinkConst
-import com.tokopedia.centralizedpromo.view.fragment.FirstVoucherBottomSheetFragment
+import com.tokopedia.centralizedpromo.view.fragment.FirstTimePromoBottomSheetFragment
 import com.tokopedia.sellerhome.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class FirstVoucherActivity: BaseSimpleActivity() {
+class FirstTimePromoActivity: BaseSimpleActivity() {
     
-    private val voucherType by lazy {
-        intent.data?.getQueryParameter(SellerHomeApplinkConst.VOUCHER_TYPE).orEmpty()
+    private val promoType by lazy {
+        intent.data?.getQueryParameter(SellerHomeApplinkConst.PROMO_TYPE).orEmpty()
     }
 
     private val productId by lazy {
@@ -22,7 +22,7 @@ class FirstVoucherActivity: BaseSimpleActivity() {
     }
     
     private val bottomSheet by lazy {
-        FirstVoucherBottomSheetFragment.createInstance(voucherType, productId).apply {
+        FirstTimePromoBottomSheetFragment.createInstance(promoType, productId).apply {
             setCloseClickListener {
                 this.dismiss()
             }
