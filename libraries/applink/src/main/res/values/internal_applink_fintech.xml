@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_fintech" translatable="false">fintech</string>
-    <string name="host_ovo" translatable="false">ovo</string>
     <string name="host_layanan_finansial" translatable="false">layanan-finansial</string>
     <!--
         If the link is Ended with {id}, must end with "/"
@@ -19,8 +18,6 @@
 
     <string name="path_home_credit_register">/home-credit-register</string>
 
-    <string name="path_upgrade">/upgrade</string>
-    <string name="path_upgrade_status">/upgradestatus</string>
 
     <string name="applink_saldo_deposit_title">Saldo</string>
     <string name="applink_saldo_intro_title">Saldo Intro</string>
