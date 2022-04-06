@@ -82,7 +82,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify(), HasComponent<ProductDetail
                 javaScriptEnabled = true
             }
             if(userSession.isLoggedIn)
-                loadUrl(generateURLSessionLogin(url,userSession.deviceId,userSession.userId))
+                loadAuthUrl(url,userSession)
             else
                 loadUrl(url)
 
