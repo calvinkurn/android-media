@@ -153,15 +153,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET,
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET_V2 -> {
-                    createDynamicChannel(
-                        channel,
-                        trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                            channel.grids.toList(),
-                            userSessionInterface?.userId ?: "",
-                            false,
-                            channel
-                        ),
-                        isCombined = false
+                    createCategoryWidgetV2(
+                        channel, position, isCache
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
@@ -634,6 +627,18 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isDataCache = isCache
         ))
+    }
+
+    private fun createCategoryWidgetV2(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(
+            CategoryWidgetV2DataModel(
+                DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache
+            )
+        )
+
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+            visitableList.size, channel) }
     }
 
     private fun createQuestChannel(
