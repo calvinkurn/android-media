@@ -50,7 +50,7 @@ class PayLaterWidget @JvmOverloads constructor(
     private fun initView() {
         layoutGopayBinding =
             LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this, true)
-        this.visibility = INVISIBLE
+        this.visibility = GONE
     }
 
     fun setPayLaterWidgetListener(payLaterWidgetListener: PayLaterWidgetListener) {
@@ -81,9 +81,8 @@ class PayLaterWidget @JvmOverloads constructor(
 
             initListner(payLaterWidgetData)
         }
-        else
-        {
-            payLaterWidgetListener?.onClosePayLaterWidget()
+        else {
+           this.visibility = GONE
         }
 
     }
