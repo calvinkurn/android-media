@@ -953,7 +953,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleClickBackOnQuiz() {
         _quizFormState.setValue { prev() }
 
-        setOptionEditable()
+        updateOptionsState()
     }
 
     private fun handleClickNextOnQuiz() {
@@ -962,7 +962,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
         _quizFormState.setValue { next() }
 
-        setOptionEditable()
+        updateOptionsState()
     }
 
     private fun handleInputQuizTitle(title: String) {
@@ -983,7 +983,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             )
         }.toMutableList()
 
-        /** Auto Add */
+        /** Auto Add New Field */
         val quizConfig = _gameConfig.value.quizConfig
         val isAllOptionFilled = newOptions.none { it.text.isEmpty() }
         val currentOption = newOptions.size
@@ -1075,13 +1075,35 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun setOptionEditable() {
+    private fun updateOptionsState() {
         needUpdateQuizForm(true) {
+            val options = _quizFormData.value.options.toMutableList()
             val isStateEditable = isQuizStateEditable()
-            val options = _quizFormData.value.options
+
+            val newOptions = if(isStateEditable) {
+                /** Add new options if needed */
+                val quizConfig = _gameConfig.value.quizConfig
+                val isAllOptionFilled = options.none { it.text.isEmpty() }
+                val currentOption = options.size
+                val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
+
+                if(isNeedAddNewField) {
+                    options.add(QuizFormDataUiModel.Option(
+                        order = currentOption,
+                        maxLength = quizConfig.maxChoiceLength,
+                        isMandatory = false,
+                    ))
+                }
+                options
+            }
+            else {
+                /** Remove non-mandatory && empty options */
+                options.filter { it.isMandatory || (!it.isMandatory && it.text.isNotEmpty())  }
+            }
+
             _quizFormData.setValue {
                 copy(
-                    options = options.map { it.copy(isEditable = isStateEditable) }
+                    options = newOptions.map { it.copy(isEditable = isStateEditable) }
                 )
             }
         }

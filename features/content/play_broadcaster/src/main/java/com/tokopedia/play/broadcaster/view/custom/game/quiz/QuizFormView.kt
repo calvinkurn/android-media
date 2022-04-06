@@ -161,8 +161,8 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-            val selectedDuration = quizConfig.availableStartTimeInMs[index]
-            eventBus.emit(Event.SelectDuration(selectedDuration))
+//            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+//            eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
         timePickerBinding.btnApply.setOnClickListener {
@@ -199,15 +199,15 @@ class QuizFormView : ConstraintLayout {
             binding.viewQuizGift.gift = quizFormData.gift
 
             /** Set Quiz Duration */
-            if(quizFormState is QuizFormStateUiModel.SetDuration) {
-                val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
-                if(timePickerBinding.puTimer.activeIndex != idx) {
-                    timePickerBinding.puTimer.apply {
-                        if(idx != -1) goToPosition(idx)
-                        else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
-                    }
-                }
-            }
+//            if(quizFormState is QuizFormStateUiModel.SetDuration) {
+//                val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
+//                if(timePickerBinding.puTimer.activeIndex != idx) {
+//                    timePickerBinding.puTimer.apply {
+//                        if(idx != -1) goToPosition(idx)
+//                        else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+//                    }
+//                }
+//            }
         }
 
         /** Validate Form */
