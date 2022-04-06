@@ -39,7 +39,7 @@ class GatewayViewHolder(
 
     private fun View.updateDateLogic(checkoutData: CheckoutData) {
         if (!checkoutData.disable && checkoutData.selectedGateway) {
-            individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            individualInsideCardContainer.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN100))
             individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioGatewaySelector.isChecked = true
         } else {
@@ -53,13 +53,13 @@ class GatewayViewHolder(
 
     private fun View.onClickLogic(checkoutData: CheckoutData, position: Int) {
         itemView.radioGatewaySelector.setOnClickListener {
-            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50)))
+            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN100)))
             individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioGatewaySelector.isChecked = true
             gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)
         }
         itemView.setOnClickListener {
-            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN50)))
+            individualInsideCardContainer.setBackgroundColor((context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN100)))
             individualGatewayItemContainer.cardType = CardUnify.TYPE_BORDER_ACTIVE
             radioGatewaySelector.isChecked = true
             gatewayCardClicked.gatewayCardSelected(checkoutData.gateway_id, newPosition = position)

@@ -44,6 +44,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
@@ -58,7 +59,6 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
-import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
@@ -125,9 +125,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
-
-    @Inject
-    lateinit var shopOperationalTracker: SettingShopOperationalTracker
 
     @Inject
     lateinit var settingPerformanceTracker: SettingPerformanceTracker
@@ -525,10 +522,13 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         viewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
             viewHolder?.setShopStatusData(it)
             if (it is SettingResponseState.SettingError) {
-                showErrorToaster(it.throwable) {
+                val throwable = it.throwable
+                showErrorToaster(throwable) {
                     onRefreshShopInfo()
                 }
-                logHeaderError(it.throwable, SHOP_INFO)
+                if (throwable is UserShopInfoException) {
+                    logHeaderError(throwable, "$SHOP_INFO - ${throwable.errorType}")
+                }
             }
         }
     }

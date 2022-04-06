@@ -2,7 +2,8 @@ package com.tokopedia.carouselproductcard
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import kotlinx.android.synthetic.main.carousel_see_more_card_item_grid_layout.view.*
+import com.tokopedia.carouselproductcard.databinding.CarouselSeeMoreCardItemGridLayoutBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class CarouselSeeMoreCardGridViewHolder(
     itemView: View
@@ -13,6 +14,8 @@ internal class CarouselSeeMoreCardGridViewHolder(
         val LAYOUT = R.layout.carousel_see_more_card_item_grid_layout
     }
 
+    private var binding: CarouselSeeMoreCardItemGridLayoutBinding? by viewBinding()
+
     override fun bind(carouselSeeMoreCardModel: CarouselSeeMoreCardModel) {
         setCarouselProductCardListeners(carouselSeeMoreCardModel)
     }
@@ -20,7 +23,7 @@ internal class CarouselSeeMoreCardGridViewHolder(
     private fun setCarouselProductCardListeners(carouselSeeMoreCardModel: CarouselSeeMoreCardModel) {
         val onClickSeeMoreListener = carouselSeeMoreCardModel.getOnSeeMoreClickListener()
 
-        itemView.card_see_more?.setOnClickListener {
+        binding?.cardSeeMore?.setOnClickListener {
             onClickSeeMoreListener?.onSeeMoreClick()
         }
     }

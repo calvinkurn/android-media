@@ -166,15 +166,6 @@ class MainNavFragmentGopayNotEligibleWithTokopointsAbOnUiTest {
             )
         ))
 
-        onView(withId(R.id.usr_shop_title)).check(matches(
-            allOf(
-                isDisplayed(),
-                withText(
-                    context.getString(R.string.account_header_store_title)
-                )
-            )
-        ))
-
         onView(withId(R.id.usr_shop_notif)).check(matches(
             allOf(
                 isDisplayed(),

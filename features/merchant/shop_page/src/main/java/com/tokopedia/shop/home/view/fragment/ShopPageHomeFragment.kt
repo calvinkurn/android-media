@@ -1584,7 +1584,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 userId = userId,
                 bundleId = selectedMultipleBundle.bundleId,
                 bundleName = bundleName,
-                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString()
+                bundlePriceCut = selectedMultipleBundle.discountPercentage.toString(),
+                bundlePrice = selectedMultipleBundle.displayPriceRaw
         )
     }
 
@@ -1627,6 +1628,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 bundleId = selectedBundle.bundleId,
                 bundleName = bundleName,
                 bundlePriceCut = selectedBundle.discountPercentage.toString(),
+                bundlePrice = selectedBundle.displayPriceRaw,
                 selectedPackage = selectedBundle.minOrderWording,
                 productId = bundleProducts.productId
         )

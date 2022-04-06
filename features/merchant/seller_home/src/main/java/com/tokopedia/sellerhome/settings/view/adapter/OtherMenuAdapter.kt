@@ -49,7 +49,7 @@ class OtherMenuAdapter(
             tag = getCentralizedPromoTag()
         ),
         MenuItemUiModel(
-            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_performance)
+            title = context?.getString(R.string.setting_menu_performance)
                 .orEmpty(),
             clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
@@ -125,7 +125,7 @@ class OtherMenuAdapter(
         ),
         DividerUiModel(DividerType.THIN_PARTIAL),
         MenuItemUiModel(
-            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_setting)
+            title = context?.getString(R.string.setting_menu_setting)
                 .orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.SETTINGS,

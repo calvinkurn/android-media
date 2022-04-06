@@ -5,17 +5,17 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = DBMetaData.DB_TABLE)
 data class CategoryDataBase(
-        @PrimaryKey(autoGenerate = true) var id: Long?,
-        var name: String="",
-        var identifier: String="",
-        var weight: Int=0,
-        var parentId: Long?,
-        var hasChild: Boolean=false
-        ){
+    @PrimaryKey(autoGenerate = true) var id: Long?,
+    var name: String = "",
+    var identifier: String = "",
+    var weight: Int = 0,
+    var parentId: Long?,
+    var hasChild: Boolean = false
+) {
 
-    constructor(): this(null, "", "", 0, null, false)
+    constructor() : this(null, "", "", 0, null, false)
 
-    companion object{
+    companion object {
         const val LEVEL_ONE_PARENT = -1
     }
 }
