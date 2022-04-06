@@ -38,7 +38,7 @@ class CreateReviewMediaTypeFactory(
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             CreateReviewMediaPreviewImageViewHolder.LAYOUT -> CreateReviewMediaPreviewImageViewHolder(parent, createReviewMediaAdapterListener)
-            CreateReviewMediaPreviewVideoViewHolder.LAYOUT -> CreateReviewMediaPreviewVideoViewHolder(parent)
+            CreateReviewMediaPreviewVideoViewHolder.LAYOUT -> CreateReviewMediaPreviewVideoViewHolder(parent, createReviewMediaAdapterListener)
             CreateReviewMediaPickerAddSmallViewHolder.LAYOUT -> CreateReviewMediaPickerAddSmallViewHolder(parent, createReviewMediaAdapterListener)
             CreateReviewMediaPickerAddLargeViewHolder.LAYOUT -> CreateReviewMediaPickerAddLargeViewHolder(parent, createReviewMediaAdapterListener)
             else -> super.createViewHolder(parent, type)

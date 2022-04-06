@@ -8,7 +8,6 @@ import androidx.transition.TransitionManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.ItemCreateReviewMediaPreviewImageBinding
 import com.tokopedia.review.feature.createreputation.presentation.adapter.CreateReviewMediaAdapter
@@ -55,7 +54,7 @@ class CreateReviewMediaPreviewImageViewHolder(
     }
 
     private fun ItemCreateReviewMediaPreviewImageBinding.setupImageThumbnail(uri: String) {
-        ivCreateReviewImagePreviewThumbnail.loadImage(uri)
+        ivCreateReviewImagePreviewThumbnail.urlSrc = uri
     }
 
     private fun setupImageState(state: CreateReviewMediaUiModel.State) {
