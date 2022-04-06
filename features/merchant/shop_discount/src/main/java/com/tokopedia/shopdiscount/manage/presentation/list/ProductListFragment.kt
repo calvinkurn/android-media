@@ -26,6 +26,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
+import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
@@ -78,7 +79,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         ProductListAdapter(
             onProductClicked,
             onUpdateDiscountClicked,
-            onOverflowMenuClicked
+            onOverflowMenuClicked,
+            onVariantInfoClicked
         )
     }
     private var onScrollDown: () -> Unit = {}
@@ -208,6 +210,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         viewModel.setSelectedProduct(product)
     }
 
+    private val onVariantInfoClicked : (Product) -> Unit = { product ->
+        viewModel.setSelectedProduct(product)
+        showProductDetailBottomSheet(product)
+    }
 
     private val onOverflowMenuClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
@@ -326,6 +332,15 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
                 })
                 .start()
         }
+    }
+
+    private fun showProductDetailBottomSheet(product: Product) {
+        val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
+            product.id,
+            product.name,
+            discountStatusId
+        )
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
 }

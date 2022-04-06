@@ -1,6 +1,4 @@
 <resources>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sd_bulk_manage">Atur Sekaligus</string>
     <string name="sd_discount_period">Periode diskon</string>
     <string name="sd_one_year_ahead">1 Tahun ke Depan</string>
@@ -25,9 +23,10 @@
     <string name="sd_shop_discount">Diskon Toko</string>
     <string name="sd_tab_name">%s (%s)</string>
     <string name="sd_placeholder">%s - %s</string>
-    <string name="sd_total_stock_various_multiple_location">Total stok: %s di beberapa lokasi</string>
-    <string name="sd_total_stock_multiple_location">Total stok: %s di %s lokasi</string>
-    <string name="sd_total_stock">Total stok: %s</string>
+    <string name="sd_total_stock_various_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
+    <string name="sd_total_stock_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+
+    <string name="sd_total_stock">Total stok: <![CDATA[<b>%1s</b>]]></string>
     <string name="sd_search">Cari produk atau pakai filter</string>
     <string name="sd_total_product">%s Produk</string>
     <string name="sd_multi_select">Pilih Sekaligus</string>
@@ -45,6 +44,8 @@
     <string name="sd_discount_deleted">Produk berhasil dihapus dari Diskon Toko.</string>
     <string name="sd_manage">Atur</string>
     <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
+    <string name="sd_with_variant">Ada Varian Diskon</string>
+    <string name="sd_more_menu">Menu Lainnya</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

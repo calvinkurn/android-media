@@ -1,6 +1,7 @@
 package com.tokopedia.shopdiscount.manage.presentation.list
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
@@ -17,6 +18,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         onProductClicked: (Product) -> Unit,
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
+        onVariantInfoClicked: (Product) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
@@ -26,10 +28,13 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         binding.root.setOnClickListener { onProductClicked(product) }
         binding.loader.isVisible = isLoading
         handleProductType(product)
+        binding.imgInfo.setOnClickListener { onVariantInfoClicked(product) }
         binding.tpgOriginalPrice.strikethrough()
     }
 
     private fun handleProductType(product: Product) {
+        binding.imgInfo.isVisible = product.hasVariant
+
         when (product.productType) {
             ProductType.SINGLE -> {
                 binding.labelDiscount.text = product.formattedDiscountMaxPercentage
@@ -40,9 +45,11 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                     product.discountStartDate,
                     product.discountEndDate
                 )
-                binding.tpgStockAndLocation.text = String.format(
-                    binding.tpgInformation.context.getString(R.string.sd_total_stock),
-                    product.totalStock
+                binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
+                    String.format(
+                        binding.tpgInformation.context.getString(R.string.sd_total_stock),
+                        product.totalStock
+                    )
                 )
             }
             ProductType.SINGLE_MULTI_LOCATION -> {
@@ -54,33 +61,41 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                     product.discountStartDate,
                     product.discountEndDate
                 )
-                binding.tpgStockAndLocation.text =
+                binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock_multiple_location),
                         product.totalStock,
-                        product.variantCount
+                        product.locationCount
                     )
+                )
+
             }
             ProductType.VARIANT -> {
                 displayDiscountPercentage(product)
                 displayDiscountedPrice(product)
                 displayOriginalPrice(product)
-                binding.tpgInformation.text = "${product.variantCount} Varian Diskon"
-                binding.tpgStockAndLocation.text = String.format(
-                    binding.tpgInformation.context.getString(R.string.sd_total_stock),
-                    product.totalStock
+                binding.tpgInformation.text =
+                    binding.tpgInformation.context.getString(R.string.sd_with_variant)
+                binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
+                    String.format(
+                        binding.tpgInformation.context.getString(R.string.sd_total_stock),
+                        product.totalStock
+                    )
                 )
             }
             ProductType.VARIANT_MULTI_LOCATION -> {
                 displayDiscountPercentage(product)
                 displayDiscountedPrice(product)
                 displayOriginalPrice(product)
-                binding.tpgInformation.text = "${product.variantCount} Varian Diskon"
-                binding.tpgStockAndLocation.text =
+                binding.tpgInformation.text =
+                    binding.tpgInformation.context.getString(R.string.sd_with_variant)
+                binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock_various_multiple_location),
                         product.totalStock
                     )
+                )
+
             }
         }
     }

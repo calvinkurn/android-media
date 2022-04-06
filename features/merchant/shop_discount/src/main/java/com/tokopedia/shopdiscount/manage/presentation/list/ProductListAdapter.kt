@@ -12,6 +12,7 @@ class ProductListAdapter(
     private val onProductClicked: (Product) -> Unit,
     private val onUpdateDiscountButtonClicked: (Product) -> Unit,
     private val onOverflowMenuClicked: (Product) -> Unit,
+    private val onVariantInfoClicked : (Product) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
     private var products: MutableList<Product> = mutableListOf()
@@ -30,7 +31,14 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         products.getOrNull(position)?.let { product ->
             val isLoading = isLoading && (position == products.lastIndex)
-            holder.bind(product, onProductClicked, onUpdateDiscountButtonClicked, onOverflowMenuClicked, isLoading)
+            holder.bind(
+                product,
+                onProductClicked,
+                onUpdateDiscountButtonClicked,
+                onOverflowMenuClicked,
+                onVariantInfoClicked,
+                isLoading
+            )
         }
     }
 

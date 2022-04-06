@@ -14,7 +14,7 @@ data class Product(
     val imageUrl: String,
     val totalStock: String,
     val locationCount: Int,
-    val variantCount: Int,
+    val hasVariant : Boolean,
     val discountStartDate: String,
     val discountEndDate: String,
     val productType: ProductType,
