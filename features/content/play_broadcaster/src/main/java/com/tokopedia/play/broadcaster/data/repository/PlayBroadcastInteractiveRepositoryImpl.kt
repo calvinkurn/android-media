@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastInteractiveRepository
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -25,6 +26,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
     private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
     private val createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase,
+    private val createInteractiveQuizUseCase: PostInteractiveCreateQuizUseCase,
     private val userSession: UserSessionInterface,
     private val mapper: PlayBroadcastMapper,
     private val interactiveMapper: PlayChannelInteractiveMapper,
@@ -70,5 +72,21 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             durationInMs
         )
         return@withContext mapper.mapInteractiveSession(response, title, durationInMs)
+    }
+
+    override suspend fun createInteractiveQuiz(
+        channelId: String,
+        question: String,
+        prize: String,
+        runningTime: Long,
+        choices: List<Pair<String, Boolean>>
+    ) {
+        createInteractiveQuizUseCase.execute(
+            channelId = channelId,
+            question = question,
+            prize = prize,
+            runningTime = runningTime,
+            choices = choices,
+        )
     }
 }

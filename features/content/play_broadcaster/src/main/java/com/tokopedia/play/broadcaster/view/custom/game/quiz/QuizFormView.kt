@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
@@ -153,7 +154,9 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.btnApply.setOnClickListener {
-            eventBus.emit(Event.Submit)
+            val index = timePickerBinding.puTimer.activeIndex
+            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+            eventBus.emit(Event.Submit(selectedDuration))
         }
 
         setupInsets()
@@ -260,7 +263,7 @@ class QuizFormView : ConstraintLayout {
         data class GiftChanged(val gift: String): Event()
         data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event()
         data class SelectDuration(val duration: Long): Event()
-        object Submit: Event()
+        data class Submit(val duration: Long): Event()
     }
 
     companion object {

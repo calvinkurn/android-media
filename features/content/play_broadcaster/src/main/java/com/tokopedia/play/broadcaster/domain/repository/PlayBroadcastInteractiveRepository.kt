@@ -19,4 +19,12 @@ interface PlayBroadcastInteractiveRepository {
     suspend fun createInteractiveSession(channelId: String,
                                          title: String,
                                          durationInMs: Long): InteractiveSessionUiModel
+
+    suspend fun createInteractiveQuiz(
+        channelId: String,
+        question: String,
+        prize: String,
+        runningTime: Long,
+        choices: List<Pair<String, Boolean>>
+    )
 }

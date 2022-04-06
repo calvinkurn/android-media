@@ -31,5 +31,5 @@ sealed class PlayBroadcastAction {
     data class InputQuizGift(val text: String): PlayBroadcastAction()
     data class SelectQuizDuration(val duration: Long): PlayBroadcastAction()
     data class SaveQuizData(val quizFormData: QuizFormDataUiModel): PlayBroadcastAction()
-    object SubmitQuizForm: PlayBroadcastAction()
+    data class SubmitQuizForm(val duration: Long): PlayBroadcastAction()
 }

@@ -361,7 +361,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
             is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
-            PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
+            is PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm(event.duration)
         }
     }
 
@@ -1037,12 +1037,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleSubmitQuizForm() {
+    private fun handleSubmitQuizForm(runningTime: Long) {
         viewModelScope.launchCatchError(block = {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
 
-            /** TODO: submit data */
-            delay(2000)
+            val quizData = _quizFormData.value
+            repo.createInteractiveQuiz(
+                channelId = channelId,
+                question = quizData.title,
+                prize = quizData.gift,
+                runningTime = runningTime,
+                choices = quizData.options.map { Pair(it.text, it.isSelected) }
+            )
 
             /** Reset Form */
             initQuizFormData()
