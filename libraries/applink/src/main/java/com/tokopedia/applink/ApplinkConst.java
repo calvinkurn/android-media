@@ -427,6 +427,8 @@ public interface ApplinkConst {
     String SHARING_HOST = "sharing";
     String GLOBAL_SHARING = "tokopedia://sharing?text={text}&image={image}&type={type}";
 
+    String WEB_HOST = "www.tokopedia.com";
+
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }
