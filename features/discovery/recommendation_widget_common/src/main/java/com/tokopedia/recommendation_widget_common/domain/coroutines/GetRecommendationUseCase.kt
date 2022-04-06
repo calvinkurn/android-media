@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 /**
@@ -27,7 +28,8 @@ constructor(private val context: Context, private val graphqlRepository: Graphql
         graphqlUseCase.setGraphqlQuery(GetRecommendationUseCaseRequest.widgetListQuery)
     }
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): List<RecommendationWidget> {
-        val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
+        val userSession = UserSession(context)
+        val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam, userSession.userId) ?: inputParameter.queryParam
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
         return graphqlUseCase.executeOnBackground().productRecommendationWidget.data.mappingToRecommendationModel()
     }
