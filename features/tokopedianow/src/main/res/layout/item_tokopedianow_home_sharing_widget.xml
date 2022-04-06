@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/i_close_sharing_education"
+            android:id="@+id/iu_close_sharing"
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_marginTop="27dp"
@@ -44,21 +44,21 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tp_sharing_education"
+            android:id="@+id/tp_sharing"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="11dp"
             android:layout_marginBottom="8dp"
             android:translationZ="1dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_sharing_education"
-            app:layout_constraintEnd_toStartOf="@+id/i_close_sharing_education"
-            app:layout_constraintStart_toEndOf="@+id/iu_sharing_education"
-            app:layout_constraintTop_toTopOf="@+id/iu_sharing_education"
+            app:layout_constraintBottom_toTopOf="@+id/btn_sharing"
+            app:layout_constraintEnd_toStartOf="@+id/iu_close_sharing"
+            app:layout_constraintStart_toEndOf="@+id/iu_sharing"
+            app:layout_constraintTop_toTopOf="@+id/iu_sharing"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iu_sharing_education"
+            android:id="@+id/iu_sharing"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginStart="24dp"
@@ -70,7 +70,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_sharing_education"
+            android:id="@+id/btn_sharing"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -80,7 +80,7 @@
             android:text="@string/tokopedianow_home_sharing_education_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iu_sharing_education" />
+            app:layout_constraintStart_toEndOf="@+id/iu_sharing" />
 
         <ImageView
             android:id="@+id/iv_bg_image_left"

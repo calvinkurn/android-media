@@ -32,6 +32,8 @@ class HomeSharingWidgetViewHolder(
 
     companion object {
         private const val IMG_SHARING_EDUCATION = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_education.png"
+        private const val IMG_SHARING_REFERRAL_RECEIVER = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_referral_receiver.png"
+        private const val IMG_SHARING_REFERRAL_SENDER = "https://images.tokopedia.net/img/android/tokonow/tokonow_ic_sharing_referral_sender.png"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_sharing_widget
@@ -63,8 +65,8 @@ class HomeSharingWidgetViewHolder(
 
     private fun setReferralData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
-            iCloseSharingEducation.hide()
-            btnSharingEducation.isLoading = element.isButtonLoading
+            iuCloseSharing.hide()
+            btnSharing.isLoading = element.isButtonLoading
         }
 
         if (element.isSender) {
@@ -78,7 +80,7 @@ class HomeSharingWidgetViewHolder(
     private fun setSenderData(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
             convertStringToLink(
-                typography = tpSharingEducation,
+                typography = tpSharing,
                 context = itemView.context,
                 stringRes = R.string.tokopedianow_home_referral_widget_desc_sender,
                 slug = element.slug,
@@ -86,8 +88,8 @@ class HomeSharingWidgetViewHolder(
                 campaignCode = element.campaignCode,
                 warehouseId = element.warehouseId
             )
-            btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
-            iuSharingEducation.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_ic_sender_illustration))
+            btnSharing.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
+            iuSharing.loadImage(IMG_SHARING_REFERRAL_SENDER)
             ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_left))
             ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_sender_supergraphic_right))
         }
@@ -95,9 +97,9 @@ class HomeSharingWidgetViewHolder(
 
     private fun setReceiverData() {
         binding?.apply {
-            tpSharingEducation.text = MethodChecker.fromHtml(itemView.resources.getString(R.string.tokopedianow_home_referral_widget_desc_receiver))
-            btnSharingEducation.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
-            iuSharingEducation.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_ic_receiver_illustration))
+            tpSharing.text = MethodChecker.fromHtml(itemView.resources.getString(R.string.tokopedianow_home_referral_widget_desc_receiver))
+            btnSharing.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_receiver)
+            iuSharing.loadImage(IMG_SHARING_REFERRAL_RECEIVER)
             ivBgImageLeft.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_left))
             ivBgImageRight.loadImage(createVectorDrawableCompat(R.drawable.tokopedianow_bg_receiver_supergraphic_right))
         }
@@ -130,7 +132,7 @@ class HomeSharingWidgetViewHolder(
 
     private fun setReferralListener(element: HomeSharingReferralWidgetUiModel) {
         binding?.apply {
-            btnSharingEducation.setOnClickListener {
+            btnSharing.setOnClickListener {
                 if (element.isSender) {
                     listener?.onShareBtnReferralSenderClicked(
                         element.slug,
@@ -152,31 +154,31 @@ class HomeSharingWidgetViewHolder(
 
     private fun setEducationalInfoData(element: HomeSharingEducationWidgetUiModel) {
         binding?.apply {
-            iCloseSharingEducation.show()
+            iuCloseSharing.show()
             ivBgImageTop.show()
             ivBgImageLeft.hide()
             ivBgImageRight.hide()
-            iCloseSharingEducation.setImage(IconUnify.CLOSE)
-            iCloseSharingEducation.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
-            tpSharingEducation.text = MethodChecker.fromHtml(
+            iuCloseSharing.setImage(IconUnify.CLOSE)
+            iuCloseSharing.setColorFilter(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN900))
+            tpSharing.text = MethodChecker.fromHtml(
                 getServiceTypeFormattedCopy(
                     context = root.context,
                     key = SHARING_WIDGET_RESOURCE_ID,
                     serviceType = element.serviceType
                 )
             )
-            btnSharingEducation.text = itemView.resources.getString(element.btnTextRes)
-            iuSharingEducation.loadImage(IMG_SHARING_EDUCATION)
+            btnSharing.text = itemView.resources.getString(element.btnTextRes)
+            iuSharing.loadImage(IMG_SHARING_EDUCATION)
         }
     }
 
     private fun setEducationalInfoListener(element: HomeSharingEducationWidgetUiModel) {
         binding?.apply {
-            btnSharingEducation.setOnClickListener {
+            btnSharing.setOnClickListener {
                 listener?.onShareBtnSharingEducationalInfoClicked()
             }
 
-            iCloseSharingEducation.setOnClickListener {
+            iuCloseSharing.setOnClickListener {
                 listener?.onCloseBtnSharingEducationalInfoClicked(element.id)
             }
         }
