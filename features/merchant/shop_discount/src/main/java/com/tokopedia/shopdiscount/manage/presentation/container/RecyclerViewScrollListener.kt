@@ -16,9 +16,6 @@ class RecyclerViewScrollListener(
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
         super.onScrollStateChanged(recyclerView, newState)
-        if (RecyclerView.SCROLL_STATE_DRAGGING == newState) {
-            onScrollDown()
-        }
 
         if (RecyclerView.SCROLL_STATE_IDLE == newState) {
             if (scrollYDistance <= 0) {
