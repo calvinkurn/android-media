@@ -122,6 +122,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
                             shop = availableGroup.shop,
+                            cartStringId = availableGroup.cartString,
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
                             notesLength = miniCartData.data.maxCharNote)
@@ -154,6 +155,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     val miniCartProductUiModel = mapProductUiModel(
                             cartDetail = cartDetail,
                             shop = unavailableGroup.shop,
+                            cartStringId = unavailableGroup.cartString,
                             shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
@@ -224,11 +226,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                   isDisabled: Boolean = false,
                                   unavailableActionId: String = "",
                                   unavailableReason: String = "",
-                                  notesLength: Int = 0): MiniCartProductUiModel {
+                                  notesLength: Int = 0,
+                                  cartStringId: String = ""): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             cartId = cartDetail.cartId
             productId = cartDetail.product.productId
             parentId = cartDetail.product.parentId
+            cartString = cartStringId
             productImageUrl = cartDetail.product.productImage.imageSrc100Square
             productName = cartDetail.product.productName
             productVariantName = cartDetail.product.variantDescriptionDetail.variantName.joinToString(", ")
@@ -357,6 +361,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     productParentId = visitable.parentId
                     quantity = visitable.productQty
                     notes = visitable.productNotes
+                    cartString = visitable.cartString
                     campaignId = visitable.campaignId
                     attribution = visitable.attribution
                     productWeight = visitable.productWeight
