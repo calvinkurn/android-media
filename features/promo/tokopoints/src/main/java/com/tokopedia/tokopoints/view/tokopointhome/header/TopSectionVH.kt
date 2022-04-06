@@ -578,7 +578,7 @@ class TopSectionVH(
         }
         try {
             handler.postDelayed(
-                runnableHandleProgress, 1000L
+                runnableHandleProgress, 600L
             )
         } catch (e: Exception) {
         }
@@ -589,7 +589,6 @@ class TopSectionVH(
             topSectionData?.popupNotification = null
             refreshOnTierUpgrade.refreshReward(popupNotification)
         }
-        handler.removeCallbacksAndMessages(this)
     }
 
     private fun progressBarIconAnimation(container:FrameLayout? , completion: (() -> Unit)? = null){
