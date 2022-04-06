@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
-import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,19 +20,21 @@ import com.tokopedia.user.session.UserSessionInterface
  * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
 class PlayBroadcastAnalytic(
-        private val userSession: UserSessionInterface,
-        private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
-        private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
-        private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
-        private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
-        private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        private val setupProductAnalytic: PlayBroSetupProductAnalytic,
-) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic,
-    PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
+    private val userSession: UserSessionInterface,
+    private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
+    private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
+    private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
+    private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
+    private val setupProductAnalytic: PlayBroSetupProductAnalytic,
+    private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
+    private val scheduleAnalytic: PlayBroScheduleAnalytic,
+) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
     PlayBroSetupCoverAnalytic by setupCoverAnalytic,
-    PlayBroSetupProductAnalytic by setupProductAnalytic {
+    PlayBroSetupProductAnalytic by setupProductAnalytic,
+    PlayBroadcastSummaryAnalytic by summaryAnalytic,
+    PlayBroScheduleAnalytic by scheduleAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -369,59 +371,12 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * View Report Page
-     */
-    fun openReportScreen(channelId: String) {
-        sendScreen("/$KEY_TRACK_CATEGORY - report summary - ${userSession.shopId} - $channelId")
-    }
-
-    /**
      * View Error Message on Report Page
      */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
         viewCustomGeneralEvent(
                 "error state on report page",
                 "- $channelId - $titleChannel - $errorMessage"
-        )
-    }
-
-    /**
-     * Click save vod on Report Page
-     */
-    fun clickSaveVodOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "save vod",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Click Delete vod on Report Page
-     */
-    fun clickDeleteVodOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "delete vod",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * View confirm on pop up delete on Report Page
-     */
-    fun viewConfirmDeleteOnReportPage(channelId: String) {
-        viewGeneralEvent(
-                "confirm on pop up delete",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Click Delete on pop up delete on Report Page
-     */
-    fun clickDeleteOnPopupOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "delete on pop up delete",
-                "- $channelId"
         )
     }
 

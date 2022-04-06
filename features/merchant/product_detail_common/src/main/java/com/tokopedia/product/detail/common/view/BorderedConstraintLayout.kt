@@ -19,7 +19,7 @@ import com.tokopedia.product.detail.common.R
  */
 class BorderedConstraintLayout : ConstraintLayout {
     companion object {
-        private const val DEFAULT_STROKE_WIDTH = 5F
+        private const val DEFAULT_STROKE_WIDTH = 4F
         private const val DEFAULT_RADIUS = 4F
     }
 

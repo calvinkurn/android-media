@@ -8,7 +8,9 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -37,6 +39,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FAVNUM_PERMISSION_CHECKER_IS_DENIED
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.FIXED_PADDING_ADJUSTMENT
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.INPUT_ACTION_TRACKING_DELAY
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MAXIMUM_VALID_NUMBER_LENGTH
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.MINIMUM_OPERATOR_PREFIX
@@ -59,11 +62,11 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWa
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
-import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -95,7 +98,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.tokopedia.unifyprinciples.R.dimen as unifyDimens
 
 /**
  * @author by firmanda on 04/01/21
@@ -139,6 +141,7 @@ class DigitalPDPDataPlanFragment :
     private var actionTypeTrackingJob: Job? = null
 
     private lateinit var localCacheHandler: LocalCacheHandler
+    private lateinit var productDescBottomSheet: ProductDescBottomSheet
 
     override fun getScreenName(): String = ""
 
@@ -167,9 +170,18 @@ class DigitalPDPDataPlanFragment :
         getDataFromBundle()
         setupKeyboardWatcher()
         setupDynamicScrollListener()
+        setupDynamicScrollViewPadding()
         initClientNumberWidget()
         observeData()
         getCatalogMenuDetail()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is ProductDescBottomSheet) {
+            childFragment.setListener(this)
+        } else if (childFragment is FilterPDPBottomsheet) {
+            childFragment.setListener(this)
+        }
     }
 
     private fun setupKeyboardWatcher() {
@@ -396,6 +408,7 @@ class DigitalPDPDataPlanFragment :
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcData ->
             when (atcData) {
                 is RechargeNetworkResult.Success -> {
+                    if (::productDescBottomSheet.isInitialized) productDescBottomSheet.dismiss()
                     onLoadingBuyWidget(false)
                     digitalPDPAnalytics.addToCart(
                         categoryId.toString(),
@@ -404,7 +417,7 @@ class DigitalPDPDataPlanFragment :
                         userSession.userId,
                         atcData.data.cartId,
                         viewModel.digitalCheckoutPassData.productId.toString(),
-                        operator.attributes.name,
+                        viewModel.selectedFullProduct.denomData.title,
                         atcData.data.priceProduct
                     )
                     navigateToCart(atcData.data.categoryId)
@@ -545,10 +558,8 @@ class DigitalPDPDataPlanFragment :
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-
-                val extendedPadding = getDimens(unifyDimens.layout_lvl8)
-                binding?.rechargePdpPaketDataSvContainer?.setPadding(0, extendedPadding, 0, 0)
             }
+            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
@@ -561,9 +572,8 @@ class DigitalPDPDataPlanFragment :
     }
 
     private fun onFailedGetFavoriteNumber(throwable: Throwable) {
-        binding?.run {
-            rechargePdpPaketDataClientNumberWidget.setFilterChipShimmer(false, true)
-        }
+        binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(false, true)
+        setupDynamicScrollViewPadding()
     }
 
     private fun onSuccessGetPrefixOperator() {
@@ -634,12 +644,13 @@ class DigitalPDPDataPlanFragment :
                             getString(R.string.bottom_sheet_filter_title),
                             userSession.userId,
                         )
-                        fragmentManager?.let {
-                            FilterPDPBottomsheet(
-                                getString(R.string.bottom_sheet_filter_title),
-                                getString(R.string.bottom_sheet_filter_reset),
-                                filterData, this@DigitalPDPDataPlanFragment
-                            ).show(it, "")
+                        childFragmentManager?.let {
+                            val filterPDPBottomsheet = FilterPDPBottomsheet.getInstance()
+                            filterPDPBottomsheet.setTitleAndAction(getString(R.string.bottom_sheet_filter_title),
+                                getString(R.string.bottom_sheet_filter_reset))
+                            filterPDPBottomsheet.setFilterTagData(filterData)
+                            filterPDPBottomsheet.setListener(this@DigitalPDPDataPlanFragment)
+                            filterPDPBottomsheet.show(it, "")
                         }
                     }
 
@@ -871,8 +882,9 @@ class DigitalPDPDataPlanFragment :
     private fun showGlobalErrorState() {
         binding?.globalErrorPaketData?.run {
             show()
-            errorTitle.text = getString(R.string.empty_state_paket_data_title)
-            errorDescription.text = getString(R.string.empty_state_paket_data_desc)
+            val categoryName = DigitalPDPCategoryUtil.getCategoryName(categoryId)
+            errorTitle.text = getString(R.string.empty_state_paket_data_title, categoryName)
+            errorDescription.text = getString(R.string.empty_state_paket_data_desc, categoryName)
             errorAction.hide()
         }
     }
@@ -1057,6 +1069,20 @@ class DigitalPDPDataPlanFragment :
         startActivityForResult(intent, requestCode)
     }
 
+    private fun setupDynamicScrollViewPadding(extraPadding: Int = 0) {
+        binding?.rechargePdpPaketDataClientNumberWidget
+            ?.viewTreeObserver?.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    binding?.rechargePdpPaketDataClientNumberWidget?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                    binding?.run {
+                        val dynamicPadding = rechargePdpPaketDataClientNumberWidget.height.pxToDp(
+                            resources.displayMetrics) + extraPadding
+                        rechargePdpPaketDataSvContainer.setPadding(0, dynamicPadding, 0, 0)
+                    }
+                }
+            })
+    }
+
     //region ClientNumberInputFieldListener
     override fun onRenderOperator(isDelayed: Boolean, isManualInput: Boolean) {
         viewModel.operatorData.rechargeCatalogPrefixSelect.prefixes.isEmpty().let {
@@ -1211,8 +1237,11 @@ class DigitalPDPDataPlanFragment :
             denom.slashPrice,
             userSession.userId
         )
-        fragmentManager?.let {
-            SummaryTelcoBottomSheet(getString(R.string.summary_transaction), denom).show(it, "")
+        childFragmentManager?.let {
+            val summaryTelcoBottomSheet = SummaryTelcoBottomSheet.getInstance()
+            summaryTelcoBottomSheet.setDenomData(denom)
+            summaryTelcoBottomSheet.setTitleBottomSheet(getString(R.string.summary_transaction))
+            summaryTelcoBottomSheet.show(it, "")
         }
     }
     //endregion
@@ -1297,25 +1326,28 @@ class DigitalPDPDataPlanFragment :
     }
 
     override fun onDenomFullImpression(
-        listDenomFull: List<DenomData>,
+        denomFull: DenomData,
         layoutType: DenomWidgetEnum,
+        position: Int
     ) {
-        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE) {
+        if (layoutType == DenomWidgetEnum.MCCM_FULL_TYPE || layoutType == DenomWidgetEnum.FLASH_FULL_TYPE){
             digitalPDPAnalytics.impressionProductMCCM(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomFull,
+                denomFull,
                 layoutType,
+                position
             )
-        } else if (layoutType == DenomWidgetEnum.FULL_TYPE) {
+        } else if (layoutType == DenomWidgetEnum.FULL_TYPE){
             digitalPDPAnalytics.impressionProductCluster(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
                 operator.attributes.name,
                 loyaltyStatus,
                 userSession.userId,
-                listDenomFull,
+                denomFull,
+                position
             )
         }
     }
@@ -1325,9 +1357,13 @@ class DigitalPDPDataPlanFragment :
         position: Int,
         layoutType: DenomWidgetEnum
     ) {
-        fragmentManager?.let {
-            ProductDescBottomSheet(denomFull, this).show(it, "")
+        childFragmentManager?.let {
+            productDescBottomSheet = ProductDescBottomSheet.getInstance()
+            productDescBottomSheet.setDenomData(denomFull)
+            productDescBottomSheet.setListener(this)
+            productDescBottomSheet.show(it, "")
         }
+
         if (layoutType == DenomWidgetEnum.FULL_TYPE) {
             digitalPDPAnalytics.clickFullDenomChevron(
                 DigitalPDPCategoryUtil.getCategoryName(categoryId),
