@@ -71,11 +71,11 @@ class LottieBottomNav : LinearLayout {
         return containerList.getOrNull(index)
     }
 
-    fun setBadge(badgeValue: Int = 0, iconPosition: Int, visibility: Int = View.VISIBLE) {
+    fun setBadge(badgeValue: Int = Int.ZERO, iconPosition: Int, visibility: Int = View.VISIBLE) {
         val badge: View? = navbarContainer?.getChildAt(iconPosition)
         val badgeText = badge?.findViewById<TextView>(R.id.notification_badge)
 
-        if (badgeValue == 0) {
+        if (badgeValue == Int.ZERO) {
             badgeText?.layoutParams = emptyBadgeLayoutParam
             badgeText?.setPadding(
                     resources.getDimensionPixelOffset(R.dimen.sah_dimen_5dp),
@@ -110,7 +110,7 @@ class LottieBottomNav : LinearLayout {
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                0,
+            Int.ZERO,
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
                 badgeRightMargin,
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
@@ -121,7 +121,7 @@ class LottieBottomNav : LinearLayout {
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                0,
+            Int.ZERO,
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
                 badgeRightMargin,
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
@@ -177,7 +177,7 @@ class LottieBottomNav : LinearLayout {
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
         badgeLayoutParam?.setMargins(
-                0,
+                Int.ZERO,
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_20dp),
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
@@ -188,7 +188,7 @@ class LottieBottomNav : LinearLayout {
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_12dp))
         emptyBadgeLayoutParam?.gravity = Gravity.END
         emptyBadgeLayoutParam?.setMargins(
-                0,
+            Int.ZERO,
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp),
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_25dp),
                 resources.getDimensionPixelOffset(R.dimen.sah_dimen_1dp)
