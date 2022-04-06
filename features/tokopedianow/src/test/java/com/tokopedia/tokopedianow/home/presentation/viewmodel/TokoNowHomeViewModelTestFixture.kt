@@ -194,7 +194,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
-        coVerify { getTickerUseCase.execute(any()) }
+        coVerify { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) }
     }
 
     protected fun verifyGetChooseAddress() {
@@ -257,7 +257,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
-        coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
+        coEvery { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) } returns tickerResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(
@@ -291,7 +291,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
-        coEvery { getTickerUseCase.execute(any()) } throws errorThrowable
+        coEvery { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {

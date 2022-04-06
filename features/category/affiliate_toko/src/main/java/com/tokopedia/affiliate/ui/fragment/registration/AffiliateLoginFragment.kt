@@ -23,7 +23,7 @@ import com.tokopedia.affiliate.viewmodel.AffiliateLoginViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.dialog.DialogUnify
@@ -217,8 +217,8 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     private fun doLogout() {
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.LOGOUT)
+            intent.putExtra(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, false)
             startActivityForResult(intent, AFFILIATE_REQUEST_CODE_LOGOUT)
         }
     }

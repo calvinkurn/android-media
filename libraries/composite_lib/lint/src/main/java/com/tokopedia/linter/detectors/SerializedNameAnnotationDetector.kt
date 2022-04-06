@@ -18,11 +18,14 @@ import org.jetbrains.uast.kotlin.KotlinConstructorUMethod
 class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
 
     companion object {
+        private const val DESCRIPTION = "Field without @SerializedName annotation can cause data parsing error."
+        private const val EXPLANATION = "Field without @SerializedName annotation can cause data parsing error. " +
+                "Add @SerializedName and @Expose (optional) annotation to avoid error."
+
         val RESPONSE_ISSUE = Issue.create(
             id = "ResponseFieldAnnotation",
-            briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
-            explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
-                "Add @SerializedName and @Expose annotation to avoid error.",
+            briefDescription = DESCRIPTION,
+            explanation = EXPLANATION,
             category = Category.CORRECTNESS,
             priority = 10,
             severity = Severity.WARNING,
@@ -34,9 +37,8 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
 
         val ENTITY_ISSUE = Issue.create(
             id = "EntityFieldAnnotation",
-            briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
-            explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
-                "Add @SerializedName and @Expose annotation to avoid error.",
+            briefDescription = DESCRIPTION,
+            explanation = EXPLANATION,
             category = Category.CORRECTNESS,
             priority = 10,
             severity = Severity.FATAL,
@@ -48,9 +50,8 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
 
         val PARAM_ISSUE = Issue.create(
             id = "ParamFieldAnnotation",
-            briefDescription = "Field without @SerializedName and @Expose annotation can cause data parsing error.",
-            explanation = "Field without @SerializedName and @Expose annotation can cause data parsing error. " +
-                "Add @SerializedName and @Expose annotation to avoid error.",
+            briefDescription = DESCRIPTION,
+            explanation = EXPLANATION,
             category = Category.CORRECTNESS,
             priority = 10,
             severity = Severity.WARNING,
@@ -65,10 +66,9 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
         private const val ENTITY_KEYWORD = "Entity"
         private const val DOMAIN_MODEL_PATH= "domain/model"
         private const val SERIALIZED_NAME_ANNOTATION = "com.google.gson.annotations.SerializedName"
-        private const val EXPOSE_ANNOTATION = "com.google.gson.annotations.Expose"
         private const val ENTITY_ANNOTATION = "androidx.room.Entity"
-        private const val MESSAGE = "Field \"%s\" without @SerializedName and @Expose annotation can cause data parsing error. " +
-            "Add @SerializedName and @Expose annotation to avoid error."
+        private const val MESSAGE = "Field \"%s\" without @SerializedName annotation can cause data parsing error. " +
+            "Add @SerializedName and @Expose (optional) annotation to avoid error."
     }
 
     override fun getApplicableUastTypes(): List<Class<out UElement>> {
@@ -79,9 +79,7 @@ class SerializedNameAnnotationDetector : Detector(), SourceCodeScanner {
         return object : UElementHandler() {
             override fun visitParameter(node: UParameter) {
                 val serializedNameAnnotation = node.findAnnotation(SERIALIZED_NAME_ANNOTATION)
-                val exposeAnnotation = node.findAnnotation(EXPOSE_ANNOTATION)
-                val shouldReportIssue = serializedNameAnnotation == null ||
-                    exposeAnnotation == null
+                val shouldReportIssue = serializedNameAnnotation == null
 
                 if(shouldCheckAnnotation(context, node) && shouldReportIssue) {
                     reportIssue(context, node)

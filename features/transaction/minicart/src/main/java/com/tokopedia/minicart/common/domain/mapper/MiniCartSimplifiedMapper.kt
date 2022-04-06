@@ -74,6 +74,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             min(product.productQuantity, product.productInvenageValue)
                         }
                         notes = product.productNotes
+                        cartString = availableGroup.cartString
                         campaignId = product.campaignId
                         attribution = product.productTrackerData.attribution
                         productWeight = product.productWeight
@@ -132,6 +133,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             productParentId = product.parentId
                             quantity = product.productQuantity
                             notes = product.productNotes
+                            cartString = unavailableGroup.cartString
                         }
                         val key = MiniCartItemKey(product.productId)
                         if (!miniCartSimplifiedDataList.contains(key)) {

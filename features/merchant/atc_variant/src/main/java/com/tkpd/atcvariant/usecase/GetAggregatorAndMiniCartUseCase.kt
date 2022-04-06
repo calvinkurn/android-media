@@ -36,8 +36,9 @@ class GetAggregatorAndMiniCartUseCase @Inject constructor(val dispatcher: Corout
                                     pdpSession: String? = null,
                                     shopId: String,
                                     isLoggedIn: Boolean,
-                                    isTokoNow: Boolean): AggregatorMiniCartUiModel {
-        this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, shopId, warehouseId, pdpSession)
+                                    isTokoNow: Boolean,
+                                    extParams: String): AggregatorMiniCartUiModel {
+        this.requestParamsAggregator = aggregatorUseCase.createRequestParams(productId, source, isTokoNow, shopId, extParams, warehouseId, pdpSession)
         this.shopIds = listOf(shopId)
         this.isTokoNow = isTokoNow
         this.isLoggedIn = isLoggedIn

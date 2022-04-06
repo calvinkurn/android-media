@@ -8,7 +8,8 @@ data class TokonowModel(
         var shopId: Long = 0,
         var warehouseId: Long = 0,
         var warehouses: List<WarehouseModel> = listOf(),
-        var serviceType: String = ""
+        var serviceType: String = "",
+        var lastUpdate: String = ""
 ): Parcelable
 
 @Parcelize
