@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcCueCategory3x2Binding
@@ -29,7 +30,9 @@ class CueWidgetCategory3x2ViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_cue_category_3x2
-        private const val SPAN_COUNT = 3
+        private const val SPAN_COUNT_MOBILE = 3
+        private const val SPAN_COUNT_TABLET = 6
+        private const val FIRST_ITEM_DECORATION = 0
     }
 
     override fun bind(element: CueCategory3x2DataModel) {
@@ -38,13 +41,16 @@ class CueWidgetCategory3x2ViewHolder (
         mappingView(element.channelModel)
     }
 
+    private fun getSpanCount(): Int =
+        if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_TABLET else SPAN_COUNT_MOBILE
+
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
             adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener)
             homeComponentCueCategory3x2Rv.adapter = adapter
-            val layoutManager = StaggeredGridLayoutManager(SPAN_COUNT, LinearLayoutManager.VERTICAL)
+            val layoutManager = StaggeredGridLayoutManager(getSpanCount(), LinearLayoutManager.VERTICAL)
             homeComponentCueCategory3x2Rv.layoutManager = layoutManager
-            if (homeComponentCueCategory3x2Rv.itemDecorationCount == 0) {
+            if (homeComponentCueCategory3x2Rv.itemDecorationCount == FIRST_ITEM_DECORATION) {
                 homeComponentCueCategory3x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())
             }
         }

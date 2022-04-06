@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcCueCategory2x2Binding
@@ -12,6 +13,7 @@ import com.tokopedia.home_component.decoration.CueWidgetCategoryItemDecoration
 import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.CueWidgetCategoryAdapter
 import com.tokopedia.home_component.visitable.CueCategory2x2DataModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -29,7 +31,9 @@ class CueWidgetCategory2x2ViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_cue_category_2x2
-        private const val SPAN_COUNT = 2
+        private const val SPAN_COUNT_MOBILE = 2
+        private const val SPAN_COUNT_TABLET = 4
+        private const val FIRST_ITEM_DECORATION = 0
     }
 
     override fun bind(element: CueCategory2x2DataModel) {
@@ -38,13 +42,17 @@ class CueWidgetCategory2x2ViewHolder (
         mappingView(element.channelModel)
     }
 
+    private fun getSpanCount(): Int =
+        if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_TABLET else SPAN_COUNT_MOBILE
+
+
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
             adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener)
             homeComponentCueCategory2x2Rv.adapter = adapter
-            val layoutManager = StaggeredGridLayoutManager(SPAN_COUNT, LinearLayoutManager.VERTICAL)
+            val layoutManager = StaggeredGridLayoutManager(getSpanCount(), LinearLayoutManager.VERTICAL)
             homeComponentCueCategory2x2Rv.layoutManager = layoutManager
-            if (homeComponentCueCategory2x2Rv.itemDecorationCount == 0) {
+            if (homeComponentCueCategory2x2Rv.itemDecorationCount == FIRST_ITEM_DECORATION) {
                 homeComponentCueCategory2x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())
             }
         }
