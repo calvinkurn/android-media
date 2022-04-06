@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Path
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -150,6 +151,7 @@ class PlayChatListView : ConstraintLayout {
     private fun setupView(view: View) {
         rvChatList.apply {
             val layoutMan = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            addItemDecoration(PlayChatItemDecoration(context))
             layoutMan.stackFromEnd = true
             layoutManager = layoutMan
             itemAnimator = null
@@ -181,5 +183,14 @@ class PlayChatListView : ConstraintLayout {
 
         private const val MASK_START_POS = 0f
         private const val MASK_DURATION_IN_MS = 300L
+    }
+
+    private class PlayChatItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+
+        private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.dp_6)
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            outRect.bottom = dividerHeight
+        }
     }
 }

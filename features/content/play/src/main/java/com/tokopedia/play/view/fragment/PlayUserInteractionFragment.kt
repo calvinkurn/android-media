@@ -529,12 +529,16 @@ class PlayUserInteractionFragment @Inject constructor(
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
-        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
+            invalidateChatListBounds(shouldForceInvalidate = true)
+        }
         view?.show()
         /**
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
-        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
+            invalidateChatListBounds(shouldForceInvalidate = true)
+        }
 
         if (isHidingInsets && rtnView?.isAnimating() == true && rtnView?.isAnimatingHide() != true) {
             val height = rtnView?.getRtnHeight() ?: return
@@ -734,6 +738,12 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             chatListView?.showNewChat(it)
+
+            if (!playViewModel.observableChatList.value.isNullOrEmpty()) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    invalidateChatListBounds(shouldForceInvalidate = true)
+                }
+            }
         })
     }
 
@@ -742,6 +752,10 @@ class PlayUserInteractionFragment @Inject constructor(
             override fun onChanged(chatList: List<PlayChatUiModel>) {
                 playViewModel.observableChatList.removeObserver(this)
                 chatListView?.setChatList(chatList)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    invalidateChatListBounds(shouldForceInvalidate = true)
+                }
             }
         })
     }
