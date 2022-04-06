@@ -149,10 +149,6 @@ class RechargeHomepageAdapterTypeFactory(
     fun type(customLastItem: RechargeHomepageProductCardCustomLastItemModel): Int =
         RechargeHomepageProductCardCustomLastItemViewHolder.LAYOUT
 
-    override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
-        return 0
-    }
-
     override fun type(dynamicLegoBannerDataModel: DynamicLegoBannerDataModel): Int {
         return RechargeHomepageLegoBannerViewHolder.LAYOUT
     }

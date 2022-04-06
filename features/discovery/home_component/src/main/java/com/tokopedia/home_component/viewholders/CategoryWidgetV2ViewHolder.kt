@@ -118,7 +118,6 @@ class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: C
     class CategoryWidgetItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         val categoryImageView: ImageView = view.findViewById(R.id.category_image)
         val categoryName: Typography = view.findViewById(R.id.category_item_name)
-        val categoryContainer: View = view.findViewById(R.id.card_container)
 
         val context: Context
             get() = itemView.context

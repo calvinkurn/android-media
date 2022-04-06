@@ -38,5 +38,6 @@ class CategoryWidgetV2Callback(
 
     override fun onSeeAllCategoryWidget(channelModel: ChannelModel) {
         CategoryWidgetTracking.sendCategoryWidgetSeeAllClick(channelModel, homeCategoryListener.userId)
+        homeCategoryListener.onDynamicChannelClicked(channelModel.channelHeader.applink)
     }
 }
