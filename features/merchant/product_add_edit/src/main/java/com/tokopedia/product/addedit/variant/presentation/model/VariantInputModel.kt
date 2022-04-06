@@ -1,9 +1,17 @@
 package com.tokopedia.product.addedit.variant.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import kotlinx.parcelize.Parcelize
 import java.math.BigInteger
+
+enum class VariantStockStatus{
+        ALL_EMPTY,
+        ALL_AVAILABLE,
+        PARTIALLY_AVAILABLE
+}
 
 @Parcelize
 data class VariantInputModel(
@@ -23,6 +31,14 @@ data class VariantInputModel(
         fun getHighestPrice() = products.maxByOrNull { it.price }?.price
 
         fun getTotalStock(): Int = products.sumOf { it.stock.orZero() }
+
+        fun getStockStatus(): VariantStockStatus {
+                return when {
+                    products.all { it.stock.orZero().isMoreThanZero() } -> VariantStockStatus.ALL_AVAILABLE
+                    products.all { it.stock.orZero().isZero() } -> VariantStockStatus.ALL_EMPTY
+                    else -> VariantStockStatus.PARTIALLY_AVAILABLE
+                }
+        }
 }
 
 @Parcelize

@@ -65,6 +65,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHOP_LOCATION
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DESCRIPTION
@@ -119,7 +120,9 @@ import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantActivity
+import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantStockStatus
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -532,32 +535,7 @@ class AddEditProductPreviewFragment :
                     activity?.finish()
                 } else {
                     // show dialog
-                    DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                        setTitle(getString(R.string.label_title_on_dialog))
-                        setDefaultMaxWidth()
-                        setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                        setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-                        if ((isEditing() || dataBackPressedLoss()) && !isDrafting()) {
-                            setDescription(getString(R.string.label_description_on_dialog_edit))
-                            setSecondaryCTAClickListener {
-                                activity?.finish()
-                            }
-                            setPrimaryCTAClickListener {
-                                this.dismiss()
-                            }
-                        } else {
-                            setDescription(getString(R.string.label_description_on_dialog))
-                            setSecondaryCTAClickListener {
-                                saveProductToDraft()
-                                moveToManageProduct()
-                                ProductAddStepperTracking.trackDraftYes(shopId)
-                            }
-                            setPrimaryCTAClickListener {
-                                this.dismiss()
-                                ProductAddStepperTracking.trackDraftCancel(shopId)
-                            }
-                        }
-                    }.show()
+                    showCloseConfirmationDialog()
                 }
             }
         })
@@ -650,7 +628,7 @@ class AddEditProductPreviewFragment :
             if (isEditing()) {
                 ProductEditStepperTracking.trackAddProductVariant(shopId)
             }
-            showVariantDialog()
+            showVariantActivity()
         }
         addProductVariantTipsLayout?.setOnClickListener {
             if (isEditing()) {
@@ -675,8 +653,15 @@ class AddEditProductPreviewFragment :
         productStatusSwitch = view.findViewById(R.id.su_product_status)
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
-            viewModel.updateProductStatus(isChecked)
-            viewModel.setIsDataChanged(true)
+
+            if (isChecked && viewModel.isVariantEmpty.value == false) {
+                viewModel.productInputModel.value?.variantInputModel?.getStockStatus()?.let {
+                    activateVariantStatusConfirmation(it)
+                }
+            } else {
+                viewModel.updateProductStatus(isChecked)
+                viewModel.setIsDataChanged(true)
+            }
 
             // track switch status on click
             if (isChecked && isEditing()) {
@@ -1006,8 +991,6 @@ class AddEditProductPreviewFragment :
         viewModel.getProductResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    val isVariantEmpty = result.data.variant.products.isEmpty()
-                    showEmptyVariantState(isVariantEmpty)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
 
@@ -1056,8 +1039,6 @@ class AddEditProductPreviewFragment :
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
             updateProductStatusSwitch(it)
-            showEmptyVariantState(viewModel.productInputModel.value?.
-                                    variantInputModel?.products?.isEmpty().orFalse())
 
             if (viewModel.getDraftId() != Int.ZERO.toLong() ||
                 it.productId != Int.ZERO.toLong() ||
@@ -1083,7 +1064,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductVariant() {
         viewModel.isVariantEmpty.observe(viewLifecycleOwner, {
-            if ((isEditing() || isDrafting()) && it) {
+            if (isEditing() || isDrafting()) {
                 showEmptyVariantState(it)
             }
         })
@@ -1442,13 +1423,23 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun showVariantDialog() {
+    private fun showVariantActivity() {
         context?.run {
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
             }
             val intent = AddEditProductVariantActivity.createInstance(this, cacheManager.id)
             startActivityForResult(intent, REQUEST_CODE_VARIANT_DIALOG_EDIT)
+        }
+    }
+
+    private fun showVariantDetailActivity() {
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel.value)
+            }
+            val intent = AddEditProductVariantDetailActivity.createInstance(this, cacheManager.id)
+            startActivityForResult(intent, REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT)
         }
     }
 
@@ -1570,17 +1561,90 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun showCloseConfirmationDialog() {
+        DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.label_title_on_dialog))
+            setDefaultMaxWidth()
+            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+            if ((isEditing() || dataBackPressedLoss()) && !isDrafting()) {
+                setDescription(getString(R.string.label_description_on_dialog_edit))
+                setSecondaryCTAClickListener {
+                    activity?.finish()
+                }
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                }
+            } else {
+                setDescription(getString(R.string.label_description_on_dialog))
+                setSecondaryCTAClickListener {
+                    saveProductToDraft()
+                    moveToManageProduct()
+                    ProductAddStepperTracking.trackDraftYes(shopId)
+                }
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                    ProductAddStepperTracking.trackDraftCancel(shopId)
+                }
+            }
+        }.show()
+    }
+
     private fun showDialogLocationValidation() {
         DialogUnify(
                 requireContext(),
                 DialogUnify.SINGLE_ACTION,
                 DialogUnify.NO_IMAGE
         ).apply {
+            setDefaultMaxWidth()
             setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
             setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
             setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
             setPrimaryCTAClickListener {
                 moveToLocationPicker()
+                dismiss()
+            }
+        }.show()
+    }
+
+    private fun activateVariantStatusConfirmation(stockStatus: VariantStockStatus) {
+        val descMessage: String
+        val buttonPrimaryText: String
+        val primaryClickAction: () -> Unit
+        when (stockStatus) {
+            VariantStockStatus.ALL_EMPTY -> {
+                descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty)
+                primaryClickAction = { showVariantDetailActivity() }
+                buttonPrimaryText = getString(R.string.action_activate_variant_status_stock_empty)
+            }
+            VariantStockStatus.ALL_AVAILABLE -> {
+                descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_available)
+                primaryClickAction = { viewModel.updateProductStatus(true) }
+                buttonPrimaryText = getString(R.string.action_activate_variant_status)
+            }
+            else -> {
+                descMessage = getString(R.string.label_dialog_desc_activate_variant_status_partially_available)
+                primaryClickAction = { viewModel.updateProductStatus(true) }
+                buttonPrimaryText = getString(R.string.action_activate_variant_status)
+            }
+        }
+        DialogUnify(
+            requireContext(),
+            DialogUnify.HORIZONTAL_ACTION,
+            DialogUnify.NO_IMAGE
+        ).apply {
+            setTitle(getString(R.string.label_dialog_title_activate_variant_status))
+            setDescription(descMessage)
+            setPrimaryCTAText(buttonPrimaryText)
+            setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))
+            setOverlayClose(false)
+            setPrimaryCTAClickListener {
+                primaryClickAction.invoke()
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                productStatusSwitch?.isChecked = false
+                viewModel.updateProductStatus(false)
                 dismiss()
             }
         }.show()

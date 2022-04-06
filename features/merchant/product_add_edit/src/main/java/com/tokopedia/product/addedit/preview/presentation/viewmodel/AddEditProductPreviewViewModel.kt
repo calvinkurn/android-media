@@ -7,6 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -113,15 +114,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
     var productInputModel = MediatorLiveData<ProductInputModel>()
 
     // observing the use case result, and will become true if no variant
-    val isVariantEmpty = Transformations.map(mGetProductResult) {
-        when (it) {
-            is Success -> {
-                it.data.variant.products.isEmpty()
-            }
-            is Fail -> {
-                true
-            }
-        }
+    val isVariantEmpty = Transformations.map(productInputModel) {
+        !it.variantInputModel.hasVariant()
     }
 
     val priceRangeFormatted = Transformations.map(productInputModel) {
@@ -315,7 +309,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
             it.detailInputModel.status = newStatus
             it.variantInputModel.products.forEach { variant ->
-                variant.status = if (isActive) ProductStatus.STATUS_ACTIVE_STRING else ProductStatus.STATUS_INACTIVE_STRING
+                variant.status = if (isActive && variant.stock != Int.ZERO) {
+                    ProductStatus.STATUS_ACTIVE_STRING
+                } else {
+                    ProductStatus.STATUS_INACTIVE_STRING
+                }
             }
         }
     }

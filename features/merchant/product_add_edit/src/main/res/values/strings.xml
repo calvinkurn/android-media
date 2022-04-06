@@ -26,6 +26,10 @@
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
     <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
+    <string name="label_dialog_title_activate_variant_status">Aktifkan status produk?</string>
+    <string name="label_dialog_desc_activate_variant_status_all_available">Status dari semua varian produk ini akan berubah menjadi aktif.</string>
+    <string name="label_dialog_desc_activate_variant_status_all_empty">Stok produk kosong. Update stok dulu, ya.</string>
+    <string name="label_dialog_desc_activate_variant_status_partially_available">Status semua varian produk ini akan berubah menjadi aktif. Varian dengan stok 0 akan tetap tidak aktif.</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
     <string name="action_add">Tambah</string>
@@ -33,6 +37,9 @@
     <string name="action_save">Simpan</string>
     <string name="action_learn">Pelajari Selengkapnya</string>
     <string name="action_oke">Oke</string>
+    <string name="action_activate_variant_status">Ya, Aktifkan</string>
+    <string name="action_activate_variant_status_stock_empty">Update Stok</string>
+    <string name="action_cancel_activate_variant_status">Batal</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>
