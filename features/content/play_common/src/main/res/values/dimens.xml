@@ -51,4 +51,7 @@
     <dimen name="engagement_tools_small_widget_marginTop">-14dp</dimen>
     <dimen name="engagement_tools_small_widget_timer_bottom">-20dp</dimen>
     <dimen name="engagement_tools_small_widget_timer_top">-16dp</dimen>
+
+    <!-- Chat -->
+    <dimen name="play_bro_chat_spacing">6dp</dimen>
 </resources>

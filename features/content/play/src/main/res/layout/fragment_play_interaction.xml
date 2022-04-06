@@ -327,7 +327,7 @@
         app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="@id/view_chat_list"
         app:layout_constraintStart_toStartOf="@id/view_size"
-        app:layout_constraintTop_toTopOf="@id/view_chat_list"
+        app:layout_constraintBottom_toTopOf="@id/view_chat_list"
         app:layout_constraintHorizontal_bias="0"
         app:rcl_cornerRadius="@dimen/play_real_time_notif_radius"
         />

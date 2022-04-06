@@ -120,7 +120,6 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductFeaturedViewComponent.Listener,
         InteractiveViewComponent.Listener,
         InteractiveWinnerBadgeViewComponent.Listener,
-        RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener
@@ -146,7 +145,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
     private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
-    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
+    private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
@@ -200,6 +199,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private var isOpened = false
     private var portraitInsets: WindowInsets? = null
+    private var hasInvalidateChat = false
 
     private var videoBoundsProvider: VideoBoundsProvider? = null
     private var dynamicLayoutManager: DynamicLayoutManager? = null
@@ -309,6 +309,8 @@ class PlayUserInteractionFragment @Inject constructor(
         videoBoundsProvider = null
         dynamicLayoutManager = null
         chatListHeightManager = null
+
+        hasInvalidateChat = false
 
         cancelAllAnimations()
 
@@ -497,17 +499,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * RealTimeNotification View Component Listener
-     */
-    override fun onShowNotification(view: RealTimeNotificationViewComponent, height: Float) {
-        chatListView?.setMask(height + offset8, true)
-    }
-
-    override fun onHideNotification(view: RealTimeNotificationViewComponent) {
-        chatListView?.setMask(MASK_NO_CUT_HEIGHT, true)
-    }
-
-    /**
      * Cast View Component Listener
      */
     override fun onCastClicked() {
@@ -541,12 +532,16 @@ class PlayUserInteractionFragment @Inject constructor(
         /**
          * The first one is to handle fast changes when insets transition from show to hide
          */
-        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) {
+            invalidateChatListBounds(shouldForceInvalidate = true)
+        }
         view?.show()
         /**
          * The second one is to handle edge cases when somehow any interaction has changed while insets is shown
          */
-        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) { invalidateChatListBounds() }
+        if (isHidingInsets) viewLifecycleOwner.lifecycleScope.launch(dispatchers.main) {
+            invalidateChatListBounds(shouldForceInvalidate = true)
+        }
 
         if (isHidingInsets && rtnView?.isAnimating() == true && rtnView?.isAnimatingHide() != true) {
             val height = rtnView?.getRtnHeight() ?: return
@@ -746,6 +741,13 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, DistinctEventObserver {
             chatListView?.showNewChat(it)
+
+            if (!hasInvalidateChat) {
+                hasInvalidateChat = true
+                viewLifecycleOwner.lifecycleScope.launch {
+                    invalidateChatListBounds(shouldForceInvalidate = true)
+                }
+            }
         })
     }
 
@@ -754,6 +756,10 @@ class PlayUserInteractionFragment @Inject constructor(
             override fun onChanged(chatList: List<PlayChatUiModel>) {
                 playViewModel.observableChatList.removeObserver(this)
                 chatListView?.setChatList(chatList)
+
+                viewLifecycleOwner.lifecycleScope.launch {
+                    invalidateChatListBounds(shouldForceInvalidate = true)
+                }
             }
         })
     }
