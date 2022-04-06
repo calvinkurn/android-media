@@ -27,7 +27,7 @@
     <string name="sd_total_stock_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
 
     <string name="sd_total_stock">Total stok: <![CDATA[<b>%1s</b>]]></string>
-    <string name="sd_search">Cari produk atau pakai filter</string>
+    <string name="sd_search">Cari produk</string>
     <string name="sd_total_product">%s Produk</string>
     <string name="sd_multi_select">Pilih Sekaligus</string>
     <string name="sd_create_discount">Buat Diskon</string>
