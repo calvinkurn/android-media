@@ -112,13 +112,15 @@ class SingleProductBundleFragment(
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
             adapter.setSelectedVariant(selectedProductId,
                 viewModel.getVariantText(selectedProductVariant, selectedProductId))
-            Toaster.build(
-                requireView(),
-                getString(R.string.single_bundle_success_variant_added),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.action_oke)
-            ).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    getString(R.string.single_bundle_success_variant_added),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
+            }
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
@@ -227,8 +229,10 @@ class SingleProductBundleFragment(
                 else -> getString(R.string.single_bundle_error_unknown)
             }
             hideLoadingDialog()
-            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(R.string.action_oke)).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.action_oke)).setAnchorView(this).show()
+            }
         })
     }
 
@@ -270,12 +274,14 @@ class SingleProductBundleFragment(
 
     private fun observeThrowableError() {
         viewModel.throwableError.observe(viewLifecycleOwner, {
-            Toaster.build(
-                requireView(),
-                ErrorHandler.getErrorMessage(context, it),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    ErrorHandler.getErrorMessage(context, it),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).setAnchorView(this).show()
+            }
             hideLoadingDialog()
             // TODO: log error
         })

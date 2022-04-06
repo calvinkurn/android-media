@@ -9,8 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_bundle_page"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".multiple.presentation.fragment.MultipleProductBundleFragment">
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product_bundle_master"
@@ -18,6 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/unify_space_16"
             android:layout_marginTop="6dp"
+            android:nestedScrollingEnabled="false"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -47,11 +47,14 @@
             android:id="@+id/rv_product_bundle_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/du_bottom"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            android:nestedScrollingEnabled="false"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="@+id/du_bottom"
             app:layout_constraintTop_toBottomOf="@id/tv_po_process_day"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <View
             android:id="@+id/du_bottom"

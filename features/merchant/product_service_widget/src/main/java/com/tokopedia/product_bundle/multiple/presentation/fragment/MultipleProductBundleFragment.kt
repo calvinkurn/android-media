@@ -221,8 +221,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
             errorMessage?.run {
                 // show error message
-                Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.action_oke)).setAnchorView(productBundleOverView?.bottomContentView).show()
+                productBundleOverView?.bottomContentView?.apply {
+                    Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.action_oke)).setAnchorView(this).show()
+                }
             }
         })
     }
@@ -465,13 +467,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     updateProductBundleOverView(productBundleOverView, selectedBundleDetails)
                 }
             }
-            Toaster.build(
-                requireView(),
-                getString(R.string.single_bundle_success_variant_added),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.action_oke)
-            ).setAnchorView(productBundleOverView?.bottomContentView).show()
+            productBundleOverView?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    getString(R.string.single_bundle_success_variant_added),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
+            }
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             productBundleOverView?.amountCtaView?.performClick()
