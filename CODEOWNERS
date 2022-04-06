@@ -245,18 +245,18 @@
 /features/fintech/ovo_pay_with_qr       				@tokopedia/android-minionyoda-dev
 /features/fintech/saldo_details         				@tokopedia/android-minionyoda-dev
 /features/fintech/home_credit           				@tokopedia/android-minionyoda-dev
-/features/promo/tokopoints              				@tokopedia/android-minionsolo-dev
-/features/promo/tokopoints_notification 				@tokopedia/android-minionsolo-dev
-/features/promo/gamification            				@tokopedia/android-minionsolo-dev
+/features/promo/tokopoints              				@tokopedia/android-minionyoda-dev
+/features/promo/tokopoints_notification 				@tokopedia/android-minionyoda-dev
+/features/promo/gamification            				@tokopedia/android-minionyoda-dev
 /features/kyc                           				@tokopedia/android-minionyoda-dev
 /features/promo/merchant_voucher                        @tokopedia/android-minionsolo-dev
-/features/promo/promo_gamification_common               @tokopedia/android-minionsolo-dev
-/features/promo/loyalty                                 @tokopedia/android-minionsolo-dev
-/features/promo/loyalty_common                          @tokopedia/android-minionsolo-dev
-/features/promo/promotions_target					    @tokopedia/android-minionsolo-dev
-/features/promo/promo_ui_common					        @tokopedia/android-minionsolo-dev
-/features/promo/mvc_widget  					        @tokopedia/android-minionsolo-dev
-/features/promo/quest_widget  					        @tokopedia/android-minionsolo-dev
+/features/promo/promo_gamification_common               @tokopedia/android-minionyoda-dev
+/features/promo/loyalty                                 @tokopedia/android-minionyoda-dev
+/features/promo/loyalty_common                          @tokopedia/android-minionyoda-dev
+/features/promo/promotions_target					    @tokopedia/android-minionyoda-dev
+/features/promo/promo_ui_common					        @tokopedia/android-minionyoda-dev
+/features/promo/mvc_widget  					        @tokopedia/android-minionyoda-dev
+/features/promo/quest_widget  					        @tokopedia/android-minionyoda-dev
 /features/fintech/merchant_lending_widget               @tokopedia/android-minionyoda-dev
 
 
