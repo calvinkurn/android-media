@@ -114,6 +114,76 @@ class DigitalRecommendationAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.SELECT_CONTENT, bundle)
     }
 
+    fun impressionDigitalRecommendationThankYouPageItems(
+        digitalRecommendationModel: DigitalRecommendationItemUnifyModel,
+        additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
+        index: Int,
+        userId: String,
+        page: DigitalRecommendationPage?
+    ){
+        val data = Bundle().apply {
+            putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.VIEW_ITEM_LIST)
+            putString(DigitalRecommendationKeys.EVENT_ACTION, DigitalRecommendationActions.IMPRESSION_THANKYOU_PAGE)
+            putString(DigitalRecommendationKeys.EVENT_CATEGORY, getEventCategoryThankYouPage(page))
+            putString(DigitalRecommendationKeys.EVENT_LABEL,getEventLabelThankYouPageImpression(
+                userType = additionalTrackingData.userType,
+                data = digitalRecommendationModel,
+                index = index
+            ))
+            putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
+            putString(DigitalRecommendationKeys.CURRENT_SITE, DigitalRecommendationValues.CURRENT_SITE)
+            putString(DigitalRecommendationKeys.ITEM_LIST, getItemListThankYouPage(digitalRecommendationModel.tracking.itemType))
+            putParcelableArrayList(DigitalRecommendationKeys.ITEMS, getItemImpressionsThankYouPage(index, digitalRecommendationModel))
+            putString(DigitalRecommendationKeys.USER_ID, userId)
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.VIEW_ITEM_LIST, data)
+    }
+
+    private fun getItemListThankYouPage(recommendationLogic: String): String{
+        return "/ - order complete dg - $recommendationLogic"
+    }
+
+    private fun getEventCategoryThankYouPage(page: DigitalRecommendationPage?): String{
+        return when (page) {
+            DigitalRecommendationPage.DG_THANK_YOU_PAGE -> DigitalRecommendationValues.CATEGORY_THANKYOU_PAGE_DG
+            DigitalRecommendationPage.PG_THANK_YOU_PAGE -> DigitalRecommendationValues.CATEGORY_THANKYOU_PAGE_PG
+            else -> ""
+        }
+    }
+
+    /**
+     * pattern : {user_loyalty} - {recommendation logic} - {slot_widget_card} - {category_id} - {operator_id} - {product_id} - {price_before} - {price_after} - {campaign_type}
+     */
+    private fun getEventLabelThankYouPageImpression(
+        index: Int,
+        userType: String,
+        data: DigitalRecommendationItemUnifyModel): String{
+        return String.format(
+            "%s - %S - %S - %s - %s - %s - %s - %s - %S",
+            userType,
+            data.tracking.itemType,
+            index + 1,
+            data.tracking.categoryId,
+            data.tracking.operatorId,
+            data.tracking.productId,
+            data.unify.priceData.slashedPrice,
+            data.unify.priceData.price,
+            data.unify.campaign.text
+        )
+    }
+
+    private fun getItemImpressionsThankYouPage(index: Int, data: DigitalRecommendationItemUnifyModel): ArrayList<Bundle>{
+        return arrayListOf(Bundle().apply {
+            putInt(DigitalRecommendationKeys.INDEX, index + 1)
+            putString(DigitalRecommendationKeys.ITEM_BRAND, data.tracking.productId.ifEmpty { "0" })
+            putString(DigitalRecommendationKeys.ITEM_CATEGORY, data.tracking.categoryId)
+            putString(DigitalRecommendationKeys.ITEM_ID, data.tracking.productId.ifEmpty { "0" })
+            putString(DigitalRecommendationKeys.ITEM_NAME, data.unify.title)
+            putString(DigitalRecommendationKeys.ITEM_VARIANT, data.tracking.itemType)
+            putString(DigitalRecommendationKeys.PRICE, "${data.unify.priceData.slashedPrice} - ${data.unify.priceData.price} - ${data.unify.campaign.text}")
+        })
+    }
 }
 
 class DigitalRecommendationKeys {
@@ -133,6 +203,7 @@ class DigitalRecommendationKeys {
         const val ITEM_VARIANT = "item_variant"
         const val PRICE = "price"
         const val USER_ID = "userId"
+        const val ITEM_LIST = "item_list"
     }
 }
 
@@ -145,6 +216,7 @@ class DigitalRecommendationEvents {
 
 class DigitalRecommendationActions {
     companion object {
+        const val IMPRESSION_THANKYOU_PAGE = "impression on widget recommendation"
         const val IMPRESSION = "impression on widget recommendation dgu"
         const val CLICK = "click on widget recommendation dgu"
     }
@@ -154,6 +226,10 @@ class DigitalRecommendationValues {
     companion object {
         const val CATEGORY_PURCHASE_LIST_MP = "my purchase list detail - mp"
         const val CATEGORY_PURCHASE_LIST_DG = "my purchase list detail - dg"
+
+        const val CATEGORY_THANKYOU_PAGE_DG = "order complete - dg"
+        const val CATEGORY_THANKYOU_PAGE_PG = "order complete - pg"
+
 
         const val CURRENT_SITE = "tokopediadigital"
     }
