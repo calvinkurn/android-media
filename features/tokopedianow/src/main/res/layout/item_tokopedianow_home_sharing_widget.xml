@@ -19,7 +19,7 @@
         android:contentDescription="@string/tokopedianow_sharing_education_background_content_description"
         android:scaleType="fitXY"
         android:visibility="gone"
-        android:src="@drawable/tokopedianow_bg_sharing_education_supergraphic_top" />
+        app:srcCompat="@drawable/tokopedianow_bg_sharing_education_supergraphic_top" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -31,7 +31,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/tokopedianow_sharing_education_background_content_description"
             android:scaleType="fitXY"
-            android:src="@drawable/tokopedianow_bg_receiver_supergraphic_right"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -89,7 +88,6 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/tokopedianow_sharing_education_background_content_description"
             android:scaleType="fitXY"
-            android:src="@drawable/tokopedianow_bg_receiver_supergraphic_left"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
