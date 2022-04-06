@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.reschedule_pickup.data.mapper.ReschedulePickupMapper
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDetailModel
+import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleTimeOptionModel
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.SaveRescheduleModel
 import com.tokopedia.sellerorder.reschedule_pickup.domain.GetReschedulePickupUseCase
 import com.tokopedia.sellerorder.reschedule_pickup.domain.SaveReschedulePickupUseCase
@@ -49,7 +50,7 @@ class ReschedulePickupViewModel @Inject constructor(
         )
     }
 
-    fun saveReschedule(orderId: String, date: String, time: String, reason: String) {
+    fun saveReschedule(orderId: String, date: String, time: RescheduleTimeOptionModel, reason: String) {
         launchCatchError(
             block = {
                 _saveRescheduleDetail.postValue(
@@ -57,9 +58,9 @@ class ReschedulePickupViewModel @Inject constructor(
                         ReschedulePickupMapper.mapToSaveRescheduleModel(
                             saveReschedulePickupUseCase.execute(
                                 ReschedulePickupMapper.mapToSaveReschedulePickupParam(
-                                    orderId, date, time, reason
+                                    orderId, date, time.time, reason
                                 )
-                            )
+                            ), time.etaPickup
                         )
                     )
                 )

@@ -68,11 +68,12 @@ object ReschedulePickupMapper {
         return SaveReschedulePickupParam(listOf(orderId), date, time, reason)
     }
 
-    fun mapToSaveRescheduleModel(data: SaveReschedulePickupResponse.Data): SaveRescheduleModel {
+    fun mapToSaveRescheduleModel(data: SaveReschedulePickupResponse.Data, etaPickup: String): SaveRescheduleModel {
         return SaveRescheduleModel(
             success = data.mpLogisticInsertReschedulePickup.status == "200" && data.mpLogisticInsertReschedulePickup.errors.isEmpty(),
             message = data.mpLogisticInsertReschedulePickup.message,
             status = data.mpLogisticInsertReschedulePickup.status,
+            etaPickup = etaPickup,
             errors = data.mpLogisticInsertReschedulePickup.errors
         )
     }

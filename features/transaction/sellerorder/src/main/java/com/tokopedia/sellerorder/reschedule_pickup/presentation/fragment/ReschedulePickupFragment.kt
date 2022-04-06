@@ -127,7 +127,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
                 is Success -> {
                     if (it.data.success) {
                         activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(SomConsts.RESULT_CONFIRM_SHIPPING, it.data.message)
+                            putExtra(SomConsts.RESULT_CONFIRM_SHIPPING, getString(R.string.template_success_reschedule_pickup, it.data.etaPickup))
                         })
                         activity?.finish()
                     } else {
@@ -222,7 +222,7 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
             otherReason
         } else chosenReason
         val dayChosen = day?.day
-        val timeChosen = time?.time
+        val timeChosen = time
         if (dayChosen != null && timeChosen != null) {
             viewModel.saveReschedule(
                 orderId,

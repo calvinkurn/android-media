@@ -370,6 +370,7 @@
     <string name="label_title_reschedule_detail">Estimasi pickup:</string>
     <string name="label_subtitle_reschedule_pick_up"><![CDATA[Cek info detail pengaturan ulang jadwal pick-up di sini.]]></string>
     <string name="title_reschedule_day_bottomsheet">Pilih Hari</string>
+    <string name="template_success_reschedule_pickup">Kami akan melakukan request pick-up sesuai jadwal barumu. %1$s</string>
     <string name="title_reschedule_reason_bottomsheet">Alasan Perubahan Jadwal</string>
     <string name="title_reschedule_time_bottomsheet">Pilih Waktu</string>
     <string name="title_reschedule_pickup_success_dialog">Berhasil ubah jadwal pick-up</string>
