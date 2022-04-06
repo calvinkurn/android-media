@@ -16,7 +16,7 @@
         android:layout_marginStart="6dp"
         android:layout_marginEnd="8dp"
         android:ellipsize="end"
-        tools:textColor="@color/Unify_N700"
+        tools:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@+id/iv_quiz_option"
         app:layout_constraintEnd_toStartOf="@+id/loader_quiz_option"
         app:layout_constraintHorizontal_bias="0.0"

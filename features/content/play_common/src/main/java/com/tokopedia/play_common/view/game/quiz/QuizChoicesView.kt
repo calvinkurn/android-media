@@ -26,7 +26,9 @@ class QuizChoicesView: ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     private val binding = ItemQuizChoiceBinding.inflate(LayoutInflater.from(context))
-    private val bgDrawable = MethodChecker.getDrawable(rootView.context, R.drawable.bg_quiz_choice)
+    private val bgDrawable = MethodChecker.getDrawable(context, R.drawable.bg_quiz_choice)
+    private val defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN600)
+    private val filledFontColor = MethodChecker.getColor(context, unifyR.color.Unify_N0)
 
     /***
      * if state is default = clickable, after click turn off all clickable? Need to ask
@@ -47,36 +49,40 @@ class QuizChoicesView: ConstraintLayout {
                 binding.ivQuizOption.setImageDrawable(
                     getIconOption(alphabet = state.alphabet)
                 )
+                binding.tvQuizQuestion.setTextColor(defaultFontColor)
             }
             /**
-             * User's answer, if icon is white and background is green [correct] and red [false]
+             * User's answer, icon is white and background is green [correct] and red [false]
              */
             is PlayQuizOptionState.Answered -> {
                 binding.loaderQuizOption.hide()
+                binding.tvQuizQuestion.setTextColor(filledFontColor)
                 if (state.isCorrect) {
                     bgDrawable.setTint(
                         MethodChecker.getColor(
                             rootView.context,
-                            unifyR.color.Unify_G500
+                            unifyR.color.Unify_GN400
                         )
                     )
                     binding.ivQuizOption.setImageDrawable(
                         getIconUnifyDrawable(
                             context,
-                            IconUnify.CHECK_CIRCLE
+                            IconUnify.CHECK_CIRCLE,
+                            unifyR.color.Unify_N0
                         )
                     )
                 } else {
                     bgDrawable.setTint(
                         MethodChecker.getColor(
-                            rootView.context,
-                            unifyR.color.Unify_R500
+                            context,
+                            unifyR.color.Unify_RN500
                         )
                     )
                     binding.ivQuizOption.setImageDrawable(
                         getIconUnifyDrawable(
                             context,
-                            IconUnify.CLEAR
+                            IconUnify.CLEAR,
+                            unifyR.color.Unify_N0
                         )
                     )
                 }
@@ -86,18 +92,22 @@ class QuizChoicesView: ConstraintLayout {
              */
             is PlayQuizOptionState.Result -> {
                 binding.quizOption.background = bgDrawable
+                binding.tvQuizQuestion.setTextColor(defaultFontColor)
                 binding.loaderQuizOption.hide()
                 if (state.isCorrect) {
-                    bgDrawable.setTint(
-                        MethodChecker.getColor(
-                            rootView.context,
-                            unifyR.color.Unify_G500
-                        )
-                    )
                     binding.ivQuizOption.setImageDrawable(
                         getIconUnifyDrawable(
                             context,
-                            IconUnify.CHECK_CIRCLE
+                            IconUnify.CHECK_CIRCLE,
+                            unifyR.color.Unify_GN400
+                        )
+                    )
+                }else{
+                    binding.ivQuizOption.setImageDrawable(
+                        getIconUnifyDrawable(
+                            context,
+                            IconUnify.CHECK_CIRCLE,
+                            unifyR.color.Unify_RN500
                         )
                     )
                 }
