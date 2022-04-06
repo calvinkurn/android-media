@@ -452,7 +452,7 @@ class AdminInvitationConfirmationFragment : BaseDaggerFragment() {
     }
 
     private fun adminConfirmationReg(acceptBecomeAdmin: Boolean) {
-        val email = getEmailFromTextField().ifEmpty { userSession.email }
+        val email = getEmailFromTextField().ifEmpty { userSession.email }.orEmpty()
         viewModel.adminConfirmationReg(userSession.userId, email, acceptBecomeAdmin)
     }
 
