@@ -30,9 +30,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.clearImage
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -87,6 +85,7 @@ class UserProfileFragment : BaseDaggerFragment(),
     var profileImage: String = ""
     var totalFollowings: String = ""
     var totalFollowers: String = ""
+    var totalPosts: String = ""
     var userSession: UserSessionInterface? = null
     var btnAction: UnifyButton? = null
     var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -667,6 +666,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         userName = data.profileHeader.profile.username
         mAdapter.setUserName(data.profileHeader.profile.username)
         totalFollowers = data.profileHeader.stats.totalFollowerFmt
+        totalPosts =  data.profileHeader.stats.totalPostFmt
         totalFollowings = data.profileHeader.stats.totalFollowingFmt
         profileImage = data.profileHeader.profile.imageCover
         profileUserId = data.profileHeader.profile.userID
@@ -1023,7 +1023,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             channel = shareModel.channel
             campaign = shareModel.campaign
             ogTitle = displayName
-            ogDescription = "$totalFollowers Follower $totalFollowings Following"
+            ogDescription = "$totalFollowers Follower $totalFollowings Following $totalPosts Post"
             if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
