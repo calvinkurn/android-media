@@ -1,6 +1,5 @@
 package com.tokopedia.home_component.viewholders.adapter
 
-import android.content.Context
 import android.graphics.Outline
 import android.os.Build
 import android.view.LayoutInflater
@@ -29,6 +28,7 @@ class CueWidgetCategoryAdapter(
         private const val DEFAULT_RADIUS = 0
         private const val CUE_WIDGET_3x2 = 6
         private const val CUE_WIDGET_2x2 = 4
+        private const val CURVE_RADIUS = 18f
     }
 
     private var grids: List<ChannelGrid> = channels.channelGrids
@@ -53,7 +53,6 @@ class CueWidgetCategoryAdapter(
                 grid.imageUrl,
                 com.tokopedia.home_component.R.drawable.placeholder_grey
             )
-            val curveRadius = 20f
             imageCategory.outlineProvider = object : ViewOutlineProvider() {
                 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
                 override fun getOutline(view: View, outline: Outline?) {
@@ -61,15 +60,15 @@ class CueWidgetCategoryAdapter(
                         DEFAULT_RADIUS,
                         DEFAULT_RADIUS,
                         view.width,
-                        (view.height + curveRadius).toInt(),
-                        curveRadius
+                        (view.height + CURVE_RADIUS).toInt(),
+                        CURVE_RADIUS
                     )
                 }
             }
             imageCategory.clipToOutline = true
             categoryName.text = grid.name
             root.setOnClickListener {
-                cueWidgetCategoryListener.onClickCategory()
+                cueWidgetCategoryListener.onClickCategory(grid)
             }
         }
     }
