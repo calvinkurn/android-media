@@ -76,8 +76,12 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
         button?.setOnClickListener { v: View? ->
             checkPermission {
                 analytics?.eventClickNextKtpPage()
-                val intent = createIntent(context,
-                        UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP)
+                val intent = createIntent(
+                        context,
+                        UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP,
+                        useCropping = true,
+                        useCompression = true
+                )
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
                 startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
             }

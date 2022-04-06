@@ -6,7 +6,6 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFaceFra
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormFinalFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoSimpleFragment
-import com.tokopedia.kyc_centralized.view.fragment.camera.CameraWithCroppingFragment
 import dagger.Component
 
 /**
