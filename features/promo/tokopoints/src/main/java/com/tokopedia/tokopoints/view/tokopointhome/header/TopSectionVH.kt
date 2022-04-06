@@ -103,6 +103,7 @@ class TopSectionVH(
     private var isNextTier = false
     val maxProgress = 100
     val handler = Handler(Looper.getMainLooper())
+    private var TIME_DELAY_PROGRESS = 1000L
 
     fun bind(model: TopSectionResponse) {
 
@@ -551,8 +552,17 @@ class TopSectionVH(
                 setValue(progressLast, true)
             }
         }
+        handler.postDelayed(
+            {
+                handleDelayedProgress(container, progressCurrent)
+            }, TIME_DELAY_PROGRESS
+        )
 
-        val runnableHandleProgress = Runnable {
+    }
+
+    private fun handleDelayedProgress(container: FrameLayout? , progressCurrent:Int){
+        try {
+            //Check max progress for higher tier and open bottomsheet
             if (progressBar?.getValue() == maxProgress) {
                 progressBarIconAnimation(container) {
                     progressBar?.setProgressIcon(null)
@@ -575,13 +585,7 @@ class TopSectionVH(
                     progressIconProgressCompletionHandle()
                 }
             }
-        }
-        try {
-            handler.postDelayed(
-                runnableHandleProgress, 600L
-            )
-        } catch (e: Exception) {
-        }
+        } catch (e:Exception){}
     }
 
     private fun progressIconProgressCompletionHandle(){

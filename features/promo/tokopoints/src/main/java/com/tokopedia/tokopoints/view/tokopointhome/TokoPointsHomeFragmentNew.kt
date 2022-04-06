@@ -750,12 +750,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     }
 
     override fun refreshReward(popupNotification: PopupNotif?) {
-        if (!requireActivity().isFinishing && !requireActivity().isDestroyed) {
-            requireActivity().apply {
+        activity?.let {
+            if (!it.isFinishing && !it.isDestroyed) {
                 startActivityForResult(
                     Intent(
                         TokopointNotifActivity.getIntent(
-                            this,
+                            it,
                             popupNotification
                         )
                     ), REQUEST_FROM_TP_NOTIFICATION
