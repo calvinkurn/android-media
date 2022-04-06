@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.promo.data.request.ValidateUseMvcOrderParam
@@ -71,8 +72,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             })
     }
 
-    private fun generateValidateUseMvcParam(miniCartItems: List<MiniCartItem>, isMoveToCart: Boolean): ValidateUseMvcParam {
-        val firstAvailableItem = miniCartItems.first { !it.isError }
+    private fun generateValidateUseMvcParam(miniCartItems: Map<MiniCartItemKey, MiniCartItem>, isMoveToCart: Boolean): ValidateUseMvcParam {
+        val firstAvailableItem = miniCartItems.values.first { it is MiniCartItem.MiniCartItemProduct && !it.isError } as MiniCartItem.MiniCartItemProduct
         val cartString = firstAvailableItem.cartString
         val shopId = firstAvailableItem.shopId
         return ValidateUseMvcParam(
@@ -85,8 +86,8 @@ class MiniCartSimplifiedViewModel @Inject constructor(private val getMiniCartLis
             orders = listOf(ValidateUseMvcOrderParam(
                 uniqueId = cartString,
                 shopId = shopId,
-                productDetails = miniCartItems.mapNotNull {
-                    if (!it.isError) {
+                productDetails = miniCartItems.values.mapNotNull {
+                    if (it is MiniCartItem.MiniCartItemProduct && !it.isError) {
                         ValidateUseMvcProductParam(it.productId, it.quantity)
                     } else {
                         null

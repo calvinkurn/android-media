@@ -12,12 +12,20 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop_widget.customview.OnStickySingleHeaderListener
 import com.tokopedia.shop_widget.customview.StickySingleHeaderView
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductGridViewHolder
 import com.tokopedia.shop_widget.mvc_locked_to_product.view.adapter.viewholder.MvcLockedToProductSortSectionViewHolder
-import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.*
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGlobalErrorUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridListPlaceholderUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductGridProductUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductSortSectionUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductSortUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductVoucherSortPlaceholderUiModel
+import com.tokopedia.shop_widget.mvc_locked_to_product.view.uimodel.MvcLockedToProductVoucherUiModel
 
 class MvcLockedToProductAdapter(
     private val typeFactory: MvcLockedToProductTypeFactory
@@ -192,9 +200,18 @@ class MvcLockedToProductAdapter(
         newList.filterIsInstance<MvcLockedToProductGridProductUiModel>().forEach { productUiModel ->
             val matchedMiniCartItem = getMatchedMiniCartItem(productUiModel, data)
             val position = visitables.indexOf(productUiModel)
-            if(matchedMiniCartItem != null && !matchedMiniCartItem.isError){
-                val miniCartProductId = matchedMiniCartItem.productId
-                val quantity =  matchedMiniCartItem.quantity
+            val (miniCartProductId, quantity) = when {
+                matchedMiniCartItem is MiniCartItem.MiniCartItemProduct && !matchedMiniCartItem.isError -> {
+                    matchedMiniCartItem.productId to matchedMiniCartItem.quantity
+                }
+                matchedMiniCartItem is MiniCartItem.MiniCartItemParentProduct -> {
+                    matchedMiniCartItem.parentId to matchedMiniCartItem.totalQuantity
+                }
+                else -> {
+                    null to null
+                }
+            }
+            if(miniCartProductId != null && quantity != null){
                 newList.setElement(
                     position, productUiModel.copy(
                         productInCart = MvcLockedToProductGridProductUiModel.ProductInCart(
@@ -229,13 +246,13 @@ class MvcLockedToProductAdapter(
         miniCartData: MiniCartSimplifiedData
     ): MiniCartItem? {
         val isVariant = productUiModel.isVariant
-        return miniCartData.miniCartItems.firstOrNull {
-            if (isVariant) {
-                it.productId == productUiModel.productID || productUiModel.childIDs.contains(it.productId)
-            } else {
-                it.productId == productUiModel.productID
+        if (isVariant) {
+            val miniCartItemParentProduct = miniCartData.miniCartItems.getMiniCartItemParentProduct(productUiModel.productID)
+            if (miniCartItemParentProduct != null) {
+                return miniCartItemParentProduct
             }
         }
+        return miniCartData.miniCartItems.getMiniCartItemProduct(productUiModel.productID)
     }
 
     private fun getMvcProductCardModel(
