@@ -2423,17 +2423,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (wishlistResult.isSuccess) {
                 recommendationWishlistItem?.isWishlist = !(recommendationWishlistItem?.isWishlist
                         ?: false)
-                showToasterWithAction(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_success_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_success_remove_wishlist),
+
+                if (wishlistResult.isAddWishlist) {
+                    showToasterWithAction(
+                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
                         typeToaster = TYPE_NORMAL,
-                        actionText = getString(R.string.go_to_wishlist),
+                        actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
                         clickListener = View.OnClickListener {
                             RouteManager.route(context, ApplinkConst.WISHLIST)
-                        }
-                )
+                        })
+                } else {
+                    showToasterWithAction(
+                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
+                        typeToaster = TYPE_NORMAL,
+                        actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
+                        clickListener = View.OnClickListener {})
+                }
             } else {
                 showToaster(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.topads.sdk.R.string.msg_error_add_wishlist) else getString(com.tokopedia.topads.sdk.R.string.msg_error_remove_wishlist),
+                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg),
                         typeToaster = TYPE_ERROR
                 )
             }

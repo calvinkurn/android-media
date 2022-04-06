@@ -85,7 +85,6 @@
     <string name="menu_account_desc_screen_recorder">Lampiran video untuk laporan kendala</string>
     <string name="menu_account_desc_play_widget_autoplay">Putar video Tokopedia Play secara otomatis</string>
 
-    <string name="new_home_account_go_to_wishlist">Lihat Wishlist</string>
     <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>
     <string name="home_account_item_error_msg">Refresh untuk tampilkan data</string>
     <string name="account_title_saldo_section"><![CDATA[Dana & Investasi]]></string>

@@ -328,8 +328,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     private fun showMessageSuccessAddWishlist() {
         showToastSuccessWithAction(
-                getString(R.string.recom_msg_success_add_wishlist),
-                getString(R.string.home_recom_go_to_wishlist)
+                getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+                getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         ){
             View.OnClickListener { goToWishlist() }
         }

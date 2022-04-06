@@ -441,15 +441,11 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun showMessageSuccessAddWishlist() {
         if (activity == null) return
         val view = requireActivity().findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_add_wishlist)
+
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
         view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.go_to_wishlist),
-                    View.OnClickListener { goToWishlist() })
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishlist() }.show()
         }
     }
 
@@ -461,8 +457,12 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun showMessageSuccessRemoveWishlist() {
         if (activity == null) return
         val view = requireActivity().findViewById<View>(android.R.id.content)
-        val message = getString(R.string.msg_success_remove_wishlist)
-        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+
+        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
+        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishlist() }.show()
+        }
     }
 
     private fun showMessageFailedWishlistAction() {
