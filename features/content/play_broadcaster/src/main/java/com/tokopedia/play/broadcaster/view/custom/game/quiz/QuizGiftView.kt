@@ -72,12 +72,8 @@ class QuizGiftView : ConstraintLayout {
 
     var gift: String = ""
         set(value) {
-            field = value
-
-            if(binding.etBroQuizGift.text.toString() != field) {
-                binding.etBroQuizGift.setText(value)
-                binding.etBroQuizGift.setSelection(value.length)
-            }
+            binding.etBroQuizGift.setText(value)
+            binding.etBroQuizGift.setSelection(value.length)
         }
 
     var isEditable: Boolean = true
@@ -93,6 +89,15 @@ class QuizGiftView : ConstraintLayout {
 
     fun setOnTextChangeListener(listener: (String) -> Unit) {
         mOnChangedListener = listener
+    }
+
+    fun hideGiftTextFieldIfEmpty() {
+        binding.etBroQuizGift.apply {
+            if(text.toString().isEmpty()) {
+                binding.clLabelView.show()
+                binding.clInputView.hide()
+            }
+        }
     }
 
     private fun isEditable(fn: () -> Unit) {

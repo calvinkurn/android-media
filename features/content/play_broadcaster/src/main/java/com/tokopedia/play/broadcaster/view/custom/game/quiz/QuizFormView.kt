@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.get
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
@@ -103,6 +104,7 @@ class QuizFormView : ConstraintLayout {
                         binding.groupActionBar.visibility = View.GONE
                         binding.viewGameHeader.isEditable = false
                         binding.viewQuizGift.isEditable = false
+                        binding.viewQuizGift.hideGiftTextFieldIfEmpty()
 
                         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
 
