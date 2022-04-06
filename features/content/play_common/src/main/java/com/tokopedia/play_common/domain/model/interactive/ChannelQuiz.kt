@@ -1,6 +1,5 @@
 package com.tokopedia.play_common.domain.model.interactive
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -45,5 +44,8 @@ data class ChannelQuiz(
 
         @SerializedName("text")
         val choicesText: String = "",
+
+        @SerializedName("isCorrect")
+        val isCorrect: Boolean? = null,
     )
 }
