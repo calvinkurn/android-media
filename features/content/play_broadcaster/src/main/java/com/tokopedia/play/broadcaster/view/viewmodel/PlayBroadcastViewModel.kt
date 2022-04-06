@@ -1098,7 +1098,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
             else {
                 /** Remove non-mandatory && empty options */
-                options.filter { it.isMandatory || (!it.isMandatory && it.text.isNotEmpty())  }
+                options.filterNot { !it.isMandatory && it.text.isEmpty() }
             }
 
             _quizFormData.setValue {
