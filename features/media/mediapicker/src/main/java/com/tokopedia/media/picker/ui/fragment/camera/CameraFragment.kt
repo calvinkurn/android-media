@@ -111,11 +111,6 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onResume() {
         super.onResume()
         cameraView.open()
-
-        // show storage full toaster every single user open camera page
-        if (controller.isVideoMode() && listener?.isMinStorageThreshold() == true) {
-            listener?.onShowMinStorageThresholdToast()
-        }
     }
 
     override fun onPause() {

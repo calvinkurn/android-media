@@ -443,13 +443,6 @@ open class PickerActivity : BaseActivity()
         )
     }
 
-    override fun onShowMinStorageThresholdToast() {
-        onShowValidationToaster(
-            R.string.picker_storage_threshold_message,
-            param.get().minStorageThreshold().toMb()
-        )
-    }
-
     override fun onShowFailToVideoRecordToast() {
         onShowToaster(
             getString(R.string.picker_storage_fail_video_record),

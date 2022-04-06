@@ -28,7 +28,6 @@ interface PickerActivityListener {
     fun onShowImageMinResToast()
     fun onShowImageMaxResToast()
     fun onShowImageMaxFileSizeToast()
-    fun onShowMinStorageThresholdToast()
     fun onShowFailToVideoRecordToast()
 
     fun onCameraThumbnailClicked()
