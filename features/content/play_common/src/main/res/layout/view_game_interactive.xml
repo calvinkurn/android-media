@@ -1,73 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.tokopedia.play_common.view.RoundedConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/engagement_tools_small_widget_width"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:layout_width="match_parent">
+    >
+
+    <android.widget.Space
+        android:id="@+id/space_bg_top"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/play_spacing_size"
+        app:layout_constraintBottom_toBottomOf="@id/iv_engagement_tools"
+        app:layout_constraintTop_toTopOf="@id/iv_engagement_tools"
+        />
+
+    <com.tokopedia.play_common.view.RoundedFrameLayout
+        android:id="@+id/fl_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/timer_engagement_tools"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/space_bg_top"
+        app:rfl_cornerRadius="@dimen/interactive_widget_radius"
+        />
 
     <com.tokopedia.play_common.view.RoundedImageView
         android:id="@+id/iv_engagement_tools"
-        app:rImg_cornerRadius="@dimen/engagement_icon_radius"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_gravity="center"
         android:background="@color/Unify_N0"
         android:padding="@dimen/spacing_lvl2"
-        android:translationZ="@dimen/dp_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rImg_cornerRadius="@dimen/interactive_icon_radius"
+        app:unify_image_type="circle"
         tools:background="@color/Unify_Static_Black"
-        tools:src="@drawable/iconunify_24h" />
+        tools:src="@drawable/iconunify_24h"
+        />
 
-    <com.tokopedia.play_common.view.RoundedConstraintLayout
-        android:layout_width="match_parent"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_engagement_desc"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/engagement_tools_small_widget_marginTop"
-        app:rcl_cornerRadius="@dimen/layout_lvl1"
-        tools:background="@drawable/bg_quiz">
+        android:layout_margin="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/engagement_title_header_top"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_engagement_tools"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Kapan ulang tahun Rockbros Indonesia?"
+        />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_engagement_question"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/engagement_title_header_top"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:textColor="@color/Unify_N0"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small"
-            app:typographyWeight="bold"
-            tools:text="Kapan ulang tahun Rockbros Indonesia?" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_engagement_timer_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/engagement_tools_small_widget_timer_bottom"
-            tools:text="@string/play_common_widget_timer_quiz_info"
-            android:textColor="@color/Unify_N0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/tv_engagement_question"
-            app:layout_constraintTop_toBottomOf="@+id/tv_engagement_question"
-            app:typographyType="small" />
-
-    </com.tokopedia.play_common.view.RoundedConstraintLayout>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_engagement_timer_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_engagement_desc"
+        app:layout_constraintTop_toBottomOf="@+id/tv_engagement_desc"
+        app:typographyType="small"
+        tools:text="@string/play_common_widget_interactive_end"
+        />
 
     <com.tokopedia.unifycomponents.timer.TimerUnifySingle
         android:id="@+id/timer_engagement_tools"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/engagement_tools_small_widget_timer_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_engagement_timer_info"
+        app:timer_unify_single_type="minute_digit"
+        app:timer_unify_single_variant="main"
         tools:timer_unify_single_remainingMinutes="10"
-        tools:timer_unify_single_type="minute_digit"
-        tools:timer_unify_single_variant="main"
-        android:translationZ="@dimen/dp_1" />
-</LinearLayout>
+        />
+
+</com.tokopedia.play_common.view.RoundedConstraintLayout>
