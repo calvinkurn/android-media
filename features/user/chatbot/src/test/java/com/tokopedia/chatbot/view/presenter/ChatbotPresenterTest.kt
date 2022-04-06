@@ -7,6 +7,9 @@ import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
+import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
+import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -175,16 +178,6 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `handleNewSession starts new session`(){
-        //TODO should i write
-    }
-
-    @Test
-    fun `handleNewSession loads history`(){
-        //TODO should i write
-    }
-
-    @Test
     fun `checkForSession when new session`(){
 
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
@@ -227,22 +220,7 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `sendRating test`(){
-//        val response = mockk<CheckUploadSecureResponse>(relaxed = true)
-//
-//        coEvery {
-//            checkUploadSecureUseCase.checkUploadSecure(any())
-//        } returns response
-//
-//        coEvery {
-//            response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
-//        } returns false
-//
-//        presenter.checkUploadSecure(" ", mockk())
-//
-//        verify(exactly = 1) {
-//            view.uploadUsingOldMechanism(any())
-//        }
+    fun `sendRating success`(){
         val params = mapOf<String,Any>()
         mockkConstructor(SendRatingSubscriber::class)
         mockkObject(SendChatRatingUseCase)
@@ -256,7 +234,6 @@ class ChatbotPresenterTest {
             sendChatRatingUseCase.execute(any(),any())
         } just runs
 
-
         presenter.sendRating("",1,"",{},{})
 
         verify {
@@ -266,7 +243,69 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `sendActionBubble test`(){
+    fun `submitChatCsat success`(){
+
+        mockkConstructor(SendRatingReasonSubscriber::class)
+        mockkObject(SendRatingReasonUseCase)
+
+        every {
+            chipSubmitChatCsatUseCase.execute(any(),any())
+        } just runs
+
+        presenter.submitChatCsat(ChipSubmitChatCsatInput(),{},{})
+
+        verify {
+            chipSubmitChatCsatUseCase.execute(any(),any())
+        }
+    }
+
+    @Test
+    fun `sendReasonRating success`(){
+        val params = mapOf<String,Any>()
+        mockkConstructor(SendRatingReasonSubscriber::class)
+        mockkObject(SendRatingReasonUseCase)
+
+        every {
+            SendRatingReasonUseCase.generateParam(
+                any(), any(), any()
+            )
+        } returns params
+
+        every {
+            sendRatingReasonUseCase.execute(any(),any())
+        } just runs
+
+        presenter.sendReasonRating("","","",{},{})
+
+        verify {
+            sendRatingReasonUseCase.execute(any(),any())
+        }
+
+    }
+
+    @Test
+    fun `loadPrevious with empty messageId`(){
+
+    }
+
+    @Test
+    fun `loadPrevious for success`(){
+
+    }
+
+
+    //checkLinkForRedirection,hitGqlforOptionList,OnClickLeaveQueue,uploadImageSecureUpload,
+    //uploadImages,loadPrevious,getExistingChat,leaveQueue,
+
+   // DONe - submitChatCsat,sendReasonRating
+
+    /******************************* Socket Related Unit Tests************************************/
+
+    //sendUploadedImageToWebsocket,sendMessageWithWebsocket,sendQuickReplyInvoice,sendQuickReply,
+    //sendInvoiceAttachment,sendReadEventWebSocket,sendReadEvent,
+
+    @Test
+    fun `sendActionBubble success`(){
         mockkObject(RxWebSocket)
         mockkObject(SendChatbotWebsocketParam)
 
