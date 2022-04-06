@@ -59,7 +59,7 @@ class QuizFormView : ConstraintLayout {
 
     private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
 
-    val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    private val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     private val eventBus = EventBus<Event>()
 
@@ -69,12 +69,10 @@ class QuizFormView : ConstraintLayout {
     private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
         override fun onOptionChecked(order: Int) {
             eventBus.emit(Event.SelectQuizOption(order))
-//            setCorrectOptions(order)
         }
 
         override fun onTextChanged(order: Int, text: String) {
             eventBus.emit(Event.OptionChanged(order, text))
-//            onOptionTextChanged(order, text)
         }
     })
 
@@ -99,16 +97,12 @@ class QuizFormView : ConstraintLayout {
                         binding.viewGameHeader.isEditable = true
                         binding.viewQuizGift.isEditable = true
 
-//                        setOptionsEditable(true)
-
                         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
                     }
                     is QuizFormStateUiModel.SetDuration -> {
                         binding.groupActionBar.visibility = View.GONE
                         binding.viewGameHeader.isEditable = false
                         binding.viewQuizGift.isEditable = false
-
-//                        setOptionsEditable(false)
 
                         bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED
 
@@ -121,8 +115,6 @@ class QuizFormView : ConstraintLayout {
             }
         }
 
-    private var mQuizFormData: QuizFormDataUiModel = QuizFormDataUiModel()
-
     init {
         binding.rvQuizOption.addItemDecoration(QuizOptionItemDecoration(context))
         binding.rvQuizOption.adapter = adapter
@@ -133,7 +125,6 @@ class QuizFormView : ConstraintLayout {
         bottomSheetHeaderBinding.tvSheetTitle.text = context.getString(R.string.play_bro_quiz_set_duration_title)
 
         binding.tvBroQuizFormNext.setOnClickListener {
-//            eventBus.emit(Event.SaveQuizData(mQuizFormData))
             eventBus.emit(Event.Next)
         }
 
@@ -143,17 +134,14 @@ class QuizFormView : ConstraintLayout {
 
         binding.viewGameHeader.setOnTextChangedListener {
             eventBus.emit(Event.TitleChanged(it))
-//            setFormData(mQuizFormData.copy(title = it), needToUpdateOptions = false)
         }
 
         binding.viewQuizGift.setOnTextChangeListener {
             eventBus.emit(Event.GiftChanged(it))
-//            setFormData(mQuizFormData.copy(gift = it), needToUpdateOptions = false)
         }
 
         binding.viewQuizGift.setOnRemoveGiftListener {
             eventBus.emit(Event.GiftChanged(""))
-//            setFormData(mQuizFormData.copy(gift = ""), needToUpdateOptions = false)
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
@@ -233,56 +221,6 @@ class QuizFormView : ConstraintLayout {
         )
     }
 
-    private fun setOptionsEditable(isEditable: Boolean) {
-        val options = mQuizFormData.options
-        setFormData(mQuizFormData.copy(
-            options = options.map { it.copy(isEditable = isEditable) }
-        ))
-    }
-
-    private fun setCorrectOptions(order: Int) {
-        val options = mQuizFormData.options
-
-        val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
-        if(currSelectedOrder == order || currSelectedOrder == -1) return
-
-        setFormData(mQuizFormData.copy(
-            options = options.map { it.copy(isSelected = it.order == order) }
-        ))
-    }
-
-    private fun onOptionTextChanged(order: Int, newText: String) {
-        val options = mQuizFormData.options
-
-        val noSelectedChoice = options.firstOrNull { it.isSelected } == null
-        val isAutoSelectEligible = noSelectedChoice && newText.isNotEmpty()
-
-        val newOptions = options.map {
-            it.copy(
-                /** Auto Select */
-                isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
-                text = if(it.order == order) newText else it.text
-            )
-        }.toMutableList()
-
-        /** Auto Add */
-        val isAllOptionFilled = newOptions.none { it.text.isEmpty() }
-        val currentOption = newOptions.size
-        val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
-
-        if(isNeedAddNewField) {
-            newOptions.add(QuizFormDataUiModel.Option(
-                order = currentOption,
-                maxLength = quizConfig.maxChoiceLength,
-                isMandatory = false,
-            ))
-        }
-
-        /** Prevent updating adapter if only text is changed */
-        val needToUpdateAdapter = isAutoSelectEligible || isNeedAddNewField
-        setFormData(mQuizFormData.copy(options = newOptions), needToUpdateAdapter)
-    }
-
     private fun setupInsets() {
         binding.clQuizForm.doOnApplyWindowInsets { view, insets, padding, _ ->
             view.updatePadding(
@@ -311,10 +249,10 @@ class QuizFormView : ConstraintLayout {
     sealed class Event {
         object Back: Event()
         object Next: Event()
-        data class TitleChanged(val title: String): Event() /** TODO: not used anymore */
-        data class OptionChanged(val order: Int, val text: String): Event() /** TODO: not used anymore */
-        data class SelectQuizOption(val order: Int): Event() /** TODO: not used anymore */
-        data class GiftChanged(val gift: String): Event() /** TODO: not used anymore */
+        data class TitleChanged(val title: String): Event()
+        data class OptionChanged(val order: Int, val text: String): Event()
+        data class SelectQuizOption(val order: Int): Event()
+        data class GiftChanged(val gift: String): Event()
         data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event()
         data class SelectDuration(val duration: Long): Event()
         object Submit: Event()
