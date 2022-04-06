@@ -130,7 +130,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="@string/title_reject_access_button"
+        android:text="@string/title_accept_access_button"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="16dp"
         app:unifyButtonType="main"
