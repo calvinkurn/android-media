@@ -1483,16 +1483,16 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun isReviewTextEmpty(): Boolean {
-        return reviewText.value.text.isNotBlank()
+        return reviewText.value.text.isBlank()
     }
 
     fun isMediaEmpty(): Boolean {
         return mediaPickerUiState.value.let { mediaPickerUiState ->
             val isLoading = mediaPickerUiState is CreateReviewMediaPickerUiState.Loading
-            val containMedia = if (mediaPickerUiState is CreateReviewMediaPickerUiState.SuccessUpload) {
+            val containMedia = if (mediaPickerUiState is CreateReviewMediaPickerUiState.HasMedia) {
                 mediaPickerUiState.mediaItems.count { media ->
                     media is CreateReviewMediaUiModel.Image || media is CreateReviewMediaUiModel.Video
-                }.isZero()
+                }.isMoreThanZero()
             } else false
             isLoading || !containMedia
         }

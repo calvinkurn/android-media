@@ -6,6 +6,10 @@ import com.tokopedia.reviewcommon.uimodel.StringRes
 
 sealed interface CreateReviewMediaPickerUiState {
 
+    interface HasMedia {
+        val mediaItems: List<CreateReviewMediaUiModel>
+    }
+
     val failedOccurrenceCount: Int
 
     object Loading : CreateReviewMediaPickerUiState {
@@ -15,19 +19,19 @@ sealed interface CreateReviewMediaPickerUiState {
 
     data class Uploading(
         override val failedOccurrenceCount: Int,
-        val mediaItems: List<CreateReviewMediaUiModel>,
+        override val mediaItems: List<CreateReviewMediaUiModel>,
         val poem: StringRes,
         val currentUploadBatchNumber: Int
-    ) : CreateReviewMediaPickerUiState
+    ) : CreateReviewMediaPickerUiState, HasMedia
 
     data class SuccessUpload(
         override val failedOccurrenceCount: Int = 0,
-        val mediaItems: List<CreateReviewMediaUiModel>,
+        override val mediaItems: List<CreateReviewMediaUiModel>,
         val poem: StringRes
-    ) : CreateReviewMediaPickerUiState
+    ) : CreateReviewMediaPickerUiState, HasMedia
 
     data class FailedUpload(
         override val failedOccurrenceCount: Int,
-        val mediaItems: List<CreateReviewMediaUiModel>
-    ) : CreateReviewMediaPickerUiState
+        override val mediaItems: List<CreateReviewMediaUiModel>
+    ) : CreateReviewMediaPickerUiState, HasMedia
 }

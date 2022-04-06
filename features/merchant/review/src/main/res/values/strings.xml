@@ -118,13 +118,13 @@
     <string name="review_form_progress_bar_bad_need_bad_rating_reason">Pilih dulu alasanmu, yuk</string>
     <string name="review_form_add_photo">Kasih liat foto barang</string>
     <string name="review_form_add_media">Kasih liat foto/video barang</string>
-    <string name="review_form_send_rating_only_dialog_title">Mau kirim Rating aja?</string>
-    <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu masih bisa ubah dan lengkapi ulasan ini di halaman Riwayat.</string>
+    <string name="review_form_send_rating_only_dialog_title">Mau coba kasih rating dulu?</string>
+    <string name="review_form_send_rating_only_body">Selama 30 hari ke depan, kamu bisa ubah &amp; lengkapi ulasanmu di halaman Riwayat.</string>
     <string name="review_form_send_rating_only_exit">Keluar Halaman</string>
-    <string name="review_form_send_rating_only">Kirim Rating</string>
-    <string name="review_form_dismiss_form_dialog_title">Ulasanmu nanti hilang, lho! 😢</string>
+    <string name="review_form_send_rating_only">Kasih Rating</string>
+    <string name="review_form_dismiss_form_dialog_title">Ulasanmu belum dikirim, lho</string>
     <string name="review_form_dismiss_form_dialog_body">Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini. Yakin tetap mau keluar?</string>
-    <string name="review_form_dismiss_form_dialog_stay">Tetap di Sini</string>
+    <string name="review_form_dismiss_form_dialog_stay">Lanjutkan Ulasan</string>
     <string name="review_form_templates_formatting">%s.&#160;</string>
     <string name="review_form_neutral_title">Apa yang bikin kamu kurang puas?</string>
     <string name="review_form_bad_title">Apa yang bikin kamu tidak puas?</string>
@@ -133,8 +133,8 @@
     <string name="review_form_bad_helper">Ceritain lebih lengkap apa yang bikin kamu tidak puas dan perlu ditingkatkan.</string>
     <string name="review_form_bad_helper_must_fill">Harus ceritain lebih lengkap apa yang bikin kamu kurang puas dan perlu ditingkatkan, ya.</string>
     <string name="review_form_worst_helper">Kasih tahu apa yang mengecewakan dan perlu ditingkatkan.</string>
-    <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar? 😢</string>
-    <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat hadiah dari ulasan, lho. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
+    <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar?</string>
+    <string name="review_form_incentives_exit_dialog_body">Kamu bisa dapat hadiah dari ulasan ini, lho. Kalau keluar, ulasanmu tidak akan tersimpan.</string>
     <string name="review_form_incentives_incomplete_dialog_body">Ayo lengkapi dulu karena kamu bisa dapat hadiah dari ulasan, lho!</string>
     <string name="review_form_media_add">Kasih liat foto/video barang</string>
     <string name="review_form_media_picker_error_upload">Oops, ada yang gagal di-upload. &lt;a href="#"&gt;Upload Ulang&lt;/a&gt;</string>
@@ -189,7 +189,7 @@
     <string name="review_edit_dialog_title">Yakin keluar halaman ini?</string>
     <string name="review_edit_dialog_subtitle">Ulasan yang kamu ubah tidak akan tersimpan jika keluar dari halaman ini.</string>
     <string name="review_edit_dialog_continue_writing">Lanjut Tulis Ulasan</string>
-    <string name="review_edit_dialog_exit">Ya, Keluar</string>
+    <string name="review_edit_dialog_exit">Keluar</string>
     <string name="review_edit_fail">Ulasan tidak tersimpan. Cek koneksi internetmu dan coba lagi, ya</string>
     <string name="review_edit_blank_error">Oops, tulis dulu komentarmu terkait barang ini atau pelayanan toko.</string>
 
