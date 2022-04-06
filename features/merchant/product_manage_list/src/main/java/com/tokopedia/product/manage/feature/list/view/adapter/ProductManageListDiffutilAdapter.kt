@@ -1,9 +1,9 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
-import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -12,10 +12,16 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiMode
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.util.ProductManageAdapterLogger
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
+import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
+import com.tokopedia.product.manage.feature.list.extension.findIndex
+import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
-class ProductManageListAdapter(
+/**
+ * Adapter using diff util
+ */
+class ProductManageListDiffutilAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl,
     deviceId: String
 ) : BaseProductManageAdapter<Visitable<*>, ProductManageAdapterFactoryImpl>(
@@ -23,46 +29,60 @@ class ProductManageListAdapter(
     deviceId
 ) {
 
+    private val differ: ProductManageDiffer = ProductListDiffer()
+
     override fun showLoading() {
         logUpdate(ProductManageAdapterLogger.MethodName.SHOW_LOADING)
-        super.showLoading()
+        if (!isLoading) {
+            val items = getItems()
+            if (isShowLoadingMore) {
+                items.add(loadingMoreModel)
+            } else {
+                items.add(loadingModel)
+            }
+            submitList(items)
+        }
     }
 
     override fun hideLoading() {
         logUpdate(ProductManageAdapterLogger.MethodName.HIDE_LOADING)
-        super.hideLoading()
+        if(isLoading) {
+            val items = getItems()
+            items.removeAt(lastIndex)
+            submitList(items)
+        }
     }
 
     override fun removeErrorNetwork() {
         logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_ERROR_NETWORK)
-        super.removeErrorNetwork()
+        val items = getItems()
+        items.remove(errorNetworkModel)
+        submitList(items)
     }
 
     override fun addElement(itemList: MutableList<out Visitable<Any>>?) {
         logUpdate(ProductManageAdapterLogger.MethodName.ADD_ELEMENT)
-        super.addElement(itemList)
+        val items = getItems()
+        items.addAll(itemList?.toList().orEmpty())
+        submitList(items)
     }
 
     override fun clearAllElements() {
         logUpdate(ProductManageAdapterLogger.MethodName.CLEAR_ALL_ELEMENTS)
-        super.clearAllElements()
+        submitList(emptyList())
     }
 
     override fun updateProduct(itemList: List<Visitable<*>>) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRODUCT)
-        visitables.clear()
-        visitables.addAll(itemList)
-        notifyDataSetChanged()
+        submitList(itemList)
     }
 
     override fun removeEmptyAndUpdateLayout(itemList: List<Visitable<*>>) {
         logUpdate(ProductManageAdapterLogger.MethodName.REMOVE_AND_UPDATE_LAYOUT)
-        val items =
-            visitables.filter { it !is EmptyModel && it !is LoadingMoreModel }.toMutableList()
-                .apply {
-                    addAll(itemList)
-                }
-        updateProduct(items)
+        val items = data.filter { it !is EmptyModel }.toMutableList().apply {
+            addAll(itemList)
+        }
+        submitList(items)
     }
 
     override fun checkAllProducts(
@@ -70,7 +90,7 @@ class ProductManageListAdapter(
         onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit
     ) {
         logUpdate(ProductManageAdapterLogger.MethodName.CHECK_ALL_PRODUCTS)
-        val items = visitables.filterIsInstance<ProductUiModel>().toMutableList()
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val newItems = items.map { product ->
             val checkedProduct = itemsChecked.firstOrNull { it.id == product.id }
             if (checkedProduct == null) {
@@ -78,7 +98,7 @@ class ProductManageListAdapter(
             }
             product.copy(isChecked = true)
         }
-        updateProduct(newItems)
+        submitList(newItems)
         onSetItemsChecked(itemsChecked)
     }
 
@@ -88,7 +108,7 @@ class ProductManageListAdapter(
         onSetItemsUnchecked: (MutableList<ProductUiModel>) -> Unit
     ) {
         logUpdate(ProductManageAdapterLogger.MethodName.UNCHECK_MULTIPLE_PRODUCTS)
-        val items = visitables.filterIsInstance<ProductUiModel>().toMutableList()
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val productIdList =
             productIds ?: items.map {
                 it.id
@@ -103,15 +123,13 @@ class ProductManageListAdapter(
                 product
             }
         }
-        updateProduct(newItems)
+        submitList(newItems)
         onSetItemsUnchecked(itemsChecked)
     }
 
     override fun updateEmptyState(emptyModel: EmptyModel) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_EMPTY_STATE)
-        visitables.clear()
-        visitables.add(emptyModel)
-        notifyDataSetChanged()
+        submitList(listOf(emptyModel))
     }
 
     override fun updatePrice(productId: String, price: String) {
@@ -125,7 +143,7 @@ class ProductManageListAdapter(
 
     override fun updatePrice(editResult: EditVariantResult) {
         logUpdate(ProductManageAdapterLogger.MethodName.UPDATE_PRICE_VARIANT)
-        submitList(editResult.productId) { product ->
+        submitList(editResult.productId) {
             val editedMinPrice = editResult.variants.minByOrNull { it.price }?.price.orZero()
             val editedMaxPrice = editResult.variants.maxByOrNull { it.price }?.price.orZero()
 
@@ -133,7 +151,7 @@ class ProductManageListAdapter(
                 PriceUiModel(editedMinPrice.toString(), editedMinPrice.getCurrencyFormatted())
             val maxPrice =
                 PriceUiModel(editedMaxPrice.toString(), editedMaxPrice.getCurrencyFormatted())
-            product.copy(minPrice = minPrice, maxPrice = maxPrice)
+            it.copy(minPrice = minPrice, maxPrice = maxPrice)
         }
     }
 
@@ -154,21 +172,22 @@ class ProductManageListAdapter(
 
     override fun deleteProduct(productId: String) {
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCT)
-        val deletedProductIndex = visitables.indexOfFirst {
-            it is ProductUiModel && it.id == productId
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        items.findIndex(productId)?.let { index ->
+            items.removeAt(index)
+            submitList(items)
         }
-        visitables.removeAt(deletedProductIndex)
-        notifyItemRemoved(deletedProductIndex)
     }
 
     override fun deleteProducts(productIds: List<String>) {
         logUpdate(ProductManageAdapterLogger.MethodName.DELETE_PRODUCTS)
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
-            visitables.indexOfFirst { it is ProductUiModel && it.id == id }.let { index ->
-                visitables.removeAt(index)
-                notifyItemRemoved(index)
+            items.findIndex(id)?.let { index ->
+                items.removeAt(index)
             }
         }
+        submitList(items)
     }
 
     override fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
@@ -178,11 +197,13 @@ class ProductManageListAdapter(
 
     override fun setProductsStatuses(productIds: List<String>, productStatus: ProductStatus) {
         logUpdate(ProductManageAdapterLogger.MethodName.SET_PRODUCTS_STATUSES)
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         productIds.forEach { id ->
-            submitList(id) {
-                it.copy(status = productStatus)
+            items.findIndex(id)?.let { index ->
+                items[index] = items[index].copy(status = productStatus)
             }
         }
+        submitList(items)
     }
 
     override fun setMultiSelectEnabled(multiSelectEnabled: Boolean) {
@@ -190,23 +211,34 @@ class ProductManageListAdapter(
         val items = data.filterIsInstance<ProductUiModel>().map {
             it.copy(multiSelectActive = multiSelectEnabled, isChecked = false)
         }
-        updateProduct(items)
+        submitList(items)
     }
 
     override fun filterProductList(predicate: (ProductUiModel) -> Boolean) {
         logUpdate(ProductManageAdapterLogger.MethodName.FILTER_PRODUCT_LIST)
         val productList = data.filterIsInstance<ProductUiModel>().filter { predicate.invoke(it) }
-        updateProduct(productList)
+        submitList(productList)
     }
 
     private fun submitList(productId: String, update: (ProductUiModel) -> ProductUiModel) {
-        visitables.forEachIndexed { index, visitable ->
-            if (visitable is ProductUiModel && visitable.id == productId) {
-                visitables[index] = update.invoke(visitable)
-                notifyItemChanged(index)
-                return@forEachIndexed
-            }
+        val items = data.filterIsInstance<ProductUiModel>().toMutableList()
+        val index = items.findIndex(productId)
+        index?.let {
+            items[it] = update.invoke(items[it])
+            submitList(items)
         }
+    }
+
+    private fun submitList(items: List<Visitable<*>>) {
+        val diffUtilCallback = differ.create(visitables, items)
+        val result = DiffUtil.calculateDiff(diffUtilCallback)
+        visitables.clear()
+        visitables.addAll(items)
+        result.dispatchUpdatesTo(this)
+    }
+
+    private fun getItems(): MutableList<Visitable<*>> {
+        return visitables.toMutableList()
     }
 
 }
