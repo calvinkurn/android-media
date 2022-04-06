@@ -11,7 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -78,7 +82,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val iconProduct: ProductIconView by detachableView(R.id.icon_product)
     private val pmvMetrics: PlayMetricsView by detachableView(R.id.pmv_metrics)
     private val loadingView: FrameLayout by detachableView(R.id.loading_view)
-//    private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
+    private val errorLiveNetworkLossView: View by detachableView(R.id.error_live_view)
 //    private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
@@ -310,7 +314,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 //    }
 
     private fun setupObserve() {
-//        observeLiveState()
         observeTotalViews()
         observeTotalLikes()
         observeChatList()
@@ -408,10 +411,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                    primaryListener = { dialog -> dialog.dismiss() },
                    secondaryCta = getString(R.string.play_broadcast_exit),
                    secondaryListener = { dialog ->
-                       // todo: revisit, karna harus sukses update channel status dulu baru ke halaman selanjutny
-                       parentViewModel.submitAction(PlayBroadcastAction.ExitLive)
                        analytic.clickDialogExitOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
-                       forceStopLive { navigateToSummary() }
+                       stopBroadcast()
+                       navigateToSummary()
                    }
            )
         }
@@ -463,9 +465,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
                     dialog.dismiss()
-                    forceStopLive {
-                        navigateToSummary()
-                    }
+                    stopBroadcast()
+                    navigateToSummary()
                 }
             )
         }
@@ -548,63 +549,51 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         analytic.impressReportPage(parentViewModel.channelId)
     }
 
-//    private fun handleLivePushInfo(state: PlayLiveViewState) {
-//        if (!isVisible) return
-//        errorLiveNetworkLossView.hide()
-//        when (state) {
-//            is PlayLiveViewState.Connecting -> showLoading(true)
-//            is PlayLiveViewState.Started -> showLoading(false)
-//            is PlayLiveViewState.Stopped -> {
-//                showLoading(false)
-//                val exitDialog = getExitDialog()
-//                exitDialog.dialogSecondaryCTA.isLoading = false
-//                exitDialog.dismiss()
-//                if (state.shouldNavigate) navigateToSummary()
-//            }
-//            is PlayLiveViewState.Error -> {
-//                showLoading(false)
-//                handleLivePushError(state)
-//            }
-//            is PlayLiveViewState.Resume -> {
-//                showLoading(false)
-//                if (!state.isResumed) showDialogContinueLiveStreaming()
-//            }
-//            is PlayLiveViewState.Recovered -> {
-//                showLoading(false)
-//                showToaster(
-//                        message = getString(R.string.play_live_broadcast_network_recover),
-//                        type = Toaster.TYPE_NORMAL
-//                )
-//            }
-//        }
-//    }
+    private fun handleBroadcastRecovered() {
+        showLoading(false)
+        errorLiveNetworkLossView.hide()
+        showToaster(getString(R.string.play_live_broadcast_network_recover))
+    }
 
-//    private fun handleLivePushError(state: PlayLiveViewState.Error) {
-//        when(state.error.type) {
-//            PlayLivePusherErrorType.NetworkPoor -> showErrorToaster(
-//                err = state.error,
-//                customErrMessage = getString(R.string.play_live_broadcast_network_poor),
-//            )
-//            PlayLivePusherErrorType.NetworkLoss -> errorLiveNetworkLossView.show()
-//            PlayLivePusherErrorType.ConnectFailed -> {
-//                showErrorToaster(
-//                    err = state.error,
-//                    customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
-//                    duration = Toaster.LENGTH_INDEFINITE,
-//                    actionLabel = getString(R.string.play_broadcast_try_again),
-//                    actionListener = { parentViewModel.reconnectLiveStream() }
-//                )
-//            }
-//            PlayLivePusherErrorType.SystemError -> showErrorToaster(
-//                err = state.error,
-//                customErrMessage = getString(R.string.play_dialog_unsupported_device_desc),
-//                duration = Toaster.LENGTH_INDEFINITE,
-//                actionLabel = getString(R.string.play_ok),
-//                actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
-//            )
-//        }
-//        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle, state.error.reason)
-//    }
+    private fun handleBroadcastError(error: Throwable) {
+        analytic.viewErrorOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle, error.localizedMessage)
+        if (error is BroadcasterException) {
+            when(error.errorType) {
+                BroadcasterErrorType.InternetUnavailable,
+                BroadcasterErrorType.StreamFailed -> {
+                    errorLiveNetworkLossView.show()
+                    broadcaster.doRetry()
+                }
+                BroadcasterErrorType.AuthFailed,
+                BroadcasterErrorType.UrlEmpty -> {
+                    showErrorToaster(error, getString(R.string.play_live_broadcast_connect_fail),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = {
+                            parentViewModel.doResumeBroadcaster(shouldContinue = true)
+                        })
+                }
+                BroadcasterErrorType.ServiceNotReady,
+                BroadcasterErrorType.StartFailed -> {
+                    showErrorToaster(error, getString(R.string.play_broadcaster_default_error),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_broadcast_try_again),
+                        actionListener = {
+                            showLoading(true)
+                            broadcaster.doRetry()
+                        })
+                }
+                else -> {
+                    showErrorToaster(error, getString(R.string.play_live_broadcast_unrecoverable_error),
+                        duration = Toaster.LENGTH_INDEFINITE,
+                        actionLabel = getString(R.string.play_ok),
+                        actionListener = {
+                            activity?.finish()
+                        })
+                }
+            }
+        }
+    }
 
     private fun showLoading(isLoading: Boolean) {
         loadingView.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -650,7 +639,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     navigateToSummary()
                 }
             }
-            stopLive()
+            stopBroadcast()
         }
     }
 
@@ -721,11 +710,23 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     PlayBroadcastEvent.ShowLoading -> showLoading(true)
                     PlayBroadcastEvent.ShowLiveEndedDialog -> showForceStopDialog()
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
-                    is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.ShowError -> {
+                        if (event.onRetry == null) showErrorToaster(event.error)
+                        else {
+                            showErrorToaster(event.error,
+                            duration = Toaster.LENGTH_INDEFINITE,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = {
+                                event.onRetry.invoke()
+                            })
+                        }
+                    }
                     is PlayBroadcastEvent.BroadcastReady -> {
                         startBroadcast(event.ingestUrl)
                         parentViewModel.startTimer()
                     }
+                    is PlayBroadcastEvent.ShowBroadcastError -> handleBroadcastError(event.error)
+                    is PlayBroadcastEvent.BroadcastRecovered -> handleBroadcastRecovered()
                     else -> {}
                 }
             }
@@ -738,8 +739,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 when(state) {
                     is PlayBroadcastTimerState.Active -> showCounterDuration(state.duration)
                     PlayBroadcastTimerState.Finish -> {
+                        stopBroadcast()
                         showForceStopDialog()
-                        forceStopLive()
                     }
                 }
             }
@@ -894,6 +895,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun pauseBroadcast() {
+        showLoading(false)
+        errorLiveNetworkLossView.hide()
         broadcaster.pause()
     }
 
@@ -901,15 +904,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcaster.resume(shouldContinue = false)
     }
 
-    private fun forceStopLive(navigateTo: () -> Unit = { }) {
-        parentViewModel.updateChannelStatusToStop()
-        stopLive(navigateTo)
-    }
-
-    private fun stopLive(navigateTo: () -> Unit = { }) {
+    private fun stopBroadcast() {
         broadcaster.stop()
         parentViewModel.stopTimer()
-        navigateTo()
     }
 
     companion object {

@@ -15,7 +15,7 @@ import javax.inject.Inject
  */
 class PlayBroadcaster(
     activityContext: Context,
-    handler: Handler?,
+    private val handler: Handler?,
     private val broadcaster: Broadcaster,
     private val callback: Callback,
 ) : Broadcaster by broadcaster {
@@ -33,6 +33,7 @@ class PlayBroadcaster(
         }
     }
 
+    private var mLastIngestUrl = ""
     private var isStartedBefore = false
 
     private val broadcastListener = object : Broadcaster.Listener {
@@ -44,9 +45,16 @@ class PlayBroadcaster(
             val newState = when(state) {
                 is BroadcastState.Error -> PlayBroadcasterState.Error(state.cause)
                 BroadcastState.Started -> PlayBroadcasterState.Started
+                BroadcastState.Recovered -> PlayBroadcasterState.Recovered
                 else -> null
             }
             if (newState != null) callback.onBroadcastStateChanged(newState)
+        }
+    }
+
+    inner class RetryRunnable : Runnable {
+        override fun run() {
+            broadcaster.retry()
         }
     }
 
@@ -55,7 +63,16 @@ class PlayBroadcaster(
         broadcaster.addListener(broadcastListener)
     }
 
+    /**
+     * start with cached rtmpUrl
+     */
+    fun start() {
+        if (mLastIngestUrl.isBlank()) return
+        start(mLastIngestUrl)
+    }
+
     override fun start(rtmpUrl: String) {
+        mLastIngestUrl = rtmpUrl
         broadcaster.start(rtmpUrl)
         isStartedBefore = true
     }
@@ -70,9 +87,14 @@ class PlayBroadcaster(
         updateAspectFrameSize()
     }
 
+    fun doRetry() {
+        handler?.postDelayed(RetryRunnable(), RETRY_TIMEOUT)
+    }
+
     override fun stop() {
         isStartedBefore = false
         broadcaster.release()
+        callback.onBroadcastStateChanged(PlayBroadcasterState.Stopped)
     }
 
     override fun destroy() {
@@ -102,5 +124,9 @@ class PlayBroadcaster(
         fun updateAspectRatio(aspectRatio: Double)
         fun onBroadcastInitStateChanged(state: BroadcastInitState)
         fun onBroadcastStateChanged(state: PlayBroadcasterState)
+    }
+
+    companion object {
+        private const val RETRY_TIMEOUT = 3000L
     }
 }

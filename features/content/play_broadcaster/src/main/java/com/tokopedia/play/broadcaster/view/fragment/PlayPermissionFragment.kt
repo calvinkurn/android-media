@@ -111,7 +111,6 @@ class PlayPermissionFragment @Inject constructor():  PlayBaseBroadcastFragment()
 
     private fun configurePermission() {
         if (permissionHelper.isPermissionGranted(permission.CAMERA)) {
-//            (activity as? PlayBroadcastActivity)?.startPreview()
             setPermissionGranted(tvCheckCamera)
         }
         if (permissionHelper.isPermissionGranted(permission.RECORD_AUDIO))

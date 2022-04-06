@@ -7,6 +7,7 @@ sealed interface PlayBroadcasterState {
     object Started: PlayBroadcasterState
     data class Resume(val startedBefore: Boolean, val shouldContinue: Boolean): PlayBroadcasterState
     object Paused: PlayBroadcasterState
+    object Recovered: PlayBroadcasterState
     data class Error(val cause: Throwable): PlayBroadcasterState
     object Stopped: PlayBroadcasterState
 }

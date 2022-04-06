@@ -26,6 +26,8 @@ interface Broadcaster {
 
     fun start(rtmpUrl: String)
 
+    fun retry()
+
     fun stop()
 
     fun release()

@@ -13,6 +13,8 @@ import com.tokopedia.broadcaster.revamp.util.bitrate.BroadcasterAdaptiveBitrate
 import com.tokopedia.broadcaster.revamp.util.bitrate.BroadcasterAdaptiveBitrateImpl
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCamera
 import com.tokopedia.broadcaster.revamp.util.camera.BroadcasterCameraManager
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
+import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.broadcaster.revamp.util.log.BroadcasterLogger
 import com.tokopedia.broadcaster.revamp.util.log.DefaultBroadcasterLogger
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterStatisticManager
@@ -107,7 +109,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         if (context == null) {
             broadcastInitStateChanged(
                 BroadcastInitState.Error(
-                    IllegalStateException("context == null")
+                    BroadcasterException(BroadcasterErrorType.ContextNotFound)
                 )
             )
             return
@@ -119,7 +121,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         if (cameraList.isNullOrEmpty()) {
             broadcastInitStateChanged(
                 BroadcastInitState.Error(
-                    IllegalStateException("cameraList.isNullOrEmpty()")
+                    BroadcasterException(BroadcasterErrorType.CameraNotFound)
                 )
             )
             return
@@ -257,7 +259,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         if (mStreamerGL == null) {
             broadcastInitStateChanged(
                 BroadcastInitState.Error(
-                    IllegalStateException("mStreamerGL == null)")
+                    BroadcasterException(BroadcasterErrorType.ServiceUnrecoverable)
                 )
             )
             return
@@ -290,23 +292,29 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
 
     override fun start(rtmpUrl: String) {
         if (mStreamer == null) return
-        val context = mContext ?: return
 
         if (rtmpUrl.isEmpty()) {
             broadcastStateChanged(
-                BroadcastState.Error(IllegalStateException("RTMP URL is empty"))
+                BroadcastState.Error(BroadcasterException(BroadcasterErrorType.UrlEmpty))
             )
             return
         }
 
+        val connectionConfig = BroadcasterUtil.getConnectionConfig(rtmpUrl)
+        val success = createConnection(connectionConfig)
+        if (success) broadcastStateChanged(BroadcastState.Started)
+    }
+
+    private fun createConnection(connectionConfig: ConnectionConfig): Boolean {
+        val context = mContext ?: return false
         val isStreamerReady = isAudioCaptureStarted() && isVideoCaptureStarted()
         if (!isStreamerReady) {
             broadcastStateChanged(
                 BroadcastState.Error(
-                    IllegalStateException("Streamer is not ready, please wait")
+                    BroadcasterException(BroadcasterErrorType.ServiceNotReady)
                 )
             )
-            return
+            return false
         }
 
         if (!DeviceConnectionInfo.isInternetAvailable(context,
@@ -315,21 +323,20 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 checkEthernet = true)) {
             broadcastStateChanged(
                 BroadcastState.Error(
-                    IllegalStateException("No internet connection")
+                    BroadcasterException(BroadcasterErrorType.InternetUnavailable)
                 )
             )
-            return
+            return false
         }
 
-        val connectionConfig = BroadcasterUtil.getConnectionConfig(rtmpUrl)
         val connectionId = mStreamer?.createConnection(connectionConfig) ?: -1
         if (connectionId == -1) {
             broadcastStateChanged(
                 BroadcastState.Error(
-                    IllegalStateException("Unknown error, please try again later")
+                    BroadcasterException(BroadcasterErrorType.StartFailed)
                 )
             )
-            return
+            return false
         }
 
         mBroadcastOn = true
@@ -338,12 +345,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         startTracking(connectionId)
 
         mAdaptiveBitrate?.start(connectionId)
-        broadcastStateChanged(BroadcastState.Started)
+        return true
     }
 
-    override fun stop() {
-        broadcastStateChanged(BroadcastState.Stopped)
-        mBroadcastOn = false
+    private fun releaseConnection() {
         stopTracking()
 
         mConnectionId?.let {
@@ -351,8 +356,21 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
         }
 
         mAdaptiveBitrate?.stop()
-        mConnectionId = null
         mConnectionState = null
+    }
+
+    override fun retry() {
+        val connectionConfig = mConnectionId?.second ?: return
+
+        releaseConnection()
+        if (mBroadcastOn) createConnection(connectionConfig)
+    }
+
+    override fun stop() {
+        mBroadcastOn = false
+        broadcastStateChanged(BroadcastState.Stopped)
+        releaseConnection()
+        mConnectionId = null
     }
 
     override fun release() {
@@ -399,7 +417,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             return
         }
 
-        TODO("Not yet implemented")
+       // TODO("Not yet implemented")
     }
 
     override fun getHandler(): Handler? {
@@ -423,7 +441,10 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
             Streamer.CONNECTION_STATE.RECORD,
             -> {
             }
-            Streamer.CONNECTION_STATE.CONNECTED -> mStatisticManager?.start(connectionId)
+            Streamer.CONNECTION_STATE.CONNECTED -> {
+                mStatisticManager?.start(connectionId)
+                if (mState is BroadcastState.Error) broadcastStateChanged(BroadcastState.Recovered)
+            }
             Streamer.CONNECTION_STATE.IDLE -> {
                 // connection established successfully, but no data is flowing
                 // Larix app expect data always flowing, so this is error for us
@@ -434,13 +455,19 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 // ongoing stream recording on server; so idle state is expected and ignored
             }
             Streamer.CONNECTION_STATE.DISCONNECTED, null -> {
-                broadcastStateChanged(
-                    BroadcastState.Error(
-                        IllegalStateException("error during broadcasting")
+                if (status == Streamer.STATUS.AUTH_FAIL) {
+                    broadcastStateChanged(
+                        BroadcastState.Error(
+                            BroadcasterException(BroadcasterErrorType.AuthFailed)
+                        )
                     )
-                )
-                // todo: retry
-                // todo: log & show error to user: error message including connection name
+                } else {
+                    broadcastStateChanged(
+                        BroadcastState.Error(
+                            BroadcasterException(BroadcasterErrorType.StreamFailed)
+                        )
+                    )
+                }
             }
         }
     }
@@ -460,7 +487,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 mStreamer?.stopVideoCapture()
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
-                        IllegalStateException("Video CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED or null")
+                        BroadcasterException(BroadcasterErrorType.VideoFailed)
                     )
                 )
             }
@@ -482,7 +509,7 @@ class BroadcastManager: Broadcaster, Streamer.Listener, BroadcasterAdaptiveBitra
                 mStreamer?.stopAudioCapture()
                 broadcastInitStateChanged(
                     BroadcastInitState.Error(
-                        IllegalStateException("Audio CAPTURE_STATE.ENCODER_FAIL, CAPTURE_STATE.FAILED or null")
+                        BroadcasterException(BroadcasterErrorType.AudioFailed)
                     )
                 )
             }

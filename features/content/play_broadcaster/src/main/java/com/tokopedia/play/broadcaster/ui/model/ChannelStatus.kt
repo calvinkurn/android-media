@@ -7,6 +7,7 @@ package com.tokopedia.play.broadcaster.ui.model
  */
 enum class ChannelStatus(val value: String) {
     Draft("0"),
+    Live("2"),
     Active("1"),
     Pause("3"),
     CompleteDraft("-2"),
@@ -34,7 +35,7 @@ enum class ChannelStatus(val value: String) {
             when {
                 activeLiveChannel > 0 -> {
                     channelId = activeLiveChannel
-                    playChannelStatus = Active
+                    playChannelStatus = Live
                 }
                 pausedChannel > 0 -> {
                     channelId = pausedChannel

@@ -339,7 +339,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         if (config.streamAllowed) {
             this.channelType = config.channelStatus
-            if (channelType == ChannelStatus.Active) {
+            if (channelType == ChannelStatus.Live) {
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
@@ -360,7 +360,7 @@ class PlayBroadcastActivity : BaseActivity(),
             return
         }
         when (channelStatus) {
-            ChannelStatus.Pause, ChannelStatus.Active -> {
+            ChannelStatus.Pause, ChannelStatus.Live -> {
                 openBroadcastActivePage()
                 showDialogContinueLiveStreaming()
             }

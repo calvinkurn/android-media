@@ -8,7 +8,7 @@ sealed interface PlayBroadcastEvent {
 
     data class ShowError(
         val error: Throwable,
-        val onRetry: () -> Unit = {},
+        val onRetry: (() -> Unit)? = null,
     ) : PlayBroadcastEvent
 
     data class ShowScheduleError(
@@ -20,4 +20,8 @@ sealed interface PlayBroadcastEvent {
 
     object BroadcastStarted : PlayBroadcastEvent
     data class BroadcastReady(val ingestUrl: String) : PlayBroadcastEvent
+    data class ShowBroadcastError(
+        val error: Throwable,
+    ) : PlayBroadcastEvent
+    object BroadcastRecovered : PlayBroadcastEvent
 }

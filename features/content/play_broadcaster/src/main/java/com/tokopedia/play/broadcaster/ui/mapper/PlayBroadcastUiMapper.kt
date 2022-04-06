@@ -160,7 +160,7 @@ class PlayBroadcastUiMapper(
         )
 
         val remainingDuration = when(channelStatus.second) {
-            ChannelStatus.Active -> config.maxDuration - config.activeChannelRemainingDuration
+            ChannelStatus.Live -> config.maxDuration - config.activeChannelRemainingDuration
             ChannelStatus.Pause -> config.maxDuration - config.pausedChannelRemainingDuration
             else -> 0
         }

@@ -104,6 +104,7 @@
     <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
     <string name="play_broadcaster_default_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="play_live_broadcast_network_loss_desc">Segera sambungkan ke koneksi yang stabil, atau akhiri siarannya.</string>
+    <string name="play_live_broadcast_unrecoverable_error">Layanan live streaming terganggu, tutup halaman dan klik mulai kembali.</string>
     <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
     <string name="play_summary_title">Laporan Live</string>
