@@ -31,8 +31,10 @@ class CueWidgetCategory2x2ViewHolder (
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_cue_category_2x2
-        private const val SPAN_COUNT_MOBILE = 2
-        private const val SPAN_COUNT_TABLET = 4
+        private const val SPAN_COUNT_2x2_MOBILE = 2
+        private const val SPAN_COUNT_2x2_TABLET = 4
+        private const val SPAN_COUNT_3x2_MOBILE = 3
+        private const val SPAN_COUNT_3x2_TABLET = 6
         private const val FIRST_ITEM_DECORATION = 0
     }
 
@@ -42,15 +44,25 @@ class CueWidgetCategory2x2ViewHolder (
         mappingView(element.channelModel)
     }
 
-    private fun getSpanCount(): Int =
-        if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_TABLET else SPAN_COUNT_MOBILE
-
+    private fun getSpanCount(gridSize: Int): Int {
+        val cueWidget2x2MinSize = 4
+        val cueWidget2x2MaxSize = 5
+        val cueWidget3x2Size = 6
+        var gridCount = 0
+        if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
+            gridCount = if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_2x2_TABLET else SPAN_COUNT_2x2_MOBILE
+        }
+        else {
+            gridCount = if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_3x2_TABLET else SPAN_COUNT_3x2_MOBILE
+        }
+        return gridCount
+    }
 
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
             adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener)
             homeComponentCueCategory2x2Rv.adapter = adapter
-            val layoutManager = StaggeredGridLayoutManager(getSpanCount(), LinearLayoutManager.VERTICAL)
+            val layoutManager = StaggeredGridLayoutManager(getSpanCount(channel.channelGrids.size), LinearLayoutManager.VERTICAL)
             homeComponentCueCategory2x2Rv.layoutManager = layoutManager
             if (homeComponentCueCategory2x2Rv.itemDecorationCount == FIRST_ITEM_DECORATION) {
                 homeComponentCueCategory2x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())

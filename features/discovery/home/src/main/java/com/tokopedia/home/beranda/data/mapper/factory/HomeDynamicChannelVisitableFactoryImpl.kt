@@ -694,15 +694,22 @@ class HomeDynamicChannelVisitableFactoryImpl(
         val cueWidget2x2MinSize = 4
         val cueWidget2x2MaxSize = 5
         val cueWidget3x2Size = 6
-        if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
+//        if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
+//            visitableList.add(
+//                mappingCueCategory2x2Component(
+//                    channel, isCache, verticalPosition
+//                )
+//            )
+//        } else if (gridSize >= cueWidget3x2Size) {
+//            visitableList.add(
+//                mappingCueCategory3x2Component(
+//                    channel, isCache, verticalPosition
+//                )
+//            )
+//        }
+        if (gridSize >= cueWidget2x2MinSize) {
             visitableList.add(
                 mappingCueCategory2x2Component(
-                    channel, isCache, verticalPosition
-                )
-            )
-        } else if (gridSize >= cueWidget3x2Size) {
-            visitableList.add(
-                mappingCueCategory3x2Component(
                     channel, isCache, verticalPosition
                 )
             )
