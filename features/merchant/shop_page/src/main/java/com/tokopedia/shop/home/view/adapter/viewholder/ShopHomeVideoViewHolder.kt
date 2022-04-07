@@ -104,11 +104,6 @@ class ShopHomeVideoViewHolder(
         textViewTitle?.apply {
             if (model.header.title.isEmpty()) {
                 hide()
-//                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
-//                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-//                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
-//                    }
-//                }
             } else {
                 text = model.header.title
                 show()
