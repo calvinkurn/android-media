@@ -45,4 +45,18 @@ interface PlayWidgetLargeAnalyticListener {
         item: PlayWidgetBannerUiModel,
         channelPositionInList: Int,
     ) {}
+
+    fun onLabelPromoClicked(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        position: Int,
+        isAutoPlay: Boolean,
+    ) {}
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetLargeView,
+        item: PlayWidgetChannelUiModel,
+        position: Int,
+        isAutoPlay: Boolean,
+    ) {}
 }
