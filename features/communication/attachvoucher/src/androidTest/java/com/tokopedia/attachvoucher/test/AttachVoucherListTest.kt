@@ -6,9 +6,11 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.attachvoucher.common.matchers.withRecyclerView
 import com.tokopedia.attachvoucher.data.voucherv2.GetMerchantPromotionGetMVListResponse
 import com.tokopedia.attachvoucher.test.base.AttachVoucherTest
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class AttachVoucherListTest: AttachVoucherTest() {
 
     @Test
