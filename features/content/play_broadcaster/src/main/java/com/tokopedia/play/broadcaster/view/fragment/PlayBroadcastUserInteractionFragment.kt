@@ -912,7 +912,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                if(state.showOnBoarding && !hasPinnedFormView()) gameIconView.showCoachmark()
+                if(state.showOnBoarding && !hasPinnedFormView() && !isQuizFormVisible()) gameIconView.showCoachmark()
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
