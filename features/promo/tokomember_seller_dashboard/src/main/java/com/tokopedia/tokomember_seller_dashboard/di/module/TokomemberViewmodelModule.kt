@@ -8,6 +8,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateCardViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -36,4 +37,10 @@ abstract class TokomemberViewmodelModule {
     @IntoMap
     @ViewModelKey(TokomemberDashProgramViewmodel::class)
     abstract fun tokomemberDashProgramViewmodel(viewModel: TokomemberDashProgramViewmodel): ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TokomemberEligibilityViewModel::class)
+    abstract fun tokomemberEligibilityViewModel(viewModel: TokomemberEligibilityViewModel): ViewModel
 }
