@@ -79,13 +79,4 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             build()
         }
     }
-
-    //TODO : will be delete if real channel name is already done
-    private fun getDummyChannelName(pageType: DigitalRecommendationPage): DigitalRecommendationPage{
-        return if (pageType == DigitalRecommendationPage.DG_THANK_YOU_PAGE) {
-            DigitalRecommendationPage.DIGITAL_GOODS
-        } else{
-            DigitalRecommendationPage.PHYSICAL_GOODS
-        }
-    }
 }
