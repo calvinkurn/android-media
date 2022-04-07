@@ -1057,16 +1057,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
 
             val quizData = _quizFormData.value
-            repo.createInteractiveQuiz(
-                channelId = channelId,
-                question = quizData.title,
-                prize = quizData.gift,
-                runningTime = runningTime,
-                choices = quizData.options.map { Pair(it.text, it.isSelected) }
-            )
+//            repo.createInteractiveQuiz(
+//                channelId = channelId,
+//                question = quizData.title,
+//                prize = quizData.gift,
+//                runningTime = runningTime,
+//                choices = quizData.options.map { Pair(it.text, it.isSelected) }
+//            )
 
             /** Reset Form */
             sharedPref.setNotFirstQuizPrice()
+            sharedPref.setNotFirstInteractive()
             initQuizFormData()
             _quizFormState.setValue { QuizFormStateUiModel.Nothing }
         }) {
@@ -1081,15 +1082,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun initQuizFormData() {
         needUpdateQuizForm(true) {
             val quizConfig = _gameConfig.value.quizConfig
-            val initialOptions = mutableListOf<QuizFormDataUiModel.Option>()
 
-            repeat(quizConfig.minChoicesCount) {
-                initialOptions.add(
-                    QuizFormDataUiModel.Option(
-                        order = it,
-                        maxLength = quizConfig.maxChoiceLength,
-                        isMandatory = true,
-                    )
+            val initialOptions = List(quizConfig.minChoicesCount) {
+                QuizFormDataUiModel.Option(
+                    order = it,
+                    maxLength = quizConfig.maxChoiceLength,
+                    isMandatory = true,
                 )
             }
 

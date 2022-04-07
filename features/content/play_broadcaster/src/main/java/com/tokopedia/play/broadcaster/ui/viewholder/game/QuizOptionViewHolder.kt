@@ -17,6 +17,7 @@ class QuizOptionViewHolder private constructor(
 
     fun bind(item: QuizFormDataUiModel.Option) {
         binding.root.apply {
+            isEditable = item.isEditable
             order = item.order
             text = item.text
             textChoice = item.getTextChoice()
@@ -24,7 +25,6 @@ class QuizOptionViewHolder private constructor(
                         else getString(R.string.play_bro_quiz_hint_add_new_option)
             maxLength = item.maxLength
             isCorrect = item.isSelected
-            isEditable = item.isEditable
 
             setFocus(item.isFocus)
 
