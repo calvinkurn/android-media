@@ -279,7 +279,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         mPresenter.userPostLiveData.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it) {
-                    initUserPost(userId)
+                    initUserPost(profileUserId)
                 }
             }
         })
@@ -489,7 +489,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                         globalErrorPost?.refreshBtn?.setOnClickListener {
                             userPostContainer?.displayedChild = PAGE_LOADING
-                            userId?.let { it1 -> initUserPost(it1) }
+                            profileUserId?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is IllegalStateException -> {
@@ -497,7 +497,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                         globalErrorPost?.refreshBtn?.setOnClickListener {
                             userPostContainer?.displayedChild = PAGE_LOADING
-                            userId?.let { it1 -> initUserPost(it1) }
+                            profileUserId?.let { it1 -> initUserPost(it1) }
                         }
                     }
                     is RuntimeException -> {
@@ -507,7 +507,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = PAGE_LOADING
-                                    userId?.let { it1 -> initUserPost(it1) }
+                                    profileUserId?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             ReponseStatus.INTERNAL_SERVER_ERROR -> {
@@ -515,7 +515,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = PAGE_LOADING
-                                    userId?.let { it1 -> initUserPost(it1) }
+                                    profileUserId?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                             else -> {
@@ -523,7 +523,7 @@ class UserProfileFragment : BaseDaggerFragment(),
 
                                 globalErrorPost?.refreshBtn?.setOnClickListener {
                                     userPostContainer?.displayedChild = PAGE_LOADING
-                                    userId?.let { it1 -> initUserPost(it1) }
+                                    profileUserId?.let { it1 -> initUserPost(it1) }
                                 }
                             }
                         }
@@ -658,7 +658,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         textFollowingCount?.text =
             UserProfileUtils.getFormattedNumber(data.profileHeader.stats.totalFollowing)
 
-        userProfileTracker?.openUserProfile(screenName = "feed user profile", userId, live = data.profileHeader.profile.liveplaychannel.islive)
+        userProfileTracker?.openUserProfile(screenName = "feed user profile", profileUserId, live = data.profileHeader.profile.liveplaychannel.islive)
 
         setProfileImg(data.profileHeader.profile)
 
@@ -884,7 +884,7 @@ class UserProfileFragment : BaseDaggerFragment(),
             R.id.text_follower_count, R.id.text_follower_label -> {
                 userProfileTracker?.clickFollowers(userId, profileUserId == userId)
                 UserProfileTracker().openFollowersTab(
-                    userId
+                    profileUserId
                 )
                 startActivity(activity?.let {
                     FollowerFollowingListingActivity.getCallingIntent(
@@ -909,7 +909,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         val bundle = Bundle()
         bundle.putString(EXTRA_DISPLAY_NAME, displayName)
         bundle.putString(EXTRA_USER_NAME, userName)
-        bundle.putString(EXTRA_USER_ID, userId)
+        bundle.putString(EXTRA_USER_ID, profileUserId)
         bundle.putString(EXTRA_PROFILE_USER_ID, profileUserId)
         bundle.putString(EXTRA_TOTAL_FOLLOWINGS, totalFollowings)
         bundle.putString(EXTRA_TOTAL_FOLLOWERS, totalFollowers)
