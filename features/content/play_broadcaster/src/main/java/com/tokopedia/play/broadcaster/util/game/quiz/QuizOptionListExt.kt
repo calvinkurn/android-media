@@ -6,7 +6,22 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 /**
  * Created By : Jonathan Darwin on April 07, 2022
  */
-object QuizPreparationExt {
+object QuizOptionListExt {
+
+    fun List<QuizFormDataUiModel.Option>.updateQuizOptionFlow(
+        order: Int,
+        newText: String,
+        quizConfig: QuizConfigUiModel,
+        isFirstSelectQuizOption: Boolean = false,
+    ) : Triple<List<QuizFormDataUiModel.Option>, Boolean, Boolean> {
+        val isAutoSelect: Boolean
+        val isAutoAdd: Boolean
+        val newOptions = updateQuizOption(order, newText, isFirstSelectQuizOption)
+                        .setupAutoSelectField(order, newText).also { isAutoSelect = it.second }.first
+                        .setupAutoAddField(quizConfig).also { isAutoAdd = it.size > size }
+
+        return Triple(newOptions, isAutoSelect, isAutoAdd)
+    }
 
     fun List<QuizFormDataUiModel.Option>.updateQuizOption(
         order: Int,
@@ -25,15 +40,17 @@ object QuizPreparationExt {
     fun List<QuizFormDataUiModel.Option>.setupAutoSelectField(
         order: Int,
         newText: String,
-    ) : List<QuizFormDataUiModel.Option> {
+    ) : Pair<List<QuizFormDataUiModel.Option>, Boolean> {
         val noSelectedChoice = firstOrNull { it.isSelected } == null
         val isAutoSelectEligible = noSelectedChoice && newText.isNotEmpty()
 
-        return map {
+        val newOptions = map {
             it.copy(
                 isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
             )
         }
+
+        return Pair(newOptions, isAutoSelectEligible)
     }
 
     fun List<QuizFormDataUiModel.Option>.setupAutoAddField(
@@ -53,5 +70,15 @@ object QuizPreparationExt {
         }
 
         return newOptions
+    }
+
+    fun List<QuizFormDataUiModel.Option>.setupEditable(
+        isEditable: Boolean,
+    ) : List<QuizFormDataUiModel.Option> {
+        return map { it.copy(isEditable = isEditable, isFocus = false) }
+    }
+
+    fun List<QuizFormDataUiModel.Option>.removeUnusedField(): List<QuizFormDataUiModel.Option> {
+        return filterNot { !it.isMandatory && it.text.isEmpty() }
     }
 }
