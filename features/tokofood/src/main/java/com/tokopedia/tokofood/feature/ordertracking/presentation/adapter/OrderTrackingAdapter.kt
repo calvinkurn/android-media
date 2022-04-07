@@ -4,9 +4,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.diffutil.OrderTrackingDiffUtilCallback
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 
 class OrderTrackingAdapter(
     private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactoryImpl
@@ -56,4 +58,35 @@ class OrderTrackingAdapter(
         }
     }
 
+    fun showError(item: OrderTrackingErrorUiModel) {
+        if (visitables.getOrNull(FIRST_INDEX) !is OrderTrackingErrorUiModel) {
+            visitables.add(item)
+            notifyItemInserted(FIRST_INDEX)
+        }
+    }
+
+    fun hideError() {
+        if (visitables.getOrNull(lastIndex) is OrderTrackingErrorUiModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
+    }
+
+    fun showLoadingShimmer(item: LoadingModel) {
+        if (visitables.getOrNull(FIRST_INDEX) !is LoadingModel) {
+            visitables.add(item)
+            notifyItemInserted(FIRST_INDEX)
+        }
+    }
+
+    fun hideLoadingShimmer() {
+        if (visitables.getOrNull(lastIndex) is LoadingModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
+    }
+
+    companion object {
+        const val FIRST_INDEX = 0
+    }
 }

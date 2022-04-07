@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.CompletedStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
@@ -12,7 +13,6 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingLoadingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
@@ -54,7 +54,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
     private val orderTrackingListener: OrderTrackingListener
 ): BaseAdapterTypeFactory(), OrderTrackingTypeFactory {
 
-    override fun type(orderTrackingLoadingUiModel: OrderTrackingLoadingUiModel): Int {
+    override fun type(viewModel: LoadingModel): Int {
         return OrderTrackingLoadingViewHolder.LAYOUT
     }
 

@@ -8,7 +8,6 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingLoadingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
@@ -24,7 +23,6 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDiv
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
 
 interface OrderTrackingTypeFactory {
-    fun type(orderTrackingLoadingUiModel: OrderTrackingLoadingUiModel): Int
 
     fun type(orderTrackingErrorUiModel: OrderTrackingErrorUiModel): Int
 

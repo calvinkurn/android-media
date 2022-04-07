@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
@@ -19,6 +20,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.RecyclerViewPollerListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -93,19 +95,25 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
 
     private fun observeOrderDetail() {
         observe(viewModel.orderDetailResult) {
+            orderTrackingAdapter.hideLoadingShimmer()
             when (it) {
                 is Success -> {
                     isCompletedOrder = it.data.isOrderCompleted
                     orderTrackingAdapter.updateOrderTracking(it.data.orderDetailList)
+                    setupViews(isCompletedOrder)
                 }
                 is Fail -> {
-
+                    orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
                 }
             }
         }
     }
 
     private fun fetchOrderDetail() {
+        orderTrackingAdapter.run {
+            hideError()
+            showLoadingShimmer(LoadingModel())
+        }
         context?.resources?.let {
             viewModel.fetchOrderDetail(
                 fileUtilsTemp.getJsonFromRaw(it, ORDER_TRACKING_RESOURCE)
@@ -118,6 +126,10 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
             isEnabled = false
             isRefreshing = false
         }
+    }
+
+    private fun setupViews(isOrderCompleted: Boolean) {
+
     }
 
     companion object {

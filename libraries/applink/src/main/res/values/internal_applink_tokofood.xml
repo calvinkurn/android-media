@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_tokofood" translatable="false">TokoFood</string>
+    <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
 
     <!--host-->
     <string name="host_tokofood" translatable="false">tokofood</string>
 
     <!--path-->
     <string name="path_tokofood_discovery" translatable="false">/discovery</string>
+    <string name="path_tokofood_post_purchase" translatable="false">/postpurchase</string>
+
 </resources>
