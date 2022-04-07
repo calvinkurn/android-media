@@ -176,7 +176,7 @@ class PlayAnalyticsTracker @Inject constructor(
     //12
     fun impressOnFilterChipsInVideoTab(filterCategory: String) {
         createAnalyticsData(
-            EventName.CLICK_HOMEPAGE,
+            EventName.VIEW_HOMEPAGE_IRIS,
             EventAction.IMPRESSION_FILTER_CHIPS,
             EventCategory.CONTENT_FEED_TIMELINE_VIDEO,
             EventLabel.getFilterCategory(filterCategory)
