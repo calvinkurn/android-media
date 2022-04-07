@@ -15,6 +15,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.CueWidgetCategoryAdapter
 import com.tokopedia.home_component.visitable.CueCategoryDataModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -35,6 +36,10 @@ class CueWidgetCategoryViewHolder (
         private const val SPAN_COUNT_3x2_MOBILE = 3
         private const val SPAN_COUNT_3x2_TABLET = 6
         private const val FIRST_ITEM_DECORATION = 0
+        private const val CUE_WIDGET_2x2_MIN_SIZE = 4
+        private const val CUE_WIDGET_2x2_MAX_SIZE = 5
+        private const val CUE_WIDGET_3x2 = 6
+        private const val HIDE_CUE_WIDGET = 0
     }
 
     override fun bind(element: CueCategoryDataModel) {
@@ -44,24 +49,29 @@ class CueWidgetCategoryViewHolder (
     }
 
     private fun getSpanCount(gridSize: Int): Int {
-        val cueWidget2x2MinSize = 4
-        val cueWidget2x2MaxSize = 5
-        val gridCount = if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
+        return if (gridSize in CUE_WIDGET_2x2_MIN_SIZE..CUE_WIDGET_2x2_MAX_SIZE) {
             if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_2x2_TABLET else SPAN_COUNT_2x2_MOBILE
-        } else {
+        } else if (gridSize >= CUE_WIDGET_3x2) {
             if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_3x2_TABLET else SPAN_COUNT_3x2_MOBILE
-        }
-        return gridCount
+        } else HIDE_CUE_WIDGET
     }
 
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
-            adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener)
+            adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener, adapterPosition)
             homeComponentCueCategory2x2Rv.adapter = adapter
-            val layoutManager = StaggeredGridLayoutManager(getSpanCount(channel.channelGrids.size), LinearLayoutManager.VERTICAL)
-            homeComponentCueCategory2x2Rv.layoutManager = layoutManager
-            if (homeComponentCueCategory2x2Rv.itemDecorationCount == FIRST_ITEM_DECORATION) {
-                homeComponentCueCategory2x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())
+            val spanCount = getSpanCount(channel.channelGrids.size)
+            if (spanCount == HIDE_CUE_WIDGET) {
+                root.gone()
+            } else {
+                val layoutManager = StaggeredGridLayoutManager(
+                    getSpanCount(channel.channelGrids.size),
+                    LinearLayoutManager.VERTICAL
+                )
+                homeComponentCueCategory2x2Rv.layoutManager = layoutManager
+                if (homeComponentCueCategory2x2Rv.itemDecorationCount == FIRST_ITEM_DECORATION) {
+                    homeComponentCueCategory2x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())
+                }
             }
         }
     }

@@ -14,14 +14,16 @@ import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.loadImageNormal
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by dhaba
  */
 class CueWidgetCategoryAdapter(
-    channels: ChannelModel,
-    private val cueWidgetCategoryListener: CueWidgetCategoryListener
+    private val channel: ChannelModel,
+    private val cueWidgetCategoryListener: CueWidgetCategoryListener,
+    private val verticalPosition: Int
 ) :
     RecyclerView.Adapter<CueWidgetCategoryAdapter.CueWidgetCategoryItemViewHolder>() {
     companion object {
@@ -29,9 +31,12 @@ class CueWidgetCategoryAdapter(
         private const val CUE_WIDGET_3x2 = 6
         private const val CUE_WIDGET_2x2 = 4
         private const val CURVE_RADIUS = 18f
+        private const val WIDGET_GRID_TYPE_2x2 = "2x2"
+        private const val WIDGET_GRID_TYPE_3x2 = "3x2"
     }
 
-    private var grids: List<ChannelGrid> = channels.channelGrids
+    private var grids: List<ChannelGrid> = channel.channelGrids
+    private var widgetGridType = ""
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -43,7 +48,13 @@ class CueWidgetCategoryAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if (grids.size < CUE_WIDGET_3x2) CUE_WIDGET_2x2 else CUE_WIDGET_3x2
+        return if (grids.size < CUE_WIDGET_3x2) {
+            widgetGridType = WIDGET_GRID_TYPE_2x2
+            CUE_WIDGET_2x2
+        } else {
+            widgetGridType = WIDGET_GRID_TYPE_3x2
+            CUE_WIDGET_3x2
+        }
     }
 
     override fun onBindViewHolder(holder: CueWidgetCategoryItemViewHolder, position: Int) {
@@ -68,7 +79,16 @@ class CueWidgetCategoryAdapter(
             imageCategory.clipToOutline = true
             categoryName.text = grid.name
             root.setOnClickListener {
-                cueWidgetCategoryListener.onClickCategory(grid)
+                cueWidgetCategoryListener.onCueClick(grid)
+            }
+            root.addOnImpressionListener(grid) {
+                cueWidgetCategoryListener.onCueImpressed(
+                    grid,
+                    channel,
+                    verticalPosition,
+                    position,
+                    widgetGridType
+                )
             }
         }
     }
