@@ -57,7 +57,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
 
     fun getProfileFeed() {
         launchCatchError(block = {
-            val result = profileFeedUsecase(userSession.userId)
+            val result = profileFeedUsecase(Unit)
             _profileFeed.value = Success(result.profileFeedData)
         }, onError = {
             _profileFeed.value = Fail(it)
@@ -67,7 +67,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
 
     /*
         add delay 2s after user typing then hit gql. if current process is running,
-        cancel that job and create new job.
+        cancel that job and create new request gql.
      */
     fun validateUsername(username: String) {
         cancelValidation()

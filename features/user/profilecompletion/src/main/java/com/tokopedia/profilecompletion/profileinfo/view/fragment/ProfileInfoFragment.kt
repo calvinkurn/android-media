@@ -449,7 +449,6 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 		if (!image.exists()) {
 		    onErrorGetProfilePhoto(MessageErrorException(getString(failed_to_get_picture)))
 		} else {
-//		    showLoading(true)
 		    viewModel.uploadPicture(image)
 		}
 	    } else { onErrorGetProfilePhoto(MessageErrorException(getString(failed_to_get_picture))) }

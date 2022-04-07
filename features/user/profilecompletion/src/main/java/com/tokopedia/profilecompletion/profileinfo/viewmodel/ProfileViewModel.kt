@@ -51,7 +51,7 @@ class ProfileViewModel @Inject constructor(
             try {
                 val profileInfo = async { profileInfoUseCase(Unit) }
                 val profileRole = async { profileRoleUseCase(Unit) }
-                val profileFeed = async { profileFeedInfoUseCase(userSession.userId)}
+                val profileFeed = async { profileFeedInfoUseCase(Unit)}
 
                 mutableProfileInfoUiData.value = ProfileInfoUiModel(
                     profileInfo.await().profileInfoData,
@@ -59,13 +59,7 @@ class ProfileViewModel @Inject constructor(
                     profileFeed.await().profileFeedData
                 )
             } catch (e: Exception) {
-                when (e) {
-                    is CancellationException -> {
-
-                    } else -> {
-                    mutableErrorMessage.value = ProfileInfoError.GeneralError(e)
-                }
-                }
+                mutableErrorMessage.value = ProfileInfoError.GeneralError(e)
             }
         }
     }
@@ -86,7 +80,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     /* To send uploadID from media uploader to accounts BE */
-    fun saveProfilePicture(uploadId: String) {
+    private fun saveProfilePicture(uploadId: String) {
         launch {
             try {
                 val res = saveProfilePictureUseCase(
