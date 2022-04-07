@@ -207,20 +207,18 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun updateSharingReferral(item: HomeSharingReferralWidgetUiModel, isButtonLoading: Boolean) {
-        launchCatchError(block = {
-            homeLayoutItemList.mapSharingReferralData(
-                item = item,
-                isSender = item.isSender,
-                isButtonLoading = isButtonLoading,
-                warehouseId = item.warehouseId,
-                isDisplayed = item.isDisplayed
-            )
-            val data = HomeLayoutListUiModel(
-                items = getHomeVisitableList(),
-                state = TokoNowLayoutState.LOADED
-            )
-            _homeLayoutList.postValue(Success(data))
-        }) { /* nothing to do */ }
+        homeLayoutItemList.mapSharingReferralData(
+            item = item,
+            isSender = item.isSender,
+            isButtonLoading = isButtonLoading,
+            warehouseId = item.warehouseId,
+            isDisplayed = item.isDisplayed
+        )
+        val data = HomeLayoutListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoNowLayoutState.LOADED
+        )
+        _homeLayoutList.value = Success(data)
     }
 
     fun getProductRecomOoc() {
@@ -620,6 +618,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel, warehouseId: String): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = validateReferralUserUseCase.execute(item.slug)
+            println("Get Referral Validation : "+response)
             if(response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
                 val isSender = REFERRAL_SENDER == response.gamiReferralValidateUser.status
                 homeLayoutItemList.mapSharingReferralData(
