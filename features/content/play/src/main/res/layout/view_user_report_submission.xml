@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_user_report_submission_content"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingTop="@dimen/spacing_lvl4"
             android:paddingRight="@dimen/spacing_lvl4"

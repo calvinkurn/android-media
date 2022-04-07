@@ -20,7 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_user_kebab_menu_sheet_content"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingRight="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toBottomOf="parent"

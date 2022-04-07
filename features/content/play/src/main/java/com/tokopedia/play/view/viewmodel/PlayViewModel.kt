@@ -649,7 +649,11 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowKebabMenuSheet(estimatedSheetHeight: Int) {
+
+    /***
+     * Estimated sheet is always 0 bcz height is set based on wrap_content
+     */
+    fun onShowKebabMenuSheet(estimatedSheetHeight: Int = 0) {
         val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.ThreeDots] =
@@ -695,7 +699,7 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowUserReportSheet(estimatedSheetHeight: Int) {
+    fun onShowUserReportSheet(estimatedSheetHeight: Int = 0) {
         val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.UserReportList] =
@@ -718,7 +722,7 @@ class PlayViewModel @AssistedInject constructor(
         _observableKebabSheets.value = insetsMap
     }
 
-    fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
+    fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int = 0) {
         val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
         insetsMap[KebabMenuType.UserReportSubmission] =
@@ -864,7 +868,7 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
-            is OpenKebabAction -> handleThreeDotsMenuClick(action.height)
+            OpenKebabAction -> handleThreeDotsMenuClick()
             is OpenFooterUserReport -> handleFooterClick(action.appLink)
             OpenUserReport -> handleUserReport()
             is SendUpcomingReminder -> handleSendReminder(action.section, false)
@@ -2023,7 +2027,7 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.clickSharePermission(channelId, partnerId, channelType.value, label)
     }
 
-    private fun handleThreeDotsMenuClick(height: Int){
+    private fun handleThreeDotsMenuClick(){
         viewModelScope.launch {
             _uiEvent.emit(OpenKebabEvent)
         }

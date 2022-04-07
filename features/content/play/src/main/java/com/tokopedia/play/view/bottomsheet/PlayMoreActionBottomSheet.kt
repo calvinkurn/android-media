@@ -1,9 +1,7 @@
 package com.tokopedia.play.view.bottomsheet
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -42,7 +40,8 @@ import kotlinx.coroutines.flow.collectLatest
 import java.lang.Exception
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -54,14 +53,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
     ) : BottomSheetUnify(), KebabMenuSheetViewComponent.Listener,
     PlayUserReportSheetViewComponent.Listener,
     PlayUserReportSubmissionViewComponent.Listener {
-
-    private var displayMetrix = DisplayMetrics()
-
-    private val kebabMenuSheetHeight: Int
-        get() = (displayMetrix.heightPixels * MIN_PERCENT_HEIGHT).toInt()
-
-    private val userReportSheetHeight: Int
-        get() = (displayMetrix.heightPixels * MAX_PERCENT_HEIGHT).toInt()
 
     private var childView: View? = null
 
@@ -80,7 +71,6 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (requireContext() as Activity).windowManager.defaultDisplay.getMetrics(displayMetrix)
 
         if(requireParentFragment() is PlayUserInteractionFragment){
             val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
@@ -137,26 +127,23 @@ class PlayMoreActionBottomSheet @Inject constructor(
         playViewModel.observableKebabMenuSheet.observe(viewLifecycleOwner, DistinctObserver { kebabMenuType ->
             kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
                 if (it is BottomInsetsState.Shown) {
-                    customPeekHeight = kebabMenuSheetHeight
-                    kebabMenuSheetView.showWithHeight(customPeekHeight)
+                    kebabMenuSheetView.showView()
                 }
-                else kebabMenuSheetView.hide()
+                else kebabMenuSheetView.hideView()
             }
 
             kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
-                    customPeekHeight = userReportSheetHeight
-                    userReportSheetView.showWithHeight(customPeekHeight)
+                    userReportSheetView.showView()
                 }
-                else userReportSheetView.hide()
+                else userReportSheetView.hideView()
             }
 
             kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
-                    customPeekHeight = userReportSheetHeight
-                    userReportSubmissionSheetView.showWithHeight(customPeekHeight)
+                    userReportSubmissionSheetView.showView()
                 }
-                else userReportSubmissionSheetView.hide()
+                else userReportSubmissionSheetView.hideView()
             }
         })
     }
@@ -219,7 +206,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private fun doActionUserReport(){
         analytic.clickUserReport()
-        playViewModel.onShowUserReportSheet(userReportSheetHeight)
+        playViewModel.onShowUserReportSheet()
         playViewModel.getUserReportList()
     }
 
@@ -342,7 +329,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         item: PlayUserReportReasoningUiModel.Reasoning
     ) {
         userReportTimeMillis = Calendar.getInstance().time
-        playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
+        playViewModel.onShowUserReportSubmissionSheet()
         userReportSubmissionSheetView.setView(item)
     }
 
@@ -392,8 +379,5 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayMoreActionBottomSheet"
-
-        private const val MAX_PERCENT_HEIGHT = 0.9
-        private const val MIN_PERCENT_HEIGHT = 0.1
     }
 }

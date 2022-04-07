@@ -3,7 +3,6 @@ package com.tokopedia.play.view.viewcomponent
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -78,15 +77,6 @@ class PlayUserReportSheetViewComponent(
         }
     }
 
-    fun showWithHeight(height: Int) {
-        if (rootView.height != height) {
-            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            rootView.layoutParams = layoutParams
-        }
-        show()
-    }
-
     fun setReportSheet(list: PlayUserReportUiModel.Loaded){
         if (list.reasoningList.isNotEmpty()){
             val actionList = mutableListOf<PlayUserReportReasoningUiModel>().apply {
@@ -112,6 +102,14 @@ class PlayUserReportSheetViewComponent(
 
     fun showPlaceholder(){
         categoryAdapter.setItemsAndAnimateChanges(getPlaceholderModel().reasoningList)
+    }
+
+    fun showView(){
+        show()
+    }
+
+    fun hideView(){
+        hide()
     }
 
     private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(

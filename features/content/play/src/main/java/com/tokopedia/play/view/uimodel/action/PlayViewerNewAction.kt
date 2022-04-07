@@ -70,7 +70,7 @@ data class SelectVariantOptionAction(val option: VariantOptionWithAttribute) : P
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
 
-data class OpenKebabAction (val height: Int): PlayViewerNewAction()
+object OpenKebabAction: PlayViewerNewAction()
 object OpenUserReport: PlayViewerNewAction()
 data class OpenFooterUserReport(val appLink: String): PlayViewerNewAction()
 

@@ -49,17 +49,14 @@ class KebabMenuSheetViewComponent(
         }
     }
 
-    fun showWithHeight(height: Int) {
-        if (rootView.height != height) {
-            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            rootView.layoutParams = layoutParams
-        }
-
-        show()
-
+    fun showView() {
         /** Need to improve if there's watch mode - need to put it under observer*/
+        show()
         setActionList()
+    }
+
+    fun hideView(){
+        hide()
     }
 
     private fun setActionList(){

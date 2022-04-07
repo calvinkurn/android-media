@@ -4,7 +4,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
@@ -61,15 +60,6 @@ class PlayUserReportSubmissionViewComponent(
         }
     }
 
-    fun showWithHeight(height: Int) {
-        if (rootView.height != height) {
-            val layoutParams = rootView.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            rootView.layoutParams = layoutParams
-        }
-        show()
-    }
-
     fun setView(item: PlayUserReportReasoningUiModel.Reasoning){
         minChar = item.submissionData.min
 
@@ -100,6 +90,14 @@ class PlayUserReportSubmissionViewComponent(
         }else{
             getString(R.string.play_user_report_text_area_min, "", minChar)
         }
+    }
+
+    fun showView(){
+        show()
+    }
+
+    fun hideView(){
+        hide()
     }
 
     interface Listener {
