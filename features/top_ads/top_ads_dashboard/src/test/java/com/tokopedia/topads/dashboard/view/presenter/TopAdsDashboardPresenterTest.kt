@@ -4,7 +4,6 @@ import android.content.res.Resources
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.topads.common.data.model.GroupListDataItem
-import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.common.data.response.*
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
@@ -17,11 +16,9 @@ import com.tokopedia.topads.headline.data.Ad
 import com.tokopedia.topads.headline.data.Data
 import com.tokopedia.topads.headline.data.ShopAdInfo
 import com.tokopedia.topads.headline.data.TopadsGetShopInfoV2
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
 import org.junit.Before
@@ -51,7 +48,7 @@ class TopAdsDashboardPresenterTest {
     private val productRecomUseCase: GraphqlUseCase<ProductRecommendationModel> = mockk(relaxed = true)
     private val topAdsEditUseCase: TopAdsEditUseCase = mockk(relaxed = true)
     private val validGroupUseCase: TopAdsGroupValidateNameUseCase = mockk(relaxed = true)
-    private val createGroupUseCase: CreateGroupUseCase = mockk(relaxed = true)
+    private val topAdsCreateUseCase: TopAdsCreateUseCase = mockk(relaxed = true)
     private val bidInfoUseCase: BidInfoUseCase = mockk(relaxed = true)
     private val groupInfoUseCase: GroupInfoUseCase = mockk(relaxed = true)
     private val autoTopUpUSeCase: TopAdsAutoTopUpUSeCase = mockk(relaxed = true)
@@ -75,7 +72,7 @@ class TopAdsDashboardPresenterTest {
             topAdsGetGroupProductDataUseCase, topAdsInsightUseCase,
             getStatisticUseCase, budgetRecomUseCase,
             productRecomUseCase, topAdsEditUseCase,
-            validGroupUseCase, createGroupUseCase,
+            validGroupUseCase, topAdsCreateUseCase,
             bidInfoUseCase, groupInfoUseCase, autoTopUpUSeCase, adsStatusUseCase,
             autoAdsStatusUseCase, getExpiryDateUseCase,
             getHiddenTrialUseCase, whiteListedUserUseCase,
@@ -339,18 +336,68 @@ class TopAdsDashboardPresenterTest {
     }
 
     @Test
-    fun `create group success`() {
-        val expected = "haha"
-        var actual = ""
-        val data = ResponseCreateGroup.TopadsCreateGroupAds(meta = ResponseCreateGroup.Meta(messages = listOf(ResponseCreateGroup.MessagesItem(title = expected))))
-        val onSuccess: (dataDeposit: ResponseCreateGroup.TopadsCreateGroupAds) -> Unit = {
-            actual = it.meta.messages[0].title
+    fun `create group success check, error should be null`() {
+        val fakeRequest = mockk<RequestParams>()
+        val expectedObj = FinalAdResponse(FinalAdResponse.TopadsManageGroupAds(
+            FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors = null),
+            FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = null)
+        ))
+
+        every {
+            topAdsCreateUseCase.executeQuery(fakeRequest, captureLambda())
+        } answers {
+            secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
         }
-        every { createGroupUseCase.executeQuerySafeMode(captureLambda(), any()) } answers {
-            onSuccess.invoke(data)
+        every {
+            topAdsCreateUseCase.setParam(any<List<String>>(), any(), any(), any())
+        } returns fakeRequest
+
+        presenter.createGroup(mockk(), "", 0.0, 0.0) {
+            assert(it.isNullOrEmpty())
         }
-        presenter.createGroup(hashMapOf(), onSuccess)
-        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `create group on error ,error should not be null`() {
+        val fakeRequest = mockk<RequestParams>()
+        val expectedObj = FinalAdResponse(FinalAdResponse.TopadsManageGroupAds(
+            FinalAdResponse.TopadsManageGroupAds.KeywordResponse(errors = listOf(FinalAdResponse.TopadsManageGroupAds.ErrorsItem())),
+            FinalAdResponse.TopadsManageGroupAds.GroupResponse(errors = null)
+        ))
+
+        every {
+            topAdsCreateUseCase.executeQuery(fakeRequest, captureLambda())
+        } answers {
+            secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
+        }
+        every {
+            topAdsCreateUseCase.setParam(any<List<String>>(), any(), any(), any())
+        } returns fakeRequest
+
+        presenter.createGroup(mockk(), "", 0.0, 0.0) {
+            assert(it != null)
+        }
+    }
+
+    @Test
+    fun `createGroup on null response, error method should not be called`() {
+        mockkConstructor(FinalAdResponse::class)
+        val fakeRequest = mockk<RequestParams>()
+
+        every {
+            topAdsCreateUseCase.executeQuery(fakeRequest, captureLambda())
+        } answers {
+            secondArg<(FinalAdResponse?) -> Unit>().invoke(null)
+        }
+        every {
+            topAdsCreateUseCase.setParam(any<List<String>>(), any(), any(), any())
+        } returns fakeRequest
+
+        var success = true
+        presenter.createGroup(mockk(), "", 0.0, 0.0) {
+            success = false
+        }
+        assert(success)
     }
 
     @Test
