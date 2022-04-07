@@ -46,6 +46,8 @@
     <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
     <string name="sd_with_variant">Ada Varian Diskon</string>
     <string name="sd_more_menu">Menu Lainnya</string>
+    <string name="sd_ticker_search_product_announcement_wording"><![CDATA[Untuk pengaturan diskon lebih dari 5 produk sekaligus, <a href="http://tokopedia.com">Buka Lewat Desktop</a>]]></string>
+    <string name="sd_search_at">Cari produk di %s</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
