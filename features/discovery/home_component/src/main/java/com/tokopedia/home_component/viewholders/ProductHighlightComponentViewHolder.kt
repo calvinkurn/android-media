@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardListView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
@@ -56,7 +57,9 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun initView() {
-        masterProductCardListView = itemView.findViewById(R.id.master_product_card_deals)
+        masterProductCardListView = itemView.findViewById<ProductCardListView?>(R.id.master_product_card_deals).apply {
+            setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
+        }
     }
 
     private fun setDealsChannelInfo(productHighlightDataModel: ProductHighlightDataModel) {

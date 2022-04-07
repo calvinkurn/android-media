@@ -27,6 +27,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -210,6 +211,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
+            recommendationCard.setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
                 if (!isCacheData) {
@@ -263,10 +265,15 @@ class RecommendationListCarouselViewHolder(itemView: View,
     class HomeRecommendationSeeMoreViewHolder(
             itemView: View
     ): RecommendationListCarouselItem(itemView){
-        private val container: View by lazy { itemView.findViewById<View>(R.id.container_banner_mix_more) }
+        private val card: CardUnify2 by lazy {
+            itemView.findViewById<CardUnify2?>(R.id.card_see_more_banner_mix).apply {
+                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            }
+        }
+
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
-                container.setOnClickListener {
+                card.setOnClickListener {
                     homeRecommendationListData.listener?.onRecommendationSeeMoreCardClick(
                             applink = homeRecommendationListData.channel.channelHeader.applink,
                             channelModel = homeRecommendationListData.channel
