@@ -61,7 +61,6 @@ class QuizPreparationUseCaseImpl @Inject constructor(
             newOptions.add(
                 QuizFormDataUiModel.Option(
                 order = currentOption,
-                maxLength = quizConfig.maxChoiceLength,
                 isMandatory = false,
             ))
         }
@@ -77,7 +76,6 @@ class QuizPreparationUseCaseImpl @Inject constructor(
         val initialOptions = List(quizConfig.minChoicesCount) {
             QuizFormDataUiModel.Option(
                 order = it,
-                maxLength = quizConfig.maxChoiceLength,
                 isMandatory = true,
             )
         }

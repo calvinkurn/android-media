@@ -23,7 +23,6 @@ class QuizOptionViewHolder private constructor(
             textChoice = item.getTextChoice()
             textHint = if(item.isMandatory) getString(R.string.play_bro_quiz_hint_text, item.order + 1)
                         else getString(R.string.play_bro_quiz_hint_add_new_option)
-            maxLength = item.maxLength
             isCorrect = item.isSelected
 
             setFocus(item.isFocus)

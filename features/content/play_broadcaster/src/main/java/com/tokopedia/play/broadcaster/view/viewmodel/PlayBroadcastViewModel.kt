@@ -1076,7 +1076,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         if(isNeedAddNewField) {
             newOptions.add(QuizFormDataUiModel.Option(
                 order = currentOption,
-                maxLength = quizConfig.maxChoiceLength,
                 isMandatory = false,
             ))
         }
@@ -1160,7 +1159,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             val initialOptions = List(quizConfig.minChoicesCount) {
                 QuizFormDataUiModel.Option(
                     order = it,
-                    maxLength = quizConfig.maxChoiceLength,
                     isMandatory = true,
                 )
             }
@@ -1183,7 +1181,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             if(isNeedAddNewField) {
                 options.add(QuizFormDataUiModel.Option(
                     order = currentOption,
-                    maxLength = quizConfig.maxChoiceLength,
                     isMandatory = false,
                 ))
             }

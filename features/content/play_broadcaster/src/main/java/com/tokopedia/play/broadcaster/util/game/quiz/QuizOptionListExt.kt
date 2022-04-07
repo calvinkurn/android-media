@@ -64,7 +64,6 @@ object QuizOptionListExt {
             newOptions.add(
                 QuizFormDataUiModel.Option(
                     order = size,
-                    maxLength = quizConfig.maxChoiceLength,
                     isMandatory = false,
                 ))
         }

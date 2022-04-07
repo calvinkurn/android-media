@@ -140,17 +140,11 @@ class QuizFormView : ConstraintLayout {
 
     fun setFormData(quizFormData: QuizFormDataUiModel, needToUpdateUI: Boolean = true) {
         if(needToUpdateUI) {
-            /** Set Quiz Title */
+            /** Update Quiz Title */
             binding.viewGameHeader.title = quizFormData.title
 
-            /** Set Options
-             *  cannot use diffutil bcs it gives a weird result.
-             *  the reason is we only update adapter when
-             *  theres a changing in number of field / option checked
-             *  so, oldItem and newItems comparison will give a weird result
-             */
+            /** Update Quiz Option */
             val options = quizFormData.options
-
             if(options.size > optionListView.size) {
                 /** Add Field */
                 for(i in optionListView.size until options.size) {
@@ -171,10 +165,10 @@ class QuizFormView : ConstraintLayout {
                 bindOptionData(optionView, option)
             }
 
-            /** Set Gift */
+            /** Update Gift */
             binding.viewQuizGift.gift = quizFormData.gift
 
-            /** Set Quiz Duration */
+            /** Update Quiz Duration */
 //            if(quizFormState is QuizFormStateUiModel.SetDuration) {
 //                val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
 //                if(timePickerBinding.puTimer.activeIndex != idx) {
@@ -272,8 +266,8 @@ class QuizFormView : ConstraintLayout {
             text = option.text
             textChoice = option.getTextChoice()
             textHint = if(option.isMandatory) context.getString(R.string.play_bro_quiz_hint_text, option.order + 1)
-            else context.getString(R.string.play_bro_quiz_hint_add_new_option)
-            maxLength = option.maxLength
+                        else context.getString(R.string.play_bro_quiz_hint_add_new_option)
+            maxLength = quizConfig.maxChoiceLength
             isCorrect = option.isSelected
 
             setFocus(option.isFocus)
@@ -282,16 +276,16 @@ class QuizFormView : ConstraintLayout {
         }
     }
 
-    sealed class Event {
-        object Back: Event()
-        object Next: Event()
-        data class TitleChanged(val title: String): Event()
-        data class OptionChanged(val order: Int, val text: String): Event()
-        data class SelectQuizOption(val order: Int): Event()
-        data class GiftChanged(val gift: String): Event()
-        data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event()
-        data class SelectDuration(val duration: Long): Event()
-        data class Submit(val duration: Long): Event()
+    sealed interface Event {
+        object Back: Event
+        object Next: Event
+        data class TitleChanged(val title: String): Event
+        data class OptionChanged(val order: Int, val text: String): Event
+        data class SelectQuizOption(val order: Int): Event
+        data class GiftChanged(val gift: String): Event
+        data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event
+        data class SelectDuration(val duration: Long): Event
+        data class Submit(val duration: Long): Event
     }
 
     companion object {
