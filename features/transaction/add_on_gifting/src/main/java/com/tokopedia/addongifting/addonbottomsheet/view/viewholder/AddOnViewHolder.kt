@@ -8,6 +8,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.addongifting.R
 import com.tokopedia.addongifting.addonbottomsheet.data.getaddonbyproduct.BasicInfoResponse
 import com.tokopedia.addongifting.addonbottomsheet.view.AddOnActionListener
@@ -41,9 +42,9 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
         with(viewBinding) {
             if (element.isTokoCabang) {
                 if (element.productCount > 1) {
-                    labelAddOnHeader.text = String.format(itemView.context.getString(R.string.add_on_label_header_toko_cabang_multiple_product), element.productCount)
+                    labelAddOnHeader.text = MethodChecker.fromHtml(String.format(itemView.context.getString(R.string.add_on_label_header_toko_cabang_multiple_product), element.productCount))
                 } else {
-                    labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header_toko_cabang_single_product)
+                    labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header)
                 }
             } else {
                 labelAddOnHeader.text = itemView.context.getString(R.string.add_on_label_header)
@@ -60,11 +61,7 @@ class AddOnViewHolder(private val viewBinding: ItemAddOnBinding, private val lis
                 labelAddOnDescription.gone()
             }
 
-            var addOnQuantityAndPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
-            if (!element.isTokoCabang && element.mainProductQuantity > 1) {
-                addOnQuantityAndPrice = "${element.addOnQty} x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()}"
-            }
-            labelAddOnQuantityAndPrice.text = addOnQuantityAndPrice
+            labelAddOnQuantityAndPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.addOnPrice, false).removeDecimalSuffix()
             labelAddOnName.setOnClickListener(getCheckboxClickListener())
             labelAddOnDescription.setOnClickListener(getCheckboxClickListener())
             labelAddOnQuantityAndPrice.setOnClickListener(getCheckboxClickListener())

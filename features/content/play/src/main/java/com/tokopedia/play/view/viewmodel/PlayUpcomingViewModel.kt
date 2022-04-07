@@ -79,38 +79,24 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private val _observableKolId = MutableLiveData<String>()
 
-    private val _partnerUiState = _partnerInfo.map {
-        PlayUpcomingPartnerUiState(it.name, it.status)
-    }.flowOn(dispatchers.computation)
-
     private val _upcomingInfoUiState = combine(
         _upcomingInfo, _upcomingState
     ) { info, state ->
         PlayUpcomingInfoUiState(
-            generalInfo = PlayUpcomingGeneralInfo(
-                title = info.title,
-                coverUrl = info.coverUrl,
-                startTime = info.startTime,
-                waitingDuration = info.refreshWaitingDuration,
-            ),
+            info = info,
             state = state
         )
     }.flowOn(dispatchers.computation)
 
-    private val _shareUiState = _channelDetail.map {
-        PlayUpcomingShareUiState(shouldShow = it.shareInfo.shouldShow)
-    }.flowOn(dispatchers.computation)
-
-
     val uiState: Flow<PlayUpcomingUiState> = combine(
-        _partnerUiState.distinctUntilChanged(),
+        _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _shareUiState.distinctUntilChanged(),
-    ) { partner, upcomingInfo, share ->
+        _channelDetail,
+    ) { partner, upcomingInfo, channelDetail ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
-            share = share
+            channel = channelDetail,
         )
     }.flowOn(dispatchers.computation)
 
@@ -224,7 +210,7 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickUpcomingButton -> handleClickUpcomingButton()
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
-            ClickPartnerNameUpcomingAction -> handleClickPartnerName()
+            is ClickPartnerNameUpcomingAction -> handleClickPartnerName(action.appLink)
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             CopyLinkUpcomingAction -> handleCopyLink()
             ClickShareUpcomingAction -> handleClickShareIcon()
@@ -340,18 +326,11 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickPartnerName() {
+    private fun handleClickPartnerName(appLink: String) {
         viewModelScope.launch {
             val partnerInfo = _partnerInfo.value
-
-            when (partnerInfo.type) {
-                PartnerType.Shop -> {
-                    playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
-                    _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString())))
-                }
-                PartnerType.Buyer -> _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString())))
-                else -> {}
-            }
+            if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
+            _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(appLink))
         }
     }
 
@@ -362,6 +341,8 @@ class PlayUpcomingViewModel @Inject constructor(
         val followStatus = _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable ?: return null
         val shouldFollow = if (shouldForceFollow) true else followStatus.followStatus == PartnerFollowableStatus.NotFollowed
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
+
+        _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
 
         viewModelScope.launchCatchError(block = {
             val isFollowing: Boolean = if(channelData.partnerInfo.type == PartnerType.Shop){
@@ -377,8 +358,9 @@ class PlayUpcomingViewModel @Inject constructor(
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
-        }) {}
-
+        }) {
+            _uiEvent.emit(PlayUpcomingUiEvent.ShowError(it))
+        }
         return followAction
     }
 

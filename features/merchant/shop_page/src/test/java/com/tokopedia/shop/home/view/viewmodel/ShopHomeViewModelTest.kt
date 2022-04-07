@@ -492,7 +492,7 @@ class ShopHomeViewModelTest {
                 productDetails = listOf(ShopHomeBundleProductUiModel()),
                 {},
                 onErrorAddToCart,
-                bundleQuantity = 1
+                productQuantity = 1
         )
 
         verify { onErrorAddToCart.invoke(any()) }
@@ -534,7 +534,7 @@ class ShopHomeViewModelTest {
                 productDetails = listOf(ShopHomeBundleProductUiModel()),
                 onFinishAddToCart = onFinishAddToCart,
                 {},
-                bundleQuantity = 1
+                productQuantity = 1
         )
 
         verify { onFinishAddToCart.invoke(any()) }
@@ -1090,7 +1090,7 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         mockTotalView,
-                        PlayWidgetPromoType.Default(""),
+                        PlayWidgetPromoType.Default("", false),
                         PlayWidgetReminderType.NotReminded,
                         PlayWidgetPartnerUiModel("", ""),
                         PlayWidgetVideoUiModel("", false, "", ""),
@@ -1179,7 +1179,7 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         mockTotalView,
-                        PlayWidgetPromoType.Default(""),
+                        PlayWidgetPromoType.Default("", false),
                         mockReminderType,
                         PlayWidgetPartnerUiModel("", ""),
                         PlayWidgetVideoUiModel("", false, "", ""),
@@ -1247,7 +1247,7 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         mockTotalView,
-                        PlayWidgetPromoType.Default(""),
+                        PlayWidgetPromoType.Default("", false),
                         mockReminderType,
                         PlayWidgetPartnerUiModel("", ""),
                         PlayWidgetVideoUiModel("", false, "", ""),

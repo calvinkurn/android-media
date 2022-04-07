@@ -20,6 +20,8 @@ import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressShareP
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
@@ -47,7 +49,9 @@ object ChooseAddressUtils {
                 localCache?.warehouse_id ?: "",
                 localCache?.warehouses ?: listOf(),
                 localCache?.service_type ?: "",
-                localCache?.version ?: DEFAULT_LCA_VERSION
+                localCache?.version ?: DEFAULT_LCA_VERSION,
+                localCache?.tokonow_last_update ?: ""
+
             )
         } else {
             if (isLoginUser(context)) {
@@ -101,12 +105,25 @@ object ChooseAddressUtils {
             if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
             if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
             if (latestChooseAddressData.version != localizingAddressStateData.version) validate = true
+            if (latestChooseAddressData.tokonow_last_update != localizingAddressStateData.tokonow_last_update) validate = true
+        }
+        return validate
+    }
+
+    fun isLocalizingTokonowHasUpdated(context: Context, localizingAddressStateData: LocalCacheModel): Boolean {
+        val latestChooseAddressData = getLocalizingAddressData(context)
+        var validate = false
+        if (latestChooseAddressData != null) {
+            if (latestChooseAddressData.shop_id != localizingAddressStateData.shop_id) validate = true
+            if (latestChooseAddressData.warehouse_id != localizingAddressStateData.warehouse_id) validate = true
+            if (latestChooseAddressData.warehouses != localizingAddressStateData.warehouses) validate = true
+            if (latestChooseAddressData.service_type != localizingAddressStateData.service_type) validate = true
         }
         return validate
     }
 
     fun setLocalizingAddressData(addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                 postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String): LocalCacheModel {
+                                 postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String, lastUpdate: String = ""): LocalCacheModel {
         return LocalCacheModel(
                 address_id = addressId,
                 city_id = cityId,
@@ -119,26 +136,67 @@ object ChooseAddressUtils {
                 warehouse_id = warehouseId,
                 warehouses = warehouses,
                 service_type = serviceType,
+                tokonow_last_update = lastUpdate,
                 version = LCA_VERSION
         )
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, addressId: String, cityId: String, districtId: String, lat: String, long: String, label: String,
-                                             postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
+                                             postalCode: String, shopId: String, warehouseId: String, warehouses: List<LocalWarehouseModel>, serviceType: String, lastUpdate: String = "") {
         val chooseAddressPref = ChooseAddressSharePref(context)
         val localData = setLocalizingAddressData(addressId = addressId, cityId = cityId, districtId = districtId, lat = lat, long = long, label = label, postalCode = postalCode, shopId = shopId, warehouseId = warehouseId, warehouses = warehouses, serviceType = serviceType)
-        chooseAddressPref.setLocalCache(localData)
+        if (lastUpdate.isEmpty()) {
+            val previousTokonowLastUpdateData = getLocalizingAddressData(context).tokonow_last_update
+            if (previousTokonowLastUpdateData.isNotEmpty()) {
+                chooseAddressPref.setLocalCache(localData.copy(tokonow_last_update = previousTokonowLastUpdateData))
+            } else {
+                chooseAddressPref.setLocalCache(localData)
+            }
+        } else {
+            chooseAddressPref.setLocalCache(localData)
+        }
     }
 
     fun updateLocalizingAddressDataFromOther(context: Context, localData: LocalCacheModel) {
         val chooseAddressPref = ChooseAddressSharePref(context)
-        chooseAddressPref.setLocalCache(localData)
+        if (localData.tokonow_last_update.isEmpty()) {
+            val previousTokonowLastUpdateData = getLocalizingAddressData(context).tokonow_last_update
+            if (previousTokonowLastUpdateData.isNotEmpty()) {
+                chooseAddressPref.setLocalCache(localData.copy(tokonow_last_update = previousTokonowLastUpdateData))
+            } else {
+                chooseAddressPref.setLocalCache(localData)
+            }
+        } else {
+            chooseAddressPref.setLocalCache(localData)
+        }
     }
 
     fun updateTokoNowData(context: Context, warehouseId: String, shopId: String, warehouses: List<LocalWarehouseModel>, serviceType: String) {
         val chooseAddressPref = ChooseAddressSharePref(context)
         val newData = getLocalizingAddressData(context).copy(warehouse_id = warehouseId, shop_id = shopId, warehouses = warehouses, service_type = serviceType, version = LCA_VERSION)
         chooseAddressPref.setLocalCache(newData)
+    }
+
+    fun refreshTokonowData(
+        context: Context,
+        lastUpdate: String,
+        warehouseId: String,
+        shopId: String,
+        warehouses: List<LocalWarehouseModel>,
+        serviceType: String
+    ) : Boolean {
+        val chooseAddressPref = ChooseAddressSharePref(context)
+        val newData = getLocalizingAddressData(context).copy(
+            tokonow_last_update = lastUpdate,
+            warehouse_id = warehouseId,
+            shop_id = shopId,
+            warehouses = warehouses,
+            service_type = serviceType,
+            version = LCA_VERSION
+        )
+        val shouldRefresh = isLocalizingTokonowHasUpdated(context, newData)
+        chooseAddressPref.setLocalCache(newData)
+        return shouldRefresh
     }
 
     /**
@@ -201,6 +259,12 @@ object ChooseAddressUtils {
             isGpsOn = isLocationEnabled(it) && isGpsOn
         }
         return isGpsOn
+    }
+
+
+    fun isRefreshTokonowRollenceActive() : Boolean {
+        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.LCA_REFRESH, "")
+        return rollenceValue == RollenceKey.LCA_REFRESH
     }
 
     @JvmStatic

@@ -108,6 +108,7 @@ class ChooseAddressMapper @Inject constructor() {
             warehouseId = response.warehouseId
             warehouses = mapWarehouses(response.warehouses)
             serviceType = response.serviceType
+            lastUpdate = response.tokonowLastUpdate
         }
     }
 

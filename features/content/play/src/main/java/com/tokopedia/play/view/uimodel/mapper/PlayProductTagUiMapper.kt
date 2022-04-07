@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.Section
 import com.tokopedia.play.di.PlayScope
@@ -33,7 +34,10 @@ class PlayProductTagUiMapper @Inject constructor() {
             gradients = input.background.gradientList ?: emptyList(),
             imageUrl = input.background.imageUrl
         ),
+        reminder = mapReminder(hasReminder = input.id.toLongOrZero() != 0L && (ProductSectionType.getSectionValue(sectionType = input.sectionType) == ProductSectionType.Upcoming), campaignId = input.id.toLongOrZero())
     )
+
+    private fun mapReminder(hasReminder: Boolean, campaignId: Long) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off(campaignId) else PlayUpcomingBellStatus.Unknown
 
     private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(

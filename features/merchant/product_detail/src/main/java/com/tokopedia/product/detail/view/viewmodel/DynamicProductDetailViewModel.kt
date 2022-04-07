@@ -6,6 +6,7 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
@@ -52,6 +53,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateTokoNowRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
@@ -65,6 +67,7 @@ import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_ERROR
+import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
@@ -80,7 +83,6 @@ import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.detail.view.util.ProductRecommendationMapper
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -512,11 +514,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 //Create tradein params
                 assignTradeinParams()
 
-                //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout)
+                //Remove all component that can be remove by using p1 data
+                //So we don't have to inflate to UI
+                val processedList = DynamicProductDetailMapper.removeUnusedComponent(
+                        getDynamicProductInfoP1,
+                        variantData,
+                        isShopOwner(),
+                        it.listOfLayout
+                )
 
                 //Render initial data
-                _productLayout.postValue(it.listOfLayout.asSuccess())
+                _productLayout.postValue(processedList.asSuccess())
             }
             // Then update the following, it will not throw anything when error
             getProductP2(affiliateUniqueString, uuid, urlQuery)
@@ -552,7 +560,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             addToCartUseCase.get().createObservable(requestParams).toBlocking().single()
         }
 
-        EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ADD_TO_CART)
+        EmbraceMonitoring.stopMoments(EmbraceKey.KEY_ACT_ADD_TO_CART)
         if (result.isStatusError()) {
             val errorMessage = result.getAtcErrorMessage() ?: ""
             if (errorMessage.isNotBlank()) {
@@ -641,41 +649,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }) {
             _topAdsImageView.postValue(it.asFail())
         }
-    }
-
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>) {
-        val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
-        val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
-        val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
-        val isVariant = getDynamicProductInfoP1?.isProductVariant() ?: false
-        val isVariantEmpty = variantData == null || variantData?.hasChildren == false
-
-        val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
-                it
-            } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
-                it
-            } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
-                it
-            } else if (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) {
-                it
-            } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
-                it
-            } else if (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner())) {
-                it
-            } else {
-                null
-            }
-        }
-
-        if (removedData.isNotEmpty())
-            initialLayoutData.removeAll(removedData)
     }
 
     fun toggleFavorite(shopID: String, isNplFollowerType: Boolean = false) {
@@ -870,6 +843,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
                         isSuccess = false,
                         errorMessage = it.message,
+                )
+                ProductTopAdsLogger.logServer(
+                    tag = TOPADS_PDP_GENERAL_ERROR,
+                    throwable = it,
+                    productId = productId
                 )
                 //nothing to do since fire and forget
             }

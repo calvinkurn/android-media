@@ -42,6 +42,9 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
     private val analytic: PlayBroadcastAnalytic,
 ) : BottomSheetDialogFragment() {
 
+    private val channelId
+        get() = arguments?.getString(ARG_CHANNEL_ID) ?: ""
+
     private val leaderboardAdapter = PlayInteractiveLeaderboardAdapter(object : PlayInteractiveLeaderboardViewHolder.Listener{
         override fun onChatWinnerButtonClicked(winner: PlayWinnerUiModel, position: Int) {
             analytic.onClickChatWinnerIcon(
@@ -95,7 +98,6 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupView(view)
-
         observeLeaderboardInfo()
     }
 
@@ -119,7 +121,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
                 }
 
             btnRefresh.setOnClickListener {
-                parentViewModel.getLeaderboardData()
+                parentViewModel.getLeaderboardData(channelId)
             }
 
             rvLeaderboard.adapter = leaderboardAdapter
@@ -202,5 +204,7 @@ class PlayInteractiveLeaderBoardBottomSheet @Inject constructor(
         private const val TAG = "PlayInteractiveLeaderBoardBottomSheet"
         private const val HEIGHT_MULTIPLIER = 0.67f
         private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
+
+        const val ARG_CHANNEL_ID = "ARG_CHANNEL_ID"
     }
 }

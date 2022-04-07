@@ -145,11 +145,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val departureTerm = args.getString(EXTRA_FLIGHT_DEPARTURE_TERM, "")
             val returnTerm = args.getString(EXTRA_FLIGHT_ARRIVAL_TERM, "")
             val searchParam: FlightSearchPassDataModel = args.getParcelable(EXTRA_SEARCH_PASS_DATA)
-                    ?: FlightSearchPassDataModel()
+                ?: FlightSearchPassDataModel()
             val flightPriceModel: FlightPriceModel = args.getParcelable(EXTRA_PRICE)
-                    ?: FlightPriceModel()
+                ?: FlightPriceModel()
 
-            bookingViewModel.setSearchParam(departureId, returnId, departureTerm, returnTerm, searchParam, flightPriceModel)
+            bookingViewModel.setSearchParam(
+                departureId,
+                returnId,
+                departureTerm,
+                returnTerm,
+                searchParam,
+                flightPriceModel
+            )
         }
 
         bookingViewModel.fetchTickerData()
@@ -167,16 +174,31 @@ class FlightBookingFragment : BaseDaggerFragment() {
         outState.putString(EXTRA_CART_ID, bookingViewModel.getCartId())
         outState.putParcelable(EXTRA_FLIGHT_BOOKING_PARAM, bookingViewModel.getFlightBookingParam())
         outState.putString(EXTRA_ORDER_DUE, orderDueTimeStampString)
-        outState.putParcelable(EXTRA_CONTACT_DATA, FlightContactData(
-            binding?.widgetTravellerInfo?.getContactName() ?: "",
+        outState.putParcelable(
+            EXTRA_CONTACT_DATA, FlightContactData(
+                binding?.widgetTravellerInfo?.getContactName() ?: "",
                 binding?.widgetTravellerInfo?.getContactEmail() ?: "",
                 binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
                 binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "",
-                binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0))
-        if (bookingViewModel.getPassengerModels().isNotEmpty()) outState.putParcelableArrayList(EXTRA_PASSENGER_MODELS, bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>)
-        if (bookingViewModel.getPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_PRICE_DATA, bookingViewModel.getPriceData() as ArrayList<out Parcelable>)
-        if (bookingViewModel.getOtherPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_OTHER_PRICE_DATA, bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>)
-        if (bookingViewModel.getAmenityPriceData().isNotEmpty()) outState.putParcelableArrayList(EXTRA_AMENITY_PRICE_DATA, bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>)
+                binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0
+            )
+        )
+        if (bookingViewModel.getPassengerModels().isNotEmpty()) outState.putParcelableArrayList(
+            EXTRA_PASSENGER_MODELS,
+            bookingViewModel.getPassengerModels() as ArrayList<out Parcelable>
+        )
+        if (bookingViewModel.getPriceData().isNotEmpty()) outState.putParcelableArrayList(
+            EXTRA_PRICE_DATA,
+            bookingViewModel.getPriceData() as ArrayList<out Parcelable>
+        )
+        if (bookingViewModel.getOtherPriceData().isNotEmpty()) outState.putParcelableArrayList(
+            EXTRA_OTHER_PRICE_DATA,
+            bookingViewModel.getOtherPriceData() as ArrayList<out Parcelable>
+        )
+        if (bookingViewModel.getAmenityPriceData().isNotEmpty()) outState.putParcelableArrayList(
+            EXTRA_AMENITY_PRICE_DATA,
+            bookingViewModel.getAmenityPriceData() as ArrayList<out Parcelable>
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -193,8 +215,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     setUpTimer(it.data.orderDueTimeStamp)
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::refreshCart)
+                    showErrorDialog(
+                        mapThrowableToFlightError(
+                            it.throwable.message
+                                ?: ""
+                        ), ::refreshCart
+                    )
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog()
@@ -236,8 +262,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     navigateToTopPay(it.data)
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::checkOutCart)
+                    showErrorDialog(
+                        mapThrowableToFlightError(
+                            it.throwable.message
+                                ?: ""
+                        )
+                    ) {
+                        checkOutCart(totalCartPrice)
+                    }
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -251,13 +283,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
                             showRepriceTag(cart)
                             renderRepricePrice(cart)
                         } else {
-                            showCheckBookingDetailPopUp()
+                            showCheckBookingDetailPopUp(cart.configuration.price)
                         }
                     }
                 }
                 is Fail -> {
-                    showErrorDialog(mapThrowableToFlightError(it.throwable.message
-                            ?: ""), ::verifyCart)
+                    showErrorDialog(
+                        mapThrowableToFlightError(
+                            it.throwable.message
+                                ?: ""
+                        ), ::verifyCart
+                    )
                 }
             }
             if (bookingViewModel.isStillLoading) showLoadingDialog() else hideShimmering()
@@ -278,10 +314,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
             }
         })
 
-        bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner,{
-            if(it == EMPTY_VOUCHER_STATE){
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
-            }else{
+        bookingViewModel.errorCancelVoucher.observe(viewLifecycleOwner, {
+            if (it == EMPTY_VOUCHER_STATE) {
+                bookingViewModel.updatePromoData(
+                    PromoData(
+                        state = TickerCheckoutView.State.EMPTY,
+                        title = "",
+                        description = "",
+                        promoCode = ""
+                    )
+                )
+            } else {
                 renderErrorToast(it)
             }
         })
@@ -291,17 +334,24 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun setUpView() {
         hidePriceDetail()
 
-        binding?.widgetTravellerInfo?.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+        binding?.widgetTravellerInfo?.setListener(object :
+            TravellerInfoWidget.TravellerInfoWidgetListener {
             override fun onClickEdit() {
                 context?.let {
-                    startActivityForResult(TravelContactDataActivity.getCallingIntent(it,
-                            TravelContactData(binding?.widgetTravellerInfo?.getContactName() ?: "",
-                                    binding?.widgetTravellerInfo?.getContactEmail() ?: "",
-                                    binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
-                                    binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0,
-                                    binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: ""),
-                            TravelContactDataActivity.FLIGHT),
-                            REQUEST_CODE_CONTACT_FORM)
+                    startActivityForResult(
+                        TravelContactDataActivity.getCallingIntent(
+                            it,
+                            TravelContactData(
+                                binding?.widgetTravellerInfo?.getContactName() ?: "",
+                                binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+                                binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+                                binding?.widgetTravellerInfo?.getContactPhoneCode() ?: 0,
+                                binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: ""
+                            ),
+                            TravelContactDataActivity.FLIGHT
+                        ),
+                        REQUEST_CODE_CONTACT_FORM
+                    )
                 }
             }
         })
@@ -310,9 +360,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
         binding?.switchTravellerAsPassenger?.setOnCheckedChangeListener { _, on ->
             if (needToDoChangesOnFirstPassenger) {
                 if (on) {
-                    val firstPassenger = bookingViewModel.onTravellerAsPassenger(binding?.widgetTravellerInfo?.getContactName() ?: "")
+                    val firstPassenger = bookingViewModel.onTravellerAsPassenger(
+                        binding?.widgetTravellerInfo?.getContactName() ?: ""
+                    )
                     passengerAsTraveller = false
-                    if (isFirstTime) navigateToPassengerInfoDetail(firstPassenger, getRequestId(), firstPassenger.passengerFirstName)
+                    if (isFirstTime) navigateToPassengerInfoDetail(
+                        firstPassenger,
+                        getRequestId(),
+                        firstPassenger.passengerFirstName
+                    )
                     isFirstTime = true
                 } else {
                     bookingViewModel.resetFirstPassenger()
@@ -327,8 +383,9 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun mapThrowableToFlightError(message: String): FlightError {
         return try {
             if (message == FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL.value.toString() ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY.value.toString() ||
-                    message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY.value.toString()) {
+                message == FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY.value.toString() ||
+                message == FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY.value.toString()
+            ) {
                 val error = FlightError(message)
                 error.head = getString(R.string.flight_booking_general_error_title)
                 error.message = getString(R.string.flight_booking_general_error_subtitle)
@@ -346,35 +403,42 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun sendAddToCartTracking() {
-        flightAnalytics.eventAddToCart(bookingViewModel.getSearchParam().flightClass,
-                bookingViewModel.getDepartureJourney(),
-                bookingViewModel.getReturnJourney(),
-                bookingViewModel.getFlightPriceModel().comboKey,
-                userSession.userId)
+        flightAnalytics.eventAddToCart(
+            bookingViewModel.getSearchParam().flightClass,
+            bookingViewModel.getDepartureJourney(),
+            bookingViewModel.getReturnJourney(),
+            bookingViewModel.getFlightPriceModel().comboKey,
+            userSession.userId
+        )
     }
 
     private fun sendCheckOutTracking(pid: String) {
         flightAnalytics.eventCheckoutClick(
-                bookingViewModel.getDepartureJourney(),
-                bookingViewModel.getReturnJourney(),
-                bookingViewModel.getSearchParam(),
-                bookingViewModel.getFlightPriceModel().comboKey,
-                userSession.userId)
+            bookingViewModel.getDepartureJourney(),
+            bookingViewModel.getReturnJourney(),
+            bookingViewModel.getSearchParam(),
+            bookingViewModel.getFlightPriceModel().comboKey,
+            userSession.userId
+        )
 
         flightAnalytics.eventBranchCheckoutFlight(
-                "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
-                "",
-                bookingViewModel.getInvoiceId(), pid,
-                bookingViewModel.getUserId(),
-                totalCartPrice.toString()
+            "${bookingViewModel.getDepartureJourney()?.departureAirportCity}-${bookingViewModel.getDepartureJourney()?.arrivalAirportCity}",
+            "",
+            bookingViewModel.getInvoiceId(), pid,
+            bookingViewModel.getUserId(),
+            totalCartPrice.toString()
         )
     }
 
     private fun renderErrorToast(resId: Int) {
         view?.let {
-            Toaster.build(it, getString(resId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.flight_booking_action_okay),
-                    View.OnClickListener { /* do nothing */ }).show()
+            Toaster.build(
+                it,
+                getString(resId),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.flight_booking_action_okay)
+            ).show()
         }
     }
 
@@ -385,17 +449,23 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun showRepriceTag(cart: FlightVerify.FlightVerifyCart) {
         val bottomSheet = BottomSheetUnify()
-        val viewBottomSheetDialog = View.inflate(context, R.layout.layout_flight_booking_reprice_bottom_sheet, null)
+        val viewBottomSheetDialog =
+            View.inflate(context, R.layout.layout_flight_booking_reprice_bottom_sheet, null)
         bottomSheet.setTitle(getString(R.string.flight_booking_reprice_bottom_sheet_title))
         bottomSheet.setChild(viewBottomSheetDialog)
         bottomSheet.setCloseClickListener {
             bottomSheet.dismiss()
         }
-        val continueToPayButton = viewBottomSheetDialog.findViewById(R.id.button_continue_pay) as UnifyButton
-        val findNewTicketButton = viewBottomSheetDialog.findViewById(R.id.button_find_new_ticket) as UnifyButton
-        val oldPriceTextView = viewBottomSheetDialog.findViewById(R.id.tv_before_reprice_amount) as AppCompatTextView
-        val newPriceTextView = viewBottomSheetDialog.findViewById(R.id.tv_after_reprice_amount) as AppCompatTextView
-        val tickerBookingPromo = viewBottomSheetDialog.findViewById(R.id.ticker_booking_promo) as Ticker
+        val continueToPayButton =
+            viewBottomSheetDialog.findViewById(R.id.button_continue_pay) as UnifyButton
+        val findNewTicketButton =
+            viewBottomSheetDialog.findViewById(R.id.button_find_new_ticket) as UnifyButton
+        val oldPriceTextView =
+            viewBottomSheetDialog.findViewById(R.id.tv_before_reprice_amount) as AppCompatTextView
+        val newPriceTextView =
+            viewBottomSheetDialog.findViewById(R.id.tv_after_reprice_amount) as AppCompatTextView
+        val tickerBookingPromo =
+            viewBottomSheetDialog.findViewById(R.id.ticker_booking_promo) as Ticker
 
         oldPriceTextView.text = cart.oldPrice
         newPriceTextView.text = FlightCurrencyFormatUtil.convertToIdrPrice(cart.configuration.price)
@@ -406,14 +476,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 tickerBookingPromo.tickerTitle = ""
             } else {
                 tickerBookingPromo.tickerType = Ticker.TYPE_WARNING
-                tickerBookingPromo.tickerTitle = getString(R.string.flight_booking_reprice_ticker_warning_title)
+                tickerBookingPromo.tickerTitle =
+                    getString(R.string.flight_booking_reprice_ticker_warning_title)
             }
             tickerBookingPromo.setTextDescription(cart.promoEligibility.message)
             tickerBookingPromo.tickerShape = Ticker.SHAPE_LOOSE
         } else tickerBookingPromo.visibility = View.GONE
 
         continueToPayButton.setOnClickListener {
-            showCheckBookingDetailPopUp()
+            showCheckBookingDetailPopUp(cart.configuration.price)
             bottomSheet.dismiss()
         }
 
@@ -427,9 +498,13 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showCheckBookingDetailPopUp() {
+    private fun showCheckBookingDetailPopUp(price: Int) {
         if (activity != null) {
-            val dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            val dialog = DialogUnify(
+                activity as FlightBookingActivity,
+                DialogUnify.HORIZONTAL_ACTION,
+                DialogUnify.NO_IMAGE
+            )
             dialog.setTitle(getString(R.string.flight_booking_popup_checkout_confirmation_title))
             dialog.setDescription(getString(R.string.flight_booking_popup_checkout_confirmation_description))
             dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_proceed_checkout))
@@ -437,7 +512,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
-                checkOutCart()
+                checkOutCart(price)
             }
 
             dialog.setSecondaryCTAClickListener { dialog.dismiss() }
@@ -466,7 +541,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun refreshCart() {
         showLoadingDialog()
-        bookingViewModel.getCart(getGetCartQuery(), bookingViewModel.getCartId(), isRefreshCart = true)
+        bookingViewModel.getCart(
+            getGetCartQuery(),
+            bookingViewModel.getCartId(),
+            isRefreshCart = true
+        )
     }
 
     private fun renderData(cart: FlightCartViewEntity) {
@@ -477,7 +556,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
         binding?.rvFlightBookingRouteSummary?.adapter = flightRouteAdapter
         flightRouteAdapter.listener = object : FlightJourneyAdapter.ViewHolder.ActionListener {
             override fun onClickRouteDetail(id: String, position: Int) {
-                val route = if (position == 0) bookingViewModel.getDepartureJourney() else bookingViewModel.getReturnJourney()
+                val route =
+                    if (position == 0) bookingViewModel.getDepartureJourney() else bookingViewModel.getReturnJourney()
                 route?.let { navigateToDetailTrip(it) }
             }
         }
@@ -487,11 +567,18 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     fun navigateToDetailTrip(departureTrip: FlightDetailModel) {
-        val flightDetailBottomSheet = FlightDetailBottomSheet.getInstance()
-        flightDetailBottomSheet.setDetailModel(departureTrip)
-        flightDetailBottomSheet.setShowSubmitButton(false)
-        flightDetailBottomSheet.setShowListener { flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
-        flightDetailBottomSheet.show(requireFragmentManager(), FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET)
+        FlightDetailBottomSheet.getInstance().apply {
+            setDetailModel(departureTrip)
+            setShowSubmitButton(false)
+            setShowListener {
+                bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }.also {
+            it.show(
+                childFragmentManager,
+                FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET
+            )
+        }
     }
 
     private fun renderInsuranceData(insurances: List<FlightCart.Insurance>) {
@@ -501,15 +588,24 @@ class FlightBookingFragment : BaseDaggerFragment() {
             binding?.rvInsuranceList?.layoutManager = layoutManager
             binding?.rvInsuranceList?.setHasFixedSize(true)
             binding?.rvInsuranceList?.adapter = flightInsuranceAdapter
-            flightInsuranceAdapter.listener = object : FlightInsuranceAdapter.ViewHolder.ActionListener {
-                override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
-                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, tncTitle, tncUrl)
-                }
+            flightInsuranceAdapter.listener =
+                object : FlightInsuranceAdapter.ViewHolder.ActionListener {
+                    override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
+                        RouteManager.route(
+                            activity,
+                            ApplinkConstInternalGlobal.WEBVIEW_TITLE,
+                            tncTitle,
+                            tncUrl
+                        )
+                    }
 
-                override fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean) {
-                    bookingViewModel.onInsuranceChanges(insurance, checked)
+                    override fun onInsuranceChecked(
+                        insurance: FlightCart.Insurance,
+                        checked: Boolean
+                    ) {
+                        bookingViewModel.onInsuranceChanges(insurance, checked)
+                    }
                 }
-            }
         }
         flightInsuranceAdapter.updateList(insurances)
     }
@@ -549,27 +645,38 @@ class FlightBookingFragment : BaseDaggerFragment() {
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             binding?.rvPassengersInfo?.layoutManager = layoutManager
             binding?.rvPassengersInfo?.adapter = flightPassengerAdapter
-            flightPassengerAdapter.listener = object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
-                override fun onClickEditPassengerListener(passenger: FlightBookingPassengerModel) {
-                    passengerAsTraveller = binding?.switchTravellerAsPassenger?.isChecked == true
-                    navigateToPassengerInfoDetail(passenger, getRequestId())
+            flightPassengerAdapter.listener =
+                object : FlightBookingPassengerAdapter.PassengerViewHolderListener {
+                    override fun onClickEditPassengerListener(passenger: FlightBookingPassengerModel) {
+                        passengerAsTraveller =
+                            binding?.switchTravellerAsPassenger?.isChecked == true
+                        navigateToPassengerInfoDetail(passenger, getRequestId())
+                    }
                 }
-            }
         }
         flightPassengerAdapter.updateList(passengers)
 
         if (passengers.isNotEmpty() && binding?.switchTravellerAsPassenger?.isChecked == true) {
             val firstPassenger = passengers.first()
-            val fullName = "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
+            val fullName =
+                "${firstPassenger.passengerFirstName} ${firstPassenger.passengerLastName}"
             if (!fullName.equals(binding?.widgetTravellerInfo?.getContactName(), true) &&
-                    !firstPassenger.passengerFirstName.equals(binding?.widgetTravellerInfo?.getContactName(), true)) {
+                !firstPassenger.passengerFirstName.equals(
+                    binding?.widgetTravellerInfo?.getContactName(),
+                    true
+                )
+            ) {
                 needToDoChangesOnFirstPassenger = false
                 binding?.switchTravellerAsPassenger?.isChecked = false
             }
         }
     }
 
-    private fun navigateToPassengerInfoDetail(model: FlightBookingPassengerModel, requestId: String, autofillName: String = "") {
+    private fun navigateToPassengerInfoDetail(
+        model: FlightBookingPassengerModel,
+        requestId: String,
+        autofillName: String = ""
+    ) {
         val departureDate = if (bookingViewModel.getSearchParam().isOneWay) {
             bookingViewModel.getSearchParam().departureDate
         } else {
@@ -577,33 +684,38 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
 
         startActivityForResult(
-                FlightBookingPassengerActivity.getCallingIntent(
-                        activity as Activity,
-                        bookingViewModel.getDepartureId(),
-                        bookingViewModel.getReturnId(),
-                        model,
-                        bookingViewModel.getLuggageViewModels(),
-                        bookingViewModel.getMealViewModels(),
-                        bookingViewModel.getMandatoryDOB(),
-                        bookingViewModel.getMandatoryIdentificationNumber(),
-                        departureDate,
-                        requestId,
-                        bookingViewModel.flightIsDomestic(),
-                        autofillName
-                ),
-                REQUEST_CODE_PASSENGER
+            FlightBookingPassengerActivity.getCallingIntent(
+                activity as Activity,
+                bookingViewModel.getDepartureId(),
+                bookingViewModel.getReturnId(),
+                model,
+                bookingViewModel.getLuggageViewModels(),
+                bookingViewModel.getMealViewModels(),
+                bookingViewModel.getMandatoryDOB(),
+                bookingViewModel.getMandatoryIdentificationNumber(),
+                departureDate,
+                requestId,
+                bookingViewModel.flightIsDomestic(),
+                autofillName
+            ),
+            REQUEST_CODE_PASSENGER
         )
     }
 
-    private fun getRequestId(): String = if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(getDepartureId())
+    private fun getRequestId(): String =
+        if (getReturnId().isNotEmpty()) generateIdEmpotency("${getDepartureId()}_${getReturnId()}") else generateIdEmpotency(
+            getDepartureId()
+        )
 
     private fun generateIdEmpotency(requestId: String): String {
         var userId = Math.random().toString()
         userId += userSession.userId
         val timeMillis = System.currentTimeMillis().toString()
         val token = FlightRequestUtil.md5(timeMillis)
-        return userId + String.format(getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format),
-                requestId, if (token.isEmpty()) timeMillis else token)
+        return userId + String.format(
+            getString(com.tokopedia.flight.R.string.flight_booking_id_empotency_format),
+            requestId, if (token.isEmpty()) timeMillis else token
+        )
     }
 
     private fun renderProfileData(profileInfo: ProfileInfo) {
@@ -624,7 +736,11 @@ class FlightBookingFragment : BaseDaggerFragment() {
         getComponent(FlightBookingComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         splitCompat()
         binding = FragmentFlightBookingV3Binding.inflate(inflater, container, false)
         return binding?.root
@@ -647,7 +763,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun renderUiFromBundle(args: Bundle) {
         val flightBookingParam = args.getParcelable(EXTRA_FLIGHT_BOOKING_PARAM)
-                ?: FlightBookingModel()
+            ?: FlightBookingModel()
         bookingViewModel.setFlightBookingParam(flightBookingParam)
 
         val cartId = args.getString(EXTRA_CART_ID, "")
@@ -660,17 +776,17 @@ class FlightBookingFragment : BaseDaggerFragment() {
         renderProfileData(profileData)
 
         val passengerModels = args.getParcelableArrayList(EXTRA_PASSENGER_MODELS)
-                ?: listOf<FlightBookingPassengerModel>()
+            ?: listOf<FlightBookingPassengerModel>()
         bookingViewModel.setPassengerModels(passengerModels)
 
         val priceData = args.getParcelableArrayList(EXTRA_PRICE_DATA)
-                ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setPriceData(priceData)
         val otherPriceData = args.getParcelableArrayList(EXTRA_OTHER_PRICE_DATA)
-                ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setOtherPriceData(otherPriceData)
         val amenityPriceData = args.getParcelableArrayList(EXTRA_AMENITY_PRICE_DATA)
-                ?: listOf<FlightCart.PriceDetail>()
+            ?: listOf<FlightCart.PriceDetail>()
         bookingViewModel.setAmenityPriceData(amenityPriceData)
 
         refreshCart()
@@ -709,21 +825,23 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
     private fun verifyCart() {
         bookingViewModel.validateDataAndVerifyCart(
-                getVerifyCartQuery(),
-                totalPrice = totalCartPrice,
-                contactName = binding?.widgetTravellerInfo?.getContactName() ?: "",
-                contactEmail = binding?.widgetTravellerInfo?.getContactEmail() ?: "",
-                contactPhone = binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
-                contactCountry = binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "",
-                checkVoucherQuery = getCheckVoucherQuery(),
-                addToCartQuery = getAtcQuery(),
-                idempotencyKey = getRequestId(),
-                getCartQuery = getGetCartQuery())
+            getVerifyCartQuery(),
+            totalPrice = totalCartPrice,
+            contactName = binding?.widgetTravellerInfo?.getContactName() ?: "",
+            contactEmail = binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+            contactPhone = binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+            contactCountry = binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "",
+            checkVoucherQuery = getCheckVoucherQuery(),
+            addToCartQuery = getAtcQuery(),
+            idempotencyKey = getRequestId(),
+            getCartQuery = getGetCartQuery()
+        )
     }
 
-    private fun checkOutCart() {
+    private fun checkOutCart(totalPrice: Int) {
+        totalCartPrice = totalPrice
         showLoadingDialog()
-        bookingViewModel.checkOutCart(getCheckoutQuery(), totalCartPrice)
+        bookingViewModel.checkOutCart(getCheckoutQuery(), totalPrice)
     }
 
     private fun renderAutoApplyPromo(flightVoucher: FlightPromoViewEntity) {
@@ -740,47 +858,71 @@ class FlightBookingFragment : BaseDaggerFragment() {
         }
         binding?.flightPromoTickerView?.title = flightVoucher.promoData.title
         binding?.flightPromoTickerView?.desc = flightVoucher.promoData.description
-        binding?.flightPromoTickerView?.actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
-            override fun onResetPromoDiscount() {
-                isCouponChanged = true
-                bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
-            }
+        binding?.flightPromoTickerView?.actionListener =
+            object : TickerPromoStackingCheckoutView.ActionListener {
+                override fun onResetPromoDiscount() {
+                    isCouponChanged = true
+                    bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
+                }
 
-            override fun onClickUsePromo() {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
-                intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
-                intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
-                startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
-            }
-
-            override fun onDisablePromoDiscount() {
-                bookingViewModel.updatePromoData(PromoData(state = TickerCheckoutView.State.EMPTY, title = "", description = "", promoCode = ""))
-                bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
-            }
-
-            override fun onClickDetailPromo() {
-                val intent: Intent
-                val promoCode = flightVoucher.promoData.promoCode
-                if (!promoCode.isEmpty()) {
-                    val requestCode: Int
-                    if (flightVoucher.promoData.typePromo == PromoData.TYPE_VOUCHER) {
-                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_FLIGHT)
-                        intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
-                        intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
-                        requestCode = COUPON_EXTRA_LIST_ACTIVITY_RESULT
-                    } else {
-                        intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT)
-                        intent.putExtra(COUPON_EXTRA_IS_USE, true)
-                        intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
-                        requestCode = COUPON_EXTRA_DETAIL_ACTIVITY_RESULT
-                    }
+                override fun onClickUsePromo() {
+                    val intent = RouteManager.getIntent(
+                        activity,
+                        ApplinkConstInternalPromo.PROMO_LIST_FLIGHT
+                    )
+                    intent.putExtra(COUPON_EXTRA_COUPON_ACTIVE, flightVoucher.isCouponActive)
                     intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
-                    startActivityForResult(intent, requestCode)
-                } else {
-                    Toast.makeText(activity, com.tokopedia.promocheckout.common.R.string.promo_none_applied, Toast.LENGTH_SHORT).show()
+                    startActivityForResult(intent, COUPON_EXTRA_LIST_ACTIVITY_RESULT)
+                }
+
+                override fun onDisablePromoDiscount() {
+                    bookingViewModel.updatePromoData(
+                        PromoData(
+                            state = TickerCheckoutView.State.EMPTY,
+                            title = "",
+                            description = "",
+                            promoCode = ""
+                        )
+                    )
+                    bookingViewModel.onCancelAppliedVoucher(getCancelVoucherQuery())
+                }
+
+                override fun onClickDetailPromo() {
+                    val intent: Intent
+                    val promoCode = flightVoucher.promoData.promoCode
+                    if (!promoCode.isEmpty()) {
+                        val requestCode: Int
+                        if (flightVoucher.promoData.typePromo == PromoData.TYPE_VOUCHER) {
+                            intent = RouteManager.getIntent(
+                                activity,
+                                ApplinkConstInternalPromo.PROMO_LIST_FLIGHT
+                            )
+                            intent.putExtra(COUPON_EXTRA_PROMO_CODE, promoCode)
+                            intent.putExtra(
+                                COUPON_EXTRA_COUPON_ACTIVE,
+                                flightVoucher.isCouponActive
+                            )
+                            requestCode = COUPON_EXTRA_LIST_ACTIVITY_RESULT
+                        } else {
+                            intent = RouteManager.getIntent(
+                                activity,
+                                ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT
+                            )
+                            intent.putExtra(COUPON_EXTRA_IS_USE, true)
+                            intent.putExtra(COUPON_EXTRA_COUPON_CODE, promoCode)
+                            requestCode = COUPON_EXTRA_DETAIL_ACTIVITY_RESULT
+                        }
+                        intent.putExtra(COUPON_EXTRA_CART_ID, bookingViewModel.getCartId())
+                        startActivityForResult(intent, requestCode)
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            com.tokopedia.promocheckout.common.R.string.promo_none_applied,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
-        }
     }
 
     private fun hideVoucherContainer() {
@@ -794,10 +936,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun randomLoadingSubtitle(): List<String> {
-        val list = listOf(getString(R.string.flight_booking_loading_text_1),
-                getString(R.string.flight_booking_loading_text_2),
-                getString(R.string.flight_booking_loading_text_3),
-                getString(R.string.flight_booking_loading_text_4))
+        val list = listOf(
+            getString(R.string.flight_booking_loading_text_1),
+            getString(R.string.flight_booking_loading_text_2),
+            getString(R.string.flight_booking_loading_text_3),
+            getString(R.string.flight_booking_loading_text_4)
+        )
         return list.shuffled()
     }
 
@@ -846,10 +990,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showErrorFullPage(e: FlightError) {
         val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(e.id.toInt())
         binding?.layoutFullPageError?.root?.visibility = View.VISIBLE
-        binding?.layoutFullPageError?.ivErrorPage?.setImageResource(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
+        binding?.layoutFullPageError?.ivErrorPage?.setImageResource(
+            FlightBookingErrorCodeMapper.getErrorIcon(
+                errorCode
+            )
+        )
         binding?.layoutFullPageError?.tvErrorTitle?.text = e.head
         binding?.layoutFullPageError?.tvErrorSubtitle?.text = e.message
-        binding?.layoutFullPageError?.buttonErrorAction?.text = getString(R.string.flight_booking_action_refind_ticket)
+        binding?.layoutFullPageError?.buttonErrorAction?.text =
+            getString(R.string.flight_booking_action_refind_ticket)
         binding?.layoutFullPageError?.buttonErrorAction?.setOnClickListener { finishActivityToSearchPage() }
     }
 
@@ -857,105 +1006,156 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun showErrorDialog(flightError: FlightError, action: () -> Unit) {
         if (activity != null) {
             if (flightError.id.isNotEmpty()) {
-                val errorCode = FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
-                if (errorCode == FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME)
-                    renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
-                else if (errorCode == FlightErrorConstant.FLIGHT_SOLD_OUT) {
-                    showErrorFullPage(flightError)
-                } else {
-                    lateinit var dialog: DialogUnify
-                    when (errorCode) {
-                        FlightErrorConstant.INVALID_JSON -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_refind_ticket))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                showLoadingDialog()
-                                finishActivityToSearchPage()
-                            }
-                        }
-                        FlightErrorConstant.FAILED_ADD_FACILITY -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_proceed_checkout))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                proceedCheckoutWithoutLuggage()
-                            }
-                            dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_cancel))
-                            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                        }
-                        FlightErrorConstant.ERROR_PROMO_CODE -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_promo_code))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                navigateToPromoPage()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_again))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                navigateToFlightOrderList()
-                            }
-                            dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
-                            dialog.setSecondaryCTAClickListener {
-                                dialog.dismiss()
-                                finishActivityToHomepage()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                finishActivityToHomepage()
-                            }
-                            dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_okay))
-                            dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                        }
-                        FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                refreshCart()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                verifyCart()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                checkOutCart()
-                            }
-                        }
-                        FlightErrorConstant.FLIGHT_INVALID_USER -> {
-                            dialog = DialogUnify(activity as FlightBookingActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
-                            dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_change_name))
-                            dialog.setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                            }
-                        }
+                val errorCode =
+                    FlightBookingErrorCodeMapper.mapToFlightErrorCode(flightError.id.toInt())
+                when (errorCode) {
+                    FlightErrorConstant.FLIGHT_DUPLICATE_USER_NAME -> renderErrorToast(R.string.flight_duplicate_user_error_toaster_text)
+                    FlightErrorConstant.FLIGHT_SOLD_OUT -> {
+                        showErrorFullPage(flightError)
                     }
-                    dialog.setCancelable(false)
-                    dialog.setOverlayClose(false)
-                    if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(getString(R.string.flight_booking_general_error_title))
-                    if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(getString(R.string.flight_booking_general_error_subtitle))
-                    dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
-                    dialog.show()
+                    else -> {
+                        lateinit var dialog: DialogUnify
+                        when (errorCode) {
+                            FlightErrorConstant.INVALID_JSON -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_refind_ticket))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    showLoadingDialog()
+                                    finishActivityToSearchPage()
+                                }
+                            }
+                            FlightErrorConstant.FAILED_ADD_FACILITY -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.VERTICAL_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_proceed_checkout))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    proceedCheckoutWithoutLuggage()
+                                }
+                                dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_cancel))
+                                dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                            }
+                            FlightErrorConstant.ERROR_PROMO_CODE -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_promo_code))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    navigateToPromoPage()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_DUPLICATE_BOOKING -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.VERTICAL_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_check_again))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    navigateToFlightOrderList()
+                                }
+                                dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
+                                dialog.setSecondaryCTAClickListener {
+                                    dialog.dismiss()
+                                    finishActivityToHomepage()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_STILL_IN_PROCESS -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.VERTICAL_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_book_other_ticket))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    finishActivityToHomepage()
+                                }
+                                dialog.setSecondaryCTAText(getString(R.string.flight_booking_action_okay))
+                                dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                            }
+                            FlightErrorConstant.FLIGHT_ERROR_GET_CART_EXCEED_MAX_RETRY -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    refreshCart()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_ERROR_VERIFY_EXCEED_MAX_RETRY -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    verifyCart()
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_ERROR_ON_CHECKOUT_GENERAL -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_retry))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                    checkOutCart(totalCartPrice)
+                                }
+                            }
+                            FlightErrorConstant.FLIGHT_INVALID_USER -> {
+                                dialog = DialogUnify(
+                                    activity as FlightBookingActivity,
+                                    DialogUnify.SINGLE_ACTION,
+                                    DialogUnify.WITH_ICON
+                                )
+                                dialog.setPrimaryCTAText(getString(R.string.flight_booking_action_change_name))
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                }
+                            }
+                            else -> {}
+                        }
+                        dialog.setCancelable(false)
+                        dialog.setOverlayClose(false)
+                        if (flightError.head.isNotEmpty()) dialog.setTitle(flightError.head) else dialog.setTitle(
+                            getString(R.string.flight_booking_general_error_title)
+                        )
+                        if (flightError.message.isNotEmpty()) dialog.setDescription(flightError.message) else dialog.setTitle(
+                            getString(R.string.flight_booking_general_error_subtitle)
+                        )
+                        dialog.setImageDrawable(FlightBookingErrorCodeMapper.getErrorIcon(errorCode))
+                        dialog.show()
+                    }
                 }
             } else {
-                NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(activity, null), getString(com.tokopedia.globalerror.R.string.error500Desc) ,getString(com.tokopedia.globalerror.R.string.error500Action), com.tokopedia.globalerror.R.drawable.unify_globalerrors_500) {
+                NetworkErrorHelper.showEmptyState(
+                    activity,
+                    view,
+                    ErrorHandler.getErrorMessage(activity, null),
+                    getString(com.tokopedia.globalerror.R.string.error500Desc),
+                    getString(com.tokopedia.globalerror.R.string.error500Action),
+                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
+                ) {
                     NetworkErrorHelper.hideEmptyState(view)
                     showLoadingDialog()
                     action()
@@ -967,13 +1167,14 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun proceedCheckoutWithoutLuggage() {
         showLoadingDialog()
         bookingViewModel.proceedCheckoutWithoutLuggage(
-                getCheckVoucherQuery(),
-                getVerifyCartQuery(),
-                flightPriceAdapter.getTotalPriceWithoutAmenities(),
-                binding?.widgetTravellerInfo?.getContactName() ?:"",
-                binding?.widgetTravellerInfo?.getContactEmail() ?: "",
-                binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
-                binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: "")
+            getCheckVoucherQuery(),
+            getVerifyCartQuery(),
+            flightPriceAdapter.getTotalPriceWithoutAmenities(),
+            binding?.widgetTravellerInfo?.getContactName() ?: "",
+            binding?.widgetTravellerInfo?.getContactEmail() ?: "",
+            binding?.widgetTravellerInfo?.getContactPhoneNum() ?: "",
+            binding?.widgetTravellerInfo?.getContactPhoneCountry() ?: ""
+        )
     }
 
     private fun navigateToPromoPage() {
@@ -991,7 +1192,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToOtpPage() {
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE), REQUEST_CODE_OTP)
+        startActivityForResult(
+            RouteManager.getIntent(
+                context,
+                ApplinkConstInternalGlobal.ADD_PHONE
+            ), REQUEST_CODE_OTP
+        )
     }
 
     private fun showLoadingDialog() {
@@ -1004,7 +1210,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
                     loadingDialog.setCancelable(false)
                     loadingDialog.setOverlayClose(false)
 
-                    val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
+                    val loadingView =
+                        View.inflate(context, R.layout.layout_flight_booking_loading, null)
                     loadingDialog.setChild(loadingView)
                     loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
                     loadingText.text = list[0]
@@ -1020,14 +1227,22 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun finishActivityToHomepage() {
         showLoadingDialog()
         activity?.let {
-            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.EXPIRED_JOURNEY.value)
+            FlightFlowUtil.actionSetResultAndClose(
+                it,
+                it.intent,
+                FlightFlowConstant.EXPIRED_JOURNEY.value
+            )
         }
     }
 
     private fun finishActivityToSearchPage() {
         showLoadingDialog()
         activity?.let {
-            FlightFlowUtil.actionSetResultAndClose(it, it.intent, FlightFlowConstant.PRICE_CHANGE.value)
+            FlightFlowUtil.actionSetResultAndClose(
+                it,
+                it.intent,
+                FlightFlowConstant.PRICE_CHANGE.value
+            )
         }
     }
 
@@ -1037,10 +1252,15 @@ class FlightBookingFragment : BaseDaggerFragment() {
         when (requestCode) {
             REQUEST_CODE_CONTACT_FORM -> if (resultCode == Activity.RESULT_OK) {
                 data?.let {
-                    val contactData: TravelContactData = it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA) ?: TravelContactData()
+                    val contactData: TravelContactData =
+                        it.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                            ?: TravelContactData()
                     binding?.widgetTravellerInfo?.setContactName(contactData.name)
                     binding?.widgetTravellerInfo?.setContactEmail(contactData.email)
-                    binding?.widgetTravellerInfo?.setContactPhoneNum(contactData.phoneCode, contactData.phone)
+                    binding?.widgetTravellerInfo?.setContactPhoneNum(
+                        contactData.phoneCode,
+                        contactData.phone
+                    )
                     binding?.widgetTravellerInfo?.setContactPhoneCountry(contactData.phoneCountry)
                 }
             }
@@ -1049,7 +1269,10 @@ class FlightBookingFragment : BaseDaggerFragment() {
                 when (resultCode) {
                     Activity.RESULT_OK -> {
                         data?.let {
-                            val passengerViewModel = it.getParcelableExtra<FlightBookingPassengerModel>(FlightBookingPassengerActivity.EXTRA_PASSENGER) ?: FlightBookingPassengerModel()
+                            val passengerViewModel =
+                                it.getParcelableExtra<FlightBookingPassengerModel>(
+                                    FlightBookingPassengerActivity.EXTRA_PASSENGER
+                                ) ?: FlightBookingPassengerModel()
                             bookingViewModel.onPassengerResultReceived(passengerViewModel)
                         }
                     }
@@ -1064,7 +1287,8 @@ class FlightBookingFragment : BaseDaggerFragment() {
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> if (resultCode == RESULT_OK) {
                 data?.let {
                     var promoData = PromoData()
-                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData = data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA) ?: PromoData()
+                    if (it.hasExtra(EXTRA_PROMO_DATA)) promoData =
+                        data.getParcelableExtra(COUPON_EXTRA_PROMO_DATA) ?: PromoData()
                     when (promoData.state) {
                         TickerCheckoutView.State.EMPTY -> {
                             promoData.promoCode = ""
@@ -1109,12 +1333,16 @@ class FlightBookingFragment : BaseDaggerFragment() {
     private fun getCheckVoucherQuery(): String = FlightBookingQuery.QUERY_CHECK_VOUCHER
     private fun getVerifyCartQuery(): String = FlightBookingQuery.QUERY_VERIFY_CART
     private fun getCheckoutQuery(): String = FlightBookingQuery.QUERY_CHECKOUT_CART
-    private fun getProfileQuery(): String = GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
-    private fun getCancelVoucherQuery(): String = PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
+    private fun getProfileQuery(): String =
+        GraphqlHelper.loadRawString(resources, com.tokopedia.sessioncommon.R.raw.query_profile)
+
+    private fun getCancelVoucherQuery(): String =
+        PromoCheckoutCommonQueryConst.QUERY_FLIGHT_CANCEL_VOUCHER
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         binding?.flightBookingTicker?.let {
-            TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel,
+            TravelTickerUtils.buildUnifyTravelTicker(
+                travelTickerModel,
                 it
             )
         }
@@ -1173,10 +1401,12 @@ class FlightBookingFragment : BaseDaggerFragment() {
             return FlightBookingFragment()
         }
 
-        fun newInstance(searchPassDataModel: FlightSearchPassDataModel,
-                        departureId: String, returnId: String,
-                        departureTerm: String, returnTerm: String,
-                        priceModel: FlightPriceModel): FlightBookingFragment {
+        fun newInstance(
+            searchPassDataModel: FlightSearchPassDataModel,
+            departureId: String, returnId: String,
+            departureTerm: String, returnTerm: String,
+            priceModel: FlightPriceModel
+        ): FlightBookingFragment {
             val fragment = FlightBookingFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_SEARCH_PASS_DATA, searchPassDataModel)
