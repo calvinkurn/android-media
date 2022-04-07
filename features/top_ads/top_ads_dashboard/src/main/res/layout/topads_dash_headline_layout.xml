@@ -93,10 +93,16 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
+                <View
+                    android:id="@+id/noTabSpace"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/unify_space_4"/>
+
                 <com.tokopedia.unifycomponents.TabsUnify
                     android:id="@+id/headlineTabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:tabGravity="fill" />
 
             </com.google.android.material.appbar.AppBarLayout>

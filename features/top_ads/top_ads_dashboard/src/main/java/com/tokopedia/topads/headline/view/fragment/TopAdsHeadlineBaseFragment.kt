@@ -10,6 +10,8 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -61,6 +63,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private lateinit var headlineTabLayout: TabsUnify
     private var groupPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
     private var isDeletedTabEnabled: Boolean = false
+    private var noTabSpace:View? = null
 
 
     companion object {
@@ -80,6 +83,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     override fun setUpView(view: View) {
         headlineAdsViePager = view.findViewById(R.id.headlineAdsViePager)
         headlineTabLayout = view.findViewById(R.id.headlineTabLayout)
+        noTabSpace = view.findViewById(R.id.noTabSpace)
     }
 
     override fun getChildScreenName(): String {
@@ -174,6 +178,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     private fun addDeletedTab(list: ArrayList<FragmentTabItem>) {
         if (isDeletedTabEnabled){
+            headlineTabLayout.show()
+            noTabSpace?.hide()
             headlineTabLayout.customTabMode = TabLayout.MODE_FIXED
             headlineTabLayout.addNewTab(TopAdsDashboardConstant.DIHAPUS)
             list.add(
