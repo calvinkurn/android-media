@@ -197,7 +197,6 @@
 -dontwarn com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 -dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
--dontwarn com.googlecode.mp4parser
 
 #fix textfieldunify get field by reflection
 -keepclassmembers class com.google.android.material.textfield.TextInputLayout {
