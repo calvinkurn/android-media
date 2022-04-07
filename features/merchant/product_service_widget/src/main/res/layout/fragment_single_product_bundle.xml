@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".single.presentation.fragment.SingleProductBundleFragment">
+    android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bundle_list_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bundle_preorder"
@@ -20,20 +16,36 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/spacing_lvl4"
             android:textColor="@color/Unify_N700_68"
+            app:layout_constraintEnd_toStartOf="@+id/rv_bundle_items"
+            app:layout_constraintStart_toEndOf="@+id/rv_bundle_items"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_bundle_items"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:clipToPadding="false" />
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toBottomOf="@+id/du_bottom"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bundle_preorder"
+            app:layout_constraintVertical_bias="0.0"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <View
+            android:id="@+id/du_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing_lvl4"
+            app:layout_constraintTop_toTopOf="@id/total_amount" />
 
         <com.tokopedia.totalamount.TotalAmount
             android:id="@+id/total_amount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_minus16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:unify_total_amount_cta_text="@string/action_buy_bundle"
             app:unify_total_amount_enable_shadow="true"
             app:unify_total_amount_enable_title_chevron="false"
@@ -42,7 +54,7 @@
             app:unify_total_amount_title_suffix_text="@string/single_bundle_default_price"
             app:unify_total_amount_title_text=" " />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/ge_bundle_page"
@@ -50,10 +62,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         app:globalerrors_type="PAGE_FULL"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
