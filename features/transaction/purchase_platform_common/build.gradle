@@ -36,8 +36,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
 
-//    implementation rootProject.ext.firebase.coreUpdateAndReloadCartUseCase.kt
-
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.principles
