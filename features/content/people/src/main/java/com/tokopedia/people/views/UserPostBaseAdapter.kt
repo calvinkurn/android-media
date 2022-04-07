@@ -153,11 +153,11 @@ open class UserPostBaseAdapter(
     }
 
     override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-        TODO("Not yet implemented")
+        RouteManager.route(view.context, item.appLink)
     }
 
     override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-        TODO("Not yet implemented")
+
     }
 
 }
