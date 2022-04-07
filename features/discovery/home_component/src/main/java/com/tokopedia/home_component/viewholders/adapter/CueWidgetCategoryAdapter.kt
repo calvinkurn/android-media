@@ -79,7 +79,11 @@ class CueWidgetCategoryAdapter(
             imageCategory.clipToOutline = true
             categoryName.text = grid.name
             root.setOnClickListener {
-                cueWidgetCategoryListener.onCueClick(grid)
+                cueWidgetCategoryListener.onCueClick(grid,
+                    channel,
+                    verticalPosition,
+                    position,
+                    widgetGridType)
             }
             root.addOnImpressionListener(grid) {
                 cueWidgetCategoryListener.onCueImpressed(

@@ -1,5 +1,5 @@
 {
-  "readme": "OS merchant voucher view, click shop, click product, and view all",
+  "readme": "Cue Widget Category impression and click",
   "mode": "exact",
   "query": [
     {
@@ -20,6 +20,27 @@
       ],
       "userId": ".*",
       "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click on cue widget banner",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .* - .*",
+      "businessUnit": "home & browse",
+      "campaignCode": ".*",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - cue widget banner - .* - .*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
     }
   ]
 }

@@ -7,7 +7,13 @@ import com.tokopedia.home_component.model.ChannelModel
  * Created by dhaba
  */
 interface CueWidgetCategoryListener {
-    fun onCueClick(channelGrid: ChannelGrid)
+    fun onCueClick(
+        channelGrid: ChannelGrid,
+        channelModel: ChannelModel,
+        positionVerticalWidget: Int,
+        positionHorizontal: Int,
+        widgetGridType: String
+    )
     fun onCueImpressed(
         channelGrid: ChannelGrid,
         channelModel: ChannelModel,

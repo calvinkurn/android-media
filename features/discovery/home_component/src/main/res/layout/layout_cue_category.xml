@@ -6,10 +6,12 @@
     android:layout_height="wrap_content"
     app:card_type="border">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:foreground="?attr/selectableItemBackground"
+        >
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/image_category"
@@ -21,7 +23,6 @@
             android:background="@drawable/bg_rounded_top_image_cue_widget"
             android:contentDescription="@string/content_desc_cue_widget"
             android:scaleType="centerCrop"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unify_image_corner_radius="0" />
 
@@ -48,6 +49,6 @@
                 tools:text="asdjfhl h ajlskdf alsdjkfh ljkasdfh" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify2>
