@@ -1,12 +1,12 @@
 package com.tokopedia.play.broadcaster.analytic
 
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
+import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.cover.PlayBroSetupCoverAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.menu.PlayBroSetupMenuAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.product.PlayBroSetupProductAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.schedule.PlayBroScheduleAnalytic
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalytic
-import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
-import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,19 +20,21 @@ import com.tokopedia.user.session.UserSessionInterface
  * Channel Scheduling https://mynakama.tokopedia.com/datatracker/product/requestdetail/247
  */
 class PlayBroadcastAnalytic(
-        private val userSession: UserSessionInterface,
-        private val contentTaggingAnalytic: PlayBroadcastContentTaggingAnalytic,
-        private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
-        private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
-        private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
-        private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
-        private val setupProductAnalytic: PlayBroSetupProductAnalytic,
-) : PlayBroadcastContentTaggingAnalytic by contentTaggingAnalytic,
-    PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
+    private val userSession: UserSessionInterface,
+    private val interactiveAnalytic: PlayBroadcastInteractiveAnalytic,
+    private val setupMenuAnalytic: PlayBroSetupMenuAnalytic,
+    private val setupTitleAnalytic: PlayBroSetupTitleAnalytic,
+    private val setupCoverAnalytic: PlayBroSetupCoverAnalytic,
+    private val setupProductAnalytic: PlayBroSetupProductAnalytic,
+    private val summaryAnalytic: PlayBroadcastSummaryAnalytic,
+    private val scheduleAnalytic: PlayBroScheduleAnalytic,
+) : PlayBroadcastInteractiveAnalytic by interactiveAnalytic,
     PlayBroSetupMenuAnalytic by setupMenuAnalytic,
     PlayBroSetupTitleAnalytic by setupTitleAnalytic,
     PlayBroSetupCoverAnalytic by setupCoverAnalytic,
-    PlayBroSetupProductAnalytic by setupProductAnalytic {
+    PlayBroSetupProductAnalytic by setupProductAnalytic,
+    PlayBroadcastSummaryAnalytic by summaryAnalytic,
+    PlayBroScheduleAnalytic by scheduleAnalytic {
 
     /**
      * View Camera and Microphone Permission Page
@@ -49,144 +51,11 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * Click Camera Switch on On Boarding Page
-     */
-    fun clickSwitchCameraOnSetupPage() {
-        clickGeneralEvent(
-                action = "camera onboarding"
-        )
-    }
-
-    /**
-     * Click Terms and Condition Ticker
-     */
-    fun clickTnC() {
-        clickGeneralEvent(
-                action = "syarat dan ketentuan"
-        )
-    }
-
-    /**
-     * View Terms and Condition Ticker
-     */
-    fun viewTnC() {
-        viewGeneralEvent(
-                action = "syarat dan ketentuan"
-        )
-    }
-
-    /**
-     * Click `Mulai persiapannya` on Onboarding Page
-     */
-    fun clickPrepareBroadcast() {
-        clickGeneralEvent(
-                action = "mulai persiapannya"
-        )
-    }
-
-    /**
      * Click `X` (exit from On Boarding Page)
      */
     fun clickCloseOnSetupPage() {
         clickGeneralEvent(
                 action = "close onboarding"
-        )
-    }
-
-    /**
-     * View Product Tagging Bottomsheet
-     */
-    fun viewProductBottomSheet() {
-        viewGeneralEvent(
-                action = "product tagging bottomsheet"
-        )
-    }
-
-    /**
-     * Click Search Bar
-     */
-    fun clickSearchBar(query: String) {
-        clickGeneralEvent(
-                action = "search bar",
-                label = "- $query"
-        )
-    }
-
-    /**
-     * Click Etalase Card
-     */
-    fun clickEtalase(etalaseName: String) {
-        clickGeneralEvent(
-                action = "etalase card",
-                label = "- $etalaseName"
-        )
-    }
-
-    /**
-     * Click Product Card (Check - Uncheck) - (Etalase - Search - Selected)
-     */
-    fun clickProductCard(productId: String, selected: Boolean) {
-        val checkOrUncheck = if (selected) "check" else "uncheck"
-        clickGeneralEvent(
-                action = "product card",
-                label = "- $checkOrUncheck - $productId"
-        )
-    }
-
-    /**
-     * Click Selected Product Icon (Etalase - Search)
-     */
-    fun clickSelectedProductIcon() {
-        clickGeneralEvent(
-                action = "selected product icon"
-        )
-    }
-
-    /**
-     * Click `Lanjutkan` on Product Tagging
-     */
-    fun clickContinueOnProductBottomSheet() {
-        clickGeneralEvent(
-                action = "lanjutkan on product tag"
-        )
-    }
-
-    /**
-     * View Search Page
-     */
-    fun viewSearchProductResult() {
-        viewGeneralEvent(
-                action = "search bar"
-        )
-    }
-
-    /**
-     * Click Product Name Suggestion
-     */
-    fun clickProductNameSuggestion(query: String, productId: String) {
-        clickGeneralEvent(
-                action = "product name suggested",
-                label = "- $query - $productId"
-        )
-    }
-
-    /**
-     * View Error Message (Fail to fetch data) - Etalase
-     */
-    fun viewEtalaseError(errorMessage: String) {
-        viewCustomGeneralEvent(
-                action = "error state on etalase",
-                label = "- $errorMessage"
-        )
-    }
-
-    /**
-     * View Error Message (Fail to fetch data) - Products
-     */
-    fun viewErrorProduct(errorMessage: String) {
-        viewCustomGeneralEvent(
-                action = "error state on product",
-                label = "- $errorMessage"
         )
     }
 
@@ -205,15 +74,6 @@ class PlayBroadcastAnalytic(
     fun clickAddCover() {
         clickGeneralEvent(
                 action = "add cover"
-        )
-    }
-
-    /**
-     * Click Add Title
-     */
-    fun clickAddTitle() {
-        clickGeneralEvent(
-                action = "add title"
         )
     }
 
@@ -330,104 +190,6 @@ class PlayBroadcastAnalytic(
     fun clickContinueOnAddCoverAndTitlePage() {
         clickGeneralEvent(
                 action = "lanjutkan on add cover"
-        )
-    }
-
-    /**
-     * View Preparation Page
-     */
-    fun openFinalSetupPage() {
-        sendScreen("/$KEY_TRACK_CATEGORY - preparation page - ${userSession.shopId}") // it is empty, from the doc row 41
-    }
-
-    /**
-     * Click Channel Title on Preparation Page
-     */
-    fun clickEditTitleOnFinalSetupPage() {
-        clickGeneralEvent(
-                action = "title live streaming"
-        )
-    }
-
-    /**
-     * Click Edit Product Tag/Pencil Icon on Preparation Page
-     */
-    fun clickEditProductTaggingOnFinalSetupPage() {
-        clickGeneralEvent(
-                action = "edit product tagging"
-        )
-    }
-
-    /**
-     * Click Edit Cover on Preparation Page Cover Edit
-     */
-    fun clickEditCoverOnFinalSetupPage() {
-        clickGeneralEvent(
-                action = "edit cover"
-        )
-    }
-
-    /**
-     * Click Share Link on Preparation Page
-     */
-    fun clickShareIconOnFinalSetupPage() {
-        clickGeneralEvent(
-                action = "share link on preparation"
-        )
-    }
-
-    /**
-     * Click Camera Switch on Preparation Page
-     */
-    fun clickSwitchCameraOnFinalSetupPage() {
-        clickGeneralEvent(
-                action = "switch camera on preparation page"
-        )
-    }
-
-    /**
-     * Click `Mulai Live Streaming` on Preparation Page
-     */
-    fun clickStartStreamingOnFinalSetupPage() {
-        clickGeneralEvent(
-                action = "mulai live streaming"
-        )
-    }
-
-    /**
-     * Click 'Batalkan' on Count Down
-     */
-    fun clickCancelOnCountDown(channelId: String, titleChannel: String) {
-        clickGeneralEvent(
-            action = "batalkan livestream",
-            label = "- $channelId - $titleChannel"
-        )
-    }
-
-    /**
-     * Click `Simpan` on Preparation Page Title Edit
-     */
-    fun clickSubmitOnEditTitleBottomSheet() {
-        clickGeneralEvent(
-                action = "simpan"
-        )
-    }
-
-    /**
-     * Click `Pilih ulang` on Preparation Page Product Tagging Edit Bottomsheet
-     */
-    fun clickChooseOverOnEditProductBottomSheet() {
-        clickGeneralEvent(
-                action = "pilih ulang product"
-        )
-    }
-
-    /**
-     * Click `Simpan` on Preparation Page Product Tagging Edit Bottomsheet
-     */
-    fun clickSubmitOnEditProductBottomSheet() {
-        clickGeneralEvent(
-                action = "simpan on product tag"
         )
     }
 
@@ -609,13 +371,6 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * View Report Page
-     */
-    fun openReportScreen(channelId: String) {
-        sendScreen("/$KEY_TRACK_CATEGORY - report summary - ${userSession.shopId} - $channelId")
-    }
-
-    /**
      * View Error Message on Report Page
      */
     fun viewErrorOnReportPage(channelId: String, titleChannel: String, errorMessage: String) {
@@ -626,115 +381,11 @@ class PlayBroadcastAnalytic(
     }
 
     /**
-     * Click save vod on Report Page
-     */
-    fun clickSaveVodOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "save vod",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Click Delete vod on Report Page
-     */
-    fun clickDeleteVodOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "delete vod",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * View confirm on pop up delete on Report Page
-     */
-    fun viewConfirmDeleteOnReportPage(channelId: String) {
-        viewGeneralEvent(
-                "confirm on pop up delete",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Click Delete on pop up delete on Report Page
-     */
-    fun clickDeleteOnPopupOnReportPage(channelId: String) {
-        clickGeneralEvent(
-                "delete on pop up delete",
-                "- $channelId"
-        )
-    }
-
-    /**
-     * Seller click pencil icon channel schedule
-     */
-    fun clickAddEditScheduleOnFinalSetupPage(isEdit: Boolean) {
-        clickGeneralEvent(
-                "${if (isEdit) "edit" else "add"} schedule"
-        )
-    }
-
-    /**
      * Seller click save channel schedule
      */
     fun clickSaveScheduleOnFinalSetupPage() {
         clickGeneralEvent(
                 "simpan jadwal"
-        )
-    }
-
-    /**
-     * Seller view bottom sheet channel schedule
-     */
-    fun viewBottomSheetScheduleOnFinalSetupPage() {
-        viewGeneralEvent(
-                "bottom sheet schedule"
-        )
-    }
-
-    /**
-     * Seller click delete (trash icon) channel schedule
-     */
-    fun clickDeleteScheduleOnFinalSetupPage() {
-        clickGeneralEvent(
-                "icon delete schedule"
-        )
-    }
-
-    /**
-     * Seller click delete channel schedule
-     */
-    fun clickDeleteScheduleOnConfirmDeleteDialog() {
-        clickGeneralEvent(
-                "delete on pop up message"
-        )
-    }
-
-    /**
-     * Seller view pop up confirmation delete channel schedule
-     */
-    fun viewDialogConfirmDeleteOnFinalSetupPage() {
-        viewGeneralEvent(
-                "pop up delete confirmation"
-        )
-    }
-
-    /**
-     * Seller click start live on pop up live before scheduled date
-     */
-    fun clickStartLiveOnBeforeScheduledDialog() {
-        clickGeneralEvent(
-                "mulai live streaming"
-        )
-    }
-
-
-    /**
-     * Seller view pop up live before scheduled date
-     */
-    fun viewDialogConfirmStartLiveBeforeScheduledOnFinalSetupPage() {
-        viewGeneralEvent(
-                "pop up message before start live"
         )
     }
 

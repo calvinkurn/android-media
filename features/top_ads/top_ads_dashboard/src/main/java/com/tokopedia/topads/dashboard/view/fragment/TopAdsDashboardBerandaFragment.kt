@@ -216,11 +216,11 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
 
     private fun onSummaryItemClicked(selectedItems: Set<SummaryBeranda>) {
         if (selectedItems.isEmpty()) {
-            binding.layoutRingkasan.graphLayout.hide()
+            binding.layoutRingkasan.graphLayoutBeranda.hide()
             return
         }
-        if (!binding.layoutRingkasan.graphLayout.isVisible) {
-            binding.layoutRingkasan.graphLayout.show()
+        if (!binding.layoutRingkasan.graphLayoutBeranda.isVisible) {
+            binding.layoutRingkasan.graphLayoutBeranda.show()
         }
         val items = selectedItems.map {
             TopAdsMultiLineGraphFragment.MultiLineGraph(it.id, it.selectedColor)
@@ -231,7 +231,7 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private fun initializeGraph() {
         parentFragmentManager
             .beginTransaction()
-            .replace(R.id.graph_layout, graphLayoutFragment, "")
+            .replace(R.id.graph_layout_beranda, graphLayoutFragment, "")
             .commit()
     }
 
