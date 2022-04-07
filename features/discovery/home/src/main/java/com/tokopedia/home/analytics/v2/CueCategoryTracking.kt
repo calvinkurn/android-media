@@ -15,8 +15,9 @@ object CueCategoryTracking : BaseTrackerConst() {
             const val PROMOTION_ID_IMPRESSED_FORMAT = "%s_%s_%s_%s"
             const val DEFAULT_VALUE = ""
             const val CUE_WIDGET_BANNER = "cue widget banner"
-            const val PROMOTION_NAME_IMPRESSED_FORMAT = "/ - p%s - %s - %s"
+            const val PROMOTION_NAME_IMPRESSED_FORMAT = "/ - p%s - %s - %s - %s"
             const val CREATIVE_NAME = "category"
+
         }
     }
 

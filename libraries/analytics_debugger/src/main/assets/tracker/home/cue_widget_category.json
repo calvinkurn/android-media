@@ -1,0 +1,25 @@
+{
+  "readme": "OS merchant voucher view, click shop, click product, and view all",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "impression on cue widget banner",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "promotions": [
+        {
+          "creative_name": "category",
+          "creative_slot": ".*",
+          "item_id": ".*_.*_.*_.*",
+          "item_name": "/ - p.* - cue widget banner - .* - .*",
+          "creative_url": ""
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    }
+  ]
+}
