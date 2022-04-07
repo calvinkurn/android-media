@@ -55,10 +55,14 @@ class QuizOptionView : ConstraintLayout {
             setRawInputType(InputType.TYPE_CLASS_TEXT)
 
             afterTextChanged {
-                mTextOnChangedListener?.invoke(order, it)
+                if(flagTriggerTextChange)
+                    mTextOnChangedListener?.invoke(order, it)
+                else flagTriggerTextChange = true
             }
         }
     }
+
+    var flagTriggerTextChange = true
 
     var order: Int = -1
 
@@ -132,6 +136,8 @@ class QuizOptionView : ConstraintLayout {
         set(value) {
             needChange(binding.etQuizOption.text.toString(), value) {
                 field = value
+
+                flagTriggerTextChange = false
                 binding.etQuizOption.setText(value)
                 binding.etQuizOption.setSelection(value.length)
             }
@@ -145,17 +151,22 @@ class QuizOptionView : ConstraintLayout {
         }
     }
 
-    fun showCoachmark() {
-        coachMark.showCoachMark(
-            arrayListOf(
-                CoachMark2Item(
-                    binding.flQuizOption,
-                    "",
-                    context.getString(R.string.play_bro_select_quiz_option_coachmark),
-                    CoachMark2.POSITION_TOP
+    fun showCoachmark(isShow: Boolean) {
+        if(isShow) {
+            coachMark.showCoachMark(
+                arrayListOf(
+                    CoachMark2Item(
+                        binding.flQuizOption,
+                        "",
+                        context.getString(R.string.play_bro_select_quiz_option_coachmark),
+                        CoachMark2.POSITION_TOP
+                    )
                 )
             )
-        )
+        }
+        else {
+            coachMark.dismissCoachMark()
+        }
     }
 
     fun setOnTextChanged(listener: (Int, String) -> Unit) {
