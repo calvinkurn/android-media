@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.car
 import android.app.Application
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
@@ -50,6 +51,13 @@ class CarouselErrorLoadViewModelTest {
     }
 
     @Test
+    fun `test for getParentComponentPosition`(){
+        mockkObject(Utils)
+        assert(viewModel.getParentComponentPosition() == Utils.getParentPosition(componentsItem))
+        unmockkObject(Utils)
+    }
+
+    @Test
     fun `test for productCardUseCase`() {
         val viewModel: CarouselErrorLoadViewModel =
                 spyk(CarouselErrorLoadViewModel(application, componentsItem, 99))
@@ -70,33 +78,49 @@ class CarouselErrorLoadViewModelTest {
     }
 
     @Test
-    fun `test for loadData`(){
+    fun `test for loadData`() {
+        viewModel.shopCardUseCase = shopCardUseCase
         every { componentsItem.parentComponentName } returns ComponentNames.ShopCardView.componentName
-        runBlocking {
-            coEvery {
-                shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-            viewModel.loadData()
-            TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+        viewModel.loadData()
+        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
 
-//            coEvery {
-//                shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint) } returns true
-//            viewModel.loadData()
-//            TestCase.assertEquals(viewModel.syncData.value, true)
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+        viewModel.loadData()
+        TestCase.assertEquals(viewModel.syncData.value, false)
+
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.loadData()
+        TestCase.assertEquals(viewModel.syncData.value, true)
 
 
-            every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
-            coEvery {
-                productCardUseCase.getProductCardsUseCase(
-                        componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-            viewModel.loadData()
-            TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
-//
-//            coEvery {
-//                productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint) } returns true
-//            viewModel.loadData()
-//            TestCase.assertEquals(viewModel.syncData.value, true)
+        viewModel.productCardUseCase = productCardUseCase
+        every { componentsItem.parentComponentName } returns ComponentNames.ProductCardCarousel.componentName
+        coEvery {
+            productCardUseCase.getCarouselPaginatedData(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+        viewModel.loadData()
+        TestCase.assertEquals(viewModel.getShowLoaderStatus().value, false)
 
-        }
+        coEvery {
+            productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+        viewModel.loadData()
+        TestCase.assertEquals(viewModel.syncData.value , false)
+
+        coEvery {
+            productCardUseCase.getCarouselPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.loadData()
+        TestCase.assertEquals(viewModel.syncData.value, true)
+
     }
 
 }

@@ -1,15 +1,13 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints
 
 import android.app.Application
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.textcomponent.TextComponentViewModel
-import io.mockk.MockKAnnotations
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
+import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -22,8 +20,8 @@ class TokopointsItemViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
     private val componentsItem: ComponentsItem = mockk(relaxed = true)
-    private val dataItem: DataItem = mockk(relaxed = true)
     private val application: Application = mockk()
+    private var context: Context = mockk()
 
     private val viewModel: TokopointsItemViewModel by lazy {
         spyk(TokopointsItemViewModel(application, componentsItem, 99))
@@ -48,12 +46,8 @@ class TokopointsItemViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
         viewModel.onAttachToViewHolder()
-        TestCase.assertEquals(viewModel.getDataItemValue().value == componentsItem.data?.firstOrNull(), true)
+        TestCase.assertEquals(viewModel.getDataItemValue().value?.slug == componentsItem.data?.firstOrNull()?.slug, true)
 
-        every { componentsItem.data } returns null
-        val viewModelTest = spyk(TextComponentViewModel(application, componentsItem, 0))
-        viewModelTest.onAttachToViewHolder()
-        assert(viewModelTest.getTextComponentLiveData().value == null)
     }
 
     @After

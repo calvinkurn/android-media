@@ -47,6 +47,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.time
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tndbanner.DiscoveryTNDBannerViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tokopoints.TokopointsViewModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topadsheadline.TopAdsHeadlineViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.topquest.TopQuestViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YouTubeViewViewModelTest
 import org.junit.runner.RunWith
@@ -107,6 +108,7 @@ import org.junit.runners.Suite
         TopQuestViewModelTest::class,
         BannerTimerViewModelTest::class,
         CategoryBestSellerViewModelTest::class,
+        TopAdsHeadlineViewModelTest:: class,
 )
 
 
