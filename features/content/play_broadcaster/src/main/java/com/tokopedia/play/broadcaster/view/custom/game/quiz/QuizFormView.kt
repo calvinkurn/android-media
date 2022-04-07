@@ -110,14 +110,12 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-//            val selectedDuration = quizConfig.availableStartTimeInMs[index]
-//            eventBus.emit(Event.SelectDuration(selectedDuration))
+            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+            eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
         timePickerBinding.btnApply.setOnClickListener {
-            val index = timePickerBinding.puTimer.activeIndex
-            val selectedDuration = quizConfig.availableStartTimeInMs[index]
-            eventBus.emit(Event.Submit(selectedDuration))
+            eventBus.emit(Event.Submit)
         }
 
         setupInsets()
@@ -169,15 +167,13 @@ class QuizFormView : ConstraintLayout {
             binding.viewQuizGift.gift = quizFormData.gift
 
             /** Update Quiz Duration */
-//            if(quizFormState is QuizFormStateUiModel.SetDuration) {
-//                val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
-//                if(timePickerBinding.puTimer.activeIndex != idx) {
-//                    timePickerBinding.puTimer.apply {
-//                        if(idx != -1) goToPosition(idx)
-//                        else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
-//                    }
-//                }
-//            }
+            val idx = quizConfig.eligibleStartTimeInMs.indexOf(quizFormData.duration)
+            if(timePickerBinding.puTimer.activeIndex != idx) {
+                timePickerBinding.puTimer.apply {
+                    if(idx != -1) goToPosition(idx)
+                    else if(quizConfig.eligibleStartTimeInMs.isNotEmpty()) goToPosition(0)
+                }
+            }
         }
 
         /** Validate Form */
@@ -285,7 +281,7 @@ class QuizFormView : ConstraintLayout {
         data class GiftChanged(val gift: String): Event
         data class SaveQuizData(val quizFormData: QuizFormDataUiModel): Event
         data class SelectDuration(val duration: Long): Event
-        data class Submit(val duration: Long): Event
+        object Submit: Event
     }
 
     companion object {

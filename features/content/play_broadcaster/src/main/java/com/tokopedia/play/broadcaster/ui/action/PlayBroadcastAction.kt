@@ -34,5 +34,5 @@ sealed interface PlayBroadcastAction {
     data class InputQuizGift(val text: String): PlayBroadcastAction
     data class SelectQuizDuration(val duration: Long): PlayBroadcastAction
     data class SaveQuizData(val quizFormData: QuizFormDataUiModel): PlayBroadcastAction
-    data class SubmitQuizForm(val duration: Long): PlayBroadcastAction
+    object SubmitQuizForm: PlayBroadcastAction
 }

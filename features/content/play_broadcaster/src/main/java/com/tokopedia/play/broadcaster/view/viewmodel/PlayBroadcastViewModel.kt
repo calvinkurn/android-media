@@ -374,7 +374,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
             is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
-            is PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm(event.duration)
+            PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
         }
     }
 
@@ -1080,8 +1080,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             ))
         }
 
-        sharedPref.setNotFirstSelectQuizOption()
-
         needUpdateQuizForm(isAutoSelectEligible || isNeedAddNewField) {
             _quizFormData.setValue { copy(options = newOptions) }
         }
@@ -1093,6 +1091,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
 
         if(currSelectedOrder == order || currSelectedOrder == -1) return
+
+        sharedPref.setNotFirstSelectQuizOption()
 
         needUpdateQuizForm(true) {
             _quizFormData.setValue {
@@ -1119,13 +1119,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun handleSelectQuizDuration(duration: Long) {
-        updateQuizEligibleDuration()
         needUpdateQuizForm(false) {
+            updateQuizEligibleDuration()
             _quizFormData.setValue { copy(duration = duration) }
         }
     }
 
-    private fun handleSubmitQuizForm(runningTime: Long) {
+    private fun handleSubmitQuizForm() {
         viewModelScope.launchCatchError(block = {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
 
@@ -1134,11 +1134,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 //                channelId = channelId,
 //                question = quizData.title,
 //                prize = quizData.gift,
-//                runningTime = runningTime,
+//                runningTime = quizData.duration,
 //                choices = quizData.options.map { Pair(it.text, it.isSelected) }
 //            )
 
             /** Reset Form */
+            sharedPref.setNotFirstSelectQuizOption()
             sharedPref.setNotFirstQuizPrice()
             sharedPref.setNotFirstInteractive()
             initQuizFormData()
