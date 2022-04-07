@@ -691,31 +691,31 @@ class PlayAnalyticsTracker @Inject constructor(
     private object EventLabel {
 
         fun liveVodUpcoming(channelId: String, shopId: String, type: String) =
-            "{${channelId}} - {${shopId}} - {${type}}"
+            "$channelId - $shopId - $type"
 
         fun liveVodUpcomingFilterCategory(
             channelId: String,
             shopId: String,
             type: String,
             filterCategory: String
-        ) = "{${channelId}} - {${shopId}} - {${type}} - {${filterCategory}}"
+        ) = "$channelId - $shopId - $type - $filterCategory"
 
         fun liveVodUpcoming(
             channelId: String,
             shopId: String,
             type: String,
             filterCategory: String
-        ) = "{${channelId}} - {${shopId}} - {${type}}"
+        ) = "$channelId - $shopId - $type"
 
         fun liveVodUpcomingFilterCategoryEntryPointCarousel(
             channelId: String, shopId: String, type: String, filterCategory: String, entryPoint: String =""
         ) =
-            "{${channelId}} - {${shopId}} - {${type}} - $FILTER_CATEGORY_EMPTY - {${entryPoint}}"
+            "$channelId - $shopId - $type - $FILTER_CATEGORY_EMPTY - $entryPoint"
 
         const val FILTER_CATEGORY_ENTRY_POINT_CAROUSEL_WIDGET =
             "{filter category} - {entry point carousel widget}"
 
-        fun getFilterCategory(filterCategory: String) = "{${filterCategory}}"
+        fun getFilterCategory(filterCategory: String) = "$filterCategory"
 
         fun getScreenName(position: Int): String {
             return when (position) {
