@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
-import com.tokopedia.home_component.databinding.GlobalDcCueCategory2x2Binding
+import com.tokopedia.home_component.databinding.GlobalDcCueCategoryBinding
 import com.tokopedia.home_component.decoration.CueWidgetCategoryItemDecoration
 import com.tokopedia.home_component.listener.CueWidgetCategoryListener
 import com.tokopedia.home_component.model.ChannelModel
@@ -24,7 +24,7 @@ class CueWidgetCategoryViewHolder (
     itemView: View,
     private val cueWidgetCategoryListener: CueWidgetCategoryListener
 ) : AbstractViewHolder<CueCategoryDataModel>(itemView) {
-    private var binding: GlobalDcCueCategory2x2Binding? by viewBinding()
+    private var binding: GlobalDcCueCategoryBinding? by viewBinding()
     private var adapter: CueWidgetCategoryAdapter? = null
 
     companion object {
