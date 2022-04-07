@@ -2,7 +2,9 @@ package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
+import com.tokopedia.checkout.domain.model.cartshipmentform.ProductVariantsResponse
 
 data class Product(
         @SerializedName("errors")
@@ -75,6 +77,8 @@ data class Product(
         val campaignId: Int = 0,
         @SerializedName("purchase_protection_plan_data")
         val purchaseProtectionPlanDataResponse: PurchaseProtectionPlanDataResponse = PurchaseProtectionPlanDataResponse(),
+        @SerializedName("product_variants")
+        val productVariantsResponse: ProductVariantsResponse = ProductVariantsResponse(),
         @SerializedName("product_tracker_data")
         val productTrackerData: ProductTrackerData = ProductTrackerData(),
         @SerializedName("product_preorder")
@@ -88,5 +92,7 @@ data class Product(
         @SerializedName("product_ticker")
         val productTicker: ProductTicker = ProductTicker(),
         @SerializedName("variant_description_detail")
-        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail()
+        val variantDescriptionDetail: VariantDescriptionDetail = VariantDescriptionDetail(),
+        @SerializedName("add_ons")
+        val addOns: AddOnsResponse = AddOnsResponse()
 )

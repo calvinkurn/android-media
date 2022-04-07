@@ -106,10 +106,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".adminrestriction.view.activity.AdminRestrictionActivity"
+            android:name=".view.activity.AdminRestrictionActivity"
             android:label="@string/sah_admin_restriction_label"
             android:theme="@style/SellerHomeTheme.Transparent"
-            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -128,10 +127,9 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.centralizedpromo.view.activity.FirstVoucherActivity"
+            android:name="com.tokopedia.centralizedpromo.view.activity.FirstTimePromoActivity"
             android:label="@string/centralized_promo_first_voucher_label"
             android:theme="@style/SellerHomeTheme.Transparent"
-            android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -141,7 +139,7 @@
 
                 <data
                     android:host="@string/host_sellerapp"
-                    android:path="@string/path_centralized_promo_first_voucher"
+                    android:path="@string/path_centralized_promo_first_time"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

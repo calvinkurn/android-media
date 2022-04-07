@@ -250,7 +250,6 @@ class TokoNowHomeViewModel @Inject constructor(
             if (shouldLoadMore(lastVisibleItemIndex)) {
                 showProgressBar()
 
-                val warehouseId = localCacheModel.warehouse_id
                 val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                     token = channelToken,
                     localCacheModel = localCacheModel
@@ -264,7 +263,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     localCacheModel.service_type
                 )
 
-                getLayoutComponentData(warehouseId)
+                getLayoutComponentData(localCacheModel)
 
                 homeLayoutItemList.removeProgressBar()
 
@@ -276,7 +275,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 _homeLayoutList.postValue(Success(data))
             }
         }) {
-            _homeLayoutList.postValue(Fail(it))
+            // do nothing
         }
     }
 
@@ -443,14 +442,14 @@ class TokoNowHomeViewModel @Inject constructor(
      * Example: Category Grid get its data from TokonowCategoryTree.
      * @param warehouseId Id obtained from choose address widget
      */
-    fun getLayoutComponentData(warehouseId: String) {
+    fun getLayoutComponentData(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
             homeLayoutItemList.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
 
                 when (val item = it.layout) {
-                    is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-                    else -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+                    is HomeLayoutUiModel -> getTokoNowHomeComponent(item, localCacheModel) // TokoNow Home Component
+                    else -> getTokoNowGlobalComponent(item, localCacheModel.warehouse_id) // TokoNow Common Component
                 }
 
                 val data = HomeLayoutListUiModel(
@@ -472,10 +471,10 @@ class TokoNowHomeViewModel @Inject constructor(
      *
      * @param item TokopediaNOW Home component item
      */
-    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, warehouseId: String) {
+    private suspend fun getTokoNowHomeComponent(item: HomeLayoutUiModel, localCacheModel: LocalCacheModel) {
         when (item) {
-            is HomeTickerUiModel -> getTickerDataAsync(item).await()
-            is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, warehouseId).await()
+            is HomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
+            is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel.warehouse_id).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -525,9 +524,9 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTickerDataAsync(item: HomeTickerUiModel): Deferred<Unit?> {
+    private suspend fun getTickerDataAsync(item: HomeTickerUiModel, localCacheModel: LocalCacheModel?): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val tickerList = getTickerUseCase.execute().ticker.tickerList
+            val tickerList = getTickerUseCase.execute(localCacheModel = localCacheModel).ticker.tickerList
             val tickerData = TickerMapper.mapTickerData(tickerList)
             homeLayoutItemList.mapTickerData(item, tickerData)
         }) {

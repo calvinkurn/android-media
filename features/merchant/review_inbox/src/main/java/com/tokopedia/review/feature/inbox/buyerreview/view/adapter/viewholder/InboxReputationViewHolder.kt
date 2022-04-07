@@ -9,7 +9,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig.isInboxUnified
 import com.tokopedia.review.common.util.TimeConverter
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.ShopReputationView
 import com.tokopedia.review.feature.inbox.buyerreview.view.customview.UserReputationView
@@ -18,7 +17,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputati
 import com.tokopedia.review.inbox.R
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.unifycomponents.NotificationUnify.Companion.COLOR_PRIMARY
-import com.tokopedia.unifycomponents.NotificationUnify.Companion.COLOR_SECONDARY
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -83,11 +81,7 @@ class InboxReputationViewHolder constructor(
     }
 
     private fun setUnreadNotification(element: InboxReputationItemUiModel) {
-        if (isInboxUnified()) {
-            unreadNotification?.setNotification("", NotificationUnify.NONE_TYPE, COLOR_SECONDARY)
-        } else {
-            unreadNotification?.setNotification("", NotificationUnify.NONE_TYPE, COLOR_PRIMARY)
-        }
+        unreadNotification?.setNotification("", NotificationUnify.NONE_TYPE, COLOR_PRIMARY)
         if (element.reputationDataUiModel.isShowBookmark) {
             unreadNotification?.visibility = View.VISIBLE
         } else {

@@ -1,15 +1,19 @@
 package com.tokopedia.topads.common.data.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.constant.Constants
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -24,6 +28,58 @@ object Utils {
 
     var locale = Locale("in", "ID")
     const val KALI = " kali"
+
+    /**
+     * This method helps to validate and update ui for edit bid textfield
+     * @param[block] has true value ,if validation passed and vice versa
+     */
+    fun TextFieldUnify.addBidValidationListener(
+        minBid: String, maxBid: String, suggestedBid: String,
+        block: ((Boolean) -> Unit)? = null,
+    ) {
+        val textField = this
+        val resources = textField.context.resources
+        textField.setMessage(String.format(
+            resources.getString(R.string.topads_common_keyword_recommended_budget), suggestedBid
+        ))
+        textFieldInput.addTextChangedListener(
+            object : NumberTextWatcher(textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val result = number.toInt()
+                    textField.setError(true)
+                    when {
+                        result < minBid.toDoubleOrZero() -> {
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.min_bid_error_new), minBid
+                            ))
+                            block?.invoke(true)
+                        }
+                        result > maxBid.toDoubleOrZero() -> {
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.max_bid_error_new), maxBid
+                            ))
+                            block?.invoke(true)
+                        }
+                        result % 50 != 0 -> {
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.topads_common_error_multiple_50), "50"
+                            ))
+                            block?.invoke(true)
+                        }
+                        else -> {
+                            textField.setError(false)
+                            textField.setMessage(String.format(
+                                resources.getString(R.string.topads_common_keyword_recommended_budget),
+                                suggestedBid
+                            ))
+                            block?.invoke(false)
+                        }
+                    }
+                }
+            }
+        )
+    }
 
     @JvmStatic
     @Throws(JSONException::class)

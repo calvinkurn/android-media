@@ -37,6 +37,10 @@ public interface CMConstant {
     String HTTP = "http";
     String WWW = "www";
 
+    interface CMPrefKeys{
+        String KEY_WIFI_MAC_ADDRESS = "key_wifi_mac_address";
+    }
+
 
     interface NotificationType {
         String GENERAL = "General";
@@ -148,6 +152,9 @@ public interface CMConstant {
             String SESSION_ID = "sesnId";
         }
 
+
+        String NOTIFICATION_CHANNEL = "nfChnl";
+        String NOTIFICATION_SOUND = "nfSnd";
     }
 
     interface NotificationProductType {

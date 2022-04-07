@@ -449,9 +449,9 @@
               "service_id": 1104,
               "service_duration": "Reguler (2-4 hari)",
               "service_name": "Reguler",
-              "sp_id": 18,
+              "sp_id": 50,
               "recommendation_service_id": 1104,
-              "recommendation_sp_id": 18,
+              "recommendation_sp_id": 50,
               "is_free_shipping_selected": false
             }
           },

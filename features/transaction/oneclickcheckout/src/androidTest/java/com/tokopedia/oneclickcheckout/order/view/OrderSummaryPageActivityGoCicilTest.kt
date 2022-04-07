@@ -14,13 +14,16 @@ import com.tokopedia.oneclickcheckout.common.interceptor.GET_OCC_CART_PAGE_GOCIC
 import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.GOCICIL_INSTALLMENT_OPTION_SOME_INACTIVE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.interceptor.OneClickCheckoutInterceptor
+import com.tokopedia.oneclickcheckout.common.interceptor.RATES_WITH_INSURANCE_RESPONSE_PATH
 import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class OrderSummaryPageActivityGoCicilTest {
 
     @get:Rule
@@ -33,6 +36,7 @@ class OrderSummaryPageActivityGoCicilTest {
     private var idlingResource: IdlingResource? = null
 
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
+    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
     private val paymentInterceptor = OneClickCheckoutInterceptor.paymentInterceptor
 
     @Before
@@ -52,6 +56,7 @@ class OrderSummaryPageActivityGoCicilTest {
     @Test
     fun happyFlow() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -65,7 +70,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.500",
                         totalPrice = "Rp2.016.500"
                 )
@@ -84,6 +88,7 @@ class OrderSummaryPageActivityGoCicilTest {
     @Test
     fun changeInstallment() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -105,7 +110,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.500",
                         totalPrice = "Rp2.127.606"
                 )
@@ -124,6 +128,7 @@ class OrderSummaryPageActivityGoCicilTest {
     @Test
     fun errorFlow_inactiveInstallment() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -148,7 +153,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp4.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         totalPrice = "Rp4.015.000"
                 )
                 closeBottomSheet()
@@ -166,7 +170,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp4.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.500",
                         totalPrice = "Rp4.127.606"
                 )
@@ -185,6 +188,7 @@ class OrderSummaryPageActivityGoCicilTest {
     @Test
     fun errorFlow_aboveLimit() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_LIMITED_WALLET_AMOUNT_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -207,7 +211,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp6.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.500",
                         totalPrice = "Rp6.016.500"
                 )
@@ -218,6 +221,7 @@ class OrderSummaryPageActivityGoCicilTest {
     @Test
     fun errorFlow_maximumAmount() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
@@ -240,7 +244,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp6.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         paymentFee = "Rp1.500",
                         totalPrice = "Rp6.016.500"
                 )
@@ -251,6 +254,7 @@ class OrderSummaryPageActivityGoCicilTest {
     @Test
     fun errorFlow_allInactiveInstallment() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_GOCICIL_RESPONSE_PATH
+        logisticInterceptor.customRatesResponsePath = RATES_WITH_INSURANCE_RESPONSE_PATH
         paymentInterceptor.customGoCicilInstallmentOptionResponsePath = GOCICIL_INSTALLMENT_OPTION_ALL_INACTIVE_RESPONSE_PATH
 
         activityRule.launchActivity(null)
@@ -268,7 +272,6 @@ class OrderSummaryPageActivityGoCicilTest {
                 assertSummary(
                         productPrice = "Rp2.000.000",
                         shippingPrice = "Rp15.000",
-                        insurancePrice = "Rp0",
                         totalPrice = "Rp2.015.000"
                 )
             }

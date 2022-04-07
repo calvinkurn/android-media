@@ -7,7 +7,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 data class TokoNowCategoryGridUiModel(
     val id: String,
     val title: String,
-    val categoryList: List<TokoNowCategoryItemUiModel>?,
+    val categoryListUiModel: TokoNowCategoryListUiModel?,
     @TokoNowLayoutState val state: Int
 ): Visitable<TokoNowCategoryGridTypeFactory> {
     override fun type(typeFactory: TokoNowCategoryGridTypeFactory): Int {

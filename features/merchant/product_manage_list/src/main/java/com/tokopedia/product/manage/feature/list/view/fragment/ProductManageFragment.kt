@@ -84,6 +84,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Get
 import com.tokopedia.product.manage.common.feature.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.common.session.ProductManageSession
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
+import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
 import com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet.OngoingPromotionBottomSheet
 import com.tokopedia.product.manage.databinding.DialogProductAddBinding
 import com.tokopedia.product.manage.databinding.FragmentProductManageSellerBinding
@@ -117,6 +118,7 @@ import com.tokopedia.product.manage.feature.list.constant.ProductManageListConst
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
+import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListDiffutilAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
@@ -147,7 +149,8 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
@@ -202,6 +205,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     @Inject
     lateinit var productManageSession: ProductManageSession
 
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+
     protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
 
     private var shopDomain: String = ""
@@ -218,7 +224,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         ProductManageAddEditMenuBottomSheet(sellerFeatureCarouselClickListener, this, childFragmentManager)
     }
 
-    private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
+    private val productManageListAdapter by lazy { adapter as BaseProductManageAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductUiModel> = mutableListOf()
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -390,7 +396,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         getProductManageAccess()
         setupDialogFeaturedProduct()
 
-        context?.let { UpdateShopActiveService.startService(it) }
+        context?.let { UpdateShopActiveWorker.execute(it) }
     }
 
     private fun setupProgressDialogVariant() {
@@ -650,11 +656,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun goToCreateProductCoupon(product: ProductUiModel?) {
         val firstTimeLink =
             if (checkProductCouponFirstTime()) {
-                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER)
+                Uri.parse(ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_TIME)
                     .buildUpon()
                     .appendQueryParameter(
-                        SellerHomeApplinkConst.VOUCHER_TYPE,
-                        SellerHomeApplinkConst.TYPE_PRODUCT
+                        SellerHomeApplinkConst.PROMO_TYPE,
+                        SellerHomeApplinkConst.TYPE_VOUCHER_PRODUCT
                     )
                     .appendQueryParameter(
                         SellerHomeApplinkConst.PRODUCT_ID,
@@ -1034,7 +1040,11 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ProductManageAdapterFactoryImpl> {
-        return ProductManageListAdapter(adapterTypeFactory)
+        return if (getIsAdapterEnableDiffutil()) {
+            ProductManageListDiffutilAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
+        } else {
+            ProductManageListAdapter(adapterTypeFactory, userSession.deviceId.orEmpty())
+        }
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
@@ -2735,11 +2745,17 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
     }
 
+    private fun getIsAdapterEnableDiffutil(): Boolean {
+        return remoteConfig.getBoolean(PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL, true)
+    }
+
     companion object {
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
 
         private const val VOUCHER_CREATION_PREF = "voucher_creation"
         private const val IS_PRODUCT_COUPON_FIRST_TIME = "is_product_coupon_first_time"
+
+        private const val PRODUCT_MANAGE_ADAPTER_ENABLE_DIFFUTIL = "android_product_manage_adapter_enable_diffutil"
 
         private const val MIN_FEATURED_PRODUCT = 0
         private const val MAX_FEATURED_PRODUCT = 5
