@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
@@ -54,7 +55,7 @@
                         android:layout_height="@dimen/up_live_circle_size"
                         android:background="@drawable/up_live_ring_bg"
                         android:visibility="invisible"
-                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -184,7 +185,7 @@
                         app:layout_constraintTop_toTopOf="@+id/text_content_label"
                         app:typographyType="body_2" />
 
-                    <View android:layout_height="0dp"
+                    <View android:layout_height="@dimen/unify_space_32"
                         android:layout_width="1dp"
                         android:background="#BFC9D9"
                         app:layout_constraintStart_toEndOf="@id/text_content_label"
@@ -192,7 +193,7 @@
                         app:layout_constraintTop_toTopOf="@id/text_content_count"
                         app:layout_constraintBottom_toBottomOf="@id/text_content_label"/>
 
-                    <View android:layout_height="0dp"
+                    <View android:layout_height="@dimen/unify_space_32"
                         android:layout_width="1dp"
                         android:background="#BFC9D9"
                         app:layout_constraintStart_toEndOf="@id/text_follower_label"
@@ -204,7 +205,7 @@
                         android:id="@+id/text_display_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginTop="@dimen/unify_space_12"
                         android:textColor="@color/Unify_NN950"
                         app:layout_constraintStart_toStartOf="parent"
@@ -217,7 +218,7 @@
                         android:id="@+id/text_user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginTop="@dimen/cp_dp_2"
                         android:textColor="@color/Unify_NN600"
                         app:layout_constraintStart_toStartOf="parent"
@@ -230,7 +231,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/unify_space_4"
-                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:ellipsize="end"
                         android:gravity="left"
@@ -247,7 +248,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:layout_marginStart="@dimen/unify_space_12"
+                        android:layout_marginStart="@dimen/unify_space_16"
                         android:layout_marginEnd="@dimen/unify_space_16"
                         android:maxLines="3"
                         android:text="@string/up_link_see_more"
@@ -309,8 +310,8 @@
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl3"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
+                    android:layout_marginStart="@dimen/unify_space_12"
+                    android:layout_marginEnd="@dimen/unify_space_12"
                     android:clipToPadding="false"
                     android:paddingBottom="@dimen/unify_space_8"
                     tools:listitem="@layout/up_item_user_post" />
