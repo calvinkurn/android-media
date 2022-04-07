@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
@@ -22,7 +23,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -35,6 +35,8 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.common.util.Utility
+import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
@@ -49,6 +51,7 @@ import com.tokopedia.totalamount.TotalAmount
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import javax.inject.Inject
 import kotlin.math.roundToInt
 
 class MultipleProductBundleFragment : BaseDaggerFragment(),
@@ -79,8 +82,11 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
             }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val viewModel by lazy {
-        ViewModelProvider(this.requireActivity()).get(ProductBundleViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(ProductBundleViewModel::class.java)
     }
 
     private var processDayView: Typography? = null
@@ -215,8 +221,10 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         viewModel.errorMessage.observe(viewLifecycleOwner, { errorMessage ->
             errorMessage?.run {
                 // show error message
-                Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.action_oke)).setAnchorView(productBundleOverView?.bottomContentView).show()
+                productBundleOverView?.bottomContentView?.apply {
+                    Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.action_oke)).setAnchorView(this).show()
+                }
             }
         })
     }
@@ -370,8 +378,9 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun refreshPage() {
-        val productBundleActivity = requireActivity() as ProductBundleActivity
-        productBundleActivity.refreshPage()
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
+            .commit()
     }
 
     private fun goToLoginPage() {
@@ -458,13 +467,15 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     updateProductBundleOverView(productBundleOverView, selectedBundleDetails)
                 }
             }
-            Toaster.build(
-                requireView(),
-                getString(R.string.single_bundle_success_variant_added),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.action_oke)
-            ).setAnchorView(productBundleOverView?.bottomContentView).show()
+            productBundleOverView?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    getString(R.string.single_bundle_success_variant_added),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
+            }
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             productBundleOverView?.amountCtaView?.performClick()

@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -25,7 +25,6 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -37,6 +36,8 @@ import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
+import com.tokopedia.product_bundle.fragment.EntrypointFragment
+import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -69,7 +70,7 @@ class SingleProductBundleFragment(
     lateinit var userSession: UserSessionInterface
 
     private var tvBundlePreorder: Typography? = null
-    private var bundleListLayout: LinearLayoutCompat? = null
+    private var bundleListLayout: ConstraintLayout? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
@@ -111,13 +112,15 @@ class SingleProductBundleFragment(
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
             adapter.setSelectedVariant(selectedProductId,
                 viewModel.getVariantText(selectedProductVariant, selectedProductId))
-            Toaster.build(
-                requireView(),
-                getString(R.string.single_bundle_success_variant_added),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_NORMAL,
-                getString(R.string.action_oke)
-            ).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    getString(R.string.single_bundle_success_variant_added),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_NORMAL,
+                    getString(R.string.action_oke)
+                ).setAnchorView(this).show()
+            }
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
@@ -226,8 +229,10 @@ class SingleProductBundleFragment(
                 else -> getString(R.string.single_bundle_error_unknown)
             }
             hideLoadingDialog()
-            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                getString(R.string.action_oke)).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    getString(R.string.action_oke)).setAnchorView(this).show()
+            }
         })
     }
 
@@ -269,12 +274,14 @@ class SingleProductBundleFragment(
 
     private fun observeThrowableError() {
         viewModel.throwableError.observe(viewLifecycleOwner, {
-            Toaster.build(
-                requireView(),
-                ErrorHandler.getErrorMessage(context, it),
-                Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            ).setAnchorView(totalAmount?.bottomContentView).show()
+            totalAmount?.bottomContentView?.apply {
+                Toaster.build(
+                    this.rootView,
+                    ErrorHandler.getErrorMessage(context, it),
+                    Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
+                ).setAnchorView(this).show()
+            }
             hideLoadingDialog()
             // TODO: log error
         })
@@ -385,11 +392,6 @@ class SingleProductBundleFragment(
         loaderDialog?.dialog?.dismiss()
     }
 
-    private fun refreshPage() {
-        val productBundleActivity = requireActivity() as ProductBundleActivity
-        productBundleActivity.refreshPage()
-    }
-
     private fun atcProductBundle() {
         showLoadingDialog()
         if (userSession.userId.isEmpty()) {
@@ -404,6 +406,12 @@ class SingleProductBundleFragment(
                 adapter.getSelectedData()
             )
         }
+    }
+
+    private fun refreshPage() {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
+            .commit()
     }
 
     companion object {
