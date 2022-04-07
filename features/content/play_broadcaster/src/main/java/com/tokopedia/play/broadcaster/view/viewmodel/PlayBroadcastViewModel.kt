@@ -42,6 +42,10 @@ import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEditable
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQuizOptionFlow
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -1055,32 +1059,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun handleInputQuizOption(order: Int, newText: String) {
         val options = _quizFormData.value.options
-        val isAutoSelectEligible = needToAutoSelectQuizOption(options, newText)
-
-        val newOptions = options.map {
-            it.copy(
-                /** Auto Select */
-                isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
-                text = if(it.order == order) newText else it.text,
-                isFocus = it.order == order,
-                isShowCoachmark = if(sharedPref.isFirstSelectQuizOption()) it.order == order else false,
-            )
-        }.toMutableList()
-
-        /** Auto Add New Field */
         val quizConfig = _gameConfig.value.quizConfig
-        val isAllOptionFilled = newOptions.none { it.text.isEmpty() }
-        val currentOption = newOptions.size
-        val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
 
-        if(isNeedAddNewField) {
-            newOptions.add(QuizFormDataUiModel.Option(
-                order = currentOption,
-                isMandatory = false,
-            ))
-        }
+        val (newOptions, isAutoSelect, isAutoAdd) = options.updateQuizOptionFlow(order, newText, quizConfig, sharedPref.isFirstSelectQuizOption())
 
-        needUpdateQuizForm(isAutoSelectEligible || isNeedAddNewField) {
+        needUpdateQuizForm(isAutoSelect || isAutoAdd) {
             _quizFormData.setValue { copy(options = newOptions) }
         }
     }
@@ -1170,37 +1153,17 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateOptionsState() {
         val options = _quizFormData.value.options.toMutableList()
+        val quizConfig = _gameConfig.value.quizConfig
         val isStateEditable = isQuizStateEditable()
 
         val newOptions = if(isStateEditable) {
-            /** Add new options if needed */
-            val quizConfig = _gameConfig.value.quizConfig
-            val isAllOptionFilled = options.none { it.text.isEmpty() }
-            val currentOption = options.size
-            val isNeedAddNewField = isAllOptionFilled && currentOption < quizConfig.maxChoicesCount
+                            options.setupAutoAddField(quizConfig)
+                        }
+                        else {
+                            options.removeUnusedField()
+                        }.setupEditable(isStateEditable)
 
-            if(isNeedAddNewField) {
-                options.add(QuizFormDataUiModel.Option(
-                    order = currentOption,
-                    isMandatory = false,
-                ))
-            }
-            options
-        }
-        else {
-            /** Remove non-mandatory && empty options */
-            options.filterNot { !it.isMandatory && it.text.isEmpty() }
-        }
-
-        _quizFormData.setValue {
-            copy(options = newOptions.map {
-                it.copy(
-                    isEditable = isStateEditable,
-                    isFocus = false,
-                    isShowCoachmark = false,
-                )
-            })
-        }
+        _quizFormData.setValue { copy(options = newOptions) }
     }
 
     private fun isQuizStateEditable(): Boolean {
@@ -1218,11 +1181,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             )
         }
-    }
-
-    private fun needToAutoSelectQuizOption(options: List<QuizFormDataUiModel.Option>, text: String): Boolean {
-        val noSelectedChoice = options.firstOrNull { it.isSelected } == null
-        return noSelectedChoice && text.isNotEmpty()
     }
 
     private fun needUpdateQuizForm(isNeedUpdate: Boolean, block: () -> Unit) {

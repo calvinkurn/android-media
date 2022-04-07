@@ -74,7 +74,7 @@ object QuizOptionListExt {
     fun List<QuizFormDataUiModel.Option>.setupEditable(
         isEditable: Boolean,
     ) : List<QuizFormDataUiModel.Option> {
-        return map { it.copy(isEditable = isEditable, isFocus = false) }
+        return map { it.copy(isEditable = isEditable, isFocus = false, isShowCoachmark = false) }
     }
 
     fun List<QuizFormDataUiModel.Option>.removeUnusedField(): List<QuizFormDataUiModel.Option> {
