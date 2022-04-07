@@ -9,9 +9,12 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.InputMultiTabDenomModel
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
-import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
+import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteGroupModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.PrefillModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -71,7 +74,7 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         } throws error
     }
 
-    protected fun onGetFavoriteNumber_thenReturn(response: PersoFavNumberGroup) {
+    protected fun onGetFavoriteNumber_thenReturn(response: FavoriteGroupModel) {
         coEvery {
             repo.getFavoriteNumbers(any(), any(), any())
         } returns response
@@ -170,24 +173,25 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetFavoriteNumberChipsSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+    protected fun verifyGetFavoriteNumberChipsSuccess(expectedResponse: List<FavoriteChipModel>) {
         val actualResponse = viewModel.favoriteChipsData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyGetFavoriteNumberListSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+    protected fun verifyGetFavoriteNumberListSuccess(expectedResponse: List<AutoCompleteModel>) {
         val actualResponse = viewModel.autoCompleteData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
-    protected fun verifyGetFavoriteNumberPrefillSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
+    protected fun verifyGetFavoriteNumberPrefillSuccess(expectedResponse: PrefillModel) {
         val actualResponse = viewModel.prefillData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
     protected fun verifyGetFavoriteNumberPrefillEmpty() {
-        val actualResponse = viewModel.prefillData.value
-        Assert.assertTrue((actualResponse as RechargeNetworkResult.Success).data.isEmpty())
+        val actualResponse = viewModel.prefillData.value as RechargeNetworkResult.Success
+        Assert.assertTrue(actualResponse.data.clientName.isEmpty())
+        Assert.assertTrue(actualResponse.data.clientNumber.isEmpty())
     }
 
     protected fun verifyPrefixOperatorLoading(expectedResponse: RechargeNetworkResult.Loading){

@@ -4,6 +4,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.presentation.data.DataPlanDataFactory
 import kotlinx.coroutines.CancellationException
@@ -21,6 +22,7 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
 
     private val dataFactory = DataPlanDataFactory()
     private val mapperFactory = DigitalDenomMapper()
+    private val persoMapperFactory = DigitalPersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
@@ -90,25 +92,27 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
         val response = dataFactory.getFavoriteNumberData(true)
-        onGetFavoriteNumber_thenReturn(response)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
         viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberChipsSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
-        verifyGetFavoriteNumberListSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
-        verifyGetFavoriteNumberPrefillSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
     }
 
     @Test
     fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
         val response = dataFactory.getFavoriteNumberData(false)
-        onGetFavoriteNumber_thenReturn(response)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
         viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberChipsSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
-        verifyGetFavoriteNumberListSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
-        verifyGetFavoriteNumberPrefillSuccess(response.favoriteNumberChips.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
         verifyGetFavoriteNumberPrefillEmpty()
     }
 
