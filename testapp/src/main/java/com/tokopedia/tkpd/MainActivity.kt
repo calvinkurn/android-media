@@ -68,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         etAppLink.setText(getDefaultAppLink())
 
         goToButton.setOnClickListener { goTo() }
+        
+        startActivity(Intent(this,FoldableActivity::class.java))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -127,4 +129,5 @@ class MainActivity : AppCompatActivity() {
          */
         return ""
     }
+
 }
