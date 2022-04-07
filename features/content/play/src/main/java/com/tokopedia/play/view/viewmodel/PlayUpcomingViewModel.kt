@@ -210,7 +210,7 @@ class PlayUpcomingViewModel @Inject constructor(
             ClickUpcomingButton -> handleClickUpcomingButton()
             UpcomingTimerFinish -> handleUpcomingTimerFinish()
             ClickFollowUpcomingAction -> handleClickFollow(isFromLogin = false)
-            ClickPartnerNameUpcomingAction -> handleClickPartnerName()
+            is ClickPartnerNameUpcomingAction -> handleClickPartnerName(action.appLink)
             is OpenUpcomingPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             CopyLinkUpcomingAction -> handleCopyLink()
             ClickShareUpcomingAction -> handleClickShareIcon()
@@ -326,18 +326,10 @@ class PlayUpcomingViewModel @Inject constructor(
         }
     }
 
-    private fun handleClickPartnerName() {
+    private fun handleClickPartnerName(appLink: String) {
         viewModelScope.launch {
             val partnerInfo = _partnerInfo.value
-
-            when (partnerInfo.type) {
-                PartnerType.Shop -> {
-                    playAnalytic.clickShop(mChannelId, channelType, partnerInfo.id.toString())
-                    _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.SHOP, listOf(partnerInfo.id.toString())))
-                }
-                PartnerType.Buyer -> _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(ApplinkConst.PROFILE, listOf(partnerInfo.id.toString())))
-                else -> {}
-            }
+            _uiEvent.emit(PlayUpcomingUiEvent.OpenPageEvent(appLink))
         }
     }
 
