@@ -25,7 +25,7 @@ import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
-class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: CategoryWidgetV2Listener): AbstractViewHolder<CategoryWidgetV2DataModel>(view)  {
+class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: CategoryWidgetV2Listener?): AbstractViewHolder<CategoryWidgetV2DataModel>(view)  {
 
     companion object {
         @LayoutRes
@@ -51,7 +51,7 @@ class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: C
     private fun initRV(element: CategoryWidgetV2DataModel){
         if (!element.isCache) {
             itemView.addOnImpressionListener(element.channelModel){
-                categoryListener.onImpressCategoryWidget(element.channelModel)
+                categoryListener?.onImpressCategoryWidget(element.channelModel)
             }
         }
         recyclerView = view.findViewById(R.id.recycleList)
@@ -83,7 +83,7 @@ class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: C
         homeComponentHeader = itemView.findViewById(R.id.home_component_header_view)
         homeComponentHeader?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                categoryListener.onSeeAllCategoryWidget(element.channelModel)
+                categoryListener?.onSeeAllCategoryWidget(element.channelModel)
             }
             override fun onChannelExpired(channelModel: ChannelModel) {}
         })
@@ -91,7 +91,7 @@ class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: C
 
     class CategoryWidgetV2ItemAdapter(
         private val element: CategoryWidgetV2DataModel,
-        private val categoryListener: CategoryWidgetV2Listener
+        private val categoryListener: CategoryWidgetV2Listener?
     ): RecyclerView.Adapter<CategoryWidgetItemViewHolder>() {
         private var grids: Array<ChannelGrid> = element.channelModel.channelGrids.toTypedArray()
 
@@ -110,7 +110,7 @@ class CategoryWidgetV2ViewHolder(val view: View, private val categoryListener: C
             holder.categoryImageView.loadImageWithoutPlaceholder(grid.imageUrl, FPM_CATEGORY_WIDGET_ITEM)
             holder.categoryName.text = grid.name
             holder.itemView.setOnClickListener {
-                categoryListener.onClickCategoryWidget(element.channelModel, grid, position)
+                categoryListener?.onClickCategoryWidget(element.channelModel, grid, position)
             }
         }
     }

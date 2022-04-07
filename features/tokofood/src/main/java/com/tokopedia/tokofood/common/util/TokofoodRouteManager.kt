@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 
 object TokofoodRouteManager {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.home.presentation
+package com.tokopedia.tokofood.home.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
+import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 
 class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
 
