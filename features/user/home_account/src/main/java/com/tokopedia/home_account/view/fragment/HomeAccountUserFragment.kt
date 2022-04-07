@@ -1205,7 +1205,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun doLogout() {
         activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
+            startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.LOGOUT))
         }
     }
 

@@ -48,7 +48,7 @@ object ApplinkConstInternalSellerapp {
     const val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
 
     //FirstVoucherActivity
-    const val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
+    const val CENTRALIZED_PROMO_FIRST_TIME = "$INTERNAL_SELLERAPP/first-time-centralized-promo"
 
     //MenuSettingActivity
     const val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
