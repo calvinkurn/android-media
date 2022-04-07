@@ -41,7 +41,9 @@ data class MiniCartProductUiModel(
         var bundleOriginalPriceFmt: String = "",
         var bundleMinOrder: Int = 0,
         var bundleMaxOrder: Int = 0,
-        var bundleQuantity: Int = 0,
+        var bundleQty: Int = 0,
+        var bundleMultiplier: Int = 0,
+        var bundleIconUrl: String = "",
         var slashPriceLabel: String = "",
         var isBundlingItem: Boolean = false,
         var showBundlingHeader: Boolean = false,
@@ -111,7 +113,8 @@ data class MiniCartProductUiModel(
 
     fun setQuantity(qty: Int) {
             if(isBundlingItem) {
-                    bundleQuantity = qty
+                    bundleQty = qty
+                    productQty = bundleMultiplier * qty
             } else {
                     productQty = qty
             }
@@ -119,7 +122,7 @@ data class MiniCartProductUiModel(
 
     fun getQuantity(): Int {
             return if(isBundlingItem) {
-                    bundleQuantity
+                    bundleQty
             } else {
                     productQty
             }

@@ -220,6 +220,7 @@ fun getQueryCartRevampV3(): String {
                       edit_app_link
                       slash_price_label
                       bundle_icon_url
+                      bundle_grayscale_icon_url
                     }
                     products {
                       checkbox_state

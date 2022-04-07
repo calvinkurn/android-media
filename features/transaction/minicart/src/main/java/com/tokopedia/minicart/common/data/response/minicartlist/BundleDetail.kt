@@ -34,7 +34,9 @@ data class BundleDetail(
     @SerializedName("edit_app_link")
     val editBundleApplink: String = "",
     @SerializedName("slash_price_label")
-    val slashPriceLabel: String = ""
+    val slashPriceLabel: String = "",
+    @SerializedName("bundle_icon_url")
+    val bundleIconUrl: String = ""
 ) {
     fun isBundlingItem(): Boolean {
         return bundleId.isNotBlank() && bundleId != "0"

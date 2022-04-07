@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.minicart.R
 import com.tokopedia.minicart.cartlist.MiniCartListActionListener
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
@@ -597,6 +598,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 renderBundleDiscount(element)
                 textBundleTitle.text = element.bundleName
                 textBundlePrice.text = element.bundlePriceFmt
+                imageBundle.loadImage(element.bundleIconUrl)
                 containerBundleHeader.show()
             } else {
                 containerBundleHeader.hide()

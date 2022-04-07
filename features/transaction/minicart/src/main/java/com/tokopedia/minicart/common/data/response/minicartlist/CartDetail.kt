@@ -10,7 +10,7 @@ data class CartDetail(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("products")
-        val products: List<Product>? = emptyList(),
+        val products: List<Product> = emptyList(),
         @SerializedName("bundle_detail")
         val bundleDetail: BundleDetail = BundleDetail()
 )

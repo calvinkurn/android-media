@@ -80,7 +80,7 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
                 // Add available product
                 val miniCartChatProductUiModels = mutableListOf<MiniCartChatProductUiModel>()
                 availableGroup.cartDetails.forEach { cartDetail ->
-                    cartDetail.products.orEmpty().forEach { product ->
+                    cartDetail.products.forEach { product ->
                         weightTotal += product.productWeight * product.productQuantity
                         val miniCartChatProductUiModel = mapChatProductUiModel(product)
                         miniCartChatProductUiModels.add(miniCartChatProductUiModel)
@@ -104,7 +104,7 @@ class MiniCartChatListUiModelMapper @Inject constructor() {
                 // Add unavailable product
                 val miniCartProductUiModels = mutableListOf<MiniCartChatProductUiModel>()
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    cartDetail.products.orEmpty().forEach { product ->
+                    cartDetail.products.forEach { product ->
                         val miniCartProductUiModel = mapChatProductUiModel(product, true)
                         miniCartProductUiModels.add(miniCartProductUiModel)
                     }

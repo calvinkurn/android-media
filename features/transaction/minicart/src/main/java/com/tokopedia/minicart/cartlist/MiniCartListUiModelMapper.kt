@@ -123,14 +123,14 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 val cartItemsCount = availableGroup.cartDetails.count()
                 availableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
                     val lastCartItem = cartIndex == cartItemsCount - 1
-                    cartDetail.products.orEmpty().forEachIndexed { productIndex, product ->
+                    cartDetail.products.forEachIndexed { productIndex, product ->
                         weightTotal += product.productWeight * product.productQuantity
                         val miniCartProductUiModel = mapProductUiModel(
                             productIndex = productIndex,
                             cartDetail = cartDetail,
                             shop = availableGroup.shop,
-                            cartStringId = availableGroup.cartString,
                             product = product,
+                            cartStringId = availableGroup.cartString,
                             shipmentInformation = availableGroup.shipmentInformation,
                             action = availableSection.action,
                             notesLength = miniCartData.data.maxCharNote,
@@ -165,13 +165,13 @@ class MiniCartListUiModelMapper @Inject constructor() {
                 val cartItemsCount = unavailableGroup.cartDetails.count()
                 unavailableGroup.cartDetails.forEachIndexed { cartIndex, cartDetail ->
                     val lastCartItem = cartIndex == cartItemsCount - 1
-                    cartDetail.products.orEmpty().forEachIndexed { productIndex, product ->
+                    cartDetail.products.forEachIndexed { productIndex, product ->
                         val miniCartProductUiModel = mapProductUiModel(
                             productIndex = productIndex,
                             cartDetail = cartDetail,
                             shop = unavailableGroup.shop,
-                            cartStringId = unavailableGroup.cartString,
                             product = product,
+                            cartStringId = unavailableGroup.cartString,
                             shipmentInformation = unavailableGroup.shipmentInformation,
                             action = unavailableSection.action,
                             isDisabled = true,
@@ -249,14 +249,17 @@ class MiniCartListUiModelMapper @Inject constructor() {
         unavailableActionId: String = "",
         unavailableReason: String = "",
         notesLength: Int = 0,
-        cartStringId: String = "",
-        lastCartItem: Boolean = false
+        lastCartItem: Boolean = false,
+        cartStringId: String = ""
     ): MiniCartProductUiModel {
         return MiniCartProductUiModel().apply {
             val products = cartDetail.products
-            val productsCount = products.orEmpty().count()
+            val productsCount = products.count()
             val bundleDetail = cartDetail.bundleDetail
             val bundlingItem = bundleDetail.isBundlingItem()
+
+            val productQuantity = product.productQuantity
+            val bundleQuantity = bundleDetail.bundleQty
 
             val firstProductItem = productIndex == 0
             val lastProductItem = productIndex == productsCount - 1
@@ -277,9 +280,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productInformation = product.productInformation
             productNotes = product.productNotes
             productQty = if (product.productSwitchInvenage == 0) {
-                product.productQuantity
+                productQuantity
             } else {
-                min(product.productQuantity, product.productInvenageValue)
+                min(productQuantity, product.productInvenageValue)
             }
             productWeight = product.productWeight
             productMinOrder = product.productMinOrder
@@ -323,13 +326,18 @@ class MiniCartListUiModelMapper @Inject constructor() {
             bundleOriginalPriceFmt = bundleDetail.bundleOriginalPriceFmt
             bundleMinOrder = bundleDetail.bundleMinOrder
             bundleMaxOrder = bundleDetail.bundleMaxOrder
-            bundleQuantity = bundleDetail.bundleQty
+            bundleQty = bundleQuantity
+            bundleIconUrl = bundleDetail.bundleIconUrl
             slashPriceLabel = bundleDetail.slashPriceLabel
             showBundlingHeader = firstProductItem && bundlingItem
             showBottomDivider = (bundlingItem && !lastCartItem && lastProductItem) ||
                 (!bundlingItem && !lastCartItem)
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
+
+            if(bundlingItem) {
+                bundleMultiplier = productQuantity / bundleQuantity
+            }
         }
     }
 

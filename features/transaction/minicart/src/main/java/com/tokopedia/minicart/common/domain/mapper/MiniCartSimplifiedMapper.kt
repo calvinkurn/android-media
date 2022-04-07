@@ -1,7 +1,10 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
+import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
+import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
+import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
@@ -30,7 +33,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                 if(isBundlingItem) {
                     totalQty += bundleDetail.bundleQty
                 } else {
-                    cartDetail.products.orEmpty().forEach { product ->
+                    cartDetail.products.forEach { product ->
                         totalQty += product.productQuantity
                     }
                 }
@@ -59,7 +62,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
 
         miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
             availableGroup.cartDetails.forEach { cartDetail ->
-                cartDetail.products.orEmpty().forEach { product ->
+                cartDetail.products.forEach { product ->
                     val item = MiniCartItem.MiniCartItemProduct().apply {
                         isError = false
                         cartId = cartDetail.cartId
@@ -143,7 +146,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         miniCartData.data.unavailableSection.forEach { unavailableSection ->
             unavailableSection.unavailableGroup.forEach { unavailableGroup ->
                 unavailableGroup.cartDetails.forEach { cartDetail ->
-                    cartDetail.products.orEmpty().forEach { product ->
+                    cartDetail.products.forEach { product ->
                         val item = MiniCartItem.MiniCartItemProduct().apply {
                             isError = true
                             cartId = cartDetail.cartId

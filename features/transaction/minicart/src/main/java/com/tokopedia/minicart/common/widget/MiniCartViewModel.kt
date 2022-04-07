@@ -697,13 +697,13 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         var totalDiscount = 0L
         var totalWeight = 0
 
-        val productList = visitables.filterIsInstance<MiniCartProductUiModel>()
-        val nonBundleProductList = productList.filter { !it.isBundlingItem }
-        val bundleProductList = productList.filter { it.isBundlingItem }
+        val allProductList = visitables.filterIsInstance<MiniCartProductUiModel>()
+        val nonBundleProductList = allProductList.filter { !it.isBundlingItem }
+        val bundleProductList = allProductList.filter { it.isBundlingItem }
             .distinctBy { it.bundleId }
-        val allProductList = nonBundleProductList + bundleProductList
+        val productList = nonBundleProductList + bundleProductList
 
-        allProductList.forEach { visitable ->
+        productList.forEach { visitable ->
             if (!visitable.isProductDisabled) {
                 val productQty = visitable.getQuantity()
                 val productPrice = visitable.getPrice()
@@ -712,27 +712,35 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
                 totalQty += productQty
                 val price = when {
-                    visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
+                    visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
+                        visitable.productWholeSalePrice
+                    }
                     else -> productPrice
                 }
                 totalPrice += productQty * price
                 sellerCashbackValue += (productQty * visitable.productCashbackPercentage / DEFAULT_PERCENTAGE * price).toLong()
-                val originalPrice =
-                        when {
-                            productOriginalPrice > 0 -> productOriginalPrice
-                            visitable.productWholeSalePrice > 0 -> visitable.productWholeSalePrice
-                            else -> productPrice
-                        }
+                val originalPrice = when {
+                    productOriginalPrice > 0 -> productOriginalPrice
+                    visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
+                        visitable.productWholeSalePrice
+                    }
+                    else -> productPrice
+                }
                 totalValue += productQty * originalPrice
-                val discountValue =
-                        when {
-                            productOriginalPrice > 0 -> productOriginalPrice - productPrice
-                            else -> 0
-                        }
+                val discountValue = when {
+                    productOriginalPrice > 0 -> productOriginalPrice - productPrice
+                    else -> 0
+                }
                 totalDiscount += productQty * discountValue
-                totalWeight += productQty * visitable.productWeight
             }
         }
+
+        allProductList.forEach { visitable ->
+            if(!visitable.isProductDisabled) {
+                totalWeight += visitable.productWeight * visitable.productQty
+            }
+        }
+
         miniCartListBottomSheetUiModel.value?.let {
             it.miniCartWidgetUiModel.totalProductPrice = totalPrice
             it.miniCartWidgetUiModel.totalProductCount = totalQty
