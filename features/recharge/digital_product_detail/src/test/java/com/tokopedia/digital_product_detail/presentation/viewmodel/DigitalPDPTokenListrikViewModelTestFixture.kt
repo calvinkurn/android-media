@@ -11,7 +11,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTokenListrikRepository
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule

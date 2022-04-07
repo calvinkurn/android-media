@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.data.prefix_select.RechargeCatalogPrefixSelect
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSelect
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -19,6 +18,9 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.D
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_PREFIX_TIME
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
+import com.tokopedia.digital_product_detail.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
 import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -27,7 +29,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomMCCMModel
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -65,17 +67,17 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     val menuDetailData: LiveData<RechargeNetworkResult<MenuDetailModel>>
         get() = _menuDetailData
 
-    private val _favoriteNumberChipsData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val favoriteNumberChipsData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
-        get() = _favoriteNumberChipsData
+    private val _favoriteChipsData = MutableLiveData<RechargeNetworkResult<List<FavoriteChipModel>>>()
+    val favoriteChipsData: LiveData<RechargeNetworkResult<List<FavoriteChipModel>>>
+        get() = _favoriteChipsData
 
-    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val autoCompleteData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+    private val _autoCompleteData = MutableLiveData<RechargeNetworkResult<List<AutoCompleteModel>>>()
+    val autoCompleteData: LiveData<RechargeNetworkResult<List<AutoCompleteModel>>>
         get() = _autoCompleteData
 
     private val _prefillData =
-        MutableLiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>()
-    val prefillData: LiveData<RechargeNetworkResult<List<TopupBillsPersoFavNumberItem>>>
+        MutableLiveData<RechargeNetworkResult<PrefillModel>>()
+    val prefillData: LiveData<RechargeNetworkResult<PrefillModel>>
         get() = _prefillData
 
     private val _catalogPrefixSelect = MutableLiveData<RechargeNetworkResult<TelcoCatalogPrefixSelect>>()
@@ -127,15 +129,15 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun setFavoriteNumberLoading(){
-        _favoriteNumberChipsData.value = RechargeNetworkResult.Loading
+        _favoriteChipsData.value = RechargeNetworkResult.Loading
     }
 
     fun getFavoriteNumbers(categoryIds: List<Int>, favoriteNumberTypes: List<FavoriteNumberType>) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getFavoriteNumbers(favoriteNumberTypes, categoryIds)
-            _favoriteNumberChipsData.value = RechargeNetworkResult.Success(data.favoriteNumberChips.persoFavoriteNumber.items)
-            _autoCompleteData.value = RechargeNetworkResult.Success(data.favoriteNumberList.persoFavoriteNumber.items)
-            _prefillData.value = RechargeNetworkResult.Success(data.favoriteNumberPrefill.persoFavoriteNumber.items)
+            _favoriteChipsData.value = RechargeNetworkResult.Success(data.favoriteChips)
+            _autoCompleteData.value = RechargeNetworkResult.Success(data.autoCompletes)
+            _prefillData.value = RechargeNetworkResult.Success(data.prefill)
         }) {
             // this section is not reachable due to no fail scenario
         }

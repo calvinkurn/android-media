@@ -11,7 +11,7 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
 import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
 import com.tokopedia.digital_product_detail.domain.repository.DigitalPDPTelcoRepository
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -166,12 +166,12 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
     }
 
     protected fun verifyGetFavoriteNumberLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.favoriteNumberChipsData.value
+        val actualResponse = viewModel.favoriteChipsData.value
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
     protected fun verifyGetFavoriteNumberChipsSuccess(expectedResponse: List<TopupBillsPersoFavNumberItem>) {
-        val actualResponse = viewModel.favoriteNumberChipsData.value
+        val actualResponse = viewModel.favoriteChipsData.value
         Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
     }
 
