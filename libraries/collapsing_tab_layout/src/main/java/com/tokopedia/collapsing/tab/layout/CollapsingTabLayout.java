@@ -17,6 +17,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.unifycomponents.CardUnify2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -334,6 +335,7 @@ public class CollapsingTabLayout extends TabLayout {
 
     private View getTabView(Context context, int position) {
         View rootView = LayoutInflater.from(context).inflate(R.layout.tab_home_feed_layout, null);
+        ((CardUnify2) rootView.findViewById(R.id.card_tab)).setAnimateOnPress(CardUnify2.Companion.getANIMATE_OVERLAY_BOUNCE());
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
         textView.setText(tabItemDataList.get(position).getTitle());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);

@@ -16,19 +16,22 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.CardUnify2
 
-open class SizeSmallBusinessViewHolder (
-        itemView: View,
-        private val listener: BusinessUnitItemViewListener
+open class SizeSmallBusinessViewHolder(
+    itemView: View,
+    private val listener: BusinessUnitItemViewListener
 ) : RecyclerView.ViewHolder(itemView) {
 
+    private val card: CardUnify2 = itemView.findViewById(R.id.card_bu)
     private var icon: AppCompatImageView = itemView.findViewById(R.id.icon)
     private var tagLine: TextView? = itemView.findViewById(R.id.tagLine)
     private var strikeThroughPrice: TextView = itemView.findViewById(R.id.strikeThroughPrice)
     private var pricePrefix: TextView? = itemView.findViewById(R.id.pricePrefix)
     private var price: TextView? = itemView.findViewById(R.id.price)
-    fun bind(element: BusinessUnitItemDataModel) {
 
+    fun bind(element: BusinessUnitItemDataModel) {
+        card.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         element.content.let {
             renderImage(it)
             renderProduct(it)
@@ -40,7 +43,7 @@ open class SizeSmallBusinessViewHolder (
         }
     }
 
-    open fun addClickListener(element: BusinessUnitItemDataModel){
+    open fun addClickListener(element: BusinessUnitItemDataModel) {
         itemView.setOnClickListener {
             listener.onClicked(adapterPosition)
             RouteManager.route(itemView.context, element.content.applink)
@@ -49,11 +52,11 @@ open class SizeSmallBusinessViewHolder (
 
     open fun addImpressionListener(element: BusinessUnitItemDataModel) {
         icon?.addOnImpressionListener(element as ImpressHolder,
-                object: ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onImpressed(element, adapterPosition)
-                    }
+            object : ViewHintListener {
+                override fun onViewHint() {
+                    listener.onImpressed(element, adapterPosition)
                 }
+            }
         )
     }
 
@@ -114,7 +117,8 @@ open class SizeSmallBusinessViewHolder (
         }
 
         if (element?.title1st.isNullOrEmpty() &&
-                element?.tagName.isNullOrEmpty()) {
+            element?.tagName.isNullOrEmpty()
+        ) {
             if (hasPrice(element) || hasTagLabel(element)) {
                 getSubtitle().maxLines = 2
             } else {
@@ -160,7 +164,8 @@ open class SizeSmallBusinessViewHolder (
             } else {
                 strikeThroughPrice?.visibility = View.VISIBLE
                 strikeThroughPrice?.text = MethodChecker.fromHtml(element?.originalPrice)
-                strikeThroughPrice?.paintFlags = strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                strikeThroughPrice?.paintFlags =
+                    strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
 
             if (element?.price.isNullOrEmpty()) {
@@ -184,24 +189,64 @@ open class SizeSmallBusinessViewHolder (
             if (element != null) {
                 when (element.tagType) {
                     1 -> {
-                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_pink_label)
-                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                        tagLine?.background = ContextCompat.getDrawable(
+                            itemView.context,
+                            R.drawable.bg_rounded_pink_label
+                        )
+                        tagLine?.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_R500
+                            )
+                        )
                     }
                     2 -> {
-                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_green_label)
-                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        tagLine?.background = ContextCompat.getDrawable(
+                            itemView.context,
+                            R.drawable.bg_rounded_green_label
+                        )
+                        tagLine?.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_G500
+                            )
+                        )
                     }
                     3 -> {
-                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_blue_label)
-                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
+                        tagLine?.background = ContextCompat.getDrawable(
+                            itemView.context,
+                            R.drawable.bg_rounded_blue_label
+                        )
+                        tagLine?.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_B500
+                            )
+                        )
                     }
                     4 -> {
-                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
-                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                        tagLine?.background = ContextCompat.getDrawable(
+                            itemView.context,
+                            R.drawable.bg_rounded_yellow_label
+                        )
+                        tagLine?.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_Y400
+                            )
+                        )
                     }
                     5 -> {
-                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_grey_label)
-                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        tagLine?.background = ContextCompat.getDrawable(
+                            itemView.context,
+                            R.drawable.bg_rounded_grey_label
+                        )
+                        tagLine?.setTextColor(
+                            ContextCompat.getColor(
+                                itemView.context,
+                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            )
+                        )
                     }
                     else -> {
                         tagLine?.visibility = View.GONE

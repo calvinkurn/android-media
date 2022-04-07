@@ -7,20 +7,19 @@ import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSe
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.unifycomponents.CardUnify2
 
 class CarouselSeeMorePdpViewHolder(view: View,
                                    private val channels: ChannelModel)
     : AbstractViewHolder<CarouselSeeMorePdpDataModel>(view){
 
-    private val container: View by lazy { view.findViewById<View>(R.id.container_banner_mix_more) }
+    private val card: CardUnify2 by lazy { view.findViewById<CardUnify2>(R.id.card_see_more_banner_mix) }
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more)}
 
     override fun bind(element: CarouselSeeMorePdpDataModel) {
-        bannerBackgroundImage.setOnClickListener {
-            element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)
-        }
+        card.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
-        container.setOnClickListener {
+        itemView.setOnClickListener {
             element.listener.onSeeMoreCardClicked(applink = element.applink, channel = channels)
         }
     }

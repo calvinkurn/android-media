@@ -5,29 +5,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/tab_home_feed_width"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:cardPreventCornerOverlap="false"
-        app:cardUseCompatPadding="true">
-
-        <ImageView
-            android:id="@+id/tabBackgroundImage"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/card_tab"
             android:layout_width="@dimen/tab_home_feed_width"
-            android:layout_height="@dimen/tab_home_feed_max_height"
-            android:layout_gravity="center_vertical"
-            android:scaleType="centerCrop"
-            />
-        <com.elyeproj.loaderviewlibrary.LoaderTextView
-            android:id="@+id/tabShimmeringView"
-            android:layout_width="@dimen/tab_home_feed_width"
-            android:layout_height="@dimen/tab_home_feed_max_height"
-            app:corners="16"/>
+            android:layout_height="match_parent"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:cardPreventCornerOverlap="false"
+            app:cardUseCompatPadding="true">
 
-    </androidx.cardview.widget.CardView>
+            <ImageView
+                android:id="@+id/tabBackgroundImage"
+                android:layout_width="@dimen/tab_home_feed_width"
+                android:layout_height="@dimen/tab_home_feed_max_height"
+                android:layout_gravity="center_vertical"
+                android:scaleType="centerCrop"
+                />
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/tabShimmeringView"
+                android:layout_width="@dimen/tab_home_feed_width"
+                android:layout_height="@dimen/tab_home_feed_max_height"
+                app:corners="16"/>
+
+        </com.tokopedia.unifycomponents.CardUnify2>
+    </RelativeLayout>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tabTitle"

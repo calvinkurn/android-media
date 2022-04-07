@@ -13,6 +13,7 @@ import com.tokopedia.home.databinding.HomeItemReviewBinding
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.reputation.common.view.AnimatedReputationView
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ReviewViewHolder(
@@ -38,6 +39,7 @@ class ReviewViewHolder(
     }
 
     override fun bind(element: ReviewDataModel) {
+        binding?.cardReview?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
         performanceMonitoring?.startTrace(performanceTraceName)
         binding?.reviewCardBg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->

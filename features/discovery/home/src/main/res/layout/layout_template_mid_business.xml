@@ -5,103 +5,109 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:padding="2dp">
+        <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/card_bu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true"
+            android:layout_marginTop="20dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="@dimen/bu_item_med_width"
-            android:layout_height="@dimen/bu_item_med_height"
-            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="@dimen/bu_item_med_width"
+                android:layout_height="@dimen/bu_item_med_height"
+                android:orientation="vertical">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/productName"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/unify_space_8"
-                android:layout_marginRight="@dimen/unify_space_8"
-                android:layout_marginTop="@dimen/unify_space_8"
-                android:gravity="right"
-                android:textSize="10sp"
-                android:textColor="@color/Unify_N700_68"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:letterSpacing="0.02"
-                android:layout_gravity="end"
-                android:visibility="gone"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="PULSA"
-                tools:visibility="visible" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/productName"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/unify_space_8"
+                    android:layout_marginRight="@dimen/unify_space_8"
+                    android:layout_marginTop="@dimen/unify_space_8"
+                    android:gravity="right"
+                    android:textSize="10sp"
+                    android:textColor="@color/Unify_N700_68"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:letterSpacing="0.02"
+                    android:layout_gravity="end"
+                    android:visibility="gone"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="PULSA"
+                    tools:visibility="visible" />
 
-            <include
-                android:id="@+id/footer"
-                layout="@layout/layout_template_footer_business"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginLeft="@dimen/unify_space_8"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="@dimen/unify_space_8"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/subtitle" />
+                <include
+                    android:id="@+id/footer"
+                    layout="@layout/layout_template_footer_business"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginLeft="@dimen/unify_space_8"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="@dimen/unify_space_8"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/subtitle" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginLeft="@dimen/unify_space_8"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textColor="@color/Unify_N700_96"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productName"
-                tools:text="Tour Les Jours"
-                tools:visibility="visible" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginLeft="@dimen/unify_space_8"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/productName"
+                    tools:text="Tour Les Jours"
+                    tools:visibility="visible" />
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/subtitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/footer"
-                android:layout_below="@id/title"
-                android:layout_marginStart="@dimen/unify_space_8"
-                android:layout_marginLeft="@dimen/unify_space_8"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:ellipsize="end"
-                android:lineSpacingExtra="6sp"
-                android:maxLines="1"
-                android:textColor="@color/Unify_N700_96"
-                android:textSize="10sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/footer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title"
-                tools:text="Voucher Tous Les Jours Rp 100.000,-"
-                tools:visibility="visible" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/subtitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/footer"
+                    android:layout_below="@id/title"
+                    android:layout_marginStart="@dimen/unify_space_8"
+                    android:layout_marginLeft="@dimen/unify_space_8"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
+                    android:ellipsize="end"
+                    android:lineSpacingExtra="6sp"
+                    android:maxLines="1"
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="10sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toTopOf="@+id/footer"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/title"
+                    tools:text="Voucher Tous Les Jours Rp 100.000,-"
+                    tools:visibility="visible" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.tokopedia.unifycomponents.CardUnify>
-
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.tokopedia.unifycomponents.CardUnify2>
+    </RelativeLayout>
 
     <include
         layout="@layout/layout_template_icon_business_widget"
