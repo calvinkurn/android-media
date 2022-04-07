@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 /**
  * Created by dhaba
  */
-class CueCategory2x2DataModel (
+class CueCategoryDataModel (
     val channelModel: ChannelModel,
     val isCache: Boolean = false
 ): ImpressHolder(), HomeComponentVisitable {

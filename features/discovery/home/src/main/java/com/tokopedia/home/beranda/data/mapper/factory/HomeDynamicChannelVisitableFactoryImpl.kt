@@ -602,7 +602,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         isCache: Boolean,
         verticalPosition: Int
     ): Visitable<*> {
-        return CueCategory2x2DataModel(
+        return CueCategoryDataModel(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
                 channel,
                 verticalPosition
