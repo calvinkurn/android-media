@@ -15,7 +15,7 @@ data class GetTradeInDetailInput(
     @SerializedName("SessionId")
     var sessionId: String,
     @SerializedName("ShopID")
-    var shopID: String,
+    var shopID: Int,
     @SerializedName("TraceId")
     var traceId: String,
     @SerializedName("UniqueCode")

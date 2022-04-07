@@ -39,7 +39,7 @@ class TradeInDetailUseCase @Inject constructor(
                     sessionId = laku6DeviceModel.sessionId,
                     appDeviceId = userSession.deviceId,
                     traceId = laku6DeviceModel.traceId,
-                    shopID = shopID,
+                    shopID = shopID.toIntOrNull() ?: 0,
                     uniqueCode = tradeInUniqueCode,
                     deviceSignature = laku6DeviceModel.deviceSignature,
                     modelInfo = laku6DeviceModel.modelInfoBase64,
