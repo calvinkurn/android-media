@@ -176,12 +176,8 @@ class EntrypointFragment : BaseDaggerFragment() {
                     val longSelectedProductIds = selectedProductIds.map { it.toLong() }
                     val inventoryError = InventoryErrorMapper.mapToInventoryError(result, bundleId, longSelectedProductIds)
                     val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock variant is 0
-                    if (bundleInfo.isNullOrEmpty()) {
+                    if (!bundleInfo.isNullOrEmpty()) {
                         val productBundleFragment = when {
-                            inventoryError.type == InventoryErrorType.BUNDLE_EMPTY -> {
-                                showEmpty()
-                                this
-                            }
                             viewModel.isSingleProductBundle(bundleInfo.orEmpty()) -> {
                                 val selectedProductId = longSelectedProductIds.firstOrNull().orZero()
                                 SingleProductBundleFragment.newInstance(viewModel.parentProductID.toString(), bundleInfo.orEmpty(),
@@ -201,6 +197,8 @@ class EntrypointFragment : BaseDaggerFragment() {
                         parentFragmentManager.beginTransaction()
                             .replace(R.id.parent_view, productBundleFragment, tagFragment)
                             .commit()
+                    } else {
+                        showEmpty()
                     }
                     showInventoryErrorDialog(inventoryError)
                 }
