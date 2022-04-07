@@ -310,7 +310,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val eventLabel = "eventLabel"
         val step = "2"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -342,7 +342,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val eventLabel = "eventLabel"
         val step = "2"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -370,7 +370,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val eventLabel = "eventLabel"
         val step = "4"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
