@@ -27,7 +27,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_header">
+            app:layout_constraintTop_toBottomOf="@id/ll_header"
+            app:layout_constraintVertical_bias="0.0">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_user_report_title"
@@ -75,44 +76,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:ellipsize="end"
+                android:text="@string/play_user_report_footer"
                 app:layout_constraintStart_toStartOf="@+id/et_detail_report"
                 app:layout_constraintTop_toBottomOf="@+id/et_detail_report"
                 app:typographyType="body_3"
-                android:text="@string/play_user_report_footer"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_action"
-                android:text="@string/play_user_report_submission_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl5"
                 android:layout_marginTop="@dimen/play_offset_12"
                 android:elevation="@dimen/spacing_lvl2"
+                android:enabled="false"
+                android:text="@string/play_user_report_submission_button"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/tv_user_report_footer"
                 app:layout_constraintTop_toBottomOf="@+id/tv_user_report_footer"
-                android:enabled="false"
                 app:unifyButtonType="main"
                 tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/global_error_product"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
-        android:clickable="true"
-        android:elevation="@dimen/play_product_variant_elevation"
-        android:focusable="true"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_header"
-        tools:visibility="gone" />
 
 </merge>
 

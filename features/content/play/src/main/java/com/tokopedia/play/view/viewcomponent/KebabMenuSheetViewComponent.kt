@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,10 +52,6 @@ class KebabMenuSheetViewComponent(
         /** Need to improve if there's watch mode - need to put it under observer*/
         show()
         setActionList()
-    }
-
-    fun hideView(){
-        hide()
     }
 
     private fun setActionList(){

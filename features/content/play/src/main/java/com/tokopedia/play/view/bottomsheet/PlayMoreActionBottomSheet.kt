@@ -129,21 +129,21 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 if (it is BottomInsetsState.Shown) {
                     kebabMenuSheetView.showView()
                 }
-                else kebabMenuSheetView.hideView()
+                else kebabMenuSheetView.hide()
             }
 
             kebabMenuType[KebabMenuType.UserReportList]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
                     userReportSheetView.showView()
                 }
-                else userReportSheetView.hideView()
+                else userReportSheetView.hide()
             }
 
             kebabMenuType[KebabMenuType.UserReportSubmission]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
-                    userReportSubmissionSheetView.showView()
+                    userReportSubmissionSheetView.showView(state.estimatedInsetsHeight)
                 }
-                else userReportSubmissionSheetView.hideView()
+                else userReportSubmissionSheetView.hide()
             }
         })
     }
@@ -329,7 +329,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
         item: PlayUserReportReasoningUiModel.Reasoning
     ) {
         userReportTimeMillis = Calendar.getInstance().time
-        playViewModel.onShowUserReportSubmissionSheet()
+        playViewModel.onShowUserReportSubmissionSheet(estimatedSheetHeight = userReportSheetView.rootView.measuredHeight)
         userReportSubmissionSheetView.setView(item)
     }
 

@@ -108,10 +108,6 @@ class PlayUserReportSheetViewComponent(
         show()
     }
 
-    fun hideView(){
-        hide()
-    }
-
     private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(
         reasoningList = List(5){PlayUserReportReasoningUiModel.Placeholder},
         resultState = ResultState.Loading
