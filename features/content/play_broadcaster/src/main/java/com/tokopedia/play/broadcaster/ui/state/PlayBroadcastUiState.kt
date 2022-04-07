@@ -38,6 +38,8 @@ data class PlayBroadcastUiState(
                 selectedProduct = emptyList(),
                 schedule = ScheduleUiModel.Empty,
                 isExiting = false,
+                gameConfig = GameConfigUiState.Empty,
+                quizForm = QuizFormUiState.Empty,
             )
     }
 }
@@ -91,10 +93,32 @@ data class GameConfigUiState(
     val tapTapConfig: TapTapConfigUiModel,
     val quizConfig: QuizConfigUiModel,
     val gameTypeList: List<GameType>,
-)
+) {
+    companion object {
+        val Empty: GameConfigUiState
+            get() {
+                return GameConfigUiState(
+                    tapTapConfig = TapTapConfigUiModel.empty(),
+                    quizConfig = QuizConfigUiModel.empty(),
+                    gameTypeList = emptyList(),
+                )
+            }
+    }
+}
 
 data class QuizFormUiState(
     val quizFormData: QuizFormDataUiModel,
     val quizFormState: QuizFormStateUiModel,
     val isNeedToUpdateUI: Boolean,
-)
+) {
+    companion object {
+        val Empty: QuizFormUiState
+            get() {
+                return QuizFormUiState(
+                    quizFormData = QuizFormDataUiModel(),
+                    quizFormState = QuizFormStateUiModel.Nothing,
+                    isNeedToUpdateUI = false,
+                )
+            }
+    }
+}

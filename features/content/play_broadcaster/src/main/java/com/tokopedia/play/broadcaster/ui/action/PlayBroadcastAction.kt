@@ -23,7 +23,7 @@ sealed interface PlayBroadcastAction {
     object ExitLive : PlayBroadcastAction
 
     /** Game */
-    data class ClickGameOption(val gameType: GameType): PlayBroadcastAction()
+    data class ClickGameOption(val gameType: GameType): PlayBroadcastAction
 
     /** Quiz */
     object ClickBackOnQuiz: PlayBroadcastAction
