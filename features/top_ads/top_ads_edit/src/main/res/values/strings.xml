@@ -57,10 +57,10 @@
     <string name="topads_edit_search_empty_tip_desc3">Gunakan kata kunci umum dengan  maksimum 2 kata.</string>
     <string name="topads_edit_filter">Filter</string>
     <string name="top_ads_edit_negatif_tip_1">Biaya iklan jadi lebih hemat.</string>
-    <string name="top_ads_edit_negatif_tip_2">Mengurangi angarran yang terapkai.</string>
-    <string name="top_ads_edit_negatif_tip_3">Meningkatkan fokus dan konversi .</string>
-    <string name="top_ads_edit_negatif_tip_4">Tidak dikenai alias gratis.</string>
-    <string name="top_ads_edit_negatif_tip_5">Iklan akan tampil di pencerian yang relevan.</string>
+    <string name="top_ads_edit_negatif_tip_2">Mengurangi anggaran yang terpakai.</string>
+    <string name="top_ads_edit_negatif_tip_3">Meningkatkan fokus dan konversi.</string>
+    <string name="top_ads_edit_negatif_tip_4">Tidak dikenai biaya alias gratis.</string>
+    <string name="top_ads_edit_negatif_tip_5">Iklan akan tampil di pencarian yang relevan.</string>
     <string name="top_ads_edit_group_name_message">Tulis nama grup berdasarkan kategori atau tema iklanmu.</string>
     <string name="top_ads_edit_daily_budget_message">Batasi pengeluaran harianmu dengan atur anggaran harian.</string>
 
@@ -71,5 +71,7 @@
         <item>Harga Terendah</item>
     </string-array>
 
+    <string name="topads_edit_keyword_title">Biaya Iklan dan Kata Kunci</string>
+    <string name="topads_edit_auto_bid_ticker_title"><![CDATA[Biaya iklan dan kata kunci pada grup iklan ini akan diatur oleh TopAds untuk memaksimalkan penjualanmu. <font color = "#03AC0E"><a href="">Pelajari Selengkapnya</a></font>]]></string>
 
 </resources>

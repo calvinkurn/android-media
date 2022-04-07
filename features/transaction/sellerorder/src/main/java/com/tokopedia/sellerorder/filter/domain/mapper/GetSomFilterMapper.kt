@@ -1,7 +1,7 @@
 package com.tokopedia.sellerorder.filter.domain.mapper
 
 import com.tokopedia.applink.order.DeeplinkMapperOrder
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.CHIPS_SORT_ASC
@@ -21,7 +21,6 @@ import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
-import com.tokopedia.unifycomponents.ChipsUnify
 
 object GetSomFilterMapper {
 
@@ -44,15 +43,15 @@ object GetSomFilterMapper {
 
     private fun mapToFilterSortUiModel(): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
-            add(SomFilterChipsUiModel(name = CHIPS_SORT_DESC, key = CHIPS_SORT_DESC, id = SORT_DESCENDING))
-            add(SomFilterChipsUiModel(name = CHIPS_SORT_ASC, key = CHIPS_SORT_ASC, id = SORT_ASCENDING))
+            add(SomFilterChipsUiModel(name = CHIPS_SORT_DESC, key = CHIPS_SORT_DESC, id = SORT_DESCENDING.toLong()))
+            add(SomFilterChipsUiModel(name = CHIPS_SORT_ASC, key = CHIPS_SORT_ASC, id = SORT_ASCENDING.toLong()))
         }
     }
 
     private fun mapToFilterLabelUiModel(): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
-            add(SomFilterChipsUiModel(name = NOT_YET_PRINTED_LABEL, key = NOT_YET_PRINTED_LABEL, id = NOT_YET_PRINTED))
-            add(SomFilterChipsUiModel(name = ALREADY_PRINT_LABEL, key = ALREADY_PRINT_LABEL, id = ALREADY_PRINT))
+            add(SomFilterChipsUiModel(name = NOT_YET_PRINTED_LABEL, key = NOT_YET_PRINTED_LABEL, id = NOT_YET_PRINTED.toLong()))
+            add(SomFilterChipsUiModel(name = ALREADY_PRINT_LABEL, key = ALREADY_PRINT_LABEL, id = ALREADY_PRINT.toLong()))
         }
     }
 
@@ -81,7 +80,7 @@ object GetSomFilterMapper {
     private fun mapToFilterCourierUiModel(shippingList: List<SomFilterResponse.OrderFilterSom.Shipping>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             shippingList.map {
-                add(SomFilterChipsUiModel(id = it.shippingId.toIntOrZero(), key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
+                add(SomFilterChipsUiModel(id = it.shippingId.toLongOrZero(), key = it.shippingCode.orEmpty(), name = it.shippingName.orEmpty(), idFilter = FILTER_COURIER))
             }
         }
     }
@@ -89,14 +88,14 @@ object GetSomFilterMapper {
     private fun mapToFilterTypeUiModel(typeList: List<SomFilterResponse.OrderType>): List<SomFilterChipsUiModel> {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             typeList.map {
-                add(SomFilterChipsUiModel(id = it.id, key = it.key.orEmpty(), name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
+                add(SomFilterChipsUiModel(id = it.id.toLong(), key = it.key.orEmpty(), name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
             }
         }
     }
 
     fun List<SomFilterUiModel>.getIsRequestCancelApplied(): Boolean {
         return find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData?.find {
-            it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
+            it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST.toLong()
         }?.isSelected ?: false
     }
 
@@ -104,7 +103,7 @@ object GetSomFilterMapper {
                                                                   updateFilterManySelected: (String, String, Int) -> Unit,
                                                                   updateParamSom: (String) -> Unit) {
         val section = this.find { it.nameFilter == FILTER_TYPE_ORDER }
-        section?.somFilterData?.indexOfFirst { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }?.let {
+        section?.somFilterData?.indexOfFirst { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST.toLong() }?.let {
             section.somFilterData[it].run {
                 updateFilterManySelected.invoke(idFilter, chipsType, it)
                 updateParamSom.invoke(idFilter)

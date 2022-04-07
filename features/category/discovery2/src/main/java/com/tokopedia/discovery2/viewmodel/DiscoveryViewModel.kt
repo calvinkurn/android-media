@@ -433,8 +433,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         return "${data.identifier}-${campaignCode}"
     }
 
-    fun updateScroll(dx: Int, dy: Int, newState: Int) {
-        _scrollState.value = ScrollData(dx,dy,newState)
+    fun updateScroll(dx: Int, dy: Int, newState: Int, userPressed: Boolean) {
+        _scrollState.value = ScrollData(dx,dy,newState,!userPressed)
     }
 
     fun resetScroll(){

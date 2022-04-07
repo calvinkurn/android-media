@@ -40,7 +40,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.miscDependencies.embraceSwazzlerSA
+        classpath rootProject.ext.miscDependencies.embraceSwazzler
         classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
@@ -312,7 +312,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.miscDependencies.newRelic
     // Embrace
-    implementation rootProject.ext.miscDependencies.embraceSdkSA
+    implementation rootProject.ext.miscDependencies.embraceSdk
 
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -368,7 +368,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.robust
     implementation rootProject.ext.miscDependencies.autopatchbase
     implementation projectOrAar(rootProject.ext.libraries.keys)
 
@@ -416,6 +415,8 @@ dependencies {
 
     //Adding this to df_base_sellerapp/build.gradle was giving error - https://github.com/Meituan-Dianping/Robust/issues/444
     implementation projectOrAar(rootProject.ext.libraries.imagePickerInsta)
+
+    debugImplementation rootProject.ext.testDependencies.fragmentTest
 }
 
 apply plugin: 'com.google.gms.google-services'
