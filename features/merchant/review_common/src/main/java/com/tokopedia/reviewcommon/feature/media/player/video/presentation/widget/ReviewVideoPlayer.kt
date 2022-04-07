@@ -153,7 +153,7 @@ class ReviewVideoPlayer(
     fun initializeVideoPlayer(
         uri: String,
         newPlayerView: PlayerView?,
-        newListener: ReviewVideoPlayerListener,
+        newListener: ReviewVideoPlayerListener?,
         shouldPrepare: Boolean
     ) {
         if (uri.isBlank() || newPlayerView == null) return
