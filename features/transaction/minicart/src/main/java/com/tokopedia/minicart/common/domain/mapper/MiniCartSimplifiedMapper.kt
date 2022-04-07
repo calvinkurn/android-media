@@ -1,10 +1,7 @@
 package com.tokopedia.minicart.common.domain.mapper
 
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
-import com.tokopedia.minicart.common.data.response.minicartlist.BundleDetail
-import com.tokopedia.minicart.common.data.response.minicartlist.CartDetail
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
@@ -106,6 +103,8 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                                     bundleSlashPriceLabel = bundleDetail.slashPriceLabel,
                                     bundleOriginalPrice = bundleDetail.bundleOriginalPrice,
                                     bundleQuantity = bundleDetail.bundleQty,
+                                    bundleMultiplier = product.productQuantity / bundleDetail.bundleQty,
+                                    bundleLabelQuantity = product.productQuantity / bundleDetail.bundleQty,
                                     products = hashMapOf(key to item)
                             )
                         } else {
@@ -170,6 +169,8 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                                         bundleSlashPriceLabel = bundleDetail.slashPriceLabel,
                                         bundleOriginalPrice = bundleDetail.bundleOriginalPrice,
                                         bundleQuantity = bundleDetail.bundleQty,
+                                        bundleMultiplier = product.productQuantity / bundleDetail.bundleQty,
+                                        bundleLabelQuantity = product.productQuantity / bundleDetail.bundleQty,
                                         products = hashMapOf(key to item)
                                 )
                             } else {

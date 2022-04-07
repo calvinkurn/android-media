@@ -33,6 +33,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.domain.data.MiniCartABTestData
 import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
@@ -148,7 +149,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
     }
 
     private fun getMiniCartItems(): List<MiniCartItem> {
-//        return miniCartSimplifiedData.value?.miniCartItems ?: emptyList()
+        // TODO: check if direct get from map is possible for changes
         return miniCartSimplifiedData.value?.miniCartItems?.values?.toList() ?: emptyList()
     }
 
@@ -559,25 +560,48 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
     fun updateProductQty(element: MiniCartProductUiModel, newQty: Int) {
         val visitables = getVisitables()
+        val productId = element.productId
+        val bundleId = element.bundleId
+        val isBundling = element.isBundlingItem
+        // flag to identify cart group
+        var isInBundle = false
         loop@ for (visitable in visitables) {
-            val productId = element.productId
-            val bundleId = element.bundleId
-            if (visitable is MiniCartProductUiModel && (visitable.productId == productId || visitable.bundleId == bundleId) && !visitable.isProductDisabled) {
-                visitable.setQuantity(newQty)
-                break@loop
+            if (visitable is MiniCartProductUiModel && !visitable.isProductDisabled) {
+                val updateNonBundle = !isBundling && visitable.productId == productId
+                val updateBundle = isBundling && visitable.bundleId == bundleId
+                if (updateNonBundle) {
+                    visitable.setQuantity(newQty)
+                    break@loop
+                }
+                if (updateBundle) {
+                    isInBundle = true
+                    visitable.setQuantity(newQty)
+                }
+                if (isInBundle && !updateBundle) {
+                    // break loop when already in another cart group
+                    break@loop
+                }
             }
         }
 
         val cartItems = getMiniCartItems()
         loop@ for (cartItem in cartItems) {
-            if (cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == element.productId && !cartItem.isError) {
+            if (!isBundling && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
                 cartItem.quantity = newQty
+                break@loop
+            }
+            if (isBundling && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
+                cartItem.bundleQuantity = newQty
+                val products = cartItem.products
+                products.forEach {
+                    it.value.quantity = newQty * cartItem.bundleMultiplier
+                }
                 break@loop
             }
         }
     }
 
-    fun updateProductNotes(productId: String, newNotes: String) {
+    fun updateProductNotes(productId: String, isBundlingItem: Boolean, bundleId: String, newNotes: String) {
         val visitables = getVisitables()
         loop@ for (visitable in visitables) {
             if (visitable is MiniCartProductUiModel && visitable.productId == productId && !visitable.isProductDisabled) {
@@ -588,8 +612,12 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
 
         val cartItems = getMiniCartItems()
         loop@ for (cartItem in cartItems) {
-            if (cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
+            if (!isBundlingItem && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
                 cartItem.notes = newNotes
+                break@loop
+            }
+            if (isBundlingItem && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
+                cartItem.products[MiniCartItemKey(productId)]?.notes = newNotes
                 break@loop
             }
         }

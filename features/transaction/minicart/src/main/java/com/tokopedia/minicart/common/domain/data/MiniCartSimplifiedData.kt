@@ -50,6 +50,7 @@ sealed class MiniCartItem {
             var bundleOriginalPrice: Long = 0L,
             var bundleQuantity: Int = 0,
             var bundleLabelQuantity: Int = 0,
+            var bundleMultiplier: Int = 0,
             var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap()
     ): MiniCartItem()
 

@@ -38,6 +38,8 @@ class MiniCartListUiModelMapper @Inject constructor() {
 
     companion object {
         const val PLACEHOLDER_OVERWEIGHT_VALUE = "{{weight}}"
+
+        private const val BUNDLE_NO_VARIANT_CONST = -1
     }
 
     fun mapUiModel(miniCartData: MiniCartData): MiniCartListUiModel {
@@ -325,7 +327,11 @@ class MiniCartListUiModelMapper @Inject constructor() {
             bundleOriginalPrice = bundleDetail.bundleOriginalPrice
             bundleOriginalPriceFmt = bundleDetail.bundleOriginalPriceFmt
             bundleMinOrder = bundleDetail.bundleMinOrder
-            bundleMaxOrder = bundleDetail.bundleMaxOrder
+            bundleMaxOrder = if (bundleDetail.bundleQuota > BUNDLE_NO_VARIANT_CONST) {
+                min(bundleDetail.bundleMaxOrder, bundleDetail.bundleQuota)
+            } else {
+                bundleDetail.bundleMaxOrder
+            }
             bundleQty = bundleQuantity
             bundleIconUrl = bundleDetail.bundleIconUrl
             slashPriceLabel = bundleDetail.slashPriceLabel
@@ -465,7 +471,9 @@ class MiniCartListUiModelMapper @Inject constructor() {
                                 bundlePrice = visitable.bundlePrice,
                                 bundleSlashPriceLabel = visitable.slashPriceLabel,
                                 bundleOriginalPrice = visitable.bundleOriginalPrice,
-                                bundleQuantity = visitable.bundleQuantity,
+                                bundleQuantity = visitable.bundleQty,
+                                bundleMultiplier = visitable.bundleMultiplier,
+                                bundleLabelQuantity = visitable.bundleMultiplier,
                                 products = hashMapOf(key to miniCartItem)
                         )
                     } else {
