@@ -13,4 +13,7 @@
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
+    <style name="PlayTagPlaceholder">
+        <item name="android:background">@drawable/bg_play_tag_placeholder</item>
+    </style>
 </resources>

@@ -186,7 +186,7 @@
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
 
-/features/user/chatbot/                         		@tokopedia/android-minionsolo-dev
+/features/user/chatbot/                         		@tokopedia/android-minionyoda-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
 /features/user/topchat/                         		@tokopedia/android-minionkevin-dev
 /features/user/topchat_no_op/                   		@tokopedia/android-minionkevin-dev
@@ -233,8 +233,8 @@
 /features/communication/notifcenter/                    @tokopedia/android-minionkevin-dev
 /features/communication/push-notification-common/       @tokopedia/android-minionyoda-dev
 
-/features/operational/contact_us        				@tokopedia/android-minionsolo-dev
-/features/operational/csat_rating        				@tokopedia/android-minionsolo-dev
+/features/operational/contact_us        				@tokopedia/android-minionyoda-dev
+/features/operational/csat_rating        				@tokopedia/android-minionyoda-dev
 
 /features/fintech/common_wallet         				@tokopedia/android-minionyoda-dev
 /features/fintech/fintech_home_widget         			@tokopedia/android-minionyoda-dev
@@ -325,7 +325,7 @@
 /libraries/logger/										@tokopedia/android-core-dev
 /libraries/keys/										@tokopedia/android-core-dev
 /libraries/mapviewer/								    @tokopedia/android-core-dev
-/libraries/network/                                     @tokopedia/android-minionkevin-dev
+/libraries/network/                                     @tokopedia/android-core-dev
 /libraries/oms/											@tokopedia/android-core-dev
 /libraries/pre_release_inspector/			            @tokopedia/android-core-dev
 /libraries/pre_release_inspector_no_op/					@tokopedia/android-core-dev
