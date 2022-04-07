@@ -13,6 +13,7 @@ sealed class PlayUpcomingUiEvent {
     data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null) : PlayUpcomingUiEvent()
     data class ShowInfoEvent(val message: UiString) : PlayUpcomingUiEvent()
     data class ShowInfoWithActionEvent(val message: UiString, val action: () -> Unit) : PlayUpcomingUiEvent()
+    data class ShowError(val error: Throwable) : PlayUpcomingUiEvent()
 
     /**
      * Upcoming

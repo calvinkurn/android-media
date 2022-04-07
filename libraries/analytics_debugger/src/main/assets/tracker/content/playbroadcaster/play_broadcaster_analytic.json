@@ -104,6 +104,16 @@
     },
     {
       "event": "clickSellerBroadcast",
+      "eventAction": "click - search bar",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "businessUnit": "play",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickSellerBroadcast",
       "eventAction": "click - save product card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
@@ -283,17 +293,6 @@
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
-      "sessionIris": ".*",
-      "currentSite": "(tokopediamarketplace|tokopediaseller)",
-      "shopId": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
-    },
-    {
-      "eventAction": "click etalase card",
-      "event": "clickSellerBroadcast",
-      "eventCategory": "seller broadcast",
-      "eventLabel": "\\d+ - .+",
       "sessionIris": ".*",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "shopId": ".*",
@@ -704,6 +703,17 @@
     },
     {
       "eventAction": "click - content tag",
+      "event": "clickSellerBroadcast",
+      "eventCategory": "seller broadcast",
+      "eventLabel": "\\d+ - .*",
+      "sessionIris": ".*",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "shopId": ".*",
+      "userId": ".*",
+      "businessUnit": "play"
+    },
+    {
+      "eventAction": "unclick - content tag",
       "event": "clickSellerBroadcast",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+ - .*",

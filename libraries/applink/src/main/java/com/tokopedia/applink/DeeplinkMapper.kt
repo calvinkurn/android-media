@@ -185,7 +185,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationTopChat(uri: Uri, deeplink: String): String {
         val query = uri.query
         val path = uri.path
-        var deepLinkInternal = ApplinkConstInternalGlobal.TOPCHAT
+        var deepLinkInternal = ApplinkConstInternalMarketplace.TOPCHAT
         if (query?.isNotEmpty() == true || path?.isNotEmpty() == true) {
             return when {
                 isChatBotTrue(uri) -> {
@@ -531,7 +531,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromInternalTokopedia(context: Context, uri: Uri, deeplink: String): String {
         return when {
             deeplink.startsWith(ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST) -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink)
-            deeplink.startsWith(ApplinkConstInternalGlobal.TOPCHAT) && shouldRedirectToSellerApp(uri) -> AppLinkMapperSellerHome.getTopChatAppLink(uri)
+            deeplink.startsWith(ApplinkConstInternalMarketplace.TOPCHAT) && shouldRedirectToSellerApp(uri) -> AppLinkMapperSellerHome.getTopChatAppLink(uri)
             deeplink.startsWith(ApplinkConstInternalOrder.NEW_ORDER) -> getSomNewOrderAppLink(uri)
             deeplink.startsWith(ApplinkConstInternalOrder.READY_TO_SHIP) -> getSomReadyToShipAppLink(uri)
             deeplink.startsWith(ApplinkConstInternalOrder.SHIPPED) -> getSomShippedAppLink(uri)

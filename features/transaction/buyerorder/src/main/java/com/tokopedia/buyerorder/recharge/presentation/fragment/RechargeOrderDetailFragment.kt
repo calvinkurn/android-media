@@ -16,6 +16,8 @@ import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
+import com.tokopedia.buyerorder.detail.data.OrderCategory
+import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
@@ -147,6 +149,21 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
                 OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
         )
         rechargeOrderDetailAnalytics.eventOpenScreen(RechargeOrderDetailAnalytics.DefaultValue.SCREEN_NAME_INVOICE)
+
+        context?.let {
+            startActivity(
+                SeeInvoiceActivity.newInstance(
+                    it,
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData()),
+                    orderId,
+                    invoiceUrl,
+                    invoiceRefNum,
+                    getString(R.string.title_invoice),
+                    OrderCategory.DIGITAL
+                )
+            )
+        }
     }
 
     override fun onCopyCodeClicked(label: String, value: String) {

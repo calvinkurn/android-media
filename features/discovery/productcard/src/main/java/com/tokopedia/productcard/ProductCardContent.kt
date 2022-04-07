@@ -14,20 +14,32 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadIcon
-import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.CLOSE_BOLD_TAG
+import com.tokopedia.productcard.utils.CustomTypefaceSpan
+import com.tokopedia.productcard.utils.LABEL_VARIANT_TAG
+import com.tokopedia.productcard.utils.OPEN_BOLD_TAG
+import com.tokopedia.productcard.utils.ROBOTO_BOLD
+import com.tokopedia.productcard.utils.ROBOTO_REGULAR
+import com.tokopedia.productcard.utils.applyConstraintSet
+import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.utils.toUnifyLabelType
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
-import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 
 internal fun View.renderProductCardContent(
         productCardModel: ProductCardModel,
@@ -57,6 +69,7 @@ internal fun View.renderProductCardContent(
 }
 
 private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
+    val textViewGimmick = findViewById<Typography?>(R.id.textViewGimmick)
     if (productCardModel.isShowLabelGimmick())
         textViewGimmick?.initLabelGroup(productCardModel.getLabelGimmick())
     else
@@ -64,6 +77,8 @@ private fun View.renderTextGimmick(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
+    val imageViewPdpView = findViewById<ImageView?>(R.id.imageViewPdpView)
+    val textViewPdpView = findViewById<Typography?>(R.id.textViewPdpView)
     imageViewPdpView?.hide()
     textViewPdpView?.shouldShowWithAction(productCardModel.pdpViewCount.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(productCardModel.pdpViewCount)
@@ -72,6 +87,7 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
+    val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
         val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productNameFromHtml.toString(), context.getString(R.string.content_desc_textViewProductName))
@@ -79,6 +95,8 @@ private fun View.renderTextProductName(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
+    val textViewProductName = findViewById<Typography?>(R.id.textViewProductName)
+    val labelVariantContainer = findViewById<LinearLayout?>(R.id.labelVariantContainer)
     val willShowVariant = productCardModel.willShowVariant()
 
     if (willShowVariant) {
@@ -188,6 +206,9 @@ private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.La
 }
 
 fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
+    val textViewCategory = findViewById<Typography?>(R.id.textViewCategory)
+    val dividerCategory = findViewById<View?>(R.id.dividerCategory)
+    val textViewCostPerUnit = findViewById<Typography?>(R.id.textViewCostPerUnit)
     textViewCategory?.shouldShowWithAction(productCardModel.isShowLabelCategory()) {
         it.initLabelGroup(productCardModel.getLabelCategory())
     }
@@ -200,6 +221,7 @@ fun View.renderTextCategoryAndCostPerUnit(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
+    val textViewPrice = findViewById<Typography?>(R.id.textViewPrice)
     moveTextPriceConstraint(productCardModel)
 
     val priceToRender = productCardModel.getPriceToRender()
@@ -220,6 +242,8 @@ private fun View.moveTextPriceConstraint(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderDiscount(productCardModel: ProductCardModel) {
+    val labelDiscount = findViewById<Label?>(R.id.labelDiscount)
+    val textViewSlashedPrice = findViewById<Typography?>(R.id.textViewSlashedPrice)
     labelDiscount?.shouldShowWithAction(productCardModel.discountPercentage.isNotEmpty()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.discountPercentage, context.getString(R.string.content_desc_labelDiscount))
     }
@@ -231,6 +255,7 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
+    val labelPrice = findViewById<Label?>(R.id.labelPrice)
     moveLabelPriceConstraint(productCardModel)
 
     if (productCardModel.isShowDiscountOrSlashPrice())
@@ -253,6 +278,9 @@ private fun ProductCardModel.getPriceToRender(): String {
 }
 
 private fun View.renderTextFulfillment(productCardModel: ProductCardModel) {
+    val imageFulfillment = findViewById<AppCompatImageView?>(R.id.imageFulfillment)
+    val dividerFulfillment = findViewById<View?>(R.id.dividerFulfillment)
+    val textViewFulfillment = findViewById<Typography?>(R.id.textViewFulfillment)
     if (productCardModel.willShowFulfillment()) {
         val labelGroup = productCardModel.getLabelFulfillment() ?: return
 
@@ -271,6 +299,7 @@ private fun View.renderTextFulfillment(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
+    val imageShopBadge = findViewById<ImageView?>(R.id.imageShopBadge)
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
     imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
         it.loadIcon(shopBadge?.imageUrl ?: "")
@@ -278,6 +307,7 @@ private fun View.renderShopBadge(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
+    val textViewShopLocation = findViewById<Typography?>(R.id.textViewShopLocation)
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty() && !productCardModel.willShowFulfillment()) {
         TextAndContentDescriptionUtil.setTextAndContentDescription(it, productCardModel.shopLocation, context.getString(R.string.content_desc_textViewShopLocation))
     }
@@ -291,15 +321,22 @@ private fun View.renderRating(productCardModel: ProductCardModel) {
 }
 
 private fun View.hideRating() {
+    val linearLayoutImageRating = findViewById<LinearLayout?>(R.id.linearLayoutImageRating)
     linearLayoutImageRating?.gone()
 }
 
 private fun View.renderRatingStars(productCardModel: ProductCardModel) {
+    val linearLayoutImageRating = findViewById<LinearLayout?>(R.id.linearLayoutImageRating)
     linearLayoutImageRating?.visible()
     setImageRating(productCardModel.ratingCount)
 }
 
 private fun View.setImageRating(rating: Int) {
+    val imageViewRating1 = findViewById<ImageView?>(R.id.imageViewRating1)
+    val imageViewRating2 = findViewById<ImageView?>(R.id.imageViewRating2)
+    val imageViewRating3 = findViewById<ImageView?>(R.id.imageViewRating3)
+    val imageViewRating4 = findViewById<ImageView?>(R.id.imageViewRating4)
+    val imageViewRating5 = findViewById<ImageView?>(R.id.imageViewRating5)
     imageViewRating1?.setImageResource(getRatingDrawable(rating >= 1))
     imageViewRating2?.setImageResource(getRatingDrawable(rating >= 2))
     imageViewRating3?.setImageResource(getRatingDrawable(rating >= 3))
@@ -314,12 +351,14 @@ private fun getRatingDrawable(isActive: Boolean): Int {
 }
 
 private fun View.renderTextReview(productCardModel: ProductCardModel) {
+    val textViewReviewCount = findViewById<Typography?>(R.id.textViewReviewCount)
     textViewReviewCount?.shouldShowWithAction(productCardModel.willShowRatingAndReviewCount()) {
         it.text = String.format(context.getString(R.string.product_card_review_count_format), productCardModel.reviewCount)
     }
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
+    val textViewIntegrity = findViewById<Typography?>(R.id.textViewIntegrity)
     if (productCardModel.willShowRatingAndReviewCount() || productCardModel.willShowSalesAndRating())
         textViewIntegrity?.initLabelGroup(null)
     else
@@ -332,6 +371,8 @@ private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
+    val imageSalesRatingFloat = findViewById<ImageView?>(R.id.imageSalesRatingFloat)
+    val salesRatingFloat = findViewById<Typography?>(R.id.salesRatingFloat)
     val willShowSalesRatingFloat = productCardModel.willShowRating()
 
     imageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
@@ -342,6 +383,8 @@ private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextIntegrityWithSalesRatingFloat(productCardModel: ProductCardModel) {
+    val salesRatingFloatLine = findViewById<View?>(R.id.salesRatingFloatLine)
+    val textViewSales = findViewById<Typography?>(R.id.textViewSales)
     val willShowSalesAndRating = productCardModel.willShowSalesAndRating()
 
     salesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
@@ -352,6 +395,8 @@ private fun View.renderTextIntegrityWithSalesRatingFloat(productCardModel: Produ
 }
 
 private fun View.renderShopRating(productCardModel: ProductCardModel) {
+    val imageShopRating = findViewById<ImageView?>(R.id.imageShopRating)
+    val textViewShopRating = findViewById<Typography?>(R.id.textViewShopRating)
     if (productCardModel.isShowShopRating()) {
         imageShopRating?.visible()
         imageShopRating.setImageResource(getShopRatingDrawable(productCardModel))
@@ -421,12 +466,14 @@ private fun getShopRatingDrawable(productCardModel: ProductCardModel) =
         else R.drawable.product_card_ic_shop_rating
 
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
+    val imageFreeOngkirPromo = findViewById<ImageView?>(R.id.imageFreeOngkirPromo)
     imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.isShowFreeOngkirBadge()) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
 }
 
 private fun View.renderTextShipping(productCardModel: ProductCardModel) {
+    val textViewShipping = findViewById<Typography?>(R.id.textViewShipping)
     if (productCardModel.isShowFreeOngkirBadge())
         textViewShipping?.initLabelGroup(null)
     else
@@ -434,6 +481,7 @@ private fun View.renderTextShipping(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextETA(productCardModel: ProductCardModel) {
+    val textViewETA = findViewById<Typography?>(R.id.textViewETA)
     textViewETA?.initLabelGroup(productCardModel.getLabelETA())
 }
 
