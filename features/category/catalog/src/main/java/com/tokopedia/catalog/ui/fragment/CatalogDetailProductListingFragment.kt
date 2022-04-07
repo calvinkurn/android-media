@@ -91,9 +91,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     lateinit var addWishlistActionUseCase: AddWishListUseCase
 
     @Inject
-    lateinit var removeWishlistV2UseCase: DeleteWishlistV2UseCase
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
     @Inject
-    lateinit var addWishlistV2UseCase: AddToWishlistV2UseCase
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -532,8 +532,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         context?.let { context ->
             if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                removeWishlistV2UseCase.setParams(productId, userId)
-                removeWishlistV2UseCase.execute(
+                deleteWishlistV2UseCase.setParams(productId, userId)
+                deleteWishlistV2UseCase.execute(
                     onSuccess = { onSuccessRemoveWishlistV2(productId) },
                     onError = { onErrorRemoveWishlistV2(ErrorHandler.getErrorMessage(context, it), productId) })
             } else {
@@ -555,8 +555,8 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
         context?.let { context ->
             if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
-                addWishlistV2UseCase.setParams(productId, userId)
-                addWishlistV2UseCase.execute(
+                addToWishlistV2UseCase.setParams(productId, userId)
+                addToWishlistV2UseCase.execute(
                     onSuccess = {
                         onSuccessAddWishlistV2(productId)},
                     onError = {

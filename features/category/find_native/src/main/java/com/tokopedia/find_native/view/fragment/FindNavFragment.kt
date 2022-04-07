@@ -54,8 +54,12 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.find_nav_fragment.*
 import kotlinx.android.synthetic.main.layout_find_related.*
 import java.util.*
@@ -68,7 +72,7 @@ private const val REQUEST_PRODUCT_ITEM_CLICK = 1002
 
 class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         BaseCategoryAdapter.OnItemChangeView,
-        QuickFilterListener, FindRelatedLinkAdapter.RelatedLinkClickListener, FindPriceListAdapter.PriceListClickListener {
+        QuickFilterListener, WishListActionListener, FindRelatedLinkAdapter.RelatedLinkClickListener, FindPriceListAdapter.PriceListClickListener {
 
     private var findNavScreenName: String = "Find"
 
@@ -82,10 +86,17 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     lateinit var gcmHandler: GCMHandler
 
     @Inject
-    lateinit var removeWishlistActionUseCase: DeleteWishlistV2UseCase
+    lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
 
     @Inject
-    lateinit var addWishListActionUseCase: AddToWishlistV2UseCase
+    lateinit var addWishListActionUseCase: AddWishListUseCase
+
+    @Inject
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
+
+    @Inject
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
+
     private lateinit var component: FindNavComponent
     private var quickFilterAdapter: QuickFilterAdapter? = null
     private var productNavListAdapter: ProductNavListAdapter? = null
@@ -550,7 +561,12 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         return getSelectedFilter().containsKey(option.key)
     }
 
-    private fun onErrorAddWishList(errorMessage: String?, productId: String) {
+    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    private fun onErrorAddWishListV2(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         view?.let { v ->
             errorMessage?.let { errorMsg ->
@@ -558,7 +574,13 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         }
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
+    override fun onSuccessAddWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
+    }
+
+    private fun onSuccessAddWishlistV2(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
         enableWishListButton(productId)
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
@@ -573,7 +595,12 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         startActivity(intent)
     }
 
-    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    private fun onErrorRemoveWishlistV2(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         view?.let { v ->
             errorMessage?.let { errorMsg ->
@@ -581,7 +608,13 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         }
     }
 
-    private fun onSuccessRemoveWishlist(productId: String) {
+    override fun onSuccessRemoveWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
+    }
+
+    private fun onSuccessRemoveWishlistV2(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
         enableWishListButton(productId)
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
@@ -608,20 +641,32 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     }
 
     private fun removeWishList(productId: String, userId: String) {
-        removeWishlistActionUseCase.setParams(productId, userId)
-        removeWishlistActionUseCase.execute(
-                onSuccess = { onSuccessRemoveWishlist(productId) },
-                onError = { onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, it), productId) })
+        context?.let { context ->
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+                deleteWishlistV2UseCase.setParams(productId, userId)
+                deleteWishlistV2UseCase.execute(
+                    onSuccess = { onSuccessRemoveWishlistV2(productId) },
+                    onError = { onErrorRemoveWishlistV2(ErrorHandler.getErrorMessage(context, it), productId) })
+            } else {
+                removeWishlistActionUseCase.createObservable(productId, userId, this)
+            }
+        }
     }
 
     private fun addWishList(productId: String, userId: String) {
-        addWishListActionUseCase.setParams(productId, userId)
-        addWishListActionUseCase.execute(
-                onSuccess = {
-                    onSuccessAddWishlist(productId)},
-                onError = {
-                    onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
-                })
+        context?.let { context ->
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+                addToWishlistV2UseCase.setParams(productId, userId)
+                addToWishlistV2UseCase.execute(
+                    onSuccess = {
+                        onSuccessAddWishlistV2(productId)},
+                    onError = {
+                        onErrorAddWishListV2(ErrorHandler.getErrorMessage(context, it), productId)
+                    })
+            } else {
+                addWishListActionUseCase.createObservable(productId, userId, this)
+            }
+        }
     }
 
     private fun launchLoginActivity() {
