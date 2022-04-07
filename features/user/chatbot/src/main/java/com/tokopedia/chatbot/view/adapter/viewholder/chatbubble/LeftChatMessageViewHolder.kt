@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
+import android.content.res.Configuration
 import android.view.Gravity
 import android.view.View
 import com.google.gson.GsonBuilder
@@ -53,9 +54,35 @@ class LeftChatMessageViewHolder(
     }
 
     private fun bindSenderInfo(senderInfoData: SenderInfoData) {
+
+        val nightModeFlags: Int = itemView.context.resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK
+        when (nightModeFlags) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                senderInfoData.iconDarkUrl?.let {
+                    senderAvatar?.setImageUrl(it)
+                }
+            }
+            Configuration.UI_MODE_NIGHT_NO -> {
+                senderInfoData.iconUrl?.let {
+                    senderAvatar?.setImageUrl(it)
+                }
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+                senderInfoData.iconUrl?.let {
+                    senderAvatar?.setImageUrl(it)
+                }
+            }
+            else -> {
+                senderInfoData.iconUrl?.let {
+                    senderAvatar?.setImageUrl(it)
+                }
+            }
+
+        }
+
         senderAvatar?.show()
         senderName?.show()
-        ImageHandler.loadImageCircle2(itemView.context, senderAvatar, senderInfoData.iconUrl)
         senderName?.text = senderInfoData.name
     }
 

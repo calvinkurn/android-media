@@ -7,5 +7,7 @@ data class SenderInfoData(
     @SerializedName("icon_url")
     val iconUrl: String?,
     @SerializedName("name")
-    val name: String?
+    val name: String?,
+    @SerializedName("icon_url_dark")
+    val iconDarkUrl: String?
 )
