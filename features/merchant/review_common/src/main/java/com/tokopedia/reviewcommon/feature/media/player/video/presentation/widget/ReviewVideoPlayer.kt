@@ -20,6 +20,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.reviewcommon.feature.media.player.video.data.cache.MediaPlayerCache
 import java.lang.ref.WeakReference
 
@@ -42,8 +44,11 @@ class ReviewVideoPlayer(
 
         //Min video You want to buffer when user resumes video
         private const val MIN_PLAYBACK_RESUME_BUFFER = 2000
+
+        private const val SERVER_LOGGER_TAG = "REVIEW_VIDEO_PLAYER"
     }
 
+    private var currentUrl: String = ""
     private var listenerRef: WeakReference<ReviewVideoPlayerListener?>? = null
     private var playerViewRef: WeakReference<PlayerView?>? = null
     private var volume: Float = 0f
@@ -108,7 +113,15 @@ class ReviewVideoPlayer(
             }
 
             override fun onPlayerError(error: ExoPlaybackException) {
-                super.onPlayerError(error)
+                ServerLogger.log(
+                    Priority.P2,
+                    SERVER_LOGGER_TAG,
+                    mapOf("type" to buildString {
+                        append("url: $currentUrl")
+                        appendLine()
+                        append(error.stackTraceToString())
+                    })
+                )
                 listenerRef?.get()?.onReviewVideoPlayerError()
             }
         })
@@ -146,6 +159,7 @@ class ReviewVideoPlayer(
         if (uri.isBlank() || newPlayerView == null) return
         val oldPlayerView = playerViewRef?.get()
         val exoPlayer = exoPlayer ?: getExoPlayerInstance()
+        currentUrl = uri
         playerViewRef = WeakReference(newPlayerView)
         listenerRef = WeakReference(newListener)
         if (shouldPrepare) {
@@ -167,6 +181,7 @@ class ReviewVideoPlayer(
         listenerRef = null
         exoPlayer?.release()
         exoPlayer = null
+        currentUrl = ""
     }
 
     fun setPlayerController(playerControlViewReviewMediaGallery: PlayerControlView?) {
