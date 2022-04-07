@@ -17,7 +17,6 @@ import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_ADD_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_SOURCE_RECOM
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.model.*
 import com.tokopedia.topads.common.data.response.FinalAdResponse
@@ -243,11 +242,10 @@ class TopAdsInsightBaseProductFragment : BaseDaggerFragment() {
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         if (currentGroupId.isEmpty()) {
-            val suggestedBidValue = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
             val priceBid = data.firstOrNull()?.suggestionBid?.toDouble() ?: 0.0
 
             topAdsDashboardPresenter.createGroup(
-                adapter.getSelectedIds(), currentGroupName, priceBid, suggestedBidValue) {
+                adapter.getSelectedIds(), currentGroupName, priceBid, priceBid) {
                 if (it.isNullOrEmpty()) {
                     showSuccessToast()
                     loadData()

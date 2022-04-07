@@ -295,7 +295,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
 
     fun setParam(
         productIds: List<String>, currentGroupName: String, priceBid: Double,
-        suggestedBidValue: Double, dailyBudget: Double = 0.0,
+        suggestedBidValue: Double
     ): RequestParams? {
         val input = TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
@@ -308,21 +308,19 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                 }
                 group.name = currentGroupName
                 group.status = PUBLISHED
+                groupInput.action = ACTION_CREATE
                 group.bidSettings = listOf(
                     GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid.toFloat()),
                     GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid.toFloat())
                 )
-                group.dailyBudget = dailyBudget
                 group.suggestionBidSettings = listOf(
                     GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH,
                         suggestedBidValue.toFloat()),
                     GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE,
                         suggestedBidValue.toFloat()),
                 )
-
             }
-            groupInput.action = ACTION_CREATE
-            keywordOperation = listOf(KeywordEditInput(action = ACTION_CREATE))
+            keywordOperation = null
         }
 
         val param = RequestParams.create()
