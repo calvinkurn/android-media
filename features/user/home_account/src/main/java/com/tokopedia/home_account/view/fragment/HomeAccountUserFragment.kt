@@ -318,7 +318,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onEditProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
-        goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
+        goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {
