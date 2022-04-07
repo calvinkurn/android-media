@@ -26,7 +26,9 @@ import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_PRODUCT_ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
+import com.tokopedia.topads.common.data.internal.ParamObject.KEY_AD_TYPE
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -245,6 +247,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         val bundle = Bundle()
         bundle.putBoolean(ISWHITELISTEDUSER, isWhiteListedUser)
         bundle.putBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED, isAutoBidToggleEnabled)
+        bundle.putString(KEY_AD_TYPE, AD_TYPE_PRODUCT_ADS)
         return bundle
     }
 
@@ -547,7 +550,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         topAdsDashboardPresenter.detachView()
     }
 
-    fun setGroupCount(size: Int) {
+    override fun setGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
 
@@ -555,7 +558,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
 
-    fun setDeletedGroupCount(size: Int) {
+    override fun setDeletedGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 

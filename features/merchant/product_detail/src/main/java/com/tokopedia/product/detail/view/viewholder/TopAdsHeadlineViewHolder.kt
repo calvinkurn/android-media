@@ -94,7 +94,8 @@ class TopAdsHeadlineViewHolder(
         topadsHeadlineUiModel?.run {
             if (cpmModel != null) {
                 showHeadlineView(cpmModel!!)
-            } else {
+            } else if (!isHeadlineDataFetched) {
+                isHeadlineDataFetched = true
                 fetchTopadsHeadlineAds(topadsHeadlineUiModel?.topadsHeadLinePage ?: 0)
             }
         }

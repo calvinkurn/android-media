@@ -66,6 +66,24 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
                 isAutoPlay = mIsAutoPlay
             )
         }
+
+        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoClicked(
+                view = this@PlayWidgetSmallView,
+                item = item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
+            )
+        }
+
+        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoImpressed(
+                view = this@PlayWidgetSmallView,
+                item = item,
+                channelPositionInList = position,
+                isAutoPlay = mIsAutoPlay
+            )
+        }
     }
 
     private var mIsAutoPlay: Boolean = false
