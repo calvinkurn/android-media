@@ -52,7 +52,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_marketplace"
                     android:path="@string/path_chat"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
@@ -93,7 +93,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
+                    android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_chat_room"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>

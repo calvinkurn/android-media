@@ -76,9 +76,21 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
 
     suspend fun saveAddress(model: SaveAddressDataModel): AddAddressResponse {
         val param = AddAddressParam(
-                model.addressName, model.receiverName, model.address1, model.address2,
-                model.postalCode, model.phone, model.provinceId.toString(), model.cityId.toString(),
-                model.districtId.toString(), model.latitude, model.longitude, model.isAnaPositive)
+            addr_name = model.addressName,
+            receiver_name = model.receiverName,
+            address_1 = model.address1,
+            address_2 = model.address2,
+            postal_code = model.postalCode,
+            phone = model.phone,
+            province = model.provinceId.toString(),
+            city = model.cityId.toString(),
+            district = model.districtId.toString(),
+            latitude = model.latitude,
+            longitude = model.longitude,
+            is_ana_positive = model.isAnaPositive,
+            set_as_primary_address = model.setAsPrimaryAddresss,
+            apply_name_as_new_user_fullname = model.applyNameAsNewUserFullname
+        )
         val gqlParam = mapOf("input" to param.toMap())
         val request = GraphqlRequest(KeroLogisticQuery.kero_add_address_query,
                 AddAddressResponse::class.java, gqlParam)

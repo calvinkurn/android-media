@@ -1,10 +1,8 @@
 package com.tokopedia.shop.common.widget.bundle.viewholder
 
-import android.util.TypedValue
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.common.R
@@ -19,16 +17,12 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductBundleMultiplePackageViewHolder(
         itemView: View,
-        private val itemListener: MultipleProductBundleListener,
-        private val bundleProductsSize: Int
+        private val itemListener: MultipleProductBundleListener
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_bundle_product_multiple
-
-        private const val MIN_BUNDLE_PRODUCTS_SIZE = 2
-        private const val WIDTH_FOR_MIN_BUNDLE_PRODUCTS_SIZE = 120f
     }
 
     private var viewBinding: ItemShopHomeBundleProductMultipleBinding? by viewBinding()
@@ -50,7 +44,6 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
             bundleParent: ShopHomeProductBundleItemUiModel,
             bundlePosition: Int
     ) {
-        setupContainerWidth()
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
         typographyBundleProductName?.text = bundleProductItem.productName
 
@@ -62,22 +55,6 @@ class ShopHomeProductBundleMultiplePackageViewHolder(
                     bundlePosition,
             )
         }
-    }
-
-    private fun setupContainerWidth() {
-        val constraintSet = ConstraintSet()
-        val containerWidthParams = if (bundleProductsSize == MIN_BUNDLE_PRODUCTS_SIZE) {
-            TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    WIDTH_FOR_MIN_BUNDLE_PRODUCTS_SIZE,
-                    itemView.resources.displayMetrics
-            ).toInt()
-        } else {
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
-        }
-        bundleProductsContainer?.layoutParams?.width = containerWidthParams
-        constraintSet.clone(bundleProductsContainer)
-        constraintSet.applyTo(bundleProductsContainer)
     }
 }
 

@@ -1290,7 +1290,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             7. s == 0 && f == 0 which mean that all order still have unknown state (maybe because the server is busy)
                (show in progress state, can retry to recheck remaining order status)
          */
-        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner, { result ->
+        viewModel.bulkAcceptOrderStatusResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     val orderCount = result.data.data.totalOrder
@@ -1330,7 +1330,10 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 }
                 is Fail -> {
-                    newShowFailedAcceptAllOrderDialog(getSelectedOrderIds().size, getSelectedOrderIds().size)
+                    newShowFailedAcceptAllOrderDialog(
+                        getSelectedOrderIds().size,
+                        getSelectedOrderIds().size
+                    )
                     SomErrorHandler.logExceptionToServer(
                         errorTag = SomErrorHandler.SOM_TAG,
                         throwable = result.throwable,
@@ -1340,7 +1343,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                     )
                 }
             }
-        })
+        }
     }
 
     private fun showOnProgressAcceptAllOrderDialog(orderCount: Int) {
@@ -2631,7 +2634,7 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             mutableSetOf()
         } else {
             somListSortFilterTab?.addCounter(1)
-            mutableSetOf(filterOrderType)
+            mutableSetOf(filterOrderType.toLong())
         }
         setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)

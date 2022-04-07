@@ -38,7 +38,7 @@ object ServerResponseDataTypeDetector {
 
 
     private val classTypeIdentifierMap = mapOf("^id_|_id\$|^id\$|Id\$|id\$" to TYPE_STRING)
-    private val primitiveTypeIdentifierMap = mapOf("^price\$" to TYPE_DOUBLE, "^price\$" to TYPE_DOUBLE_WRAPPER)
+    private val primitiveTypeIdentifierMap = mapOf("^price\$" to TYPE_DOUBLE_WRAPPER, "^price\$" to TYPE_DOUBLE)
 
 
     const val DATA_TYPE_IMPORT_ID = "Invalid Data Type"

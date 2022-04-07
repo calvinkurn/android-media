@@ -9,11 +9,11 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_icon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -31,8 +31,8 @@
         tools:text="Ada pelengkap bingkisan untuk barang ini" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginEnd="4dp"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="parent"

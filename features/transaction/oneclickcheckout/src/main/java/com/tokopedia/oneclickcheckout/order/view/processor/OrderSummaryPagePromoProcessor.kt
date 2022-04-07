@@ -92,7 +92,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val resultValidateUse = withContext(executorDispatchers.io) {
             try {
                 val response = validateUsePromoRevampUseCase.get().setParam(validateUsePromoRequest).executeOnBackground()
-                if (response.status.equals(STATUS_OK, true)) {
+                if (response.status.equals(STATUS_OK, true) && response.promoUiModel.globalSuccess) {
                     val voucherOrderUiModel = response.promoUiModel.voucherOrderUiModels.firstOrNull { it.code == logisticPromoCode }
                     if (voucherOrderUiModel != null && voucherOrderUiModel.messageUiModel.state != "red") {
                         return@withContext Triple(true, response, OccGlobalEvent.Normal)

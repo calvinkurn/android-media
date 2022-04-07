@@ -38,13 +38,12 @@ class PayLaterViewModel @Inject constructor(
     // index of selected tenure/simulation in list
     // if failure -> 0
     // if tenure found -> then intended simulation
-    // if tenure not found -> then last simulation
+    // if tenure not found -> then max simulation
     var defaultSelectedSimulation: Int = 0
-
-    // (K,V) -> Tenure -> Index of Simulation Item for corresponding tenure
-    var tenureMap: Map<Int?, Int?> = mapOf()
+    var finalProductPrice:Double = 0.0
 
     fun getPayLaterAvailableDetail(price: Double, productId: String) {
+        finalProductPrice = price
         paylaterGetSimulationV3UseCase.cancelJobs()
         paylaterGetSimulationV3UseCase.getPayLaterSimulationDetails(
             ::onAvailableDetailSuccess,
@@ -81,19 +80,18 @@ class PayLaterViewModel @Inject constructor(
         _payLaterOptionsDetailLiveData.postValue(Fail(throwable))
     }
 
-    private fun onAvailableDetailSuccess(paylaterGetSimulation: PayLaterGetSimulation?) {
+    private fun onAvailableDetailSuccess(payLaterGetSimulation: PayLaterGetSimulation?) {
         mapperUseCase.cancelJobs()
         mapperUseCase.mapResponseToUi(
             { data ->
                 if (data.isNotEmpty()) {
-                    tenureMap =
-                        data.mapIndexed { index, simulationUiModel -> simulationUiModel.tenure to index }
-                            .toMap()
-                    // set selection
-                    defaultSelectedSimulation = tenureMap[defaultTenure] ?: data.size - 1
+                    data.mapIndexed { index, simulationUiModel ->
+                        if (simulationUiModel.isSelected)
+                            defaultSelectedSimulation = index
+                    }
                 }
                 _payLaterOptionsDetailLiveData.postValue(Success(data))
-            }, paylaterGetSimulation, defaultTenure
+            }, payLaterGetSimulation, defaultTenure
         )
     }
 

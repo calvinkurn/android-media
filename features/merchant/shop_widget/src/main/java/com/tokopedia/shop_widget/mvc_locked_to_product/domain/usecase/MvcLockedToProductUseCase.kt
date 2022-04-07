@@ -99,6 +99,10 @@ class MvcLockedToProductUseCase @Inject constructor(
                     }
                     stock
                     finalPrice
+                    productInCart {
+                      productID
+                      qty
+                    }
                   }
                 }
                 error {

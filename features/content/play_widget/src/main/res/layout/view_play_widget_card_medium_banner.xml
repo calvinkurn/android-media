@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/play_card_banner_medium"
     android:layout_width="@dimen/play_widget_card_medium_width"
     android:layout_height="@dimen/play_widget_card_medium_height"
     android:layout_marginEnd="@dimen/spacing_lvl2"
