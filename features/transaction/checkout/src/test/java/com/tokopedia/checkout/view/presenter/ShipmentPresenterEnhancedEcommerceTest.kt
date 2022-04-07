@@ -6,7 +6,11 @@ import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutReques
 import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
 import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -121,7 +125,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce data step 2 THEN enhanced ecommerce data should not be null`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -138,7 +142,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce data step 3 THEN enhanced ecommerce data should not be null`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -155,7 +159,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce data step 4 THEN enhanced ecommerce data should not be null`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -173,7 +177,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         val shopId = 652660L
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
             this.shopId = shopId
@@ -191,7 +195,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
     fun `WHEN generate enhanced ecommerce data with no Bebas Ongkir THEN enhanced ecommerce product data dimension83 should be none other`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -219,7 +223,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             })
         }
         dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -247,7 +251,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
             })
         }
         dataCheckoutRequest.shopProducts?.firstOrNull()?.productData = productData
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -273,7 +277,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val eventLabel = "eventLabel"
         val step = "4"
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
@@ -331,7 +335,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
         val promoCodes = "a"
         val promoDetails = "aaa"
 
-        presenter.dataCheckoutRequestList = arrayListOf<DataCheckoutRequest>().apply {
+        presenter.setDataCheckoutRequestList(arrayListOf<DataCheckoutRequest>().apply {
             add(DataCheckoutRequest().apply {
                 shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
                     add(ShopProductCheckoutRequest().apply {
@@ -344,7 +348,7 @@ class ShipmentPresenterEnhancedEcommerceTest {
                     })
                 }
             })
-        }
+        })
         val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>().apply {
             add(ShipmentCartItemModel().apply {
                 this.cartString = cartString
