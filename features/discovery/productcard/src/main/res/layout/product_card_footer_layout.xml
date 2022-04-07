@@ -18,6 +18,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/buttonNotifyStubBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="buttonNotify"
+        />
+
     <FrameLayout
         android:id="@+id/buttonRemoveFromWishlist"
         android:layout_width="@dimen/dp_32"
@@ -32,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/buttonAddToCart"
         app:layout_constraintBottom_toBottomOf="@id/buttonAddToCart"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/imageRemoveFromWishlist"
@@ -55,8 +64,9 @@
         android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
-        app:layout_constraintTop_toBottomOf="@id/buttonNotify"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/buttonNotifyStubBarrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible"/>
 
     <ViewStub
         android:id="@+id/buttonSeeSimilarProductStub"
@@ -69,7 +79,7 @@
         android:layout_marginTop="@dimen/product_card_button_similar_product_margin_top"
         app:layout_goneMarginStart="0dp"
         app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
-        app:layout_constraintTop_toBottomOf="@id/buttonNotify"
+        app:layout_constraintTop_toBottomOf="@id/buttonNotifyStubBarrier"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 
@@ -154,7 +164,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/product_card_button_primary_margin"
-        android:layout_marginTop="@dimen/product_card_button_primary_margin"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@id/buttonThreeDotsWishlist"
         app:layout_constraintTop_toBottomOf="@id/buttonAddVariant"
@@ -166,6 +175,7 @@
             android:layout="@layout/product_card_add_to_cart_wishlist_button"
             android:layout_width="match_parent"
             android:layout_height="@dimen/product_card_button_primary_height"
+            android:layout_marginTop="@dimen/product_card_button_primary_margin"
             app:layout_goneMarginStart="0dp"/>
 
         <ViewStub
@@ -173,7 +183,8 @@
             android:inflatedId="@+id/buttonSeeSimilarProductWishlist"
             android:layout="@layout/product_card_see_similar_product_wishlist_button"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/product_card_button_primary_height"/>
+            android:layout_height="@dimen/product_card_button_primary_height"
+            android:layout_marginTop="@dimen/product_card_button_primary_margin"/>
 
     </RelativeLayout>
 
