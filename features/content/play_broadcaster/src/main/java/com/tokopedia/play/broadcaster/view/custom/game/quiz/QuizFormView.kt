@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.get
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
@@ -68,16 +69,6 @@ class QuizFormView : ConstraintLayout {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private val adapter = QuizOptionAdapter(object : QuizOptionViewHolder.Listener {
-        override fun onOptionChecked(order: Int) {
-            eventBus.emit(Event.SelectQuizOption(order))
-        }
-
-        override fun onTextChanged(order: Int, text: String) {
-            eventBus.emit(Event.OptionChanged(order, text))
-        }
-    })
-
     private var quizConfig: QuizConfigUiModel = QuizConfigUiModel.empty()
         set(value) {
             if(field != value) {
@@ -90,10 +81,9 @@ class QuizFormView : ConstraintLayout {
             }
         }
 
-    init {
-        binding.rvQuizOption.addItemDecoration(QuizOptionItemDecoration(context))
-        binding.rvQuizOption.adapter = adapter
+    private val optionListView: MutableList<QuizOptionView> = mutableListOf()
 
+    init {
         binding.viewGameHeader.type = GameHeaderView.Type.QUIZ
         timePickerBinding.puTimer.infiniteMode = false
         bottomSheetHeaderBinding.ivSheetClose.setImage(IconUnify.ARROW_BACK)
@@ -159,8 +149,27 @@ class QuizFormView : ConstraintLayout {
              *  theres a changing in number of field / option checked
              *  so, oldItem and newItems comparison will give a weird result
              */
-            adapter.setItems(quizFormData.options)
-            adapter.notifyDataSetChanged()
+            val options = quizFormData.options
+
+            if(options.size > optionListView.size) {
+                /** Add Field */
+                for(i in optionListView.size until options.size) {
+                    val newOptionView = createNewOptionView(options[i])
+                    optionListView.add(newOptionView)
+                    binding.llOptionContainer.addView(newOptionView)
+                }
+            }
+            else if(options.size < optionListView.size) {
+                /** Remove Field */
+                for(i in options.size until optionListView.size) {
+                    val removedOptionView = optionListView.removeAt(i)
+                    binding.llOptionContainer.removeView(removedOptionView)
+                }
+            }
+
+            options.zip(optionListView).forEach { (option, optionView) ->
+                bindOptionData(optionView, option)
+            }
 
             /** Set Gift */
             binding.viewQuizGift.gift = quizFormData.gift
@@ -247,6 +256,30 @@ class QuizFormView : ConstraintLayout {
         if (minute > 0) stringBuilder.append(context.getString(R.string.play_interactive_minute, minute))
         if (second > 0) stringBuilder.append(" ").append(context.getString(R.string.play_interactive_second, second))
         return stringBuilder.toString()
+    }
+
+    private fun createNewOptionView(option: QuizFormDataUiModel.Option): QuizOptionView {
+        return bindOptionData(QuizOptionView(context), option).apply {
+            setOnCheckedListener { eventBus.emit(Event.SelectQuizOption(option.order)) }
+            setOnTextChanged { order, text -> eventBus.emit(Event.OptionChanged(order, text)) }
+        }
+    }
+
+    private fun bindOptionData(optionView: QuizOptionView, option: QuizFormDataUiModel.Option): QuizOptionView {
+        return optionView.apply {
+            isEditable = option.isEditable
+            order = option.order
+            text = option.text
+            textChoice = option.getTextChoice()
+            textHint = if(option.isMandatory) context.getString(R.string.play_bro_quiz_hint_text, option.order + 1)
+            else context.getString(R.string.play_bro_quiz_hint_add_new_option)
+            maxLength = option.maxLength
+            isCorrect = option.isSelected
+
+            setFocus(option.isFocus)
+
+            showCoachmark(option.isShowCoachmark)
+        }
     }
 
     sealed class Event {

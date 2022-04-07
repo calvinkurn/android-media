@@ -88,33 +88,33 @@
             android:id="@+id/view_game_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/fl_option_container"
+            app:layout_constraintBottom_toTopOf="@id/ll_option_container"
             app:layout_constraintStart_toStartOf="@id/gl_quiz_form_left"
             app:layout_constraintEnd_toEndOf="@id/gl_quiz_form_right"
             />
 
-        <FrameLayout
-            android:id="@+id/fl_option_container"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_option_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_lvl4"
-            android:background="@drawable/bg_play_quiz_option_container"
             android:layout_marginBottom="@dimen/spacing_lvl3"
+            android:background="@drawable/bg_play_quiz_option_container"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lvl4"
             app:layout_constraintBottom_toTopOf="@id/view_quiz_gift"
-            app:layout_constraintStart_toStartOf="@id/gl_quiz_form_left"
             app:layout_constraintEnd_toEndOf="@id/gl_quiz_form_right"
-            >
+            app:layout_constraintStart_toStartOf="@id/gl_quiz_form_left">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_quiz_option"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_quiz_option_list"
-                tools:itemCount="2"
-                />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/rv_quiz_option"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+<!--                tools:listitem="@layout/item_quiz_option_list"-->
+<!--                tools:itemCount="2"-->
+<!--                />-->
 
-        </FrameLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizGiftView
             android:id="@+id/view_quiz_gift"
