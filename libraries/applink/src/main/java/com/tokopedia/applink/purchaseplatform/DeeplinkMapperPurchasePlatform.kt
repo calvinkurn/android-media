@@ -32,21 +32,4 @@ object DeeplinkMapperPurchasePlatform {
             true
         }
     }
-
-    fun isAddRemoveWishlistV2(context: Context): Boolean {
-        return useWishlistV2RemoteConfig(context) && useWishlistV2Rollence()
-    }
-
-    private fun isEnableAddRemoveWishlistV2RemoteConfig(context: Context) = FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.ENABLE_ADD_REMOVE_WISHLIST_V2)
-
-    private fun isEnableAddRemoveWishlistV2Rollence(): Boolean {
-        return try {
-            val abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-            val abTestAddRemoveWishlistV2 = abTestPlatform.getString(RollenceKey.ADD_REMOVE_WISHLIST_V2, "")
-
-            abTestAddRemoveWishlistV2 == RollenceKey.ADD_REMOVE_WISHLIST_V2
-        } catch (throwable: Throwable) {
-            false
-        }
-    }
 }
