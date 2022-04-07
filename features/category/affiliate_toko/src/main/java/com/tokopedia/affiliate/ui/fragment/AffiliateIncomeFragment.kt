@@ -318,15 +318,17 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         affiliateIncomeViewModel.getAffiliateBalance()
     }
 
+    private var tarikSaldoBtn : UnifyButton? = null
     private fun initUi() {
+        tarikSaldoBtn =  view?.findViewById(R.id.saldo_button_affiliate)
         setTarikSaldoButtonUI()
         when (RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_WITHDRAWAL,
             ""
         )) {
-            AFFILIATE_WITHDRAWAL -> view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = true
+            AFFILIATE_WITHDRAWAL -> tarikSaldoBtn?.isEnabled = true
             else ->{
-                view?.findViewById<UnifyButton>(R.id.saldo_button_affiliate)?.isEnabled = false
+                tarikSaldoBtn?.isEnabled = false
                 initTicker()
             }
         }
