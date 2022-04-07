@@ -46,7 +46,7 @@ const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 private const val LOGIN_REQUEST_CODE = 35769
 
-open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), FoldableSupportManager.FoldableInfoCallback {
+open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     protected lateinit var discoveryViewModel: DiscoveryViewModel
 
@@ -83,17 +83,6 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), Fold
         initDaggerInject()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        FoldableAndTabletSupportManager(windowInfoRepository(), this,this)
-    }
-
-    override fun onChangeLayout(foldableInfo: FoldableInfo) {
-        Log.e("TEST_TAG","windowLayoutInfo - ${(foldableInfo.windowLayoutInfo)!=null}")
-        Log.e("TEST_TAG","foldingFeature - ${(foldableInfo.foldingFeature)!=null}")
-        Log.e("TEST_TAG","isFoldableDevice - ${foldableInfo.isFoldableDevice()}")
-        Log.e("TEST_TAG","isHalfOpen - ${foldableInfo.isHalfOpen()}")
-        Log.e("TEST_TAG","isTableTopMode - ${foldableInfo.isTableTopMode()}")
-        Log.e("TEST_TAG","isBookMode - ${foldableInfo.isBookMode()}")
-//        Log.e("TEST_TAG","isBookMode - ${foldableInfo.getDisplayFeatureBounds(findViewById(android.R.id.content).getRootView()),false}")
     }
 
     override fun sendScreenAnalytics() {
