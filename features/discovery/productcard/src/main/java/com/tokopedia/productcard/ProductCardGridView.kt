@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -24,10 +23,7 @@ import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.video.ProductCardVideo
-import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -37,8 +33,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     private val video: ProductCardVideo by lazy{
         ProductCardVideo(this)
     }
-    private val cardViewProductCard: CardView? by lazy(NONE) {
-        findViewById(R.id.cardViewProductCard)
+    private val cardViewProductCard: CardUnify2? by lazy(NONE) {
+        findViewById<CardUnify2?>(R.id.cardViewProductCard).apply {
+            animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+        }
     }
     private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
         findViewById(R.id.constraintLayoutProductCard)
@@ -258,5 +256,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getProductCardVideo(): ProductCardVideo {
         return video
+    }
+
+    override fun setCardInteraction(animation: Int) {
+        cardViewProductCard?.animateOnPress = animation
     }
 }

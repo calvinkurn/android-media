@@ -9,6 +9,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.unifycomponents.CardUnify2
 
 class CarouselProductCardViewHolder (view: View,
                                      private val channels: ChannelModel):
@@ -26,6 +27,7 @@ class CarouselProductCardViewHolder (view: View,
 
     private fun setLayout(context: Context, element: CarouselProductCardDataModel){
         productCardView?.run{
+            setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
