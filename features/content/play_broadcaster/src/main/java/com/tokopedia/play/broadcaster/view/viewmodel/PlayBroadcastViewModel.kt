@@ -990,7 +990,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             it.copy(
                 /** Auto Select */
                 isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
-                text = if(it.order == order) newText else it.text
+                text = if(it.order == order) newText else it.text,
+                isFocus = it.order == order,
             )
         }.toMutableList()
 
@@ -1022,7 +1023,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         needUpdateQuizForm(true) {
             _quizFormData.setValue {
-                copy(options = options.map { it.copy(isSelected = it.order == order) })
+                copy(options = options.map {
+                    it.copy(
+                        isSelected = it.order == order,
+                        isFocus = it.order == order,
+                    )
+                })
             }
         }
     }
