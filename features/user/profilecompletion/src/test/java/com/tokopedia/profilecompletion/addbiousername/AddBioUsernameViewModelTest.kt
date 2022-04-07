@@ -82,7 +82,7 @@ class AddBioUsernameViewModelTest {
         //Given
         val dummyResponse = ProfileFeedResponse()
         coEvery {
-            profileFeedUsecase(any())
+            profileFeedUsecase(Unit)
         } returns dummyResponse
 
         //When
@@ -90,7 +90,7 @@ class AddBioUsernameViewModelTest {
 
         //Then
         coVerify(exactly = 1) {
-            profileFeedUsecase(any())
+            profileFeedUsecase(Unit)
             profileFeedObserver.onChanged(viewModel.profileFeed.value)
         }
     }
@@ -100,7 +100,7 @@ class AddBioUsernameViewModelTest {
         //Given
         val dummyError = Throwable("")
         coEvery {
-            profileFeedUsecase(any())
+            profileFeedUsecase(Unit)
         } throws dummyError
 
         //When
@@ -108,7 +108,7 @@ class AddBioUsernameViewModelTest {
 
         //Then
         coVerify(exactly = 1) {
-            profileFeedUsecase(any())
+            profileFeedUsecase(Unit)
             profileFeedObserver.onChanged(viewModel.profileFeed.value)
 
         }

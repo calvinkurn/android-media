@@ -93,7 +93,7 @@ class ProfileViewModelTest {
         //Given
         coEvery { profileInfoUsecase(Unit) } returns dummyProfileInfo
         coEvery { profileRoleUsecase(Unit) } returns dummyProfilerole
-        coEvery { profileFeedInfoUsecase(any()) } returns dummyProfileFeed
+        coEvery { profileFeedInfoUsecase(Unit) } returns dummyProfileFeed
 
         //When
         viewModel.getProfileInfo()
@@ -102,7 +102,7 @@ class ProfileViewModelTest {
         coVerify(exactly = 1) {
             profileInfoUsecase(Unit)
             profileRoleUsecase(Unit)
-            profileFeedInfoUsecase(any())
+            profileFeedInfoUsecase(Unit)
             profileInfoObserver.onChanged(dummyProfileUIModel)
         }
     }
@@ -112,7 +112,7 @@ class ProfileViewModelTest {
         //Given
         coEvery { profileInfoUsecase(Unit) } throws dummyError
         coEvery { profileRoleUsecase(Unit) } returns dummyProfilerole
-        coEvery { profileFeedInfoUsecase(any()) } returns dummyProfileFeed
+        coEvery { profileFeedInfoUsecase(Unit) } returns dummyProfileFeed
 
         //When
         viewModel.getProfileInfo()
@@ -129,7 +129,7 @@ class ProfileViewModelTest {
         //Given
         coEvery { profileInfoUsecase(Unit) } returns dummyProfileInfo
         coEvery { profileRoleUsecase(Unit) } throws dummyError
-        coEvery { profileFeedInfoUsecase(any()) } returns dummyProfileFeed
+        coEvery { profileFeedInfoUsecase(Unit) } returns dummyProfileFeed
 
         //When
         viewModel.getProfileInfo()
@@ -146,14 +146,14 @@ class ProfileViewModelTest {
         //Given
         coEvery { profileInfoUsecase(Unit) } returns dummyProfileInfo
         coEvery { profileRoleUsecase(Unit) } returns dummyProfilerole
-        coEvery { profileFeedInfoUsecase(any()) } throws dummyError
+        coEvery { profileFeedInfoUsecase(Unit) } throws dummyError
 
         //When
         viewModel.getProfileInfo()
 
         //Then
         coVerify(exactly = 1) {
-            profileFeedInfoUsecase(any())
+            profileFeedInfoUsecase(Unit)
             errorMessageObserver.onChanged(viewModel.errorMessage.value)
         }
     }
