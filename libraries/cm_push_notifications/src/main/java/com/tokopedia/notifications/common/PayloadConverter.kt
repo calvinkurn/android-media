@@ -110,7 +110,7 @@ object PayloadConverter {
         return model
     }
 
-    fun convertToBaseModel(data: AmplificationBaseNotificationModel): BaseNotificationModel {
+    fun convertToBaseModel(data: SerializedNotificationData): BaseNotificationModel {
         val model = BaseNotificationModel()
         model.icon = data.icon
         model.priorityPreOreo = data.priorityPreOreo ?: 2
@@ -267,7 +267,7 @@ object PayloadConverter {
 
 
     private fun setNotificationSound(model: BaseNotificationModel,
-                                     data: AmplificationBaseNotificationModel) {
+                                     data: SerializedNotificationData) {
         model.soundFileName = data.notificationSound ?: ""
         model.channelName = data.notificationChannel ?: ""
     }
@@ -398,7 +398,7 @@ object PayloadConverter {
         )
     }
 
-    private fun getPayloadExtras(data : AmplificationBaseNotificationModel) : PayloadExtra{
+    private fun getPayloadExtras(data : SerializedNotificationData) : PayloadExtra{
         return PayloadExtra(
             campaignName = data.campaignName,
             journeyId = data.journeyId,

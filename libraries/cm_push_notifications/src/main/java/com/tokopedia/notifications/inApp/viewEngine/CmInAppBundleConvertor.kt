@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.SerializedCMInAppData
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMLayout
 import com.tokopedia.notifications.inApp.ruleEngine.RulesUtil.Constants.Payload
@@ -28,48 +28,48 @@ object CmInAppBundleConvertor {
         }
     }
 
-    fun getCmInApp(amplificationCMInApp: AmplificationCMInApp): CMInApp? {
+    fun getCmInApp(serializedCMInAppData: SerializedCMInAppData): CMInApp? {
         return try {
             val cmInApp = CMInApp()
             cmInApp.isAmplification = true
-            amplificationCMInApp.id?.let {
-                if (it == 0L)
-                    return null
-                cmInApp.id = it
-            } ?: run {
+
+            if(serializedCMInAppData.id == null || serializedCMInAppData.id == 0L){
                 return null
+            }else {
+                //already checked for null show !! is safe check...
+                cmInApp.id = serializedCMInAppData.id!!
             }
 
-            if (amplificationCMInApp.parentId != null)
-                cmInApp.setParentId(amplificationCMInApp.parentId)
+            if (serializedCMInAppData.parentId != null)
+                cmInApp.setParentId(serializedCMInAppData.parentId)
 
-            if (amplificationCMInApp.campaignId != null)
-                cmInApp.setCampaignId(amplificationCMInApp.campaignId)
+            if (serializedCMInAppData.campaignId != null)
+                cmInApp.setCampaignId(serializedCMInAppData.campaignId)
 
-            if (!TextUtils.isEmpty(amplificationCMInApp.campaignCode))
-                cmInApp.setCampaignCode(amplificationCMInApp.campaignCode)
+            if (!TextUtils.isEmpty(serializedCMInAppData.campaignCode))
+                cmInApp.setCampaignCode(serializedCMInAppData.campaignCode)
 
-            if (!TextUtils.isEmpty(amplificationCMInApp.campaignUserToken))
-                cmInApp.setCampaignUserToken(amplificationCMInApp.campaignUserToken)
+            if (!TextUtils.isEmpty(serializedCMInAppData.campaignUserToken))
+                cmInApp.setCampaignUserToken(serializedCMInAppData.campaignUserToken)
 
-            setStartTime(cmInApp, amplificationCMInApp.startTime)
+            setStartTime(cmInApp, serializedCMInAppData.startTime)
 
-            setEndTime(cmInApp, amplificationCMInApp.endTime)
+            setEndTime(cmInApp, serializedCMInAppData.endTime)
 
-            cmInApp.setFreq(amplificationCMInApp.freq ?: 1)
+            cmInApp.setFreq(serializedCMInAppData.freq ?: 0)
 
-            cmInApp.isCancelable = amplificationCMInApp.isCancelable ?: false
+            cmInApp.isCancelable = serializedCMInAppData.isCancelable ?: false
 
-            cmInApp.isTest = amplificationCMInApp.isTest ?: false
+            cmInApp.isTest = serializedCMInAppData.isTest ?: false
 
-            cmInApp.isPersistentToggle = amplificationCMInApp.isPersistentToggle ?: true
+            cmInApp.isPersistentToggle = serializedCMInAppData.isPersistentToggle ?: true
 
-            cmInApp.setType(amplificationCMInApp.type ?: "")
+            cmInApp.setType(serializedCMInAppData.type ?: "")
 
-            cmInApp.customValues = amplificationCMInApp.customValues ?: ""
+            cmInApp.customValues = serializedCMInAppData.customValues ?: ""
 
             val screenNameIsPresent =
-                amplificationCMInApp.screen != null || amplificationCMInApp.ss != null
+                serializedCMInAppData.screen != null || serializedCMInAppData.ss != null
 
             if (!screenNameIsPresent) {
                 return null
@@ -77,21 +77,21 @@ object CmInAppBundleConvertor {
 
             setScreenNames(
                 cmInApp,
-                amplificationCMInApp.screen,
-                amplificationCMInApp.ss
+                serializedCMInAppData.screen,
+                serializedCMInAppData.ss
             )
 
 
-            if (amplificationCMInApp.cmLayout == null) {
+            if (serializedCMInAppData.cmLayout == null) {
                 return null
             }
 
-            val cmLayout = amplificationCMInApp.cmLayout
+            val cmLayout = serializedCMInAppData.cmLayout
             cmInApp.setCmLayout(cmLayout)
 
-            cmInApp.shopId = amplificationCMInApp.shopId
+            cmInApp.shopId = serializedCMInAppData.shopId
 
-            cmInApp.payloadExtra = getPayloadExtra(amplificationCMInApp)
+            cmInApp.payloadExtra = getPayloadExtra(serializedCMInAppData)
 
             return cmInApp
         } catch (e: Exception) {
@@ -106,6 +106,9 @@ object CmInAppBundleConvertor {
 
         cmInApp.setId(getLongFromStr(map[Payload.NOTIFICATION_ID]))
 
+        if (map.containsKey(Payload.PARENT_ID))
+            cmInApp.setParentId(map[Payload.PARENT_ID])
+
         if (map.containsKey(Payload.CAMPAIGN_ID))
             cmInApp.setCampaignId(map[Payload.CAMPAIGN_ID])
 
@@ -115,10 +118,8 @@ object CmInAppBundleConvertor {
         if (map.containsKey(Payload.CAMPAIGN_USER_TOKEN))
             cmInApp.setCampaignUserToken(map[Payload.CAMPAIGN_USER_TOKEN])
 
-        if (map.containsKey(Payload.PARENT_ID))
-            cmInApp.setParentId(map[Payload.PARENT_ID])
 
-        setStartTime(cmInApp,getLongFromStr(map[Payload.START_TIME]))
+        setStartTime(cmInApp, getLongFromStr(map[Payload.START_TIME]))
 
         setEndTime(cmInApp, getLongFromStr(map[Payload.END_TIME]))
 
@@ -173,12 +174,12 @@ object CmInAppBundleConvertor {
         )
     }
 
-    private fun getPayloadExtra(amplificationCMInApp: AmplificationCMInApp): PayloadExtra {
+    private fun getPayloadExtra(serializedCMInAppData: SerializedCMInAppData): PayloadExtra {
         return PayloadExtra(
-            campaignName = amplificationCMInApp.campaignName,
-            journeyId = amplificationCMInApp.journeyId,
-            journeyName = amplificationCMInApp.journeyName,
-            sessionId = amplificationCMInApp.sessionId,
+            campaignName = serializedCMInAppData.campaignName,
+            journeyId = serializedCMInAppData.journeyId,
+            journeyName = serializedCMInAppData.journeyName,
+            sessionId = serializedCMInAppData.sessionId,
         )
     }
 

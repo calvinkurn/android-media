@@ -7,7 +7,7 @@ import com.tokopedia.notifications.common.CMConstant
 /**
  * @author lalit.singh
  */
-data class AmplificationCMInApp (
+data class SerializedCMInAppData (
     @Expose
     @SerializedName("notificationId")
     var id: Long? = 0,
