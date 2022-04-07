@@ -12,6 +12,8 @@ import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnal
 import com.tokopedia.play.broadcaster.analytic.setup.title.PlayBroSetupTitleAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalytic
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalyticImpl
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.QuizPreparationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.QuizPreparationUseCaseImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountUpTimerImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -84,4 +86,8 @@ abstract class PlayBroadcastBindModule {
     @ActivityRetainedScope
     @Binds
     abstract fun bindPlayCountUp(playCountUpImpl: PlayCountUpImpl): PlayCountUp
+
+    @ActivityRetainedScope
+    @Binds
+    abstract fun bindQuizPreparationUseCase(quizPreparationUseCaseImpl: QuizPreparationUseCaseImpl): QuizPreparationUseCase
 }

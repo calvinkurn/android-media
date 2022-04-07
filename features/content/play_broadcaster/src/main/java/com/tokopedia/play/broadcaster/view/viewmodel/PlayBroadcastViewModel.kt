@@ -19,6 +19,7 @@ import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketRes
 import com.tokopedia.play.broadcaster.domain.model.socket.SectionedProductTagSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.QuizPreparationUseCase
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -1094,9 +1095,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
 
-            _quizFormData.setValue {
-                QuizFormDataUiModel(options = initialOptions)
-            }
+            _quizFormData.setValue { QuizFormDataUiModel(options = initialOptions) }
         }
     }
 
