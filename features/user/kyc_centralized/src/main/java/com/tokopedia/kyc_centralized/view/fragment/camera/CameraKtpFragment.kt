@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
@@ -17,7 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_COMPRESSION
 import com.tokopedia.kyc_centralized.KycConstant.EXTRA_USE_CROPPING
 import com.tokopedia.kyc_centralized.R
-import com.tokopedia.kyc_centralized.databinding.FragmentCameraCroppingBinding
+import com.tokopedia.kyc_centralized.databinding.FragmentCameraKtpBinding
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
@@ -38,7 +39,7 @@ import kotlin.coroutines.CoroutineContext
  * */
 class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
-    private var viewBinding by autoClearedNullable<FragmentCameraCroppingBinding>()
+    private var viewBinding by autoClearedNullable<FragmentCameraKtpBinding>()
     private var imagePath: String = ""
     private var bitmapProcessing: BitmapCroppingAndCompression? = null
 
@@ -59,7 +60,7 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewBinding = FragmentCameraCroppingBinding.inflate(inflater, container, false)
+        viewBinding = FragmentCameraKtpBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
 
@@ -133,6 +134,8 @@ class CameraKtpFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun showCameraView() {
         viewBinding?.apply {
+            subtitle.text = getString(R.string.camera_ktp_subtitle)
+
             imageButtonShutter.show()
             imageButtonFlip.show()
             cropBorder.show()

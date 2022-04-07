@@ -17,7 +17,6 @@
         app:cameraPlaySounds="true"
         app:cameraAudio="off"
         app:cameraMode="picture"
-        app:cameraPreview="glSurface"
         app:cameraUseDeviceOrientation="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -44,7 +43,7 @@
         app:layout_constraintBottom_toTopOf="@id/cropBorder"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/kyc_dms_background_camera" />
+        android:background="@color/kyc_dms_background_camera"/>
 
     <View
         android:id="@+id/left_crop"
@@ -54,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="@id/cropBorder"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/cropBorder"
-        android:background="@color/kyc_dms_background_camera" />
+        android:background="@color/kyc_dms_background_camera"/>
 
     <View
         android:id="@+id/right_crop"
@@ -64,7 +63,7 @@
         app:layout_constraintBottom_toBottomOf="@id/cropBorder"
         app:layout_constraintLeft_toRightOf="@id/cropBorder"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/kyc_dms_background_camera" />
+        android:background="@color/kyc_dms_background_camera"/>
 
     <View
         android:id="@+id/bottom_crop"
@@ -74,7 +73,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:background="@color/kyc_dms_background_camera" />
+        android:background="@color/kyc_dms_background_camera"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imagePreview"
@@ -83,6 +82,7 @@
         android:adjustViewBounds="true"
         android:layout_margin="@dimen/layout_lvl3"
         android:visibility="gone"
+        app:layout_constraintCircleRadius="@dimen/layout_lvl1"
         app:layout_constraintDimensionRatio="3:2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -195,7 +195,7 @@
             android:id="@+id/next_button"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="match_parent"
-            app:unifyButtonVariant="ghost"
+            app:unifyButtonVariant="filled"
             android:layout_marginStart="@dimen/spacing_lvl1"
             android:layout_weight="1"
             android:gravity="center"
