@@ -7,10 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressTest
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform.AddressFormFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
 import com.tokopedia.logisticaddaddress.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig.Companion.FIND_BY_CONTAINS
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
@@ -47,7 +44,7 @@ class EditAddressRevampTest {
 
     @Test
     fun editAddress_WithPinpoint() {
-        val queryPath = "tracker/logistic/editaddress_user_revamp.json"
+        val queryPath = "tracker/logistic/editaddress_user_revamp_positive.json"
         editAddressRevamp {
             launchWithParam(context, mActivityTestRule)
             fillAddress(ADDRESS)
