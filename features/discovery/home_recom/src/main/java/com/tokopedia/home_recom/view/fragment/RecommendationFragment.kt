@@ -53,6 +53,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -100,6 +102,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private var navToolbar: NavToolbar? = null
+    private var remoteConfig: RemoteConfig? = null
+
     private lateinit var viewModelProvider: ViewModelProvider
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, this, this, this) }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
@@ -139,6 +143,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             recommendationWidgetViewModel = viewModelProvider.get(RecommendationPageViewModel::class.java)
             trackingQueue = TrackingQueue(it)
+            remoteConfig = FirebaseRemoteConfigImpl(it)
         }
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
@@ -488,6 +493,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.id.toString(),
                         productDetailData.name,
                         productDetailData.imageUrl)
+                RecomServerLogger.logServer(
+                    RecomServerLogger.TOPADS_RECOM_PAGE_HIT_ADS_TRACKER_IMPRESSION,
+                    productId = productId,
+                    queryParam = queryParam
+                )
             }
         }
     }
@@ -505,6 +515,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         productDetailData.id.toString(),
                         productDetailData.name,
                         productDetailData.imageUrl)
+                RecomServerLogger.logServer(
+                    RecomServerLogger.TOPADS_RECOM_PAGE_HIT_ADS_TRACKER,
+                    productId = productId,
+                    queryParam = queryParam
+                )
             }
         }
         RecommendationPageTracking.eventClickPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
@@ -639,6 +654,14 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     override fun onClickSeeMore(pageName: String, seeMoreAppLink: String) {
         RecommendationPageTracking.eventUserClickSeeMore(pageName, productId)
         RouteManager.route(this.context, seeMoreAppLink)
+    }
+
+    override fun getProductQueryParam(): String {
+        return queryParam
+    }
+
+    override fun getFragmentRemoteConfig(): RemoteConfig? {
+        return remoteConfig
     }
 
     /**

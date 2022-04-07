@@ -200,7 +200,8 @@ class DigitalCartViewModel @Inject constructor(
             _totalPrice.postValue(
                 calculateTotalPrice(
                     pricePlain, mappedCartData.attributes.adminFee,
-                    mappedCartData.attributes.isOpenAmount
+                    mappedCartData.attributes.isOpenAmount,
+                    mappedCartData.attributes.isAdminFeeIncluded
                 )
             )
             paymentSummary.summaries.clear()
@@ -209,7 +210,10 @@ class DigitalCartViewModel @Inject constructor(
                 Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain))
             )
 
-            if (mappedCartData.attributes.isOpenAmount && mappedCartData.attributes.adminFee > 0) {
+            if (mappedCartData.attributes.isOpenAmount &&
+                mappedCartData.attributes.adminFee > 0 &&
+                !mappedCartData.attributes.isAdminFeeIncluded
+            ) {
                 paymentSummary.addToSummary(
                     SUMMARY_ADMIN_FEE_POSITION,
                     Payment(
@@ -246,9 +250,10 @@ class DigitalCartViewModel @Inject constructor(
     private fun calculateTotalPrice(
         totalPrice: Double,
         adminFee: Double,
-        isOpenAmount: Boolean
+        isOpenAmount: Boolean,
+        isAdminFeeIncluded: Boolean
     ): Double {
-        return if (isOpenAmount) {
+        return if (isOpenAmount && !isAdminFeeIncluded) {
             totalPrice + adminFee
         } else totalPrice
     }
@@ -342,7 +347,8 @@ class DigitalCartViewModel @Inject constructor(
                 calculateTotalPrice(
                     totalPrice,
                     attributes.adminFee,
-                    attributes.isOpenAmount
+                    attributes.isOpenAmount,
+                    attributes.isAdminFeeIncluded
                 )
             )
         }
@@ -429,7 +435,7 @@ class DigitalCartViewModel @Inject constructor(
 
                 }) {
                     _showLoading.postValue(false)
-                    if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                    if (it is ResponseErrorException) {
                         _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
                     } else _errorThrowable.postValue(Fail(it))
                 }

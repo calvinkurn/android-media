@@ -95,12 +95,8 @@ class BrandlistPageFragment :
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val brandFirstLetter: String = if (stateLoadBrands == LoadAllBrandState.LOAD_BRAND_PER_ALPHABET) selectedBrandLetter else defaultBrandLetter
-                    viewModel.loadMoreAllBrands(category, brandFirstLetter)
-                    isLoadMore = true
 
-                    if (adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
-                        adapter?.showLoading()
-                    }
+                    viewModel.loadMoreAllBrands(brandFirstLetter)
                 }
             }
         }
@@ -218,6 +214,7 @@ class BrandlistPageFragment :
             }
 
             isChipSelected = false
+            selectedChip = DEFAULT_SELECTED_CHIPS
             viewModel.resetAllBrandRequestParameter()
             adapter?.notifyDataSetChanged()
             adapter?.initAdapter(recyclerViewLastState)
@@ -294,13 +291,22 @@ class BrandlistPageFragment :
     }
 
     private fun observeAllBrands() {
+        viewModel.remindingRequestSize.observe(viewLifecycleOwner) {remindingSize ->
+            val remindingRequestSize = remindingSize.first
+            if (remindingRequestSize > 0 && adapter?.getVisitables()?.lastOrNull() is AllBrandUiModel) {
+                isLoadMore = true
+                adapter?.showLoading()
+                viewModel.loadMoreAllBrandsReminding(remindingRequestSize, category, remindingSize.second)
+             }
+        }
+
         viewModel.getAllBrandResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     val totalBrandPerCharacter = it.data.totalBrands
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
-                    adapter?.hideLoading()
+                    BrandlistPageMapper.resetAllBrandData(adapter)
 
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()
@@ -424,32 +430,34 @@ class BrandlistPageFragment :
     }
 
     override fun onClickedChip(position: Int, chipName: String, current: Long, recyclerViewState: Parcelable?) {
-        selectedChip = position
-        selectedCategoryName = categoryName
-        recyclerViewLastState = recyclerViewState
-        isChipSelected = true
-        lastTimeChipIsClicked = current
+        if (recyclerView?.isComputingLayout == false) {
+            selectedChip = position
+            selectedCategoryName = categoryName
+            recyclerViewLastState = recyclerViewState
+            isChipSelected = true
+            lastTimeChipIsClicked = current
 
-        resetCurrentBrandRecom()
-        showLoadingBrandRecom()
+            resetCurrentBrandRecom()
+            showLoadingBrandRecom()
 
-        if (position > 0 && position < 2) {     // Load Semua Brand
-            isLoadMore = false
-            selectedBrandLetter = defaultBrandLetter
-            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
-            viewModel.resetAllBrandRequestParameter()
-            Handler().postDelayed({
-                viewModel.loadAllBrands(category)
-            }, 100)
+            if (position > 0 && position < 2) {     // Load Semua Brand
+                isLoadMore = false
+                selectedBrandLetter = defaultBrandLetter
+                setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
+                viewModel.resetAllBrandRequestParameter()
+                Handler().postDelayed({
+                    viewModel.loadAllBrands(category)
+                }, 100)
 
-        } else if (position >= 2) {     // Load per alphabet
-            isLoadMore = false
-            selectedBrandLetter = chipName
-            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
-            viewModel.resetAllBrandRequestParameter()
-            Handler().postDelayed({
-                viewModel.loadBrandsPerAlphabet(category, chipName)
-            }, 100)
+            } else if (position >= 2) {     // Load per alphabet
+                isLoadMore = false
+                selectedBrandLetter = chipName
+                setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
+                viewModel.resetAllBrandRequestParameter()
+                Handler().postDelayed({
+                    viewModel.loadBrandsPerAlphabet(category, chipName)
+                }, 100)
+            }
         }
     }
 
@@ -458,7 +466,11 @@ class BrandlistPageFragment :
     }
 
     private fun resetCurrentBrandRecom() {
-        BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+        recyclerView?.let {
+            if (!it.isComputingLayout) {
+                BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+            }
+        }
     }
 
     override fun onClickSearchButton() {

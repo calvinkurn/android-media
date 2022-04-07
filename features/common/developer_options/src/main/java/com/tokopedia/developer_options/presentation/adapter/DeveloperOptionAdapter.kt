@@ -47,6 +47,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
+        const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
         const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
         const val KEYWORD_VIEW_SERVER_LOGGER = "View Server Logger"
@@ -56,6 +57,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
         const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
+        const val KEYWORD_DATA_EXPLORER_ACTIVITY = "Data Explrorer Activity"
         const val KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER = "Home and Navigation Revamp Switcher"
         const val KEYWORD_NEW_NAVIGATION = "New Navigation"
         const val KEYWORD_ALWAYS_OS_EXPERIMENT = "Always OS Experiment"
@@ -120,7 +122,7 @@ class DeveloperOptionAdapter(
         )),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
-        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
+        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(listOf(
             KEYWORD_LOGGING_TO_SERVER,
             KEYWORD_SEND_LOG_TO_SERVER,
@@ -135,6 +137,7 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         TranslatorUiModel(listOf(
             KEYWORD_API_KEY_SETTING,
             KEYWORD_VISIT_BELOW_FOR_API_KEY,

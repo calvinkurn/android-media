@@ -3,20 +3,24 @@ package com.tokopedia.kyc_centralized.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kyc_centralized.util.CipherProvider
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
+import com.tokopedia.utils.file.FileUtil
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.crypto.Cipher
@@ -27,6 +31,7 @@ class KycUploadViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val kycSharedPreference: KycSharedPreference,
     private val cryptoFactory: CipherProvider,
+    private val serverLogger: ServerLogger
 ) : BaseViewModel(dispatcher.main) {
 
     private val _kycResponse = MutableLiveData<Result<KycData>>()
@@ -44,16 +49,24 @@ class KycUploadViewModel @Inject constructor(
             isKtpFileUsingEncryption: Boolean,
             isFaceFileUsingEncryption: Boolean
     ) {
+        val startTimeLog = System.currentTimeMillis()
+        var encryptionTimeKtp = 0L
+        var encryptionTimeFace = 0L
+
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 var finalKtp = ktpPath
                 var finalFace = facePath
 
+                Timber.d("$LIVENESS_TAG: Start uploading")
+
                 if(isKtpFileUsingEncryption) {
                     try {
-                        kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)?.let {
-                            finalKtp = decryptImage(ktpPath, it, KYC_IV_KTP_CACHE)
+                        val startTime = System.currentTimeMillis()
+                        kycSharedPreference.getByteArrayCache(KYC_IV_KTP_CACHE)?.let { ivKey ->
+                            finalKtp = decryptImage(ktpPath, ivKey, KYC_IV_KTP_CACHE)
                         }
+                        encryptionTimeKtp = System.currentTimeMillis() - startTime
                     } catch (e: Exception) {
                         _kycResponse.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on decrypt file KTP; error: ${e.message}")))
                         return@withContext
@@ -62,9 +75,11 @@ class KycUploadViewModel @Inject constructor(
 
                 if (isFaceFileUsingEncryption) {
                     try {
-                        kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)?.let {
-                            finalFace = decryptImage(facePath, it, KYC_IV_FACE_CACHE)
+                        val startTime = System.currentTimeMillis()
+                        kycSharedPreference.getByteArrayCache(KYC_IV_FACE_CACHE)?.let { ivKey ->
+                            finalFace = decryptImage(facePath, ivKey, KYC_IV_FACE_CACHE)
                         }
+                        encryptionTimeFace = System.currentTimeMillis() - startTime
                     } catch (e: Exception) {
                         _kycResponse.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on decrypt file Selfie/Liveness; error: ${e.message}")))
                         return@withContext
@@ -72,25 +87,88 @@ class KycUploadViewModel @Inject constructor(
                 }
 
                 when {
-                    finalKtp.isEmpty() -> _kycResponse.postValue(Fail(Throwable(FILE_PATH_KTP_EMPTY)))
-                    finalFace.isEmpty() -> _kycResponse.postValue(Fail(Throwable(FILE_PATH_FACE_EMPTY)))
+                    finalKtp.isEmpty() -> {
+                        _kycResponse.postValue(Fail(Throwable(FILE_PATH_KTP_EMPTY)))
+                        sendLoadTimeUploadLog(
+                                isSuccess = false,
+                                uploadTime = System.currentTimeMillis() - startTimeLog,
+                                encryptionTimeFileKtp = encryptionTimeKtp,
+                                encryptionTimeFileFace = encryptionTimeFace,
+                                fileKtp = finalKtp,
+                                fileFace = finalFace,
+                                message = FILE_PATH_KTP_EMPTY
+                        )
+                    }
+                    finalFace.isEmpty() -> {
+                        _kycResponse.postValue(Fail(Throwable(FILE_PATH_FACE_EMPTY)))
+                        sendLoadTimeUploadLog(
+                                isSuccess = false,
+                                uploadTime = System.currentTimeMillis() - startTimeLog,
+                                encryptionTimeFileKtp = encryptionTimeKtp,
+                                encryptionTimeFileFace = encryptionTimeFace,
+                                fileKtp = finalKtp,
+                                fileFace = finalFace,
+                                message = FILE_PATH_FACE_EMPTY
+                        )
+                    }
                     else -> {
-                        val kycUploadResult = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
-                        _kycResponse.postValue(Success(kycUploadResult))
+                        val result = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
+                        if (result.header.message.isNotEmpty() || result.header.errorCode.isNotEmpty()) {
+
+                            // set with empty throwable message so it can trigger general error
+                            _kycResponse.postValue(Fail(MessageErrorException(result.header.message[0])))
+                            sendLoadTimeUploadLog(
+                                    isSuccess = false,
+                                    uploadTime = System.currentTimeMillis() - startTimeLog,
+                                    encryptionTimeFileKtp = encryptionTimeKtp,
+                                    encryptionTimeFileFace = encryptionTimeFace,
+                                    fileKtp = finalKtp,
+                                    fileFace = finalFace,
+                                    isErrorHeader = true,
+                                    message = String.format("%s (%s)",
+                                            result.header.message[0],
+                                            result.header.errorCode
+                                    )
+                            )
+                        } else {
+                            _kycResponse.postValue(Success(result.data))
+                            if (result.data.isSuccessRegister) {
+                                sendLoadTimeUploadLog(
+                                    isSuccess = true,
+                                    uploadTime = System.currentTimeMillis() - startTimeLog,
+                                    encryptionTimeFileKtp = encryptionTimeKtp,
+                                    encryptionTimeFileFace = encryptionTimeFace,
+                                    fileKtp = finalKtp,
+                                    fileFace = finalFace
+                                )
+                            } else {
+                                sendLoadTimeUploadLog(
+                                    isSuccess = false,
+                                    uploadTime = System.currentTimeMillis() - startTimeLog,
+                                    encryptionTimeFileKtp = encryptionTimeKtp,
+                                    encryptionTimeFileFace = encryptionTimeFace,
+                                    fileKtp = finalKtp,
+                                    fileFace = finalFace,
+                                    message = result.data.listMessage.toString()
+                                )
+                            }
+                        }
                     }
                 }
             }
         }) {
             _kycResponse.postValue(Fail(it))
+            sendLoadTimeUploadLog(
+                isSuccess = false,
+                uploadTime = System.currentTimeMillis() - startTimeLog,
+                encryptionTimeFileKtp = encryptionTimeKtp,
+                encryptionTimeFileFace = encryptionTimeFace,
+                message = it.message.toString()
+            )
         }
     }
 
     fun encryptImage(originalFilePath: String, ivCache: String) {
-        Timber.d(
-            "$LIVENESS_TAG: Start encrypting %s, %s",
-            originalFilePath.substringAfterLast("/"),
-            ivCache
-        )
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val encryptedImagePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
@@ -99,9 +177,21 @@ class KycUploadViewModel @Inject constructor(
                 kycSharedPreference.saveByteArrayCache(ivCache, aes.iv)
                 val createdFile = writeEncryptedResult(originalFilePath, encryptedImagePath, aes)
                 _encryptImage.postValue(Success(createdFile))
+
+                Timber.d(
+                        "$LIVENESS_TAG: Start encrypting %s, %s(%s)",
+                        originalFilePath.substringAfterLast("/"),
+                        ivCache,
+                        aes.iv
+                )
             }
         }, onError = {
             _encryptImage.postValue(Fail(Throwable("$FAILED_ENCRYPTION : on encrypt $originalFilePath; error: ${it.message}")))
+            Timber.d(
+                    "$LIVENESS_TAG: Failed encrypting %s, %s",
+                    originalFilePath.substringAfterLast("/"),
+                    ivCache
+            )
         })
     }
 
@@ -118,6 +208,12 @@ class KycUploadViewModel @Inject constructor(
     }
 
     fun decryptImage(originalFilePath: String, iv: ByteArray, ivCache: String): String {
+        Timber.d(
+                "$LIVENESS_TAG: Start decrypting %s, %s(%s)",
+                originalFilePath.substringAfterLast("/"),
+                ivCache,
+                iv
+        )
         val decryptedFilePath = ImageEncryptionUtil.createCopyOfOriginalFile(originalFilePath)
         val aes = cryptoFactory.initAesDecrypt(iv)
         val resultPath = writeDecryptedResult(originalFilePath, decryptedFilePath, aes)
@@ -129,6 +225,33 @@ class KycUploadViewModel @Inject constructor(
     private fun writeDecryptedResult(originalFilePath: String, decryptedFilePath: String, aes: Cipher): String {
         ImageEncryptionUtil.writeDecryptedImage(originalFilePath, decryptedFilePath, aes)
         return deleteAndRenameResult(originalFilePath, decryptedFilePath)
+    }
+
+    private fun sendLoadTimeUploadLog(
+        isSuccess: Boolean,
+        uploadTime: Long,
+        encryptionTimeFileKtp: Long = 0L,
+        encryptionTimeFileFace: Long = 0L,
+        fileKtp: String = "",
+        fileFace: String = "",
+        isErrorHeader: Boolean = false,
+        message: String = ""
+    ) {
+        val type = if (isErrorHeader) {
+            "ErrorHeader"
+        } else {
+            if (isSuccess) "Success" else "Failed"
+        }
+
+        serverLogger.log(Priority.P2, "KYC_UPLOAD_MONITORING", mapOf(
+            "type" to type,
+            "uploadTime" to "${uploadTime}ms",
+            "encryptionTimeFileKtp" to "${encryptionTimeFileKtp}ms",
+            "encryptionTimeFileFace" to "${encryptionTimeFileFace}ms",
+            "ktpFileSize" to if (fileKtp.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileKtp)}Kb" else "-",
+            "faceFileSize" to if (fileFace.isNotEmpty()) "${FileUtil.getFileSizeInKb(fileFace)}Kb" else "-",
+            "message" to message
+        ))
     }
 
     companion object {

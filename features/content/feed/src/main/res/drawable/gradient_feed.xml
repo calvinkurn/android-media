@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:type="radial"
-        android:gradientRadius="100%p"
-        android:centerX="-0.2"
-        android:centerY="0.1"
-        android:startColor="@color/Unify_G300"
-        android:endColor="@color/Unify_B500" />
+    <gradient android:type="radial" android:gradientRadius="100%p" android:centerX="-0.2" android:centerY="0.1" android:startColor="@color/Unify_G300" android:endColor="@color/Unify_B500"/>
 </shape>

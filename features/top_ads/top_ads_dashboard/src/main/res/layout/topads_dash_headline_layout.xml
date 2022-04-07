@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -34,12 +36,16 @@
                 android:layout_height="match_parent"
                 android:visibility="gone" />
 
-            <include
-                android:id="@+id/headlinList"
-                layout="@layout/topads_dash_fragment_headline_group_list"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/headlineAdsViePager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
             <com.google.android.material.appbar.AppBarLayout
                 android:id="@+id/app_bar_layout_2"
@@ -87,11 +93,11 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-                <include
-                    android:id="@+id/search"
-                    layout="@layout/topads_dash_layout_common_searchbar_layout"
+                <com.tokopedia.unifycomponents.TabsUnify
+                    android:id="@+id/headlineTabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:tabGravity="fill" />
 
             </com.google.android.material.appbar.AppBarLayout>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

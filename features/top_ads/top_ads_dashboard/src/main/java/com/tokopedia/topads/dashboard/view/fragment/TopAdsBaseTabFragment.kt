@@ -79,6 +79,10 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     abstract fun getCustomDateText(customDateText: String)
 
+    abstract fun setDeletedGroupCount(size: Int)
+
+    abstract fun setGroupCount(size: Int)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
         currentDate = view.findViewById(R.id.current_date)

@@ -1,0 +1,135 @@
+{
+  "digiPersoGetPersonalizedItems": {
+    "trackingData": {
+      "userType": "new user"
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Nabilla",
+        "subtitle": "087855812080",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png",
+        "trackingData": {
+          "clientNumber": "087855812080",
+          "lastOrderDate": "20200729160515",
+          "totalTransaction": "1",
+          "productID": "1136",
+          "operatorID": "5",
+          "categoryID": "1"
+        }
+      },
+      {
+        "id": 2,
+        "title": "Danur rr",
+        "subtitle": "08121111111",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+        "trackingData": {
+          "clientNumber": "08121111111",
+          "lastOrderDate": "20200717040938",
+          "totalTransaction": "1",
+          "productID": "70",
+          "operatorID": "12",
+          "categoryID": "1"
+        }
+      },
+      {
+        "id": 3,
+        "title": "08121111112",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+        "trackingData": {
+          "clientNumber": "08121111112",
+          "lastOrderDate": "20200612161245",
+          "totalTransaction": "3",
+          "productID": "68",
+          "operatorID": "12",
+          "categoryID": "1"
+        }
+      },
+      {
+        "id": 4,
+        "title": "081211111111",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+        "trackingData": {
+          "clientNumber": "081211111111",
+          "lastOrderDate": "20200612144903",
+          "totalTransaction": "1",
+          "productID": "316",
+          "operatorID": "12",
+          "categoryID": "2"
+        }
+      },
+      {
+        "id": 5,
+        "title": "Tes",
+        "subtitle": "081911111111",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png",
+        "trackingData": {
+          "clientNumber": "081911111111",
+          "lastOrderDate": "20200612144059",
+          "totalTransaction": "20",
+          "productID": "2700",
+          "operatorID": "5",
+          "categoryID": "2"
+        }
+      },
+      {
+        "id": 6,
+        "title": "0811111111111",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/18/59205941/59205941_4206fd77-877d-46aa-a4f7-3ddb752da681.png",
+        "trackingData": {
+          "clientNumber": "0811111111111",
+          "lastOrderDate": "20200612131512",
+          "totalTransaction": "1",
+          "productID": "9944",
+          "operatorID": "12",
+          "categoryID": "2"
+        }
+      },
+      {
+        "id": 7,
+        "title": "087786807105",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png",
+        "trackingData": {
+          "clientNumber": "087786807105",
+          "lastOrderDate": "20190808121229",
+          "totalTransaction": "1",
+          "productID": "31",
+          "operatorID": "5",
+          "categoryID": "1"
+        }
+      },
+      {
+        "id": 8,
+        "title": "087889514776",
+        "subtitle": "",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png",
+        "trackingData": {
+          "clientNumber": "087889514776",
+          "lastOrderDate": "20190807113727",
+          "totalTransaction": "1",
+          "productID": "30",
+          "operatorID": "5",
+          "categoryID": "1"
+        }
+      },
+      {
+        "id": 9,
+        "title": "Sepaydermen",
+        "subtitle": "081908878591",
+        "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/11/17/80338194/80338194_7a8e9af4-a3ec-4f77-9892-69acc932df92.png",
+        "trackingData": {
+          "clientNumber": "081908878591",
+          "lastOrderDate": "20190621161022",
+          "totalTransaction": "8",
+          "productID": "32",
+          "operatorID": "5",
+          "categoryID": "1"
+        }
+      }
+    ]
+  }
+}

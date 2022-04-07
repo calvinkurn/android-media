@@ -2,16 +2,15 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape>
-            <corners android:radius="@dimen/dp_15" />
-            <solid android:color="@color/Unify_N50" />
+            <corners android:radius="@dimen/dp_15"/>
+            <solid android:color="@color/Unify_N50"/>
         </shape>
     </item>
-
     <item android:id="@android:id/progress">
         <clip>
             <shape>
-                <corners android:radius="@dimen/dp_15" />
-                <solid android:color="@color/Unify_R500" />
+                <corners android:radius="@dimen/dp_15"/>
+                <solid android:color="@color/Unify_R500"/>
             </shape>
         </clip>
     </item>

@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.digital.home.databinding.LayoutDigitalHomeCategoryItemSubmenuBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -14,7 +15,7 @@ class RechargeItemCategoryAdapter(
 ) : RecyclerView.Adapter<RechargeItemCategoryAdapter.DigitalItemSubmenuCategoryViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: DigitalItemSubmenuCategoryViewHolder, position: Int) {
-        viewHolder.bind(items[position], listener)
+        viewHolder.bind(items[position], listener, position == items.size - 1)
     }
 
     override fun onCreateViewHolder(
@@ -37,7 +38,8 @@ class RechargeItemCategoryAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             element: RechargeHomepageSections.Item,
-            onItemBindListener: RechargeHomepageItemListener
+            onItemBindListener: RechargeHomepageItemListener,
+            isLastItem: Boolean = false
         ) {
             with(binding) {
                 binding.categoryImage.loadImage(element.mediaUrl)
@@ -45,8 +47,22 @@ class RechargeItemCategoryAdapter(
                 root.setOnClickListener {
                     onItemBindListener.onRechargeSectionItemClicked(element)
                 }
+
+                if (isLastItem && element.title.equals(SEE_ALL_TITLE, true)) {
+                    binding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
+                        ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            onItemBindListener.onRechargeAllCategoryShowCoachmark(binding.root)
+                        }
+                    })
+                }
             }
 
+        }
+
+        companion object {
+            private const val SEE_ALL_TITLE = "Semua Kategori"
         }
 
     }

@@ -69,7 +69,7 @@ class CatalogComparisonViewModelTest {
         val mockGqlResponse : GraphqlResponse  = createMockGraphqlResponse(getJsonObject("catalog_comparison_dummy_response.json"))
         val data = mockGqlResponse.getData<CatalogComparisonProductsResponse>(
             CatalogComparisonProductsResponse::class.java)
-        data.catalogComparisonList?.catalogComparisonList = null
+        data.catalogComparisonList?.catalogComparisonList = arrayListOf()
        runBlocking {
             coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
@@ -88,6 +88,22 @@ class CatalogComparisonViewModelTest {
             viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,2,"")
             assertEquals(viewModel.getShimmerData().value?.size, 2)
             assertEquals(viewModel.masterDataList.size, 2)
+        }
+    }
+
+    @Test
+    fun `Get Catalog Comparison Response Success Is Null`() {
+        val mockGqlResponse : GraphqlResponse  =
+            CatalogForYouViewModelTest.createMockGraphqlResponse(
+                CatalogForYouViewModelTest.getJsonObject("catalog_comparison_dummy_response.json")
+            )
+        val data = mockGqlResponse.getData<CatalogComparisonProductsResponse>(
+            CatalogComparisonProductsResponse::class.java)
+        data.catalogComparisonList = null
+        runBlocking {
+            coEvery { repository.getComparisonProducts(any(),any(), any(),any(),any(), any()) } returns mockGqlResponse
+            viewModel.getComparisonProducts(CatalogTestUtils.CATALOG_ID,"","","",10,1,"")
+            assertEquals(viewModel.getHasMoreItems().value , false)
         }
     }
 
