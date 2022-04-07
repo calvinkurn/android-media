@@ -72,6 +72,13 @@ class SearchProductAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun refresh(items: List<Product>) {
+        this.products.clear()
+        this.products.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         this.products = mutableListOf()
         notifyDataSetChanged()

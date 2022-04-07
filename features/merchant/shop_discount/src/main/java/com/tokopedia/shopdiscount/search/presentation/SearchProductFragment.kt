@@ -279,12 +279,12 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     private fun disableProductSelection(products : List<Product>) {
         val toBeDisabledProducts = viewModel.disableProducts(products)
-        adapter?.updateAll(toBeDisabledProducts)
+        adapter?.refresh(toBeDisabledProducts)
     }
 
     private fun enableProductSelection(products : List<Product>) {
         val toBeEnabledProducts = viewModel.enableProduct(products)
-        adapter?.updateAll(toBeEnabledProducts)
+        adapter?.refresh(toBeEnabledProducts)
     }
 
     private fun handleBulkManageButtonVisibility(selectedProductCount : Int) {
