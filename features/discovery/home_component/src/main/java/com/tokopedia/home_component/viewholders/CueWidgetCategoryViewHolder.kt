@@ -59,7 +59,7 @@ class CueWidgetCategoryViewHolder (
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
             adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener, adapterPosition)
-            homeComponentCueCategory2x2Rv.adapter = adapter
+            homeComponentCueCategoryRv.adapter = adapter
             val spanCount = getSpanCount(channel.channelGrids.size)
             if (spanCount == HIDE_CUE_WIDGET) {
                 root.gone()
@@ -68,9 +68,9 @@ class CueWidgetCategoryViewHolder (
                     getSpanCount(channel.channelGrids.size),
                     LinearLayoutManager.VERTICAL
                 )
-                homeComponentCueCategory2x2Rv.layoutManager = layoutManager
-                if (homeComponentCueCategory2x2Rv.itemDecorationCount == FIRST_ITEM_DECORATION) {
-                    homeComponentCueCategory2x2Rv.addItemDecoration(CueWidgetCategoryItemDecoration())
+                homeComponentCueCategoryRv.layoutManager = layoutManager
+                if (homeComponentCueCategoryRv.itemDecorationCount == FIRST_ITEM_DECORATION) {
+                    homeComponentCueCategoryRv.addItemDecoration(CueWidgetCategoryItemDecoration())
                 }
             }
         }
