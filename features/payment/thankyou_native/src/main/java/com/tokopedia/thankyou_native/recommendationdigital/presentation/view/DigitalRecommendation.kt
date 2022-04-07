@@ -66,7 +66,7 @@ class DigitalRecommendation : FrameLayout, IDigitalRecommendationView {
             setViewModelFactory(viewModelFactory.get())
             setLifecycleOwner(fragment)
             setAdditionalData(DigitalRecommendationAdditionalTrackingData())
-            setPage(getDummyChannelName(pageType))
+            setPage(pageType)
             listener = object : DigitalRecommendationWidget.Listener{
                 override fun onFetchFailed(throwable: Throwable) {
                     hide()
