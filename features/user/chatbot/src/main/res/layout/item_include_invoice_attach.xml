@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/invoice_height"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/attach_invoice_item_cardview"
@@ -61,10 +61,10 @@
                 android:layout_alignLeft="@id/attach_invoice_item_invoice_date"
                 android:layout_below="@id/attach_invoice_item_invoice_date"
                 android:layout_marginTop="6dp"
-                android:background="@color/grey_300"
+                android:background="@color/Unify_N100"
                 android:padding="@dimen/dp_1"
                 android:scaleType="fitXY"
-                android:src="@color/colorAccent" />
+                android:src="@color/Unify_G500" />
 
             <TextView
                 android:id="@+id/attach_invoice_item_product_name"
@@ -115,7 +115,7 @@
                 android:paddingRight="16dp"
                 android:paddingTop="4dp"
                 android:textAlignment="center"
-                android:textColor="#f5a623"
+                android:textColor="@color/Unify_Y400"
                 android:textSize="11sp"
                 tools:text="Kode resi pengiriman tidak valid" />
 
@@ -149,7 +149,7 @@
                 android:layout_height="@dimen/dp_1"
                 android:layout_above="@id/attach_invoice_item_invoice_total_container"
                 android:layout_marginTop="12dp"
-                android:background="@color/grey_hint" />
+                android:background="@color/Unify_N100" />
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

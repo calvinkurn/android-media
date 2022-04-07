@@ -78,7 +78,7 @@
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/chatbot_black_color_opacity_lvl_35"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintStart_toStartOf="@id/tv_invoice_name"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_name"
             app:typographyType="small"

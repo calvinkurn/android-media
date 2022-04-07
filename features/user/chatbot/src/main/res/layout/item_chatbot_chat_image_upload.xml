@@ -17,7 +17,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="#E5F5FF"
+        app:cardBackgroundColor="@color/Unify_B100"
         android:layout_centerHorizontal="true">
 
         <com.tokopedia.unifyprinciples.Typography

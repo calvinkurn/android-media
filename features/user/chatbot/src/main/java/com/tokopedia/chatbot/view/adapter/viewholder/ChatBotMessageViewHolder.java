@@ -38,7 +38,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
     @Override
     protected void setChatLeft(View chatBalloon) {
         super.setChatLeft(chatBalloon);
-        message.setLinkTextColor(MethodChecker.getColor(chatBalloon.getContext(), R.color.read_more_color));
+        message.setLinkTextColor(MethodChecker.getColor(chatBalloon.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         if (htmlMessage != null)
             ChatBotTextExtKt.removeUnderLineFromLinkAndSetText(message, htmlMessage);
         message.post(() -> {
