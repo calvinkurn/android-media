@@ -31,6 +31,7 @@ import com.tokopedia.discovery2.di.DiscoveryModule
 import com.tokopedia.discovery2.di.DiscoveryRepoProvider
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.foldable.FoldableAndTabletSupportManager
 import com.tokopedia.foldable.FoldableInfo
 import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -45,7 +46,7 @@ const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 private const val LOGIN_REQUEST_CODE = 35769
 
-open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), FoldableSupportManager.Callback {
+open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), FoldableSupportManager.FoldableInfoCallback {
 
     protected lateinit var discoveryViewModel: DiscoveryViewModel
 
@@ -82,9 +83,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>(), Fold
         initDaggerInject()
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
-        FoldableSupportManager(windowInfoRepository(), this,this).let {
-            this.lifecycle.addObserver(it)
-        }
+        FoldableAndTabletSupportManager(windowInfoRepository(), this,this)
     }
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
