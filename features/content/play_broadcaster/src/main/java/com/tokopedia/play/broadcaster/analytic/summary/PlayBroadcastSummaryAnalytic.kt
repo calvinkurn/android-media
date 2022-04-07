@@ -9,7 +9,7 @@ interface PlayBroadcastSummaryAnalytic {
 
     fun clickPostingVideoNow()
 
-    fun clickContentTag(tagName: String)
+    fun clickContentTag(tagName: String, isChosen: Boolean)
 
     fun clickCoverOnReportPage(channelID: String, channelTitle: String)
 

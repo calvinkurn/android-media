@@ -305,9 +305,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     override fun doSetDelivered(receiverName: String) {
-        val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
         setLoadingIndicator(true)
-        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverName)
+        somDetailViewModel.setDelivered(orderId, receiverName)
     }
 
     override fun onEditAwbButtonClicked(cancelNotes: String) {
@@ -825,7 +824,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRejectOrder() {
-        somDetailViewModel.getRejectReasons(GraphqlHelper.loadRawString(resources, R.raw.gql_som_reject_reason))
+        somDetailViewModel.getRejectReasons()
     }
 
     private fun doEditAwb(shippingRef: String) {
@@ -1008,7 +1007,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onClickProduct(orderDetailId: Int) {
+    override fun onClickProduct(orderDetailId: Long) {
         val appLinkSnapShot = "${ApplinkConst.SNAPSHOT_ORDER}/$orderId/$orderDetailId"
         val intent = RouteManager.getIntent(activity, appLinkSnapShot)
         intent.putExtra(ApplinkConstInternalOrder.IS_SNAPSHOT_FROM_SOM, true)
