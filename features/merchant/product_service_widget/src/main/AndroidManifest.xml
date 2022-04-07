@@ -44,7 +44,7 @@
             android:name="com.tokopedia.gifting.presentation.activity.GiftingBottomsheetActivity"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
-            android:exported="false">
+            android:exported="false"> 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

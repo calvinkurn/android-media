@@ -128,7 +128,7 @@ object ApplinkConstInternalGlobal {
 
     // UserIdentificationFormActivity
     // tokopedia-android-internal://global/user-identification-form
-    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&type={type}&redirectUrl={redirectUrl}"
+    const val USER_IDENTIFICATION_FORM = "$USER_IDENTIFICATION_FORM_BASE?projectId={projectId}&redirectUrl={redirectUrl}"
     const val PARAM_PROJECT_ID = "projectId"
 
     const val PARAM_CALL_BACK = "callBack"
@@ -136,7 +136,7 @@ object ApplinkConstInternalGlobal {
     // UserIdentificationInfoSimpleActivity
     // tokopedia-android-internal://global/user-identification-only
     @JvmField
-    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}&type={type}"
+    val USER_IDENTIFICATION_INFO_SIMPLE = "$INTERNAL_GLOBAL/user-identification-only?projectId={projectId}&showIntro={showIntro}&redirectUrl={redirectUrl}"
     const val PARAM_SHOW_INTRO = "showIntro"
     const val PARAM_REDIRECT_URL = "redirectUrl"
     const val PARAM_KYC_TYPE = "type"
@@ -425,10 +425,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/screen-recorder
     const val SCREEN_RECORDER = "$INTERNAL_GLOBAL/screen-recorder"
 
-    // TwoFactorActivity
-    // tokopedia-android-internal://global/two-factor-register
-    const val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
-
     // AccountHomeActivity
     // tokopedia-android-internal://global/account-home-old
     const val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
@@ -471,9 +467,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/global-sharing
     const val GLOBAL_SHARING = "$INTERNAL_GLOBAL/sharing?text={text}&image={image}&type={type}"
 
-    // LinkAccountReminderActivity
-    // tokopedia-android-internal://global/link-acc-reminder
-    const val LINK_ACC_REMINDER = "$INTERNAL_GLOBAL/link-acc-reminder"
 
     // LinkAccountWebViewActivity
     // tokopedia-android-internal://global/link-account-webview
@@ -481,4 +474,7 @@ object ApplinkConstInternalGlobal {
 
     //TkpdYoutubeVideoActivity
     const val YOUTUBE_VIDEO = "$INTERNAL_GLOBAL/youtube-video"
+
+    //DataExplorerActivity
+    const val DATA_EXPLORER = "$INTERNAL_GLOBAL/data-explorer"
 }

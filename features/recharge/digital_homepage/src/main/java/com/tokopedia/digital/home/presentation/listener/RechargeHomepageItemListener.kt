@@ -1,5 +1,6 @@
 package com.tokopedia.digital.home.presentation.listener
 
+import android.view.View
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 
 interface RechargeHomepageItemListener {
@@ -18,4 +19,6 @@ interface RechargeHomepageItemListener {
     fun onRechargeBannerImpression(element: RechargeHomepageSections.Section)
     fun onRechargeReminderWidgetImpression(sectionID: String)
     fun onRechargeLegoBannerImpression(sectionID: String)
+
+    fun onRechargeAllCategoryShowCoachmark(view: View)
 }
