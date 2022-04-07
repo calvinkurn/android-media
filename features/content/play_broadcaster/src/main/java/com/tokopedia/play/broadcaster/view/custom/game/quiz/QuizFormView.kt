@@ -4,9 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
@@ -21,6 +23,7 @@ import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
+import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -56,6 +59,7 @@ class QuizFormView : ConstraintLayout {
     private val bottomSheetBehaviour = BottomSheetBehavior.from(timePickerBinding.clInteractiveTimePicker)
 
     private val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    private val offset16 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private val eventBus = EventBus<Event>()
 
@@ -142,6 +146,9 @@ class QuizFormView : ConstraintLayout {
                     val newOptionView = createNewOptionView(options[i])
                     optionListView.add(newOptionView)
                     binding.llOptionContainer.addView(newOptionView)
+
+                    val marginLayoutParams = newOptionView.layoutParams as MarginLayoutParams
+                    marginLayoutParams.updateMargins(bottom = offset16)
                 }
             }
             else if(options.size < optionListView.size) {
