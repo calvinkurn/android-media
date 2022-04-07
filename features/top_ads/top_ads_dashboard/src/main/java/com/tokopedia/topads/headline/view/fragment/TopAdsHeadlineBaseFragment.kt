@@ -159,13 +159,13 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         headlineTabLayout.getUnifyTabLayout().removeAllTabs()
         headlineTabLayout.addNewTab(TopAdsDashboardConstant.IKLAN_TOKO)
         headlineTabLayout.customTabMode = TabLayout.MODE_SCROLLABLE
-        addDeletedTab(list)
         list.add(
             FragmentTabItem(
                 TopAdsDashboardConstant.IKLAN_TOKO,
                 TopAdsHeadlineShopFragment.createInstance()
             )
         )
+        addDeletedTab(list)
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
@@ -200,7 +200,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         super.onActivityCreated(savedInstanceState)
         presenter.getWhiteListedUser(::onSuccessWhiteListing){
             presenter.getShopAdsInfo {
-                val info = it.topadsGetShopInfoV2.data.ads.firstOrNull()
+                val info = it.topadsGetShopInfoV2.data.ads.getOrNull(1)
                 if (info?.type == "headline") {
                     if (!info.isUsed) {
                         showEmptyView()
