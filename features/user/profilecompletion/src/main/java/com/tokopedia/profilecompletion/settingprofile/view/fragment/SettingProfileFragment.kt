@@ -687,6 +687,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 	const val REQUEST_CODE_EDIT_PROFILE_PHOTO = 200
 	const val REQUEST_CODE_EDIT_PHONE = 203
 	const val REQUEST_CODE_EDIT_BOD = 204
+	const val REQUEST_CODE_VERIFY_PHONE = 205
 
 	const val REQUEST_CODE_CHANGE_NAME = 300
 	const val REQUEST_CODE_ADD_BOD = 301

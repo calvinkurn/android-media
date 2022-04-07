@@ -80,6 +80,8 @@
     <string name="change_email_change_success">Email berhasil diubah</string>
     <string name="change_email_change_success_v2">Yay! E-mail kamu berhasil diubah.</string>
     <string name="add_and_verify_phone">Tambah nomor HP dulu, yuk!</string>
+    <string name="change_email_and_unverified_phone">Verifikasi nomor HP dulu, yuk!</string>
+    <string name="description_verify_phone">Biar akunmu tetap aman, kamu harus verifikasi nomor HP sebelum ubah e-mail.</string>
     <string name="add_and_verify_phone_detail">Proses verifikasi buat akses akun jadi lebih gampang kalau ada nomor HP. Keamanan akunmu makin terjamin, deh!</string>
   
   <!-- ADD PHONE -->
@@ -220,5 +222,6 @@
     <string name="title_toolbar_edit_bio">Ubah Bio</string>
     <string name="title_toolbar_add_bio">Tambah Bio</string>
     <string name="no_verified">Belum Diverifikasi</string>
+    <string name="success_verify_phone">Yay! Nomor HP kamu berhasil diverifikasi.</string>
 
 </resources>

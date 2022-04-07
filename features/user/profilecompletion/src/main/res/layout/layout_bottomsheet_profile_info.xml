@@ -16,30 +16,18 @@
         android:layout_marginHorizontal="@dimen/unify_space_16"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
-        app:layout_constraintTop_toBottomOf="@id/iv_profile_info"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:typographyType="heading_3"
-        android:layout_marginTop="24dp"
-        android:text="@string/title_bottomsheet_profile_info"
-        tools:text ="Info Pribadi"/>
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/iv_profile_info"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        android:layout_marginTop="@dimen/unify_space_4"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:text="@string/body_profile_info"
         tools:text = "Tenang, informasi ini rahasia. Hanya kamu yang dapat melihatnya dan tidak dibagiin ke siapa pun."/>
 

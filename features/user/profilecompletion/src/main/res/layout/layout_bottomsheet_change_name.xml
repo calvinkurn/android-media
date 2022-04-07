@@ -14,11 +14,9 @@
         app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toTopOf="@id/btn_ok"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginHorizontal="@dimen/unify_space_16"
         app:typographyType="body_2"
         app:layout_constraintVertical_chainStyle="packed"
         app:typographyWeight="reguler"
-        android:layout_marginTop="16dp"
         tools:text="@string/body_personal_info"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -31,7 +29,6 @@
         android:id="@+id/btn_ok"
         android:text="@string/btn_ok"
         android:layout_width="match_parent"
-        android:layout_marginHorizontal="@dimen/unify_space_16"
         android:layout_height="wrap_content"
         app:unifyButtonSize="medium"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

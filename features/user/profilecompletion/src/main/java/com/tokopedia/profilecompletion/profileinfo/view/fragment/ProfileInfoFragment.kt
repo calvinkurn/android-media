@@ -38,10 +38,7 @@ import com.tokopedia.profilecompletion.changebiousername.view.ChangeBioUsernameF
 import com.tokopedia.profilecompletion.common.webview.ProfileSettingWebViewActivity
 import com.tokopedia.profilecompletion.databinding.FragmentProfileInfoBinding
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoConstants
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoData
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
-import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoUiModel
+import com.tokopedia.profilecompletion.profileinfo.data.*
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker.Companion.LABEL_ENTRY_POINT_USER_ID
 import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoAdapter
@@ -209,6 +206,9 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 		    SettingProfileFragment.REQUEST_CODE_ADD_PHONE -> {
 			showNormalToaster(getString(success_add_phone_v2))
 		    }
+			SettingProfileFragment.REQUEST_CODE_VERIFY_PHONE -> {
+				showNormalToaster(getString(success_verify_phone))
+			}
 		    SettingProfileFragment.REQUEST_CODE_ADD_GENDER -> {
 			showNormalToaster(getString(success_add_gender_v2))
 		    }
@@ -310,7 +310,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 		ProfileInfoConstants.PHONE,
 		title = getString(title_phone),
 		itemValue = data.profileInfoData.msisdn,
-		showVerifiedTag = !data.profileInfoData.isMsisdnVerified,
+		showVerifiedTag = showVerifiedTag(data),
 		placeholder = getString(R.string.placeholder_phone)
 	    ) {
 		onPhoneClicked(data)
@@ -371,7 +371,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 		goToChangeEmail()
 	    } else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
 		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
-		showVerifyEmailDialog()
+		showVerifyEmailDialog(data.profileInfoData.msisdn)
 	    } else {
 		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
 		showChangeEmailDialog()
@@ -419,6 +419,10 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 	    }
 	}
     }
+
+	private fun showVerifiedTag(data: ProfileInfoUiModel): Boolean {
+		return !data.profileInfoData.isMsisdnVerified && data.profileInfoData.msisdn.isNotBlank()
+	}
 
     private fun openBottomSheetWarning(entryPoint: String, title: String, msg: String) {
 	when (entryPoint) {
@@ -540,11 +544,11 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 	val bottomSheetUnify = BottomSheetUnify()
 	val data = viewModel.profileInfoUiData.value?.profileFeedData?.profile
 	bottomSheetUnify.isDragable = true
-	bottomSheetUnify.showKnob = true
 	bottomSheetUnify.isSkipCollapseState = true
 	bottomSheetUnify.isHideable = true
+	bottomSheetUnify.setTitle(getString(profile_info_title))
 	bottomSheetUnify.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
-	bottomSheetUnify.showCloseIcon = false
+	bottomSheetUnify.showCloseIcon = true
 	val view = View.inflate(context, R.layout.layout_bottomsheet_profile_info, null).apply {
 	    this.findViewById<ImageUnify>(R.id.iv_profile_info)
 		.setImageUrl(data?.profilePreviewImageUrl ?: "")
@@ -562,11 +566,12 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 
     private fun openBottomSheetPersonalInfo() {
 	val bottomSheet = BottomSheetUnify()
-	bottomSheet.showKnob = true
+	bottomSheet.showKnob = false
 	bottomSheet.isSkipCollapseState = true
 	bottomSheet.isHideable = true
 	bottomSheet.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
-	bottomSheet.showCloseIcon = false
+	bottomSheet.setTitle(getString(title_personal_info))
+		bottomSheet.showCloseIcon = true
 	val view = View.inflate(context, R.layout.layout_bottomsheet_personal_info, null).apply {
 
 	}
@@ -619,14 +624,14 @@ class ProfileInfoFragment : BaseDaggerFragment(),
 	}
     }
 
-    private fun showVerifyEmailDialog() {
+    private fun showVerifyEmailDialog(phone: String) {
 	context?.let {
 	    DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-		setTitle(getString(add_and_verify_phone))
-		setDescription(getString(add_and_verify_phone_detail))
+		setTitle(getString(change_email_and_unverified_phone))
+		setDescription(getString(description_verify_phone))
 		setPrimaryCTAText(getString(title_verify_phone))
 		setPrimaryCTAClickListener {
-		    goToAddPhone()
+		    goToAddPhoneBy(phone)
 		    this.dismiss()
 		}
 		setSecondaryCTAText(getString(label_cancel))
@@ -645,7 +650,7 @@ class ProfileInfoFragment : BaseDaggerFragment(),
     private fun goToAddPhoneBy(phone: String) {
 	val intent =
 	    RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
-	startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_PHONE)
+	startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_VERIFY_PHONE)
     }
 
     private fun goToChangePhone(phone: String, email: String) {
