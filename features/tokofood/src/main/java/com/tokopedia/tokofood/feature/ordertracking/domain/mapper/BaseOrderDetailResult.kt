@@ -16,7 +16,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
@@ -86,7 +86,7 @@ abstract class BaseOrderDetailResult {
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addPaymentAmountUiModel(
         paymentAmount: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment.PaymentAmount
-    ) = add(PaymentAmountlUiModel(paymentAmount.label, paymentAmount.value))
+    ) = add(PaymentAmountUiModel(paymentAmount.label, paymentAmount.value))
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addDriverSectionUiModel(
         driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails,

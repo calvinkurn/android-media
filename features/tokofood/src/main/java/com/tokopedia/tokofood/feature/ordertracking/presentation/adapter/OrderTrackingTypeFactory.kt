@@ -9,7 +9,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
@@ -54,7 +54,7 @@ interface OrderTrackingTypeFactory {
 
     fun type(paymentMethodUiModel: PaymentMethodUiModel): Int
 
-    fun type(paymentAmountlUiModel: PaymentAmountlUiModel): Int
+    fun type(paymentAmountUiModel: PaymentAmountUiModel): Int
 
     fun type(paymentHeaderUiModel: PaymentHeaderUiModel): Int
 

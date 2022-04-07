@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel
 
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
-import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactory
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 
 data class RestaurantUserAddressUiModel(
     val merchantName: String,
@@ -11,7 +11,7 @@ data class RestaurantUserAddressUiModel(
     val destinationAddress: String
 ): BaseOrderTrackingTypeFactory {
 
-    override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
+    override fun type(typeFactory: OrderTrackingAdapterTypeFactoryImpl): Int {
         return typeFactory.type(this)
     }
 }

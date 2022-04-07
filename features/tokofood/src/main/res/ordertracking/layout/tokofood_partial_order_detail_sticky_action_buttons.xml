@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:background="@drawable/order_detail_sticky_action_buttons_shadow"
+        android:background="@drawable/tokofood_order_detail_sticky_action_buttons_shadow"
         app:layout_constraintBottom_toTopOf="@id/btnOrderDetailSecondaryActions" />
 
     <com.tokopedia.unifycomponents.UnifyImageButton

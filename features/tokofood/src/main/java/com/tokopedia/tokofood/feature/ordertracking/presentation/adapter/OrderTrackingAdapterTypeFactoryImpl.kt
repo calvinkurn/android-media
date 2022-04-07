@@ -14,7 +14,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
@@ -118,7 +118,7 @@ class OrderTrackingAdapterTypeFactoryImpl(
         return PaymentMethodViewHolder.LAYOUT
     }
 
-    override fun type(paymentAmountlUiModel: PaymentAmountlUiModel): Int {
+    override fun type(paymentAmountUiModel: PaymentAmountUiModel): Int {
         return PaymentAmountViewHolder.LAYOUT
     }
 

@@ -2,12 +2,12 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.diffut
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactory
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 
 class OrderTrackingDiffUtilCallback(
-    private val oldItems: List<Visitable<OrderTrackingAdapterTypeFactory>>,
-    private val newItems: List<Visitable<OrderTrackingAdapterTypeFactory>>,
-    private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactory
+    private val oldItems: List<Visitable<OrderTrackingAdapterTypeFactoryImpl>>,
+    private val newItems: List<Visitable<OrderTrackingAdapterTypeFactoryImpl>>,
+    private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactoryImpl
 ): DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldItems.size

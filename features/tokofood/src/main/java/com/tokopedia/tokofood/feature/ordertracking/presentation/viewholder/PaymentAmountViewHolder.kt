@@ -4,10 +4,10 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingPaymentGrandTotalBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountUiModel
 
 class PaymentAmountViewHolder(view: View) :
-    BaseOrderTrackingViewHolder<PaymentAmountlUiModel>(view) {
+    BaseOrderTrackingViewHolder<PaymentAmountUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -16,7 +16,7 @@ class PaymentAmountViewHolder(view: View) :
 
     private val binding = ItemTokofoodOrderTrackingPaymentGrandTotalBinding.bind(itemView)
 
-    override fun bind(element: PaymentAmountlUiModel) {
+    override fun bind(element: PaymentAmountUiModel) {
         with(binding) {
             setGrandTotalLabel(element.totalLabel)
             setGrandTotalValue(element.grandTotalValue)
@@ -26,7 +26,7 @@ class PaymentAmountViewHolder(view: View) :
     override fun bindPayload(payloads: Pair<*, *>?) {
         payloads?.let {
             val (oldItem, newItem) = it
-            if (oldItem is PaymentAmountlUiModel && newItem is PaymentAmountlUiModel) {
+            if (oldItem is PaymentAmountUiModel && newItem is PaymentAmountUiModel) {
                 if (oldItem.totalLabel != newItem.totalLabel) {
                     binding.setGrandTotalLabel(newItem.totalLabel)
                 }
