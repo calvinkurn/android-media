@@ -5,6 +5,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -18,6 +19,7 @@ import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import timber.log.Timber
 
 internal class DefaultNetworkMonitor(
     context: Context?,
@@ -67,7 +69,15 @@ internal class DefaultNetworkMonitor(
         val context = context ?: return
         val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java) as ConnectivityManager
         val networkRequest = NetworkRequest.Builder().build()
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                connectivityManager.registerDefaultNetworkCallback(networkCallback)
+            } else {
+                connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
