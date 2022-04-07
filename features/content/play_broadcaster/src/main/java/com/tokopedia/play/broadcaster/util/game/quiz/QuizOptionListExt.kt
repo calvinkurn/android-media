@@ -32,7 +32,7 @@ object QuizOptionListExt {
             it.copy(
                 text = if(it.order == order) newText else it.text,
                 isFocus = it.order == order,
-                isShowCoachmark = if(isFirstSelectQuizOption) it.order == order else false,
+                isShowCoachmark = if(isFirstSelectQuizOption) it.order == order else it.isShowCoachmark,
             )
         }
     }
