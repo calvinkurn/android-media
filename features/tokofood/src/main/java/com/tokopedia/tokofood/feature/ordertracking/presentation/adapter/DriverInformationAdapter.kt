@@ -36,8 +36,17 @@ class DriverInformationAdapter(
         fun bind(item: DriverInformationUiModel) {
             with(binding) {
                 val nn500Color =
-                    ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
-                imgDriverInformation.setImage(item.iconInformation, nn500Color, nn500Color)
+                    ContextCompat.getColor(
+                        root.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    )
+                item.iconInformation?.let {
+                    imgDriverInformation.setImage(
+                        it,
+                        nn500Color,
+                        nn500Color
+                    )
+                }
                 tvDriverInformation.text = item.informationName
             }
         }

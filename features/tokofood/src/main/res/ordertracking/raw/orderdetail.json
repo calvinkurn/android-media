@@ -1,0 +1,157 @@
+{
+  "tokofoodOrderDetail": {
+    "orderStatus": {
+      "status": "COMPLETED",
+      "title": "Pesanan Selesai",
+      "subtitle": "Driver meluncur ke restoran",
+      "iconName": "cooking"
+    },
+    "eta": {
+      "label": "Estimasi tiba pukul",
+      "time": "12:45 - 12:48"
+    },
+    "merchant": {
+      "displayName": "Kopi Janji Jiwa, Permata Hijau",
+      "distanceInKm": "2.5 km dari tujuan"
+    },
+    "destination": {
+      "label": "Rumah",
+      "phone": "081234567890",
+      "info": "Jl. Prof. DR. Satrio No.3, Karet Semanggi, ..."
+    },
+    "items": [
+      {
+        "displayName": "Milo Macchiato",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [
+          {
+            "displayName": "Sugar level",
+            "optionName": "Less Sugar"
+          },
+          {
+            "displayName": "Ice level",
+            "optionName": "Normal"
+          },
+          {
+            "displayName": "Size",
+            "optionName": "Large"
+          }
+        ],
+        "notes": "Pastiin pesanannya sesuai ya mas"
+      },
+      {
+        "displayName": "Ovomaltine Macchiato",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [
+          {
+            "displayName": "Sugar level",
+            "optionName": "Less Sugar"
+          }
+        ],
+        "notes": "Pastiin pesanannya sesuai ya mas"
+      },
+      {
+        "display_name": "1 Liter Ice Coffee Jelly",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [],
+        "notes": "Pastiin pesanannya sesuai ya mas"
+      },
+      {
+        "displayName": "1 Liter Mocha Coffee Boba",
+        "price": "Rp24.000",
+        "quantity": 1,
+        "variants": [
+          {
+            "displayName": "Sugar level",
+            "optionName": "Normal"
+          }
+        ],
+        "notes": null
+      }
+    ],
+    "additionalTickerInfo": [
+      {
+        "level": "info",
+        "notes": "This will be text for cancelation reason",
+        "urlText": "This will be link",
+        "appUrl": "tokopedia://food/merchant/{merchantId}",
+        "webUrl": "https://tokopedia.com/food/merchant/{merchantId}"
+      }
+    ],
+    "actionButtons": [
+      {
+        "label": "Beli Lagi",
+        "actionType": "link",
+        "appUrl": "tokopedia://food/merchant/{merchantId}",
+        "webUrl": "https://tokopedia.com/food/merchant/{merchantId}"
+      }
+    ],
+    "dotMenus": [
+      {
+        "label": "Bantuan",
+        "actionType": "link",
+        "appUrl": "tokopedia://webview?url=https://www.tokopedia.com/help",
+        "webUrl": "https://tokopedia.com/help"
+      }
+    ],
+    "driverDetails": {
+      "name": "Pria Kusumawardana",
+      "photoUrl": "https://images.tokopedia.net/img/product-1/2020/2/10/5511683/5511683_98da12b1-2985-459d-946e-275c2e592865_1000_1000?ect=4g",
+      "licensePlateNumber": "B 1234 ABC",
+      "karma": [
+        {
+          "icon": "enum_vaksin",
+          "message": "Drivermu sudah divaksin!"
+        },
+        {
+          "icon": "enum_termometer",
+          "message": "Suhu tubuh normal"
+        },
+        {
+          "icon": "enum_telepon",
+          "message": "Telp. untuk diantar tanpa kontak fisik"
+        }
+      ]
+    },
+    "invoice": {
+      "invoiceNumber": "INV/20181011/XVI/X/55069657",
+      "gofoodOrderNumber": "F-1468046953"
+    },
+    "payment": {
+      "paymentMethod": {
+        "label": "Metode Pembayaran",
+        "value": "GoPay"
+      },
+      "paymentDetails": [
+        {
+          "label": "Total Harga",
+          "value": "Rp133.000"
+        },
+        {
+          "label": "Biaya Bungkus dari Restoran",
+          "value": "Rp6.000"
+        },
+        {
+          "label": "Ongkir",
+          "value": "Gratis"
+        },
+        {
+          "label": "Biaya Jasa Aplikasi",
+          "value": "Rp3.000"
+        },
+        {
+          "label": "Diskon",
+          "value": "-Rp50.000"
+        }
+      ],
+      "paymentAmount": {
+        "label": "Total Belanja",
+        "value": "Rp92.000"
+      },
+      "paymentDate": "19 Maret 2022, 20:04"
+    }
+  }
+}

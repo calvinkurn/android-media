@@ -10,7 +10,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-@Module
+@Module(includes = [TokoFoodOrderTrackingViewModelModule::class])
 class TokoFoodOrderTrackingModule {
 
     @TokoFoodOrderTrackingScope

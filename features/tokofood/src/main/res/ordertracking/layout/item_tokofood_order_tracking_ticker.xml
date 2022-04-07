@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ticker.Ticker android:id="@+id/tickerOrderTrackingLive"
+<com.tokopedia.unifycomponents.ticker.Ticker
+    android:id="@+id/tickerOrderDetail"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -7,6 +8,7 @@
     android:layout_marginTop="8dp"
     app:tickerType="announcement"
     app:tickerShapeType="full"
+    app:closeButtonVisibility="gone"
     tools:titleText="Pengiriman terkendala, cuaca ekstrim"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"

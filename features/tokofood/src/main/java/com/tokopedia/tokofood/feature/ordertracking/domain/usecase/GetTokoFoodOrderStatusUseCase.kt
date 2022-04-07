@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderSt
 import com.tokopedia.tokofood.feature.ordertracking.domain.query.TokoFoodOrderStatusQuery
 import javax.inject.Inject
 
-class TokoFoodOrderStatusUseCase @Inject constructor(
+class GetTokoFoodOrderStatusUseCase @Inject constructor(
     private val useCase: GraphqlUseCase<TokoFoodOrderStatusResponse>
 ) {
     init {

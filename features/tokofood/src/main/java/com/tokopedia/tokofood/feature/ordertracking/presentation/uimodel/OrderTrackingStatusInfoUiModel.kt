@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactory
 
 data class OrderTrackingStatusInfoUiModel(
@@ -9,12 +9,14 @@ data class OrderTrackingStatusInfoUiModel(
     val orderStatusTitle: String,
     val orderStatusSubTitle: String,
     val lottieUrl: String
-) : Visitable<OrderTrackingAdapterTypeFactory> {
+) : BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
 }
 
 data class StepperStatusUiModel(
-    val isActive: Boolean
+    val isIconActive: Boolean,
+    val isLineActive: Boolean,
+    val iconName: Int
 )

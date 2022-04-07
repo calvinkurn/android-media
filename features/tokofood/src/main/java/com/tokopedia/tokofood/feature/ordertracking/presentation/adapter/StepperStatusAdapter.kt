@@ -49,8 +49,11 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
         } else {
             val bundle = payloads.getOrNull(Int.ZERO) as? Bundle
             bundle?.keySet()?.forEach { key ->
-                if (key == KEY_IS_ACTIVE) {
-                    holder.updateStepper(bundle.getBoolean(KEY_IS_ACTIVE))
+                if (key == KEY_IS_ICON_ACTIVE) {
+                    holder.updateStepperIcon(bundle.getBoolean(KEY_IS_ICON_ACTIVE))
+                }
+                if (key == KEY_IS_LINE_ACTIVE) {
+                    holder.updateStepperLine(bundle.getBoolean(KEY_IS_LINE_ACTIVE))
                 }
             }
         }
@@ -63,23 +66,31 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
 
         private val stepperColor = getStepperColor()
 
-        fun updateStepper(isActive: Boolean) {
-            setupStepperMask(isActive, stepperColor)
-            setupStepperLine(isActive, stepperColor)
+        fun updateStepperIcon(isActive: Boolean) {
+            setupStepperIcon(isActive, stepperColor)
+        }
+
+        fun updateStepperLine(isActive: Boolean) {
+            setupStepperIcon(isActive, stepperColor)
         }
 
         fun bind(item: StepperStatusUiModel) {
             if (stepperStatusList.size == adapterPosition + Int.ONE) {
                 hideStepperLine()
             } else {
-                setupStepperMask(item.isActive, stepperColor)
-                setupStepperLine(item.isActive, stepperColor)
+                setStepperIcon(item.iconName)
+                setupStepperIcon(item.isIconActive, stepperColor)
+                setupStepperLine(item.isLineActive, stepperColor)
             }
         }
 
-        private fun setupStepperMask(isActive: Boolean, stepperColor: Pair<Int, Int>) {
+        private fun setStepperIcon(iconName: Int) {
+            binding.icOrderTrackingStatus.setImage(iconName)
+        }
+
+        private fun setupStepperIcon(isActive: Boolean, stepperColor: Pair<Int, Int>) {
             with(binding) {
-                viewOrderTrackingStatusMask.setBackgroundColor(
+                icOrderTrackingStatus.setBackgroundColor(
                     if (isActive) stepperColor.first else stepperColor.second
                 )
             }
@@ -111,6 +122,7 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
     }
 
     companion object {
-        const val KEY_IS_ACTIVE = "isActive"
+        const val KEY_IS_ICON_ACTIVE = "isIconActive"
+        const val KEY_IS_LINE_ACTIVE = "isLineActive"
     }
 }

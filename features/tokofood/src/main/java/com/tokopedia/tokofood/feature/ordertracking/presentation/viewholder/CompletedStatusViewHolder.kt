@@ -4,10 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailStatusInfoHeaderBinding
-import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingPaymentGrandTotalBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StatusInfoHeaderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.CompletedStatusInfoUiModel
 
-class StatusInfoHeaderViewHolder(view: View): BaseOrderTrackingViewHolder<StatusInfoHeaderUiModel>(view) {
+class CompletedStatusViewHolder(view: View): BaseOrderTrackingViewHolder<CompletedStatusInfoUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -16,7 +15,7 @@ class StatusInfoHeaderViewHolder(view: View): BaseOrderTrackingViewHolder<Status
 
     private val binding = ItemTokofoodOrderDetailStatusInfoHeaderBinding.bind(itemView)
 
-    override fun bind(element: StatusInfoHeaderUiModel) {
+    override fun bind(element: CompletedStatusInfoUiModel) {
         with(binding) {
             setOrderStatus(element.orderStatus)
         }
@@ -25,7 +24,7 @@ class StatusInfoHeaderViewHolder(view: View): BaseOrderTrackingViewHolder<Status
     override fun bindPayload(payloads: Pair<*, *>?) {
         payloads?.let {
             val (oldItem, newItem) = it
-            if (oldItem is StatusInfoHeaderUiModel && newItem is StatusInfoHeaderUiModel) {
+            if (oldItem is CompletedStatusInfoUiModel && newItem is CompletedStatusInfoUiModel) {
                 if (oldItem.orderStatus != newItem.orderStatus) {
                     binding.setOrderStatus(newItem.orderStatus)
                 }

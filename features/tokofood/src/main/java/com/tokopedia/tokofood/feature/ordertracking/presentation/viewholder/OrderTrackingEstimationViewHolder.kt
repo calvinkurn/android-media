@@ -22,7 +22,7 @@ class OrderTrackingEstimationViewHolder(itemView: View):
         with(binding) {
             tvOrderTrackingEstimation.text = MethodChecker.fromHtml(root.context.getString(
                 R.string.order_tracking_estimation_time, element.estimationLabel,
-                element.timeEstimation
+                element.estimationTime
             ))
         }
     }

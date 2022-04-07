@@ -4,9 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailPaymentInfoBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentInfoUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
 
-class PaymentInfoViewHolder(view: View) : BaseOrderTrackingViewHolder<PaymentInfoUiModel>(view) {
+class PaymentDetailViewHolder(view: View) : BaseOrderTrackingViewHolder<PaymentDetailUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -15,7 +15,7 @@ class PaymentInfoViewHolder(view: View) : BaseOrderTrackingViewHolder<PaymentInf
 
     private val binding = ItemTokofoodOrderDetailPaymentInfoBinding.bind(itemView)
 
-    override fun bind(element: PaymentInfoUiModel) {
+    override fun bind(element: PaymentDetailUiModel) {
         with(binding) {
             setPaymentInfoLabel(element.paymentInfoLabel)
             setPaymentInfoValue(element.paymentInfoValue)
@@ -25,7 +25,7 @@ class PaymentInfoViewHolder(view: View) : BaseOrderTrackingViewHolder<PaymentInf
     override fun bindPayload(payloads: Pair<*, *>?) {
         payloads?.let {
             val (oldItem, newItem) = it
-            if (oldItem is PaymentInfoUiModel && newItem is PaymentInfoUiModel) {
+            if (oldItem is PaymentDetailUiModel && newItem is PaymentDetailUiModel) {
                 if (oldItem.paymentInfoLabel != newItem.paymentInfoLabel) {
                     binding.setPaymentInfoLabel(newItem.paymentInfoLabel)
                 }

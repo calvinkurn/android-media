@@ -1,34 +1,34 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailHeaderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.CompletedStatusInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingHeaderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingDetailUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingLoadingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingTickerUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentGrandTotalUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountlUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentDetailUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentHeaderUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentInfoUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentMethodUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StatusInfoHeaderUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingDetailUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ShippingHeaderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TemporaryFinishOrderUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
 
 interface OrderTrackingTypeFactory {
     fun type(orderTrackingLoadingUiModel: OrderTrackingLoadingUiModel): Int
 
     fun type(orderTrackingErrorUiModel: OrderTrackingErrorUiModel): Int
 
-    fun type(orderTrackingTickerUiModel: OrderTrackingTickerUiModel): Int
+    fun type(tickerInfoUiModel: TickerInfoData): Int
 
     fun type(restaurantUserAddressUiModel: RestaurantUserAddressUiModel): Int
 
@@ -44,7 +44,7 @@ interface OrderTrackingTypeFactory {
 
     fun type(orderTrackingStatusInfoUiModel: OrderTrackingStatusInfoUiModel): Int
 
-    fun type(statusInfoHeaderUiModel: StatusInfoHeaderUiModel): Int
+    fun type(completedStatusInfoUiModel: CompletedStatusInfoUiModel): Int
 
     fun type(orderTrackingEstimationUiModel: OrderTrackingEstimationUiModel): Int
 
@@ -52,11 +52,11 @@ interface OrderTrackingTypeFactory {
 
     fun type(invoiceOrderNumberUiModel: InvoiceOrderNumberUiModel): Int
 
-    fun type(paymentInfoUiModel: PaymentInfoUiModel): Int
+    fun type(paymentInfoUiModel: PaymentDetailUiModel): Int
 
     fun type(paymentMethodUiModel: PaymentMethodUiModel): Int
 
-    fun type(paymentGrandTotalUiModel: PaymentGrandTotalUiModel): Int
+    fun type(paymentAmountlUiModel: PaymentAmountlUiModel): Int
 
     fun type(paymentHeaderUiModel: PaymentHeaderUiModel): Int
 

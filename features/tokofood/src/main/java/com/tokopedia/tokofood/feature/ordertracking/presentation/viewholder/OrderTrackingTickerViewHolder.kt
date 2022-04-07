@@ -3,37 +3,53 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingTickerBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingTickerUiModel
-import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.view.binding.viewBinding
 
-class OrderTrackingTickerViewHolder(itemView: View): AbstractViewHolder<OrderTrackingTickerUiModel>(itemView) {
+class OrderTrackingTickerViewHolder(
+    itemView: View,
+    private val orderTrackingListener: OrderTrackingListener
+) : AbstractViewHolder<TickerInfoData>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_ticker
-
-        const val TICKER_INFO_TYPE = "info"
-        const val TICKER_ANNOUNCE_TYPE = "announce"
     }
 
     private val binding: ItemTokofoodOrderTrackingTickerBinding? by viewBinding()
 
-    override fun bind(element: OrderTrackingTickerUiModel) {
+    override fun bind(element: TickerInfoData) {
         binding?.run {
-            tickerOrderTrackingLive.apply {
-                tickerType = mapTickerType(element.type)
+            if (element.tickerList.isNotEmpty()) {
+                setupOrderTrackingTicker(element.tickerList)
+            } else {
+                tickerOrderDetail.hide()
             }
         }
     }
 
-    private fun mapTickerType(type: String): Int {
-        return when (type) {
-            TICKER_INFO_TYPE -> Ticker.TYPE_INFORMATION
-            TICKER_ANNOUNCE_TYPE -> Ticker.TYPE_ANNOUNCEMENT
-            else -> 0
+    private fun ItemTokofoodOrderTrackingTickerBinding.setupOrderTrackingTicker(tickerList: List<TickerData>) {
+        tickerOrderDetail.run {
+            val tickerPagerAdapter = TickerPagerAdapter(context, tickerList)
+            addPagerView(tickerPagerAdapter, tickerList)
+            tickerPagerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    if (linkUrl.isNotEmpty()) {
+                        orderTrackingListener.onTickerLinkClick(linkUrl.toString())
+                    }
+                }
+            })
         }
+    }
+
+    interface Listener {
+        fun onTickerLinkClick(linkUrl: String)
     }
 }

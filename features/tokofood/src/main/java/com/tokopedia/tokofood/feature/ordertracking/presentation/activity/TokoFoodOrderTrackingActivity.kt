@@ -11,7 +11,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.fragment.TokoFo
 class TokoFoodOrderTrackingActivity: BaseSimpleActivity(), HasComponent<TokoFoodOrderTrackingComponent> {
 
     override fun getNewFragment(): Fragment {
-        return TokoFoodOrderTrackingFragment()
+        return TokoFoodOrderTrackingFragment.newInstance()
     }
 
     override fun getComponent(): TokoFoodOrderTrackingComponent {

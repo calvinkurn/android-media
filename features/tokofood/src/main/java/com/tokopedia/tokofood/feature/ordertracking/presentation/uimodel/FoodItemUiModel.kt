@@ -9,9 +9,8 @@ class FoodItemUiModel(
     val quantity: String,
     val priceStr: String,
     val addOnVariantList: List<AddonVariantItemUiModel> = emptyList(),
-    val notes: String,
-    val isExpand: Boolean
-): BaseOrderTrackingTypeFactory {
+    val notes: String
+) : BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

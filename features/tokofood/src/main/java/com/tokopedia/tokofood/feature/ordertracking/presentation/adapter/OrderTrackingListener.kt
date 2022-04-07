@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderDetailToggleCtaViewHolder
+import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingTickerViewHolder
 
-interface OrderTrackingListener: OrderDetailToggleCtaViewHolder.OrderDetailToggleCtaListener
+interface OrderTrackingListener: OrderDetailToggleCtaViewHolder.OrderDetailToggleCtaListener,
+        OrderTrackingTickerViewHolder.Listener

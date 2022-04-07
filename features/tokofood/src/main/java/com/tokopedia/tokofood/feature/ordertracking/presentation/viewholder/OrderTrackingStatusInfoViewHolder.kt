@@ -4,17 +4,17 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingStatusInfoSectionBinding
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.RecyclerViewPollerListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.StepperStatusAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderTrackingStatusInfoWidget
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 
 class OrderTrackingStatusInfoViewHolder(
     itemView: View,
-    private val orderTrackingStatusInfoListener: Listener
+    private val recyclerViewPollerListener: RecyclerViewPollerListener
 ) : BaseOrderTrackingViewHolder<OrderTrackingStatusInfoUiModel>(itemView) {
 
     companion object {
@@ -106,7 +106,7 @@ class OrderTrackingStatusInfoViewHolder(
 
         binding.rvOrderStatusStepper.run {
             setHasFixedSize(true)
-            setRecycledViewPool(orderTrackingStatusInfoListener.getRecyclerViewPoolStatusInfo())
+            setRecycledViewPool(recyclerViewPollerListener.parentPool)
             layoutManager = gridLayoutManager
             adapter = stepperStatusAdapter
         }

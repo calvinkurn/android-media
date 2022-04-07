@@ -7,17 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.diffutil.OrderTrackingDiffUtilCallback
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.FoodItemViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingStatusInfoViewHolder
 
 class OrderTrackingAdapter(
-    private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactory
-) : BaseAdapter<OrderTrackingAdapterTypeFactory>(orderTrackingAdapterTypeFactory),
-    RecyclerViewPollerListener {
-
-    private val rvPoolFoodItem = RecyclerView.RecycledViewPool()
-    private val rvPoolStatusInfo = RecyclerView.RecycledViewPool()
-
+    private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactoryImpl
+) : BaseAdapter<OrderTrackingAdapterTypeFactoryImpl>(orderTrackingAdapterTypeFactory) {
 
     fun updateOrderTracking(newItems: List<BaseOrderTrackingTypeFactory>) {
         val oldItems = visitables.filterIsInstance<BaseOrderTrackingTypeFactory>()
@@ -62,14 +55,5 @@ class OrderTrackingAdapter(
             notifyItemRangeRemoved(startRemovedIndex, removedCount)
         }
     }
-
-    override fun getRecyclerViewPoolFoodItem(): RecyclerView.RecycledViewPool {
-        return rvPoolFoodItem
-    }
-
-    override fun getRecyclerViewPoolStatusInfo(): RecyclerView.RecycledViewPool {
-        return rvPoolStatusInfo
-    }
-
 
 }

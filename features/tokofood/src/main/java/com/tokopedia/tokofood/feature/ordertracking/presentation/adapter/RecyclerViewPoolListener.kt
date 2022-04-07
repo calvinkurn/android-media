@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.FoodItemViewHolder
-import com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder.OrderTrackingStatusInfoViewHolder
+import androidx.recyclerview.widget.RecyclerView
 
-interface RecyclerViewPollerListener: FoodItemViewHolder.Listener, OrderTrackingStatusInfoViewHolder.Listener
+interface RecyclerViewPollerListener {
+    val parentPool: RecyclerView.RecycledViewPool
+}

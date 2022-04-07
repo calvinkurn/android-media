@@ -28,7 +28,7 @@ class DriverSectionViewHolder(view: View) :
             setDriverName(element.name)
             setDriverPhotoUrl(element.photoUrl)
             setLicensePlatNumber(element.licensePlateNumber)
-            setupDriverCall(element.isDisableCall)
+            setupDriverCall(element.isCallable)
             setupDriverInformationAdapter(element.driverInformationList)
         }
     }
@@ -46,8 +46,8 @@ class DriverSectionViewHolder(view: View) :
                 if (oldItem.licensePlateNumber != newItem.licensePlateNumber) {
                     binding.setLicensePlatNumber(newItem.licensePlateNumber)
                 }
-                if (oldItem.isDisableCall != newItem.isDisableCall) {
-                    binding.setupDriverCall(newItem.isDisableCall)
+                if (oldItem.isCallable != newItem.isCallable) {
+                    binding.setupDriverCall(newItem.isCallable)
                 }
             }
         }
@@ -67,28 +67,40 @@ class DriverSectionViewHolder(view: View) :
         tvOrderTrackingDriverPlatNumber.text = platNumber
     }
 
-    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isDisableCall: Boolean) {
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {
         icDriverCall.run {
-            if (isDisableCall) {
-                isClickable = false
-                val nn300Color =
-                    ContextCompat.getColor(
-                        root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN300
-                    )
-                setImage(IconUnify.CALL, nn300Color, nn300Color)
+            if (isCallable) {
+                setCallEnable()
             } else {
-                isClickable = true
-                val nn900Color =
-                    ContextCompat.getColor(
-                        root.context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN900
-                    )
-                setImage(IconUnify.CALL, nn900Color, nn900Color)
-                setOnClickListener {
-                    //todo request to BE, call driver
-                }
+                setCallDisable()
             }
+        }
+    }
+
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setCallEnable() {
+        icDriverCall.run {
+            isClickable = true
+            val nn900Color =
+                ContextCompat.getColor(
+                    root.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                )
+            setImage(IconUnify.CALL, nn900Color, nn900Color)
+            setOnClickListener {
+                //todo request to BE, call driver
+            }
+        }
+    }
+
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setCallDisable() {
+        icDriverCall.run {
+            isClickable = false
+            val nn300Color =
+                ContextCompat.getColor(
+                    root.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                )
+            setImage(IconUnify.CALL, nn300Color, nn300Color)
         }
     }
 

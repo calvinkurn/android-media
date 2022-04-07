@@ -10,7 +10,7 @@ data class DriverSectionUiModel(
     val photoUrl: String,
     val phone: String,
     val licensePlateNumber: String,
-    val isDisableCall: Boolean
+    val isCallable: Boolean
 ): BaseOrderTrackingTypeFactory {
     override fun type(typeFactory: OrderTrackingAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -18,6 +18,6 @@ data class DriverSectionUiModel(
 }
 
 data class DriverInformationUiModel(
-    val iconInformation: Int,
+    val iconInformation: Int?,
     val informationName: String
 )

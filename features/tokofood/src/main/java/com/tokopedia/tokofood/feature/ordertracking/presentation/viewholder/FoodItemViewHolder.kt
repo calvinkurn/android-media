@@ -10,11 +10,12 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingFoodItemBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.AddonVariantAdapter
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.RecyclerViewPollerListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 
 class FoodItemViewHolder(view: View,
-                         private val foodItemListener: Listener
+                         private val recylerViewPoolListener: RecyclerViewPollerListener
 ) : AbstractViewHolder<FoodItemUiModel>(view) {
 
     companion object {
@@ -65,7 +66,7 @@ class FoodItemViewHolder(view: View,
             rvVariantAddon.run {
                 show()
                 setHasFixedSize(true)
-                setRecycledViewPool(foodItemListener.getRecyclerViewPoolFoodItem())
+                setRecycledViewPool(recylerViewPoolListener.parentPool)
                 layoutManager = LinearLayoutManager(context)
                 adapter = AddonVariantAdapter(addOnVariantList)
             }

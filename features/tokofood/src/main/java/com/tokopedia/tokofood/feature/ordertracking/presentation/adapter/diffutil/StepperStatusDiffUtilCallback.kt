@@ -6,15 +6,19 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.StepperStatusAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 
-class StepperStatusDiffUtilCallback(private val oldItems: List<StepperStatusUiModel>,
-                                    private val newItems: List<StepperStatusUiModel>): DiffUtil.Callback() {
+class StepperStatusDiffUtilCallback(
+    private val oldItems: List<StepperStatusUiModel>,
+    private val newItems: List<StepperStatusUiModel>
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldItems.size
 
     override fun getNewListSize(): Int = newItems.size
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldItems.getOrNull(oldItemPosition)?.isActive == newItems.getOrNull(newItemPosition)?.isActive
+        val oldItem = oldItems.getOrNull(oldItemPosition)
+        val newItem = newItems.getOrNull(newItemPosition)
+        return oldItem?.isIconActive == newItem?.isIconActive || oldItem?.isLineActive == newItem?.isLineActive
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -28,8 +32,11 @@ class StepperStatusDiffUtilCallback(private val oldItems: List<StepperStatusUiMo
         val diff = Bundle()
 
         newItem?.let {
-            if (it.isActive != oldItem?.isActive) {
-                diff.putBoolean(StepperStatusAdapter.KEY_IS_ACTIVE, it.isActive)
+            if (it.isIconActive != oldItem?.isIconActive) {
+                diff.putBoolean(StepperStatusAdapter.KEY_IS_ICON_ACTIVE, it.isIconActive)
+            }
+            if (it.isLineActive != oldItem?.isLineActive) {
+                diff.putBoolean(StepperStatusAdapter.KEY_IS_LINE_ACTIVE, it.isLineActive)
             }
         }
 
