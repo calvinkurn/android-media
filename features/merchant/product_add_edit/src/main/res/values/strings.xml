@@ -30,6 +30,7 @@
     <string name="label_dialog_desc_activate_variant_status_all_available">Status dari semua varian produk ini akan berubah menjadi aktif.</string>
     <string name="label_dialog_desc_activate_variant_status_all_empty">Stok produk kosong. Update stok dulu, ya.</string>
     <string name="label_dialog_desc_activate_variant_status_partially_available">Status semua varian produk ini akan berubah menjadi aktif. Varian dengan stok 0 akan tetap tidak aktif.</string>
+    <string name="label_coachmark_out_of_stock">Stok produkmu kosong. Update stok agar produkmu bisa dicari pembeli, ya.</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
     <string name="action_add">Tambah</string>

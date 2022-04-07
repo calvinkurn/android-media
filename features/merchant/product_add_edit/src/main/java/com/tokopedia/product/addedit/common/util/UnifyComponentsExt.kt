@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -222,6 +223,17 @@ fun DialogUnify.setDialogOrientationToVertical() {
         dialogPrimaryCTA.layoutParams = paramSecondary
         dialogPrimaryCTA.layoutParams.width = dialogSecondaryLongCTA.measuredWidth
         dialogPrimaryCTA.requestLayout()
+    }
+}
+
+fun CoachMark2.hideCoachmarkWhenTouchOutside(anchorView: View) {
+    anchorView.requestFocus()
+    anchorView.requestFocusFromTouch()
+    anchorView.setOnFocusChangeListener { _, hasFocus ->
+        if (!hasFocus) dismissCoachMark()
+    }
+    setOnDismissListener {
+        anchorView.clearFocus()
     }
 }
 

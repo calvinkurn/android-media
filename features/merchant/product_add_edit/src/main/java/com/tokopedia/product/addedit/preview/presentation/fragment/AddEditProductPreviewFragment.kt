@@ -29,9 +29,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
@@ -183,6 +187,7 @@ class AddEditProductPreviewFragment :
     private var productNameView: Typography? = null
     private var productPriceView: Typography? = null
     private var productStockView: Typography? = null
+    private var iconOutOfStock: IconUnify? = null
     private var dividerDetail: DividerUnify? = null
 
     // description
@@ -587,6 +592,7 @@ class AddEditProductPreviewFragment :
         productNameView = view.findViewById(R.id.tv_product_name)
         productPriceView = view.findViewById(R.id.tv_product_price)
         productStockView = view.findViewById(R.id.tv_product_stock)
+        iconOutOfStock = view.findViewById(R.id.icon_out_of_stock)
         dividerDetail = view.findViewById(R.id.divider_detail)
         addEditProductDetailButton?.setOnClickListener {
             if (isEditing()) {
@@ -594,6 +600,9 @@ class AddEditProductPreviewFragment :
             }
             val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
             moveToDetailFragment(productInputModel, false)
+        }
+        iconOutOfStock?.setOnClickListener {
+            displayEmptyStockCoachmark(it)
         }
     }
 
@@ -888,6 +897,23 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    private fun displayEmptyStockInfo(stock: Int) {
+        iconOutOfStock?.isVisible = stock.isZero()
+    }
+
+    private fun displayEmptyStockCoachmark(anchor: View) {
+        val items = listOf(
+            CoachMark2Item(anchor, "",
+                getString(R.string.label_coachmark_out_of_stock),
+                CoachMarkContentPosition.BOTTOM.position
+            )
+        )
+        val coachMark = CoachMark2(context ?: return)
+        coachMark.simpleCloseIcon?.isVisible = false
+        coachMark.hideCoachmarkWhenTouchOutside(anchor)
+        coachMark.showCoachMark(ArrayList(items))
+    }
+
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
         doneButton?.show()
         enablePhotoEdit()
@@ -1079,6 +1105,7 @@ class AddEditProductPreviewFragment :
     private fun observeStockFormatted() {
         viewModel.stockFormatted.observe(viewLifecycleOwner, {
             productStockView?.text = it.toString()
+            displayEmptyStockInfo(it)
         })
     }
 
@@ -1516,6 +1543,9 @@ class AddEditProductPreviewFragment :
             override fun onTransitionCompleted(p0: MotionLayout?, p1: Int) {
                 loadingLayout?.hide()
                 loadingLayout?.progress = 0.0f
+                if (viewModel.stockFormatted.value.isZero()) {
+                    displayEmptyStockCoachmark(iconOutOfStock ?: return)
+                }
             }
         })
     }
