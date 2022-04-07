@@ -62,7 +62,7 @@
 
 <!--    special char-->
     <string name="picker_album_subtitle">%1$d Media</string>
-    <string name="separator_recording_duration">/</string>
+    <string name="picker_separator_recording_duration">/</string>
 
     <string name="picker_video_duration_max_limit_sec">detik</string>
     <string name="picker_video_duration_max_limit_min">menit</string>
