@@ -172,25 +172,25 @@ class EntrypointFragment : BaseDaggerFragment() {
             when (result) {
                 is Success -> {
                     val productBundleData = result.data
-                    val bundleInfo = productBundleData.getBundleInfo.bundleInfo
+                    val bundleInfo = productBundleData.getBundleInfo?.bundleInfo
                     val longSelectedProductIds = selectedProductIds.map { it.toLong() }
                     val inventoryError = InventoryErrorMapper.mapToInventoryError(result, bundleId, longSelectedProductIds)
                     val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock variant is 0
-                    if (bundleInfo.isNotEmpty()) {
+                    if (bundleInfo.isNullOrEmpty()) {
                         val productBundleFragment = when {
                             inventoryError.type == InventoryErrorType.BUNDLE_EMPTY -> {
                                 showEmpty()
                                 this
                             }
-                            viewModel.isSingleProductBundle(bundleInfo) -> {
+                            viewModel.isSingleProductBundle(bundleInfo.orEmpty()) -> {
                                 val selectedProductId = longSelectedProductIds.firstOrNull().orZero()
-                                SingleProductBundleFragment.newInstance(viewModel.parentProductID.toString(), bundleInfo,
+                                SingleProductBundleFragment.newInstance(viewModel.parentProductID.toString(), bundleInfo.orEmpty(),
                                     bundleId.toString(), selectedProductId, emptyVariantProductIds,
                                     source)
                             }
                             else -> {
                                 MultipleProductBundleFragment.newInstance(
-                                    productBundleInfo = bundleInfo,
+                                    productBundleInfo = bundleInfo.orEmpty(),
                                     emptyVariantProductIds = emptyVariantProductIds,
                                     selectedBundleId = bundleId.toString(),
                                     selectedProductIds = selectedProductIds,
