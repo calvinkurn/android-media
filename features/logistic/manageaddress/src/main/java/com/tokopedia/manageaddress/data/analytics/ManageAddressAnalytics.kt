@@ -5,7 +5,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object ManageAddressAnalytics : BaseTrackerConst(){
+object ManageAddressAnalytics : BaseTrackerConst() {
 
     private const val EVENT_CLICK_LOGISTIC = "clickLogistic"
     private const val ACTION_UBAH_ALAMAT = "click button ubah alamat"
