@@ -11,10 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentSearchProductBinding
@@ -76,7 +73,8 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             onProductClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
-            onVariantInfoClicked
+            onVariantInfoClicked,
+            onProductSelectionChange
         )
     }
 
@@ -116,6 +114,23 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             }
             searchBar.clearListener = { clearSearchBar() }
             searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
+            tpgMultiSelect.setOnClickListener {
+                viewModel.setMultiSelectEnabled(true)
+                tpgMultiSelect.gone()
+                tpgCancelMultiSelect.visible()
+                val currentItems = adapter?.getItems() ?: emptyList()
+                val enabledMultiSelect = viewModel.enableMultiSelect(currentItems)
+                adapter?.updateAll(enabledMultiSelect)
+            }
+            tpgCancelMultiSelect.setOnClickListener {
+                viewModel.setMultiSelectEnabled(false)
+                tpgMultiSelect.visible()
+                tpgCancelMultiSelect.gone()
+                val currentItems = adapter?.getItems() ?: emptyList()
+                val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
+                adapter?.updateAll(disabledMultiSelect)
+                binding?.cardView?.gone()
+            }
         }
     }
 
@@ -207,6 +222,19 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         displayMoreMenuBottomSheet(product)
     }
 
+    private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
+        val updatedProduct = selectedProduct.copy(isSelected = isSelected)
+        adapter?.update(selectedProduct, updatedProduct)
+
+        val items = adapter?.getItems() ?: emptyList()
+        val selectedProductCount = viewModel.findSelectedProducts(items).size
+
+        binding?.cardView?.isVisible = selectedProductCount > 0
+
+        val counter = String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
+        binding?.btnManage?.text = counter
+    }
+
 
     override fun createAdapter(): SearchProductAdapter {
         return productAdapter
@@ -232,7 +260,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         binding?.globalError?.gone()
         binding?.emptyState?.gone()
         val keyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
-        viewModel.getSlashPriceProducts(page, discountStatusId, keyword)
+        viewModel.getSlashPriceProducts(page, discountStatusId, keyword, viewModel.isMultiSelectEnabled())
     }
 
     override fun clearAdapterData() {
@@ -292,6 +320,6 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     private fun clearSearchBar() {
         clearAllData()
         onShowLoading()
-        viewModel.getSlashPriceProducts(FIRST_PAGE, discountStatusId, EMPTY_STRING)
+        viewModel.getSlashPriceProducts(FIRST_PAGE, discountStatusId, EMPTY_STRING, viewModel.isMultiSelectEnabled())
     }
 }

@@ -6,11 +6,11 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.common.entity.ProductType
-import com.tokopedia.shopdiscount.databinding.SdItemProductBinding
+import com.tokopedia.shopdiscount.databinding.SdItemSearchProductBinding
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.utils.extension.strikethrough
 
-class SearchProductViewHolder(private val binding: SdItemProductBinding) :
+class SearchProductViewHolder(private val binding: SdItemSearchProductBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
@@ -19,6 +19,7 @@ class SearchProductViewHolder(private val binding: SdItemProductBinding) :
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
         onVariantInfoClicked: (Product) -> Unit,
+        onProductSelectionChange : (Product, Boolean) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
@@ -30,6 +31,24 @@ class SearchProductViewHolder(private val binding: SdItemProductBinding) :
         handleProductType(product)
         binding.imgInfo.setOnClickListener { onVariantInfoClicked(product) }
         binding.tpgOriginalPrice.strikethrough()
+        handleCheckboxAppearance(product, onProductSelectionChange)
+        handleChangeDiscountButtonAppearance(product.shouldDisplayCheckbox)
+        handleOverflowMenuAppearance(product.shouldDisplayCheckbox)
+    }
+
+    private fun handleCheckboxAppearance(product: Product, onProductSelectionChange: (Product, Boolean) -> Unit) {
+        binding.checkBox.setOnCheckedChangeListener(null)
+        binding.checkBox.isVisible = product.shouldDisplayCheckbox
+        binding.checkBox.isChecked = product.isSelected
+        binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
+    }
+
+    private fun handleOverflowMenuAppearance(shouldDisplayCheckbox: Boolean) {
+        binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
+    }
+
+    private fun handleChangeDiscountButtonAppearance(shouldDisplayCheckbox: Boolean) {
+        binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
     }
 
     private fun handleProductType(product: Product) {

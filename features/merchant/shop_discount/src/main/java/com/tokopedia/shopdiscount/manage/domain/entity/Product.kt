@@ -20,5 +20,7 @@ data class Product(
     val productType: ProductType,
     val hasSameDiscountPercentageAmount: Boolean,
     val hasSameDiscountedPriceAmount: Boolean,
-    val hasSameOriginalPrice: Boolean
+    val hasSameOriginalPrice: Boolean,
+    var isSelected : Boolean = false,
+    val shouldDisplayCheckbox : Boolean = false
 )

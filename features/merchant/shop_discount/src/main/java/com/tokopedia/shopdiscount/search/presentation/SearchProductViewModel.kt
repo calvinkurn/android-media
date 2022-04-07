@@ -33,8 +33,14 @@ class SearchProductViewModel @Inject constructor(
 
     private var totalProduct = 0
     private var selectedProduct : Product? = null
+    private var isMultiSelectEnabled = false
 
-    fun getSlashPriceProducts(page : Int, discountStatus : Int, keyword: String) {
+    fun getSlashPriceProducts(
+        page: Int,
+        discountStatus: Int,
+        keyword: String,
+        isMultiSelectEnabled: Boolean
+    ) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getSlashPriceProductListUseCase.setRequestParams(
@@ -44,7 +50,9 @@ class SearchProductViewModel @Inject constructor(
                 )
                 val response = getSlashPriceProductListUseCase.executeOnBackground()
                 val formattedProduct = productMapper.map(response)
-                Pair(response.getSlashPriceProductList.totalProduct, formattedProduct)
+                val multiSelectAwareProduct =
+                    formattedProduct.map { it.copy(shouldDisplayCheckbox = isMultiSelectEnabled) }
+                Pair(response.getSlashPriceProductList.totalProduct, multiSelectAwareProduct)
             }
 
             val (totalProduct, formattedProduct) = result
@@ -88,5 +96,32 @@ class SearchProductViewModel @Inject constructor(
 
     fun getSelectedProduct() : Product?  {
         return selectedProduct
+    }
+
+    fun setMultiSelectEnabled(isMultiSelectEnabled: Boolean) {
+        this.isMultiSelectEnabled = isMultiSelectEnabled
+    }
+
+    fun isMultiSelectEnabled(): Boolean {
+        return isMultiSelectEnabled
+    }
+
+    fun enableMultiSelect(products : List<Product>) : List<Product> {
+        return products.map { it.copy(shouldDisplayCheckbox = true) }
+    }
+
+    fun disableMultiSelect(products : List<Product>) : List<Product> {
+        return products.map { it.copy(shouldDisplayCheckbox = false, isSelected = false) }
+    }
+
+    fun findSelectedProducts(products: List<Product>) : List<Product> {
+        return products.filter { it.isSelected }
+    }
+
+    fun toggleSelection(products: List<Product>, product : Product, isSelected : Boolean) {
+        val allProducts = products.toMutableList()
+        val selectedProductPosition = allProducts.indexOf(product)
+        allProducts[selectedProductPosition] = product.copy(isSelected = isSelected)
+        return
     }
 }
