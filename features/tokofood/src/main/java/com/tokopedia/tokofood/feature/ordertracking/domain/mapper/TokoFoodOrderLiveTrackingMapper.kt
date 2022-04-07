@@ -14,6 +14,7 @@ class TokoFoodOrderLiveTrackingMapper @Inject constructor() : BaseOrderDetailRes
         return mutableListOf<BaseOrderTrackingTypeFactory>().apply {
             addTickerUiModel(tokoFoodOrderDetail.additionalTickerInfo)
             addOrderTrackingStatusInfo(tokoFoodOrderDetail.orderStatus)
+            addEstimationUiModel(tokoFoodOrderDetail.eta)
             addThinDividerUiModel()
             addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails, "081234567890")
             addThinDividerUiModel()
