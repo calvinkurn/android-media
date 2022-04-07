@@ -3,10 +3,8 @@ package com.tokopedia.discovery2.viewcontrollers.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.window.windowInfoRepository
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -31,9 +29,6 @@ import com.tokopedia.discovery2.di.DiscoveryModule
 import com.tokopedia.discovery2.di.DiscoveryRepoProvider
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
-import com.tokopedia.foldable.FoldableAndTabletSupportManager
-import com.tokopedia.foldable.FoldableInfo
-import com.tokopedia.foldable.FoldableSupportManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
