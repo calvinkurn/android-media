@@ -611,20 +611,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mappingCueCategory3x2Component(
-        channel: DynamicHomeChannel.Channels,
-        isCache: Boolean,
-        verticalPosition: Int
-    ): Visitable<*> {
-        return CueCategory3x2DataModel(
-            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
-                channel,
-                verticalPosition
-            ),
-            isCache = isCache
-        )
-    }
-
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -692,21 +678,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
         val gridSize = channel.grids.size
         val cueWidget2x2MinSize = 4
-        val cueWidget2x2MaxSize = 5
-        val cueWidget3x2Size = 6
-//        if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
-//            visitableList.add(
-//                mappingCueCategory2x2Component(
-//                    channel, isCache, verticalPosition
-//                )
-//            )
-//        } else if (gridSize >= cueWidget3x2Size) {
-//            visitableList.add(
-//                mappingCueCategory3x2Component(
-//                    channel, isCache, verticalPosition
-//                )
-//            )
-//        }
         if (gridSize >= cueWidget2x2MinSize) {
             visitableList.add(
                 mappingCueCategory2x2Component(

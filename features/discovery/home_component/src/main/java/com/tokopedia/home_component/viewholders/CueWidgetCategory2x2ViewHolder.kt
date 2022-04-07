@@ -47,13 +47,10 @@ class CueWidgetCategory2x2ViewHolder (
     private fun getSpanCount(gridSize: Int): Int {
         val cueWidget2x2MinSize = 4
         val cueWidget2x2MaxSize = 5
-        val cueWidget3x2Size = 6
-        var gridCount = 0
-        if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
-            gridCount = if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_2x2_TABLET else SPAN_COUNT_2x2_MOBILE
-        }
-        else {
-            gridCount = if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_3x2_TABLET else SPAN_COUNT_3x2_MOBILE
+        val gridCount = if (gridSize in cueWidget2x2MinSize .. cueWidget2x2MaxSize) {
+            if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_2x2_TABLET else SPAN_COUNT_2x2_MOBILE
+        } else {
+            if (DeviceScreenInfo.isTablet(itemView.context)) SPAN_COUNT_3x2_TABLET else SPAN_COUNT_3x2_MOBILE
         }
         return gridCount
     }
