@@ -48,6 +48,8 @@
     <string name="sd_more_menu">Menu Lainnya</string>
     <string name="sd_ticker_search_product_announcement_wording"><![CDATA[Untuk pengaturan diskon lebih dari 5 produk sekaligus, <a href="http://tokopedia.com">Buka Lewat Desktop</a>]]></string>
     <string name="sd_search_at">Cari produk di %s</string>
+    <string name="sd_search_result_not_found_title">Oops, produk nggak ditemukan</string>
+    <string name="sd_search_result_not_found_description">Coba gunakan kata kunci atau filter lain, ya</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

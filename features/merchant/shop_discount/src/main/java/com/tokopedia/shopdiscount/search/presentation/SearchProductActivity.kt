@@ -57,7 +57,7 @@ class SearchProductActivity : AppCompatActivity() {
     }
 
     private fun displayFragment() {
-        val fragment = SearchProductFragment.newInstance(discountStatusName, discountStatusId, { first, second -> })
+        val fragment = SearchProductFragment.newInstance(discountStatusName, discountStatusId)
         router.replace(supportFragmentManager, R.id.container, fragment)
     }
 

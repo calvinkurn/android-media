@@ -27,8 +27,7 @@
         app:layout_constraintStart_toEndOf="@+id/imgBack"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_scrollFlags="scroll|snap"
-        app:search_bar_clearable="false"
-        app:search_bar_placeholder="@string/sd_search"
+        app:search_bar_clearable="true"
         app:search_bar_show_icon="false" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -71,6 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_16"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -95,17 +95,17 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tpgTotalProduct" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="searchBar,recyclerView,cardView" />
+        app:constraint_referenced_ids="searchBar,recyclerView" />
 
     <include
         android:id="@+id/shimmer"
@@ -125,10 +125,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpgTotalProduct"
         app:unifyEmptyStateOrientation="vertical"
         app:unifyEmptyStateType="section" />
 

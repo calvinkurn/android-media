@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -22,7 +23,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
-import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
@@ -37,6 +38,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "discount-status-name"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "discount-status-id"
         private const val PAGE_SIZE = 10
+        private const val FIRST_PAGE = 1
 
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
@@ -44,15 +46,13 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         @JvmStatic
         fun newInstance(
             discountStatusName : String,
-            discountStatusId: Int,
-            onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
+            discountStatusId: Int
         ): SearchProductFragment {
             val fragment = SearchProductFragment()
             fragment.arguments = Bundle().apply {
                 putString(BUNDLE_KEY_DISCOUNT_STATUS_NAME, discountStatusName)
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
             }
-            fragment.onDiscountRemoved = onDiscountRemoved
             return fragment
         }
 
@@ -79,8 +79,6 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             onVariantInfoClicked
         )
     }
-    private var onScrollDown: () -> Unit = {}
-    private var onScrollUp: () -> Unit = {}
 
     override fun getScreenName(): String = SearchProductFragment::class.java.canonicalName.orEmpty()
     override fun initInjector() {
@@ -108,9 +106,19 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     private fun setupView() {
         binding?.run {
+            imgBack.setOnClickListener { activity?.onBackPressed() }
+            searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    loadInitialData()
+                    return@setOnEditorActionListener false
+                }
+                return@setOnEditorActionListener false
+            }
+            searchBar.clearListener = { clearSearchBar() }
             searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
         }
     }
+
 
 
     private fun observeProducts() {
@@ -149,26 +157,20 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     private fun handleProducts(data: ProductData) {
         if (data.totalProduct == Int.ZERO) {
-            val title = if (discountStatusId == DiscountStatus.PAUSED) {
-                getString(R.string.sd_no_paused_discount_title)
-            } else {
-                getString(R.string.sd_no_paused_discount_description)
-            }
-
-            val description = if (discountStatusId == DiscountStatus.PAUSED) {
-                getString(R.string.sd_no_discount_title)
-            } else {
-                getString(R.string.sd_no_discount_description)
-            }
-
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            binding?.emptyState?.setTitle(title)
-            binding?.emptyState?.setDescription(description)
+            binding?.emptyState?.setTitle(getString(R.string.sd_search_result_not_found_title))
+            binding?.emptyState?.setDescription(getString(R.string.sd_search_result_not_found_description))
 
             binding?.recyclerView?.gone()
-            binding?.tpgTotalProduct?.gone()
             binding?.emptyState?.visible()
+
+            binding?.tpgMultiSelect?.isEnabled = false
         } else {
+            binding?.recyclerView?.visible()
+            binding?.emptyState?.gone()
+
+            binding?.tpgMultiSelect?.isEnabled = true
+
             renderList(data.products, data.products.size == getPerPage())
         }
     }
@@ -287,4 +289,9 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    private fun clearSearchBar() {
+        clearAllData()
+        onShowLoading()
+        viewModel.getSlashPriceProducts(FIRST_PAGE, discountStatusId, EMPTY_STRING)
+    }
 }
