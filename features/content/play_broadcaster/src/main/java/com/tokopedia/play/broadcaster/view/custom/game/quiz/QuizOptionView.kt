@@ -135,11 +135,12 @@ class QuizOptionView : ConstraintLayout {
 
     fun setFocus(isFocus: Boolean) {
         binding.etQuizOption.apply {
-            if(isFocus) requestFocus()
-            else clearFocus()
+            if(isFocus) {
+                requestFocus()
+                isPressed = true
+                setSelection(text.toString().length)
+            }
         }
-
-        showKeyboard(isFocus)
     }
 
     private fun showKeyboard(isShow: Boolean) {
