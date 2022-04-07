@@ -128,4 +128,6 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.libraries.foldable)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
