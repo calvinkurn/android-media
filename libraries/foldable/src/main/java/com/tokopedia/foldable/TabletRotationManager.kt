@@ -9,7 +9,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 
-class TabletRotationManager(val activity: AppCompatActivity) : LifecycleObserver{
+class TabletRotationManager(val activity: AppCompatActivity) : LifecycleObserver {
 
     init {
         activity.lifecycle.addObserver(this)

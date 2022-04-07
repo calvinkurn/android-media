@@ -9,33 +9,33 @@ import androidx.window.WindowLayoutInfo
 
 class FoldableInfo(newLayoutInfo: WindowLayoutInfo) {
     var windowLayoutInfo: WindowLayoutInfo = newLayoutInfo
-    private set
+        private set
     var foldingFeature: FoldingFeature? = null
-    private set
+        private set
 
     init {
         foldingFeature = getFoldingFeature(newLayoutInfo)
     }
 
 
-    internal fun setWindowLayoutInfo(newLayoutInfo: WindowLayoutInfo){
+    internal fun setWindowLayoutInfo(newLayoutInfo: WindowLayoutInfo) {
         windowLayoutInfo = newLayoutInfo
         foldingFeature = getFoldingFeature(newLayoutInfo)
     }
 
 
-    fun isTableTopMode():Boolean {
+    fun isTableTopMode(): Boolean {
         return foldingFeature?.let {
             it.state == FoldingFeature.STATE_HALF_OPENED &&
                     it.orientation == FoldingFeature.ORIENTATION_HORIZONTAL
-        }?:false
+        } ?: false
     }
 
-    fun isBookMode():Boolean {
+    fun isBookMode(): Boolean {
         return foldingFeature?.let {
             it.state == FoldingFeature.STATE_HALF_OPENED &&
                     it.orientation == FoldingFeature.ORIENTATION_VERTICAL
-        }?:false
+        } ?: false
     }
 
     fun isFoldableDevice(): Boolean {
