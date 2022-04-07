@@ -95,10 +95,10 @@ class MCCMFlashSaleFullWidget @JvmOverloads constructor(@NotNull context: Contex
         }
     }
 
-    fun clearSelectedProduct(){
+    fun clearSelectedProduct(position: Int){
         adapterDenomFull.run {
             selectedProductIndex = null
-            notifyDataSetChanged()
+            notifyItemChanged(position)
         }
     }
 

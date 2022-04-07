@@ -295,6 +295,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
         return selectedProductPositionId
     }
 
+    fun updateSelectedPositionId(position: Int?) {
+        position?.let { selectedFullProduct.position = it }
+    }
+
     fun isAutoSelectedProduct(layoutType: DenomWidgetEnum): Boolean =
         (selectedFullProduct.denomData.id.isNotEmpty()
                 && selectedFullProduct.position >= 0
