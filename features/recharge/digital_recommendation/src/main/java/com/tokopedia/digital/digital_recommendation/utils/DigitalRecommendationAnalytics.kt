@@ -103,7 +103,7 @@ class DigitalRecommendationAnalytics {
         page: DigitalRecommendationPage?
     ){
         val data = Bundle().apply {
-            putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.VIEW_ITEM_LIST)
+            putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.SELECT_CONTENT)
             putString(DigitalRecommendationKeys.EVENT_ACTION, DigitalRecommendationActions.CLICK_THANKYOU_PAGE)
             putString(DigitalRecommendationKeys.EVENT_CATEGORY, getEventCategory(page))
             putString(DigitalRecommendationKeys.EVENT_LABEL,getEventLabelThankYouPage(
