@@ -1125,7 +1125,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
 
         _quizFormData.setValue {
-            copy(options = newOptions.map { it.copy(isEditable = isStateEditable, isFocus = false) })
+            copy(options = newOptions.map {
+                it.copy(
+                    isEditable = isStateEditable,
+                    isFocus = false,
+                    isShowCoachmark = false,
+                )
+            })
         }
     }
 
