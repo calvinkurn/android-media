@@ -1,12 +1,19 @@
 package com.tokopedia.play.broadcaster.ui.event
 
-sealed class PlayBroadcastEvent {
+sealed interface PlayBroadcastEvent {
 
     data class ShowError(
         val error: Throwable
-    ) : PlayBroadcastEvent()
+    ) : PlayBroadcastEvent
+
+    data class ShowScheduleError(
+        val error: Throwable
+    ) : PlayBroadcastEvent
+
+    data class SetScheduleSuccess(val isEdit: Boolean) : PlayBroadcastEvent
+    object DeleteScheduleSuccess : PlayBroadcastEvent
 
     data class ShowErrorCreateQuiz(
         val error: Throwable
-    ) : PlayBroadcastEvent()
+    ) : PlayBroadcastEvent
 }

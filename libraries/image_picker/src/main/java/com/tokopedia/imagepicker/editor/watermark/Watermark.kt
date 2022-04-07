@@ -55,7 +55,7 @@ data class Watermark(
      * @param: [TextAndImageUIModel]
      */
     private fun createScalableWatermarkTextAndImage(watermark: TextAndImageUIModel?) {
-        if (watermark == null) return
+        if (watermark == null || watermark.image!!.isRecycled) return
 
         val resizedBitmap = watermark.image!!.resizeBitmap(backgroundImg!!)
 

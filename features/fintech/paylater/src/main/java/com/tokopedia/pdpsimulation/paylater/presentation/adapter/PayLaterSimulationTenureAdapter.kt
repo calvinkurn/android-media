@@ -9,7 +9,7 @@ import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimu
 import com.tokopedia.pdpsimulation.paylater.presentation.viewholder.PayLaterSimulationTenureViewHolder
 
 class PayLaterSimulationTenureAdapter(
-    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>) -> Unit
+    private val showPayLaterOption: (ArrayList<BasePayLaterWidgetUiModel>,Int) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -29,7 +29,7 @@ class PayLaterSimulationTenureAdapter(
             else ->
                 PayLaterSimulationTenureViewHolder.getViewHolder(inflater, parent) { pos ->
                     if (isTenureSelectionChanged(pos)) {
-                        showPayLaterOption(tenureItemList[pos].simulationList!!)
+                        showPayLaterOption(tenureItemList[pos].simulationList!!, tenureItemList[pos].tenure?:0)
                         changeAndUpdateSelection(pos)
                     }
                 }

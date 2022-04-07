@@ -72,8 +72,30 @@ abstract class BaseNotification internal constructor(
             }
 
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setSmallIcon(drawableIcon)
             setSoundProperties(builder)
             setNotificationIcon(builder)
+            return builder
+        }
+
+    protected val noLargeIconNotificationBuilder: NotificationCompat.Builder
+        get() {
+            val channelID = notificationChannelController.getChannelID(
+                baseNotificationModel.channelName,
+                baseNotificationModel.soundFileName
+            )
+
+            val builder: NotificationCompat.Builder = NotificationCompat.Builder(
+                context, channelID
+            )
+
+            if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
+                builder.setSubText(baseNotificationModel.subText)
+            }
+
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            builder.setSmallIcon(drawableIcon)
+            setSoundProperties(builder)
             return builder
         }
 
@@ -118,7 +140,6 @@ abstract class BaseNotification internal constructor(
         } else {
             builder.setLargeIcon(getBitmap(baseNotificationModel.icon))
         }
-        builder.setSmallIcon(drawableIcon)
     }
 
     internal val drawableIcon: Int

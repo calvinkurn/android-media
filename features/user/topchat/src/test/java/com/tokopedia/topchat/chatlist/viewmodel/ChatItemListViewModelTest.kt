@@ -45,7 +45,6 @@ class ChatItemListViewModelTest {
     @get:Rule val rule = InstantTaskExecutorRule()
 
     private val repository: GraphqlRepository = mockk(relaxed = true)
-    private var queries: MutableMap<String, String> = mockk(relaxed = true)
 
     private val chatWhitelistFeature: GetChatWhitelistFeature = mockk(relaxed = true)
     private val chatBannedSellerUseCase: ChatBanedSellerUseCase = mockk(relaxed = true)
@@ -69,7 +68,6 @@ class ChatItemListViewModelTest {
     @Before fun setUp() {
         viewModel = ChatItemListViewModel(
             repository,
-            queries,
             chatWhitelistFeature,
             chatBannedSellerUseCase,
             pinChatUseCase,
@@ -578,52 +576,14 @@ class ChatItemListViewModelTest {
     }
 
     @Test
-    fun should_do_nothing_when_mark_chat_as_read_but_empty_query() {
-        //Given
-        val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
-        every {
-            queries[ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ]
-        } returns null
-
-        //When
-        viewModel.markChatAsRead(listOf(exMessageId), expectedResult)
-
-        //Then
-        verify (exactly = 0) {
-            expectedResult.invoke(any())
-        }
-    }
-
-    @Test
-    fun should_do_nothing_when_mark_chat_as_unread_but_empty_query() {
-        //Given
-        val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
-        every {
-            queries[ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD]
-        } returns null
-
-        //When
-        viewModel.markChatAsUnread(listOf(exMessageId), expectedResult)
-
-        //Then
-        verify (exactly = 0) {
-            expectedResult.invoke(any())
-        }
-    }
-
-    @Test
     fun should_invoke_result_success_when_mark_chat_as_read() {
         //Given
-        val testQuery = "testQuery123"
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedData = ChatChangeStateResponse()
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(ChatChangeStateResponse::class.java, expectedData)),
             mapOf(), false
         )
-        every {
-            queries[ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
@@ -642,10 +602,6 @@ class ChatItemListViewModelTest {
         //Given
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedError = Throwable("Oops!")
-        val testQuery = "testQuery123"
-        every {
-            queries[ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } throws expectedError
@@ -662,16 +618,12 @@ class ChatItemListViewModelTest {
     @Test
     fun should_invoke_result_success_when_mark_chat_as_unread() {
         //Given
-        val testQuery = "testQuery123"
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedData = ChatChangeStateResponse()
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(ChatChangeStateResponse::class.java, expectedData)),
             mapOf(), false
         )
-        every {
-            queries[ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
@@ -690,10 +642,6 @@ class ChatItemListViewModelTest {
         //Given
         val expectedResult: (Result<ChatChangeStateResponse>) -> Unit = mockk(relaxed = true)
         val expectedError = Throwable("Oops!")
-        val testQuery = "testQuery123"
-        every {
-            queries[ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } throws expectedError
@@ -763,28 +711,8 @@ class ChatItemListViewModelTest {
     }
 
     @Test
-    fun should_not_update_anything_when_load_chat_blast_seller_metadata_but_query_null() {
-        //Given
-        every {
-            queries[ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA]
-        } returns null
-
-        //When
-        viewModel.loadChatBlastSellerMetaData()
-
-        //Then
-        assertEquals(null,
-            viewModel.broadCastButtonUrl.value
-        )
-        assertEquals(null,
-            viewModel.broadCastButtonVisibility.value
-        )
-    }
-
-    @Test
     fun should_get_data_when_load_success_get_chat_blast_seller_metadata() {
         //Given
-        val testQuery = "query123"
         val testUrlBroadcast = "url broadcast 123"
         val expectedData = BlastSellerMetaDataResponse(
             ChatBlastSellerMetadata(urlBroadcast = testUrlBroadcast)
@@ -793,9 +721,6 @@ class ChatItemListViewModelTest {
             mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
             mapOf(), false
         )
-        every {
-            queries[ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
@@ -820,15 +745,11 @@ class ChatItemListViewModelTest {
     @Test
     fun should_get_data_when_load_success_get_chat_blast_seller_metadata_but_no_access() {
         //Given
-        val testQuery = "query123"
         val expectedData = BlastSellerMetaDataResponse()
         val expectedResponse = GraphqlResponse(
             mapOf(Pair(BlastSellerMetaDataResponse::class.java, expectedData)),
             mapOf(), false
         )
-        every {
-            queries[ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } returns expectedResponse
@@ -848,11 +769,7 @@ class ChatItemListViewModelTest {
     @Test
     fun should_get_data_when_load_error_get_chat_blast_seller_metadata() {
         //Given
-        val testQuery = "query123"
         val expectedError = Throwable("Oops!")
-        every {
-            queries[ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA]
-        } returns testQuery
         coEvery {
             repository.response(any(), any())
         } throws expectedError
