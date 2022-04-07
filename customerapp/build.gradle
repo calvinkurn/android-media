@@ -433,6 +433,7 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.empty_state
     implementation rootProject.ext.unifyDependencies.accordion
+    implementation group: 'com.googlecode.mp4parser', name: 'isoparser', version: '1.0-RC-1'
 }
 
 apply plugin: 'com.google.gms.google-services'
