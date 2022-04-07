@@ -79,7 +79,9 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
@@ -685,8 +687,9 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
         product: ProductData,
         position: Int
     ) {
-        context?.let {
-            viewModel.addWishListNormal(product.productId,
+        context?.let { context ->
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+                viewModel.addWishListV2Normal(product.productId,
                     object : WishlistV2ActionListener {
                         override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                             showErrorMessage(ErrorHandler.getErrorMessage(context, throwable))
@@ -697,14 +700,29 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
                             val msg = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
                             val ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
                             view?.let {
-                                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL,
-                                        ctaText,  View.OnClickListener { goToWishlist()}).show()
+                                Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishlist() }.show()
                             }
                         }
 
                         override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
                         override fun onSuccessRemoveWishlist(productId: String) {}
                     })
+            } else {
+                viewModel.addWishListNormal(product.productId,
+                    object : WishListActionListener {
+                        override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                            showErrorMessage(errorMessage ?: "")
+                            rvAdapter?.updateFailedAddToWishlist(notification, product, position)
+                        }
+
+                        override fun onSuccessAddWishlist(productId: String?) {
+                            showMessage(R.string.title_success_add_to_wishlist)
+                        }
+
+                        override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+                        override fun onSuccessRemoveWishlist(productId: String?) {}
+                    })
+            }
         }
     }
 
