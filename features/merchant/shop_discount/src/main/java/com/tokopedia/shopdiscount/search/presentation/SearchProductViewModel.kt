@@ -31,6 +31,8 @@ class SearchProductViewModel @Inject constructor(
     val deleteDiscount: LiveData<Result<Boolean>>
         get() = _deleteDiscount
 
+    private var selectedProductCount = 0
+
     private var totalProduct = 0
     private var selectedProduct : Product? = null
     private var isMultiSelectEnabled = false
@@ -131,10 +133,6 @@ class SearchProductViewModel @Inject constructor(
         }
     }
 
-    fun findUnselectedProduct(products : List<Product>) : List<Product> {
-        return products.filter { !it.isCheckboxTicked }
-    }
-
     fun findSelectedProducts(products: List<Product>) : List<Product> {
         return products.filter { it.isCheckboxTicked }
     }
@@ -157,6 +155,14 @@ class SearchProductViewModel @Inject constructor(
                 product
             }
         }
+    }
+
+    fun setSelectedProductCount(selectedProductCount : Int) {
+        this.selectedProductCount = selectedProductCount
+    }
+
+    fun getSelectedProductCount(): Int {
+        return selectedProductCount
     }
 
 }

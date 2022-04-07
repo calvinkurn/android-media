@@ -106,8 +106,13 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     }
 
     private fun setupView() {
+        setupMultiSelection()
+        setupToolbar()
+        setupSearchBar()
+    }
+
+    private fun setupSearchBar() {
         binding?.run {
-            imgBack.setOnClickListener { activity?.onBackPressed() }
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     loadInitialData()
@@ -117,6 +122,17 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             }
             searchBar.clearListener = { clearSearchBar() }
             searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
+        }
+    }
+
+    private fun setupToolbar() {
+        binding?.run {
+            imgBack.setOnClickListener { activity?.onBackPressed() }
+        }
+    }
+
+    private fun setupMultiSelection() {
+        binding?.run {
             tpgMultiSelect.setOnClickListener {
                 viewModel.setMultiSelectEnabled(true)
                 tpgMultiSelect.gone()
@@ -140,7 +156,6 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     }
 
 
-
     private fun observeProducts() {
         viewModel.products.observe(viewLifecycleOwner) {
             when (it) {
@@ -149,8 +164,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
                     binding?.shimmer?.content?.gone()
                     handleProducts(it.data)
                     viewModel.setTotalProduct(it.data.totalProduct)
-                    binding?.tpgTotalProduct?.text =
-                        String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    updateCounter(it.data.totalProduct)
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
@@ -174,6 +188,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             }
         }
     }
+
 
     private fun handleProducts(data: ProductData) {
         if (data.totalProduct == Int.ZERO) {
@@ -242,6 +257,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
+        viewModel.setSelectedProductCount(selectedProductCount)
 
         handleBulkManageButtonVisibility(selectedProductCount)
 
@@ -389,5 +405,15 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             viewModel.isMultiSelectEnabled(),
             viewModel.shouldDisableProductSelection()
         )
+    }
+
+    private fun updateCounter(totalProduct: Int) {
+        if (viewModel.isMultiSelectEnabled()) {
+            binding?.tpgTotalProduct?.text =
+                String.format(getString(R.string.sd_selected_product_counter), viewModel.getSelectedProductCount())
+        } else {
+            binding?.tpgTotalProduct?.text =
+                String.format(getString(R.string.sd_total_product), totalProduct)
+        }
     }
 }
