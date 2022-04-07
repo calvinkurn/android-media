@@ -7,7 +7,7 @@
     android:layout_marginEnd="16dp"
     android:layout_marginTop="8dp"
     app:tickerType="announcement"
-    app:tickerShapeType="full"
+    app:tickerShapeType="loose"
     app:closeButtonVisibility="gone"
     tools:titleText="Pengiriman terkendala, cuaca ekstrim"
     xmlns:android="http://schemas.android.com/apk/res/android"

@@ -13,7 +13,7 @@ class FileUtilsTemp @Inject constructor() {
     inline fun <reified T> getJsonResources(json: String): T {
         val gson = Gson()
         val type = object : TypeToken<T>() {}.type
-        return gson.fromJson(json, type)
+        return gson.fromJson(json, T::class.java)
     }
 
     fun getJsonFromRaw(resources: Resources, resourcesId: Int): String {

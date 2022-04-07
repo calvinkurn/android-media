@@ -21,6 +21,9 @@
     <string name="order_tracking_temporary_finish_title">Yay, pesananmu sudah sampai!</string>
     <string name="order_tracking_temporary_finish_desc">Pesananmu sampai dalam 15 menit. Terima kasih sudah nungguin dan selamat menikmati.</string>
 
+    <string name="order_tracking_help_button_title">Bantuan</string>
+    <string name="order_completed_buy_again_button_title">Beli Lagi</string>
+
     <!-- this string will removed-->
     <string name="order_detail_food_addon_item_value"><![CDATA[%1s <font color=\"%2$s\"><b>(%3$s add on)</b></font>]]></string>
 

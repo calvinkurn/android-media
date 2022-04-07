@@ -26,7 +26,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun fetchOrderDetail(json: String) {
         launchCatchError(block = {
-            val orderDetailResult = withContext(coroutineDispatchers.main) {
+            val orderDetailResult = withContext(coroutineDispatchers.io) {
                 getTokoFoodOrderDetailUseCase.get().executeTemp(json)
             }
             _orderDetailResult.value = Success(orderDetailResult)

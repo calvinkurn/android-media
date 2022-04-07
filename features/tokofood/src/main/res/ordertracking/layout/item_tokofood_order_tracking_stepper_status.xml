@@ -10,21 +10,20 @@
         android:id="@+id/icOrderTrackingStatus"
         android:layout_height="20dp"
         android:layout_width="20dp"
-        android:layout_marginStart="16dp"
-        tools:icon_name="HOURGLASS"
+        android:layout_marginStart="8dp"
+        tools:icon_name="PRODUCT_MOVE"
         app:icon_color_light_enable="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivOrderTrackingStatusLine"
+    <View
+        android:id="@+id/viewOrderTrackingStatusLine"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="4dp"
         android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/icOrderTrackingStatus"
         app:layout_constraintStart_toEndOf="@id/icOrderTrackingStatus"
         app:layout_constraintTop_toTopOf="@id/icOrderTrackingStatus"
-        app:srcCompat="@drawable/ic_tokofood_order_tracking_status_line" />
+        android:background="@drawable/ic_tokofood_order_tracking_status_line" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

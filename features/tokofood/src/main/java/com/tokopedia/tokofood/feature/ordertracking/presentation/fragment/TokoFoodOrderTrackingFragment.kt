@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
@@ -63,6 +67,8 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupActionBar()
+        setupRvOrderTracking()
         setSwipeRefreshDisabled()
         observeOrderDetail()
         fetchOrderDetail()
@@ -121,6 +127,13 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
         }
     }
 
+    private fun setupRvOrderTracking() {
+        binding?.rvOrderTracking?.run {
+            layoutManager = LinearLayoutManager(context)
+            adapter = orderTrackingAdapter
+        }
+    }
+
     private fun setSwipeRefreshDisabled() {
         binding?.orderTrackingSwipeRefresh?.run {
             isEnabled = false
@@ -129,7 +142,23 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
     }
 
     private fun setupViews(isOrderCompleted: Boolean) {
+        if (isOrderCompleted) {
+            binding?.containerOrderTrackingHelpButton?.show()
+            binding?.containerOrderTrackingActionsButton?.hide()
+        } else {
+            binding?.containerOrderTrackingHelpButton?.hide()
+            binding?.containerOrderTrackingActionsButton?.show()
+        }
+    }
 
+    private fun setupActionBar() {
+        (activity as? AppCompatActivity)?.run {
+            supportActionBar?.hide()
+            setSupportActionBar(binding?.orderTrackingToolbar)
+            supportActionBar?.run {
+                title = getString(R.string.title_tokofood_post_purchase)
+            }
+        }
     }
 
     companion object {

@@ -1,8 +1,8 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.model
 
 
-import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class TokoFoodOrderDetailResponse(
     @SerializedName("tokofoodOrderDetail")
@@ -152,16 +152,16 @@ data class TokoFoodOrderDetailResponse(
             val displayName: String = "",
             @SerializedName("notes")
             @Expose
-            val notes: String = "",
+            val notes: String? = "",
             @SerializedName("price")
             @Expose
-            val price: Double = 0.0,
+            val price: String = "0.0",
             @SerializedName("quantity")
             @Expose
             val quantity: Int = 0,
             @SerializedName("variants")
             @Expose
-            val variants: List<Variant> = listOf()
+            val variants: List<Variant>? = listOf()
         ) {
             data class Variant(
                 @SerializedName("displayName")

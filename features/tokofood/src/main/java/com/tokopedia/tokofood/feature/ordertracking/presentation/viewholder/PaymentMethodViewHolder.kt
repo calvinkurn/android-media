@@ -19,7 +19,7 @@ class PaymentMethodViewHolder(view: View) :
     override fun bind(element: PaymentMethodUiModel) {
         with(binding) {
             setMethodLabel(element.methodLabel)
-            setMethodLabel(element.methodValue)
+            setMethodValue(element.methodValue)
         }
     }
 

@@ -21,9 +21,9 @@ class OrderTrackingStatusInfoViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_status_info_section
 
-        const val SPAN_WIDTH_DEFAULT = 2
+        const val SPAN_WIDTH_DEFAULT = 3
         const val SPAN_WIDTH_LAST_ITEM = 1
-        const val MAX_SPAN_COUNT = 7
+        const val MAX_SPAN_COUNT = 10
     }
 
     private val binding = ItemTokofoodOrderTrackingStatusInfoSectionBinding.bind(itemView)

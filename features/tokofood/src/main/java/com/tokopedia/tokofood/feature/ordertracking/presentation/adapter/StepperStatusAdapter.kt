@@ -18,7 +18,7 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
     private val stepperStatusList = mutableListOf<StepperStatusUiModel>()
 
     fun setStepperList(newStepperStatusList: List<StepperStatusUiModel>) {
-        if (stepperStatusList.isNullOrEmpty()) return
+        if (newStepperStatusList.isNullOrEmpty()) return
         val callBack = StepperStatusDiffUtilCallback(stepperStatusList, newStepperStatusList)
         val diffResult = DiffUtil.calculateDiff(callBack)
         stepperStatusList.clear()
@@ -66,46 +66,55 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
 
         private val stepperColor = getStepperColor()
 
-        fun updateStepperIcon(isActive: Boolean) {
-            setupStepperIcon(isActive, stepperColor)
-        }
-
-        fun updateStepperLine(isActive: Boolean) {
-            setupStepperIcon(isActive, stepperColor)
-        }
+        private var stepperStatusItem: StepperStatusUiModel? = null
 
         fun bind(item: StepperStatusUiModel) {
+            this.stepperStatusItem = item
             if (stepperStatusList.size == adapterPosition + Int.ONE) {
                 hideStepperLine()
             } else {
-                setStepperIcon(item.iconName)
-                setupStepperIcon(item.isIconActive, stepperColor)
-                setupStepperLine(item.isLineActive, stepperColor)
+                setStepperIcon(item.isIconActive)
+                setupStepperIcon(item.isIconActive)
+                setupStepperLine(item.isLineActive)
             }
         }
 
-        private fun setStepperIcon(iconName: Int) {
-            binding.icOrderTrackingStatus.setImage(iconName)
+        fun updateStepperIcon(isActive: Boolean) {
+            setupStepperIcon(isActive)
         }
 
-        private fun setupStepperIcon(isActive: Boolean, stepperColor: Pair<Int, Int>) {
+        fun updateStepperLine(isActive: Boolean) {
+            setupStepperLine(isActive)
+        }
+
+        private fun setStepperIcon(isActive: Boolean) {
             with(binding) {
-                icOrderTrackingStatus.setBackgroundColor(
-                    if (isActive) stepperColor.first else stepperColor.second
+                icOrderTrackingStatus.setImage(
+                    stepperStatusItem?.iconName,
+                    newLightEnable = if (isActive) stepperColor.first else stepperColor.second
                 )
             }
         }
 
-        private fun setupStepperLine(isActive: Boolean, stepperColor: Pair<Int, Int>) {
+        private fun setupStepperIcon(isActive: Boolean) {
             with(binding) {
-                ivOrderTrackingStatusLine.setBackgroundColor(
+                icOrderTrackingStatus.setImage(
+                    stepperStatusItem?.iconName,
+                    newLightEnable = if (isActive) stepperColor.first else stepperColor.second
+                )
+            }
+        }
+
+        private fun setupStepperLine(isActive: Boolean) {
+            with(binding) {
+                viewOrderTrackingStatusLine.setBackgroundColor(
                     if (isActive) stepperColor.first else stepperColor.second
                 )
             }
         }
 
         private fun hideStepperLine() {
-            binding.ivOrderTrackingStatusLine.hide()
+            binding.viewOrderTrackingStatusLine.hide()
         }
 
         private fun getStepperColor(): Pair<Int, Int> {

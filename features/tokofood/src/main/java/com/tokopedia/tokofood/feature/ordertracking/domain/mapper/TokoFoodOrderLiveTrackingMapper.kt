@@ -31,6 +31,7 @@ class TokoFoodOrderLiveTrackingMapper @Inject constructor() : BaseOrderDetailRes
             addPaymentMethodUiModel(tokoFoodOrderDetail.payment.paymentMethod)
             addThinDividerMarginUiModel()
             addPaymentDetailListUiModel(tokoFoodOrderDetail.payment.paymentDetails)
+            addThinDividerMarginUiModel()
             addPaymentAmountUiModel(tokoFoodOrderDetail.payment.paymentAmount)
         }
     }

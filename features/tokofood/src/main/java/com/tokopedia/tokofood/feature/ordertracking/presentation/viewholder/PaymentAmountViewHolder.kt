@@ -41,7 +41,7 @@ class PaymentAmountViewHolder(view: View) :
         tvOrderTrackingGrandTotalLabel.text = grandTotalLabel
     }
 
-    private fun ItemTokofoodOrderTrackingPaymentGrandTotalBinding.setGrandTotalValue(grandTotalLabel: String) {
-        tvOrderTrackingGrandTotalValue.text = grandTotalLabel
+    private fun ItemTokofoodOrderTrackingPaymentGrandTotalBinding.setGrandTotalValue(grandTotalValue: String) {
+        tvOrderTrackingGrandTotalValue.text = grandTotalValue
     }
 }

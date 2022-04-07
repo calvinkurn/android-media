@@ -42,7 +42,7 @@ class FoodItemViewHolder(view: View,
         quantity: String,
         price: String
     ) {
-        tvFoodItemName.text = itemView.context.getString(
+        tvFoodItemQtyPrice.text = itemView.context.getString(
             R.string.order_detail_qty_price_value,
             quantity, price
         )

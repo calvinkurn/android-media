@@ -55,7 +55,6 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
                 addAnimatorListener(lottieStatusInfoAnimationListener)
                 playAnimation()
                 repeatCount = LottieDrawable.INFINITE
-                pauseAnimation()
             }
         }
     }

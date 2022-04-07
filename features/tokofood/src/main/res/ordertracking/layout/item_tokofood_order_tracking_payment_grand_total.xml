@@ -5,14 +5,15 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginTop="@dimen/spacing_lvl3"
-    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="20dp"
     android:animateLayoutChanges="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderTrackingGrandTotalLabel"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="0dp"
         android:layout_marginEnd="8dp"
@@ -27,7 +28,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOrderTrackingGrandTotalValue"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="0dp"

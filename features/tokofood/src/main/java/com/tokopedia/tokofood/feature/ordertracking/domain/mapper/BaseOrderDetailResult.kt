@@ -24,6 +24,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Shippin
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThickDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerMarginUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ThinDividerUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.TickerInfoData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -247,8 +248,8 @@ abstract class BaseOrderDetailResult {
             FoodItemUiModel(
                 foodName = it.displayName,
                 quantity = it.quantity.toString(),
-                priceStr = it.price.toString(),
-                notes = it.notes,
+                priceStr = it.price,
+                notes = it.notes.orEmpty(),
                 addOnVariantList = mapToAddonVariantUiModel(it)
             )
         })
@@ -258,9 +259,9 @@ abstract class BaseOrderDetailResult {
         foodItem:
         TokoFoodOrderDetailResponse.TokofoodOrderDetail.Item
     ): List<AddonVariantItemUiModel> {
-        return foodItem.variants.map {
+        return foodItem.variants?.map {
             AddonVariantItemUiModel(displayName = it.displayName, optionName = it.optionName)
-        }
+        }.orEmpty()
     }
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addOrderDetailToggleCtaUiModel(
@@ -285,7 +286,7 @@ abstract class BaseOrderDetailResult {
         add(ThickDividerUiModel())
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addThinDividerUiModel() =
-        add(ThickDividerUiModel())
+        add(ThinDividerUiModel())
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addThinDividerMarginUiModel() =
         add(ThinDividerMarginUiModel())
