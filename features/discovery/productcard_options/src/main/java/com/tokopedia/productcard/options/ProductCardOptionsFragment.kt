@@ -8,26 +8,21 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.manager.*
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
-import com.tokopedia.productcard.options.item.ProductCardOptionsItemViewHolder
+import com.tokopedia.productcard.options.databinding.ProductCardOptionsFragmentLayoutBinding
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
-import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
 
     private var productCardOptionsViewModel: ProductCardOptionsViewModel? = null
+    private var binding: ProductCardOptionsFragmentLayoutBinding? by viewBinding()
 
     override fun getScreenName(): String {
         return "product card options"
@@ -67,11 +62,12 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun loadOptions(optionList: List<Visitable<*>>) {
-        productCardOptionsRecyclerView?.adapter = ProductCardOptionsAdapter(ProductCardOptionsTypeFactoryImpl()).also {
+        val productCardOptionsRecyclerView = binding?.productCardOptionsRecyclerView ?:return
+        productCardOptionsRecyclerView.adapter = ProductCardOptionsAdapter(ProductCardOptionsTypeFactoryImpl()).also {
             it.setList(optionList)
         }
 
-        productCardOptionsRecyclerView?.layoutManager = LinearLayoutManager(context)
+        productCardOptionsRecyclerView.layoutManager = LinearLayoutManager(context)
     }
 
     private fun observeRouteToSimilarSearchEventLiveData() {
@@ -148,8 +144,9 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun showLoading() {
-        productCardOptionsRecyclerView?.visibility = View.INVISIBLE
-        productCardOptionsLoading?.visible()
+        val binding = binding ?: return
+        binding.productCardOptionsRecyclerView.visibility = View.INVISIBLE
+        binding.productCardOptionsLoading.visible()
     }
 
     private fun observeIsLoadingEvent() {
