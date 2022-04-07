@@ -12,15 +12,11 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
-import com.tokopedia.play.view.uimodel.VariantSheetUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

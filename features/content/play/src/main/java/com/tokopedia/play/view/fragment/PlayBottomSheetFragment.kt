@@ -40,7 +40,6 @@ import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
 import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
@@ -83,7 +82,7 @@ import javax.inject.Inject
  */
 class PlayBottomSheetFragment @Inject constructor(
         private val viewModelFactory: ViewModelProvider.Factory,
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
 ): TkpdBaseV4Fragment(),
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
@@ -244,10 +243,10 @@ class PlayBottomSheetFragment @Inject constructor(
         closeVariantSheet()
     }
 
-    override fun onActionClicked(variant: PlayProductUiModel.Product, action: ProductAction) {
+    override fun onActionClicked(variant: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction) {
         playViewModel.submitAction(
-            if (action == ProductAction.Buy) BuyProductVariantAction(variant.id)
-            else AtcProductVariantAction(variant.id)
+            if (action == ProductAction.Buy) BuyProductVariantAction(variant.id, sectionInfo)
+            else AtcProductVariantAction(variant.id, sectionInfo)
         )
     }
 
@@ -709,7 +708,19 @@ class PlayBottomSheetFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                     is BuySuccessEvent -> {
+                        val bottomInsetsType = if (event.isVariant) {
+                            BottomInsetsType.VariantSheet
+                        } else BottomInsetsType.ProductSheet //TEMPORARY
+
                         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                        analytic.clickProductAction(
+                            product = event.product,
+                            cartId = event.cartId,
+                            productAction = ProductAction.Buy,
+                            bottomInsetsType = bottomInsetsType,
+                            shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                            sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                        )
                     }
                     is AtcSuccessEvent -> {
                         val bottomInsetsType = if (event.isVariant) {
