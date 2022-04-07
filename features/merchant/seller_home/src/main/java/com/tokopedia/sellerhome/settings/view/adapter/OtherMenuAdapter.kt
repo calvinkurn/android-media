@@ -30,7 +30,8 @@ class OtherMenuAdapter(
     companion object {
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
         private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
-        private const val PRODUCT_COUPON_END_DATE = 1648573200000 // Wed Mar 30 2022 00:00:00
+        private const val PRODUCT_COUPON_END_DATE = 1649869200000 // Wed Apr 14 2022 00:00:00
+        private const val TOKOPEDIA_PLAY_END_DATE = 1652806800000 // Wed May 18 2022 00:00:00
     }
 
     private val settingList = listOf(
@@ -49,7 +50,7 @@ class OtherMenuAdapter(
             tag = getCentralizedPromoTag()
         ),
         MenuItemUiModel(
-            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_performance)
+            title = context?.getString(R.string.setting_menu_performance)
                 .orEmpty(),
             clickApplink = ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
             eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
@@ -125,7 +126,7 @@ class OtherMenuAdapter(
         ),
         DividerUiModel(DividerType.THIN_PARTIAL),
         MenuItemUiModel(
-            title = context?.getString(com.tokopedia.seller.menu.common.R.string.setting_menu_setting)
+            title = context?.getString(R.string.setting_menu_setting)
                 .orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.SETTINGS,
@@ -157,14 +158,28 @@ class OtherMenuAdapter(
     }
 
     private fun getCentralizedPromoTag(): String {
-        val expiredDateMillis = PRODUCT_COUPON_END_DATE
-        val todayMillis = Date().time
-        return if (todayMillis < expiredDateMillis) {
+        val shouldShow = !areDatesExpired()
+        return if (shouldShow) {
             context?.getString(R.string.setting_new_tag).orEmpty()
         } else {
             SellerHomeConst.EMPTY_STRING
         }
     }
+
+    private fun areDatesExpired(): Boolean {
+        val todayMillis = Date().time
+        val expirationDateList = listOf(
+            getProductCouponEndDate(),
+            getTokopediaPlayEndDate()
+        )
+        return expirationDateList.all { expiredDate ->
+            todayMillis >= expiredDate
+        }
+    }
+
+    private fun getProductCouponEndDate(): Long = PRODUCT_COUPON_END_DATE
+
+    private fun getTokopediaPlayEndDate(): Long = TOKOPEDIA_PLAY_END_DATE
 
     fun populateAdapterData() {
         clearAllElements()

@@ -1,9 +1,16 @@
 package com.tokopedia.play.view.uimodel.mapper
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.OutOfStock
+import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -14,6 +21,7 @@ import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import javax.inject.Inject
 
 /**
@@ -78,5 +86,35 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapUnfollowKol(input: KOLUnFollowStatus): Boolean {
         return input.unFollowedKOLInfo.data.isSuccess == 1
+    }
+
+    fun mapVariantChildToProduct(
+        child: VariantChild,
+        prevDetail: PlayProductUiModel.Product,
+    ): PlayProductUiModel.Product {
+        val stock = child.stock
+
+        return PlayProductUiModel.Product(
+            id = child.productId,
+            shopId = prevDetail.shopId,
+            imageUrl = child.picture?.original.orEmpty(),
+            title = child.name,
+            stock = if (stock == null) OutOfStock
+            else StockAvailable(stock.stock ?: 0),
+            isVariantAvailable = true,
+            price = if (child.campaign?.discountedPercentage != 0f) {
+                DiscountedPrice(
+                    originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
+                    discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
+                    discountPercent = child.campaign?.discountedPercentage?.toInt()?:0,
+                    discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
+                )
+            } else {
+                OriginalPrice(child.priceFmt.toEmptyStringIfNull(), child.price)
+            },
+            minQty = prevDetail.minQty.orZero(),
+            isFreeShipping = prevDetail.isFreeShipping,
+            applink = prevDetail.applink
+        )
     }
 }

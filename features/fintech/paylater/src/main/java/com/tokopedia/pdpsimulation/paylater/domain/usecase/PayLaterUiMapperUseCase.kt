@@ -56,12 +56,18 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
         val uiList = arrayListOf<SimulationUiModel>()
         payLaterGetSimulation?.let {
             var isTenureFound = false
+            var maxTenureItemIndex = -1
+            var maxTenureSoFar = -1
             if (it.productList.isNullOrEmpty()) return uiList
 
-            it.productList.forEach { data ->
+            it.productList.forEachIndexed { index, data ->
                 val getPayLaterList = mapSimulationToUi(data.detail)
                 if (defaultTenure == data.tenure)
                     isTenureFound = true
+                else if (maxTenureSoFar < data.tenure ?: -1) {
+                    maxTenureItemIndex = index
+                    maxTenureSoFar = data.tenure ?: -1
+                }
 
                 val simulationUiModel = SimulationUiModel(
                     tenure = data.tenure,
@@ -72,9 +78,13 @@ class PayLaterUiMapperUseCase @Inject constructor() : UseCase<ArrayList<Simulati
                 )
                 uiList.add(simulationUiModel)
             }
-            // if no matching tenure set last as selected
-            if (uiList.isNotEmpty() && isTenureFound.not())
-                uiList[uiList.size - 1].isSelected = true
+            // if no matching tenure set max tenure as selected
+            if (uiList.isNotEmpty() && isTenureFound.not()) {
+                val selectionIndex = if(maxTenureItemIndex >= 0)
+                    maxTenureItemIndex
+                else uiList.size -1
+                uiList[selectionIndex].isSelected = true
+            }
         }
         return uiList
     }

@@ -79,6 +79,15 @@ class ProductSheetViewComponent(
         ) {
             listener.onProductCardClicked(this@ProductSheetViewComponent, product, sectionInfo, position)
         }
+
+        override fun onReminderClicked(product: ProductSectionUiModel.Section) {
+            listener.onReminderClicked(this@ProductSheetViewComponent, product)
+        }
+
+        override fun onReminderImpressed(section: ProductSectionUiModel.Section) {
+            listener.onReminderImpressed(this@ProductSheetViewComponent, section)
+        }
+
         override fun onProductChanged() {
             listener.onProductCountChanged(this@ProductSheetViewComponent)
         }
@@ -235,5 +244,7 @@ class ProductSheetViewComponent(
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)
+        fun onReminderClicked(view: ProductSheetViewComponent, productSectionUiModel: ProductSectionUiModel.Section)
+        fun onReminderImpressed(view: ProductSheetViewComponent, section: ProductSectionUiModel.Section)
     }
 }

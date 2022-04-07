@@ -2,7 +2,6 @@ package com.tokopedia.topads.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,14 +18,17 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus.*
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_PRODUCT_ADS
 import com.tokopedia.topads.common.data.internal.ParamObject.ISWHITELISTEDUSER
+import com.tokopedia.topads.common.data.internal.ParamObject.KEY_AD_TYPE
 import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
 import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
@@ -81,6 +83,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     private var datePickerSheet: DatePickerSheet? = null
     private var currentDateText: String = ""
     private var isWhiteListedUser: Boolean = false
+    private var isAutoBidToggleEnabled: Boolean = false
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
@@ -219,8 +222,9 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
 
     private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
         response.data.forEach {
-            if(it.featureId == 39 && it.featureName == "split_bid") {
-                isWhiteListedUser = true
+            when(it.featureId) {
+                TopAdsFeature.WHITE_LISTED_USER_ID -> isWhiteListedUser = true
+                TopAdsFeature.AUTO_BID_TOGGLE_ID -> isAutoBidToggleEnabled = true
             }
         }
     }
@@ -240,8 +244,10 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     }
 
     private fun prepareBundle() : Bundle {
-        var bundle = Bundle()
+        val bundle = Bundle()
         bundle.putBoolean(ISWHITELISTEDUSER, isWhiteListedUser)
+        bundle.putBoolean(ParamObject.IS_AUTO_BID_TOGGLE_ENABLED, isAutoBidToggleEnabled)
+        bundle.putString(KEY_AD_TYPE, AD_TYPE_PRODUCT_ADS)
         return bundle
     }
 
@@ -544,7 +550,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         topAdsDashboardPresenter.detachView()
     }
 
-    fun setGroupCount(size: Int) {
+    override fun setGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(0)?.setCounter(size)
     }
 
@@ -552,7 +558,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         tab_layout?.getUnifyTabLayout()?.getTabAt(1)?.setCounter(size)
     }
 
-    fun setDeletedGroupCount(size: Int) {
+    override fun setDeletedGroupCount(size: Int) {
         tab_layout?.getUnifyTabLayout()?.getTabAt(2)?.setCounter(size)
     }
 

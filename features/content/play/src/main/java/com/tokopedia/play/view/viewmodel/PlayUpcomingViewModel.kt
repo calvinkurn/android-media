@@ -79,38 +79,24 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private val _observableKolId = MutableLiveData<String>()
 
-    private val _partnerUiState = _partnerInfo.map {
-        PlayUpcomingPartnerUiState(it.name, it.status)
-    }.flowOn(dispatchers.computation)
-
     private val _upcomingInfoUiState = combine(
         _upcomingInfo, _upcomingState
     ) { info, state ->
         PlayUpcomingInfoUiState(
-            generalInfo = PlayUpcomingGeneralInfo(
-                title = info.title,
-                coverUrl = info.coverUrl,
-                startTime = info.startTime,
-                waitingDuration = info.refreshWaitingDuration,
-            ),
+            info = info,
             state = state
         )
     }.flowOn(dispatchers.computation)
 
-    private val _shareUiState = _channelDetail.map {
-        PlayUpcomingShareUiState(shouldShow = it.shareInfo.shouldShow)
-    }.flowOn(dispatchers.computation)
-
-
     val uiState: Flow<PlayUpcomingUiState> = combine(
-        _partnerUiState.distinctUntilChanged(),
+        _partnerInfo,
         _upcomingInfoUiState.distinctUntilChanged(),
-        _shareUiState.distinctUntilChanged(),
-    ) { partner, upcomingInfo, share ->
+        _channelDetail,
+    ) { partner, upcomingInfo, channelDetail ->
         PlayUpcomingUiState(
             partner = partner,
             upcomingInfo = upcomingInfo,
-            share = share
+            channel = channelDetail,
         )
     }.flowOn(dispatchers.computation)
 
@@ -363,6 +349,8 @@ class PlayUpcomingViewModel @Inject constructor(
         val shouldFollow = if (shouldForceFollow) true else followStatus.followStatus == PartnerFollowableStatus.NotFollowed
         val followAction = if (shouldFollow) PartnerFollowAction.Follow else PartnerFollowAction.UnFollow
 
+        _partnerInfo.setValue { (copy(isLoadingFollow = true)) }
+
         viewModelScope.launchCatchError(block = {
             val isFollowing: Boolean = if(channelData.partnerInfo.type == PartnerType.Shop){
                 repo.postFollowStatus(
@@ -377,8 +365,9 @@ class PlayUpcomingViewModel @Inject constructor(
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
-        }) {}
-
+        }) {
+            _uiEvent.emit(PlayUpcomingUiEvent.ShowError(it))
+        }
         return followAction
     }
 

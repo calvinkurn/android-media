@@ -1448,7 +1448,7 @@ class PlayUserInteractionFragment @Inject constructor(
         else interactiveWinnerBadgeView?.hide()
     }
 
-    private fun renderToolbarView(title: PlayTitleUiState, ) {
+    private fun renderToolbarView(title: PlayTitleUiState) {
         toolbarView.setTitle(title.title)
     }
 
