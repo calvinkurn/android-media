@@ -13,12 +13,19 @@ import androidx.lifecycle.lifecycleScope
 import com.otaliastudios.cameraview.CameraOptions
 import com.otaliastudios.cameraview.PictureResult
 import com.otaliastudios.cameraview.VideoResult
+import com.otaliastudios.cameraview.controls.Flash
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
 import com.tokopedia.media.databinding.FragmentCameraBinding
+import com.tokopedia.media.picker.analytics.CAMERA_BACK_STRING
+import com.tokopedia.media.picker.analytics.CAMERA_FRONT_STRING
+import com.tokopedia.media.picker.analytics.FLASH_AUTO_STRING
+import com.tokopedia.media.picker.analytics.FLASH_OFF_STRING
+import com.tokopedia.media.picker.analytics.FLASH_ON_STRING
+import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
@@ -43,8 +50,14 @@ open class CameraFragment : BaseDaggerFragment()
     , CameraControllerComponent.Listener
     , CameraViewComponent.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var cameraAnalytics: CameraAnalytics
 
     private val binding: FragmentCameraBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -124,6 +137,7 @@ open class CameraFragment : BaseDaggerFragment()
 
     override fun onCameraThumbnailClicked() {
         listener?.onCameraThumbnailClicked()
+        cameraAnalytics.clickThumbnail()
     }
 
     override fun onDestroyView() {
@@ -145,11 +159,26 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onFlashClicked() {
         cameraView.setCameraFlashIndex()
         setCameraFlashState()
+
+        val flashStateString = when(cameraView.cameraFlash()){
+            Flash.AUTO -> FLASH_AUTO_STRING
+            Flash.ON -> FLASH_ON_STRING
+            else -> FLASH_OFF_STRING
+        }
+        cameraAnalytics.clickFlash(flashStateString)
     }
 
     override fun onFlipClicked() {
         if (cameraView.isTakingPicture() || cameraView.isTakingVideo()) return
         cameraView.toggleFacing()
+
+        val cameraState = if (cameraView.isFacingCameraIsFront()) {
+            CAMERA_FRONT_STRING
+        } else {
+            CAMERA_BACK_STRING
+        }
+
+        cameraAnalytics.clickFlip(cameraState)
     }
 
     override fun onTakeMediaClicked() {
@@ -161,10 +190,12 @@ open class CameraFragment : BaseDaggerFragment()
         showShutterEffect {
             if (isTakingPictureMode) {
                 cameraView.onStartTakePicture()
+                cameraAnalytics.clickShutter()
             } else {
                 cameraView.enableFlashTorch()
                 cameraView.onStartTakeVideo()
                 controller.onVideoDurationChanged()
+                cameraAnalytics.clickRecord()
             }
         }
     }

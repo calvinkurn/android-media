@@ -3,7 +3,9 @@ package com.tokopedia.media.picker.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
 import com.tokopedia.media.picker.data.repository.*
 import com.tokopedia.media.picker.di.scope.PickerScope
@@ -27,11 +29,30 @@ class PickerModule {
     @Provides
     @PickerScope
     fun providePickerAnalytics(
-        userSession: UserSessionInterface
+        cameraAnalytics: CameraAnalytics,
+        galleryAnalytics: GalleryAnalytics
     ) = PickerAnalytics(
-        CameraAnalyticsImpl(userSession),
-        GalleryAnalyticsImpl()
+        cameraAnalytics,
+        galleryAnalytics
     )
+
+    @Provides
+    @PickerScope
+    fun provideGalleryAnalytics(
+        userSession: UserSessionInterface,
+        paramCacheManager: ParamCacheManager
+    ): GalleryAnalytics {
+        return GalleryAnalyticsImpl(userSession, paramCacheManager)
+    }
+
+    @Provides
+    @PickerScope
+    fun provideCameraAnalytics(
+        userSession: UserSessionInterface,
+        paramCacheManager: ParamCacheManager
+    ): CameraAnalytics {
+        return CameraAnalyticsImpl(userSession, paramCacheManager)
+    }
 
     @Provides
     @PickerScope

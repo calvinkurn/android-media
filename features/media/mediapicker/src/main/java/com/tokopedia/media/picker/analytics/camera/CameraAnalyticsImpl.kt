@@ -3,43 +3,104 @@
 package com.tokopedia.media.picker.analytics.camera
 
 import com.tokopedia.media.picker.analytics.*
+import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CameraAnalyticsImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val paramCacheManager: ParamCacheManager
 ) : CameraAnalytics {
 
     private val userId: String
-        get() = userSession.userId
+        get() = if (userSession.userId.isNullOrEmpty()) "0" else userSession.userId
 
     private val shopId: String
-        get() = userSession.shopId?: ""
+        get() = if (userSession.shopId.isNullOrEmpty()) "0" else userSession.shopId
 
-    override fun visitCameraPage(
-        entryPoint: String,
-        pagePath: String,
-        pageType: String
-    ) {
-        sendGeneralEvent(
-            event = EVENT_CLICK_COMMUNICATION,
-            eventAction = ACTION_VISIT_CAMERA,
-            eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId",
-            additionalEvent = mapOf(
-                KEY_PAGE_PATH to "",
-                KEY_PAGE_TYPE to ""
-            )
-        )
-    }
+    private val sourcePage: String
+        get() = paramCacheManager.get().pageSourceName()
 
-    override fun clickRecord(entryPoint: String) {
+    override fun clickRecord() {
         sendGeneralEvent(
             event = EVENT_CLICK_COMMUNICATION,
             eventAction = ACTION_CLICK_RECORD,
             eventCategory = CATEGORY_MEDIA_CAMERA,
-            eventLabel = "$entryPoint - $userId - $shopId"
+            eventLabel = "$sourcePage - $userId - $shopId"
+        )
+    }
+
+    override fun clickShutter() {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_SHUTTER,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun clickFlash(flashState: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_FLASH,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$flashState - $sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun clickFlip(cameraState: String) {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_FLIP,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$cameraState - $sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun clickThumbnail() {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_THUMBNAIL,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun clickGalleryTab() {
+        sendGeneralEvent(
+            event = EVENT_CLICK_COMMUNICATION,
+            eventAction = ACTION_CLICK_TAB_GALLERY,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun maxPhotoLimit() {
+        sendGeneralEvent(
+            event = EVENT_VIEW_COMMUNICATION,
+            eventAction = ACTION_MAX_PHOTO,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun maxVideoLimit() {
+        sendGeneralEvent(
+            event = EVENT_VIEW_COMMUNICATION,
+            eventAction = ACTION_MAX_VIDEO,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$sourcePage - $userId - $shopId",
+        )
+    }
+
+    override fun recordLowStorage() {
+        sendGeneralEvent(
+            event = EVENT_VIEW_COMMUNICATION,
+            eventAction = ACTION_LOW_STORAGE,
+            eventCategory = CATEGORY_MEDIA_CAMERA,
+            eventLabel = "$sourcePage - $userId - $shopId",
         )
     }
 
