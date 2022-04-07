@@ -51,6 +51,9 @@
     <string name="sd_search_result_not_found_title">Oops, produk nggak ditemukan</string>
     <string name="sd_search_result_not_found_description">Coba gunakan kata kunci atau filter lain, ya</string>
     <string name="sd_manage_with_counter">Atur (%s)</string>
+    <string name="sd_max_product_selection_reached">Kamu cuma bisa pilih 5 produk sekaligus.</string>
+    <string name="sd_ok">Oke</string>
+    <string name="sd_selected_product_counter">%s Produk Dipilih</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

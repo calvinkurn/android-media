@@ -9,9 +9,16 @@ import com.tokopedia.shopdiscount.common.entity.ProductType
 import com.tokopedia.shopdiscount.databinding.SdItemSearchProductBinding
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.utils.extension.strikethrough
+import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_GREY
+import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_RED
 
 class SearchProductViewHolder(private val binding: SdItemSearchProductBinding) :
     RecyclerView.ViewHolder(binding.root) {
+
+    companion object {
+        private const val ALPHA_DISABLED = 0.5f
+        private const val ALPHA_ENABLED = 1.0f
+    }
 
     fun bind(
         product: Product,
@@ -34,21 +41,30 @@ class SearchProductViewHolder(private val binding: SdItemSearchProductBinding) :
         handleCheckboxAppearance(product, onProductSelectionChange)
         handleChangeDiscountButtonAppearance(product.shouldDisplayCheckbox)
         handleOverflowMenuAppearance(product.shouldDisplayCheckbox)
+        handleCardSelectable(product.disableClick)
     }
 
     private fun handleCheckboxAppearance(product: Product, onProductSelectionChange: (Product, Boolean) -> Unit) {
         binding.checkBox.setOnCheckedChangeListener(null)
         binding.checkBox.isVisible = product.shouldDisplayCheckbox
-        binding.checkBox.isChecked = product.isSelected
+        binding.checkBox.isChecked = product.isCheckboxTicked
         binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
     }
 
     private fun handleOverflowMenuAppearance(shouldDisplayCheckbox: Boolean) {
-        binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
+        binding.imgMore.isVisible = !shouldDisplayCheckbox
     }
 
     private fun handleChangeDiscountButtonAppearance(shouldDisplayCheckbox: Boolean) {
         binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
+    }
+
+    private fun handleCardSelectable(disableClick : Boolean) {
+        val labelType =  if (disableClick) HIGHLIGHT_LIGHT_GREY else HIGHLIGHT_LIGHT_RED
+        binding.labelDiscount.setLabelType(labelType)
+
+        val alpha = if (disableClick) ALPHA_DISABLED else ALPHA_ENABLED
+        binding.card.alpha = alpha
     }
 
     private fun handleProductType(product: Product) {

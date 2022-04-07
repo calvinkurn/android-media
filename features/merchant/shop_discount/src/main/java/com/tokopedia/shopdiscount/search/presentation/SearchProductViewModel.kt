@@ -34,12 +34,14 @@ class SearchProductViewModel @Inject constructor(
     private var totalProduct = 0
     private var selectedProduct : Product? = null
     private var isMultiSelectEnabled = false
+    private var shouldDisableProductSelection = false
 
     fun getSlashPriceProducts(
         page: Int,
         discountStatus: Int,
         keyword: String,
-        isMultiSelectEnabled: Boolean
+        isMultiSelectEnabled: Boolean,
+        shouldDisableProductSelection: Boolean
     ) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -52,7 +54,8 @@ class SearchProductViewModel @Inject constructor(
                 val formattedProduct = productMapper.map(response)
                 val multiSelectAwareProduct =
                     formattedProduct.map { it.copy(shouldDisplayCheckbox = isMultiSelectEnabled) }
-                Pair(response.getSlashPriceProductList.totalProduct, multiSelectAwareProduct)
+                val selectionEnabledProduct = multiSelectAwareProduct.map { it.copy(disableClick = shouldDisableProductSelection) }
+                Pair(response.getSlashPriceProductList.totalProduct, selectionEnabledProduct)
             }
 
             val (totalProduct, formattedProduct) = result
@@ -106,22 +109,46 @@ class SearchProductViewModel @Inject constructor(
         return isMultiSelectEnabled
     }
 
+    fun setDisableProductSelection(shouldDisableProductSelection: Boolean) {
+        this.shouldDisableProductSelection = shouldDisableProductSelection
+    }
+
+    fun shouldDisableProductSelection(): Boolean {
+        return shouldDisableProductSelection
+    }
+
     fun enableMultiSelect(products : List<Product>) : List<Product> {
         return products.map { it.copy(shouldDisplayCheckbox = true) }
     }
 
     fun disableMultiSelect(products : List<Product>) : List<Product> {
-        return products.map { it.copy(shouldDisplayCheckbox = false, isSelected = false) }
+        return products.map {
+            it.copy(
+                shouldDisplayCheckbox = false,
+                isCheckboxTicked = false,
+                disableClick = false
+            )
+        }
+    }
+
+    fun findUnselectedProduct(products : List<Product>) : List<Product> {
+        return products.filter { !it.isCheckboxTicked }
     }
 
     fun findSelectedProducts(products: List<Product>) : List<Product> {
-        return products.filter { it.isSelected }
+        return products.filter { it.isCheckboxTicked }
     }
 
-    fun toggleSelection(products: List<Product>, product : Product, isSelected : Boolean) {
-        val allProducts = products.toMutableList()
-        val selectedProductPosition = allProducts.indexOf(product)
-        allProducts[selectedProductPosition] = product.copy(isSelected = isSelected)
-        return
+    fun disableProducts(products: List<Product>): List<Product> {
+        return products.map {
+            it.copy(disableClick = true)
+        }
     }
+
+    fun enableProduct(products: List<Product>): List<Product> {
+        return products.map {
+            it.copy(disableClick = false)
+        }
+    }
+
 }
