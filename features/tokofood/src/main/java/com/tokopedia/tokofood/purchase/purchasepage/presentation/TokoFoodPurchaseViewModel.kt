@@ -61,49 +61,34 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         return dataList.subList(from, to)
     }
 
-    fun loadData() {
-
-        launch {
-            delay(3000) // Simulate hit API
-            val isSuccess = true
-            if (isSuccess) {
+    fun loadData(shouldRefresh: Boolean = false) {
+        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
+        if (fragmentUiModel.value != null && !shouldRefresh) {
+            if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
-                constructRecycleViewItem()
+                _fragmentUiModel.value = fragmentUiModel.value
+                _visitables.value = visitables.value
                 calculateTotal()
             } else {
-                // Todo : Set throwable from network
                 _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
+                _fragmentUiModel.value = fragmentUiModel.value
+            }
+        } else {
+            launch {
+                delay(3000) // Simulate hit API
+                val isSuccess = true
+                if (isSuccess) {
+                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
+                    constructRecycleViewItem()
+                    calculateTotal()
+                } else {
+                    // Todo : Set throwable from network
+                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
+                }
             }
         }
-        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
-//        if (fragmentUiModel.value != null) {
-//            if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
-//                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-//                _fragmentUiModel.value = fragmentUiModel.value
-//                _visitables.value = visitables.value
-//                calculateTotal()
-//            } else {
-//                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-//                _fragmentUiModel.value = fragmentUiModel.value
-//            }
-//        } else {
-//            launch {
-//                delay(3000) // Simulate hit API
-//                val isSuccess = true
-//                if (isSuccess) {
-//                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-//                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
-//                    constructRecycleViewItem()
-//                    calculateTotal()
-//                } else {
-//                    // Todo : Set throwable from network
-//                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-//                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
-//                }
-//            }
-//        }
     }
 
     private fun constructRecycleViewItem() {

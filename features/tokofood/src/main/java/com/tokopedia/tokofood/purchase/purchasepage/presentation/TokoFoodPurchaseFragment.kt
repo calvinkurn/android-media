@@ -158,11 +158,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun loadData() {
+        showLoadingLayout()
+        viewModel.loadData()
+    }
+
+    private fun showLoadingLayout() {
         viewBinding?.layoutGlobalErrorPurchase?.gone()
         viewBinding?.recyclerViewPurchase?.show()
         adapter.clearAllElements()
         showLoading()
-        viewModel.loadData()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -259,9 +263,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
                 UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
-                UiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> loadData()
+                UiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData(true)
                 UiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     // TODO: Show error
+                    viewModel.loadData(true)
                 }
             }
         })
@@ -365,6 +370,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             data?.let {
                 val locationPass = it.getParcelableExtra(LogisticConstant.EXTRA_EXISTING_LOCATION) as? LocationPass
                 locationPass?.let {
+                    showLoadingLayout()
                     viewModel.updateAddressPinpoint(locationPass.latitude, locationPass.longitude)
                 }
             }
