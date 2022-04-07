@@ -152,6 +152,14 @@ open class UserPostBaseAdapter(
         )
     }
 
+    override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
+        TODO("Not yet implemented")
+    }
+
 }
 
 interface ReminderCallback{
