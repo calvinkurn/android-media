@@ -140,14 +140,22 @@ class SearchProductViewModel @Inject constructor(
     }
 
     fun disableProducts(products: List<Product>): List<Product> {
-        return products.map {
-            it.copy(disableClick = true)
+        return products.map { product ->
+            if (!product.isCheckboxTicked) {
+                product.copy(disableClick = true)
+            } else {
+                product
+            }
         }
     }
 
     fun enableProduct(products: List<Product>): List<Product> {
-        return products.map {
-            it.copy(disableClick = false)
+        return products.map { product ->
+            if (!product.isCheckboxTicked) {
+                product.copy(disableClick = false)
+            } else {
+                product
+            }
         }
     }
 

@@ -68,7 +68,7 @@ class SearchProductAdapter(
     fun updateAll(items: List<Product>) {
         this.products.clear()
         this.products.addAll(items)
-        notifyItemRangeChanged(FIRST_ITEM, itemCount)
+        notifyItemRangeChanged(FIRST_ITEM, items.size)
     }
 
     @SuppressLint("NotifyDataSetChanged")

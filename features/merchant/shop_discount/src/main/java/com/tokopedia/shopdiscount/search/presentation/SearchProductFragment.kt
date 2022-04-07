@@ -254,22 +254,20 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         }
 
 
-        /*if (shouldDisableSelection) {
+        if (shouldDisableSelection) {
             disableProductSelection(items)
         } else {
             enableProductSelection(items)
-        }*/
+        }
     }
 
     private fun disableProductSelection(products : List<Product>) {
-        val unselectedProducts = viewModel.findUnselectedProduct(products)
-        val toBeDisabledProducts = viewModel.disableProducts(unselectedProducts)
+        val toBeDisabledProducts = viewModel.disableProducts(products)
         adapter?.updateAll(toBeDisabledProducts)
     }
 
     private fun enableProductSelection(products : List<Product>) {
-        val unselectedProducts = viewModel.findUnselectedProduct(products)
-        val toBeEnabledProducts = viewModel.enableProduct(unselectedProducts)
+        val toBeEnabledProducts = viewModel.enableProduct(products)
         adapter?.updateAll(toBeEnabledProducts)
     }
 
