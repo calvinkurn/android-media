@@ -80,20 +80,20 @@ import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
-import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
+import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -2244,6 +2244,43 @@ class ProductListPresenter @Inject constructor(
         else broadMatchDataView.applink
 
         view.redirectionStartActivity(applink, broadMatchDataView.url)
+    }
+    //endregion
+
+    //region Inspiration Carousel
+    override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
+        if (isViewNotAttached) return
+
+        when(product.inspirationCarouselType) {
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID -> view.trackEventImpressionInspirationCarouselGridItem(product)
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS -> view.trackEventImpressionInspirationCarouselChipsItem(product)
+            else -> view.trackEventImpressionInspirationCarouselListItem(product)
+        }
+    }
+
+    override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
+        if (isViewNotAttached) return
+
+        view.redirectionStartActivity(product.applink, product.url)
+
+        when(product.inspirationCarouselType) {
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID -> view.trackEventClickInspirationCarouselGridItem(product)
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS -> view.trackEventClickInspirationCarouselChipsItem(product)
+            else -> view.trackEventClickInspirationCarouselListItem(product)
+        }
+
+        if(product.isOrganicAds) sendTrackingClickInspirationCarouselAds(product)
+    }
+
+    private fun sendTrackingClickInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
+        topAdsUrlHitter.hitClickUrl(
+            view.className,
+            product.topAdsClickUrl,
+            product.id,
+            product.name,
+            product.imgUrl,
+            SearchConstant.TopAdsComponent.ORGANIC_ADS
+        )
     }
     //endregion
 
