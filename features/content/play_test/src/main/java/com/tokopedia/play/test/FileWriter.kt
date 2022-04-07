@@ -12,7 +12,7 @@ import java.io.FileOutputStream
 class FileWriter {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
-    private val documentsFolder = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)!!.path.toString()
+    private val documentsFolder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
 
     fun write(folderName: String = "", fileName: String, text: String) {
         val folder = File(documentsFolder, folderName)
