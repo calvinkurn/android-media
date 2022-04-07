@@ -81,6 +81,9 @@ class MvcMultiShopView @JvmOverloads constructor(
         item.shopIcon.let {
             if (it.isNotEmpty()) {
                 ivShopIcon?.loadImage(it)
+                ivShopIcon?.show()
+            }else{
+                ivShopIcon?.hide()
             }
         }
         if (item.products?.size != null && item.products.isNotEmpty()) {

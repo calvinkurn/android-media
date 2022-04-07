@@ -356,7 +356,6 @@ open class MvcLockedToProductFragment : BaseDaggerFragment(),
         super.onResume()
         refreshCartCounterData()
         updateMiniCartWidget()
-        isPromoValid = null
     }
 
     private fun refreshCartCounterData() {

@@ -41,4 +41,8 @@ class DeletedGroupItemsListAdapter(private val typeFactory: DeletedGroupItemsAda
     ) {
         holder.bind(items[position])
     }
+
+    fun clearList() {
+        items.clear()
+    }
 }

@@ -122,4 +122,7 @@ object ParamObject {
     const val PRODUCT_SEARCH = "product_search"
     const val PRODUCT_AUTO_BROWSE = "product_auto_browse"
     const val PRODUCT_BROWSE = "product_browse"
+    const val AD_TYPE_PRODUCT_ADS = "1"
+    const val AD_TYPE_SHOP_ADS = "3"
+    const val KEY_AD_TYPE = "ad_type"
 }
