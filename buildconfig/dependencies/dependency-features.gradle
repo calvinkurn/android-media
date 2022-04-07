@@ -249,8 +249,8 @@ ext {
             inboxCommon                     : ":features:communication:inbox_common",
             notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
+            attachvoucher                   : ":features:communication:attachvoucher",
 
-            attachvoucher                   : ":features:user:attachvoucher",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             fcm_common                      : ":features:user:fcm_common",

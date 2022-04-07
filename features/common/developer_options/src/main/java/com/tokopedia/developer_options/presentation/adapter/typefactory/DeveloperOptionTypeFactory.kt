@@ -49,4 +49,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: SellerAppReviewDebuggingUiModel): Int
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
+    fun type(uiModel: TypographySwitchUiModel): Int
 }

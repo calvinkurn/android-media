@@ -114,6 +114,7 @@ object ProductDetailConstant {
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
+    const val ARG_CHANNEL = "ARG_CHANNEL"
 
     //Animation
     const val CART_MAX_COUNT = 99

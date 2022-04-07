@@ -1,6 +1,7 @@
 package com.tokopedia.cart.data.model.response.promo
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
 
 /**
  * Created by fwidjaja on 2020-03-03.
@@ -13,4 +14,8 @@ data class PromoAdditionalInfo (
         var errorDetail: PromoErrorDetail = PromoErrorDetail(),
 
         @SerializedName("empty_cart_info")
-        var emptyCartInfo: PromoEmptyCartInfo = PromoEmptyCartInfo())
+        var emptyCartInfo: PromoEmptyCartInfo = PromoEmptyCartInfo(),
+
+        @SerializedName("usage_summaries")
+        var usageSummaries: List<UsageSummaries> = emptyList(),
+)

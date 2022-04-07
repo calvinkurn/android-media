@@ -40,14 +40,18 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
             showScreenRecorder: Boolean
     ): SettingDataView {
         val listSetting = mutableListOf(
-        CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
-                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.SHAKE,
-                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SHAKE, true)),
-        CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = context?.getString(R.string.menu_account_title_geolocation), body = context?.getString(R.string.menu_account_desc_geolocation),
-                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.LOCATION,
-                isChecked = permissionChecker.hasLocationPermission()),
-        CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
-                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)))
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_SHAKE_ID, title = context?.getString(R.string.menu_account_title_shake), body = context?.getString(R.string.menu_account_desc_shake),
+                    type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.SHAKE,
+                    isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SHAKE, true)),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_GEOLOCATION_ID, title = context?.getString(R.string.menu_account_title_geolocation), body = context?.getString(R.string.menu_account_desc_geolocation),
+                    type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.LOCATION,
+                    isChecked = permissionChecker.hasLocationPermission()),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
+                    isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)),
+            CommonDataView(id = AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY, title = context?.getString(R.string.menu_account_title_play_widget_autoplay), body = context?.getString(R.string.menu_account_desc_play_widget_autoplay),
+                type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.VIDEO,
+                isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, true)),
+        )
 
         if(showDarkModeToggle) {
             listSetting.add(CommonDataView(id = AccountConstants.SettingCode.SETTING_DARK_MODE,

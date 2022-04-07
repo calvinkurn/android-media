@@ -20,19 +20,19 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.R
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.SellerFeatureUiModel
+import com.tokopedia.seller.menu.presentation.uimodel.SellerFeatureUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.SellerMenuItemUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingError
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState.SettingLoading
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
-import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoErrorViewHolder
-import com.tokopedia.seller.menu.common.view.viewholder.ShopInfoViewHolder
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoErrorViewHolder
+import com.tokopedia.seller.menu.presentation.adapter.viewholder.ShopInfoViewHolder
 import com.tokopedia.seller.menu.databinding.FragmentSellerMenuBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
+import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.AdminPermissionMapper
 import com.tokopedia.seller.menu.presentation.util.SellerMenuList
 import com.tokopedia.seller.menu.presentation.viewmodel.SellerMenuViewModel
@@ -71,7 +71,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private var shopAge = 0L
 
     private val adapter by lazy {
-        SellerMenuAdapter(OtherMenuAdapterTypeFactory(
+        SellerMenuAdapter(SellerMenuAdapterTypeFactory(
                 this,
                 this,
                 this,

@@ -47,6 +47,9 @@ data class SearchProductModel(
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
+    val backendFilters: String
+        get() = searchProduct.backendFilters
+
     fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
         this.topAdsImageViewModelList.clear()
         this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
@@ -62,7 +65,11 @@ data class SearchProductModel(
             @SerializedName("data")
             @Expose
             val data: SearchProductData = SearchProductData()
-    )
+    ) {
+
+        val backendFilters: String
+            get() = data.backendFilters
+    }
 
     data class SearchProductHeader(
             @SerializedName("totalData")
@@ -106,6 +113,10 @@ data class SearchProductModel(
             @SerializedName("autocompleteApplink")
             @Expose
             val autocompleteApplink: String = "",
+
+            @SerializedName("backendFilters")
+            @Expose
+            val backendFilters: String = "",
 
             @SerializedName("redirection")
             @Expose

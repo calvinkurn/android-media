@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopInfoLocation
 import com.tokopedia.sellerhome.utils.TestHelper

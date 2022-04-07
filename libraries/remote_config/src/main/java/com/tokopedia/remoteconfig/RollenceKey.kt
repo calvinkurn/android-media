@@ -13,6 +13,9 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
+    // shop mvc discovery
+    const val AB_TEST_SHOP_MVC_DISCO_PAGE_PHASE_2 = "shop_page_mvc"
+
     const val BALANCE_EXP = "Balance Widget"
     const val BALANCE_VARIANT_OLD = "Existing Balance Widget"
     const val BALANCE_VARIANT_NEW = "New Balance Widget"
@@ -61,6 +64,9 @@ object RollenceKey {
 
     // Fulfillment Rebranding
     const val FULFILLMENT_REBRANDING = "fulfill_rebranding"
+
+    // Logistic
+    const val LCA_REFRESH = "android_lca_refresh"
 
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"

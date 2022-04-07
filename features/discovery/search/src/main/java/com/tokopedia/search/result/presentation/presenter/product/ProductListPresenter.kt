@@ -1751,7 +1751,7 @@ class ProductListPresenter @Inject constructor(
                 StringUtils.join(categoryNameMapping, ","),
                 createGeneralSearchTrackingRelatedKeyword(productDataView),
                 dimension90,
-                view.filterParamString,
+                productDataView.backendFilters,
                 productDataView.pageComponentId
             )
         )
