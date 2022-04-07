@@ -1056,7 +1056,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showMoreActionBottomSheet() {
-        getBottomSheetInstance().show(childFragmentManager)
+        if (!bottomSheet.isVisible) getBottomSheetInstance().show(childFragmentManager)
     }
 
     private fun doClickChatBox() {
