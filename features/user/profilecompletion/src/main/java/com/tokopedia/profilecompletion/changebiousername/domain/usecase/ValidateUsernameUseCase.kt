@@ -8,13 +8,13 @@ import com.tokopedia.profilecompletion.changebiousername.data.UsernameValidation
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class ValidateUsernameUseCase @Inject constructor(private val repository: GraphqlRepository)
-    : CoroutineUseCase<String, UsernameValidationResponse>(Dispatchers.IO) {
+class ValidateUsernameUseCase @Inject constructor(private val repository: GraphqlRepository) :
+    CoroutineUseCase<String, UsernameValidationResponse>(Dispatchers.IO) {
 
     private val usernameParam = "username"
 
     override fun graphqlQuery(): String {
-        return """query feedXProfileValidateUsername(${'$'}username: String!) {
+	return """query feedXProfileValidateUsername(${'$'}username: String!) {
                     feedXProfileValidateUsername(username: ${'$'}username) {
                         isValid
                         notValidInformation
@@ -23,6 +23,6 @@ class ValidateUsernameUseCase @Inject constructor(private val repository: Graphq
     }
 
     override suspend fun execute(params: String): UsernameValidationResponse {
-        return repository.request(graphqlQuery(), mapOf(usernameParam to params))
+	return repository.request(graphqlQuery(), mapOf(usernameParam to params))
     }
 }

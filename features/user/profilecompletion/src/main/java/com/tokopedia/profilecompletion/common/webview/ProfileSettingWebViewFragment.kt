@@ -10,42 +10,42 @@ import com.tokopedia.webview.BaseWebViewFragment
 import javax.inject.Inject
 
 
-class ProfileSettingWebViewFragment: BaseWebViewFragment() {
+class ProfileSettingWebViewFragment : BaseWebViewFragment() {
 
     @Inject
     lateinit var tracker: ProfileInfoTracker
 
     override fun onFragmentBackPressed(): Boolean {
-        tracker.trackClickOnBtnBackChangeEmail()
-        return super.onFragmentBackPressed()
+	tracker.trackClickOnBtnBackChangeEmail()
+	return super.onFragmentBackPressed()
     }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
-        if (isUrlAppLinkSuccessChangeEmail(url)) {
-            onChangeEmailSuccess()
-            return true
-        }
-        return super.shouldOverrideUrlLoading(webview, url)
+	if (isUrlAppLinkSuccessChangeEmail(url)) {
+	    onChangeEmailSuccess()
+	    return true
+	}
+	return super.shouldOverrideUrlLoading(webview, url)
     }
 
     private fun onChangeEmailSuccess() {
-        activity?.apply {
-            this.setResult(Activity.RESULT_OK)
-            this.finish()
-        }
+	activity?.apply {
+	    this.setResult(Activity.RESULT_OK)
+	    this.finish()
+	}
     }
 
     private fun isUrlAppLinkSuccessChangeEmail(url: String): Boolean {
-        return url.isNotEmpty() && url == APPLINK
+	return url.isNotEmpty() && url == APPLINK
     }
 
     companion object {
-        private const val APPLINK = "tokopedia-android-internal://success-change-email"
+	private const val APPLINK = "tokopedia-android-internal://success-change-email"
 
-        fun instance(bundle: Bundle): Fragment {
-            val fragment = ProfileSettingWebViewFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+	fun instance(bundle: Bundle): Fragment {
+	    val fragment = ProfileSettingWebViewFragment()
+	    fragment.arguments = bundle
+	    return fragment
+	}
     }
 }

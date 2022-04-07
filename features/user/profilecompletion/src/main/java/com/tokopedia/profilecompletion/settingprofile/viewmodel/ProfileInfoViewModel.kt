@@ -45,67 +45,69 @@ class ProfileInfoViewModel @Inject constructor(
     val saveImageProfileResponse: LiveData<Result<String>> = _saveImageProfileResponse
 
     fun getUserProfileInfo(context: Context) {
-        GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)?.let { query ->
-            userProfileInfoUseCase.run {
-                setGraphqlQuery(query)
-                execute(
-                        {
-                            it.profileCompletionData.apply {
-                                this.profilePicture = userSession.profilePicture
-                                userProfileInfo.value = Success(this)
-                            }
-                        }, {
-                    userProfileInfo.value = Fail(it)
-                }
-                )
-            }
-        }
+	GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
+	    ?.let { query ->
+		userProfileInfoUseCase.run {
+		    setGraphqlQuery(query)
+		    execute(
+			{
+			    it.profileCompletionData.apply {
+				this.profilePicture = userSession.profilePicture
+				userProfileInfo.value = Success(this)
+			    }
+			}, {
+			    userProfileInfo.value = Fail(it)
+			}
+		    )
+		}
+	    }
     }
 
     /* Use media uploader */
     fun uploadPicture(image: File) {
-        viewModelScope.launch(dispatcher.io) {
-            val param = uploader.createParams(
-                filePath = image,
-                sourceId = SOURCE_ID
-            )
-            val result = uploader(param)
-            withContext(dispatcher.main) {
-                when (result) {
-                    is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> _saveImageProfileResponse.value =
-                        Fail(Throwable(result.message))
-                }
-            }
-        }
+	viewModelScope.launch(dispatcher.io) {
+	    val param = uploader.createParams(
+		filePath = image,
+		sourceId = SOURCE_ID
+	    )
+	    val result = uploader(param)
+	    withContext(dispatcher.main) {
+		when (result) {
+		    is UploadResult.Success -> saveProfilePicture(result.uploadId)
+		    is UploadResult.Error -> _saveImageProfileResponse.value =
+			Fail(Throwable(result.message))
+		}
+	    }
+	}
     }
 
     /* To send uploadID from media uploader to accounts BE */
     fun saveProfilePicture(uploadId: String) {
-        viewModelScope.launch(dispatcher.io) {
-            try {
-                val res = saveProfilePictureUseCase(
-                    mapOf(PARAM_UPLOAD_ID to uploadId)
-                )
-                withContext(dispatcher.main) {
-                    if (res.data.errorMessage.isEmpty() &&
-                        res.data.innerData.isSuccess == 1 &&
-                        res.data.innerData.imageUrl.isNotEmpty()
-                    ) {
-                        _saveImageProfileResponse.value = Success(res.data.innerData.imageUrl)
-                    } else {
-                        _saveImageProfileResponse.value = Fail(Throwable(res.data.errorMessage.first()))
-                    }
-                }
-            } catch (e: Exception) {
-                withContext(dispatcher.main) {
-                    _saveImageProfileResponse.value = Fail(e)
-                }
-            }
-        }
+	viewModelScope.launch(dispatcher.io) {
+	    try {
+		val res = saveProfilePictureUseCase(
+		    mapOf(PARAM_UPLOAD_ID to uploadId)
+		)
+		withContext(dispatcher.main) {
+		    if (res.data.errorMessage.isEmpty() &&
+			res.data.innerData.isSuccess == 1 &&
+			res.data.innerData.imageUrl.isNotEmpty()
+		    ) {
+			_saveImageProfileResponse.value = Success(res.data.innerData.imageUrl)
+		    } else {
+			_saveImageProfileResponse.value =
+			    Fail(Throwable(res.data.errorMessage.first()))
+		    }
+		}
+	    } catch (e: Exception) {
+		withContext(dispatcher.main) {
+		    _saveImageProfileResponse.value = Fail(e)
+		}
+	    }
+	}
     }
 
     companion object {
-        private val SOURCE_ID = "tPxBYm"
+	private val SOURCE_ID = "tPxBYm"
     }
 }

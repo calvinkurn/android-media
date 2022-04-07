@@ -30,7 +30,7 @@ class ProfileViewModel @Inject constructor(
     private val saveProfilePictureUseCase: SaveProfilePictureUseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val mutableProfileInfoUiData = MutableLiveData<ProfileInfoUiModel>()
     val profileInfoUiData: LiveData<ProfileInfoUiModel>

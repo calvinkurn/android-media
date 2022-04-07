@@ -10,7 +10,7 @@ import javax.inject.Inject
 class ProfileRoleUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
-): CoroutineUseCase<Unit, ProfileRoleResponse>(dispatcher) {
+) : CoroutineUseCase<Unit, ProfileRoleResponse>(dispatcher) {
 
     override suspend fun execute(params: Unit): ProfileRoleResponse {
 	return repository.request(graphqlQuery(), params)

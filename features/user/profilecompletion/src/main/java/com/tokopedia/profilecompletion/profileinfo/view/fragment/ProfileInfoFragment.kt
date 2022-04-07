@@ -72,7 +72,9 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.ProfileInfoItemInterface, ProfileInfoTitleViewHolder.ProfileInfoTitleInterface {
+class ProfileInfoFragment : BaseDaggerFragment(),
+    ProfileInfoItemViewHolder.ProfileInfoItemInterface,
+    ProfileInfoTitleViewHolder.ProfileInfoTitleInterface {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -89,11 +91,12 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	ProfileInfoAdapter(ProfileInfoListTypeFactory(this, this))
     }
 
-    private val editPhotoListener = object: View.OnClickListener {
+    private val editPhotoListener = object : View.OnClickListener {
 	override fun onClick(v: View?) {
 	    val ctx = v?.context ?: return
-		tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_CLICK)
-	    val builder = ImagePickerBuilder.getSquareImageBuilder(ctx).apply { maxFileSizeInKB = MAX_FILE_SIZE }
+	    tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_CLICK)
+	    val builder = ImagePickerBuilder.getSquareImageBuilder(ctx)
+		.apply { maxFileSizeInKB = MAX_FILE_SIZE }
 	    val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.IMAGE_PICKER)
 	    intent.putImagePickerBuilder(builder)
 	    startActivityForResult(intent, REQUEST_CODE_EDIT_PROFILE_PHOTO)
@@ -110,13 +113,17 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 
     override fun getScreenName(): String = "New Profile Info"
 
-	override fun onFragmentBackPressed(): Boolean {
-		tracker.trackOnClickBackBtn()
-		return super.onFragmentBackPressed()
-	}
+    override fun onFragmentBackPressed(): Boolean {
+	tracker.trackOnClickBackBtn()
+	return super.onFragmentBackPressed()
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_profile_info, container, false)
+    override fun onCreateView(
+	inflater: LayoutInflater,
+	container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? =
+	inflater.inflate(R.layout.fragment_profile_info, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 	super.onViewCreated(view, savedInstanceState)
@@ -130,7 +137,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	binding?.fragmentProfileInfoRv?.layoutManager = layoutManager
 	binding?.fragmentProfileInfoRv?.adapter = adapter
 
-        binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
+	binding?.profileInfoImageSubtitle?.setOnClickListener(editPhotoListener)
 	binding?.profileInfoImageUnify?.setImageUrl(userSession.profilePicture)
     }
 
@@ -138,42 +145,42 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	viewModel.profileInfoUiData.observe(viewLifecycleOwner) { setProfileData(it) }
 
 	viewModel.errorMessage.observe(viewLifecycleOwner) {
-		when (it){
-			is ProfileInfoError.ErrorSavePhoto -> {
-				tracker.trackOnChangeProfilePictureClick("${ProfileInfoTracker.LABEL_FAILED} - ${it.errorMsg}")
-				showToasterError(it.errorMsg ?: "")
-			}
-			is ProfileInfoError.GeneralError -> {
-				when (it.error) {
-					is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
-					view?.let {
-						showGlobalError(GlobalError.NO_CONNECTION)
-					}
-				}
-					is RuntimeException -> {
-						when (it.error.localizedMessage.toIntOrNull()) {
-							ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
-								GlobalError.NO_CONNECTION
-							)
-							ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
-							ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
-							else -> {
-								showGlobalError(GlobalError.SERVER_ERROR)
-							}
-						}
-					}
-					else -> {
-					showToasterError(it.error.message ?: "")
-				}
-				}
-			}
+	    when (it) {
+		is ProfileInfoError.ErrorSavePhoto -> {
+		    tracker.trackOnChangeProfilePictureClick("${ProfileInfoTracker.LABEL_FAILED} - ${it.errorMsg}")
+		    showToasterError(it.errorMsg ?: "")
 		}
+		is ProfileInfoError.GeneralError -> {
+		    when (it.error) {
+			is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+			    view?.let {
+				showGlobalError(GlobalError.NO_CONNECTION)
+			    }
+			}
+			is RuntimeException -> {
+			    when (it.error.localizedMessage.toIntOrNull()) {
+				ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+				    GlobalError.NO_CONNECTION
+				)
+				ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+				ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+				else -> {
+				    showGlobalError(GlobalError.SERVER_ERROR)
+				}
+			    }
+			}
+			else -> {
+			    showToasterError(it.error.message ?: "")
+			}
+		    }
+		}
+	    }
 	}
 
 	viewModel.saveImageProfileResponse.observe(viewLifecycleOwner) {
 	    binding?.profileInfoImageUnify?.setImageUrl(it)
-		tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_SUCCESS)
-		showNormalToaster(getString(success_change_profile_picture))
+	    tracker.trackOnChangeProfilePictureClick(ProfileInfoTracker.LABEL_SUCCESS)
+	    showNormalToaster(getString(success_change_profile_picture))
 	}
     }
 
@@ -208,10 +215,13 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 		    SettingProfileFragment.REQUEST_CODE_CHANGE_EMAIL -> {
 			showNormalToaster(getString(change_email_change_success_v2))
 		    }
-			SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO -> {
-				showNormalToaster(data?.getStringExtra(
-					ChangeBioUsernameFragment.RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO) ?: "")
-			}
+		    SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO -> {
+			showNormalToaster(
+			    data?.getStringExtra(
+				ChangeBioUsernameFragment.RESULT_KEY_MESSAGE_SUCCESS_USERNAME_BIO
+			    ) ?: ""
+			)
+		    }
 		}
 		viewModel.getProfileInfo()
 	    }
@@ -225,200 +235,238 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	}
     }
 
-	private fun getProfileInfo() {
-		viewModel.getProfileInfo()
-		binding?.shimmerProfileInfo?.root?.visible()
-		binding?.globalError?.gone()
-	}
+    private fun getProfileInfo() {
+	viewModel.getProfileInfo()
+	binding?.shimmerProfileInfo?.root?.visible()
+	binding?.globalError?.gone()
+    }
 
-	private fun showGlobalError(type: Int) {
-		binding?.shimmerProfileInfo?.root?.gone()
-		binding?.containerProfileInfo?.gone()
-		binding?.globalError?.setType(type)
-		binding?.globalError?.setActionClickListener {
-			getProfileInfo()
-		}
-		binding?.globalError?.show()
+    private fun showGlobalError(type: Int) {
+	binding?.shimmerProfileInfo?.root?.gone()
+	binding?.containerProfileInfo?.gone()
+	binding?.globalError?.setType(type)
+	binding?.globalError?.setActionClickListener {
+	    getProfileInfo()
 	}
+	binding?.globalError?.show()
+    }
 
     private fun setProfileData(data: ProfileInfoUiModel) {
-		binding?.shimmerProfileInfo?.root?.visible()
-		if (binding?.containerProfileInfo?.visibility == View.GONE) binding?.containerProfileInfo?.visible()
+	binding?.shimmerProfileInfo?.root?.visible()
+	if (binding?.containerProfileInfo?.visibility == View.GONE) binding?.containerProfileInfo?.visible()
 
-        val listItem = listOf(
-	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_INFO_SECTION, getString(R.string.profile_info_title)),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.NAME, title = getString(R.string.title_item_name), itemValue = data.profileInfoData.fullName) {
-	    	onNameClicked(data)
-		},
-	    ProfileInfoItemUiModel(ProfileInfoConstants.USERNAME,
-			title = getString(R.string.title_username),
-			itemValue = data.profileFeedData.profile.username,
-			placeholder = getString(R.string.placeholder_username),
-			isEnable = data.profileFeedData.profile.canChangeUsername,
-			rightIcon = entryPointIconUsername(data)
-		) {
-			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME)
-		},
-	    ProfileInfoItemUiModel(ProfileInfoConstants.BIO,
-			title = getString(R.string.title_bio),
-			itemValue = data.profileFeedData.profile.biography,
-			placeholder = getString(R.string.placeholder_bio)
-		) {
-			goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO)
-		},
+	val listItem = listOf(
+	    ProfileInfoTitleUiModel(
+		ProfileInfoConstants.PROFILE_INFO_SECTION,
+		getString(R.string.profile_info_title)
+	    ),
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.NAME,
+		title = getString(R.string.title_item_name),
+		itemValue = data.profileInfoData.fullName
+	    ) {
+		onNameClicked(data)
+	    },
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.USERNAME,
+		title = getString(R.string.title_username),
+		itemValue = data.profileFeedData.profile.username,
+		placeholder = getString(R.string.placeholder_username),
+		isEnable = data.profileFeedData.profile.canChangeUsername,
+		rightIcon = entryPointIconUsername(data)
+	    ) {
+		goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME)
+	    },
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.BIO,
+		title = getString(R.string.title_bio),
+		itemValue = data.profileFeedData.profile.biography,
+		placeholder = getString(R.string.placeholder_bio)
+	    ) {
+		goToEditProfileInfo(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO)
+	    },
 	    DividerProfileUiModel("line"),
-	    ProfileInfoTitleUiModel(ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION, getString(
-	    			title_personal_info
-	    		)),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.USER_ID, title = getString(R.string.title_user_id), itemValue = userSession.userId, rightIcon = IconUnify.COPY),
-	    ProfileInfoItemUiModel(ProfileInfoConstants.EMAIL, title = getString(R.string.title_email), itemValue = getEmailValue(data),
-			showVerifiedTag = !data.profileInfoData.isEmailDone, placeholder = getString(R.string.placeholder_email)
-		) {
-			onEmailClicked(data)
-	    } ,
-	    ProfileInfoItemUiModel(ProfileInfoConstants.PHONE, title = getString(title_phone), itemValue = data.profileInfoData.msisdn,
-			showVerifiedTag = !data.profileInfoData.isMsisdnVerified, placeholder = getString(R.string.placeholder_phone)
-		) {
-			onPhoneClicked(data)
+	    ProfileInfoTitleUiModel(
+		ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION, getString(
+		    title_personal_info
+		)
+	    ),
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.USER_ID,
+		title = getString(R.string.title_user_id),
+		itemValue = userSession.userId,
+		rightIcon = IconUnify.COPY
+	    ),
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.EMAIL,
+		title = getString(R.string.title_email),
+		itemValue = getEmailValue(data),
+		showVerifiedTag = !data.profileInfoData.isEmailDone,
+		placeholder = getString(R.string.placeholder_email)
+	    ) {
+		onEmailClicked(data)
 	    },
-	    ProfileInfoItemUiModel(ProfileInfoConstants.GENDER, title = getString(R.string.title_gender),
-			itemValue = getGenderText(data.profileInfoData.gender),
-			isEnable = data.profileRoleData.isAllowedChangeGender,
-			rightIcon = entryPointIconGender(data),
-			placeholder = getString(R.string.placeholder_gender)
-		){
-			onGenderClicked(data)
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.PHONE,
+		title = getString(title_phone),
+		itemValue = data.profileInfoData.msisdn,
+		showVerifiedTag = !data.profileInfoData.isMsisdnVerified,
+		placeholder = getString(R.string.placeholder_phone)
+	    ) {
+		onPhoneClicked(data)
 	    },
-	    ProfileInfoItemUiModel(ProfileInfoConstants.BIRTH_DATE, title = "Tanggal Lahir",
-			itemValue = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD, DateFormatUtils.FORMAT_DD_MMMM_YYYY, data.profileInfoData.birthDay),
-			placeholder = getString(R.string.placeholder_dob)
-		) {
-			onDobClicked(data)
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.GENDER, title = getString(R.string.title_gender),
+		itemValue = getGenderText(data.profileInfoData.gender),
+		isEnable = data.profileRoleData.isAllowedChangeGender,
+		rightIcon = entryPointIconGender(data),
+		placeholder = getString(R.string.placeholder_gender)
+	    ) {
+		onGenderClicked(data)
+	    },
+	    ProfileInfoItemUiModel(
+		ProfileInfoConstants.BIRTH_DATE, title = "Tanggal Lahir",
+		itemValue = DateFormatUtils.formatDate(
+		    DateFormatUtils.FORMAT_YYYY_MM_DD,
+		    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+		    data.profileInfoData.birthDay
+		),
+		placeholder = getString(R.string.placeholder_dob)
+	    ) {
+		onDobClicked(data)
 	    },
 	)
 	adapter.setProfileInfoItem(listItem)
 	renderWarningTickerName(data.profileInfoData)
     }
 
-	private fun onNameClicked(data: ProfileInfoUiModel) {
-		if (data.profileRoleData.isAllowedChangeName) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_NAME)
-			val intent = RouteManager.getIntent(
-				context,
-				ApplinkConstInternalGlobal.CHANGE_NAME,
-				data.profileInfoData.fullName,
-				data.profileRoleData.chancesChangeName
-			)
-			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
-		} else {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
-			openBottomSheetWarning(ProfileInfoConstants.NAME, data.profileRoleData.changeNameMessageInfoTitle, data.profileRoleData.changeNameMessageInfo)
-		}
+    private fun onNameClicked(data: ProfileInfoUiModel) {
+	if (data.profileRoleData.isAllowedChangeName) {
+	    tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_NAME)
+	    val intent = RouteManager.getIntent(
+		context,
+		ApplinkConstInternalGlobal.CHANGE_NAME,
+		data.profileInfoData.fullName,
+		data.profileRoleData.chancesChangeName
+	    )
+	    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_NAME)
+	} else {
+	    tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
+	    openBottomSheetWarning(
+		ProfileInfoConstants.NAME,
+		data.profileRoleData.changeNameMessageInfoTitle,
+		data.profileRoleData.changeNameMessageInfo
+	    )
 	}
+    }
 
-	private fun onEmailClicked(data: ProfileInfoUiModel) {
-		if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
-			val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
-			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
-		} else {
-			if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
-				goToChangeEmail()
-			} else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
-				showVerifyEmailDialog()
-			} else {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
-				showChangeEmailDialog()
-			}
-		}
+    private fun onEmailClicked(data: ProfileInfoUiModel) {
+	if (data.profileInfoData.email.isEmpty() || !data.profileInfoData.isEmailDone) {
+	    tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
+	    val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+	    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_EMAIL)
+	} else {
+	    if (data.profileInfoData.msisdn.isNotEmpty() && data.profileInfoData.isMsisdnVerified) {
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_EMAIL)
+		goToChangeEmail()
+	    } else if (data.profileInfoData.msisdn.isNotEmpty() && !data.profileInfoData.isMsisdnVerified) {
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
+		showVerifyEmailDialog()
+	    } else {
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_POPUP)
+		showChangeEmailDialog()
+	    }
 	}
+    }
 
-	private fun onPhoneClicked(data: ProfileInfoUiModel) {
-		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE)
-		if (data.profileInfoData.msisdn.isEmpty()) {
-			goToAddPhone()
-		} else {
-			if (data.profileInfoData.isMsisdnVerified) {
-				goToChangePhone(data.profileInfoData.msisdn, data.profileInfoData.email)
-			} else {
-				goToAddPhoneBy(PhoneNumberUtil.replace62with0(data.profileInfoData.msisdn))
-			}
-		}
+    private fun onPhoneClicked(data: ProfileInfoUiModel) {
+	tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_PHONE)
+	if (data.profileInfoData.msisdn.isEmpty()) {
+	    goToAddPhone()
+	} else {
+	    if (data.profileInfoData.isMsisdnVerified) {
+		goToChangePhone(data.profileInfoData.msisdn, data.profileInfoData.email)
+	    } else {
+		goToAddPhoneBy(PhoneNumberUtil.replace62with0(data.profileInfoData.msisdn))
+	    }
 	}
+    }
 
-	private fun onGenderClicked(data: ProfileInfoUiModel) {
-		if (data.profileRoleData.isAllowedChangeGender) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER)
-			val intent =
-				RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
-			startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
-		}
+    private fun onGenderClicked(data: ProfileInfoUiModel) {
+	if (data.profileRoleData.isAllowedChangeGender) {
+	    tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_GENDER)
+	    val intent =
+		RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_GENDER)
+	    startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_GENDER)
 	}
+    }
 
-	private fun onDobClicked(data: ProfileInfoUiModel) {
-		if(data.profileInfoData.birthDay.isEmpty()) {
-			tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
-			goToAddDob()
-		} else {
-			if (data.profileRoleData.isAllowedChangeDob) {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
-				goToChangeDob(data.profileInfoData.birthDay)
-			} else {
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
-				openBottomSheetWarning(ProfileInfoConstants.BIRTH_DATE, data.profileRoleData.changeDobMessageInfoTitle, data.profileRoleData.changeDobMessageInfo)
-			}
-		}
+    private fun onDobClicked(data: ProfileInfoUiModel) {
+	if (data.profileInfoData.birthDay.isEmpty()) {
+	    tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
+	    goToAddDob()
+	} else {
+	    if (data.profileRoleData.isAllowedChangeDob) {
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRY_POINT_DOB)
+		goToChangeDob(data.profileInfoData.birthDay)
+	    } else {
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_BOTTOMSHEET)
+		openBottomSheetWarning(
+		    ProfileInfoConstants.BIRTH_DATE,
+		    data.profileRoleData.changeDobMessageInfoTitle,
+		    data.profileRoleData.changeDobMessageInfo
+		)
+	    }
 	}
+    }
 
-	private fun openBottomSheetWarning(entryPoint: String, title: String, msg: String) {
-		when (entryPoint) {
-			ProfileInfoConstants.BIRTH_DATE -> {
-				tracker.trackOnCloseBottomSheetChangeBirthday()
-			}
-			ProfileInfoConstants.NAME -> {
-				tracker.trackOnCloseBottomSheetChangeName()
-			}
-		}
-		val bottomSheetUnify = BottomSheetUnify()
-		bottomSheetUnify.setTitle(title)
-		bottomSheetUnify.setCloseClickListener {
-			bottomSheetUnify.dismiss()
-			tracker.trackOnCloseBottomSheetChangeName()
-		}
-		val view = View.inflate(context, R.layout.layout_bottomsheet_change_name, null).apply {
-			this.findViewById<Typography>(R.id.tv_body).apply {
-				this.text = msg
-			}
-			this.findViewById<UnifyButton>(R.id.btn_ok)?.setOnClickListener {
-				bottomSheetUnify.dismiss()
-			}
-		}
-		bottomSheetUnify.setChild(view)
-		activity?.supportFragmentManager?.let {
-			bottomSheetUnify.show(it, "")
-		}
+    private fun openBottomSheetWarning(entryPoint: String, title: String, msg: String) {
+	when (entryPoint) {
+	    ProfileInfoConstants.BIRTH_DATE -> {
+		tracker.trackOnCloseBottomSheetChangeBirthday()
+	    }
+	    ProfileInfoConstants.NAME -> {
+		tracker.trackOnCloseBottomSheetChangeName()
+	    }
 	}
-
-	private fun entryPointIconGender(data: ProfileInfoUiModel): Int {
-		if (data.profileRoleData.isAllowedChangeGender) return IconUnify.CHEVRON_RIGHT
-		else return ENTRY_POINT_DISABLED
+	val bottomSheetUnify = BottomSheetUnify()
+	bottomSheetUnify.setTitle(title)
+	bottomSheetUnify.setCloseClickListener {
+	    bottomSheetUnify.dismiss()
+	    tracker.trackOnCloseBottomSheetChangeName()
 	}
-
-	private fun entryPointIconUsername(data: ProfileInfoUiModel): Int {
-		return if (data.profileFeedData.profile.canChangeUsername) IconUnify.CHEVRON_RIGHT
-		else ENTRY_POINT_DISABLED
+	val view = View.inflate(context, R.layout.layout_bottomsheet_change_name, null).apply {
+	    this.findViewById<Typography>(R.id.tv_body).apply {
+		this.text = msg
+	    }
+	    this.findViewById<UnifyButton>(R.id.btn_ok)?.setOnClickListener {
+		bottomSheetUnify.dismiss()
+	    }
 	}
-
-	private fun getEmailValue(data: ProfileInfoUiModel): String {
-		return if (data.profileInfoData.isEmailDone) data.profileInfoData.email
-		else ""
-
+	bottomSheetUnify.setChild(view)
+	activity?.supportFragmentManager?.let {
+	    bottomSheetUnify.show(it, "")
 	}
+    }
+
+    private fun entryPointIconGender(data: ProfileInfoUiModel): Int {
+	if (data.profileRoleData.isAllowedChangeGender) return IconUnify.CHEVRON_RIGHT
+	else return ENTRY_POINT_DISABLED
+    }
+
+    private fun entryPointIconUsername(data: ProfileInfoUiModel): Int {
+	return if (data.profileFeedData.profile.canChangeUsername) IconUnify.CHEVRON_RIGHT
+	else ENTRY_POINT_DISABLED
+    }
+
+    private fun getEmailValue(data: ProfileInfoUiModel): String {
+	return if (data.profileInfoData.isEmailDone) data.profileInfoData.email
+	else ""
+
+    }
 
     private fun getGenderText(gender: Int): String {
-        return if(gender == GENDER_MALE) "Pria" else if (gender == GENDER_FEMALE) "Wanita" else ""
+	return if (gender == GENDER_MALE) "Pria" else if (gender == GENDER_FEMALE) "Wanita" else ""
     }
 
     private fun showToasterError(errorMsg: String) {
@@ -430,7 +478,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     }
 
     private fun onErrorGetProfilePhoto(errorException: Exception) {
-        showToasterError(ErrorHandlerSession.getErrorMessage(errorException, context, false))
+	showToasterError(ErrorHandlerSession.getErrorMessage(errorException, context, false))
     }
 
     private fun renderWarningTickerName(profileInfoData: ProfileInfoData) {
@@ -451,7 +499,9 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 		} else {
 		    viewModel.uploadPicture(image)
 		}
-	    } else { onErrorGetProfilePhoto(MessageErrorException(getString(failed_to_get_picture))) }
+	    } else {
+		onErrorGetProfilePhoto(MessageErrorException(getString(failed_to_get_picture)))
+	    }
 	} else {
 	    onErrorGetProfilePhoto(MessageErrorException(getString(failed_to_get_picture)))
 	}
@@ -466,77 +516,79 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     }
 
     override fun onSectionIconClicked(id: String?) {
-	when(id) {
+	when (id) {
 	    ProfileInfoConstants.PROFILE_INFO_SECTION -> {
-			tracker.trackOnInfoProfileClick(ProfileInfoTracker.LABEL_PROFILE_INFO)
-	 		openBottomSheetProfileInfo()
+		tracker.trackOnInfoProfileClick(ProfileInfoTracker.LABEL_PROFILE_INFO)
+		openBottomSheetProfileInfo()
 	    }
 	    ProfileInfoConstants.PROFILE_PERSONAL_INFO_SECTION -> {
-			tracker.trackOnInfoProfileClick(ProfileInfoTracker.LABEL_PERSONAL_INFO)
-	  		openBottomSheetPersonalInfo()
+		tracker.trackOnInfoProfileClick(ProfileInfoTracker.LABEL_PERSONAL_INFO)
+		openBottomSheetPersonalInfo()
 	    }
 	}
     }
 
     override fun onRightIconClicked(item: ProfileInfoItemUiModel?) {
-    	when (item?.id) {
-    		ProfileInfoConstants.USER_ID -> {
-    			copyUserId()
-    		}
-    	}
+	when (item?.id) {
+	    ProfileInfoConstants.USER_ID -> {
+		copyUserId()
+	    }
+	}
     }
 
-	private fun openBottomSheetProfileInfo() {
-		val bottomSheetUnify = BottomSheetUnify()
-		val data = viewModel.profileInfoUiData.value?.profileFeedData?.profile
-		bottomSheetUnify.isDragable = true
-		bottomSheetUnify.showKnob = true
-		bottomSheetUnify.isSkipCollapseState = true
-		bottomSheetUnify.isHideable = true
-		bottomSheetUnify.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
-		bottomSheetUnify.showCloseIcon = false
-		val view = View.inflate(context, R.layout.layout_bottomsheet_profile_info, null).apply {
-			this.findViewById<ImageUnify>(R.id.iv_profile_info).setImageUrl(data?.profilePreviewImageUrl ?: "")
-			this.findViewById<UnifyButton>(R.id.btn_profile_info)?.setOnClickListener {
-				tracker.trackClickOnLihatHalaman()
-				val shareLink = data?.shareLink
-				RouteManager.route(activity, shareLink?.applink ?: "")
-			}
-		}
-		bottomSheetUnify.setChild(view)
-		activity?.supportFragmentManager?.let {
-			bottomSheetUnify.show(it, "")
-		}
+    private fun openBottomSheetProfileInfo() {
+	val bottomSheetUnify = BottomSheetUnify()
+	val data = viewModel.profileInfoUiData.value?.profileFeedData?.profile
+	bottomSheetUnify.isDragable = true
+	bottomSheetUnify.showKnob = true
+	bottomSheetUnify.isSkipCollapseState = true
+	bottomSheetUnify.isHideable = true
+	bottomSheetUnify.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
+	bottomSheetUnify.showCloseIcon = false
+	val view = View.inflate(context, R.layout.layout_bottomsheet_profile_info, null).apply {
+	    this.findViewById<ImageUnify>(R.id.iv_profile_info)
+		.setImageUrl(data?.profilePreviewImageUrl ?: "")
+	    this.findViewById<UnifyButton>(R.id.btn_profile_info)?.setOnClickListener {
+		tracker.trackClickOnLihatHalaman()
+		val shareLink = data?.shareLink
+		RouteManager.route(activity, shareLink?.applink ?: "")
+	    }
 	}
-
-	private fun openBottomSheetPersonalInfo() {
-		val bottomSheet = BottomSheetUnify()
-		bottomSheet.showKnob = true
-		bottomSheet.isSkipCollapseState = true
-		bottomSheet.isHideable = true
-		bottomSheet.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
-		bottomSheet.showCloseIcon = false
-		val view = View.inflate(context, R.layout.layout_bottomsheet_personal_info, null).apply {
-
-		}
-		bottomSheet.clearContentPadding = true
-		bottomSheet.setChild(view)
-		activity?.supportFragmentManager?.let {
-			bottomSheet.show(it, "")
-		}
+	bottomSheetUnify.setChild(view)
+	activity?.supportFragmentManager?.let {
+	    bottomSheetUnify.show(it, "")
 	}
+    }
 
-	private fun goToEditProfileInfo(page: String) {
-		when (page) {
-			ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME ->
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_USERNAME)
-			ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO ->
-				tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_BIO)
-		}
-		val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.EDIT_PROFILE_INFO)
-		intent.putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, page)
-		startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO)
+    private fun openBottomSheetPersonalInfo() {
+	val bottomSheet = BottomSheetUnify()
+	bottomSheet.showKnob = true
+	bottomSheet.isSkipCollapseState = true
+	bottomSheet.isHideable = true
+	bottomSheet.bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
+	bottomSheet.showCloseIcon = false
+	val view = View.inflate(context, R.layout.layout_bottomsheet_personal_info, null).apply {
+
 	}
+	bottomSheet.clearContentPadding = true
+	bottomSheet.setChild(view)
+	activity?.supportFragmentManager?.let {
+	    bottomSheet.show(it, "")
+	}
+    }
+
+    private fun goToEditProfileInfo(page: String) {
+	when (page) {
+	    ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_USERNAME ->
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_USERNAME)
+	    ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PROFILE_BIO ->
+		tracker.trackOnEntryPointListClick(ProfileInfoTracker.LABEL_ENTRYPOINT_BIO)
+	}
+	val intent =
+	    RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.EDIT_PROFILE_INFO)
+	intent.putExtra(ApplinkConstInternalUserPlatform.PAGE_EDIT_INFO_PARAM, page)
+	startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_CHANGE_USERNAME_BIO)
+    }
 
     private fun goToChangeEmail() {
 	val url = Uri.parse(TokopediaUrl.getInstance().MOBILEWEB).buildUpon().apply {
@@ -591,7 +643,8 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
     }
 
     private fun goToAddPhoneBy(phone: String) {
-	val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
+	val intent =
+	    RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE_WITH, phone)
 	startActivityForResult(intent, SettingProfileFragment.REQUEST_CODE_ADD_PHONE)
     }
 
@@ -624,7 +677,7 @@ class ProfileInfoFragment: BaseDaggerFragment(), ProfileInfoItemViewHolder.Profi
 	private const val GENDER_FEMALE = 2
 
 	fun createInstance(): ProfileInfoFragment {
-            return ProfileInfoFragment()
-        }
+	    return ProfileInfoFragment()
+	}
     }
 }

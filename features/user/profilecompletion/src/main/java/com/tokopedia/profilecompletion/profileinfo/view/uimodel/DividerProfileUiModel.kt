@@ -5,7 +5,7 @@ import com.tokopedia.profilecompletion.profileinfo.view.adapter.ProfileInfoListT
 data class DividerProfileUiModel(
     override var title: String = "",
     override var id: String = ""
-): BaseProfileInfoUiModel {
+) : BaseProfileInfoUiModel {
     override fun type(typeFactory: ProfileInfoListTypeFactory): Int {
 	return typeFactory.type(this)
     }

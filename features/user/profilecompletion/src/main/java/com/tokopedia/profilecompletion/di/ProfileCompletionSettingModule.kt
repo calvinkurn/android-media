@@ -22,25 +22,27 @@ class ProfileCompletionSettingModule(private val context: Context) {
     @Provides
     @ProfileCompletionContext
     fun provideContext(): Context {
-        return context
+	return context
     }
 
     @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphQlRepository(): GraphqlRepository =
+	GraphqlInteractor.getInstance().graphqlRepository
 
     @ProfileCompletionSettingScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface =
+	UserSession(context)
 
     @Provides
     fun provideTrackingPinUtil() = TrackingPinUtil()
 
     @Provides
     fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
-        return FirebaseRemoteConfigImpl(context)
+	return FirebaseRemoteConfigImpl(context)
     }
 
     @Provides

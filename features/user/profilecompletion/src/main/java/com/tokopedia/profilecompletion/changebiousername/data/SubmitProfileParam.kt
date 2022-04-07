@@ -16,4 +16,4 @@ data class SubmitProfileParam(
 
     @SerializedName("isUpdateBiography")
     val isUpdateBioGraphy: Boolean = false
-): GqlParam
+) : GqlParam

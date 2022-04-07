@@ -7,12 +7,14 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.profilecompletion.settingprofile.data.SaveProfilePictureResponse
 
-class SaveProfilePictureUseCase(@ApplicationContext private val repository: GraphqlRepository,
-                                dispatcher: CoroutineDispatchers):
+class SaveProfilePictureUseCase(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) :
     CoroutineUseCase<Map<String, Any>, SaveProfilePictureResponse>(dispatcher.io) {
 
     override suspend fun execute(params: Map<String, Any>): SaveProfilePictureResponse {
-        return repository.request(graphqlQuery(), params)
+	return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String = """
@@ -29,6 +31,6 @@ class SaveProfilePictureUseCase(@ApplicationContext private val repository: Grap
     """.trimIndent()
 
     companion object {
-        const val PARAM_UPLOAD_ID = "uploadID"
+	const val PARAM_UPLOAD_ID = "uploadID"
     }
 }

@@ -21,13 +21,15 @@ import dagger.Component
 
 
 @ProfileCompletionSettingScope
-@Component(modules = [
-    ProfileCompletionSettingModule::class,
-    ProfileCompletionViewModelsModule::class,
-    ProfileCompletionQueryModule::class,
-    ImageUploadSettingProfileModule::class,
-    MediaUploaderModule::class
-], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [
+	ProfileCompletionSettingModule::class,
+	ProfileCompletionViewModelsModule::class,
+	ProfileCompletionQueryModule::class,
+	ImageUploadSettingProfileModule::class,
+	MediaUploaderModule::class
+    ], dependencies = [BaseAppComponent::class]
+)
 interface ProfileCompletionSettingComponent {
     fun inject(fragment: ChangeGenderFragment)
     fun inject(fragment: AddEmailFragment)

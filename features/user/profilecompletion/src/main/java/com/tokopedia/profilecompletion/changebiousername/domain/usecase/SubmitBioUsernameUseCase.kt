@@ -16,7 +16,7 @@ class SubmitBioUsernameUseCase @Inject constructor(private val repository: Graph
     private val paramQuery = "param"
 
     override fun graphqlQuery(): String {
-        return """mutation feedXProfileSubmit(${'$'}param: feedXProfileSubmitRequest!) {
+	return """mutation feedXProfileSubmit(${'$'}param: feedXProfileSubmitRequest!) {
                        feedXProfileSubmit(req: ${'$'}param) {
                            status
                        }
@@ -24,15 +24,19 @@ class SubmitBioUsernameUseCase @Inject constructor(private val repository: Graph
     }
 
     override suspend fun execute(params: SubmitProfileParam): SubmitBioUsernameResponse {
-        val param = params.toMapParam()
-        val request = GraphqlRequest(graphqlQuery(), SubmitBioUsernameResponse::class.java, mapOf(paramQuery to param))
-        val response = repository.response(listOf(request))
-        val error = response.getError(SubmitBioUsernameResponse::class.java)
-        if ( error != null && error.isNotEmpty()) {
-            throw SubmitProfileError(error.first(), error.first().message)
-        } else {
-            return response.getData(SubmitBioUsernameResponse::class.java)
-        }
+	val param = params.toMapParam()
+	val request = GraphqlRequest(
+	    graphqlQuery(),
+	    SubmitBioUsernameResponse::class.java,
+	    mapOf(paramQuery to param)
+	)
+	val response = repository.response(listOf(request))
+	val error = response.getError(SubmitBioUsernameResponse::class.java)
+	if (error != null && error.isNotEmpty()) {
+	    throw SubmitProfileError(error.first(), error.first().message)
+	} else {
+	    return response.getData(SubmitBioUsernameResponse::class.java)
+	}
 
     }
 }

@@ -10,14 +10,14 @@ import javax.inject.Inject
 class ProfileInfoUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatcher
-): CoroutineUseCase<Unit, ProfileInfoResponse>(dispatcher) {
+) : CoroutineUseCase<Unit, ProfileInfoResponse>(dispatcher) {
 
     override suspend fun execute(params: Unit): ProfileInfoResponse {
-        return repository.request(graphqlQuery(), params)
+	return repository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String =
-        """
+	"""
        	query userProfileInfo(){
 	    userProfileCompletion {
 		isActive,

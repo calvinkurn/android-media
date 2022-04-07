@@ -7,6 +7,7 @@ data class UsernameValidationData(
     @SerializedName("data")
     val data: UsernameValidationResponse = UsernameValidationResponse()
 )
+
 data class UsernameValidationResponse(
     @SerializedName("feedXProfileValidateUsername")
     val response: UsernameValidation = UsernameValidation()
