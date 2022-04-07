@@ -26,6 +26,6 @@ class FileWriter {
             it.flush()
         }
 
-        println("Write is successful")
+        println("Write is successful at ${file.absolutePath}")
     }
 }
