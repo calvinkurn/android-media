@@ -32,7 +32,7 @@ class ChatActionListBubbleViewHolder(itemView: View, private val viewListener: C
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             chatActionListSelectionContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.color.chatbot_left_message_bg,
             R.dimen.dp_chatbot_0,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_20,

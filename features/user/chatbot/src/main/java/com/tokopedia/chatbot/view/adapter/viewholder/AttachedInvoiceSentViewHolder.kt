@@ -39,7 +39,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             clContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.color.chatbot_left_message_bg,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -48,7 +48,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             R.dimen.dp_chatbot_2,
             R.dimen.dp_chatbot_1,
             Gravity.CENTER,
-            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            R.color.chatbot_stroke,
             getStrokeWidthSenderDimenRes()
     )
 

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chatbot_right_message_bg">#2ABF70</color>
+    <color name="chatbot_left_message_bg">#2D323A</color>
+    <color name="chatbot_read_receipt_bg">#03AC0E</color>
+    <color name="chatbot_time_text">#DCE4ED</color>
+    <color name="chatbot_chat_divider_bg">#4B5461</color>
+    <color name="chatbot_invoice_date">#808FA1</color>
+    <color name="chatbot_invoice_price">#F2600C</color>
+    <color name="chatbot_stroke">#2ABF70</color>
+    <color name="chatbot_date_indicator_bg">#BCE8FE</color>
+    <color name="chatbot_date_indicator_text">#AD31353B</color>
+    <color name="chatbot_message_text">#FFFFFF</color>
+    <color name="chatbot_message_see_more">#2ABF70</color>
+    <color name="chatbot_message_hint_color">#DCE4ED</color>
+    <color name="chatbot_add_attachment_color">#CBD4E1</color>
+    <color name="sender_image_background">#252930</color>
+
+
+
+
+
+    <color name="chatbot_color_date">#F531353B</color>
+
+</resources>

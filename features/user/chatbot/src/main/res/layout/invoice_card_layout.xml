@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_chat_bubble"
         android:layout_width="@dimen/chatbot_invoice_sent_width"
+        android:background="@color/chatbot_left_message_bg"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/chatbot_invoice_sent_width">
 
@@ -19,7 +20,7 @@
             android:layout_marginLeft="@dimen/unify_space_12"
             android:layout_marginTop="@dimen/unify_space_12"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_44"
+            android:textColor="@color/chatbot_invoice_date"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
@@ -117,7 +118,7 @@
             android:gravity="top"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:textColor="@color/Unify_Y500"
+            android:textColor="@color/chatbot_invoice_price"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_price_prefix"
             app:layout_constraintTop_toBottomOf="@id/tv_invoice_desc"

@@ -1,10 +1,12 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
@@ -12,6 +14,7 @@ import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.util.OptionListRecyclerItemDecorator
+import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist.ChatOptionListAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.helpfullquestionoptionlist.OPTION_TYPE_CSAT
@@ -33,6 +36,19 @@ class CsatOptionListViewHolder(itemView: View,
     private val chatActionBubbleSelectionContainer: CardUnify = itemView.findViewById<CardUnify>(R.id.chat_csat_option_list_container)
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
+    private val bg = ViewUtil.generateBackgroundWithShadow(
+        customChatLayout,
+        R.color.chatbot_left_message_bg,
+        R.dimen.dp_chatbot_0,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        R.dimen.dp_chatbot_20,
+        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+        R.dimen.dp_chatbot_2,
+        R.dimen.dp_chatbot_1,
+        Gravity.CENTER
+    )
+
     init {
         ViewCompat.setNestedScrollingEnabled(chatActionListSelection, false)
         adapter = ChatOptionListAdapter(onOptionListSelected())
@@ -47,6 +63,7 @@ class CsatOptionListViewHolder(itemView: View,
         super.bind(viewModel)
         ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
         model = viewModel
+        bindBackground()
         if (viewModel.isSubmited == true) {
             chatActionBubbleSelectionContainer.hide()
         } else {
@@ -54,6 +71,10 @@ class CsatOptionListViewHolder(itemView: View,
             val options = getOptionListViewModelList(viewModel.csat?.points)
             adapter.setDataList(options)
         }
+    }
+
+    private fun bindBackground() {
+        customChatLayout?.background = bg
     }
 
     private fun getOptionListViewModelList(points: List<CsatAttributesPojo.Csat.Point>?): ArrayList<ChatOptionListViewModel> {
