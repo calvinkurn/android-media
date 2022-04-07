@@ -473,7 +473,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun bindReplyTextBackground() {
         val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
                 replyEditTextContainer,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                R.color.chatbot_left_message_bg,
                 R.dimen.dp_chatbot_20,
                 R.dimen.dp_chatbot_20,
                 R.dimen.dp_chatbot_20,

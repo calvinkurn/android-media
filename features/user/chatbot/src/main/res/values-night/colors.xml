@@ -15,6 +15,7 @@
     <color name="chatbot_message_hint_color">#DCE4ED</color>
     <color name="chatbot_add_attachment_color">#CBD4E1</color>
     <color name="sender_image_background">#252930</color>
+    <color name="chatbot_chat_background">#1D2025</color>
 
 
 

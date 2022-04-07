@@ -5,6 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_3"
     android:layout_marginRight="2dp"
+    android:background="@color/chatbot_chat_background"
     android:layout_marginLeft="2dp">
 
     <TextView
