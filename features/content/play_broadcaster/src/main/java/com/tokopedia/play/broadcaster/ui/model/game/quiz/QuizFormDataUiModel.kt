@@ -17,6 +17,7 @@ data class QuizFormDataUiModel(
         val isSelected: Boolean = false,
         val isEditable: Boolean = true,
         val isFocus: Boolean = false,
+        val isShowCoachmark: Boolean = false,
     ) {
         fun getTextChoice() = (INITIAL_CHOICE + order).toString()
 

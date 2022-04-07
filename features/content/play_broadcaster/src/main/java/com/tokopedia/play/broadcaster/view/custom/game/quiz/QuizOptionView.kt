@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
@@ -41,6 +43,8 @@ class QuizOptionView : ConstraintLayout {
 
     private var mTextOnChangedListener: ((Int, String) -> Unit)? = null
     private var mOnCheckedListener: ((Int) -> Unit)? = null
+
+    private val coachMark: CoachMark2 = CoachMark2(context)
 
     init {
         binding.flQuizOption.setOnClickListener {
@@ -139,6 +143,19 @@ class QuizOptionView : ConstraintLayout {
                 requestFocus()
             }
         }
+    }
+
+    fun showCoachmark() {
+        coachMark.showCoachMark(
+            arrayListOf(
+                CoachMark2Item(
+                    binding.flQuizOption,
+                    "",
+                    context.getString(R.string.play_bro_select_quiz_option_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        )
     }
 
     fun setOnTextChanged(listener: (Int, String) -> Unit) {

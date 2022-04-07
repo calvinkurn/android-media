@@ -28,6 +28,8 @@ class QuizOptionViewHolder private constructor(
 
             setFocus(item.isFocus)
 
+            if(item.isShowCoachmark) showCoachmark()
+
             setOnCheckedListener { listener.onOptionChecked(item.order) }
             setOnTextChanged { order, text -> listener.onTextChanged(order, text) }
         }

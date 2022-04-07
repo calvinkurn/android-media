@@ -992,6 +992,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 isSelected = if(isAutoSelectEligible) it.order == order else it.isSelected,
                 text = if(it.order == order) newText else it.text,
                 isFocus = it.order == order,
+                isShowCoachmark = if(sharedPref.isFirstSelectQuizOption()) it.order == order else false,
             )
         }.toMutableList()
 
@@ -1008,6 +1009,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 isMandatory = false,
             ))
         }
+
+        sharedPref.setNotFirstSelectQuizOption()
 
         needUpdateQuizForm(isAutoSelectEligible || isNeedAddNewField) {
             _quizFormData.setValue { copy(options = newOptions) }
