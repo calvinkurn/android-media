@@ -23,7 +23,11 @@ import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
 import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.video.ProductCardVideo
-import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.LazyThreadSafetyMode.NONE
 
