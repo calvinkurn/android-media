@@ -328,14 +328,6 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         }
     }
 
-    private fun setLoader(show: Boolean) {
-        if (show) {
-            binding?.loaderRescheduleDetail?.visibility = View.VISIBLE
-        } else {
-            binding?.loaderRescheduleDetail?.visibility = View.GONE
-        }
-    }
-
     private fun setRescheduleDetailSummary(etaPickup: String) {
         binding?.layoutRescheduleDetail?.visibility = View.VISIBLE
         binding?.layoutRescheduleDetail?.setHtmlDescription(etaPickup)
