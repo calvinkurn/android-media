@@ -20,11 +20,7 @@ class PermissionProperty : ReadOnlyProperty<FragmentActivity, Boolean> {
         val hasPermissionAudio = RequestPermissionUtil.checkHasPermission(this, Manifest.permission.RECORD_AUDIO)
         val hasPermissionStorage = RequestPermissionUtil.checkHasPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
 
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            hasPermissionCamera && hasPermissionAudio && hasPermissionStorage
-        } else {
-            true
-        }
+        return hasPermissionCamera && hasPermissionAudio && hasPermissionStorage
     }
 
 }

@@ -1,38 +1,33 @@
 package com.tokopedia.media.picker.data.repository
 
-import android.content.Context
 import android.net.Uri
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.base.BaseRepository
 import java.io.File
 
-interface AlbumRepository {
-    suspend operator fun invoke(param: PickerParam): List<Album>
-}
+open class AlbumRepository constructor(
+    loaderDataSource: LoaderDataSource,
+    dispatcher: CoroutineDispatchers
+) : BaseRepository<Unit, List<Album>>(dispatcher.io)
+    , LoaderDataSource by loaderDataSource {
 
-class AlbumRepositoryImpl constructor(
-    context: Context
-) : LoaderDataSource(context), AlbumRepository {
-
-    override suspend operator fun invoke(param: PickerParam): List<Album> {
-        val cursor = query(param, -1) ?: error("cannot find the query")
+    override fun execute(param: Unit): List<Album> {
+        val cursor = query( -1) ?: error("cannot find the query")
         val albumMap = mutableMapOf<String, Album>()
 
         var recentPreviewUri: Uri? = null
 
         if (cursor.moveToFirst()) {
             do {
-                val media = medias(cursor, param) ?: continue
+                val media = medias(cursor) ?: continue
 
                 // get first album media for thumbnail
                 if (recentPreviewUri == null) recentPreviewUri = media.uri
 
-                // directory id
-                val bucketId = cursor.getLong(projection[4])
-
-                // directory name
-                var bucketName = cursor.getString(projection[3])
+                val bucketId = cursor.getLong(cursor.getColumnIndex(projection[4])) // directory id
+                var bucketName = cursor.getString(cursor.getColumnIndex(projection[3])) // directory name
 
                 if (bucketName == null) {
                     bucketName = File(media.path).parentFile.let {
@@ -83,7 +78,7 @@ class AlbumRepositoryImpl constructor(
                     id = RECENT_ALBUM_ID,
                     name = RECENT_ALBUM_NAME,
                     preview = firstMediaPreviewUri,
-                    count = recentMediaSize++
+                    count = recentMediaSize + 1
                 ))
             }
     }

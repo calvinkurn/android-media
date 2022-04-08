@@ -102,12 +102,12 @@ class DrawerSelectionWidget : FrameLayout {
 
         isDraggable = typedArray.getBoolean(
             R.styleable.MediaPickerPreviewWidget_draggable,
-            false
+            DEFAULT_DRAGGABLE_MODE
         )
 
         maxVideo = typedArray.getInteger(
             R.styleable.MediaPickerPreviewWidget_maxVideo,
-            1
+            DEFAULT_MAX_VIDEO
         )
 
         placeholderPreview = typedArray.getResourceId(
@@ -180,6 +180,11 @@ class DrawerSelectionWidget : FrameLayout {
     interface Listener {
         fun onItemClicked(media: MediaUiModel)
         fun onDataSetChanged(action: DrawerActionType)
+    }
+
+    companion object {
+        private const val DEFAULT_MAX_VIDEO = 1
+        private const val DEFAULT_DRAGGABLE_MODE = false
     }
 
 }

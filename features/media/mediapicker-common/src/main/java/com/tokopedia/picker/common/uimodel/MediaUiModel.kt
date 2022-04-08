@@ -38,7 +38,7 @@ open class MediaUiModel(
         return isMinImageRes(path, value)
     }
 
-    fun isMaxFileSize(maxSizeInBytes: Long): Boolean {
+    fun isMoreThan(maxSizeInBytes: Long): Boolean {
         val file = File(path)
 
         if (!file.exists()) return false

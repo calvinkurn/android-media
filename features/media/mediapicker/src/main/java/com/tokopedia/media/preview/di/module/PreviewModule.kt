@@ -2,36 +2,27 @@ package com.tokopedia.media.preview.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.preview.analytics.PreviewAnalytics
 import com.tokopedia.media.preview.analytics.PreviewAnalyticsImpl
-import com.tokopedia.media.preview.di.scope.PreviewScope
 import com.tokopedia.media.preview.managers.ImageCompressionManager
 import com.tokopedia.media.preview.managers.ImageCompressionManagerImpl
 import com.tokopedia.media.preview.managers.SaveToGalleryManager
 import com.tokopedia.media.preview.managers.SaveToGalleryManagerImpl
-import com.tokopedia.picker.common.ParamCacheManager
 import dagger.Module
 import dagger.Provides
 
 @Module
-class PreviewModule {
+object PreviewModule {
 
     @Provides
-    @PreviewScope
+    @ActivityScope
     fun providePreviewAnalytics(): PreviewAnalytics {
         return PreviewAnalyticsImpl()
     }
 
     @Provides
-    @PreviewScope
-    fun provideParamCacheManager(
-        @ApplicationContext context: Context
-    ): ParamCacheManager {
-        return ParamCacheManager(context)
-    }
-
-    @Provides
-    @PreviewScope
+    @ActivityScope
     fun provideImageCompressionManager(
         @ApplicationContext context: Context
     ): ImageCompressionManager {
@@ -39,7 +30,7 @@ class PreviewModule {
     }
 
     @Provides
-    @PreviewScope
+    @ActivityScope
     fun provideSaveToGalleryManager(
         @ApplicationContext context: Context
     ): SaveToGalleryManager {

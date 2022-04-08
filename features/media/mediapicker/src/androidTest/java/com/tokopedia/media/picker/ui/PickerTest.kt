@@ -12,6 +12,8 @@ import com.tokopedia.media.picker.common.di.common.DaggerTestBaseAppComponent
 import com.tokopedia.media.picker.common.di.common.TestAppModule
 import com.tokopedia.media.picker.common.di.common.TestBaseAppComponent
 import com.tokopedia.media.picker.common.ui.activity.TestPickerActivity
+import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
+import com.tokopedia.picker.common.PickerParam
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -47,25 +49,23 @@ abstract class PickerTest {
         pickerComponent = null
     }
 
-    protected fun startPickerActivity(
-        modifier: (Intent) -> Unit = {}
-    ) {
-        val uri = createIntent().build()
+    protected fun startPickerActivity(pickerParam: PickerParam.() -> Unit = {}) {
+        val param = PickerParam().apply(pickerParam)
+        val uri = createUriIntent().build()
+
         val intent = Intent().apply {
             data = uri
         }
-        modifier(intent)
+
+        intent.putExtra(EXTRA_PICKER_PARAM, param)
+
         activityTestRule.launchActivity(intent)
         mActivity = activityTestRule.activity
     }
 
-    private fun createIntent(): Uri.Builder {
-        val builder = Uri.parse(
-            ApplinkConst.MediaPicker.MEDIA_PICKER
-        ).buildUpon()
-
+    private fun createUriIntent(): Uri.Builder {
+        val builder = Uri.parse(ApplinkConst.MediaPicker.MEDIA_PICKER).buildUpon()
         createAndAppendUri(builder)
-
         return builder
     }
 

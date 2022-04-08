@@ -28,15 +28,22 @@ class SaveToGalleryManagerImpl constructor(
 
     private fun mimeType(filePath: String): String {
         return if (isVideoFormat(filePath)) {
-            "video/mp4"
+            MIME_VIDEO_TYPE
         } else {
-            "image/jpeg"
+            MIME_IMAGE_TYPE
         }
     }
 
     private fun fileName(name: String): String {
         val currentTime = System.currentTimeMillis()
-        return "Tkpd_${currentTime}_$name"
+        return "${FILE_NAME_PREFIX}_${currentTime}_$name"
+    }
+
+    companion object {
+        private const val FILE_NAME_PREFIX = "Tkpd_"
+
+        private const val MIME_VIDEO_TYPE = "video/mp4"
+        private const val MIME_IMAGE_TYPE = "image/jpeg"
     }
 
 }

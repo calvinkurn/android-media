@@ -1,10 +1,10 @@
 package com.tokopedia.media.picker.ui.gallery
 
 import androidx.test.rule.GrantPermissionRule
-import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.media.picker.common.di.TestPickerInterceptor
-import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.ui.core.GalleryPageTest
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.test.application.annotations.UiTest
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
@@ -27,22 +27,30 @@ class GalleryPageUITest : GalleryPageTest() {
         pickerComponent?.inject(interceptor)
     }
 
+    // ⏳ should be able to fetch real media data
+    // ⏳ should be able to fetch image only
+    // ⏳ should be able to fetch video only
+    // ⏳ should be able to fetch image and video
+    // ⏳ should be able to fetch image and video with different album id
+    // ⏳ should be able to single selection
+    // ⏳ should be able to multiple selection with shown on drawer
+    // ⏳ should be able to remove item on drawer
+
     @Test
     fun should_show_real_media_list() {
         runBlocking {
             // Given
-            interceptor.realMedia(
-                context,
-                -1,
-                PickerParam()
-            )
+            interceptor.realMedia(-1)
 
             // When
-            startPickerActivity()
+            startPickerActivity {
+                pageSource(PageSource.CreatePost)
+                pageType(PageType.GALLERY)
+            }
 
             // Then
-            Assertion.assertRecyclerViewDisplayed()
-            Assertion.assertItemListSize(
+            Asserts.assertRecyclerViewDisplayed()
+            Asserts.assertItemListSize(
                 interceptor.mediaRepository.data.size
             )
         }
@@ -56,47 +64,39 @@ class GalleryPageUITest : GalleryPageTest() {
         interceptor.mockMedia(data)
 
         // When
-        startPickerActivity()
+        startPickerActivity {
+            pageSource(PageSource.CreatePost)
+            pageType(PageType.GALLERY)
+        }
 
         // Then
-        Assertion.assertRecyclerViewDisplayed()
-        Assertion.assertItemListSize(data.size)
-    }
-
-    @Test
-    fun should_show_empty_media_list() {
-        // Given
-        val data = emptyList<Media>()
-
-        interceptor.mockMedia(data)
-
-        // When
-        startPickerActivity()
-
-        // Then
-        Assertion.assertRecyclerViewDisplayed()
-        Assertion.assertItemListSize(data.size)
+        Asserts.assertRecyclerViewDisplayed()
+        Asserts.assertItemListSize(data.size)
     }
 
     @Test
     fun should_continue_button_is_active_mode_when_selected_media_item() {
-        // Given
-        val data = DataProvider.imageAndVideo
+        runBlocking {
+            // Given
+            interceptor.realMedia(-1)
 
-        interceptor.mockMedia(data)
+            // When
+            startPickerActivity {
+                pageSource(PageSource.CreatePost)
+                pageType(PageType.GALLERY)
+            }
 
-        // When
-        startPickerActivity()
-        Action.clickFirstItemMediaList()
+            Robot.clickFirstItemMediaList()
 
-        /*
-        * needed due event bus has debounce 500 millis
-        * regarding the state of continue button
-        * */
-        Thread.sleep(500)
+            /*
+            * needed due event bus has debounce 500 millis
+            * regarding the state of continue button
+            * */
+            Thread.sleep(500)
 
-        // Then
-        Assertion.assertContinueButtonIsVisible()
+            // Then
+            Asserts.assertContinueButtonIsVisible()
+        }
     }
 
 }

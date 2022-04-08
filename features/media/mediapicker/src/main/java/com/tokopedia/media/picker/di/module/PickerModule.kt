@@ -2,22 +2,27 @@ package com.tokopedia.media.picker.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
-import com.tokopedia.media.picker.data.repository.*
-import com.tokopedia.media.picker.di.scope.PickerScope
+import com.tokopedia.media.picker.data.loader.LoaderDataSource
+import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
+import com.tokopedia.media.picker.data.repository.AlbumRepository
+import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
+import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.picker.common.ParamCacheManager
 import dagger.Module
 import dagger.Provides
 
 @Module
-class PickerModule {
+object PickerModule {
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideUserSession(
         @ApplicationContext context: Context
     ): UserSessionInterface {
@@ -25,7 +30,7 @@ class PickerModule {
     }
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun providePickerAnalytics(
         userSession: UserSessionInterface
     ) = PickerAnalytics(
@@ -34,33 +39,40 @@ class PickerModule {
     )
 
     @Provides
-    @PickerScope
-    fun provideParamCacheManager(
-        @ApplicationContext context: Context
-    ): ParamCacheManager {
-        return ParamCacheManager(context)
+    @ActivityScope
+    fun provideLoaderDataSource(
+        @ApplicationContext context: Context,
+        cacheManager: ParamCacheManager
+    ) : LoaderDataSource {
+        return LoaderDataSourceImpl(context, cacheManager)
     }
 
     @Provides
-    @PickerScope
-    fun provideDeviceInfoRepository(): DeviceInfoRepository {
-        return DeviceInfoRepositoryImpl()
-    }
+    @ActivityScope
+    fun provideDeviceInfoRepository(
+        dispatcher: CoroutineDispatchers
+    ) = DeviceInfoRepository(dispatcher)
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideAlbumRepository(
-        @ApplicationContext context: Context
-    ): AlbumRepository {
-        return AlbumRepositoryImpl(context)
-    }
+        loaderDataSource: LoaderDataSource,
+        dispatcher: CoroutineDispatchers
+    ) = AlbumRepository(
+        loaderDataSource,
+        dispatcher
+    )
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideMediaRepository(
-        @ApplicationContext context: Context
+        loaderDataSource: LoaderDataSource,
+        dispatcher: CoroutineDispatchers
     ): MediaRepository {
-        return MediaRepositoryImpl(context)
+        return MediaRepository(
+            loaderDataSource,
+            dispatcher
+        )
     }
 
 }

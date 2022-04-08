@@ -18,9 +18,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentCameraBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
 import com.tokopedia.media.picker.ui.fragment.camera.component.CameraControllerComponent
@@ -30,7 +30,6 @@ import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
 import com.tokopedia.media.picker.utils.exceptionHandler
 import com.tokopedia.media.picker.utils.wrapper.FlingGestureWrapper
-import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.cameraToUiModel
@@ -287,7 +286,6 @@ open class CameraFragment : BaseDaggerFragment()
     override fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }

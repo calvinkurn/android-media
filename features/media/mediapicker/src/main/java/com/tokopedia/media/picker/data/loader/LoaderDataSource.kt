@@ -9,26 +9,42 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Files.FileColumns.*
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.utils.isGifFormat
 import java.io.File
 
-open class LoaderDataSource(private val context: Context) {
+interface LoaderDataSource {
+    val projection: Array<String>
+
+    fun query(bucketId: Long, limit: Int? = null): Cursor?
+    fun medias(cursor: Cursor): Media?
+}
+
+open class LoaderDataSourceImpl(
+    private val context: Context,
+    private val cacheManager: ParamCacheManager
+) : LoaderDataSource {
 
     @SuppressLint("AnnotateVersionCheck")
     private val isNewApi = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
-    val projection = arrayOf(
-        MediaStore.Images.Media._ID,
-        MediaStore.Images.Media.DISPLAY_NAME,
-        MediaStore.Images.Media.DATA,
-        MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-        MediaStore.Images.Media.BUCKET_ID,
-    )
+    private val param: PickerParam by lazy {
+        cacheManager.get()
+    }
+
+    override val projection: Array<String>
+        get() = arrayOf(
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
+            MediaStore.Images.Media.BUCKET_ID,
+        )
 
     @SuppressLint("InlinedApi")
-    fun query(param: PickerParam, bucketId: Long, limit: Int? = null): Cursor? {
+    override fun query(bucketId: Long, limit: Int?): Cursor? {
         val sourceUri = if (limit != null && isNewApi) {
             sourceUri(param).buildUpon()
                 .appendQueryParameter(QUERY_LIMIT, limit.toString())
@@ -57,7 +73,7 @@ open class LoaderDataSource(private val context: Context) {
         return context.contentResolver.query(sourceUri, projection, selection, null, sortOrder)
     }
 
-    fun medias(cursor: Cursor, param: PickerParam): Media? {
+    override fun medias(cursor: Cursor): Media? {
         val path = cursor.getString(cursor.getColumnIndex(projection[2]))
         val file = makeSafeFile(path) ?: return null
 
@@ -98,14 +114,6 @@ open class LoaderDataSource(private val context: Context) {
         return if (param.isOnlyVideoFile() || param.isIncludeVideoFile()) {
             MediaStore.Files.getContentUri(VOLUME_NAME)
         } else MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    }
-
-    protected fun Cursor.getLong(key: String): Long {
-        return getLong(getColumnIndex(key))
-    }
-
-    protected fun Cursor.getString(key: String): String? {
-        return getString(getColumnIndex(key))
     }
 
     companion object {

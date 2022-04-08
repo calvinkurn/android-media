@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.media.picker.ui.PickerUiConfig
@@ -318,7 +318,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMaxVideoSize(model: MediaUiModel): Boolean {
-        return model.isMaxFileSize(param.get().maxVideoFileSize())
+        return model.isMoreThan(param.get().maxVideoFileSize())
     }
 
     override fun isMinImageResolution(model: MediaUiModel): Boolean {
@@ -330,7 +330,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun isMaxImageSize(model: MediaUiModel): Boolean {
-        return model.isMaxFileSize(param.get().maxImageFileSize())
+        return model.isMoreThan(param.get().maxImageFileSize())
     }
 
     override fun isMinStorageThreshold(): Boolean {
@@ -432,7 +432,6 @@ open class PickerActivity : BaseActivity()
     protected open fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }

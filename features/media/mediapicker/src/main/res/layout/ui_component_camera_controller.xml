@@ -42,7 +42,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/separator_recording_duration"
+            android:text="@string/picker_separator_recording_duration"
             android:layout_marginStart="4dp"
             android:textColor="@color/Unify_Static_White" />
 

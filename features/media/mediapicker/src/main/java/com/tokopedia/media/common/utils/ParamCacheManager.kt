@@ -1,11 +1,14 @@
-package com.tokopedia.picker.common
+package com.tokopedia.media.common.utils
 
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.picker.common.PickerParam
+import javax.inject.Inject
 
-class ParamCacheManager constructor(
-    context: Context
+class ParamCacheManager @Inject constructor(
+    @ApplicationContext context: Context
 ) : LocalCacheHandler(context, PREF_NAME_CACHE_PICKER) {
 
     fun get(): PickerParam {

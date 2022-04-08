@@ -14,10 +14,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
-import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
+import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
@@ -30,7 +30,6 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
-import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -94,7 +93,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             binding?.albumSelector?.txtName?.text = bucketName
 
             // fetch album by bucket id
-            viewModel.fetch(bucketId, param.get())
+            viewModel.fetch(bucketId)
 
             // force and scroll to up if the bucketId is "recent medias / all media"
             if (bucketId == -1L) {
@@ -154,7 +153,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun initView() {
         setupRecyclerView()
 
-        viewModel.fetch(RECENT_ALBUM_ID, param.get())
+        viewModel.fetch(RECENT_ALBUM_ID)
     }
 
     private fun hasMediaList(isShown: Boolean) {
@@ -254,10 +253,8 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 listener?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType()) {
-            if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
-                adapter.removeAllSelectedSingleClick()
-            }
+        } else if (!param.get().isMultipleSelectionType() && (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
+            adapter.removeAllSelectedSingleClick()
         }
 
         if (!isSelected) {
@@ -272,7 +269,6 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }
