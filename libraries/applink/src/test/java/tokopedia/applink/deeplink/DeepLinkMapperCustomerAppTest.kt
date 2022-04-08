@@ -1317,9 +1317,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
         } returns ""
         every {
-            DeeplinkMapperUser.getRegisteredNavigationUser(context, settingProfileApplink)
-        } returns expectedDeepLink
-        every {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
         } returns true
         assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
@@ -1333,9 +1330,6 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         every {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
         } returns RollenceKey.VARIANT_NEW_PROFILE_REVAMP
-        every {
-            DeeplinkMapperUser.getRegisteredNavigationUser(context, settingProfileApplink)
-        } returns expectedDeepLink
         every {
             remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
         } returns true
