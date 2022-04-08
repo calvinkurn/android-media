@@ -132,6 +132,9 @@ class PlayViewModel @AssistedInject constructor(
         get() = _observableOnboarding
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
+    val observableKebabMenuSheet: LiveData<Map<KebabMenuType, BottomInsetsState>>
+        get() = _observableKebabSheets
+
 
     /**
      * Remote Config for bubble like
@@ -152,6 +155,15 @@ class PlayViewModel @AssistedInject constructor(
     private val _uiEvent = MutableSharedFlow<PlayViewerNewUiEvent>(extraBufferCapacity = 50)
 
     private var selectedUpcomingCampaign: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
+
+    /***
+     * User Report
+     */
+    private val _userReportItems = MutableStateFlow(PlayUserReportUiModel.Empty)
+    val userReportItems: StateFlow<PlayUserReportUiModel.Loaded> = _userReportItems
+
+    private val _userReportSubmission = MutableStateFlow<ResultState>(ResultState.Loading)
+    val userReportSubmission: StateFlow<ResultState> = _userReportSubmission
 
     /**
      * Data State
@@ -245,7 +257,6 @@ class PlayViewModel @AssistedInject constructor(
             shouldShow = !isFreezeOrBanned && !it.isKeyboardShown
         )
     }.flowOn(dispatchers.computation)
-
 
     /**
      * Until repeatOnLifecycle is available (by updating library version),
@@ -406,6 +417,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
+    private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
     private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
         addSource(_observableChatList) { chatList ->
             chatList.lastOrNull()?.let { value = Event(it) }
@@ -639,27 +651,31 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowKebabMenuSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
-        insetsMap[BottomInsetsType.KebabMenuSheet] =
+    /***
+     * Estimated sheet is always 0 bcz height is set based on wrap_content
+     */
+    fun onShowKebabMenuSheet(estimatedSheetHeight: Int = 0) {
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
+
+        insetsMap[KebabMenuType.ThreeDots] =
             BottomInsetsState.Shown(
                 estimatedInsetsHeight = estimatedSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isShown == true
+                isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isShown == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideKebabMenuSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.KebabMenuSheet] =
+        insetsMap[KebabMenuType.ThreeDots] =
             BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isHidden == true
+                isPreviousStateSame = insetsMap[KebabMenuType.ThreeDots]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun showCouponSheet(estimatedHeight: Int) {
@@ -685,50 +701,50 @@ class PlayViewModel @AssistedInject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowUserReportSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+    fun onShowUserReportSheet(estimatedSheetHeight: Int = 0) {
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSheet] =
+        insetsMap[KebabMenuType.UserReportList] =
             BottomInsetsState.Shown(
                 estimatedInsetsHeight = estimatedSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isShown == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isShown == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideUserReportSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSheet] =
+        insetsMap[KebabMenuType.UserReportList] =
             BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isHidden == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportList]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
-    fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+    fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int = 0) {
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+        insetsMap[KebabMenuType.UserReportSubmission] =
             BottomInsetsState.Shown(
                 estimatedInsetsHeight = estimatedSheetHeight,
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isShown == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideUserReportSubmissionSheet() {
-        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+        val insetsMap = getLatestKebabBottomInset().toMutableMap()
 
-        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+        insetsMap[KebabMenuType.UserReportSubmission] =
             BottomInsetsState.Hidden(
-                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isHidden == true
+                isPreviousStateSame = insetsMap[KebabMenuType.UserReportSubmission]?.isHidden == true
             )
 
-        _observableBottomInsetsState.value = insetsMap
+        _observableKebabSheets.value = insetsMap
     }
 
     fun hideInsets(isKeyboardHandled: Boolean) {
@@ -751,6 +767,34 @@ class PlayViewModel @AssistedInject constructor(
         return currentValue
     }
 
+
+    private fun getLatestKebabBottomInset(): Map<KebabMenuType, BottomInsetsState> {
+        val currentValue = _observableKebabSheets.value ?: return getDefaultKebabInsets()
+        currentValue.values.forEach {
+            it.isPreviousStateSame = true
+            if (it is BottomInsetsState.Shown) it.deepLevel += 1
+        }
+        return currentValue
+    }
+
+    fun hideThreeDotsSheet(){
+        _observableKebabSheets.value = getDefaultKebabInsets()
+    }
+
+    private fun getDefaultKebabInsets(): Map<KebabMenuType, BottomInsetsState> {
+        val currentValue = _observableKebabSheets.value
+        val defaultUserReportListState = currentValue?.get(KebabMenuType.UserReportList)?.isHidden ?: true
+        val defaultUserReportSubmissionState = currentValue?.get(KebabMenuType.UserReportSubmission)?.isHidden ?: true
+
+        /**Make sure the default state for kebab menu is threedots must need to be shown. If you have any feedback please comment
+         * */
+        return mapOf(
+            KebabMenuType.ThreeDots to BottomInsetsState.Shown(100, false),
+            KebabMenuType.UserReportList to BottomInsetsState.Hidden(defaultUserReportListState),
+            KebabMenuType.UserReportSubmission to BottomInsetsState.Hidden(defaultUserReportSubmissionState)
+        )
+    }
+
     private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
         val currentBottomInsetsMap = _observableBottomInsetsState.value
         val defaultKeyboardState = currentBottomInsetsMap?.get(BottomInsetsType.Keyboard)?.isHidden ?: true
@@ -758,18 +802,12 @@ class PlayViewModel @AssistedInject constructor(
         val defaultVariantSheetState = currentBottomInsetsMap?.get(BottomInsetsType.VariantSheet)?.isHidden ?: true
         val defaultLeaderboardSheetState = currentBottomInsetsMap?.get(BottomInsetsType.LeaderboardSheet)?.isHidden ?: true
         val defaultCouponSheetState = currentBottomInsetsMap?.get(BottomInsetsType.CouponSheet)?.isHidden ?: true
-        val defaultKebabMenuSheet = currentBottomInsetsMap?.get(BottomInsetsType.KebabMenuSheet)?.isHidden ?: true
-        val defautUserReportListSheet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSheet)?.isHidden ?: true
-        val defaultUserReportSubmissionSHeet = currentBottomInsetsMap?.get(BottomInsetsType.UserReportSubmissionSheet)?.isHidden ?: true
         return mapOf(
                 BottomInsetsType.Keyboard to BottomInsetsState.Hidden(defaultKeyboardState),
                 BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(defaultProductSheetState),
                 BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(defaultVariantSheetState),
                 BottomInsetsType.LeaderboardSheet to BottomInsetsState.Hidden(defaultLeaderboardSheetState),
                 BottomInsetsType.CouponSheet to BottomInsetsState.Hidden(defaultCouponSheetState),
-                BottomInsetsType.KebabMenuSheet to BottomInsetsState.Hidden(defaultKebabMenuSheet),
-                BottomInsetsType.UserReportSheet to BottomInsetsState.Hidden(defautUserReportListSheet),
-                BottomInsetsType.UserReportSubmissionSheet to BottomInsetsState.Hidden(defaultUserReportSubmissionSHeet)
         )
     }
     //endregion
@@ -832,6 +870,9 @@ class PlayViewModel @AssistedInject constructor(
             CloseSharingOptionAction -> handleCloseSharingOption()
             is ClickSharingOptionAction -> handleSharingOption(action.shareModel)
             is SharePermissionAction -> handleSharePermission(action.label)
+            OpenKebabAction -> handleThreeDotsMenuClick()
+            is OpenFooterUserReport -> handleFooterClick(action.appLink)
+            OpenUserReport -> handleUserReport()
             is SendUpcomingReminder -> handleSendReminder(action.section, false)
             is BuyProductAction -> handleBuyProduct(action.sectionInfo, action.product, ProductAction.Buy)
             is BuyProductVariantAction -> handleBuyProductVariant(action.id, ProductAction.Buy)
@@ -1016,7 +1057,6 @@ class PlayViewModel @AssistedInject constructor(
             _tagItems.update { it.copy(resultState = ResultState.Success) }
             return
         }
-
         _tagItems.update { it.copy(resultState = ResultState.Loading) }
         viewModelScope.launchCatchError(dispatchers.io, block = {
             val tagItem = repo.getTagItem(channelId)
@@ -1107,9 +1147,6 @@ class PlayViewModel @AssistedInject constructor(
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
-            BottomInsetsType.KebabMenuSheet -> hideKebabMenuSheet()
-            BottomInsetsType.UserReportSheet -> hideUserReportSheet()
-            BottomInsetsType.UserReportSubmissionSheet -> hideUserReportSubmissionSheet()
             BottomInsetsType.CouponSheet -> hideCouponSheet()
         }
         return shownBottomSheets.isNotEmpty()
@@ -1780,6 +1817,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
+            REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             else -> {}
         }
@@ -2003,6 +2041,26 @@ class PlayViewModel @AssistedInject constructor(
         playAnalytic.clickSharePermission(channelId, partnerId, channelType.value, label)
     }
 
+    private fun handleThreeDotsMenuClick(){
+        viewModelScope.launch {
+            _uiEvent.emit(OpenKebabEvent)
+        }
+    }
+
+    private fun handleFooterClick(appLink: String){
+        viewModelScope.launch {
+            _uiEvent.emit(OpenPageEvent(applink = appLink))
+        }
+    }
+
+    private fun handleUserReport(){
+        needLogin(REQUEST_CODE_USER_REPORT){
+            viewModelScope.launch {
+                _uiEvent.emit(OpenUserReportEvent)
+            }
+        }
+    }
+
     /**
      * Handle buying product
      * @param productId the id of the product
@@ -2148,6 +2206,49 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    fun getUserReportList(){
+        _userReportItems.update { it.copy(resultState = ResultState.Loading)        }
+
+        viewModelScope.launchCatchError(block = {
+            val userReportUiModel = repo.getReasoningList()
+
+            _userReportItems.update { it.copy(resultState = ResultState.Success, reasoningList = userReportUiModel) }
+        }){
+            error ->
+            _userReportItems.update {
+                it.copy(resultState = ResultState.Fail(error = error))
+            }
+        }
+    }
+
+    fun submitUserReport(channelId: Long,
+                         mediaUrl: String,
+                         shopId: Long,
+                         reasonId: Int,
+                         timestamp: Long,
+                         reportDesc: String){
+        viewModelScope.launchCatchError(block = {
+            _userReportSubmission.value = ResultState.Loading
+            val isSuccess =
+                repo.submitReport(
+                    channelId = channelId,
+                    mediaUrl = mediaUrl,
+                    shopId = shopId,
+                    reasonId = reasonId,
+                    timestamp = timestamp,
+                    reportDesc = reportDesc
+                )
+
+            if(isSuccess){
+                _userReportSubmission.value = ResultState.Success
+            }else{
+                throw Exception()
+            }
+        }){ err ->
+            _userReportSubmission.value = ResultState.Fail(err)
+        }
+    }
+
     private fun handleSendReminder(sectionUiModel: ProductSectionUiModel.Section, isFromLogin: Boolean){
         selectedUpcomingCampaign = sectionUiModel
         needLogin(REQUEST_CODE_LOGIN_UPCO_REMINDER) {
@@ -2230,6 +2331,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
         private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
+        private const val REQUEST_CODE_USER_REPORT = 575
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
     }
