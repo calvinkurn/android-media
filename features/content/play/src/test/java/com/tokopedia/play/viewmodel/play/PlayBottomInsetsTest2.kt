@@ -14,6 +14,8 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
+import com.tokopedia.play.view.uimodel.action.OpenKebabAction
+import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import org.junit.Rule
 import org.junit.Test
 
@@ -319,6 +321,95 @@ class PlayBottomInsetsTest2 {
         createPlayViewModelRobot {
             val back = viewModel.goBack()
             back.assertFalse()
+        }
+    }
+
+    @Test
+    fun `given kebab bottom sheet is shown, then kebab bottom sheet should be shown`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+
+            viewModel.onShowKebabMenuSheet()
+
+            viewModel.observableKebabMenuSheet.getOrAwaitValue()[KebabMenuType.ThreeDots]!!.isShown.assertTrue()
+
+            viewModel.observableKebabMenuSheet
+                .getOrAwaitValue()[KebabMenuType.ThreeDots]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given kebab bottom sheet is hidden, then kebab bottom sheet should be hidden`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+
+            viewModel.hideKebabMenuSheet()
+
+            viewModel.observableKebabMenuSheet.getOrAwaitValue()[KebabMenuType.ThreeDots]!!.isHidden.assertTrue()
+
+            viewModel.observableKebabMenuSheet
+                .getOrAwaitValue()[KebabMenuType.ThreeDots]!!
+                .isHidden.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report bottom sheet is shown, then user report bottom sheet should be shown`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+
+            viewModel.onShowUserReportSheet()
+
+            viewModel.observableKebabMenuSheet.getOrAwaitValue()[KebabMenuType.UserReportList]!!.isShown.assertTrue()
+
+            viewModel.observableKebabMenuSheet
+                .getOrAwaitValue()[KebabMenuType.UserReportList]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report bottom sheet is hidden, then user report bottom sheet should be hidden`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+
+            viewModel.hideUserReportSheet()
+
+            viewModel.observableKebabMenuSheet.getOrAwaitValue()[KebabMenuType.UserReportList]!!.isHidden.assertTrue()
+
+            viewModel.observableKebabMenuSheet
+                .getOrAwaitValue()[KebabMenuType.UserReportList]!!
+                .isHidden.assertTrue()
+        }
+    }
+    @Test
+    fun `given user report submission bottom sheet is shown, then user report submission bottom sheet should be shown`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+
+            viewModel.onShowUserReportSubmissionSheet()
+
+            viewModel.observableKebabMenuSheet.getOrAwaitValue()[KebabMenuType.UserReportSubmission]!!.isShown.assertTrue()
+
+            viewModel.observableKebabMenuSheet
+                .getOrAwaitValue()[KebabMenuType.UserReportSubmission]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
+    fun `given user report submission bottom sheet is hidden, then user report submission bottom sheet should be hidden`() {
+        createPlayViewModelRobot {
+            createPage(mockLiveChannelData)
+
+            viewModel.hideUserReportSubmissionSheet()
+
+            viewModel.observableKebabMenuSheet.getOrAwaitValue()[KebabMenuType.UserReportSubmission]!!.isHidden.assertTrue()
+
+            viewModel.observableKebabMenuSheet
+                .getOrAwaitValue()[KebabMenuType.UserReportSubmission]!!
+                .isHidden.assertTrue()
         }
     }
 }
