@@ -37,6 +37,7 @@ class SearchProductViewModel @Inject constructor(
     private var selectedProduct : Product? = null
     private var isMultiSelectEnabled = false
     private var shouldDisableProductSelection = false
+    private var selectedProductIds : MutableList<String> = mutableListOf()
 
     fun getSlashPriceProducts(
         page: Int,
@@ -53,11 +54,16 @@ class SearchProductViewModel @Inject constructor(
                     keyword = keyword
                 )
                 val response = getSlashPriceProductListUseCase.executeOnBackground()
-                val formattedProduct = productMapper.map(response)
-                val multiSelectAwareProduct =
-                    formattedProduct.map { it.copy(shouldDisplayCheckbox = isMultiSelectEnabled) }
-                val selectionEnabledProduct = multiSelectAwareProduct.map { it.copy(disableClick = shouldDisableProductSelection) }
-                Pair(response.getSlashPriceProductList.totalProduct, selectionEnabledProduct)
+                val mappedProduct = productMapper.map(response)
+                val formattedProduct =
+                    mappedProduct.map {
+                        it.copy(
+                            shouldDisplayCheckbox = isMultiSelectEnabled,
+                            disableClick = shouldDisableProductSelection,
+                            isCheckboxTicked = it.id in selectedProductIds
+                        )
+                    }
+                Pair(response.getSlashPriceProductList.totalProduct, formattedProduct)
             }
 
             val (totalProduct, formattedProduct) = result
@@ -165,4 +171,11 @@ class SearchProductViewModel @Inject constructor(
         return selectedProductCount
     }
 
+    fun addProductToSelection(product : Product) {
+        this.selectedProductIds.add(product.id)
+    }
+
+    fun removeProductFromSelection(product: Product) {
+        this.selectedProductIds.remove(product.id)
+    }
 }

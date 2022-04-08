@@ -249,6 +249,12 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     }
 
     private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
+        if (isSelected) {
+            viewModel.addProductToSelection(selectedProduct)
+        } else {
+            viewModel.removeProductFromSelection(selectedProduct)
+        }
+
         val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
         adapter?.update(selectedProduct, updatedProduct)
 
