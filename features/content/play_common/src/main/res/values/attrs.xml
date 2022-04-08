@@ -13,6 +13,10 @@
         <attr name="rfl_cornerRadius" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="RoundedLinearLayout">
+        <attr name="rll_cornerRadius" format="dimension" />
+    </declare-styleable>
+
     <declare-styleable name="RemoteImageView">
         <attr name="imageUrl" format="string"/>
         <attr name="cacheStrategy" format="enum">

@@ -15,8 +15,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -77,6 +80,8 @@ import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.game.follow.InteractiveFollowDialogFragment
+import com.tokopedia.play_common.view.game.follow.setupGiveaway
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -442,12 +447,21 @@ class PlayUserInteractionFragment @Inject constructor(
      * PIP View Component Listener
      */
     override fun onPiPButtonClicked(view: PiPViewComponent) {
-        playViewModel.requestWatchInPiP()
-        pipAnalytic.clickPiPIcon(
-                channelId = channelId,
-                shopId = playViewModel.partnerId,
-                channelType = playViewModel.channelType
+//        playViewModel.requestWatchInPiP()
+//        pipAnalytic.clickPiPIcon(
+//                channelId = channelId,
+//                shopId = playViewModel.partnerId,
+//                channelType = playViewModel.channelType
+//        )
+
+        val dialog = InteractiveFollowDialogFragment.getOrCreate(childFragmentManager)
+        dialog.setupGiveaway(
+            title = "Giveaway Kacamata Rockbros",
+            badgeUrl = "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power%20Merchant%20Pro.png",
+            avatarUrl = "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/12/8/9804ea71-612a-49bb-89ce-3afd2bf89a14.jpg",
+            partnerName = "Rockbros Indonesia",
         )
+        dialog.show(childFragmentManager)
     }
 
     /**
