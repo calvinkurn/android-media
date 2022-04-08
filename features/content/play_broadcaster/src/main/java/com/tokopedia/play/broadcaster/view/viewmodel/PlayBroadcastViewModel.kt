@@ -1119,6 +1119,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 choices = quizData.options.map { Pair(it.text, it.isSelected) }
             )
 
+            handleActiveInteractive()
+
             /** Reset Form */
             sharedPref.setNotFirstSelectQuizOption()
             sharedPref.setNotFirstQuizPrice()
