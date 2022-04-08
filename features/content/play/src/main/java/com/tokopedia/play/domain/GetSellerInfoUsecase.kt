@@ -15,8 +15,8 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2019-12-10.
  */
-@GqlQuery(GetPartnerInfoUseCase.QUERY_NAME, GetPartnerInfoUseCase.QUERY)
-class GetPartnerInfoUseCase @Inject constructor(
+@GqlQuery(GetSellerInfoUsecase.QUERY_NAME, GetSellerInfoUsecase.QUERY)
+class GetSellerInfoUsecase @Inject constructor(
         private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<ShopInfo>(graphqlRepository) {
 

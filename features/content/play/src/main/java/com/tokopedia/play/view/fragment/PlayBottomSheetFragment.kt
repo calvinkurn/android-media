@@ -38,19 +38,19 @@ import com.tokopedia.play.view.uimodel.action.BuyProductAction
 import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
 import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
@@ -63,7 +63,6 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -179,8 +178,8 @@ class PlayBottomSheetFragment @Inject constructor(
         shouldOpenProductDetail(product, sectionInfo, position)
     }
 
-    override fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long) {
-        openShopPage(partnerId)
+    override fun onEmptyButtonClicked(view: ProductSheetViewComponent) {
+        dismissSheets()
     }
 
     override fun onProductsImpressed(
@@ -288,10 +287,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun initAnalytic() {
         productAnalyticHelper = ProductAnalyticHelper(analytic)
-    }
-
-    private fun openShopPage(partnerId: Long) {
-        openPageByApplink(ApplinkConst.SHOP, partnerId.toString(), pipMode = true)
     }
 
     private fun closeProductSheet() {
@@ -415,10 +410,14 @@ class PlayBottomSheetFragment @Inject constructor(
                 .setPrimaryClip(ClipData.newPlainText("play-room-bottom-sheet", content))
     }
 
+    private fun dismissSheets(){
+        playFragment.hideKeyboard()
+        playViewModel.hideInsets(isKeyboardHandled = true)
+    }
+
     /**
      * Observe
      */
-
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             val productSheetState = it[BottomInsetsType.ProductSheet]
@@ -487,7 +486,7 @@ class PlayBottomSheetFragment @Inject constructor(
                     prevState?.tagItems,
                     state.tagItems,
                     state.tagItems.bottomSheetTitle,
-                    state.partner.id
+                    state.channel.emptyBottomSheetInfo
                 )
 
                 renderVoucherSheet(state.tagItems)
@@ -586,7 +585,7 @@ class PlayBottomSheetFragment @Inject constructor(
         prevTagItem: TagItemUiModel?,
         tagItem: TagItemUiModel,
         bottomSheetTitle: String,
-        partnerId: Long,
+        emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel,
     ) {
         if (tagItem.resultState.isLoading && tagItem.product.productSectionList.isEmpty()) {
             productSheetView.showPlaceholder()
@@ -603,7 +602,7 @@ class PlayBottomSheetFragment @Inject constructor(
                 title = bottomSheetTitle,
             )
         } else {
-            productSheetView.showEmpty(partnerId)
+            productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
     }
 
