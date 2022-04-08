@@ -1,10 +1,10 @@
 package com.tokopedia.media.picker.common.di.module
 
-import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.picker.di.scope.PickerScope
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.common.data.repository.TestAlbumRepository
 import com.tokopedia.media.picker.common.data.repository.TestMediaRepository
+import com.tokopedia.media.picker.data.repository.AlbumRepository
+import com.tokopedia.media.picker.data.repository.MediaRepository
 import dagger.Module
 import dagger.Provides
 
@@ -12,13 +12,13 @@ import dagger.Provides
 class TestPickerModule {
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideAlbumRepository(
         stub: TestAlbumRepository
     ): AlbumRepository = stub
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideMediaRepository(
         stub: TestMediaRepository
     ): MediaRepository = stub
@@ -26,11 +26,11 @@ class TestPickerModule {
     // -- mock repository -- //
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideTestAlbumRepository() = TestAlbumRepository()
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideTestMediaRepository() = TestMediaRepository()
 
 }

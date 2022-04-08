@@ -1,13 +1,13 @@
 package com.tokopedia.media.picker.common.di
 
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.common.di.common.TestBaseAppComponent
 import com.tokopedia.media.picker.common.di.module.TestPickerModule
 import com.tokopedia.media.picker.di.PickerComponent
 import com.tokopedia.media.picker.di.module.PickerViewModelModule
-import com.tokopedia.media.picker.di.scope.PickerScope
 import dagger.Component
 
-@PickerScope
+@ActivityScope
 @Component(
     modules = [
         PickerViewModelModule::class,

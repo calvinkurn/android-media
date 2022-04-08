@@ -2,8 +2,8 @@ package com.tokopedia.media.picker.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.data.repository.*
-import com.tokopedia.media.picker.di.scope.PickerScope
 import dagger.Module
 import dagger.Provides
 
@@ -11,13 +11,13 @@ import dagger.Provides
 object PickerModule {
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideDeviceInfoRepository(): DeviceInfoRepository {
         return DeviceInfoRepositoryImpl()
     }
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideAlbumRepository(
         @ApplicationContext context: Context
     ): AlbumRepository {
@@ -25,7 +25,7 @@ object PickerModule {
     }
 
     @Provides
-    @PickerScope
+    @ActivityScope
     fun provideMediaRepository(
         @ApplicationContext context: Context
     ): MediaRepository {
