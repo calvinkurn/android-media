@@ -16,16 +16,16 @@ data class InboxReputationItemUiModel(
     val reputationDaysLeft: String = "",
     val invoice: String = "",
     val reputationDataUiModel: ReputationDataUiModel = ReputationDataUiModel(),
-    val role: Int = 0,
+    val role: String = "",
     val revieweeBadgeCustomerUiModel: RevieweeBadgeCustomerUiModel = RevieweeBadgeCustomerUiModel(),
     val revieweeBadgeSellerUiModel: RevieweeBadgeSellerUiModel = RevieweeBadgeSellerUiModel(),
-    val shopId: Long = 0L,
-    val userId: Long = 0L
+    val shopId: String = "",
+    val userId: String = ""
 ) : Visitable<InboxReputationTypeFactory> {
 
     companion object {
-        const val ROLE_SELLER = 2
-        const val ROLE_BUYER: Int = 1
+        const val ROLE_SELLER = "2"
+        const val ROLE_BUYER = "1"
     }
 
     override fun type(typeFactory: InboxReputationTypeFactory): Int {

@@ -7,7 +7,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
-import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.config.GlobalConfig
@@ -44,6 +43,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDa
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
+import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
@@ -1325,6 +1325,41 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.VARIANT_OPTIONS } == 0)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+    }
+
+    @Test
+    fun `on success remove unused component when sellerapp`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productParams = ProductParams("", "", "", "", "", "")
+
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
+
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.count { it.type() == ProductDetailConstant.PRODUCT_LIST } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.PLAY_CAROUSEL } == 0)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 0)
     }
 
     /**
