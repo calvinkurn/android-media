@@ -1,9 +1,6 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.domain.PostAddToCartUseCase
-import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
@@ -16,13 +13,10 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.GetProductVariantResponse
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
@@ -41,8 +35,6 @@ class PlayBottomSheetViewModelTest {
 
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
-    private val mockRepo: PlayViewerRepository = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
     private val productModelBuilder = PlayProductTagsModelBuilder()
@@ -57,9 +49,7 @@ class PlayBottomSheetViewModelTest {
     @Before
     fun setUp() {
         playBottomSheetViewModel = PlayBottomSheetViewModel(
-                userSession,
-                dispatchers,
-                mockRepo
+                userSession
         )
 
         coEvery { mockGetProductVariantUseCase.executeOnBackground() } returns mockProductVariantResponse
