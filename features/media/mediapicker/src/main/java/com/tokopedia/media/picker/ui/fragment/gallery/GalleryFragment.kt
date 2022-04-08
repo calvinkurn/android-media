@@ -253,10 +253,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                 listener?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (!param.get().isMultipleSelectionType()
-            && listener?.mediaSelected()?.isNotEmpty() == true
-            || adapter.selectedMedias.isNotEmpty()
-        ) {
+        } else if (!param.get().isMultipleSelectionType() && (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
             adapter.removeAllSelectedSingleClick()
         }
 
