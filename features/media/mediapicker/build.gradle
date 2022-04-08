@@ -49,7 +49,6 @@ android {
         }
     }
 
-    // TODO, remove this
     testOptions {
         unitTests.all {
             jacoco {
