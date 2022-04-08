@@ -10,8 +10,8 @@ import dagger.Component
 @ActivityScope
 @Component(
     modules = [
+        TestPickerModule::class,
         PickerViewModelModule::class,
-        TestPickerModule::class
     ],
     dependencies = [
         TestBaseAppComponent::class
