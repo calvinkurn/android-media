@@ -5,7 +5,6 @@ import android.text.InputFilter
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMark2
@@ -14,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizOptionBinding
-import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * Created By : Jonathan Darwin on April 04, 2022
@@ -126,8 +125,8 @@ class QuizOptionView : ConstraintLayout {
                 etQuizOption.setTextColor(
                     ContextCompat.getColor(
                         context,
-                        if(value) R.color.Unify_Static_White
-                        else R.color.Unify_NN950
+                        if(value) unifyR.color.Unify_Static_White
+                        else unifyR.color.Unify_NN950
                     )
                 )
             }
