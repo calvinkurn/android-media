@@ -43,7 +43,10 @@ class ChangeBioUsernameViewModel @Inject constructor(
     val resultSubmitBio: LiveData<Result<SubmitBioUsername>>
         get() = _resultSubmitBio
 
-    private var validationUsernameJob: Job? = null
+    private var _validationUsernameJob: Job? = null
+
+    val validationUsernameJob: Job?
+        get() = _validationUsernameJob
 
     private val _profileFeed = MutableLiveData<Result<ProfileFeedData>>()
 
@@ -71,7 +74,7 @@ class ChangeBioUsernameViewModel @Inject constructor(
      */
     fun validateUsername(username: String) {
         cancelValidation()
-        validationUsernameJob = launchCatchError(block = {
+        _validationUsernameJob = launchCatchError(block = {
             delay(2000)
             _loadingState.value = true
             val result = validateUseCase(username)
@@ -82,10 +85,11 @@ class ChangeBioUsernameViewModel @Inject constructor(
         })
     }
 
-    fun cancelValidation() {
-        if (validationUsernameJob != null && validationUsernameJob?.isActive == true) {
-            validationUsernameJob?.cancel()
-        }
+    fun cancelValidation(): Boolean {
+        if (_validationUsernameJob != null && _validationUsernameJob?.isActive == true) {
+            _validationUsernameJob?.cancel()
+            return true
+        } else return false
     }
 
     fun submitUsername(username: String) {

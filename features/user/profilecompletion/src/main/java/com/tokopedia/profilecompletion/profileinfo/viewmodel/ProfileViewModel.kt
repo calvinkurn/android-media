@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.profilecompletion.profileinfo.data.ProfileInfoError
@@ -71,7 +70,7 @@ class ProfileViewModel @Inject constructor(
                 val param = uploader.createParams(filePath = image, sourceId = SOURCE_ID)
                 when (val result = uploader(param)) {
                     is UploadResult.Success -> saveProfilePicture(result.uploadId)
-                    is UploadResult.Error -> mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(result.message)
+                    else -> mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto((result as UploadResult.Error).message)
                 }
             } catch (e: Exception) {
                 mutableErrorMessage.value = ProfileInfoError.ErrorSavePhoto(e.message)

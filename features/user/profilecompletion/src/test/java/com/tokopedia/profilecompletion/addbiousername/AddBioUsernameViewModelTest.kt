@@ -18,7 +18,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -305,11 +304,13 @@ class AddBioUsernameViewModelTest {
 
         //When
         viewModel.validateUsername(dummyUsername)
-        viewModel.cancelValidation()
+        val result = viewModel.cancelValidation()
 
         //Then
         coVerify(exactly = 0) {
             validateUsecase(any())
+            assertTrue(viewModel.validationUsernameJob?.isCancelled == true)
+            assertTrue(result)
         }
     }
 }
