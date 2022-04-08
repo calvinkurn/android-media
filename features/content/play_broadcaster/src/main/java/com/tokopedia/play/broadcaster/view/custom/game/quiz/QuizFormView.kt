@@ -243,8 +243,8 @@ class QuizFormView : ConstraintLayout {
         val second = millis.millisToRemainingSeconds()
 
         val stringBuilder = StringBuilder()
-        if (minute > 0) stringBuilder.append(context.getString(R.string.play_interactive_minute, minute))
-        if (second > 0) stringBuilder.append(" ").append(context.getString(R.string.play_interactive_second, second))
+        if (minute > 0) stringBuilder.append(context.getString(R.string.play_interactive_minute, minute)).append(" ")
+        if (second > 0) stringBuilder.append(context.getString(R.string.play_interactive_second, second))
         return stringBuilder.toString()
     }
 
