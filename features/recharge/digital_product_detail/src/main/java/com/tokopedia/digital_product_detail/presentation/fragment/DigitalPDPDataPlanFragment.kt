@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
@@ -52,6 +51,9 @@ import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagCompon
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpDataPlanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
+import com.tokopedia.digital_product_detail.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.FilterPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.ProductDescBottomSheet
@@ -60,6 +62,7 @@ import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistory
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.utils.setupDynamicScrollListener
 import com.tokopedia.digital_product_detail.presentation.utils.toggle
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPDataPlanViewModel
@@ -78,12 +81,12 @@ import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomFullListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
-import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -325,9 +328,9 @@ class DigitalPDPDataPlanFragment :
             }
         })
 
-        viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
+        viewModel.favoriteChipsData.observe(viewLifecycleOwner, {
             when (it) {
-                is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
+                is RechargeNetworkResult.Success -> onSuccessGetFavoriteChips(it.data)
                 is RechargeNetworkResult.Loading -> {
                     binding?.rechargePdpPaketDataClientNumberWidget?.setFilterChipShimmer(true)
                 }
@@ -546,38 +549,33 @@ class DigitalPDPDataPlanFragment :
         }
     }
 
-    private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetFavoriteChips(favoriteChips: List<FavoriteChipModel>) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
-            setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            if (favoriteNumber.isNotEmpty()) {
-                setFilterChipShimmer(false, favoriteNumber.isEmpty())
-                setFavoriteNumber(favoriteNumber)
+            setFilterChipShimmer(false, favoriteChips.isEmpty())
+            if (favoriteChips.isNotEmpty()) {
+                setFavoriteNumber(DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
             }
             setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
-    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
-                setAutoCompleteList(autoComplete)
+                setAutoCompleteList(DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete))
             }
         }
     }
 
-    private fun onSuccessGetPrefill(prefills: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetPrefill(prefill: PrefillModel) {
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
-                if (isInputFieldEmpty() && prefills.isNotEmpty()) {
-                    if (prefills.first().subtitle.isNotEmpty()) {
-                        setContactName(prefills.first().title)
-                        setInputNumber(prefills.first().subtitle, true)
-                    } else {
-                        setInputNumber(prefills.first().title, true)
-                    }
+                if (isInputFieldEmpty()) {
+                    setContactName(prefill.clientName)
+                    setInputNumber(prefill.clientNumber)
                 }
             }
         }

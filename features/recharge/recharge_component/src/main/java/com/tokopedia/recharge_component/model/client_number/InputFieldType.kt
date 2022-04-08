@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_component.model
+package com.tokopedia.recharge_component.model.client_number
 
 import android.text.InputType
 import com.tokopedia.iconunify.IconUnify

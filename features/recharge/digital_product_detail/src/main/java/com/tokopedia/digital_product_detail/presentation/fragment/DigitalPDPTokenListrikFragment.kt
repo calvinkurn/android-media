@@ -22,9 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsTicker
-import com.tokopedia.common.topupbills.data.TopupBillsUserPerso
 import com.tokopedia.common.topupbills.data.constant.GeneralCategoryType
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
@@ -47,6 +45,9 @@ import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTokenListrikBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
+import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
+import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
+import com.tokopedia.digital_product_detail.domain.model.PrefillModel
 import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.SummaryTelcoBottomSheet
@@ -54,6 +55,7 @@ import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistory
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalKeyboardWatcher
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTokenListrikViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
@@ -69,12 +71,12 @@ import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.RechargeBuyWidgetListener
 import com.tokopedia.recharge_component.listener.RechargeDenomGridListener
 import com.tokopedia.recharge_component.listener.RechargeRecommendationCardListener
-import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.denom.DenomWidgetModel
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -223,7 +225,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 }
             }
         })
-        viewModel.favoriteNumberChipsData.observe(viewLifecycleOwner, {
+        viewModel.favoriteChipsData.observe(viewLifecycleOwner, {
             when (it) {
                 is RechargeNetworkResult.Success -> onSuccessGetFavoriteNumber(it.data)
                 is RechargeNetworkResult.Loading -> {
@@ -546,38 +548,34 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         loader?.dialog?.dismiss()
     }
 
-    private fun onSuccessGetFavoriteNumber(favoriteNumber: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetFavoriteNumber(favoriteChips: List<FavoriteChipModel>) {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-            setFilterChipShimmer(false, favoriteNumber.isEmpty())
-            if (favoriteNumber.isNotEmpty()) {
-                setFilterChipShimmer(false, favoriteNumber.isEmpty())
-                setFavoriteNumber(favoriteNumber)
+            setFilterChipShimmer(false, favoriteChips.isEmpty())
+            if (favoriteChips.isNotEmpty()) {
+                setFilterChipShimmer(false, favoriteChips.isEmpty())
+                setFavoriteNumber(DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
             }
             setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
         }
     }
 
-    private fun onSuccessGetAutoComplete(autoComplete: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetAutoComplete(autoComplete: List<AutoCompleteModel>) {
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
-                setAutoCompleteList(autoComplete)
+                setAutoCompleteList(DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete))
             }
         }
     }
 
-    private fun onSuccessGetPrefill(prefills: List<TopupBillsPersoFavNumberItem>) {
+    private fun onSuccessGetPrefill(prefill: PrefillModel) {
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
                 setInputNumber(clientNumber, true)
             } else {
-                if (isInputFieldEmpty() && prefills.isNotEmpty()) {
-                    if (prefills.first().subtitle.isNotEmpty()) {
-                        setContactName(prefills.first().title)
-                        setInputNumber(prefills.first().subtitle, true)
-                    } else {
-                        setInputNumber(prefills.first().title, true)
-                    }
+                if (isInputFieldEmpty()) {
+                    setContactName(prefill.clientName)
+                    setInputNumber(prefill.clientNumber, true)
                 }
             }
         }
