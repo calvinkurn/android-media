@@ -22,6 +22,7 @@ class ReschedulePickupFailedDialog(private val context: Context) {
 
     fun init() {
         binding = ReschedulePickupFailedDialogBinding.inflate(LayoutInflater.from(context))
+        binding?.ivFailedRpu?.setImageUrl(FAILED_RPU_ILLUSTRATION)
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
             if (DeviceScreenInfo.isTablet(context)) {
                 dialogMaxWidth = getScreenWidth() / 2
@@ -52,5 +53,9 @@ class ReschedulePickupFailedDialog(private val context: Context) {
 
     fun dismiss() {
         dialogUnify?.dismiss()
+    }
+
+    companion object {
+        private const val FAILED_RPU_ILLUSTRATION = "https://images.tokopedia.net/img/android/rpu/failed_reschedule_pickup.png"
     }
 }

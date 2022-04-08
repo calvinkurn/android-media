@@ -9,10 +9,10 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_failed_rpu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_illustration_gagal" />
+        android:layout_gravity="center" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
