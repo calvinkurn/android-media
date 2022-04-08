@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.vouchercreation.common.utils.ResourceProvider
 import com.tokopedia.vouchercreation.product.create.data.response.ProductId
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponSettings
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
@@ -16,6 +17,7 @@ import com.tokopedia.vouchercreation.product.list.view.model.ProductUiModel
 import com.tokopedia.vouchercreation.product.list.view.model.VariantUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
 import org.junit.Before
@@ -40,13 +42,17 @@ class ManageProductViewModelTest {
     @RelaxedMockK
     lateinit var validateVoucherUseCase: ValidateVoucherUseCase
 
+    @RelaxedMockK
+    lateinit var resourceProvider: ResourceProvider
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ManageProductViewModel(
             testCoroutineDispatcherProvider,
             getProductListUseCase,
-            validateVoucherUseCase
+            validateVoucherUseCase,
+            resourceProvider
         )
         spykViewModel = spyk(viewModel)
     }
@@ -158,6 +164,27 @@ class ManageProductViewModelTest {
     }
 
     @Test
+    fun `check if updateProductUiModelsDisplayMode should return mocked data if isViewing true`() {
+        val mockProductId1 = "1234"
+        val mockProductId2 = "5678"
+        val mockListVariantData = listOf(
+            Pair("567", false),
+            Pair("568", false)
+        )
+        val mockProductList = listOf(
+            getMockProductUiModelWithVariant(mockProductId1, mockListVariantData),
+            getMockProductUiModelWithVariant(mockProductId2, mockListVariantData)
+        )
+        val result = viewModel.updateProductUiModelsDisplayMode(
+            isViewing = true,
+            isEditing = false,
+            productList = mockProductList
+        )
+        assert(result.size == mockProductList.size)
+        assert(result.first() == mockProductList.first())
+    }
+
+    @Test
     fun `check if filterSelectedProductVariant should return product list if there is selected variant`() {
         val mockProductId1 = "1234"
         val mockProductId2 = "5678"
@@ -207,6 +234,10 @@ class ManageProductViewModelTest {
     fun `check if applyValidationResult return value match with validationResults`() {
         val mockProductId = "1234"
         val mockProductVariantId = "12345"
+        val mockIsEditing = false
+        every {
+            resourceProvider.getFormattedSku()
+        } returns "sku"
         val mockProductList = listOf(
             getMockProductUiModel(mockProductId)
         )
@@ -217,8 +248,34 @@ class ManageProductViewModelTest {
             )
         )
         val result = viewModel.applyValidationResult(
+            mockIsEditing,
             mockProductList,
-            mockValidationResult
+            mockValidationResult,
+        )
+        assert(result.first().variants.first().sku.isNotEmpty())
+    }
+
+    @Test
+    fun `check if applyValidationResult return value match with validationResults if isEditing true`() {
+        val mockProductId = "1234"
+        val mockProductVariantId = "12345"
+        val mockIsEditing = true
+        every {
+            resourceProvider.getFormattedSku()
+        } returns "sku"
+        val mockProductList = listOf(
+            getMockProductUiModel(mockProductId, mockIsEditing)
+        )
+        val mockValidationResult = listOf(
+            getMockVoucherValidationPartialProduct(
+                mockProductId,
+                listOf(mockProductVariantId)
+            )
+        )
+        val result = viewModel.applyValidationResult(
+            mockIsEditing,
+            mockProductList,
+            mockValidationResult,
         )
         assert(result.first().variants.first().sku.isNotEmpty())
     }
@@ -578,9 +635,13 @@ class ManageProductViewModelTest {
         )
     }
 
-    private fun getMockProductUiModel(productId: String): ProductUiModel {
+    private fun getMockProductUiModel(
+        productId: String,
+        isEditing: Boolean = false
+    ): ProductUiModel {
         return ProductUiModel(
-            id = productId
+            id = productId,
+            isEditing = isEditing
         )
     }
 
@@ -613,7 +674,7 @@ class ManageProductViewModelTest {
         return ProductData(
             productId,
             name = "",
-            GoodsPriceRange(0.0, 0.0),
+            GoodsPriceRange(0L, 0L),
             stock = 1,
             stockReserved = 1,
             hasStockReserved = true,
