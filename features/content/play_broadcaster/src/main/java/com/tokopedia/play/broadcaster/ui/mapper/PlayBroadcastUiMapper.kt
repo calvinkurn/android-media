@@ -309,7 +309,7 @@ class PlayBroadcastUiMapper(
     override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
-        val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSecond.map {
+        val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSeconds.map {
             TimeUnit.SECONDS.toMillis(it.toLong())
         }
 

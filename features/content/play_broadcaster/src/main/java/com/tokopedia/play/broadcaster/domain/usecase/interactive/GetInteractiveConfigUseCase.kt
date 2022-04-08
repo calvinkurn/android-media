@@ -30,22 +30,18 @@ class GetInteractiveConfigUseCase @Inject constructor(
               interactiveDuration
               countdownPickerTime
             }
+            quizConfig {
+              isActive
+              maxTitleLength
+              maxChoicesCount
+              minChoicesCount
+              maxRewardLength
+              maxChoiceLength
+              quizDurationsInSeconds
+            }
           }
         }
     """
-
-    /** TODO: should add this one later on */
-    /**
-     * quizConfig {
-            isActive
-            maxTitleLength
-            maxChoicesCount
-            minChoicesCount
-            maxRewardLength
-            maxChoiceLength
-            quizDurationsInSecond
-        }
-     */
 
     init {
         setGraphqlQuery(query)

@@ -1111,13 +1111,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
 
             val quizData = _quizFormData.value
-//            repo.createInteractiveQuiz(
-//                channelId = channelId,
-//                question = quizData.title,
-//                prize = quizData.gift,
-//                runningTime = quizData.duration,
-//                choices = quizData.options.map { Pair(it.text, it.isSelected) }
-//            )
+            repo.createInteractiveQuiz(
+                channelId = channelId,
+                question = quizData.title,
+                prize = quizData.gift,
+                runningTime = quizData.duration,
+                choices = quizData.options.map { Pair(it.text, it.isSelected) }
+            )
 
             /** Reset Form */
             sharedPref.setNotFirstSelectQuizOption()

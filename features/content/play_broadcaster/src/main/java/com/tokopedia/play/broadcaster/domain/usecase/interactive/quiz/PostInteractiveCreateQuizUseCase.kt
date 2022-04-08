@@ -15,17 +15,12 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
 ) : RetryableGraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     private val query = """
-        type Choice {
-            text: String!,
-            correct: Boolean
-        }
-        
         mutation PostInteractiveCreateQuizUseCase(
             ${"$$PARAM_CHANNEL_ID"}: String!, 
             ${"$$PARAM_QUESTION"}: String!, 
-            ${"$$PARAM_PRIZE"}: String!, 
-            ${"$$PARAM_RUNNING_TIME"}: Long!,
-            ${"$$PARAM_CHOICES"}: [Choice]!
+            ${"$$PARAM_PRIZE"}: String, 
+            ${"$$PARAM_RUNNING_TIME"}: Int!,
+            ${"$$PARAM_CHOICES"}: [PlayInteractiveQuizChoiceInput!]!
         ) {
           playInteractiveSellerCreateQuiz(input: {
             channelID: ${"$$PARAM_CHANNEL_ID"},
