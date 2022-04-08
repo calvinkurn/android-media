@@ -131,12 +131,14 @@ class DigitalPDPPulsaViewModel @Inject constructor(
     }
 
     fun getFavoriteNumbers(categoryIds: List<Int>, favoriteNumberTypes: List<FavoriteNumberType>) {
-        viewModelScope.launch(dispatchers.main, block = {
+        viewModelScope.launchCatchError(dispatchers.main, block = {
             val data = repo.getFavoriteNumbers(favoriteNumberTypes, categoryIds)
             _favoriteNumberChipsData.value = RechargeNetworkResult.Success(data.favoriteNumberChips.persoFavoriteNumber.items)
             _autoCompleteData.value = RechargeNetworkResult.Success(data.favoriteNumberList.persoFavoriteNumber.items)
             _prefillData.value = RechargeNetworkResult.Success(data.favoriteNumberPrefill.persoFavoriteNumber.items)
-        })
+        }) {
+            // this section is not reachable due to no fail scenario
+        }
     }
 
     fun setPrefixOperatorLoading(){
