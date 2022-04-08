@@ -2929,7 +2929,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             id = channelId,
             warehouseId = "",
             state = HomeLayoutItemState.LOADED,
-            isSender = false
+            isSender = false,
+            userStatus = "1"
         )
 
         onValidateReferralSender_thenReturn(slug, validateReferral)
@@ -2984,7 +2985,8 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             id = channelId,
             warehouseId = "",
             state = HomeLayoutItemState.LOADED,
-            isSender = false
+            isSender = false,
+            userStatus = "2"
         )
 
         addHomeLayoutItem(HomeLayoutItemUiModel(
