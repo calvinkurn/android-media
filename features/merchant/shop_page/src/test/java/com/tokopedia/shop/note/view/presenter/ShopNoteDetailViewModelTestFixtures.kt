@@ -1,6 +1,7 @@
 package com.tokopedia.shop.note.view.presenter
 
-import com.tokopedia.shop.common.domain.GetShopNoteUseCase
+import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
+import com.tokopedia.shop_widget.note.view.viewmodel.ShopNoteDetailViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
