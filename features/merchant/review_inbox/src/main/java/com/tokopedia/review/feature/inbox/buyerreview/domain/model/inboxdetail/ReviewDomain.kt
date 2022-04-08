@@ -5,7 +5,7 @@ package com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail
  */
 data class ReviewDomain(
     val data: List<ReviewItemDomain> = listOf(),
-    val reputationId: Long = 0L,
+    val reputationId: String = "",
     val userData: UserDataDomain = UserDataDomain(),
     val shopData: ShopDataDomain = ShopDataDomain(),
     val invoiceRefNum: String = "",

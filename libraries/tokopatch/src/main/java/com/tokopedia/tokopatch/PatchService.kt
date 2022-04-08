@@ -14,8 +14,14 @@ import com.tokopedia.tokopatch.domain.repository.PatchRepository
 import com.tokopedia.tokopatch.model.Patch
 import com.tokopedia.tokopatch.model.Tester
 import com.tokopedia.tokopatch.patch.PatchExecutors
-import com.tokopedia.tokopatch.utils.*
-import kotlinx.coroutines.*
+import com.tokopedia.tokopatch.utils.Decoder
+import com.tokopedia.tokopatch.utils.Jwt
+import com.tokopedia.tokopatch.utils.PatchLogger
+import com.tokopedia.tokopatch.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -145,9 +151,9 @@ class PatchService(val context: Context) {
     }
 
     private fun decodeData(result: DataResponse.Result, patchList: MutableList<Patch>) {
-        val file = File.createTempFile(result.versionName, ".zip", context.cacheDir)
-        val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
         try {
+            val file = File.createTempFile(result.versionName, ".zip", context.cacheDir)
+            val bufferedOutputStream = BufferedOutputStream(FileOutputStream(file))
             val decodedBytes = Decoder.decrypt(result.signature, result.data)
             decodedBytes?.let {
                 bufferedOutputStream.write(decodedBytes)
@@ -160,15 +166,30 @@ class PatchService(val context: Context) {
                 p.debug = !isProd
                 patchList.add(p)
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
             try {
                 bufferedOutputStream.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        } catch (e: IOException) {
+            deleteTempFiles(context.cacheDir)
+            e.printStackTrace()
         }
     }
 
+    private fun deleteTempFiles(file: File): Boolean {
+        if (file.isDirectory) {
+            val files = file.listFiles()
+            if (files != null) {
+                for (f in files) {
+                    if (f.isDirectory) {
+                        deleteTempFiles(f)
+                    } else {
+                        f.delete()
+                    }
+                }
+            }
+        }
+        return file.delete()
+    }
 }

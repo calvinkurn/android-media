@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class InboxReputationDetailPojo(
     @SerializedName("reputation_id")
     @Expose
-    val reputationId: Long = 0,
+    val reputationId: String = "",
 
     @SerializedName("review_inbox_data")
     @Expose

@@ -35,7 +35,7 @@ interface InboxReputationDetail {
         fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>)
         val tab: Int
         fun getErrorMessage(throwable: Throwable = Throwable()): String
-        fun onGoToReportReview(shopId: Long, reviewId: String?)
+        fun onGoToReportReview(shopId: String, reviewId: String?)
         fun onSuccessSendSmiley(score: Int)
         fun onErrorFavoriteShop(errorMessage: String?)
         fun onSuccessFavoriteShop()
@@ -48,8 +48,8 @@ interface InboxReputationDetail {
 
         fun onGoToProductDetail(productId: String?, productAvatar: String?, productName: String?)
         fun onSmoothScrollToReplyView(adapterPosition: Int)
-        fun onGoToProfile(reviewerId: Long)
-        fun onGoToShopInfo(shopId: Long)
+        fun onGoToProfile(reviewerId: String)
+        fun onGoToShopInfo(shopId: String)
         fun getShopId(): String
         fun onClickReviewOverflowMenu(
             inboxReputationDetailItemUiModel: InboxReputationDetailItemUiModel,
@@ -64,6 +64,6 @@ interface InboxReputationDetail {
 
     interface Presenter : CustomerPresenter<View?> {
         fun getInboxDetail(id: String, anInt: Int)
-        fun sendSmiley(reputationId: String, score: String, role: Int)
+        fun sendSmiley(reputationId: String, score: String, role: String)
     }
 }

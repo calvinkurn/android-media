@@ -10,11 +10,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
-import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
 import com.tokopedia.seller.menu.databinding.FragmentSellerSettingsBinding
 import com.tokopedia.seller.menu.di.component.DaggerSellerMenuComponent
 import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapter
+import com.tokopedia.seller.menu.presentation.adapter.SellerMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.presentation.util.SellerSettingsList
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -57,11 +57,13 @@ class SellerSettingsFragment: Fragment(), SettingTrackingListener {
     private fun setupSettingsList() {
         context?.let { context ->
             val settingsList = SellerSettingsList.create(context)
-            val adapter = SellerMenuAdapter(OtherMenuAdapterTypeFactory(
-                this,
-                sellerMenuTracker = sellerMenuTracker,
-                userSession = userSession
-            ))
+            val adapter = SellerMenuAdapter(
+                SellerMenuAdapterTypeFactory(
+                    this,
+                    sellerMenuTracker = sellerMenuTracker,
+                    userSession = userSession
+                )
+            )
 
             binding?.listSettings?.run {
                 this.adapter = adapter

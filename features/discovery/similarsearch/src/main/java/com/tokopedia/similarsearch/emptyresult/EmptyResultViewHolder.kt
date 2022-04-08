@@ -3,7 +3,8 @@ package com.tokopedia.similarsearch.emptyresult
 import android.view.View
 import com.tokopedia.similarsearch.R
 import com.tokopedia.similarsearch.abstraction.BaseViewHolder
-import kotlinx.android.synthetic.main.similar_search_empty_result_layout.view.*
+import com.tokopedia.similarsearch.databinding.SimilarSearchEmptyResultLayoutBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class EmptyResultViewHolder(
         itemView: View,
@@ -13,9 +14,10 @@ internal class EmptyResultViewHolder(
     companion object {
         val LAYOUT = R.layout.similar_search_empty_result_layout
     }
+    private var binding: SimilarSearchEmptyResultLayoutBinding? by viewBinding()
 
     override fun bind(item: EmptyResultViewModel) {
-        itemView.similarSearchEmptyButton?.setOnClickListener {
+        binding?.similarSearchEmptyButton?.setOnClickListener {
             emptyResultListener.onEmptyResultButtonClicked()
         }
     }

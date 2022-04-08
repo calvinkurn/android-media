@@ -40,7 +40,7 @@
     <string name="min_buy_x">Minimum Pembelian %1$d</string>
     <string name="product_is_at_status_x">Product berada dalam status %1$s</string>
     <string name="multiorigin_desc">Barang dikirim dari lokasi penyimpanan terdekat.</string>
-    <string name="success_to_report">Laporanmu sudah tercatat dan akan segera diproses.</string>
+    <string name="success_to_report">Laporanmu sedang diproses. Tunggu email update-nya maks. 1x12 jam, ya.</string>
     <string name="pdp_search_hint">Cari %s di Tokopedia</string>
     <string name="pdp_search_hint_tokonow">Cari "'"%s"'" di Tokopedia NOW!</string>
 
@@ -102,7 +102,7 @@
     <string name="terjual_single_text_template_builder">%1s barang berhasil terjual</string>
     <string name="wishlist_single_text_template_builder">%1s orang menyukai barang ini</string>
     <string name="view_single_text__template_builder">%1s orang melihat barang ini</string>
-    <string name="label_buyer_photos">Foto Pembeli</string>
+    <string name="label_buyer_photos">Foto &amp; Video Pembeli</string>
 
     <!--Social Proof 2-->
     <string name="label_stock_builder">%1s stok tersedia</string>
