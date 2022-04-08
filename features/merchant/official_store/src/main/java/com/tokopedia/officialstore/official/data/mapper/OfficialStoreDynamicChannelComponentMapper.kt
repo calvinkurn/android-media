@@ -99,8 +99,11 @@ object OfficialStoreDynamicChannelComponentMapper {
                             shop =  ChannelShop(
                                     id = it.shop?.shopId?: "",
                                     shopName = it.shop?.name?: "",
-                                    shopApplink = it.shop?.applink?: ""
-                            ),
+                                    shopApplink = it.shop?.applink?: "",
+                                    shopLocation = it.shop?.city?:"",
+                                    shopProfileUrl = it.shop?.imageUrl?:"",
+                                    shopUrl = it.shop?.url?:"",
+                                    ),
                             badges = it.badges?.map { badge ->
                                 ChannelGridBadges(
                                         imageUrl = badge.imageUrl
@@ -108,7 +111,8 @@ object OfficialStoreDynamicChannelComponentMapper {
                             } ?: listOf(),
                             backColor = it.backColor,
                             productImageUrl = it.productImageUrl,
-                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value)
+                            benefit = ChannelBenefit(it.benefit.type, it.benefit.value),
+                            expiredTime = it.expiredTime
                     )
                 }
         )
