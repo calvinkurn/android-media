@@ -15,24 +15,24 @@ object UserSessionDataStoreClient {
     private const val PREFERENCE_FILE = "tkpd_master_key_preference"
 
     fun createAead(context: Context): Aead {
-	return if(::aead.isInitialized) {
+	return if (::aead.isInitialized) {
 	    aead
 	} else {
 	    AeadConfig.register()
-	    aead =  AndroidKeysetManager.Builder()
-		    .withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
-		    .withKeyTemplate(KeyTemplates.get("AES256_GCM"))
-		    .withMasterKeyUri(MASTER_KEY_URI)
-		    .build()
-		    .keysetHandle
-		    .getPrimitive(Aead::class.java)
+	    aead = AndroidKeysetManager.Builder()
+		.withSharedPref(context.applicationContext, KEYSET_NAME, PREFERENCE_FILE)
+		.withKeyTemplate(KeyTemplates.get("AES256_GCM"))
+		.withMasterKeyUri(MASTER_KEY_URI)
+		.build()
+		.keysetHandle
+		.getPrimitive(Aead::class.java)
 	    aead
 	}
     }
 
     fun getInstance(context: Context): UserSessionDataStore {
-        if(::userSessionDataStore.isInitialized) {
-            return userSessionDataStore
+	if (::userSessionDataStore.isInitialized) {
+	    return userSessionDataStore
 	}
 	userSessionDataStore = UserSessionDataStoreImpl(context)
 	return userSessionDataStore
