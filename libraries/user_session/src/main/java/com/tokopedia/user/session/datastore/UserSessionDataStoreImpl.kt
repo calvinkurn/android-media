@@ -14,20 +14,17 @@ import okhttp3.internal.toLongOrDefault
 import java.security.MessageDigest
 import kotlin.experimental.and
 
-class UserSessionDataStoreImpl (val context: Context):
-    UserSessionDataStore {
-
-    private val Context.userSessionStore: DataStore<UserSessionProto> by dataStore(
-        fileName = UserSessionDataStoreImpl.DATA_STORE_FILE_NAME,
-        serializer = UserSessionSerializer(UserSessionDataStoreClient.createAead(context))
-    )
+class UserSessionDataStoreImpl(
+    private val context: Context,
+    private val store: DataStore<UserSessionProto>
+) : UserSessionDataStore {
 
     fun getUserSessionFlow(): Flow<UserSessionProto> {
-        return context.userSessionStore.data
+        return store.data
     }
 
     suspend fun getUserSessionSuspend(): UserData {
-        val proto = context.userSessionStore.data.first()
+        val proto = store.data.first()
         return UserData(
             name = proto.name,
             email = proto.email,
@@ -38,16 +35,19 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override fun getUserSession(): Flow<UserData> {
-        return getUserSessionFlow().map { UserData(
-            name = it.name,
-            email = it.email,
-            phoneNumber = it.phoneNumber,
-            accessToken = it.accessToken,
-            refreshToken = it.refreshToken
-        ) }
+        return getUserSessionFlow().map {
+            UserData(
+                name = it.name,
+                email = it.email,
+                phoneNumber = it.phoneNumber,
+                accessToken = it.accessToken,
+                refreshToken = it.refreshToken
+            )
+        }
     }
+
     private suspend fun userSessionSetter(func: UserSessionProto.Builder.() -> Unit) {
-        context.userSessionStore.updateData { preferences ->
+        store.updateData { preferences ->
             preferences.toBuilder()
                 .also { func(it) }
                 .build()
@@ -459,7 +459,8 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override suspend fun setAndroidId(androidId: String) {
-        val android_id = md5(Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID))
+        val android_id =
+            md5(Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID))
         userSessionSetter { setAndroidId(android_id) }
     }
 
@@ -514,7 +515,7 @@ class UserSessionDataStoreImpl (val context: Context):
     }
 
     override suspend fun clearDataStore() {
-        context.userSessionStore.updateData {
+        store.updateData {
             it.toBuilder().clear().build()
         }
     }
@@ -526,7 +527,7 @@ class UserSessionDataStoreImpl (val context: Context):
             val messageDigest = digest.digest()
             val hexString = StringBuilder()
             for (b in messageDigest) {
-                hexString.append(String.format("%02x", b and(0xff).toByte()))
+                hexString.append(String.format("%02x", b and (0xff).toByte()))
             }
             hexString.toString()
         } catch (e: Exception) {
@@ -537,7 +538,6 @@ class UserSessionDataStoreImpl (val context: Context):
 
     companion object {
         const val USER_PREFERENCES_NAME = "user_session"
-        const val DATA_STORE_FILE_NAME = "user_session.pb"
         const val SORT_ORDER_KEY = "sort_order"
 
         const val USER_SESSION_AB_TEST_KEY = "android_data_store"
