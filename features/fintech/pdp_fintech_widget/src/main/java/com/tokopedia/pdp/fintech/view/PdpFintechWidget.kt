@@ -133,6 +133,30 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView?.adapter = fintechWidgetAdapter
     }
 
+    private fun sendClickEvent(
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        rediretionLink: String
+    ) {
+
+        if (fintechRedirectionWidgetDataClass.gatewayId == 0)
+            FintechWidgetAnalyticsEvent.PdpWidgetClick(
+                this.productID,
+                fintechRedirectionWidgetDataClass.linkingStatus,
+                fintechRedirectionWidgetDataClass.userStatus, "NON-BRANDED",
+                "${fintechRedirectionWidgetDataClass.tenure}",
+                fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+            )
+        else
+            FintechWidgetAnalyticsEvent.PdpWidgetClick(
+                this.productID,
+                fintechRedirectionWidgetDataClass.linkingStatus,
+                fintechRedirectionWidgetDataClass.userStatus, "BRANDED",
+                "${fintechRedirectionWidgetDataClass.tenure}",
+                fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+            )
+    }
+
+
     private fun routeToPdp(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
         val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
                 "?productID=${this.productID}" +
@@ -140,6 +164,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                 "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                 "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}" +
                 "&productURL=${setProductUrl()}"
+
+        sendClickEvent(fintechRedirectionWidgetDataClass, rediretionLink)
         instanceProductUpdateListner?.fintechChipClicked(
             fintechRedirectionWidgetDataClass,
             rediretionLink
@@ -177,8 +203,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
-        }
-        finally {
+        } finally {
             this.logInStatus = loggedIn
         }
     }
@@ -216,7 +241,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
         for (i in 0 until chipList.size) {
-            if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
+            if (chipList[i].gatewayId == 0)
                 pdpWidgetAnalytics.get().sendAnalyticsEvent(
                     FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                         productID ?: "",
