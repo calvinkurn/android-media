@@ -16,9 +16,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
@@ -34,22 +32,16 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.AtcProductAction
 import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
 import com.tokopedia.play.view.uimodel.action.BuyProductAction
 import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
 import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
 import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
-import com.tokopedia.play.view.uimodel.event.AtcSuccessEvent
-import com.tokopedia.play.view.uimodel.event.BuySuccessEvent
-import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
-import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
-import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
@@ -67,15 +59,11 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.utils.date.DateUtil
-import com.tokopedia.utils.date.toDate
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -89,9 +77,6 @@ class PlayBottomSheetFragment @Inject constructor(
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
         PlayInteractiveLeaderboardViewComponent.Listener,
-        KebabMenuSheetViewComponent.Listener,
-        PlayUserReportSheetViewComponent.Listener,
-        PlayUserReportSubmissionViewComponent.Listener,
         ShopCouponSheetViewComponent.Listener
 {
 
@@ -99,16 +84,12 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-        private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
-    private val kebabMenuSheetView by viewComponent { KebabMenuSheetViewComponent(it, this) }
-    private val userReportSheetView by viewComponent { PlayUserReportSheetViewComponent(it, this) }
-    private val userReportSubmissionSheetView by viewComponent { PlayUserReportSubmissionViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -118,15 +99,10 @@ class PlayBottomSheetFragment @Inject constructor(
     private val variantSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_VARIANT_SHEET_HEIGHT).toInt()
 
-    private val userReportSheetHeight: Int
-        get() = (requireView().height * PERCENT_FULL_SHEET_HEIGHT).toInt()
-
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
     private lateinit var productAnalyticHelper: ProductAnalyticHelper
-
-    private var userReportTimeMillis: Date = Date()
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
@@ -267,106 +243,6 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     /**
-     * KebabMenuSheet View Component Listener
-     */
-    override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
-        playViewModel.hideKebabMenuSheet()
-    }
-
-    override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        shouldOpenUserReport()
-    }
-
-    /**
-     * UserReportSheet View Component Listener
-     */
-
-    private fun unlistenKeyboard(){
-        playFragment.view?.let {
-            playFragment.unregisterKeyboardListener(it)
-        }
-    }
-
-    private fun listenKeyboard(){
-        playFragment.view?.postDelayed({
-            playFragment.view?.let { playFragment.registerKeyboardListener(it) }
-        }, PlayFragment.KEYBOARD_REGISTER_DELAY)
-    }
-
-    override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
-        unlistenKeyboard()
-
-        userReportTimeMillis = Calendar.getInstance().time
-        playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
-        userReportSubmissionSheetView.setView(item)
-    }
-
-    override fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent) {
-        playViewModel.hideUserReportSheet()
-    }
-
-    override fun onFooterClicked(view: PlayUserReportSheetViewComponent) {
-        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
-    }
-
-    /**
-     * UserReportSubmissionSheet View Component Listener
-     */
-
-    override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
-        listenKeyboard()
-        playViewModel.hideUserReportSubmissionSheet()
-    }
-
-    private fun onSubmitUserReport(reasonId: Int, description: String) {
-        analytic.clickUserReportSubmissionDialogSubmit()
-        val channelData = playViewModel.latestCompleteChannelData
-
-        viewModel.submitUserReport(
-            channelId = channelData.id.toLongOrZero(),
-            shopId = channelData.partnerInfo.id,
-            mediaUrl = getMediaUrl(channelData.id),
-            timestamp = getTimestampVideo(channelData.channelDetail.channelInfo.startTime),
-            reportDesc = description,
-            reasonId = reasonId
-        )
-    }
-
-    private fun getMediaUrl(channelId: String) : String = "${TokopediaUrl.getInstance().WEB}play/channel/$channelId"
-
-    private fun getTimestampVideo(startTime: String): Long{
-        return if(playViewModel.channelType.isLive){
-            val startTimeInMiliSecond : Date = try {
-                startTime.toDate(
-                    DateUtil.YYYY_MM_DD_T_HH_MM_SS
-                )
-            }catch (e: Exception){
-                Date()
-            }
-            val duration = userReportTimeMillis.time - startTimeInMiliSecond.time
-            TimeUnit.MILLISECONDS.toSeconds(duration)
-        }else{
-            TimeUnit.MILLISECONDS.toSeconds(playViewModel.getVideoTimestamp())
-        }
-    }
-
-    override fun onFooterClicked(view: PlayUserReportSubmissionViewComponent) {
-        openApplink(applink = getString(R.string.play_user_report_footer_weblink))
-    }
-
-    override fun onShowVerificationDialog(view: PlayUserReportSubmissionViewComponent, reasonId: Int, description: String) {
-        val isUse = description.isNotEmpty()
-        analytic.clickUserReportSubmissionBtnSubmit(isUse)
-
-        showDialog(title = getString(R.string.play_user_report_verification_dialog_title), description = getString(R.string.play_user_report_verification_dialog_desc),
-        primaryCTAText = getString(R.string.play_user_report_verification_dialog_btn_ok), secondaryCTAText = getString(R.string.play_pip_cancel),
-        primaryAction = {
-            onSubmitUserReport( reasonId, description)
-        })
-    }
-
-
-    /**
      * CouponSheet View Component Listener
      */
     override fun onCloseButtonClicked(view: ShopCouponSheetViewComponent) {
@@ -400,16 +276,11 @@ class PlayBottomSheetFragment @Inject constructor(
         variantSheetView.hide()
         couponSheetView.hide()
         leaderboardSheetView.hide()
-        kebabMenuSheetView.hide()
-        userReportSheetView.hide()
-        userReportSubmissionSheetView.hide()
     }
 
     private fun setupObserve() {
         observeLoggedInInteractionEvent()
         observeBottomInsetsState()
-        observeUserReport()
-        observeUserReportSubmission()
 
         observeUiState()
         observeUiEvent()
@@ -458,10 +329,6 @@ class PlayBottomSheetFragment @Inject constructor(
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product = product, sectionInfo = sectionInfo, position = position))
     }
 
-    private fun shouldOpenUserReport() {
-        viewModel.doInteractionEvent(InteractionEvent.OpenUserReport)
-    }
-
     private fun doShowToaster(
             bottomSheetType: BottomInsetsType,
             toasterType: Int,
@@ -470,7 +337,7 @@ class PlayBottomSheetFragment @Inject constructor(
             actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         when (bottomSheetType) {
-            BottomInsetsType.ProductSheet, BottomInsetsType.CouponSheet , BottomInsetsType.UserReportSubmissionSheet ->
+            BottomInsetsType.ProductSheet, BottomInsetsType.CouponSheet ->
                 Toaster.build(
                         view = requireView(),
                         text = message,
@@ -491,26 +358,6 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun showDialog(title: String, description: String, primaryCTAText: String, secondaryCTAText: String, primaryAction: () -> Unit, secondaryAction: () -> Unit = {}){
-        activity?.let {
-            val dialog = DialogUnify(context = it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.apply {
-                setTitle(title)
-                setDescription(description)
-                setPrimaryCTAText(primaryCTAText)
-                setPrimaryCTAClickListener {
-                    primaryAction()
-                    dismiss()
-                }
-                setSecondaryCTAText(secondaryCTAText)
-                setSecondaryCTAClickListener {
-                    secondaryAction()
-                    dismiss()
-                }
-            }.show()
-        }
-    }
-
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
         val statusBarHeight = view?.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
         val requiredMargin = offset16
@@ -527,7 +374,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
             is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product, event.sectionInfo, event.position)
-            is InteractionEvent.OpenUserReport -> doActionUserReport()
         }
     }
 
@@ -536,12 +382,6 @@ class PlayBottomSheetFragment @Inject constructor(
             analytic.clickProduct(product, configUiModel, position)
             openPageByApplink(product.applink, pipMode = true)
         }
-    }
-
-    private fun doActionUserReport(){
-        analytic.clickUserReport()
-        playViewModel.onShowUserReportSheet(userReportSheetHeight)
-        viewModel.getUserReportList()
     }
 
     private fun openLoginPage() {
@@ -578,35 +418,6 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * Observe
      */
-    private fun observeUserReport(){
-        viewModel.observableUserReportReasoning.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Loading -> if(it.showPlaceholder) userReportSheetView.showPlaceholder()
-                is PlayResult.Success -> userReportSheetView.setReportSheet(it.data)
-                is PlayResult.Failure -> userReportSheetView.showError(
-                    isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
-                    onError = it.onRetry
-                )
-            }
-        })
-    }
-
-    private fun observeUserReportSubmission(){
-        viewModel.observableUserReportSubmission.observe(viewLifecycleOwner, DistinctObserver {
-            when (it) {
-                is PlayResult.Success -> {
-                    playFragment.hideKeyboard()
-                    playViewModel.hideInsets(isKeyboardHandled = true)
-                    listenKeyboard()
-                }
-                is PlayResult.Failure -> doShowToaster(
-                    bottomSheetType = BottomInsetsType.UserReportSubmissionSheet,
-                    toasterType = Toaster.TYPE_ERROR,
-                    message = ErrorHandler.getErrorMessage(requireContext(), it.error)
-                )
-            }
-        })
-    }
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
@@ -645,21 +456,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()
-            }
-
-            it[BottomInsetsType.KebabMenuSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) kebabMenuSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else kebabMenuSheetView.hide()
-            }
-
-            it[BottomInsetsType.UserReportSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) userReportSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else userReportSheetView.hide()
-            }
-
-            it[BottomInsetsType.UserReportSubmissionSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) userReportSubmissionSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else userReportSubmissionSheetView.hide()
             }
         })
     }
@@ -704,58 +500,61 @@ class PlayBottomSheetFragment @Inject constructor(
         }
     }
 
-    private fun observeUiEvent() {
-        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-            playViewModel.uiEvent.collect { event ->
-                when (event) {
-                    is BuySuccessEvent -> {
-                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                    }
-                    is AtcSuccessEvent -> {
-                        val bottomInsetsType = if (event.isVariant) {
-                            BottomInsetsType.VariantSheet
-                        } else BottomInsetsType.ProductSheet //TEMPORARY
+    private fun observeUiEvent(){
+            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+                playViewModel.uiEvent.collect { event ->
+                    when (event) {
+                        is BuySuccessEvent -> {
+                            RouteManager.route(
+                                requireContext(),
+                                ApplinkConstInternalMarketplace.CART
+                            )
+                        }
+                        is ShowInfoEvent -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = getTextFromUiString(event.message)
+                            )
+                        }
+                        is ShowErrorEvent -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = ErrorHandler.getErrorMessage(requireContext(), event.error)
+                            )
+                        }
+                        is AtcSuccessEvent -> {
+                            val bottomInsetsType = if (event.isVariant) {
+                                BottomInsetsType.VariantSheet
+                            } else BottomInsetsType.ProductSheet //TEMPORARY
 
-                        doShowToaster(
-                            bottomSheetType = bottomInsetsType,
-                            toasterType = Toaster.TYPE_NORMAL,
-                            message = getString(R.string.play_add_to_cart_message_success),
-                            actionText = getString(R.string.play_action_view),
-                            actionClickListener = {
-                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                                analytic.clickSeeToasterAfterAtc()
-                            }
-                        )
+                            doShowToaster(
+                                bottomSheetType = bottomInsetsType,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = getString(R.string.play_add_to_cart_message_success),
+                                actionText = getString(R.string.play_action_view),
+                                actionClickListener = {
+                                    RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                    analytic.clickSeeToasterAfterAtc()
+                                }
+                            )
 
-                        if (event.isVariant) closeVariantSheet()
+                            if (event.isVariant) closeVariantSheet()
 
-                        analytic.clickProductAction(
-                            product = event.product,
-                            cartId = event.cartId,
-                            productAction = ProductAction.AddToCart,
-                            bottomInsetsType = bottomInsetsType,
-                            shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                            sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
-                        )
+                            analytic.clickProductAction(
+                                product = event.product,
+                                cartId = event.cartId,
+                                productAction = ProductAction.AddToCart,
+                                bottomInsetsType = bottomInsetsType,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
+                            )
+                        }
+                        else -> {}
                     }
-                    is ShowInfoEvent -> {
-                        doShowToaster(
-                            bottomSheetType = BottomInsetsType.ProductSheet,
-                            toasterType = Toaster.TYPE_NORMAL,
-                            message = getTextFromUiString(event.message)
-                        )
-                    }
-                    is ShowErrorEvent -> {
-                        doShowToaster(
-                            bottomSheetType = BottomInsetsType.ProductSheet,
-                            toasterType = Toaster.TYPE_ERROR,
-                            message = ErrorHandler.getErrorMessage(requireContext(), event.error)
-                        )
-                    }
-                    else -> {}
                 }
             }
-        }
     }
 
     private fun getTextFromUiString(uiString: UiString): String {

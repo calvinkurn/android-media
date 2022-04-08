@@ -11,6 +11,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -1388,7 +1389,7 @@ class ModelBuilder {
         val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
             title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
         )
-        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt), ResultState.Success)
     }
 
     fun generateResponseSectionGql(
