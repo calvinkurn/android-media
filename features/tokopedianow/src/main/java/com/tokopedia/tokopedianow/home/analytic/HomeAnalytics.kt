@@ -871,9 +871,16 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2906
     */
 
+    private fun getEventLabelReferralWidget(slug: String, referralCode: String, userStatus: String, referralStatus: String, warehouseId: String): String {
+        return "$slug - $referralCode - $userStatus - $referralStatus - $warehouseId"
+    }
+
     // - 1
     fun sendImpressSenderReferralWidget(
-        eventLabel: String,
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -881,7 +888,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_VIEW_PG_IRIS)
             .setEventAction(EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(eventLabel)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = referralStatus,
+                    warehouseId = warehouseId
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -893,7 +907,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     // - 2
     fun sendClickMoreSenderReferralWidget(
-        eventLabel: String,
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -901,7 +918,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_CLICK_PG)
             .setEventAction(EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(eventLabel)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = referralStatus,
+                    warehouseId = warehouseId
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -913,7 +937,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     // - 3
     fun sendClickShareSenderReferralWidget(
-        eventLabel: String,
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -921,7 +948,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_CLICK_PG)
             .setEventAction(EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(eventLabel)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = referralStatus,
+                    warehouseId = warehouseId
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -933,7 +967,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     // - 4
     fun sendImpressReceiverReferralWidget(
-        eventLabel: String,
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -941,7 +978,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_VIEW_PG_IRIS)
             .setEventAction(EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(eventLabel)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = referralStatus,
+                    warehouseId = warehouseId
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
@@ -953,7 +997,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
     // - 5
     fun sendClickCheckDetailReceiverReferralWidget(
-        eventLabel: String,
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -961,7 +1008,14 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             .setEvent(EVENT_CLICK_PG)
             .setEventAction(EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET)
             .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
-            .setEventLabel(eventLabel)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = referralStatus,
+                    warehouseId = warehouseId
+                )
+            )
             .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
             .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)

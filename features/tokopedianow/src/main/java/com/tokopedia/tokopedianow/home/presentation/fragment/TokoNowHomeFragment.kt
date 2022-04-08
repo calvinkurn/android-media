@@ -523,7 +523,10 @@ class TokoNowHomeFragment: Fragment(),
         openWebView(linkUrl)
 
         analytics.sendClickMoreSenderReferralWidget(
-            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            slug = slug,
+            referralCode = "",
+            userStatus = "1",
+            referralStatus = "2",
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -548,7 +551,10 @@ class TokoNowHomeFragment: Fragment(),
         openWebView(REFERRAL_PAGE_URL+slug)
 
         analytics.sendClickCheckDetailReceiverReferralWidget(
-            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            slug = slug,
+            referralCode = "",
+            userStatus = "1",
+            referralStatus = "2",
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -561,7 +567,10 @@ class TokoNowHomeFragment: Fragment(),
         warehouseId: String
     ) {
         analytics.sendImpressSenderReferralWidget(
-            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            slug = slug,
+            referralCode = "",
+            userStatus = "1",
+            referralStatus = "1",
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -574,7 +583,10 @@ class TokoNowHomeFragment: Fragment(),
         warehouseId: String
     ) {
         analytics.sendImpressReceiverReferralWidget(
-            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            slug = slug,
+            referralCode = "",
+            userStatus = "1",
+            referralStatus = "2",
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -1062,7 +1074,10 @@ class TokoNowHomeFragment: Fragment(),
 
         observe(viewModelTokoNow.sharingReferralUrlParam) {
             when(it) {
-                is Success -> onSuccessSharingReferralUrlParam(it.data)
+                is Success -> {
+                    onSuccessSharingReferralUrlParam(it.data)
+                    updateSharingReferral(false, it.data)
+                }
                 is Fail -> {
                     showToaster(
                         message = getString(R.string.tokopedianow_home_referral_toaster),
@@ -1070,11 +1085,10 @@ class TokoNowHomeFragment: Fragment(),
                     )
                 }
             }
-            updateSharingReferral(false)
         }
     }
 
-    private fun updateSharingReferral(isButtonLoading: Boolean) {
+    private fun updateSharingReferral(isButtonLoading: Boolean, sharingReferralUrlParam: String = "") {
         val item = adapter.getItem(HomeSharingReferralWidgetUiModel::class.java)
         if (item is HomeSharingReferralWidgetUiModel) {
             viewModelTokoNow.updateSharingReferral(item, isButtonLoading)
@@ -1084,6 +1098,7 @@ class TokoNowHomeFragment: Fragment(),
                     slug = item.slug,
                     campaignCode = item.campaignCode,
                     warehouseId = item.warehouseId,
+                    referralCode = sharingReferralUrlParam.removePrefix("${item.slug}/")
                 )
             }
         }
@@ -1175,9 +1190,12 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onRepurchaseAddToCart(position, quantity, data)
     }
 
-    private fun trackClickShareSenderReferralWidget(slug: String, campaignCode: String, warehouseId: String) {
+    private fun trackClickShareSenderReferralWidget(slug: String, referralCode: String, campaignCode: String, warehouseId: String) {
         analytics.sendClickShareSenderReferralWidget(
-            eventLabel = "$slug - {referral_code} - {user_status} - {referral_status} - $warehouseId",
+            slug = slug,
+            referralCode = referralCode,
+            userStatus = "1",
+            referralStatus = "2",
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
