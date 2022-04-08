@@ -28,12 +28,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
-    implementation projectOrAar(rootProject.ext.libraries.dataExplorer)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.screenRecorder)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
     implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    implementation projectOrAar(rootProject.ext.libraries.dataExplorer)
     implementation projectOrAar(rootProject.ext.libraries.pushNotification)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
