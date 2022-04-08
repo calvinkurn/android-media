@@ -552,7 +552,6 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             if (favoriteChips.isNotEmpty()) {
-                setFilterChipShimmer(false, favoriteChips.isEmpty())
                 setFavoriteNumber(DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
                 setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
             } else setupDynamicScrollViewPadding()
