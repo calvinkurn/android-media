@@ -7,16 +7,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.shopadmin.ShopAdminDeepLinkMapper
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -27,7 +24,6 @@ import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants.URL_PLAYSTORE
 import com.tokopedia.shopadmin.R
 import com.tokopedia.shopadmin.common.constants.AdminImageUrl
-import com.tokopedia.shopadmin.common.constants.Constants
 import com.tokopedia.shopadmin.common.utils.setTextMakeHyperlink
 import com.tokopedia.shopadmin.common.utils.setTypeGlobalError
 import com.tokopedia.shopadmin.databinding.FragmentAdminInvitationAcceptedBinding
@@ -35,7 +31,6 @@ import com.tokopedia.shopadmin.feature.invitationaccepted.di.component.AdminInvi
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.adapter.ItemFeatureAccessAdapter
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.bottomsheet.TncAdminBottomSheet
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.model.AdminPermissionUiModel
-import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.util.FeatureAccessItemDecoration
 import com.tokopedia.shopadmin.feature.invitationaccepted.presentation.viewmodel.AdminInvitationAcceptedViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -74,7 +69,12 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
         setShopNameFromArgs()
         hideViewGroup()
@@ -139,9 +139,6 @@ class AdminInvitationAcceptedFragment : BaseDaggerFragment() {
                 VERTICAL, false
             ) {
                 override fun canScrollVertically(): Boolean = false
-            }
-            if (itemDecorationCount.isZero()) {
-                addItemDecoration(FeatureAccessItemDecoration())
             }
             adapter = ItemFeatureAccessAdapter(featureAccessList)
         }

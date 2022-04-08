@@ -1,8 +1,8 @@
 package com.tokopedia.shopadmin.feature.invitationaccepted.domain.model
 
 
-import com.google.gson.annotations.SerializedName
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
 data class GetAdminPermissionResponse(
     @SerializedName("getAdminInfo")
@@ -23,7 +23,7 @@ data class GetAdminPermissionResponse(
                 @SerializedName("permission_name")
                 @Expose
                 val permissionName: String = "",
-                @SerializedName("iconUrl")
+                @SerializedName("icon_url")
                 @Expose
                 val iconUrl: String = ""
             )

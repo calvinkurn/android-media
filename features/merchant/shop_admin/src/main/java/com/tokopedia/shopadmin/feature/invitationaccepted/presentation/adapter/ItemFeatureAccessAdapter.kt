@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isOdd
+import com.tokopedia.kotlin.extensions.view.isEven
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shopadmin.databinding.ItemAdminFeatureAccessBinding
@@ -32,8 +32,8 @@ class ItemFeatureAccessAdapter(private val featureAccessList: List<AdminPermissi
 
             fun bind(item: AdminPermissionUiModel) {
                 with(binding) {
-                    dividerTopVertical.showWithCondition(adapterPosition > Int.ONE)
-                    dividerFeatureAccess.showWithCondition(adapterPosition.isOdd())
+                    dividerTopHorizontal.showWithCondition(adapterPosition < featureAccessList.size - Int.ONE)
+                    dividerFeatureAccessVertical.showWithCondition(adapterPosition.isEven())
 
                     setFeatureAccessImg(item.iconUrl)
                     setFeatureAccessTitle(item.permissionName)
@@ -62,4 +62,8 @@ class ItemFeatureAccessAdapter(private val featureAccessList: List<AdminPermissi
                 }
             }
         }
+
+    companion object {
+        const val TWO_LIMIT = 2
+    }
 }
