@@ -1138,6 +1138,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
      */
     private fun initQuizFormData() {
         needUpdateQuizForm(true) {
+            updateQuizEligibleDuration()
+
             val quizConfig = _gameConfig.value.quizConfig
 
             val initialOptions = List(quizConfig.minChoicesCount) {
@@ -1147,7 +1149,12 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 )
             }
 
-            _quizFormData.setValue { QuizFormDataUiModel(options = initialOptions) }
+            _quizFormData.setValue {
+                QuizFormDataUiModel(
+                    duration = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
+                    options = initialOptions
+                )
+            }
         }
     }
 
