@@ -227,7 +227,12 @@ class PlayVideoFragment @Inject constructor(
                 )
         }
         playViewModel.handleInetSpeed(PlayLiveRoomMetricsCommon.getInetSpeed(requireContext()))
-        playLog.sendAll(playViewModel.channelId, (playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl)
+        val url = when (playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer) {
+            is PlayVideoPlayerUiModel.General -> (playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl
+            is PlayVideoPlayerUiModel.YouTube -> (playViewModel.latestCompleteChannelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.YouTube).youtubeId
+            else -> ""
+        }
+        playLog.sendAll(playViewModel.channelId, url)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
