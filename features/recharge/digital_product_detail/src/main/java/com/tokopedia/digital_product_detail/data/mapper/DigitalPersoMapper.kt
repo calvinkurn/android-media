@@ -22,15 +22,11 @@ class DigitalPersoMapper @Inject constructor() {
 
     private fun mapDigiPersoPrefillToModel(data: TopupBillsPersoFavNumberData): PrefillModel {
         if (data.persoFavoriteNumber.items.isEmpty()) return PrefillModel()
-
         val persoPrefillData = data.persoFavoriteNumber.items.first()
-        val (clientName, clientNumber) = if (persoPrefillData.subtitle.isNotEmpty())
-            persoPrefillData.title to persoPrefillData.subtitle
-        else "" to persoPrefillData.title
 
         return PrefillModel(
-            clientName = clientName,
-            clientNumber = clientNumber
+            clientName = persoPrefillData.subtitle,
+            clientNumber = persoPrefillData.title
         )
     }
 
