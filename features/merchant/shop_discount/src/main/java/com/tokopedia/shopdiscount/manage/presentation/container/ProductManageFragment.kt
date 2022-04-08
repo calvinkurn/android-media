@@ -49,6 +49,8 @@ class ProductManageFragment : BaseDaggerFragment() {
         private const val ALPHA_INVISIBLE = 0F
         private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
         private const val ONE_PRODUCT = 1
+        private const val EMPTY_STATE_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -111,7 +113,11 @@ class ProductManageFragment : BaseDaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.setSelectedTabPosition(position)
-                    refreshSearchBarTitle()
+
+                    val currentTabPosition = viewModel.getSelectedTabPosition()
+                    val tab = viewModel.getSelectedTab(currentTabPosition)
+                    refreshSearchBarTitle(tab)
+                    handleEmptyState(tab)
                 }
             })
         }
@@ -182,14 +188,40 @@ class ProductManageFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         viewModel.setSelectedTabPosition(getCurrentTabPosition())
-        getTabsMeta()
+        getTabsMetadata()
     }
 
-    private fun refreshSearchBarTitle() {
-        val currentTabPosition = viewModel.getSelectedTabPosition()
-        val tab = viewModel.getSelectedTab(currentTabPosition)
+    private fun refreshSearchBarTitle(tab : PageTab) {
         binding?.searchBar?.isVisible = tab.count > ZERO
         binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
+    }
+
+
+    private fun handleEmptyState(tab: PageTab) {
+        if (tab.count == ZERO) {
+            binding?.emptyState?.visible()
+            showEmptyState(tab.discountStatusId)
+        } else {
+            binding?.emptyState?.gone()
+        }
+    }
+
+    private fun showEmptyState(discountStatusId : Int) {
+        val title = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_paused_discount_title)
+        } else {
+            getString(R.string.sd_no_paused_discount_description)
+        }
+
+        val description = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_discount_title)
+        } else {
+            getString(R.string.sd_no_discount_description)
+        }
+
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(title)
+        binding?.emptyState?.setDescription(description)
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
@@ -261,7 +293,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { getTabsMeta() }
+            globalError.setActionClickListener { getTabsMetadata() }
             root showError throwable
         }
 
@@ -311,10 +343,11 @@ class ProductManageFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun getTabsMeta() {
+    private fun getTabsMetadata() {
         binding?.shimmer?.content?.visible()
         binding?.groupContent?.gone()
         binding?.searchBar?.gone()
+        binding?.globalError?.gone()
         viewModel.getSlashPriceProductsMeta()
     }
 }

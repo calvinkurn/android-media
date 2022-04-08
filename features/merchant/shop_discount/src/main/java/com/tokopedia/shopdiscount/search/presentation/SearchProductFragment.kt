@@ -41,7 +41,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         private const val MAX_PRODUCT_SELECTION = 5
 
         private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
+            "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
 
         @JvmStatic
         fun newInstance(
