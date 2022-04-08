@@ -1,0 +1,37 @@
+[
+  {
+    "data": {
+      "kero_get_address": {
+        "data": [
+          {
+            "addr_id": 4764876,
+            "receiver_name": "fakhira",
+            "addr_name": "gedung trans",
+            "address_1": "alamat mampang gedung trans tv (gedung trans)",
+            "address_2": "",
+            "postal_code": "12790",
+            "province": 13,
+            "city": 175,
+            "district": 2266,
+            "phone": "628777383727",
+            "province_name": "DKI Jakarta",
+            "city_name": "Jakarta Selatan",
+            "district_name": "Mampang Prapatan",
+            "status": 1,
+            "country": "Indonesia",
+            "latitude": "",
+            "longitude": "",
+            "is_primary": false,
+            "is_active": false,
+            "is_whitelist": true,
+            "address_detail_street": "alamat mampang gedung trans tv ",
+            "address_detail_notes": "gedung trans"
+          }
+        ],
+        "status": "OK",
+        "server_process_time": "",
+        "config": ""
+      }
+    }
+  }
+]

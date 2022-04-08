@@ -8,21 +8,6 @@
     },
     {
       "eventCategory": "edit address page",
-      "eventAction": "click field alamat",
-      "eventLabel": ".*"
-    },
-    {
-      "eventCategory": "edit address page",
-      "eventAction": "click field nomor hp",
-      "eventLabel": ".*"
-    },
-    {
-      "eventCategory": "edit address page",
-      "eventAction": "click field nama penerima",
-      "eventLabel": ".*"
-    },
-    {
-      "eventCategory": "edit address page",
       "eventAction": "click field kota & kecamatan",
       "eventLabel": ".*"
     },
@@ -39,6 +24,11 @@
     {
       "eventCategory": "edit address, kode pos page",
       "eventAction": "click field kode pos",
+      "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "edit address, kode pos page",
+      "eventAction": "click chips kode pos",
       "eventLabel": ".*"
     },
     {

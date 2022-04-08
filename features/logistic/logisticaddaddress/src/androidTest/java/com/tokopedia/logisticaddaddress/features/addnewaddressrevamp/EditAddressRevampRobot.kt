@@ -119,6 +119,7 @@ class EditAddressRevampRobot {
     fun clickChoosePostalCode() {
         onView(withId(R.id.btn_choose_zipcode))
                 .perform(click())
+        waitForData()
     }
 
     fun fillAddressNegative(address: String) {
