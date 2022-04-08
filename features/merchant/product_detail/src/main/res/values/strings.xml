@@ -102,7 +102,7 @@
     <string name="terjual_single_text_template_builder">%1s barang berhasil terjual</string>
     <string name="wishlist_single_text_template_builder">%1s orang menyukai barang ini</string>
     <string name="view_single_text__template_builder">%1s orang melihat barang ini</string>
-    <string name="label_buyer_photos">Foto Pembeli</string>
+    <string name="label_buyer_photos">Foto &amp; Video Pembeli</string>
 
     <!--Social Proof 2-->
     <string name="label_stock_builder">%1s stok tersedia</string>
