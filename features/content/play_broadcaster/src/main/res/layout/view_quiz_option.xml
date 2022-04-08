@@ -42,8 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_color_light_enable="@color/Unify_NN0"
+            app:icon_color_night_enable="@color/Unify_NN0"
             app:icon_name="CHECK_CIRCLE" />
 
     </FrameLayout>
