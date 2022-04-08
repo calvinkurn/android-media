@@ -1167,8 +1167,8 @@ class TokoNowHomeFragment: Fragment(),
             isScreenShot = false,
             thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
             linkerType = WEBVIEW_TYPE,
-            id = "url=${url.encodeToUtf8()}",
-            url = url.encodeToUtf8()
+            id = "url=$url",
+            url = url
         )
 
         shareHomeTokonow?.apply {

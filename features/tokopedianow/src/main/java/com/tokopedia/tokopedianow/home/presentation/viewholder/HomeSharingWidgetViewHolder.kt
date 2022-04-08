@@ -198,7 +198,7 @@ class HomeSharingWidgetViewHolder(
     ) {
         val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
         val urlParam = REFERRAL_PAGE_URL+slug
-        val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, urlParam.encodeToUtf8()))
+        val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, urlParam))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->
