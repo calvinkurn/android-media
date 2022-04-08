@@ -452,8 +452,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
             if (favoriteNumber.isNotEmpty()) {
                 setFilterChipShimmer(false, favoriteNumber.isEmpty())
                 setFavoriteNumber(favoriteNumber)
-            }
-            setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
+                setupDynamicScrollViewPadding(FIXED_PADDING_ADJUSTMENT)
+            } else setupDynamicScrollViewPadding()
         }
     }
 
