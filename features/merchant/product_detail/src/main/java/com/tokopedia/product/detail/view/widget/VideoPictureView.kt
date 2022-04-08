@@ -1,13 +1,11 @@
 package com.tokopedia.product.detail.view.widget
 
-import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -15,14 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.databinding.WidgetVideoPictureBinding
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Yehezkiel on 23/11/20
@@ -41,21 +37,7 @@ class VideoPictureView @JvmOverloads constructor(
     init {
         addView(binding.root)
         binding.pdpViewPager.offscreenPageLimit = VIDEO_PICTURE_PAGE_LIMIT
-
-        configLabel()
-    }
-
-    @SuppressLint("ResourceType")
-    private fun configLabel() {
-        binding.pdpVideoPictureLabel.apply {
-            unlockFeature = true
-
-            val bgColor = resources.getString(com.tokopedia.unifyprinciples.R.color.light_N700_68)
-            setLabelType(bgColor)
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, 14f.toPx())
-            typeface = Typeface.DEFAULT
-            setPadding(8.toPx(), 4.toPx(), 8.toPx(), 4.toPx())
-        }
+        binding.pdpVideoPictureLabel.typeface = Typeface.DEFAULT
     }
 
     fun setup(media: List<MediaDataModel>,
@@ -139,8 +121,7 @@ class VideoPictureView @JvmOverloads constructor(
                 val mediaDescription =
                     videoPictureAdapter?.currentList?.getOrNull(position)?.mediaDescription ?: ""
                 binding.pdpVideoPictureLabel.showIfWithBlock(mediaDescription.isNotEmpty()) {
-                    setLabel(mediaDescription)
-                    setTypeface(typeface, Typeface.NORMAL)
+                    text = mediaDescription
                 }
             }
         })
