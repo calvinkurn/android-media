@@ -518,25 +518,22 @@ class TokoNowHomeFragment: Fragment(),
         isSender: Boolean,
         campaignCode: String,
         warehouseId: String,
-        linkUrl: String
+        linkUrl: String,
+        userStatus: String
     ) {
         openWebView(linkUrl)
 
         analytics.sendClickMoreSenderReferralWidget(
             slug = slug,
             referralCode = "",
-            userStatus = "1",
-            referralStatus = "2",
+            userStatus = userStatus,
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
     }
 
     override fun onShareBtnReferralSenderClicked(
-        slug: String,
-        isSender: Boolean,
-        campaignCode: String,
-        warehouseId: String
+        slug: String
     ) {
         updateSharingReferral(true)
         viewModelTokoNow.getReferralSenderHome(slug)
@@ -546,15 +543,15 @@ class TokoNowHomeFragment: Fragment(),
         slug: String,
         isSender: Boolean,
         campaignCode: String,
-        warehouseId: String
+        warehouseId: String,
+        userStatus: String
     ) {
         openWebView(REFERRAL_PAGE_URL+slug)
 
         analytics.sendClickCheckDetailReceiverReferralWidget(
             slug = slug,
             referralCode = "",
-            userStatus = "1",
-            referralStatus = "2",
+            userStatus = userStatus,
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -564,13 +561,13 @@ class TokoNowHomeFragment: Fragment(),
         slug: String,
         isSender: Boolean,
         campaignCode: String,
-        warehouseId: String
+        warehouseId: String,
+        userStatus: String
     ) {
         analytics.sendImpressSenderReferralWidget(
             slug = slug,
             referralCode = "",
-            userStatus = "1",
-            referralStatus = "1",
+            userStatus = userStatus,
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -580,13 +577,13 @@ class TokoNowHomeFragment: Fragment(),
         slug: String,
         isSender: Boolean,
         campaignCode: String,
-        warehouseId: String
+        warehouseId: String,
+        userStatus: String
     ) {
         analytics.sendImpressReceiverReferralWidget(
             slug = slug,
             referralCode = "",
-            userStatus = "1",
-            referralStatus = "2",
+            userStatus = userStatus,
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )
@@ -1096,6 +1093,7 @@ class TokoNowHomeFragment: Fragment(),
             if (!isButtonLoading) {
                 trackClickShareSenderReferralWidget(
                     slug = item.slug,
+                    userStatus = item.userStatus,
                     campaignCode = item.campaignCode,
                     warehouseId = item.warehouseId,
                     referralCode = sharingReferralUrlParam.removePrefix("${item.slug}/")
@@ -1174,6 +1172,12 @@ class TokoNowHomeFragment: Fragment(),
             url = url
         )
 
+        shareHomeTokonow?.apply {
+            sharingText = "${userSession.name} ${resources.getString(R.string.tokopedianow_home_referral_share_main_text)}"
+            specificPageName = resources.getString(R.string.tokopedianow_home_referral_share_title)
+            specificPageDescription = resources.getString(R.string.tokopedianow_home_referral_share_desc)
+        }
+
         showUniversalShareBottomSheet(shareHomeTokonow)
     }
 
@@ -1190,12 +1194,11 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onRepurchaseAddToCart(position, quantity, data)
     }
 
-    private fun trackClickShareSenderReferralWidget(slug: String, referralCode: String, campaignCode: String, warehouseId: String) {
+    private fun trackClickShareSenderReferralWidget(slug: String, userStatus: String, referralCode: String, campaignCode: String, warehouseId: String) {
         analytics.sendClickShareSenderReferralWidget(
             slug = slug,
             referralCode = referralCode,
-            userStatus = "1",
-            referralStatus = "2",
+            userStatus = userStatus,
             campaignCode = campaignCode,
             warehouseId = warehouseId,
         )

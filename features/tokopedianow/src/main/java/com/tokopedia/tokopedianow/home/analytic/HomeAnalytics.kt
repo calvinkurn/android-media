@@ -139,6 +139,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.ITEM_LIST_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.Tracker
@@ -209,6 +210,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val HOMEPAGE_TOKONOW = "homepage tokonow"
         const val ITEM_LIST_LEFT_CAROUSEL = "/tokonow - left carousel - carousel"
         const val HOME_WIDGET = "homewidget"
+        const val REFERRAL_STATUS = "1"
     }
 
     fun onClickSearchBar() {
@@ -880,7 +882,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         slug: String,
         referralCode: String,
         userStatus: String,
-        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -892,7 +893,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     slug = slug,
                     referralCode = referralCode,
                     userStatus = userStatus,
-                    referralStatus = referralStatus,
+                    referralStatus = REFERRAL_STATUS,
                     warehouseId = warehouseId
                 )
             )
@@ -910,7 +911,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         slug: String,
         referralCode: String,
         userStatus: String,
-        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -922,7 +922,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     slug = slug,
                     referralCode = referralCode,
                     userStatus = userStatus,
-                    referralStatus = referralStatus,
+                    referralStatus = REFERRAL_STATUS,
                     warehouseId = warehouseId
                 )
             )
@@ -940,7 +940,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         slug: String,
         referralCode: String,
         userStatus: String,
-        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -952,7 +951,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     slug = slug,
                     referralCode = referralCode,
                     userStatus = userStatus,
-                    referralStatus = referralStatus,
+                    referralStatus = REFERRAL_STATUS,
                     warehouseId = warehouseId
                 )
             )
@@ -970,7 +969,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         slug: String,
         referralCode: String,
         userStatus: String,
-        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -982,7 +980,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     slug = slug,
                     referralCode = referralCode,
                     userStatus = userStatus,
-                    referralStatus = referralStatus,
+                    referralStatus = REFERRAL_STATUS,
                     warehouseId = warehouseId
                 )
             )
@@ -1000,7 +998,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         slug: String,
         referralCode: String,
         userStatus: String,
-        referralStatus: String,
         campaignCode: String,
         warehouseId: String
     ) {
@@ -1012,7 +1009,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                     slug = slug,
                     referralCode = referralCode,
                     userStatus = userStatus,
-                    referralStatus = referralStatus,
+                    referralStatus = REFERRAL_STATUS,
                     warehouseId = warehouseId
                 )
             )

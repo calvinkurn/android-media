@@ -216,7 +216,8 @@ object HomeLayoutMapper {
         isSender: Boolean,
         isButtonLoading: Boolean = false,
         warehouseId: String,
-        isDisplayed: Boolean
+        isDisplayed: Boolean,
+        userStatus: String,
     ) {
         updateItemById(item.visitableId) {
             HomeLayoutItemUiModel(
@@ -225,7 +226,8 @@ object HomeLayoutMapper {
                     isSender = isSender,
                     isButtonLoading = isButtonLoading,
                     warehouseId = warehouseId,
-                    isDisplayed = isDisplayed
+                    isDisplayed = isDisplayed,
+                    userStatus = userStatus
                 ),
                 state = HomeLayoutItemState.LOADED
             )

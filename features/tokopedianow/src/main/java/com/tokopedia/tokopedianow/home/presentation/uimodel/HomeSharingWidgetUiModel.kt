@@ -16,7 +16,8 @@ sealed class HomeSharingWidgetUiModel (
         var isButtonLoading: Boolean = false,
         var campaignCode: String = "",
         var warehouseId: String = "0",
-        var isDisplayed: Boolean = false
+        var isDisplayed: Boolean = false,
+        var userStatus: String = ""
     ): HomeSharingWidgetUiModel(
         id,
         state

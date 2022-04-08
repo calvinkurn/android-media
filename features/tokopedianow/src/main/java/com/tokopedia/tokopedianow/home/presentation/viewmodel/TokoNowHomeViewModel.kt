@@ -212,7 +212,8 @@ class TokoNowHomeViewModel @Inject constructor(
             isSender = item.isSender,
             isButtonLoading = isButtonLoading,
             warehouseId = item.warehouseId,
-            isDisplayed = item.isDisplayed
+            isDisplayed = item.isDisplayed,
+            userStatus = item.userStatus
         )
         val data = HomeLayoutListUiModel(
             items = getHomeVisitableList(),
@@ -618,14 +619,15 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel, warehouseId: String): Deferred<Unit?> {
         return asyncCatchError(block = {
             val response = validateReferralUserUseCase.execute(item.slug)
-            println("Get Referral Validation : "+response)
             if(response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
-                val isSender = REFERRAL_SENDER == response.gamiReferralValidateUser.status
+                val status = response.gamiReferralValidateUser.status
+                val isSender = REFERRAL_SENDER == status
                 homeLayoutItemList.mapSharingReferralData(
                     item = item,
                     isSender = isSender,
                     warehouseId = warehouseId,
-                    isDisplayed = false
+                    isDisplayed = false,
+                    userStatus = status.toString()
                 )
             } else {
                 homeLayoutItemList.removeItem(item.id)

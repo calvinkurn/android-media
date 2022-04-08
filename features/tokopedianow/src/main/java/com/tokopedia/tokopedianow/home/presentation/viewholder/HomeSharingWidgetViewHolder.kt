@@ -86,7 +86,8 @@ class HomeSharingWidgetViewHolder(
                 slug = element.slug,
                 isSender = element.isSender,
                 campaignCode = element.campaignCode,
-                warehouseId = element.warehouseId
+                warehouseId = element.warehouseId,
+                userStatus = element.userStatus
             )
             btnSharing.text = itemView.resources.getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
             iuSharing.loadImage(IMG_SHARING_REFERRAL_SENDER)
@@ -106,20 +107,22 @@ class HomeSharingWidgetViewHolder(
     }
 
     private fun shareReferralWidgetImpressed(element: HomeSharingReferralWidgetUiModel) {
-        if (!element.isDisplayed) {
+        if (!element.isDisplayed && element.userStatus.isNotBlank()) {
             if (element.isSender) {
                 listener?.onShareReferralSenderWidgetImpressed(
                     element.slug,
                     element.isSender,
                     element.campaignCode,
-                    element.warehouseId
+                    element.warehouseId,
+                    element.userStatus
                 )
             } else {
                 listener?.onShareReferralReceiverWidgetImpressed(
                     element.slug,
                     element.isSender,
                     element.campaignCode,
-                    element.warehouseId
+                    element.warehouseId,
+                    element.userStatus
                 )
             }
         }
@@ -135,17 +138,15 @@ class HomeSharingWidgetViewHolder(
             btnSharing.setOnClickListener {
                 if (element.isSender) {
                     listener?.onShareBtnReferralSenderClicked(
-                        element.slug,
-                        element.isSender,
-                        element.campaignCode,
-                        element.warehouseId
+                        element.slug
                     )
                 } else {
                     listener?.onShareBtnReferralReceiverClicked(
                         element.slug,
                         element.isSender,
                         element.campaignCode,
-                        element.warehouseId
+                        element.warehouseId,
+                        element.userStatus
                     )
                 }
             }
@@ -191,7 +192,8 @@ class HomeSharingWidgetViewHolder(
         slug: String,
         isSender: Boolean,
         campaignCode: String,
-        warehouseId: String
+        warehouseId: String,
+        userStatus: String
     ) {
         val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
         val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, REFERRAL_PAGE_URL+slug))
@@ -199,17 +201,17 @@ class HomeSharingWidgetViewHolder(
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->
             link.onClick = {
-                listener?.onMoreReferralClicked(slug, isSender, campaignCode, warehouseId, link.linkUrl)
+                listener?.onMoreReferralClicked(slug, isSender, campaignCode, warehouseId, link.linkUrl, userStatus)
             }
         }
     }
 
     interface HomeSharingListener {
-        fun onMoreReferralClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String, linkUrl: String)
-        fun onShareBtnReferralSenderClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
-        fun onShareBtnReferralReceiverClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
-        fun onShareReferralSenderWidgetImpressed(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
-        fun onShareReferralReceiverWidgetImpressed(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String)
+        fun onMoreReferralClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String, linkUrl: String, userStatus: String)
+        fun onShareBtnReferralSenderClicked(slug: String)
+        fun onShareBtnReferralReceiverClicked(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String, userStatus: String)
+        fun onShareReferralSenderWidgetImpressed(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String, userStatus: String)
+        fun onShareReferralReceiverWidgetImpressed(slug: String, isSender: Boolean, campaignCode: String, warehouseId: String, userStatus: String)
         fun onShareBtnSharingEducationalInfoClicked()
         fun onCloseBtnSharingEducationalInfoClicked(id: String)
     }
