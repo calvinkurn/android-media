@@ -10,8 +10,12 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tm_dash_create_card.*
+import kotlinx.android.synthetic.main.tm_dash_create_card.progressCard
+import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
 import javax.inject.Inject
 
 class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
@@ -35,6 +39,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        renderHeader()
         observeViewModel()
     }
 
@@ -57,8 +62,20 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+    private fun renderHeader() {
+        headerProgram?.apply {
+            title = "Buat Program"
+            subtitle = "Langkah 2 dari 4"
+            isShowBackButton = true
+        }
+        progressProgram?.apply {
+            progressBarColorType = ProgressBarUnify.COLOR_GREEN
+            progressBarHeight = ProgressBarUnify.SIZE_SMALL
+            setValue(50, false)
+        }
+    }
 
+    private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
 
     }
 

@@ -14,12 +14,11 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_is_show_back_button="true"
-        app:unify_header_is_show_shadow="true" />
+        app:unify_header_is_show_back_button="true" />
 
     <com.tokopedia.unifycomponents.ProgressBarUnify
         android:id="@+id/progressCard"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerCard"/>
@@ -30,7 +29,7 @@
         android:layout_height="232dp"
         android:background="@color/Unify_NN50"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerCard" />
+        app:layout_constraintTop_toBottomOf="@+id/progressCard" />
 
     <com.tokopedia.carousel.CarouselUnify
         android:id="@+id/carouselCard"

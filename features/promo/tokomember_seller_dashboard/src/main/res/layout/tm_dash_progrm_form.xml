@@ -14,6 +14,13 @@
         app:subtitle="Langkah 2 dari 4"
         app:title="Buat Program" />
 
+    <com.tokopedia.unifycomponents.ProgressBarUnify
+        android:id="@+id/progressProgram"
+        android:layout_width="wrap_content"
+        android:layout_height="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerProgram"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDetail"
         android:layout_width="wrap_content"

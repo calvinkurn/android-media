@@ -14,11 +14,16 @@ import android.view.WindowManager
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberIntroFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TokomemberVideoView
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -31,7 +36,7 @@ private const val ARG_OPEN_BS = "openBS"
 class TokomemberDashIntroFragment : BaseDaggerFragment() {
 
     private var rootView: RelativeLayout? = null
-    private var viewFlipperIntro : ViewFlipper?=null
+    private var viewFlipperIntro: ViewFlipper? = null
     private var openBS: Boolean = false
 
     @Inject
@@ -39,6 +44,9 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     private val tokomemberIntroViewmodel: TokomemberDashIntroViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TokomemberDashIntroViewModel::class.java)
+    }
+    val adapter: TokomemberIntroAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TokomemberIntroAdapter(arrayListOf(), TokomemberIntroFactory())
     }
 
     override fun onAttach(context: Context) {
@@ -76,7 +84,9 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
         tokomemberIntroViewmodel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    tokomemberIntroViewmodel.getIntroInfo(6553698)
+                    tokomemberIntroViewmodel.getIntroInfo(
+                        it.data.userShopInfo?.info?.shopId?.toInt() ?: 0
+                    )
                 }
                 is Fail -> {
                 }
@@ -87,61 +97,71 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     viewFlipperIntro?.displayedChild = 1
-                    populateUI(it.data.membershipGetSellerOnboarding )
+                    populateUI(it.data)
                 }
                 is Fail -> {
                     viewFlipperIntro?.displayedChild = 0
                 }
             }
         })
+
+        tokomemberIntroViewmodel.tokomemberIntroSectionResultLiveData.observe(viewLifecycleOwner,{
+            when(it){
+                is Success -> renderSectionBenefit(it.data)
+                is Fail -> {}
+            }
+        })
     }
 
-    private fun populateUI(membershipGetSellerOnboarding: MembershipGetSellerOnboarding?) {
+    @SuppressLint("NotifyDataSetChanged")
+    private fun populateUI(membershipData: MembershipData) {
 
-        if(openBS){
+        if (openBS) {
             var bottomSheet = BottomSheetUnify()
-            fragmentManager?.let { bottomSheet.show(it,"BottomSheet Tag") }
+            fragmentManager?.let { bottomSheet.show(it, "BottomSheet Tag") }
 //            val bottomsheet = TokomemberIntroBottomsheet()
 //            fragmentManager?.let { bottomsheet.show(it, "") }
         }
 
-        tvTitle.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.title?.firstOrNull()
-                ?: ""
-        tvSubtitle.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.subTitle?.firstOrNull()
-                ?: ""
-        tvSectionOne.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.firstOrNull()?.benefit
-                ?: ""
-//        tvSectionTwo.text =
-//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-//                1
-//            )?.benefit
-//                ?: ""
-//        tvSectionThree.text =
-//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-//                2
-//            )?.benefit
-//                ?: ""
-//        tvSectionFour.text =
-//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
-//                3
-//            )?.benefit
-//                ?: ""
-//
-//        if (!layoutVideo.isPlaying) {
-//            layoutVideo.setVideoURI(Uri.parse("https://vod.tokopedia.com/view/adaptive.m3u8?id=bb4a5fb8790f4d8a95e75ca9c5bcf53"))
-//            layoutVideo.setOnPreparedListener { mp ->
-//               //  mp.isLooping =  true
-//            }
-//            layoutVideo.start()
-//        }
+        val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
+        headerData?.let {
+            tvTitle.text = it.title?.getOrNull(0)
+            tvSubtitle.text =it.subTitle?.getOrNull(0)
+        }
+
+        frame_video.addView(
+            setVideoView(
+                membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeInfo?.infoURL?:"",
+                "1:1"
+            )
+        )
 
         btnContinue.setOnClickListener {
-            startActivity(Intent(requireActivity() , TokomemberDashCreateCardActivity::class.java))
+            startActivity(Intent(requireActivity(), TokomemberDashCreateCardActivity::class.java))
         }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun renderSectionBenefit(data: TokomemberIntroItem) {
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = adapter
+        adapter.addItems(data.tokoVisitable)
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun setVideoView(
+        url: String,
+        ratio: String,
+    ): View? {
+
+        return context?.let {
+            val tmVideoView =
+                TokomemberVideoView(it)
+            tmVideoView.playVideo("")
+            tmVideoView
+        }
+    }
+
 
     @SuppressLint("ObsoleteSdkInt", "DeprecatedMethod")
     private fun hideStatusBar() {
