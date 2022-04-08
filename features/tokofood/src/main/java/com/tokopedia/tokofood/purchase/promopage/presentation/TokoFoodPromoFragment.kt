@@ -25,8 +25,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.databinding.LayoutFragmentPurchasePromoBinding
-import com.tokopedia.tokofood.example.ExampleTokofoodActivity
 import com.tokopedia.tokofood.purchase.promopage.di.DaggerTokoFoodPromoComponent
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapter
 import com.tokopedia.tokofood.purchase.promopage.presentation.adapter.TokoFoodPromoAdapterTypeFactory
@@ -146,7 +146,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
     }
 
     override fun onBackPressed() {
-        (activity as ExampleTokofoodActivity).onBackPressed()
+        (activity as BaseTokofoodActivity).onBackPressed()
     }
 
     private fun initializeToolbar(view: View) {
@@ -238,7 +238,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             val totalAmountString = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.promoAmount, false).removeDecimalSuffix()
             it.totalAmountPurchasePromo.setAmount(totalAmountString)
             it.totalAmountPurchasePromo.amountCtaView.setOnClickListener {
-                (activity as ExampleTokofoodActivity).onBackPressed()
+                (activity as BaseTokofoodActivity).onBackPressed()
             }
         }
     }
@@ -281,7 +281,7 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
             it.layoutGlobalErrorPurchasePromo.errorDescription.text = ""
             it.layoutGlobalErrorPurchasePromo.errorIllustration.setImage("", 0f)
             it.layoutGlobalErrorPurchasePromo.setActionClickListener {
-                (activity as ExampleTokofoodActivity).onBackPressed()
+                (activity as BaseTokofoodActivity).onBackPressed()
             }
         }
     }

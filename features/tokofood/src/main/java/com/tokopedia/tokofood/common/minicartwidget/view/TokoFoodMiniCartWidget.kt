@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.LayoutWidgetPurchaseMiniCartBinding
-import com.tokopedia.tokofood.example.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.purchase.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.utils.currency.CurrencyFormatUtil
