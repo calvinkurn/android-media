@@ -139,20 +139,24 @@ class PdpFintechWidget @JvmOverloads constructor(
     ) {
 
         if (fintechRedirectionWidgetDataClass.gatewayId == 0)
-            FintechWidgetAnalyticsEvent.PdpWidgetClick(
-                this.productID,
-                fintechRedirectionWidgetDataClass.linkingStatus,
-                fintechRedirectionWidgetDataClass.userStatus, "NON-BRANDED",
-                "${fintechRedirectionWidgetDataClass.tenure}",
-                fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                FintechWidgetAnalyticsEvent.PdpWidgetClick(
+                    this.productID,
+                    fintechRedirectionWidgetDataClass.linkingStatus,
+                    fintechRedirectionWidgetDataClass.userStatus, "NON-BRANDED",
+                    "${fintechRedirectionWidgetDataClass.tenure}",
+                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+                )
             )
         else
-            FintechWidgetAnalyticsEvent.PdpWidgetClick(
-                this.productID,
-                fintechRedirectionWidgetDataClass.linkingStatus,
-                fintechRedirectionWidgetDataClass.userStatus, "BRANDED",
-                "${fintechRedirectionWidgetDataClass.tenure}",
-                fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                FintechWidgetAnalyticsEvent.PdpWidgetClick(
+                    this.productID,
+                    fintechRedirectionWidgetDataClass.linkingStatus,
+                    fintechRedirectionWidgetDataClass.userStatus, "BRANDED",
+                    "${fintechRedirectionWidgetDataClass.tenure}",
+                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+                )
             )
     }
 
