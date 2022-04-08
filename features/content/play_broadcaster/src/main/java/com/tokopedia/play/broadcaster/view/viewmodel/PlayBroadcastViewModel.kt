@@ -1057,11 +1057,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val options = _quizFormData.value.options
         val quizConfig = _gameConfig.value.quizConfig
 
-        val (newOptions, isAutoSelect, isAutoAdd) = options.updateQuizOptionFlow(order, newText, quizConfig, sharedPref.isFirstSelectQuizOption())
+        val (newOptions, needUpdate) = options.updateQuizOptionFlow(order, newText, quizConfig, sharedPref.isFirstSelectQuizOption())
 
         sharedPref.setNotFirstSelectQuizOption()
 
-        needUpdateQuizForm(isAutoSelect || isAutoAdd) {
+        needUpdateQuizForm(needUpdate) {
             _quizFormData.setValue { copy(options = newOptions) }
         }
     }

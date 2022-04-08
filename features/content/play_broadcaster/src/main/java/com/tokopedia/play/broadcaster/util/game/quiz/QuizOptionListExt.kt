@@ -13,14 +13,18 @@ object QuizOptionListExt {
         newText: String,
         quizConfig: QuizConfigUiModel,
         isFirstSelectQuizOption: Boolean = false,
-    ) : Triple<List<QuizFormDataUiModel.Option>, Boolean, Boolean> {
+    ) : Pair<List<QuizFormDataUiModel.Option>, Boolean> {
+        val changedOption = first { it.order == order }
+
+        val isNeedUpdateOptionalIcon = !changedOption.isMandatory && changedOption.text.isEmpty()
         val isAutoSelect: Boolean
         val isAutoAdd: Boolean
+
         val newOptions = updateQuizOption(order, newText, isFirstSelectQuizOption)
                         .setupAutoSelectField(order, newText).also { isAutoSelect = it.second }.first
                         .setupAutoAddField(quizConfig).also { isAutoAdd = it.size > size }
 
-        return Triple(newOptions, isAutoSelect, isAutoAdd)
+        return Pair(newOptions, isAutoSelect || isAutoAdd || isNeedUpdateOptionalIcon)
     }
 
     fun List<QuizFormDataUiModel.Option>.updateQuizOption(
