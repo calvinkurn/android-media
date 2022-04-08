@@ -2,26 +2,27 @@
 
 package com.tokopedia.media.picker.analytics.camera
 
+import com.tokopedia.kotlin.extensions.view.toZeroStringIfNullOrBlank
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.analytics.*
-import com.tokopedia.picker.common.ParamCacheManager
-import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CameraAnalyticsImpl @Inject constructor(
     private val userSession: UserSessionInterface,
-    private val paramCacheManager: ParamCacheManager
+    private val cacheManager: ParamCacheManager
 ) : CameraAnalytics {
 
     private val userId: String
-        get() = if (userSession.userId.isNullOrEmpty()) "0" else userSession.userId
+        get() = userSession.userId.toZeroStringIfNullOrBlank()
 
     private val shopId: String
-        get() = if (userSession.shopId.isNullOrEmpty()) "0" else userSession.shopId
+        get() = userSession.shopId.toZeroStringIfNullOrBlank()
 
-    private val sourcePage: String
-        get() = paramCacheManager.get().pageSourceName()
+    private val sourcePage by lazy {
+        cacheManager.get().pageSourceName()
+    }
 
     override fun clickRecord() {
         sendGeneralEvent(

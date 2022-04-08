@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.common.utils.ParamCacheManager
-import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
 import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
 import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
@@ -30,16 +29,6 @@ object PickerModule {
     ): UserSessionInterface {
         return UserSession(context)
     }
-
-    @Provides
-    @ActivityScope
-    fun providePickerAnalytics(
-        cameraAnalytics: CameraAnalytics,
-        galleryAnalytics: GalleryAnalytics
-    ) = PickerAnalytics(
-        cameraAnalytics,
-        galleryAnalytics
-    )
 
     @Provides
     @ActivityScope

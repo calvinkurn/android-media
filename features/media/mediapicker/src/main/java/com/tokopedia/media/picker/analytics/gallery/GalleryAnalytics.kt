@@ -1,35 +1,18 @@
 package com.tokopedia.media.picker.analytics.gallery
 
 interface GalleryAnalytics {
-
     fun selectGalleryItem()
-
-    fun clickNextButton()
-
     fun clickCloseButton()
-
-    fun clickDropDown()
-
-    fun clickGalleryThumbnail()
-
+    fun clickNextButton()
     fun clickCameraTab()
-
-    fun galleryMaxPhotoLimit()
-
-    fun galleryMaxVideoLimit()
-
-    fun maxVideoDuration()
-
+    fun clickDropDown()
     fun maxImageSize()
-
     fun maxVideoSize()
-
-    fun clickAlbumFolder(
-        albumName: String
-    )
-
+    fun maxVideoDuration()
     fun minVideoDuration()
-
     fun minImageResolution()
-
+    fun galleryMaxPhotoLimit()
+    fun galleryMaxVideoLimit()
+    fun clickGalleryThumbnail()
+    fun clickAlbumFolder(albumName: String)
 }
