@@ -35,6 +35,8 @@ import com.tokopedia.minicart.common.domain.data.MiniCartCheckoutData
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemBundle
+import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListUseCase
 import java.text.NumberFormat
@@ -584,21 +586,37 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
         }
 
-        val cartItems = getMiniCartItems()
-        loop@ for (cartItem in cartItems) {
-            if (!isBundling && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
-                cartItem.quantity = newQty
-                break@loop
-            }
-            if (isBundling && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
-                cartItem.bundleQuantity = newQty
-                val products = cartItem.products
-                products.forEach {
-                    it.value.quantity = newQty * cartItem.bundleMultiplier
+        if (!isBundling) {
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.apply {
+                if (!isError) {
+                    quantity = newQty
                 }
-                break@loop
+            }
+        } else {
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundle(bundleId)?.apply {
+                if (!isError) {
+                    bundleQuantity = newQty
+                    products.forEach {
+                        it.value.quantity = newQty * bundleMultiplier
+                    }
+                }
             }
         }
+//        val cartItems = getMiniCartItems()
+//        loop@ for (cartItem in cartItems) {
+//            if (!isBundling && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
+//                cartItem.quantity = newQty
+//                break@loop
+//            }
+//            if (isBundling && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
+//                cartItem.bundleQuantity = newQty
+//                val products = cartItem.products
+//                products.forEach {
+//                    it.value.quantity = newQty * cartItem.bundleMultiplier
+//                }
+//                break@loop
+//            }
+//        }
     }
 
     fun updateProductNotes(productId: String, isBundlingItem: Boolean, bundleId: String, newNotes: String) {
@@ -610,17 +628,30 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
             }
         }
 
-        val cartItems = getMiniCartItems()
-        loop@ for (cartItem in cartItems) {
-            if (!isBundlingItem && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
-                cartItem.notes = newNotes
-                break@loop
+        if (!isBundlingItem) {
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemProduct(productId)?.apply {
+                if (!isError) {
+                    notes = newNotes
+                }
             }
-            if (isBundlingItem && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
-                cartItem.products[MiniCartItemKey(productId)]?.notes = newNotes
-                break@loop
+        } else {
+            miniCartSimplifiedData.value?.miniCartItems?.getMiniCartItemBundle(bundleId)?.apply {
+                if (!isError) {
+                    products[MiniCartItemKey(productId)]?.notes = newNotes
+                }
             }
         }
+//        val cartItems = getMiniCartItems()
+//        loop@ for (cartItem in cartItems) {
+//            if (!isBundlingItem && cartItem is MiniCartItem.MiniCartItemProduct && cartItem.productId == productId && !cartItem.isError) {
+//                cartItem.notes = newNotes
+//                break@loop
+//            }
+//            if (isBundlingItem && cartItem is MiniCartItem.MiniCartItemBundle && cartItem.bundleId == bundleId && !cartItem.isError) {
+//                cartItem.products[MiniCartItemKey(productId)]?.notes = newNotes
+//                break@loop
+//            }
+//        }
     }
 
     fun toggleUnavailableItemsAccordion() {
