@@ -258,42 +258,6 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     }
 
     @Test
-    fun `when getting inquiry should run and give success result`() {
-        val response = dataFactory.getInquiry()
-        onGetInquiry_thenReturn(response)
-
-        viewModel.inquiry(
-            TagihanDataFactory.PRODUCT_ID,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
-            mapOf()
-        )
-        val expectedResult = dataFactory.getInquiry()
-        verifyInquiryProductRepoGetCalled()
-        verifyGetInquiryProductSuccess(expectedResult)
-    }
-
-    @Test
-    fun `given inquiry loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setInquiryLoading()
-        verifyGetInquiryProductLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting inquiry should run and give fail result`() {
-        onGetInquiry_thenReturn(NullPointerException())
-
-        viewModel.inquiry(
-            TagihanDataFactory.PRODUCT_ID,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
-            mapOf()
-        )
-        verifyInquiryProductRepoGetCalled()
-        verifyGetInquiryProductFail()
-    }
-
-    @Test
     fun `when updateCheckoutPassData called should update digitalCheckoutPassData`() {
         val response = dataFactory.getTagihanProductData()
         onGetTagihanProduct_thenReturn(response)

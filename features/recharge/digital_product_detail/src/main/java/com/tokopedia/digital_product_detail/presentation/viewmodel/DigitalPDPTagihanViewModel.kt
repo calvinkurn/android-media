@@ -80,10 +80,6 @@ class DigitalPDPTagihanViewModel @Inject constructor(
     val tagihanProduct: LiveData<RechargeNetworkResult<RechargeProduct>>
         get() = _tagihanProduct
 
-    private val _inquiry = MutableLiveData<RechargeNetworkResult<TopupBillsEnquiryData>>()
-    val inquiry: LiveData<RechargeNetworkResult<TopupBillsEnquiryData>>
-        get() = _inquiry
-
     private val _clientNumberValidatorMsg = MutableLiveData<Pair<String, Boolean>>()
     val clientNumberValidatorMsg: LiveData<Pair<String, Boolean>>
         get() = _clientNumberValidatorMsg
@@ -156,27 +152,6 @@ class DigitalPDPTagihanViewModel @Inject constructor(
             }
         }) {
             _tagihanProduct.value = RechargeNetworkResult.Fail(it)
-        }
-    }
-
-    fun setInquiryLoading() {
-        _inquiry.value = RechargeNetworkResult.Loading
-    }
-
-    fun inquiry(productId: String, clientNumber: String, inputData: Map<String, String>) {
-        viewModelScope.launchCatchError(dispatchers.main, block = {
-            var data: TopupBillsEnquiryData
-            do {
-                data = repo.inquiryProduct(productId, clientNumber, inputData)
-
-                with(data.enquiry) {
-                    if (status == STATUS_PENDING && retryDuration > 0)
-                        delay(TimeUnit.SECONDS.toMillis(retryDuration.toLong()))
-                }
-            } while (data.enquiry.status != STATUS_DONE)
-            _inquiry.value = RechargeNetworkResult.Success(data)
-        }) {
-            _inquiry.value = RechargeNetworkResult.Fail(it)
         }
     }
 
