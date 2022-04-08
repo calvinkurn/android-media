@@ -2251,11 +2251,24 @@ class ProductListPresenter @Inject constructor(
     override fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product) {
         if (isViewNotAttached) return
 
+        if(product.isOrganicAds) sendTrackingImpressInspirationCarouselAds(product)
+
         when(product.inspirationCarouselType) {
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID -> view.trackEventImpressionInspirationCarouselGridItem(product)
             SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS -> view.trackEventImpressionInspirationCarouselChipsItem(product)
             else -> view.trackEventImpressionInspirationCarouselListItem(product)
         }
+    }
+
+    private fun sendTrackingImpressInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
+        topAdsUrlHitter.hitImpressionUrl(
+            view.className,
+            product.topAdsViewUrl,
+            product.id,
+            product.name,
+            product.imgUrl,
+            SearchConstant.TopAdsComponent.ORGANIC_ADS
+        )
     }
 
     override fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product) {
