@@ -43,6 +43,7 @@ data class GetInteractiveConfigResponse(
     )
 
     data class QuizConfig(
+        /** TODO: gonna change default value after gql is ready on prod */
         @SerializedName("isActive")
         val isActive: Boolean = true,
 

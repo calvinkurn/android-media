@@ -34,8 +34,8 @@ class GetInteractiveConfigUseCase @Inject constructor(
         }
     """
 
+    /** TODO: gonna add this on query when gql is ready on prod */
     /**
-     *
      * quizConfig {
             isActive
             maxTitleLength
