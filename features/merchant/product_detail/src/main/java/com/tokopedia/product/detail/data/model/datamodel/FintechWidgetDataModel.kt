@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 data class FintechWidgetDataModel(
@@ -10,7 +10,7 @@ data class FintechWidgetDataModel(
     val type: String = "",
     var productId: String = "",
     var categoryId: String? = null,
-    var idToPriceUrlMap: HashMap<String, FintechPriceUrlDataModel> = HashMap(),
+    var idToPriceUrlMap: HashMap<String, FintechPriceDataModel> = HashMap(),
     var isLoggedIn: Boolean = false
 
     ): DynamicPdpDataModel

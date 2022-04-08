@@ -355,6 +355,9 @@
     <!-- Merchant Login -->
     <string name="title_module_merchant_login">Fitur Toko</string>
 
+    <!-- Merchant NonLogin -->
+    <string name="title_module_merchant_nonlogin">Fitur Toko Non-Login</string>
+
     <!-- Shop Page -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_label_physical_shop">Toko Fisik</string>
@@ -376,9 +379,6 @@
     <string name="vidpick_app_name">Video Recorder</string>
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
-
-    <!-- Review   -->
-    <string name="title_review">Ulasan</string>
 
     <string name="title_image_picker_insta_df">Media Picker</string>
     <string name="title_feed_create_post">Create Post</string>
