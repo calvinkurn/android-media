@@ -1,4 +1,4 @@
-package com.tokopedia.shop.note.view.presenter
+package com.tokopedia.shop_widget.note.view
 
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop_widget.note.view.viewmodel.ShopNoteDetailViewModel

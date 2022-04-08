@@ -1,7 +1,6 @@
-package com.tokopedia.shop.note.view.presenter
+package com.tokopedia.shop_widget.note.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

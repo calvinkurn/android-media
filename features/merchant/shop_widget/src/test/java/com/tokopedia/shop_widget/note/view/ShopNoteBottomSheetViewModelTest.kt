@@ -1,12 +1,12 @@
-package com.tokopedia.shop.note.view.viewmodel
+package com.tokopedia.shop_widget.note.view
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.shop.common.graphql.data.shopnote.gql.GetShopNoteUseCase
 import com.tokopedia.shop_widget.note.view.viewmodel.ShopNoteBottomSheetViewModel
+import com.tokopedia.shop_widget.util.LiveDataUtil.observeAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.util.LiveDataUtil.observeAwaitValue
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.TestCase
