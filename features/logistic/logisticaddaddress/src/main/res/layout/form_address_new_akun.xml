@@ -8,6 +8,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_nama_penerima"
+        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:text_field_label="Nama Penerima"
@@ -40,6 +41,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/et_nomor_hp"
+        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_32"
