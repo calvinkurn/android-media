@@ -99,7 +99,6 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        setupTicker()
         setupSearchBar()
         setupHeader()
         setupTabs()
@@ -117,7 +116,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupTicker() {
+    private fun displayTicker() {
         val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
 
         binding?.run {
@@ -171,7 +170,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    binding?.ticker?.visible()
+                    displayTicker()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
