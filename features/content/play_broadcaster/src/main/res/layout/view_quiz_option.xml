@@ -48,6 +48,7 @@
         android:imeOptions="actionNext"
         android:inputType="textCapWords|textMultiLine"
         android:minLines="2"
+        android:textColor="@color/Unify_NN950"
         android:textColorHint="@color/Unify_NN400"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
