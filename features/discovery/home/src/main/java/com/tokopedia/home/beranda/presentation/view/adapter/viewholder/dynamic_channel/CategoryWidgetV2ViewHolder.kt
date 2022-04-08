@@ -34,6 +34,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
         val LAYOUT = R.layout.home_dc_category_widget_v2
         private const val TOTAL_SPAN_RECYCLER = 2
         private const val IMAGE_CORNER = 0
+        private const val CARD_CORNER_RADIUS = 9f
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -89,7 +90,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
             val v = LayoutInflater.from(parent.context).inflate(layout, parent, false)
             val viewHolder = CategoryWidgetItemViewHolder(v)
             viewHolder.cardUnify.apply {
-                radius = 9f.dpToPx()
+                radius = CARD_CORNER_RADIUS.dpToPx()
                 cardType = CardUnify2.TYPE_BORDER
                 animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
             }
