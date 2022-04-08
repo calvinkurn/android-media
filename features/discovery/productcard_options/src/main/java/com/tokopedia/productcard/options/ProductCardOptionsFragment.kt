@@ -22,6 +22,7 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemModel
 import com.tokopedia.productcard.options.item.ProductCardOptionsItemViewHolder
 import com.tokopedia.productcard.options.tracking.ProductCardOptionsTracking
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.product_card_options_fragment_layout.*
 
 
@@ -43,8 +44,14 @@ internal class ProductCardOptionsFragment: TkpdBaseV4Fragment() {
     }
 
     private fun initViewModel() {
+
+        var isUsingWishlistV2 = false
+        context?.let {
+            isUsingWishlistV2 = WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
+        }
         activity?.let {
             productCardOptionsViewModel = ViewModelProvider(it).get(ProductCardOptionsViewModel::class.java)
+            productCardOptionsViewModel?.isUsingWishlistV2 = isUsingWishlistV2
         }
     }
 

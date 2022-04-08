@@ -10,6 +10,8 @@ import com.tokopedia.productcard.options.di.UserSessionModule
 import com.tokopedia.productcard.options.di.WishlistUseCaseModule
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -29,8 +31,10 @@ internal class ProductCardOptionsViewModelFactoryModule(
     @Provides
     @Named(PRODUCT_CARD_OPTIONS_VIEW_MODEL_FACTORY)
     fun provideProductCardOptionsViewModelFactory(
-            addWishListUseCase: AddToWishlistV2UseCase,
-            removeWishListUseCase: DeleteWishlistV2UseCase,
+            addWishListUseCase: AddWishListUseCase,
+            removeWishListUseCase: RemoveWishListUseCase,
+            addToWishlistV2UseCase: AddToWishlistV2UseCase,
+            deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
             topAdsWishlistUseCase: UseCase<Boolean>,
             addToCartUseCase: AddToCartUseCase,
             userSession: UserSessionInterface,
@@ -41,6 +45,8 @@ internal class ProductCardOptionsViewModelFactoryModule(
                 productCardOptionsModel,
                 addWishListUseCase,
                 removeWishListUseCase,
+                addToWishlistV2UseCase,
+                deleteWishlistV2UseCase,
                 topAdsWishlistUseCase,
                 addToCartUseCase,
                 userSession
