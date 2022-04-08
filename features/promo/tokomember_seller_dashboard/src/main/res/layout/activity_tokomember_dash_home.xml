@@ -6,4 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".view.activity.TokomemberDashHomeActivity">
 
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/home_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:title="TokoMember"
+        app:titleTextColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_transparent_mode="false"
+        app:unify_header_is_show_shadow="false"/>
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/home_tabs"
+        app:layout_constraintTop_toBottomOf="@id/home_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tabGravity="center"
+        app:tabMode="fixed"
+        app:tabTextAppearance="@style/TokomemberTabLayoutTextStyle">
+
+    </com.tokopedia.unifycomponents.TabsUnify>
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/home_tabs"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/home_viewpager"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

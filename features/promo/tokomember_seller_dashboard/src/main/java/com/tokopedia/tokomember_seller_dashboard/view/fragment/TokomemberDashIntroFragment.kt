@@ -18,15 +18,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateCardActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
 
 private const val ARG_OPEN_BS = "openBS"
+private const val ARG_SHOP_ID = "shopId"
 
 class TokomemberDashIntroFragment : BaseDaggerFragment() {
 
@@ -44,7 +46,7 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        arguments?.getBoolean(ARG_OPEN_BS)?.let {
+        arguments?.getBoolean(BUNDLE_OPEN_BS)?.let {
             openBS = it
         }
     }
@@ -63,7 +65,9 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
         rootView = view.findViewById(R.id.rootView)
         hideStatusBar()
         observeViewModel()
-        tokomemberIntroViewmodel.getSellerInfo()
+//        tokomemberIntroViewmodel.getSellerInfo()
+        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let { tokomemberIntroViewmodel.getIntroInfo(it) }
+
     }
 
     override fun getScreenName() = ""
@@ -73,15 +77,15 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     }
 
     private fun observeViewModel() {
-        tokomemberIntroViewmodel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
-            when (it) {
-                is Success -> {
-                    tokomemberIntroViewmodel.getIntroInfo(6553698)
-                }
-                is Fail -> {
-                }
-            }
-        })
+//        tokomemberIntroViewmodel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
+//            when (it) {
+//                is Success -> {
+//                    tokomemberIntroViewmodel.getIntroInfo(it.data.userShopInfo?.info?.shopId.toIntOrZero())
+//                }
+//                is Fail -> {
+//                }
+//            }
+//        })
 
         tokomemberIntroViewmodel.tokomemberOnboardingResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
@@ -99,10 +103,11 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     private fun populateUI(membershipGetSellerOnboarding: MembershipGetSellerOnboarding?) {
 
         if(openBS){
-            var bottomSheet = BottomSheetUnify()
-            fragmentManager?.let { bottomSheet.show(it,"BottomSheet Tag") }
-//            val bottomsheet = TokomemberIntroBottomsheet()
-//            fragmentManager?.let { bottomsheet.show(it, "") }
+            val bundle = Bundle()
+            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET_TITLE, "Haa bai ki haal")
+            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET_DESC, "Main changa veere tu suna")
+            bundle.putString(TokomemberIntroBottomsheet.ARG_BOTTOMSHEET_IMG, "https://images.tokopedia.net/img/android/res/singleDpi/quest_widget_nonlogin_banner.png")
+            TokomemberIntroBottomsheet.show(bundle, childFragmentManager)
         }
 
         tvTitle.text =
@@ -199,12 +204,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        fun newInstance(openBS: Boolean?) = TokomemberDashIntroFragment().apply {
-            if (openBS != null) {
-                arguments = Bundle().apply {
-                    putBoolean(ARG_OPEN_BS, openBS)
-                }
-            }
+        fun newInstance(bundle: Bundle?) = TokomemberDashIntroFragment().apply {
+            arguments = bundle
         }
     }
 }

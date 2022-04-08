@@ -4,14 +4,13 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashIntroFragment
 
 class TokomemberDashIntroActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
-        val openBS = intent.extras?.getBoolean(BUNDLE_OPEN_BS)
-        return TokomemberDashIntroFragment.newInstance(openBS)
+
+        return TokomemberDashIntroFragment.newInstance(intent.extras)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

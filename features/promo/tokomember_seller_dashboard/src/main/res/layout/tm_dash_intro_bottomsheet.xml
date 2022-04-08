@@ -16,11 +16,13 @@
         android:layout_width="280dp"
         android:layout_height="210dp"
         android:layout_marginTop="12dp"
+        android:id="@+id/img_bottom_sheet"
         />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tv_heading"
         app:typographyType="heading_2"
         android:layout_marginTop="16dp"
         android:text="Tokomu belum memenuhi syarat"/>
@@ -28,6 +30,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tv_desc"
         android:layout_marginTop="8dp"
         android:gravity="center_horizontal"
         android:text="Pastikan toko berstatus Official Store. Yuk, baca cara untuk jadi Official Store!"
@@ -38,13 +41,12 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/btn_proceed"
         android:layout_marginTop="46dp"
         app:unifyButtonSize="large"
         android:text="Pelajari Official Store"
         />
 
     </LinearLayout>
-
-    <include layout="@layout/bottom_sheet_layout"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

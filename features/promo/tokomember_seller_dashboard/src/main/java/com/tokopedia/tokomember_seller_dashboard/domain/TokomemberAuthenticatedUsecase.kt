@@ -28,10 +28,10 @@ class TokomemberAuthenticatedUsecase @Inject constructor(graphqlRepository: Grap
 
 const val IS_AUTHENTICATED = """
     query isAuthenticatedQuery {
-  userShopInfo {
-    info {
-      shop_id
+        userShopInfo {
+            info {
+              shop_id
+            }
+        }
     }
-  }
-}
 """
