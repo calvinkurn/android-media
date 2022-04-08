@@ -116,9 +116,9 @@ class TokomemberDashIntroFragment : BaseDaggerFragment() {
         tvSubtitle.text =
             membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.subTitle?.firstOrNull()
                 ?: ""
-        tvSectionOne.text =
-            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.firstOrNull()?.benefit
-                ?: ""
+//        tvSectionOne.text =
+//            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.firstOrNull()?.benefit
+//                ?: ""
 //        tvSectionTwo.text =
 //            membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText?.sellerHomeTextBenefit?.get(
 //                1

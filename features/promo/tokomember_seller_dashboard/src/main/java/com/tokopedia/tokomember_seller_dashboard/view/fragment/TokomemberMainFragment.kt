@@ -11,7 +11,8 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashHomeActivity
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -74,27 +75,30 @@ class TokomemberMainFragment : BaseDaggerFragment() {
             if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
             {
 
-                startActivity(Intent(requireContext(), TokomemberDashHomeActivity::class.java))
+                val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
+                intent.putExtra(BUNDLE_OPEN_BS, true)
+                intent.putExtra(BUNDLE_SHOP_ID, shopId)
+                startActivity(intent)
                 requireActivity().finish()
+//                startActivity(Intent(requireContext(), TokomemberDashHomeActivity::class.java))
+//                requireActivity().finish()
                 // redirect to dashboard
             }
             else{
 
                 val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
+                intent.putExtra(BUNDLE_SHOP_ID, shopId)
                 startActivity(intent)
                 requireActivity().finish()
                 // redirect to intro page
             }
         }
         else{
-
-            startActivity(Intent(requireContext(), TokomemberDashHomeActivity::class.java))
+            val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
+            intent.putExtra(BUNDLE_OPEN_BS, true)
+            intent.putExtra(BUNDLE_SHOP_ID, shopId)
+            startActivity(intent)
             requireActivity().finish()
-//            val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
-//            intent.putExtra(BUNDLE_OPEN_BS, true)
-//            intent.putExtra(BUNDLE_SHOP_ID, shopId)
-//            startActivity(intent)
-//            requireActivity().finish()
             // redirect to intro page + bottomsheet
         }
     }
