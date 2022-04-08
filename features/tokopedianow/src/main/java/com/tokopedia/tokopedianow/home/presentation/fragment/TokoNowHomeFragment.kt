@@ -31,6 +31,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
@@ -175,8 +176,7 @@ class TokoNowHomeFragment: Fragment(),
         const val DEFAULT_QUANTITY = 0
         const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
-        const val REFERRAL_PAGE_URL = "https://tokopedia.com/seru/undang-untung/"
-        const val REFERRAL_PAGE_APPLINK = "url=https://tokopedia.com/seru/undang-untung/"
+        const val REFERRAL_PAGE_URL = "https://www.tokopedia.com/seru/undang-untung/"
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
         const val PAGE_TYPE_HOME = "home"
@@ -1161,15 +1161,14 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onSuccessSharingReferralUrlParam(sharingReferralUrlParam: String) {
         val url = REFERRAL_PAGE_URL + sharingReferralUrlParam
-        val appLink = REFERRAL_PAGE_APPLINK + sharingReferralUrlParam
 
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
             thumbNailTitle = resources.getString(R.string.tokopedianow_home_share_thumbnail_title),
             linkerType = WEBVIEW_TYPE,
-            id = appLink,
-            url = url
+            id = "url=${url.encodeToUtf8()}",
+            url = url.encodeToUtf8()
         )
 
         shareHomeTokonow?.apply {

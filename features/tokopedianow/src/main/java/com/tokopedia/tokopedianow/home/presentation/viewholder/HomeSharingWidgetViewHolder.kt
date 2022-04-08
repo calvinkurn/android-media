@@ -9,6 +9,7 @@ import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -196,7 +197,8 @@ class HomeSharingWidgetViewHolder(
         userStatus: String
     ) {
         val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
-        val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, REFERRAL_PAGE_URL+slug))
+        val urlParam = REFERRAL_PAGE_URL+slug
+        val linkHelper = HtmlLinkHelper(context, context.getString(stringRes, greenColor, urlParam.encodeToUtf8()))
         typography.text = linkHelper.spannedString
         typography.movementMethod = LinkMovementMethod.getInstance()
         linkHelper.urlList[0].let { link ->
