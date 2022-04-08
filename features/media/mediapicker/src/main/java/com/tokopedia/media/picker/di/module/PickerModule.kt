@@ -5,16 +5,48 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
+import com.tokopedia.media.picker.analytics.camera.CameraAnalyticsImpl
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalyticsImpl
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
 import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
 import com.tokopedia.media.picker.data.repository.AlbumRepository
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
 import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
 @Module
 object PickerModule {
+
+    @Provides
+    @ActivityScope
+    fun provideUserSession(
+        @ApplicationContext context: Context
+    ): UserSessionInterface {
+        return UserSession(context)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideGalleryAnalytics(
+        userSession: UserSessionInterface,
+        paramCacheManager: ParamCacheManager
+    ): GalleryAnalytics {
+        return GalleryAnalyticsImpl(userSession, paramCacheManager)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideCameraAnalytics(
+        userSession: UserSessionInterface,
+        paramCacheManager: ParamCacheManager
+    ): CameraAnalytics {
+        return CameraAnalyticsImpl(userSession, paramCacheManager)
+    }
 
     @Provides
     @ActivityScope

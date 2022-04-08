@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
 import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
@@ -38,6 +39,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var galleryAnalytics: GalleryAnalytics
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -112,7 +114,9 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.drawerSelector?.removeListener()
     }
 
-    override fun onItemClicked(media: MediaUiModel) {} //no-op
+    override fun onItemClicked(media: MediaUiModel) {
+        galleryAnalytics.clickGalleryThumbnail()
+    }
 
     override fun onDataSetChanged(action: DrawerActionType) {
         if (!param.get().isMultipleSelectionType()) return
@@ -183,6 +187,8 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.albumSelector?.root?.showWithCondition(isShown)
 
         binding?.albumSelector?.container?.setOnClickListener {
+            galleryAnalytics.clickDropDown()
+
             startActivityForResult(Intent(
                 requireContext(),
                 AlbumActivity::class.java
@@ -259,6 +265,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
         if (!isSelected) {
             stateOnAddPublished(media)
+            galleryAnalytics.selectGalleryItem()
         } else {
             stateOnRemovePublished(media)
         }

@@ -8,16 +8,17 @@ import com.tokopedia.picker.common.PickerParam
 import javax.inject.Inject
 
 class ParamCacheManager @Inject constructor(
-    @ApplicationContext context: Context
+    @ApplicationContext context: Context,
+    private val gson: Gson
 ) : LocalCacheHandler(context, PREF_NAME_CACHE_PICKER) {
 
     fun get(): PickerParam {
         val param = getString(KEY_PICKER_PARAM) ?: return PickerParam()
-        return Gson().fromJson(param, PickerParam::class.java)
+        return gson.fromJson(param, PickerParam::class.java)
     }
 
     fun setParam(param: PickerParam) {
-        val toJson = Gson().toJson(param)
+        val toJson = gson.toJson(param)
         putString(KEY_PICKER_PARAM, toJson)
         applyEditor()
     }
