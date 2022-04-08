@@ -78,7 +78,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         // fetch the album list
-        viewModel.fetch(param.get())
+        viewModel.fetch()
     }
 
     private fun setupRecyclerView() {
