@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_create_review_video_preview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:paddingHorizontal="4dp"
+    android:paddingTop="4dp">
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/container_create_review_video_preview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:card_type="clear"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/player_view_create_review_video_preview_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:resize_mode="zoom"
+                app:shutter_background_color="@color/transparent"
+                app:surface_type="texture_view"
+                app:use_controller="false" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_create_review_video_preview_thumbnail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:loader_type="rect" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_create_review_video_preview_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textColor="@color/Unify_NN0"
+                app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintVertical_bias="1"
+                tools:text="00:12" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_create_review_video_preview_duration"
+                android:layout_width="50dp"
+                android:layout_height="8dp"
+                android:layout_marginEnd="4dp"
+                app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintHorizontal_bias="1"
+                app:layout_constraintStart_toStartOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintVertical_bias="1"
+                app:loader_type="rect" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_create_review_video_preview_uploading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="view_create_review_video_preview_overlay_uploading,loader_create_review_video_preview_upload_progress" />
+
+            <View
+                android:id="@+id/view_create_review_video_preview_overlay_uploading"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:alpha="0.5"
+                android:background="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/player_view_create_review_video_preview_thumbnail" />
+
+            <com.tokopedia.unifycomponents.LoaderUnify
+                android:id="@+id/loader_create_review_video_preview_upload_progress"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:translationZ="1dp"
+                app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/player_view_create_review_video_preview_thumbnail" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_create_review_video_preview_upload_failed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="view_create_review_video_preview_overlay_failed, ic_create_review_video_preview_upload_failed" />
+
+            <View
+                android:id="@+id/view_create_review_video_preview_overlay_failed"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:alpha="0.5"
+                android:background="@color/Unify_NN900"
+                app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/player_view_create_review_video_preview_thumbnail" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/ic_create_review_video_preview_upload_failed"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon_color_light_disabled="@color/Unify_Static_White"
+                app:icon_color_light_enable="@color/Unify_Static_White"
+                app:icon_color_night_disabled="@color/Unify_Static_White"
+                app:icon_color_night_enable="@color/Unify_Static_White"
+                app:icon_name="IMAGE_BROKEN"
+                app:layout_constraintBottom_toBottomOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintEnd_toEndOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintStart_toStartOf="@id/player_view_create_review_video_preview_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/player_view_create_review_video_preview_thumbnail" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <ImageView
+        android:id="@+id/ic_create_review_video_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="8dp"
+        android:translationX="6dp"
+        android:translationY="-6dp"
+        app:layout_constraintEnd_toEndOf="@id/container_create_review_video_preview"
+        app:layout_constraintTop_toTopOf="@id/container_create_review_video_preview"
+        app:srcCompat="@drawable/ic_remove_image" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
