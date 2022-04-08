@@ -184,9 +184,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         cartExtension.setProductModel(productCardModel)
         video.setProductModel(productCardModel)
-        productCardModel.animationOnPress?.let {
-            cardViewProductCard?.animateOnPress = it
-        }
+        cardViewProductCard?.animateOnPress = productCardModel.animationOnPress
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

@@ -80,7 +80,7 @@ data class ProductCardModel (
         val hasAddToCartWishlist: Boolean = false,
         val hasSimilarProductWishlist: Boolean = false,
         val customVideoURL : String = "",
-        val animationOnPress: Int? = null
+        val animationOnPress: Int = CardUnify2.ANIMATE_NONE,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
