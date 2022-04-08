@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
+import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
@@ -51,6 +52,7 @@ open class PickerActivity : BaseActivity()
 
     @Inject lateinit var factory: ViewModelProvider.Factory
     @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var pickerAnalytics: PickerAnalytics
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -260,10 +262,17 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onCloseClicked() {
+        if (container.isFragmentActive(FragmentType.GALLERY)) {
+            pickerAnalytics.clickCloseButton()
+        }
         finish()
     }
 
     override fun onContinueClicked() {
+        if (container.isFragmentActive(FragmentType.GALLERY)) {
+            pickerAnalytics.clickNextButton()
+        }
+
         val intent = Intent(this, PickerPreviewActivity::class.java).apply {
             putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
         }
@@ -275,16 +284,24 @@ open class PickerActivity : BaseActivity()
         onContinueClicked()
     }
 
-    override fun onCameraTabSelected() {
+    override fun onCameraTabSelected(isDirectClick: Boolean) {
         container.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
         container.resetBottomNavMargin()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickCameraTab()
+        }
     }
 
-    override fun onGalleryTabSelected() {
+    override fun onGalleryTabSelected(isDirectClick: Boolean) {
         container.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
         container.addBottomNavMargin()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickGalleryTab()
+        }
     }
 
     override fun tabVisibility(isShown: Boolean) {
@@ -342,6 +359,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_selection_limit_message,
             param.get().maxMediaTotal()
         )
+
+        pickerAnalytics.galleryMaxPhotoLimit()
     }
 
     override fun onShowVideoLimitReachedGalleryToast() {
@@ -349,6 +368,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_selection_limit_video,
             param.get().maxVideoCount()
         )
+
+        pickerAnalytics.galleryMaxVideoLimit()
     }
 
     override fun onShowMediaLimitReachedCameraToast() {
@@ -356,6 +377,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_capture_limit_photo,
             param.get().maxMediaTotal()
         )
+
+        pickerAnalytics.maxPhotoLimit()
     }
 
     override fun onShowVideoLimitReachedCameraToast() {
@@ -363,6 +386,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_capture_limit_video,
             param.get().maxVideoCount()
         )
+
+        pickerAnalytics.maxVideoLimit()
     }
 
     override fun onShowVideoMinDurationToast() {
@@ -370,6 +395,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_video_duration_min_limit,
             param.get().minVideoDuration().toSec()
         )
+
+        pickerAnalytics.minVideoDuration()
     }
 
     override fun onShowVideoMaxDurationToast() {
@@ -377,6 +404,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_video_duration_max_limit,
             param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
         )
+
+        pickerAnalytics.maxVideoDuration()
     }
 
     override fun onShowVideoMaxFileSizeToast() {
@@ -384,6 +413,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_video_max_size,
             param.get().maxVideoFileSize().toMb()
         )
+
+        pickerAnalytics.maxVideoSize()
     }
 
     override fun onShowImageMaxFileSizeToast() {
@@ -391,6 +422,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_image_max_size,
             param.get().maxImageFileSize().toMb()
         )
+
+        pickerAnalytics.maxImageSize()
     }
 
     override fun onShowImageMinResToast() {
@@ -398,6 +431,8 @@ open class PickerActivity : BaseActivity()
             R.string.picker_image_res_min_limit,
             param.get().minImageResolution()
         )
+
+        pickerAnalytics.minImageResolution()
     }
 
     override fun onShowImageMaxResToast() {
@@ -412,6 +447,8 @@ open class PickerActivity : BaseActivity()
             getString(R.string.picker_storage_fail_video_record),
             Toaster.TYPE_ERROR
         )
+
+        pickerAnalytics.recordLowStorage()
     }
 
     private fun onShowValidationToaster(messageId: Int, param: Any) {

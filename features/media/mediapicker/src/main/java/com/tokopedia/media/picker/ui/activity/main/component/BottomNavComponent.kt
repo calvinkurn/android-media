@@ -16,6 +16,9 @@ class BottomNavComponent(
 
     private val tabUnify = findViewById<TabsUnify>(R.id.tab_page)
 
+    // to differentiate between tab changes by user click / by .select()
+    private var isTabClicked = false
+
     fun setupView() {
         container().show()
 
@@ -59,21 +62,25 @@ class BottomNavComponent(
 
     private fun onTabSelectionChanged(position: Int) {
         if (position == PAGE_CAMERA_INDEX) {
-            listener.onCameraTabSelected()
+            listener.onCameraTabSelected(isTabClicked)
         } else if (position == PAGE_GALLERY_INDEX) {
-            listener.onGalleryTabSelected()
+            listener.onGalleryTabSelected(isTabClicked)
         }
+        isTabClicked = false
     }
 
     private fun addTab(id: Int) {
-        tabUnify.addNewTab(context.getString(id))
+        tabUnify.addNewTab(context.getString(id)).view.setOnClickListener {
+            isTabClicked = true
+        }
     }
 
     override fun release() {}
 
     interface Listener {
-        fun onCameraTabSelected()
-        fun onGalleryTabSelected()
+        // isDirectClick is used as flag if tab changes is caused by direct tab click / not
+        fun onCameraTabSelected(isDirectClick: Boolean)
+        fun onGalleryTabSelected(isDirectClick: Boolean)
     }
 
     companion object {
