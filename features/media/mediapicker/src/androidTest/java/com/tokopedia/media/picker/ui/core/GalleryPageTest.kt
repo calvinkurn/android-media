@@ -7,7 +7,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.helper.matchers.withRecyclerView
@@ -17,12 +16,7 @@ import org.hamcrest.Matcher
 
 open class GalleryPageTest : PickerTest() {
 
-    override fun createAndAppendUri(builder: Uri.Builder) {
-        builder.appendQueryParameter(
-            ApplinkConst.MediaPicker.PARAM_PAGE,
-            ApplinkConst.MediaPicker.VALUE_PAGE_GALLERY
-        )
-    }
+    override fun createAndAppendUri(builder: Uri.Builder) {}
 
     object DataProvider {
         val imageOnly = listOf(
@@ -41,7 +35,7 @@ open class GalleryPageTest : PickerTest() {
         )
     }
 
-    object Action {
+    object Robot {
         fun clickContinueButtonOnToolbar() {
             onView(
                 withId(R.id.btn_done)
@@ -56,7 +50,7 @@ open class GalleryPageTest : PickerTest() {
         }
     }
 
-    object Assertion {
+    object Asserts {
         fun assertRecyclerViewDisplayed() {
             onView(
                 withId(R.id.lst_media)

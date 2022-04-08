@@ -14,15 +14,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.PickerCacheManager
-import com.tokopedia.media.common.types.PickerPageType
-import com.tokopedia.media.common.types.PickerSelectionType
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentGalleryBinding
-import com.tokopedia.media.picker.data.repository.AlbumRepositoryImpl.Companion.RECENT_ALBUM_ID
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.data.repository.AlbumRepository.Companion.RECENT_ALBUM_ID
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
-import com.tokopedia.media.picker.ui.PickerUiConfig
 import com.tokopedia.media.picker.ui.activity.album.AlbumActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivity
 import com.tokopedia.media.picker.ui.activity.main.PickerActivityListener
@@ -35,13 +31,15 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.picker.utils.exceptionHandler
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var galleryAnalytics: GalleryAnalytics
 
     private val binding: FragmentGalleryBinding? by viewBinding()
     private var listener: PickerActivityListener? = null
@@ -97,7 +95,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
             binding?.albumSelector?.txtName?.text = bucketName
 
             // fetch album by bucket id
-            viewModel.fetch(bucketId, cacheManager.getParam())
+            viewModel.fetch(bucketId)
 
             // force and scroll to up if the bucketId is "recent medias / all media"
             if (bucketId == -1L) {
@@ -116,9 +114,13 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.drawerSelector?.removeListener()
     }
 
-    override fun onItemClicked(media: MediaUiModel) {} //no-op
+    override fun onItemClicked(media: MediaUiModel) {
+        galleryAnalytics.clickGalleryThumbnail()
+    }
 
     override fun onDataSetChanged(action: DrawerActionType) {
+        if (!param.get().isMultipleSelectionType()) return
+
         when (action) {
             is DrawerActionType.Add -> stateOnAddPublished(action.media)
             is DrawerActionType.Remove -> stateOnRemovePublished(action.mediaToRemove)
@@ -155,7 +157,7 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     private fun initView() {
         setupRecyclerView()
 
-        viewModel.fetch(RECENT_ALBUM_ID, cacheManager.getParam())
+        viewModel.fetch(RECENT_ALBUM_ID)
     }
 
     private fun hasMediaList(isShown: Boolean) {
@@ -166,20 +168,17 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
 
     private fun setupEmptyState(isShown: Boolean) {
         binding?.emptyState?.root?.showWithCondition(isShown)
-        binding?.emptyState?.emptyNavigation?.visibility =
-            if (cacheManager.getParam().pageType() == PickerPageType.COMMON) {
-                binding?.emptyState?.emptyNavigation?.setOnClickListener {
-                    listener?.navigateToCameraPage()
-                }
-                View.VISIBLE
-            } else View.GONE
+        binding?.emptyState?.emptyNavigation?.showWithCondition(param.get().isCommonPageType())
+        binding?.emptyState?.emptyNavigation?.setOnClickListener {
+            listener?.navigateToCameraPage()
+        }
     }
 
     private fun setupSelectionDrawerWidget(isShown: Boolean) {
-        val isMultipleSelectionType = PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE
+        val isMultipleSelectionType = param.get().isMultipleSelectionType()
 
         if (isMultipleSelectionType) {
-            binding?.drawerSelector?.setMaxAdapterSize(cacheManager.getParam().maxMediaAmount())
+            binding?.drawerSelector?.setMaxAdapterSize(param.get().maxMediaTotal())
             binding?.drawerSelector?.showWithCondition(isShown)
         }
     }
@@ -188,6 +187,8 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
         binding?.albumSelector?.root?.showWithCondition(isShown)
 
         binding?.albumSelector?.container?.setOnClickListener {
+            galleryAnalytics.clickDropDown()
+
             startActivityForResult(Intent(
                 requireContext(),
                 AlbumActivity::class.java
@@ -214,11 +215,11 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     }
 
     private fun selectMedia(media: MediaUiModel, isSelected: Boolean): Boolean {
-        if (PickerUiConfig.selectionMode == PickerSelectionType.MULTIPLE) {
+        if (param.get().isMultipleSelectionType()) {
             if (!isSelected && media.isVideo()) {
                 // video validation
                 if (listener?.hasVideoLimitReached() == true) {
-                    listener?.onShowVideoLimitReachedToast()
+                    listener?.onShowVideoLimitReachedGalleryToast()
                     return false
                 }
 
@@ -226,23 +227,45 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
                     listener?.onShowVideoMinDurationToast()
                     return false
                 }
+
+                if(listener?.isMaxVideoDuration(media) == true){
+                    listener?.onShowVideoMaxDurationToast()
+                    return false
+                }
+
+                if (listener?.isMaxVideoSize(media) == true) {
+                    listener?.onShowVideoMaxFileSizeToast()
+                    return false
+                }
             } else if (!isSelected && !media.isVideo()) {
                 // image validation
-                // TODO
+                if (listener?.isMaxImageResolution(media) == true) {
+                    listener?.onShowImageMaxResToast()
+                    return false
+                }
+
+                if (listener?.isMinImageResolution(media) == true) {
+                    listener?.onShowImageMinResToast()
+                    return false
+                }
+
+                if (listener?.isMaxImageSize(media) == true) {
+                    listener?.onShowImageMaxFileSizeToast()
+                    return false
+                }
             }
 
             if (!isSelected && listener?.hasMediaLimitReached() == true) {
-                listener?.onShowMediaLimitReachedToast()
+                listener?.onShowMediaLimitReachedGalleryToast()
                 return false
             }
-        } else if (PickerUiConfig.selectionMode == PickerSelectionType.SINGLE) {
-            if (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty()) {
-                adapter.removeAllSelectedSingleClick()
-            }
+        } else if (!param.get().isMultipleSelectionType() && (listener?.mediaSelected()?.isNotEmpty() == true || adapter.selectedMedias.isNotEmpty())) {
+            adapter.removeAllSelectedSingleClick()
         }
 
         if (!isSelected) {
             stateOnAddPublished(media)
+            galleryAnalytics.selectGalleryItem()
         } else {
             stateOnRemovePublished(media)
         }
@@ -253,7 +276,6 @@ open class GalleryFragment : BaseDaggerFragment(), DrawerSelectionWidget.Listene
     override fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }

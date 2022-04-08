@@ -2,104 +2,61 @@ package com.tokopedia.media.picker.ui.activity.main
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.PickerCacheManager
-import com.tokopedia.media.common.basecomponent.uiComponent
-import com.tokopedia.media.common.component.NavToolbarComponent
-import com.tokopedia.media.common.component.ToolbarTheme
-import com.tokopedia.media.common.intent.PreviewIntent
-import com.tokopedia.media.common.observer.EventFlowFactory
-import com.tokopedia.media.common.types.PickerFragmentType
-import com.tokopedia.media.common.types.PickerPageType
-import com.tokopedia.media.common.uimodel.MediaUiModel
-import com.tokopedia.media.common.uimodel.MediaUiModel.Companion.toUiModel
-import com.tokopedia.media.databinding.ActivityPickerBinding
+import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
-import com.tokopedia.media.picker.ui.PickerNavigator
 import com.tokopedia.media.picker.ui.PickerUiConfig
+import com.tokopedia.media.picker.ui.activity.main.component.BottomNavComponent
+import com.tokopedia.media.picker.ui.activity.main.component.ParentContainerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.PermissionFragment
 import com.tokopedia.media.picker.ui.observer.observe
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
 import com.tokopedia.media.picker.ui.uimodel.hasVideoBy
 import com.tokopedia.media.picker.ui.uimodel.safeRemove
-import com.tokopedia.media.picker.utils.addOnTabSelected
 import com.tokopedia.media.picker.utils.delegates.permissionGranted
-import com.tokopedia.media.picker.utils.dimensionPixelOffsetOf
+import com.tokopedia.media.picker.utils.toVideoMaxDurationTextFormat
 import com.tokopedia.media.preview.ui.activity.PickerPreviewActivity
+import com.tokopedia.picker.common.*
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.observer.EventFlowFactory
+import com.tokopedia.picker.common.types.FragmentType
+import com.tokopedia.picker.common.types.PageType
+import com.tokopedia.picker.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
+import com.tokopedia.picker.common.utils.toMb
+import com.tokopedia.picker.common.utils.toSec
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-/**
- * main applink:
- * tokopedia://media-picker
- * state -> camera, video, gallery, and multiple selection
- *
- * page:
- * camera -> camera page only
- * gallery -> gallery page only
- *
- * mode:
- * image -> image only (camera only and gallery only shown an image)
- * video -> video only (video only and gallery only shown an video)
- *
- * type:
- * single -> single selection
- * multiple -> multiple selection
- *
- * sample use-cases:
- * show camera page and only supported for image:
- * tokopedia://media-picker?page=camera&mode=image
- *
- * show camera page and only supported for video:
- * tokopedia://media-picker?page=camera&mode=video
- *
- * show gallery page and only supported for image:
- * tokopedia://media-picker?page=gallery&mode=image
- *
- * show gallery page and only supported for video:
- * tokopedia://media-picker?page=gallery&mode=video
- *
- * show camera and gallery but only supported for image:
- * tokopedia://media-picker?mode=image
- *
- * show camera and gallery but only supported for video:
- * tokopedia://media-picker?mode=video
- *
- * if you want to set between single or multiple selection, just add this query:
- * ...&type=single/multiple
- */
 open class PickerActivity : BaseActivity()
     , PermissionFragment.Listener
     , NavToolbarComponent.Listener
-    , PickerActivityListener {
+    , PickerActivityListener
+    , BottomNavComponent.Listener {
 
     @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject lateinit var param: ParamCacheManager
+    @Inject lateinit var pickerAnalytics: PickerAnalytics
 
-    private val binding: ActivityPickerBinding? by viewBinding()
     private val hasPermissionGranted: Boolean by permissionGranted()
 
     protected val medias = arrayListOf<MediaUiModel>()
-
-    private val param by lazy {
-        cacheManager.getParam()
-    }
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -108,20 +65,26 @@ open class PickerActivity : BaseActivity()
         )[PickerViewModel::class.java]
     }
 
-    private val navigator: PickerNavigator? by lazy {
-        PickerNavigator(
-            this,
-            R.id.container,
-            supportFragmentManager,
-            createFragmentFactory()
+    private val navToolbar by uiComponent {
+        NavToolbarComponent(
+            parent = it,
+            listener = this,
+            useArrowIcon = false
         )
     }
 
-    private val navToolbar by uiComponent {
-        NavToolbarComponent(
-            listener = this,
+    private val container by uiComponent {
+        ParentContainerComponent(
             parent = it,
-            useArrowIcon = false
+            fragmentManager = supportFragmentManager,
+            fragmentFactory = createFragmentFactory()
+        )
+    }
+
+    private val bottomNavTab by uiComponent {
+        BottomNavComponent(
+            parent = it,
+            listener = this
         )
     }
 
@@ -130,7 +93,7 @@ open class PickerActivity : BaseActivity()
         setContentView(R.layout.activity_picker)
         initInjector()
 
-        setupQueryAndUIConfigBuilder()
+        setupParamQueryAndDataIntent()
         restoreDataState(savedInstanceState)
 
         initView()
@@ -139,13 +102,23 @@ open class PickerActivity : BaseActivity()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
-            // get data from preview if user had an updated the media elements
-            val mediasFromPreview = data.getParcelableArrayListExtra<MediaUiModel>(
-                PickerPreviewActivity.MEDIA_ELEMENT_RESULT
-            )?.toList()?: return
 
-            stateOnChangePublished(mediasFromPreview)
+        // get data from preview if user had an updated the media elements
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_PREVIEW_PAGE && data != null) {
+            data.getParcelableArrayListExtra<MediaUiModel>(RESULT_INTENT_PREVIEW)?.toList()?.let {
+                stateOnChangePublished(it)
+            }
+
+            // exit picker
+            data.getParcelableExtra<PickerResult>(EXTRA_RESULT_PICKER)?.let {
+                val withEditor = data.getBooleanExtra(EXTRA_EDITOR_PICKER, false)
+
+                if (withEditor) {
+                    onEditorIntent(it)
+                } else {
+                    onFinishIntent(it)
+                }
+            }
         }
     }
 
@@ -162,39 +135,21 @@ open class PickerActivity : BaseActivity()
         )
     }
 
-    override fun onPermissionGranted() {
-        navigateByPageType()
-    }
+    private fun setupParamQueryAndDataIntent() {
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        navigator?.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
-        return super.dispatchTouchEvent(ev)
-    }
+        onPageSourceNotFound(pickerParam)
 
-    override fun onCloseClicked() {
-        finish()
-    }
+        // get data from uri query parameter
+        intent?.data?.let {
+            PickerUiConfig.getStartPageIndex(it)
+        }
 
-    override fun onContinueClicked() {
-        val intent = PreviewIntent.intent(this, medias)
-        startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
-    }
-
-    private fun setupQueryAndUIConfigBuilder() {
-        val data = intent?.data ?: return
-
-        PickerUiConfig.setupQueryPage(data)
-        PickerUiConfig.setupQueryMode(data)
-        PickerUiConfig.setupQuerySelectionType(data)
-
-        cacheManager.setParam(
-            PickerUiConfig.pageType,
-            PickerUiConfig.modeType,
-            PickerUiConfig.selectionMode,
-        )
+        // set the picker param as cache
+        param.setParam(pickerParam)
 
         // get pre-included media items
-        param.includeMedias()
+        param.get().includeMedias()
             .map { it.toUiModel() }
             .also {
                 stateOnChangePublished(it)
@@ -218,7 +173,7 @@ open class PickerActivity : BaseActivity()
             navigateByPageType()
         } else {
             navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-            navigator?.start(PickerFragmentType.PERMISSION)
+            container.open(FragmentType.PERMISSION)
         }
     }
 
@@ -235,12 +190,11 @@ open class PickerActivity : BaseActivity()
                     }
                 },
                 onAdded = {
-                    if (PickerUiConfig.isSingleSelectionType()) {
-                        medias.clear()
-                    }
+                    if (!param.get().isMultipleSelectionType()) medias.clear()
+                    if (!medias.contains(it)) medias.add(it)
 
-                    if (!medias.contains(it)) {
-                        medias.add(it)
+                    if (!param.get().isMultipleSelectionType()) {
+                        onContinueClicked()
                     }
                 }
             ) {
@@ -252,58 +206,260 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun navigateByPageType() {
-        when (PickerUiConfig.pageType) {
-            PickerPageType.CAMERA -> {
+        when (param.get().pageType()) {
+            PageType.CAMERA -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-                navigator?.start(PickerFragmentType.CAMERA)
+                container.open(FragmentType.CAMERA)
             }
-            PickerPageType.GALLERY -> {
+            PageType.GALLERY -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
-                navigator?.start(PickerFragmentType.GALLERY)
+                container.open(FragmentType.GALLERY)
             }
             else -> {
                 navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
 
-                // show camera as initial page
-                navigator?.start(PickerFragmentType.CAMERA)
-
                 // display the tab navigation
-                setupTabView()
+                bottomNavTab.setupView()
+
+                // start position of tab
+                bottomNavTab.onStartPositionChanged(
+                    PickerUiConfig.startPageIndex
+                )
             }
         }
     }
 
-    private fun setupTabView() {
-        binding?.tabContainer?.show()
+    private fun onPageSourceNotFound(param: PickerParam) {
+        if (GlobalConfig.isAllowDebuggingTools()) return
 
-        // setup as transparent tab layout background
-        binding?.tabPage?.tabLayout?.setBackgroundColor(Color.TRANSPARENT)
+        if (param.pageSourceName().isEmpty()) {
+            Toast.makeText(
+                applicationContext,
+                getString(R.string.picker_page_source_not_found),
+                Toast.LENGTH_SHORT
+            ).show()
 
-        binding?.tabPage?.addNewTab(getString(R.string.picker_title_camera))
-        binding?.tabPage?.addNewTab(getString(R.string.picker_title_gallery))
-
-        binding?.tabPage?.tabLayout?.addOnTabSelected { position ->
-            if (position == PAGE_CAMERA_INDEX) {
-                onCameraTabSelected()
-            } else if (position == PAGE_GALLERY_INDEX) {
-                onGalleryTabSelected()
-            }
+            finish()
         }
     }
 
-    private fun onCameraTabSelected() {
-        navigator?.onPageSelected(PickerFragmentType.CAMERA)
+    private fun onFinishIntent(data: PickerResult) {
+        val intent = Intent()
+        intent.putExtra(EXTRA_RESULT_PICKER, data)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun onEditorIntent(data: PickerResult) {} // no-op
+
+    override fun onPermissionGranted() {
+        navigateByPageType()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        container.cameraFragment()?.gestureDetector?.onTouchEvent(ev)
+        return super.dispatchTouchEvent(ev)
+    }
+
+    override fun onCloseClicked() {
+        if (container.isFragmentActive(FragmentType.GALLERY)) {
+            pickerAnalytics.clickCloseButton()
+        }
+        finish()
+    }
+
+    override fun onContinueClicked() {
+        if (container.isFragmentActive(FragmentType.GALLERY)) {
+            pickerAnalytics.clickNextButton()
+        }
+
+        val intent = Intent(this, PickerPreviewActivity::class.java).apply {
+            putExtra(EXTRA_INTENT_PREVIEW, ArrayList(medias))
+        }
+
+        startActivityForResult(intent, REQUEST_PREVIEW_PAGE)
+    }
+
+    override fun onCameraThumbnailClicked() {
+        onContinueClicked()
+    }
+
+    override fun onCameraTabSelected(isDirectClick: Boolean) {
+        container.open(FragmentType.CAMERA)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Transparent)
-        binding?.container?.setMargin(0, 0, 0, 0)
+        container.resetBottomNavMargin()
+
+        if (isDirectClick) {
+            pickerAnalytics.clickCameraTab()
+        }
     }
 
-    private fun onGalleryTabSelected() {
-        val marginBottom = dimensionPixelOffsetOf(R.dimen.picker_page_margin_bottom)
-
-        navigator?.onPageSelected(PickerFragmentType.GALLERY)
+    override fun onGalleryTabSelected(isDirectClick: Boolean) {
+        container.open(FragmentType.GALLERY)
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
+        container.addBottomNavMargin()
 
-        binding?.container?.setMargin(0, 0, 0, marginBottom)
+        if (isDirectClick) {
+            pickerAnalytics.clickGalleryTab()
+        }
+    }
+
+    override fun tabVisibility(isShown: Boolean) {
+        if (!param.get().isCommonPageType()) return
+
+        bottomNavTab.container().showWithCondition(isShown)
+    }
+
+    override fun navigateToCameraPage() {
+        bottomNavTab.navigateToCameraTab()
+    }
+
+    override fun mediaSelected(): List<MediaUiModel> {
+        return medias
+    }
+
+    override fun hasVideoLimitReached(): Boolean {
+        return medias.hasVideoBy(param.get().maxVideoCount())
+    }
+
+    override fun hasMediaLimitReached(): Boolean {
+        return medias.size == param.get().maxMediaTotal()
+    }
+
+    override fun isMinVideoDuration(model: MediaUiModel): Boolean {
+        return model.videoDuration(applicationContext) <= param.get().minVideoDuration()
+    }
+
+    override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
+        return model.videoDuration(applicationContext) > param.get().maxVideoDuration()
+    }
+
+    override fun isMaxVideoSize(model: MediaUiModel): Boolean {
+        return model.isMoreThan(param.get().maxVideoFileSize())
+    }
+
+    override fun isMinImageResolution(model: MediaUiModel): Boolean {
+        return model.isMinImageRes(param.get().minImageResolution())
+    }
+
+    override fun isMaxImageResolution(model: MediaUiModel): Boolean {
+        return model.isMaxImageRes(param.get().maxImageResolution())
+    }
+
+    override fun isMaxImageSize(model: MediaUiModel): Boolean {
+        return model.isMoreThan(param.get().maxImageFileSize())
+    }
+
+    override fun isMinStorageThreshold(): Boolean {
+        return viewModel.isDeviceStorageFull()
+    }
+
+    override fun onShowMediaLimitReachedGalleryToast() {
+        onShowValidationToaster(
+            R.string.picker_selection_limit_message,
+            param.get().maxMediaTotal()
+        )
+
+        pickerAnalytics.galleryMaxPhotoLimit()
+    }
+
+    override fun onShowVideoLimitReachedGalleryToast() {
+        onShowValidationToaster(
+            R.string.picker_selection_limit_video,
+            param.get().maxVideoCount()
+        )
+
+        pickerAnalytics.galleryMaxVideoLimit()
+    }
+
+    override fun onShowMediaLimitReachedCameraToast() {
+        onShowValidationToaster(
+            R.string.picker_capture_limit_photo,
+            param.get().maxMediaTotal()
+        )
+
+        pickerAnalytics.maxPhotoLimit()
+    }
+
+    override fun onShowVideoLimitReachedCameraToast() {
+        onShowValidationToaster(
+            R.string.picker_capture_limit_video,
+            param.get().maxVideoCount()
+        )
+
+        pickerAnalytics.maxVideoLimit()
+    }
+
+    override fun onShowVideoMinDurationToast() {
+        onShowValidationToaster(
+            R.string.picker_video_duration_min_limit,
+            param.get().minVideoDuration().toSec()
+        )
+
+        pickerAnalytics.minVideoDuration()
+    }
+
+    override fun onShowVideoMaxDurationToast() {
+        onShowValidationToaster(
+            R.string.picker_video_duration_max_limit,
+            param.get().maxVideoDuration().toSec().toVideoMaxDurationTextFormat(this)
+        )
+
+        pickerAnalytics.maxVideoDuration()
+    }
+
+    override fun onShowVideoMaxFileSizeToast() {
+        onShowValidationToaster(
+            R.string.picker_video_max_size,
+            param.get().maxVideoFileSize().toMb()
+        )
+
+        pickerAnalytics.maxVideoSize()
+    }
+
+    override fun onShowImageMaxFileSizeToast() {
+        onShowValidationToaster(
+            R.string.picker_image_max_size,
+            param.get().maxImageFileSize().toMb()
+        )
+
+        pickerAnalytics.maxImageSize()
+    }
+
+    override fun onShowImageMinResToast() {
+        onShowValidationToaster(
+            R.string.picker_image_res_min_limit,
+            param.get().minImageResolution()
+        )
+
+        pickerAnalytics.minImageResolution()
+    }
+
+    override fun onShowImageMaxResToast() {
+        onShowValidationToaster(
+            R.string.picker_image_res_max_limit,
+            param.get().maxImageResolution()
+        )
+    }
+
+    override fun onShowFailToVideoRecordToast() {
+        onShowToaster(
+            getString(R.string.picker_storage_fail_video_record),
+            Toaster.TYPE_ERROR
+        )
+
+        pickerAnalytics.recordLowStorage()
+    }
+
+    private fun onShowValidationToaster(messageId: Int, param: Any) {
+        val content = getString(messageId, param)
+        onShowToaster(content)
+    }
+
+    private fun onShowToaster(message: String, type: Int = Toaster.TYPE_NORMAL) {
+        container.container().let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, type).show()
+        }
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
@@ -313,102 +469,14 @@ open class PickerActivity : BaseActivity()
     protected open fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }
 
-    override fun tabVisibility(isShown: Boolean) {
-        if (!param.isCommonPageType()) return
-        binding?.tabContainer?.showWithCondition(isShown)
-    }
-
-    override fun mediaSelected(): List<MediaUiModel> {
-        return medias
-    }
-
-    override fun hasVideoLimitReached(): Boolean {
-        return medias.hasVideoBy(param.maxVideoCount())
-    }
-
-    override fun hasMediaLimitReached(): Boolean {
-        return medias.size == param.maxMediaAmount()
-    }
-
-    override fun isMinVideoDuration(model: MediaUiModel): Boolean {
-        return model.getVideoDuration(applicationContext) <= param.minVideoDuration()
-    }
-
-    override fun isMaxVideoDuration(model: MediaUiModel): Boolean {
-        return model.getVideoDuration(applicationContext) > param.maxVideoDuration()
-    }
-
-    override fun isMaxVideoSize(model: MediaUiModel): Boolean {
-        return model.isMaxFileSize(param.maxVideoSize())
-    }
-
-    override fun isMinImageResolution(model: MediaUiModel): Boolean {
-        return model.isMinImageRes(param.minImageResolution())
-    }
-
-    override fun isMaxImageResolution(model: MediaUiModel): Boolean {
-        return model.isMaxImageRes(param.maxImageResolution())
-    }
-
-    override fun isMaxImageSize(model: MediaUiModel): Boolean {
-        return model.isMaxFileSize(param.maxImageSize())
-    }
-
-    override fun onShowMediaLimitReachedToast() {
-        onShowToaster(R.string.picker_selection_limit_message, param.maxMediaAmount())
-    }
-
-    override fun onShowVideoLimitReachedToast() {
-        onShowToaster(R.string.picker_selection_limit_video, param.maxVideoCount())
-    }
-
-    override fun onShowVideoMinDurationToast() {
-        onShowToaster(R.string.picker_video_duration_min_limit, param.minVideoDuration())
-    }
-
-    override fun onShowVideoMaxDurationToast() {
-        onShowToaster(R.string.picker_video_duration_max_limit, param.maxVideoDuration())
-    }
-
-    override fun onShowVideoMaxFileSizeToast() {
-        onShowToaster(R.string.picker_video_max_size, param.maxVideoSize())
-    }
-
-    override fun onShowImageMinResToast() {
-        onShowToaster(R.string.picker_image_res_min_limit, param.maxImageResolution())
-    }
-
-    override fun onShowImageMaxResToast() {
-        onShowToaster(R.string.picker_image_res_max_limit, param.minImageResolution())
-    }
-
-    override fun onShowImageMaxFileSizeToast() {
-        onShowToaster(R.string.picker_image_max_size, param.maxImageSize())
-    }
-
-    private fun onShowToaster(messageId: Int, param: Number) {
-        binding?.rootView?.let {
-            val content = getString(messageId, param)
-            Toaster.build(it, content, Toaster.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun navigateToCameraPage() {
-        binding?.tabPage?.tabLayout?.getTabAt(PAGE_CAMERA_INDEX)?.select()
-    }
-
     companion object {
-        private const val REQUEST_PREVIEW_PAGE = 123
+        const val REQUEST_PREVIEW_PAGE = 123
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
-
-        private const val PAGE_CAMERA_INDEX = 0
-        private const val PAGE_GALLERY_INDEX = 1
     }
 
 }

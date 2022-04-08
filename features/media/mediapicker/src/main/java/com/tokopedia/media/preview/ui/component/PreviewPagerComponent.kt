@@ -4,8 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.R
-import com.tokopedia.media.common.basecomponent.UiComponent
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.basecomponent.UiComponent
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.preview.ui.activity.pagers.adapter.PreviewPagerAdapter
 import com.tokopedia.media.preview.ui.uimodel.PreviewUiModel
 
@@ -17,7 +17,7 @@ class PreviewPagerComponent(
     private var previousViewPagerIndex = 0
 
     private val viewPager by lazy {
-        componentView() as ViewPager
+        container() as ViewPager
     }
 
     private val adapter by lazy {
@@ -31,27 +31,35 @@ class PreviewPagerComponent(
         viewPager.addOnPageChangeListener(viewPagerListener())
     }
 
-    fun setupView(medias: List<MediaUiModel>) {
+    fun setupView(medias: List<MediaUiModel>, firstRenderIndex: Int) {
         setData(medias)
         viewPager.adapter = adapter
+        viewPager.currentItem = firstRenderIndex
         viewPager.addOnAttachStateChangeListener(attachStateListener())
     }
 
-    fun removeData(media: MediaUiModel) {
+    fun removeData(media: MediaUiModel): Int {
         val element = getData(media)
-        adapter.remove(element)
+        val removedIndex = adapter.remove(element)
+
+        // play video if new selected index mVideoPlayer is ready
+        adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
+
+        return removedIndex
     }
 
-    fun moveToOf(media: MediaUiModel) : Int{
+    fun moveToOf(media: MediaUiModel): Int {
         val element = getData(media)
         val index = medias.indexOf(element)
         viewPager.setCurrentItem(index, false)
         return index
     }
 
-    override fun release() {
-
+    fun getSelectedIndex(): Int {
+        return viewPager.currentItem
     }
+
+    override fun release() {} //no-op
 
     private fun viewPagerListener() = object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(state: Int) {}
@@ -59,12 +67,12 @@ class PreviewPagerComponent(
         override fun onPageSelected(position: Int) {
             val currentItem = medias[position]
             currentItem.mVideoPlayer?.let {
-                if(!it.player().isPlaying){
+                if (!it.player().isPlaying) {
                     currentItem.mVideoPlayer?.start()
                 }
             }
 
-            if(adapter.count > previousViewPagerIndex){
+            if (previousViewPagerIndex in 0 until adapter.count) {
                 val previousItem = medias[previousViewPagerIndex]
                 if (previousItem.data.isVideo()) {
                     previousItem.mVideoPlayer?.stop()
@@ -84,12 +92,11 @@ class PreviewPagerComponent(
         this.medias.addAll(asPreviewUiModel)
     }
 
-    private fun getData(media: MediaUiModel)
-        = medias.firstOrNull {
-            it.data == media
-        }
+    private fun getData(media: MediaUiModel) = medias.firstOrNull {
+        it.data == media
+    }
 
-    private fun attachStateListener() = object: View.OnAttachStateChangeListener{
+    private fun attachStateListener() = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View?) {
             v?.post {
                 adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.start()
@@ -99,10 +106,6 @@ class PreviewPagerComponent(
         override fun onViewDetachedFromWindow(v: View?) {
             adapter.getItem(viewPager.currentItem)?.mVideoPlayer?.stop()
         }
-    }
-
-    interface Listener {
-
     }
 
 }

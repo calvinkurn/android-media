@@ -9,32 +9,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.media.common.types.PickerPageType
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentPermissionBinding
-import com.tokopedia.media.picker.ui.PickerUiConfig
+import com.tokopedia.media.picker.di.DaggerPickerComponent
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.utils.view.binding.viewBinding
+import javax.inject.Inject
 
 open class PermissionFragment : BaseDaggerFragment() {
 
-    private var listener: Listener? = null
+    @Inject lateinit var cacheManager: ParamCacheManager
 
     private val binding by viewBinding<FragmentPermissionBinding>()
-    private val permissionList = PermissionUiModel.get()
+    private var listener: Listener? = null
 
-    private val permissions = permissionList.map {
-        it.name
+    private val permissionList = mutableListOf<PermissionUiModel>()
+
+    private val permissions by lazy {
+        permissionList.map { it.name }
     }
 
-    private val mAdapter by lazy {
-        PermissionAdapter(permissionList)
-    }
+    private val mAdapter by lazy { PermissionAdapter(permissionList) }
+    private val param by lazy { cacheManager.get() }
 
     private var isPermissionRationale = false
     private var mTitle = ""
@@ -63,16 +67,27 @@ open class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun setupView() {
+        initPermissionList()
         initPermissionDynamicWording()
-        setupPermissionList()
+        setupPermissionRecyclerView()
 
         binding?.txtTitle?.text = mTitle
         binding?.txtMessage?.text = mMessage
     }
 
+    private fun initPermissionList() {
+        permissionList.clear()
+        permissionList.addAll(
+            PermissionUiModel.get(
+                param.pageType(),
+                param.isImageModeOnly()
+            )
+        )
+    }
+
     private fun initPermissionDynamicWording() {
-        val (_title, _message) = when (PickerUiConfig.pageType) {
-            PickerPageType.CAMERA -> if (PickerUiConfig.isPhotoModeOnly()) {
+        val (_title, _message) = when (param.pageType()) {
+            PageType.CAMERA -> if (param.isImageModeOnly()) {
                 Pair(
                     getString(R.string.picker_title_camera_photo_permission),
                     getString(R.string.picker_message_camera_photo_permission)
@@ -83,7 +98,7 @@ open class PermissionFragment : BaseDaggerFragment() {
                     getString(R.string.picker_message_camera_video_permission)
                 )
             }
-            PickerPageType.GALLERY -> Pair(
+            PageType.GALLERY -> Pair(
                 getString(R.string.picker_title_gallery_permission),
                 getString(R.string.picker_message_gallery_permission)
             )
@@ -97,7 +112,7 @@ open class PermissionFragment : BaseDaggerFragment() {
         mMessage = _message
     }
 
-    private fun setupPermissionList() {
+    private fun setupPermissionRecyclerView() {
         binding?.lstPermission?.apply {
             layoutManager = LinearLayoutManager(requireContext())
             addItemDecoration(ItemDividerDecoration(requireContext()))
@@ -172,7 +187,12 @@ open class PermissionFragment : BaseDaggerFragment() {
         listener = null
     }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        DaggerPickerComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
 
     override fun getScreenName() = "Permission"
 

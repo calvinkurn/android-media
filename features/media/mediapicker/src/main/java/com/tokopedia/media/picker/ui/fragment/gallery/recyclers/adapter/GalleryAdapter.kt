@@ -13,7 +13,7 @@ import com.tokopedia.media.databinding.ViewItemGalleryPickerBinding
 import com.tokopedia.media.picker.ui.fragment.OnMediaClickListener
 import com.tokopedia.media.picker.ui.fragment.OnMediaSelectedListener
 import com.tokopedia.media.picker.ui.fragment.gallery.recyclers.utils.MediaDiffUtil
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.uimodel.fastSubtract
 import com.tokopedia.utils.view.binding.viewBinding
 

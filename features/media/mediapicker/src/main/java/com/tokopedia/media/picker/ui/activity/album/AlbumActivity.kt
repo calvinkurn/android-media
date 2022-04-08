@@ -8,23 +8,29 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.media.common.PickerCacheManager
-import com.tokopedia.media.common.basecomponent.uiComponent
-import com.tokopedia.media.common.component.NavToolbarComponent
-import com.tokopedia.media.common.component.ToolbarTheme
-import com.tokopedia.media.common.uimodel.AlbumUiModel
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityAlbumBinding
+import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
 import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
+import com.tokopedia.picker.common.basecomponent.uiComponent
+import com.tokopedia.picker.common.component.NavToolbarComponent
+import com.tokopedia.picker.common.component.ToolbarTheme
+import com.tokopedia.picker.common.uimodel.AlbumUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var cacheManager: PickerCacheManager
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var pickerAnalytics: PickerAnalytics
 
     private val binding: ActivityAlbumBinding? by viewBinding()
 
@@ -79,7 +85,7 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
         navToolbar.onToolbarThemeChanged(ToolbarTheme.Solid)
 
         // fetch the album list
-        viewModel.fetch(cacheManager.getParam())
+        viewModel.fetch()
     }
 
     private fun setupRecyclerView() {
@@ -89,6 +95,8 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
 
     private val onAlbumClickListener = object : OnAlbumClickListener {
         override fun invoke(album: AlbumUiModel) {
+            pickerAnalytics.clickAlbumFolder(album.name)
+
             setResult(RESULT_OK, Intent().apply {
                 putExtra(INTENT_BUCKET_ID, album.id)
                 putExtra(INTENT_BUCKET_NAME, album.name)
@@ -101,7 +109,6 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     private fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }

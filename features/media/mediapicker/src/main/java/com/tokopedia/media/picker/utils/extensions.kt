@@ -1,12 +1,14 @@
 package com.tokopedia.media.picker.utils
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.media.loader.data.Resize
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.R
+import com.tokopedia.media.R as mediaPickerR
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 
@@ -36,10 +38,14 @@ fun Context.dimensionPixelOffsetOf(dimen: Int)
 fun Context.dimensionOf(dimen: Int)
     = resources.getDimension(dimen)
 
-// TODO create shared-component for this
+fun View.setBottomMargin(value: Int) {
+    val layoutParams = this.layoutParams as ViewGroup.MarginLayoutParams
+    layoutParams.setMargins(0, 0, 0, value)
+}
+
 fun ImageView.pickerLoadImage(path: String) {
-    val thumbnailSize = context.dimensionPixelOffsetOf(R.dimen.picker_thumbnail_size)
-    val roundedSize = context.dimensionOf(R.dimen.picker_thumbnail_rounded)
+    val thumbnailSize = context.dimensionPixelOffsetOf(mediaPickerR.dimen.picker_thumbnail_size)
+    val roundedSize = context.dimensionOf(mediaPickerR.dimen.picker_thumbnail_rounded)
 
     val isFitCenter = File(path).let {
         if (it.exists()) {
@@ -61,5 +67,18 @@ fun ImageView.pickerLoadImage(path: String) {
             centerCrop()
         }
     }
+}
 
+fun Long.toVideoMaxDurationTextFormat(context: Context): String {
+    return if (this < 60) {
+        "$this ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_sec)}"
+    } else {
+        val minResult = "${this / 60} ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_min)}"
+        val remainingSec = this % 60
+
+        return if (remainingSec == 0L)
+            minResult
+        else
+            minResult + " $remainingSec ${context.getString(mediaPickerR.string.picker_video_duration_max_limit_sec)}"
+    }
 }

@@ -14,16 +14,11 @@ import com.tokopedia.utils.view.binding.viewBinding
 class PlaceholderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     private val binding: ViewItemSelectionPlaceholderBinding? by viewBinding()
+    private val context by lazy { itemView.context }
 
     fun bind(bgColor: Int, @DrawableRes placeholder: Int) {
-        binding?.imageView?.setBackgroundColor(bgColor)
-
-        binding?.imageViewPlaceholder?.setImageDrawable(
-            MethodChecker.getDrawable(
-                binding?.imageViewPlaceholder?.context,
-                placeholder
-            )
-        )
+        binding?.imgBgPlaceholder?.setBackgroundColor(bgColor)
+        binding?.imgPlaceholder?.setImageDrawable(MethodChecker.getDrawable(context, placeholder))
     }
 
     companion object {

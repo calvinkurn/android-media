@@ -1,8 +1,8 @@
 package com.tokopedia.media.picker.ui.observer
 
-import com.tokopedia.media.common.observer.EventFlowFactory
-import com.tokopedia.media.common.observer.EventState
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.observer.EventFlowFactory
+import com.tokopedia.picker.common.observer.EventState
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 

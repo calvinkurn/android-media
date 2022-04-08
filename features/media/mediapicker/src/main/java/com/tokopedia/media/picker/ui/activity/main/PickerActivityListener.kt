@@ -1,6 +1,6 @@
 package com.tokopedia.media.picker.ui.activity.main
 
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 
 interface PickerActivityListener {
     fun tabVisibility(isShown: Boolean)
@@ -14,14 +14,22 @@ interface PickerActivityListener {
     fun isMinImageResolution(model: MediaUiModel): Boolean
     fun isMaxImageResolution(model: MediaUiModel): Boolean
     fun isMaxImageSize(model: MediaUiModel): Boolean
+    fun isMinStorageThreshold(): Boolean
 
-    fun onShowMediaLimitReachedToast()
-    fun onShowVideoLimitReachedToast()
+    fun onShowMediaLimitReachedGalleryToast()
+    fun onShowVideoLimitReachedGalleryToast()
+
+    fun onShowMediaLimitReachedCameraToast()
+    fun onShowVideoLimitReachedCameraToast()
+
     fun onShowVideoMinDurationToast()
     fun onShowVideoMaxDurationToast()
     fun onShowVideoMaxFileSizeToast()
     fun onShowImageMinResToast()
     fun onShowImageMaxResToast()
     fun onShowImageMaxFileSizeToast()
+    fun onShowFailToVideoRecordToast()
+
+    fun onCameraThumbnailClicked()
     fun navigateToCameraPage()
 }

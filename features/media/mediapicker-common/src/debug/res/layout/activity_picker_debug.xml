@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/edt_applink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        app:unify_text_field_maxline="3"
+        app:unify_text_field_input_type="text"
+        app:unify_text_field_label="Applink"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_below="@+id/edt_applink"
+        android:text="OPEN PICKER"
+        app:unifyButtonSize="medium" />
+
+    <EditText
+        android:id="@+id/edt_config"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:background="@null"
+        android:textSize="12sp"
+        android:gravity="start|top"
+        android:layout_below="@+id/btn_action"
+        android:layout_above="@+id/drawer_selector" />
+
+    <com.tokopedia.picker.widget.drawerselector.DebugDrawerSelectionWidget
+        android:id="@+id/drawer_selector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        app:canReorder="true"
+        app:backgroundColorPlaceHolder="@color/Unify_N0"
+        app:placeholder="@drawable/picker_ic_placeholder_media_preview" />
+
+</RelativeLayout>

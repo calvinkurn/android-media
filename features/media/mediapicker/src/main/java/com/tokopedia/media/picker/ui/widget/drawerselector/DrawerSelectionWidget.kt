@@ -9,18 +9,18 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.media.R
-import com.tokopedia.media.common.uimodel.MediaUiModel
+import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.databinding.WidgetSelectionBottomNavBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.adapter.DrawerSelectionAdapter
 import com.tokopedia.media.picker.ui.widget.drawerselector.viewholder.ThumbnailViewHolder
-import com.tokopedia.media.picker.utils.Unify_N0
+import com.tokopedia.picker.common.utils.Unify_N0
 
 class DrawerSelectionWidget : FrameLayout {
 
     private var adapter: DrawerSelectionAdapter? = null
     private var placeHolderBackgroundColor: Int? = null
     private var placeholderPreview: Int? = null
-    private var canReorder: Boolean = false
+    private var isDraggable: Boolean = false
     private var maxVideo: Int = 1
 
     private var binding: WidgetSelectionBottomNavBinding? =
@@ -82,7 +82,7 @@ class DrawerSelectionWidget : FrameLayout {
             adapter?.placeholderPreview = it
         }
 
-        adapter?.canReorder = canReorder
+        adapter?.isDraggable = isDraggable
     }
 
     private fun setAttribute(attrs: AttributeSet?) {
@@ -100,14 +100,14 @@ class DrawerSelectionWidget : FrameLayout {
             defaultColor
         )
 
-        canReorder = typedArray.getBoolean(
-            R.styleable.MediaPickerPreviewWidget_canReorder,
-            false
+        isDraggable = typedArray.getBoolean(
+            R.styleable.MediaPickerPreviewWidget_draggable,
+            DEFAULT_DRAGGABLE_MODE
         )
 
         maxVideo = typedArray.getInteger(
             R.styleable.MediaPickerPreviewWidget_maxVideo,
-            1
+            DEFAULT_MAX_VIDEO
         )
 
         placeholderPreview = typedArray.getResourceId(
@@ -117,7 +117,7 @@ class DrawerSelectionWidget : FrameLayout {
     }
 
     fun isAbleToReorder(canReorder: Boolean) {
-        adapter?.canReorder = canReorder
+        adapter?.isDraggable = canReorder
     }
 
     fun removeData(media: MediaUiModel) {
@@ -156,6 +156,7 @@ class DrawerSelectionWidget : FrameLayout {
     fun setThumbnailSelected(previousIndex: Int? = null, nextIndex: Int){
         // set previous index item border back to normal
         previousIndex?.let { index ->
+            if(!isThumbnailViewHolder(previousIndex)) return@let
             binding?.rvThumbnail?.findViewHolderForAdapterPosition(index)?.let {
                 (it as ThumbnailViewHolder).setThumbnailSelected(false)
             }
@@ -163,13 +164,27 @@ class DrawerSelectionWidget : FrameLayout {
 
         // set next index item border to selected
         binding?.rvThumbnail?.findViewHolderForAdapterPosition(nextIndex)?.let {
+            if(!isThumbnailViewHolder(nextIndex)) return@let
             (it as ThumbnailViewHolder).setThumbnailSelected(true)
         }
+    }
+
+    private fun isThumbnailViewHolder(index: Int) : Boolean{
+        return binding?.rvThumbnail?.adapter?.getItemViewType(index) == DrawerSelectionAdapter.ITEM_TYPE
+    }
+
+    fun scrollTo(index: Int) {
+        binding?.rvThumbnail?.scrollToPosition(index)
     }
 
     interface Listener {
         fun onItemClicked(media: MediaUiModel)
         fun onDataSetChanged(action: DrawerActionType)
+    }
+
+    companion object {
+        private const val DEFAULT_MAX_VIDEO = 1
+        private const val DEFAULT_DRAGGABLE_MODE = false
     }
 
 }

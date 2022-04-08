@@ -39,14 +39,16 @@ class PreviewPagerAdapter constructor(
 
     override fun getCount() = elements.size
 
-    fun remove(element: PreviewUiModel?) {
+    fun remove(element: PreviewUiModel?) : Int{
         val position = elements.indexOf(element)
 
         if (position > -1 && position < elements.size) {
             elements.removeAt(position)
             element?.mVideoPlayer?.stop()
             notifyDataSetChanged()
+            return position
         }
+        return -1
     }
 
     fun getItem(position: Int) : PreviewUiModel? {

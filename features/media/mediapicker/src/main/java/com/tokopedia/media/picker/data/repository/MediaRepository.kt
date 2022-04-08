@@ -1,25 +1,23 @@
 package com.tokopedia.media.picker.data.repository
 
-import android.content.Context
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
-import com.tokopedia.media.common.PickerParam
+import com.tokopedia.picker.common.base.BaseRepository
 
-interface MediaRepository {
-    suspend operator fun invoke(bucketId: Long, param: PickerParam): List<Media>
-}
+open class MediaRepository constructor(
+    loaderDataSource: LoaderDataSource,
+    dispatchers: CoroutineDispatchers
+) : BaseRepository<Long, List<Media>>(dispatchers.io)
+    , LoaderDataSource by loaderDataSource {
 
-class MediaRepositoryImpl constructor(
-    context: Context
-) : LoaderDataSource(context), MediaRepository {
-
-    override suspend fun invoke(bucketId: Long, param: PickerParam): List<Media> {
-        val cursor = query(param, bucketId, FIRST_LIMIT)?: error("cannot find the query")
+    override fun execute(param: Long): List<Media> {
+        val cursor = query(param, FIRST_LIMIT)?: error("cannot find the query")
         val medias = mutableListOf<Media>()
 
         if (cursor.moveToFirst()) {
             do {
-                val image = medias(cursor, param)
+                val image = medias(cursor)
 
                 if (image != null) {
                     medias.add(image)

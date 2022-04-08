@@ -7,12 +7,18 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.media.R
 
-class ItemDividerDecoration(context: Context?) : RecyclerView.ItemDecoration() {
+class ItemDividerDecoration(
+    private val context: Context?
+) : RecyclerView.ItemDecoration() {
 
     private var divider: Drawable? = null
     private var dividerStartEndPadding = 0
 
     init {
+        initPermissionDivider()
+    }
+
+    private fun initPermissionDivider() {
         context?.let {
             dividerStartEndPadding = it.resources.getDimensionPixelSize(R.dimen.picker_item_permission_left_padding)
             divider = ContextCompat.getDrawable(it, R.drawable.bg_picker_permission_divider)

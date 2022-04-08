@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.media.picker.di.scope.PickerScope
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.media.picker.ui.activity.album.AlbumViewModel
 import com.tokopedia.media.picker.ui.activity.main.PickerViewModel
 import com.tokopedia.media.picker.ui.fragment.camera.CameraViewModel
@@ -17,14 +17,14 @@ import dagger.multibindings.IntoMap
 abstract class PickerViewModelModule {
 
     @Binds
-    @PickerScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(
         factory: ViewModelFactory
     ): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @PickerScope
+    @ActivityScope
     @ViewModelKey(PickerViewModel::class)
     internal abstract fun getPickerViewModel(
         viewModel: PickerViewModel
@@ -32,7 +32,7 @@ abstract class PickerViewModelModule {
 
     @Binds
     @IntoMap
-    @PickerScope
+    @ActivityScope
     @ViewModelKey(AlbumViewModel::class)
     internal abstract fun getAlbumViewModel(
         viewModel: AlbumViewModel
@@ -40,7 +40,7 @@ abstract class PickerViewModelModule {
 
     @Binds
     @IntoMap
-    @PickerScope
+    @ActivityScope
     @ViewModelKey(CameraViewModel::class)
     internal abstract fun getCameraViewModel(
         viewModel: CameraViewModel
@@ -48,7 +48,7 @@ abstract class PickerViewModelModule {
 
     @Binds
     @IntoMap
-    @PickerScope
+    @ActivityScope
     @ViewModelKey(GalleryViewModel::class)
     internal abstract fun getGalleryViewModel(
         viewModel: GalleryViewModel
