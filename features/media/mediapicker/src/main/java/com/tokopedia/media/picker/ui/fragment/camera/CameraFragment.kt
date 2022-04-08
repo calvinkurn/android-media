@@ -190,14 +190,14 @@ open class CameraFragment : BaseDaggerFragment()
     override fun onVideoTaken(result: VideoResult) {
         val fileToModel = result.file.cameraToUiModel()
 
-        if (listener?.isMinStorageThreshold() == true) {
-            listener?.onShowFailToVideoRecordToast()
-            return
-        }
-
         if (listener?.isMinVideoDuration(fileToModel) == true) {
             listener?.onShowVideoMinDurationToast()
             safeFileDelete(fileToModel.path)
+            return
+        }
+
+        if (listener?.isMinStorageThreshold() == true) {
+            listener?.onShowFailToVideoRecordToast()
             return
         }
 
