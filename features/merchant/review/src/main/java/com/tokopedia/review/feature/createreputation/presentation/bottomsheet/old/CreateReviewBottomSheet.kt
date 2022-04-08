@@ -135,6 +135,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ReviewBadRatingCategoriesAdapter(this)
     }
 
+    init {
+        clearContentPadding = true
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
