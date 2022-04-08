@@ -33,7 +33,12 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserP
 import com.tokopedia.tokopedianow.common.domain.model.WarehouseData
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
-import com.tokopedia.tokopedianow.home.domain.model.*
+import com.tokopedia.tokopedianow.home.domain.model.Grid
+import com.tokopedia.tokopedianow.home.domain.model.Header
+import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
+import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
+import com.tokopedia.tokopedianow.home.domain.model.GetReferralSenderHomeResponse
+import com.tokopedia.tokopedianow.home.domain.model.ValidateReferralUserResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -45,10 +50,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyString
 
 class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 

@@ -1173,7 +1173,7 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         shareHomeTokonow?.apply {
-            sharingText = "${userSession.name} ${resources.getString(R.string.tokopedianow_home_referral_share_main_text)}"
+            sharingText = "${if (userSession.name.isNullOrBlank()) resources.getString(R.string.tokopedianow_home_referral_share_your_friend) else userSession.name} ${resources.getString(R.string.tokopedianow_home_referral_share_main_text)}"
             specificPageName = resources.getString(R.string.tokopedianow_home_referral_share_title)
             specificPageDescription = resources.getString(R.string.tokopedianow_home_referral_share_desc)
         }
