@@ -2040,7 +2040,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleUserReport(){
-        needLogin(REQUEST_CODE_LOGIN_FOLLOW){
+        needLogin(REQUEST_CODE_USER_REPORT){
             viewModelScope.launch {
                 _uiEvent.emit(OpenUserReportEvent)
             }

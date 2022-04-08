@@ -14,7 +14,6 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
-import com.tokopedia.play.view.uimodel.action.OpenKebabAction
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import org.junit.Rule
 import org.junit.Test
