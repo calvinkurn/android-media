@@ -13,6 +13,7 @@ import com.tokopedia.home_component.model.ReminderState
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -50,6 +51,11 @@ class ReminderWidgetViewHolder(
 
     fun initView(element: ReminderWidgetModel, itemView: View){
         with(binding) {
+            binding?.cardReminder?.apply {
+                cardElevation = 0f
+                cardType = CardUnify2.TYPE_CLEAR
+                animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+            }
             if(element.data.reminders.isEmpty()){
                 this?.homeReminderRecommendationLoading?.root?.show()
                 if (!disableNetwork){
