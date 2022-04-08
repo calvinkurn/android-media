@@ -40,6 +40,7 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_PIN_COMPLETE = "${NEW_INTERNAL_USER}/add-pin-complete"
 
     // SettingFingerprintActivity
+
     const val BIOMETRIC_SETTING = "${NEW_INTERNAL_USER}/biometric-setting"
 
     // VerifyFingerprintActivity

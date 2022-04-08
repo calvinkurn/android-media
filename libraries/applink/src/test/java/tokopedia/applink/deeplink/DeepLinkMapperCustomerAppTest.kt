@@ -12,9 +12,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
+import com.tokopedia.applink.user.DeeplinkMapperUser
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import io.mockk.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -1307,8 +1310,36 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check setting profile appLink then should return tokopedia internal setting profile in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/setting-profile"
-        assertEqualsDeepLinkMapper(ApplinkConst.SETTING_PROFILE, expectedDeepLink)
+        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/setting-profile"
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
+        } returns ""
+        every {
+            DeeplinkMapperUser.getRegisteredNavigationUser(context, settingProfileApplink)
+        } returns expectedDeepLink
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
+        } returns true
+        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check setting profile applink then should return tokopedia internal new revamp setting profile in customerapp`() {
+        val settingProfileApplink = ApplinkConst.SETTING_PROFILE
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/profile-info"
+        val remoteConfig = FirebaseRemoteConfigInstance.get(context)
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.VARIANT_NEW_PROFILE_REVAMP)
+        } returns RollenceKey.VARIANT_NEW_PROFILE_REVAMP
+        every {
+            DeeplinkMapperUser.getRegisteredNavigationUser(context, settingProfileApplink)
+        } returns expectedDeepLink
+        every {
+            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_PROFILE_INFO , true)
+        } returns true
+        assertEqualsDeepLinkMapper(settingProfileApplink, expectedDeepLink)
     }
 
     @Test
