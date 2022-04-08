@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.example
+package com.tokopedia.tokofood.common.util
 
 sealed class Result<T> {
     data class Success<T>(val data: T) : Result<T>()

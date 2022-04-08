@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration
+package com.tokopedia.home_component.decoration
 
 import android.graphics.Rect
 import android.view.View

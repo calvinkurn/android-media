@@ -1,12 +1,14 @@
-package com.tokopedia.tokofood.example
+package com.tokopedia.tokofood.common.util
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 
 object TokofoodRouteManager {
@@ -16,17 +18,17 @@ object TokofoodRouteManager {
         if (uri.host == "tokofood") {
             var f: IBaseMultiFragment? = null
             if (uri.path == "/home") { // tokopedia://tokofood/home
-                f = FragmentA()
-            } else if (uri.path == "/b") { // tokopedia://tokofood/b
-                f = FragmentB()
+                f = TokoFoodHomeFragment()
             } else if (uri.path == "/purchase") {
                 f = TokoFoodPurchaseFragment.createInstance()
+            } else if (uri.path == "/b") { // tokopedia://tokofood/b
+
             }
             if (f != null) {
-//                f.arguments = Bundle().apply {
-//                    putString(Constant.DATA_KEY, uri.toString())
-//                }
-//                return f
+                f.arguments = Bundle().apply {
+                    putString(Constant.DATA_KEY, uri.toString())
+                }
+                return f
             }
         }
         return null
