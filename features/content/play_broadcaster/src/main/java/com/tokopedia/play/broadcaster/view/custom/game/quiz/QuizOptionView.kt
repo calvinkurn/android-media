@@ -109,26 +109,24 @@ class QuizOptionView : ConstraintLayout {
 
     var isCorrect: Boolean = false
         set(value) {
-            needChange(field, value) {
-                field = value
-                binding.apply {
-                    tvQuizOptionChoice.showWithCondition(!value)
-                    icQuizOptionChecked.showWithCondition(value)
+            field = value
+            binding.apply {
+                tvQuizOptionChoice.showWithCondition(!value)
+                icQuizOptionChecked.showWithCondition(value)
 
-                    root.background = ContextCompat.getDrawable(
+                root.background = ContextCompat.getDrawable(
+                    context,
+                    if(value) R.drawable.bg_quiz_option_selected
+                    else R.drawable.bg_quiz_option
+                )
+
+                etQuizOption.setTextColor(
+                    ContextCompat.getColor(
                         context,
-                        if(value) R.drawable.bg_quiz_option_selected
-                        else R.drawable.bg_quiz_option
+                        if(value) R.color.Unify_Static_White
+                        else R.color.Unify_NN950
                     )
-
-                    etQuizOption.setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            if(value) R.color.Unify_Static_White
-                            else R.color.Unify_NN950
-                        )
-                    )
-                }
+                )
             }
         }
 
