@@ -51,12 +51,16 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    fun setTabs(tabs: List<PageTab>) {
+    fun storeTabsData(tabs: List<PageTab>) {
         this.tabs.addAll(tabs)
     }
 
     fun setSelectedTabPosition(selectedTabPosition: Int) {
         this.selectedTabPosition = selectedTabPosition
+    }
+
+    fun getSelectedTabPosition(): Int {
+        return selectedTabPosition
     }
 
     fun getSelectedTab() : PageTab {

@@ -47,6 +47,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         private const val ALPHA_VISIBLE = 1F
         private const val ALPHA_INVISIBLE = 0F
         private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
+        private const val ONE_PRODUCT = 1
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -95,7 +96,6 @@ class ProductManageFragment : BaseDaggerFragment() {
         applyUnifyBackgroundColor()
         setupViews()
         observeProductsMeta()
-        viewModel.getSlashPriceProductsMeta()
     }
 
     private fun setupViews() {
@@ -177,7 +177,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
-                    viewModel.setTabs(discountStatusWithCounter)
+                    viewModel.storeTabsData(discountStatusWithCounter)
                 }
                 is Fail -> {
                     binding?.ticker?.gone()
@@ -191,18 +191,24 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.setSelectedTabPosition(getCurrentTabPosition())
+        viewModel.getSlashPriceProductsMeta()
+    }
+
     private fun refreshSearchBarTitle() {
         val tab = viewModel.getSelectedTab()
         binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
+        val meta = tabs.find { it.discountStatusId == discountStatusId }
+        val decreasedProductCount = totalProduct - ONE_PRODUCT
+        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
+
         val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
         val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
-
-        val meta = tabs.find { it.discountStatusId == discountStatusId }
-        val decreasedProductCount = totalProduct - 1
-        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
 
         val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
         previouslySelectedTab?.setCustomText(updatedTabName)
@@ -226,6 +232,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
+        val previouslySelectedPosition = viewModel.getSelectedTabPosition()
 
         binding?.run {
             viewPager.adapter = pagerAdapter
@@ -233,6 +240,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
+                if (previouslySelectedPosition == position) {
+                    tab.select()
+                }
             }
         }
     }
@@ -294,5 +304,10 @@ class ProductManageFragment : BaseDaggerFragment() {
                     }
                 })
         }
+    }
+
+    private fun getCurrentTabPosition(): Int {
+        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+        return tabLayout?.selectedTabPosition.orZero()
     }
 }
