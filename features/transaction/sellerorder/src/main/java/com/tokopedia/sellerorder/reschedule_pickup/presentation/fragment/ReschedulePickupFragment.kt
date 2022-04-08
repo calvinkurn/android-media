@@ -7,9 +7,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.TextWatcher
@@ -29,7 +27,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.common.util.OrderedListSpan
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.FragmentReschedulePickupBinding
 import com.tokopedia.sellerorder.reschedule_pickup.data.model.RescheduleDayOptionModel
@@ -44,6 +41,7 @@ import com.tokopedia.sellerorder.reschedule_pickup.presentation.bottomsheet.Resc
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.dialog.ReschedulePickupFailedDialog
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.dialog.ReschedulePickupLoadingDialog
 import com.tokopedia.sellerorder.reschedule_pickup.presentation.viewmodel.ReschedulePickupViewModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -164,16 +162,8 @@ class ReschedulePickupFragment : BaseDaggerFragment(), RescheduleTimeBottomSheet
         binding?.let {
             it.invoiceOrderDetail.text = data.invoice
             it.courierOrderDetail.text = data.courierName
-            val rescheduleGuide = resources.getStringArray(R.array.reschedule_guide)
-            val rescheduleGuideBuilder = SpannableStringBuilder()
-            rescheduleGuide.forEachIndexed { index, item ->
-                rescheduleGuideBuilder.append(
-                    if (index == rescheduleGuide.size - 1) item else item + "\n",
-                    OrderedListSpan("${index + 1}."),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-            it.tipsReschedulePickup.description = rescheduleGuideBuilder
+            val rescheduleGuide = context?.let { ctx -> HtmlLinkHelper(ctx, data.ticker).spannedString }
+            rescheduleGuide?.let { guide -> it.tipsReschedulePickup.description = guide }
 
             showSubtitle(requireContext(), it.subtitleReschedulePickup)
 

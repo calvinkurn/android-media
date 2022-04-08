@@ -18,6 +18,10 @@ data class GetReschedulePickupResponse(
     ) {
         data class MpLogisticGetReschedulePickup(
             @Expose
+            @SerializedName("order_detail_ticker")
+            val orderDetailTicker: String = "",
+
+            @Expose
             @SerializedName("data")
             val data: List<DataItem> = emptyList()
 
@@ -32,7 +36,6 @@ data class GetReschedulePickupResponse(
                 @SerializedName("shipper_id")
                 val shipperId: Long = 0,
 
-                @SuppressLint("Invalid Data Type")
                 @Expose
                 @SerializedName("shipper_name")
                 val shipperName: String = ""

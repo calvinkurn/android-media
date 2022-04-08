@@ -4,7 +4,8 @@ data class RescheduleDetailModel(
     val options: RescheduleOptionsModel = RescheduleOptionsModel(),
     val courierName: String = "",
     val invoice: String = "",
-    val errorMessage: String = ""
+    val errorMessage: String = "",
+    val ticker: String = ""
 )
 
 data class RescheduleOptionsModel(

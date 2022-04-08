@@ -39,7 +39,7 @@ class ReschedulePickupViewModel @Inject constructor(
                     )
                 )
                 if (response.mpLogisticGetReschedulePickup.data.isNotEmpty()) {
-                    _reschedulePickupDetail.postValue(Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup.data.first())))
+                    _reschedulePickupDetail.postValue(Success(ReschedulePickupMapper.mapToRescheduleDetailModel(response.mpLogisticGetReschedulePickup)))
                 } else {
                     _reschedulePickupDetail.postValue(Fail(Throwable("Data Reschedule Pickup tidak ditemukan")))
                 }

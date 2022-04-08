@@ -19,12 +19,15 @@ object ReschedulePickupMapper {
         )
     }
 
-    fun mapToRescheduleDetailModel(data: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem): RescheduleDetailModel {
+    fun mapToRescheduleDetailModel(data: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup): RescheduleDetailModel {
+        val orderData = data.data.first().orderData
+        val shipperName = data.data.first().shipperName
         return RescheduleDetailModel(
-            options = mapOrderDataToOptionModel(data.orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
-            courierName = "${data.orderData.firstOrNull()?.shipperProductName ?: ""} - ${data.shipperName}",
-            invoice = data.orderData.firstOrNull()?.invoice ?: "",
-            errorMessage = data.orderData.firstOrNull()?.errorMessage ?: ""
+            options = mapOrderDataToOptionModel(orderData.firstOrNull() ?: GetReschedulePickupResponse.Data.MpLogisticGetReschedulePickup.DataItem.OrderData()),
+            courierName = "${orderData.firstOrNull()?.shipperProductName ?: ""} - $shipperName",
+            invoice = orderData.firstOrNull()?.invoice ?: "",
+            errorMessage = orderData.firstOrNull()?.errorMessage ?: "",
+            ticker = data.orderDetailTicker
         )
     }
 
