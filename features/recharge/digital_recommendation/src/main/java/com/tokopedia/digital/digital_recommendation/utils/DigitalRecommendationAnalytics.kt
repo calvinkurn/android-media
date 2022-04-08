@@ -150,7 +150,7 @@ class DigitalRecommendationAnalytics {
             data.tracking.categoryId,
             data.tracking.operatorId,
             data.tracking.productId,
-            data.unify.priceData.slashedPrice,
+            data.unify.priceData.slashedPrice.ifEmpty { data.unify.priceData.price },
             data.unify.priceData.price,
             data.unify.campaign.text
         )
