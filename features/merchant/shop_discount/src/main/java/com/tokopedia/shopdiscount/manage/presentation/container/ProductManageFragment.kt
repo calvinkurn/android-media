@@ -138,22 +138,8 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun setupSearchBar() {
         binding?.run {
             searchBar.searchBarTextField.isFocusable = false
-            searchBar.searchBarTextField.setOnClickListener {
-                val tab = viewModel.getSelectedTab()
-                SearchProductActivity.start(
-                    requireActivity(),
-                    tab.name,
-                    tab.discountStatusId
-                )
-            }
-            searchBar.setOnClickListener {
-                val tab = viewModel.getSelectedTab()
-                SearchProductActivity.start(
-                    requireActivity(),
-                    tab.name,
-                    tab.discountStatusId
-                )
-            }
+            searchBar.searchBarTextField.setOnClickListener { navigateToSearchProductPage() }
+            searchBar.setOnClickListener { navigateToSearchProductPage() }
         }
     }
 
@@ -194,11 +180,12 @@ class ProductManageFragment : BaseDaggerFragment() {
     override fun onResume() {
         super.onResume()
         viewModel.setSelectedTabPosition(getCurrentTabPosition())
-        viewModel.getSlashPriceProductsMeta()
+        getTabsMeta()
     }
 
     private fun refreshSearchBarTitle() {
-        val tab = viewModel.getSelectedTab()
+        val currentTabPosition = getCurrentTabPosition()
+        val tab = viewModel.getSelectedTab(currentTabPosition)
         binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
     }
 
@@ -271,7 +258,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { viewModel.getSlashPriceProductsMeta() }
+            globalError.setActionClickListener { getTabsMeta() }
             root showError throwable
         }
 
@@ -309,5 +296,21 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun getCurrentTabPosition(): Int {
         val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
         return tabLayout?.selectedTabPosition.orZero()
+    }
+
+    private fun navigateToSearchProductPage() {
+        val currentTabPosition = getCurrentTabPosition()
+        val tab = viewModel.getSelectedTab(currentTabPosition)
+        SearchProductActivity.start(
+            requireActivity(),
+            tab.name,
+            tab.discountStatusId
+        )
+    }
+
+    private fun getTabsMeta() {
+        binding?.shimmer?.content?.visible()
+        binding?.groupContent?.gone()
+        viewModel.getSlashPriceProductsMeta()
     }
 }
