@@ -68,7 +68,7 @@
             android:layout_marginTop="@dimen/play_dp_12"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="@string/play_common_interactive_follow"
+            android:text="@string/play_follow"
             app:unifyButtonSize="medium"
             />
 
