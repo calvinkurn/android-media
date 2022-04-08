@@ -291,7 +291,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     override fun onZipCodeClicked(zipCode: String) {
-        if (isEdit) {
+        if (!isEdit) {
             AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
         } else {
             EditAddressRevampAnalytics.onClickChipsKodePos(userSession.userId)
