@@ -93,7 +93,7 @@ class TopAdsInsightViewModelTest {
         } returns mockObject
 
         viewModel.getShopKeywords("", emptyArray())
-        assertTrue(viewModel.recommendedKeyword.value == mockObject.suggestion!!.recommendedKeywordData)
+        assertEquals(viewModel.recommendedKeyword.value , mockObject.suggestion!!.recommendedKeywordData)
     }
 
     @Test

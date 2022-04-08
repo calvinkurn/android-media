@@ -129,11 +129,9 @@ class TopAdsDashboardViewModelTest {
 
     @Test
     fun `fetchSummaryStatistics failure check`() {
-        val expected: TopadsWidgetSummaryStatisticsModel? = null
-
         coEvery {
             summaryStatisticsUseCase.getSummaryStatistics(any(), any(), any())
-        } returns expected
+        } returns null
 
         viewModel.fetchSummaryStatistics("", "", "")
         assert(viewModel.summaryStatisticsLiveData.value is Fail)
