@@ -40,6 +40,7 @@
 
     <!-- Game -->
     <color name="play_bro_quiz_header_title_hint">#80ffffff</color>
+    <color name="play_bro_quiz_header_title">#FFFFFF</color>
 
     <color name="play_bro_taptap_icon_color">#F36819</color>
     <color name="play_bro_taptap_header_gradient_start">#E02954</color>

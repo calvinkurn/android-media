@@ -6,6 +6,8 @@
     <color name="play_dms_discount_badge">#40454C</color>
 
     <!-- Game -->
+    <color name="play_bro_quiz_header_title">#DCE4ED</color>
+
     <color name="play_bro_quiz_header_gradient_start">#7E34C9</color>
     <color name="play_bro_quiz_header_gradient_end">#F24E62</color>
 </resources>
