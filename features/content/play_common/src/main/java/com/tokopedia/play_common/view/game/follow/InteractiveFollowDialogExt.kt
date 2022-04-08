@@ -1,10 +1,5 @@
 package com.tokopedia.play_common.view.game.follow
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.play_common.R
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
 
@@ -16,12 +11,15 @@ fun InteractiveFollowDialogFragment.setupGiveaway(
     avatarUrl: String,
     badgeUrl: String,
     partnerName: String,
+    isLoading: Boolean = false,
 ) {
-    updateView {
+    onView {
         getHeader().setupGiveaway(title)
         setAvatarUrl(avatarUrl)
         setBadgeUrl(badgeUrl)
         setPartnerName(partnerName)
+
+        setLoading(isLoading)
     }
 }
 
@@ -30,11 +28,14 @@ fun InteractiveFollowDialogFragment.setupQuiz(
     avatarUrl: String,
     badgeUrl: String,
     partnerName: String,
+    isLoading: Boolean = false,
 ) {
-    updateView {
+    onView {
         getHeader().setupQuiz(title)
         setAvatarUrl(avatarUrl)
         setBadgeUrl(badgeUrl)
         setPartnerName(partnerName)
+
+        setLoading(isLoading)
     }
 }

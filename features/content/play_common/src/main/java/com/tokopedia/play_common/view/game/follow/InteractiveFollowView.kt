@@ -13,7 +13,7 @@ import com.tokopedia.play_common.view.game.GameHeaderView
 /**
  * Created by kenny.hadisaputra on 07/04/22
  */
-class InteractiveFollowView : RoundedLinearLayout {
+class InteractiveFollowView : LinearLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -28,14 +28,14 @@ class InteractiveFollowView : RoundedLinearLayout {
         this,
     )
 
-    init {
-        clipChildren = false
-        clipToPadding = false
+    private var mListener: Listener? = null
 
+    init {
         orientation = VERTICAL
-        setCornerRadius(
-            resources.getDimensionPixelSize(R.dimen.play_dp_12).toFloat()
-        )
+
+        binding.btnFollow.setOnClickListener {
+            mListener?.onFollowClicked(this)
+        }
     }
 
     fun getHeader(): GameHeaderView {
@@ -52,5 +52,23 @@ class InteractiveFollowView : RoundedLinearLayout {
 
     fun setPartnerName(name: String) {
         binding.tvName.text = name
+    }
+
+    fun setLoading(isLoading: Boolean) {
+        binding.btnFollow.isLoading = isLoading
+    }
+
+    fun setListener(listener: Listener?) {
+        mListener = listener
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        mListener = null
+    }
+
+    interface Listener {
+
+        fun onFollowClicked(view: InteractiveFollowView)
     }
 }

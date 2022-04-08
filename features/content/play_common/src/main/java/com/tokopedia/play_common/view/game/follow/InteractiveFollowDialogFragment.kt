@@ -13,7 +13,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
@@ -21,8 +20,6 @@ import kotlin.coroutines.resume
  * Created by kenny.hadisaputra on 07/04/22
  */
 class InteractiveFollowDialogFragment : DialogFragment() {
-
-    private var updateJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,9 +44,8 @@ class InteractiveFollowDialogFragment : DialogFragment() {
         if (!isAdded) show(fragmentManager, TAG)
     }
 
-    fun updateView(updateFn: InteractiveFollowView.() -> Unit) {
-        updateJob?.cancel()
-        updateJob = lifecycleScope.launchWhenCreated {
+    fun onView(updateFn: InteractiveFollowView.() -> Unit) {
+        lifecycleScope.launchWhenCreated {
             awaitView()
 
             val view = view as? InteractiveFollowView ?: return@launchWhenCreated

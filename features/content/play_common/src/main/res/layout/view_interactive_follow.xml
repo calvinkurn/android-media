@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:parentTag="com.tokopedia.play_common.view.RoundedLinearLayout"
-    tools:rll_cornerRadius="12dp"
+    tools:parentTag="android.widget.LinearLayout"
     >
 
     <com.tokopedia.play_common.view.game.GameHeaderView
@@ -16,12 +15,14 @@
         android:layout_height="wrap_content"
         />
 
-    <LinearLayout
+    <com.tokopedia.play_common.view.RoundedLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_Background"
         android:gravity="center_horizontal"
         android:orientation="vertical"
+        app:rll_bottomLeftRadius="@dimen/play_dp_12"
+        app:rll_bottomRightRadius="@dimen/play_dp_12"
         >
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -71,6 +72,6 @@
             app:unifyButtonSize="medium"
             />
 
-    </LinearLayout>
+    </com.tokopedia.play_common.view.RoundedLinearLayout>
 
 </merge>

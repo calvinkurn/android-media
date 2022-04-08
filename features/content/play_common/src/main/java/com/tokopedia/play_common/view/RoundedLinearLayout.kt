@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import com.tokopedia.play_common.R
@@ -26,32 +25,51 @@ open class RoundedLinearLayout : LinearLayout {
     }
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
-        if (attrs != null) {
-            val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedLinearLayout)
+        if (attrs == null) return
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedLinearLayout)
 
-            roundedHelper.setCornerRadius(
-                    attributeArray.getDimension(R.styleable.RoundedLinearLayout_rll_cornerRadius, 0f)
-            )
-            attributeArray.recycle()
-        }
+        val wholeRadius = attributeArray.getDimension(
+            R.styleable.RoundedLinearLayout_rll_cornerRadius, 0f
+        )
+        roundedHelper.setCornerRadius(wholeRadius)
+
+        val topLeft = attributeArray.getDimension(
+            R.styleable.RoundedLinearLayout_rll_topLeftRadius, -1f
+        )
+        val topRight = attributeArray.getDimension(
+            R.styleable.RoundedLinearLayout_rll_topRightRadius, -1f
+        )
+        val bottomLeft = attributeArray.getDimension(
+            R.styleable.RoundedLinearLayout_rll_bottomLeftRadius, -1f
+        )
+        val bottomRight = attributeArray.getDimension(
+            R.styleable.RoundedLinearLayout_rll_bottomRightRadius, -1f
+        )
+        roundedHelper.setCornerRadius(
+            topLeft = if (topLeft != -1f) topLeft else wholeRadius,
+            topRight = if (topRight != -1f) topRight else wholeRadius,
+            bottomLeft = if (bottomLeft != -1f) bottomLeft else wholeRadius,
+            bottomRight = if (bottomRight != -1f) bottomRight else wholeRadius,
+        )
+
+        attributeArray.recycle()
     }
 
-    @SuppressLint("ObsoleteSdkInt")
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) roundedHelper.setupCorner(w.toFloat(), h.toFloat())
+        roundedHelper.setupCorner(w.toFloat(), h.toFloat())
+    }
+
+    override fun draw(canvas: Canvas) {
+        val save = canvas.save()
+        canvas.clipPath(roundedHelper.cornerPath)
+        super.draw(canvas)
+        canvas.restoreToCount(save)
     }
 
     @SuppressLint("ObsoleteSdkInt")
     override fun dispatchDraw(canvas: Canvas) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            val save = canvas.save()
-            canvas.clipPath(roundedHelper.cornerPath)
-            super.dispatchDraw(canvas)
-            canvas.restoreToCount(save)
-        } else {
-            setRoundedOutlineProvider(roundedHelper.cornerRadius)
-            super.dispatchDraw(canvas)
-        }
+        setRoundedOutlineProvider()
+        super.dispatchDraw(canvas)
     }
 
     fun setCornerRadius(cornerRadius: Float) {
@@ -61,8 +79,8 @@ open class RoundedLinearLayout : LinearLayout {
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-    private fun setRoundedOutlineProvider(cornerRadius: Float) {
-        outlineProvider = roundedHelper.getOutlineProvider(cornerRadius)
+    private fun setRoundedOutlineProvider() {
+        outlineProvider = roundedHelper.getOutlineProvider()
         clipToOutline = true
     }
 }
