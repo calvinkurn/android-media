@@ -56,7 +56,6 @@ import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateTokoNowRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequest
-import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.getAffiliateUIID
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
@@ -70,6 +69,7 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_BE_E
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_GENERAL_ERROR
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_DYNAMIC_SLOTTING
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_TIMEOUT_EXCEEDED
+import com.tokopedia.product.detail.usecase.CreateAffiliateCookieUseCase
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -149,6 +149,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getTopadsIsAdsUseCase: Lazy<GetTopadsIsAdsUseCase>,
                                                              private val playWidgetTools: PlayWidgetTools,
                                                              private val remoteConfig: RemoteConfig,
+                                                             private val createAffiliateCookieUseCase: Lazy<CreateAffiliateCookieUseCase>,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.main) {
 
     companion object {
@@ -266,6 +267,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _playWidgetReminderSwitch = MutableLiveData<Result<PlayWidgetReminderType>>()
     val playWidgetReminderSwitch: LiveData<Result<PlayWidgetReminderType>> = _playWidgetReminderSwitch
+
+    private val _affiliateCookie = MutableLiveData<Result<Boolean>>()
+    val affiliateCookie: LiveData<Result<Boolean>> = _affiliateCookie
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -494,7 +498,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, layoutId: String = "",
-                     userLocationLocal: LocalCacheModel, affiliateUniqueString: String = "", uuid: String = "", urlQuery: String = "", extParam: String = "") {
+                     userLocationLocal: LocalCacheModel, urlQuery: String = "", extParam: String = "") {
         launchCatchError(dispatcher.io, block = {
             alreadyHitRecom = mutableListOf()
             shopDomain = productParams.shopDomain
@@ -527,7 +531,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 _productLayout.postValue(processedList.asSuccess())
             }
             // Then update the following, it will not throw anything when error
-            getProductP2(affiliateUniqueString, uuid, urlQuery)
+            getProductP2(urlQuery)
 
         }) {
             _productLayout.postValue(it.asFail())
@@ -610,13 +614,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductP2(affiliateUniqueString: String, uuid: String, urlQuery: String = "") {
+    private suspend fun getProductP2(urlQuery: String = "") {
         getDynamicProductInfoP1?.let {
             val p2LoginDeferred: Deferred<ProductInfoP2Login>? = if (isUserSessionActive) {
                 getProductInfoP2LoginAsync(it.basic.getShopId(),
                         it.basic.productID)
             } else null
-            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession, affiliateUniqueString, uuid, it.basic.shopID, it.basic.isTokoNow)
+            val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(
+                    productId = it.basic.productID,
+                    pdpSession = it.pdpSession,
+                    shopId = it.basic.shopID,
+                    isTokoNow = it.basic.isTokoNow)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.productID, it.basic.getShopId())
 
             p2DataDeffered.await().let {
@@ -1016,6 +1024,36 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     }
 
+    fun hitAffiliateCookie(productInfo: DynamicProductInfoP1,
+                           deviceId: String,
+                           affiliateUuid: String,
+                           uuid: String,
+                           affiliateChannel:String) {
+        if (affiliateUuid.isEmpty()) return
+        launchCatchError(block = {
+            val affiliateParam = DynamicProductDetailMapper.generateAffiliateCookieRequest(
+                    productInfo = productInfo,
+                    affiliateUuid = affiliateUuid,
+                    deviceId = deviceId,
+                    uuid = uuid,
+                    affiliateChannel = affiliateChannel
+            )
+            val result = createAffiliateCookieUseCase
+                    .get()
+                    .executeOnBackground(CreateAffiliateCookieUseCase.createParams(affiliateParam))
+
+            if (result.isSuccess()) {
+                _affiliateCookie.postValue(true.asSuccess())
+            } else {
+                _affiliateCookie.postValue(
+                        Throwable(result.response.data.error.errorMessage).asFail()
+                )
+            }
+        }) {
+            _affiliateCookie.postValue(it.asFail())
+        }
+    }
+
     private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
         _atcRecomTokonow.value = message.asSuccess()
         if (isAtc) {
@@ -1073,7 +1111,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private fun getProductInfoP2DataAsync(productId: String, pdpSession: String, affiliateUniqueString: String, uuid: String, shopId: String, isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
+    private fun getProductInfoP2DataAsync(productId: String,
+                                          pdpSession: String,
+                                          shopId: String,
+                                          isTokoNow: Boolean): Deferred<ProductInfoP2UiData> {
         return async(dispatcher.io) {
             getP2DataAndMiniCartUseCase.get().executeOnBackground(
                     requestParams = GetProductInfoP2DataUseCase.createParams(
@@ -1081,7 +1122,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                             pdpSession,
                             generatePdpSessionWithDeviceId(),
                             generateUserLocationRequest(userLocationCache),
-                            getAffiliateUIID(affiliateUniqueString, uuid),
                             generateTokoNowRequest(userLocationCache)),
                     isTokoNow = isTokoNow,
                     shopId = shopId,
