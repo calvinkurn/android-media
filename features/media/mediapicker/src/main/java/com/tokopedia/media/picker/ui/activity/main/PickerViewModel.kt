@@ -20,7 +20,7 @@ class PickerViewModel @Inject constructor(
         .flowOn(dispatchers.computation)
 
     fun isDeviceStorageFull(): Boolean {
-        return deviceInfo.isStorageFullWithThreshold(
+        return deviceInfo.execute(
             param.get().minStorageThreshold()
         )
     }
