@@ -101,7 +101,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun setupViews() {
         setupTicker()
         setupSearchBar()
-        setupToolbar()
+        setupHeader()
         setupTabs()
     }
 
@@ -158,7 +158,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupToolbar() {
+    private fun setupHeader() {
         val shopIcon = IconUnify(requireContext(), IconUnify.SHOP_INFO)
         binding?.run {
             header.addCustomRightContent(shopIcon)

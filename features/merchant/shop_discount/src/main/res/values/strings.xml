@@ -54,6 +54,7 @@
     <string name="sd_max_product_selection_reached">Kamu cuma bisa pilih 5 produk sekaligus.</string>
     <string name="sd_ok">Oke</string>
     <string name="sd_selected_product_counter">%s Produk Dipilih</string>
+    <string name="sd_select_product">Pilih Produk</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
