@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.util.video.millisToFormattedVideoDuration
+import kotlin.math.max
 import com.google.android.exoplayer2.ui.R as exoR
 
 /**
@@ -55,7 +56,7 @@ class PlayVideoControlView : ConstraintLayout {
 
     private val progressUpdateListener = PlayerControlView.ProgressUpdateListener { pos, _ ->
         val player = playerControl.player ?: return@ProgressUpdateListener
-        tvTimeRemaining.text = (player.contentDuration.orZero() - pos)
+        tvTimeRemaining.text = max((player.contentDuration.orZero() - pos), 0)
             .millisToFormattedVideoDuration()
 
         if (!alreadyUpdateProgress) {
