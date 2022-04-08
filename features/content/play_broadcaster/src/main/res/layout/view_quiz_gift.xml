@@ -103,7 +103,7 @@
             android:hint="@string/play_bro_quiz_gift_hint"
             android:background="@null"
             android:inputType="textCapWords"
-            android:textColor="@color/Unify_Static_White"
+            android:textColor="@color/play_bro_quiz_gift_text"
             android:textColorHint="@color/play_bro_quiz_header_title_hint"
             android:textStyle="bold"
             android:textSize="@dimen/fontSize_lvl3"

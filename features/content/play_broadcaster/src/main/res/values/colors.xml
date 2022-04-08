@@ -48,4 +48,7 @@
 
     <!--Live-->
     <color name="play_dms_product_icon_dot">#03AC0E</color>
+
+    <!-- Quiz -->
+    <color name="play_bro_quiz_gift_text">#FFFFFF</color>
 </resources>
