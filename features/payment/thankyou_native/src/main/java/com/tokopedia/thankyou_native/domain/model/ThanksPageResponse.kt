@@ -80,6 +80,12 @@ data class ThanksPageData(
         val isMonthlyNewUser: Boolean,
         @SerializedName("custom_data")
         val thanksCustomization: ThanksCustomization?,
+        @SerializedName("custom_data_url")
+        val customDataUrl: CustomAppLinkData,
+        @SerializedName("custom_data_applink")
+        val customDataAppLink: CustomAppLinkData,
+        @SerializedName("custom_data_message")
+        val customDataMessage: CustomDataMessage,
         @SerializedName("config_flag")
         val configFlag: String?,
         @SerializedName("config_list")
@@ -95,6 +101,33 @@ data class ThanksPageData(
         // parse config flag json
         var configFlagData: ConfigFlag? = null,
         ) : Parcelable
+
+
+@Parcelize
+data class CustomAppLinkData(
+    @SerializedName("auto_redirect")
+    val autoRedirect: String,
+    @SerializedName("home")
+    val home: String,
+    @SerializedName("order")
+    val order: String,
+    @SerializedName("pms")
+    val pms: String,
+): Parcelable
+
+@Parcelize
+data class CustomDataMessage(
+    @SerializedName("loader_text")
+    val loaderText: String,
+    @SerializedName("subtitle")
+    val subtitle: String,
+    @SerializedName("title")
+    val titel: String,
+    @SerializedName("title_home_button")
+    val titleHomeButton: String,
+    @SerializedName("title_order_button")
+    val titleOrderButton: String,
+): Parcelable
 
 @Parcelize
 data class ThanksSummaryInfo(

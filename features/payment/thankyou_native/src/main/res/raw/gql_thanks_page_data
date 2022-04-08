@@ -133,6 +133,10 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
     push_gtm
     new_user
     is_mub
+    custom_data_url
+    custom_data_applink
+    custom_data_message
+    custom_data_other
     custom_data{
        tracking_data
        custom_order_url_app
