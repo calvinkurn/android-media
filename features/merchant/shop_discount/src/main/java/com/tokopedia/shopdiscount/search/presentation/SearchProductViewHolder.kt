@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation.list
+package com.tokopedia.shopdiscount.search.presentation
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -6,12 +6,19 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.common.entity.ProductType
-import com.tokopedia.shopdiscount.databinding.SdItemProductBinding
+import com.tokopedia.shopdiscount.databinding.SdItemSearchProductBinding
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.utils.extension.strikethrough
+import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_GREY
+import com.tokopedia.unifycomponents.Label.Companion.HIGHLIGHT_LIGHT_RED
 
-class ProductViewHolder(private val binding: SdItemProductBinding) :
+class SearchProductViewHolder(private val binding: SdItemSearchProductBinding) :
     RecyclerView.ViewHolder(binding.root) {
+
+    companion object {
+        private const val ALPHA_DISABLED = 0.5f
+        private const val ALPHA_ENABLED = 1.0f
+    }
 
     fun bind(
         product: Product,
@@ -19,6 +26,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
         onVariantInfoClicked: (Product) -> Unit,
+        onProductSelectionChange : (Product, Boolean) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
@@ -30,6 +38,33 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         handleProductType(product)
         binding.imgInfo.setOnClickListener { onVariantInfoClicked(product) }
         binding.tpgOriginalPrice.strikethrough()
+        handleCheckboxAppearance(product, onProductSelectionChange)
+        handleChangeDiscountButtonAppearance(product.shouldDisplayCheckbox)
+        handleOverflowMenuAppearance(product.shouldDisplayCheckbox)
+        handleCardSelectable(product.disableClick)
+    }
+
+    private fun handleCheckboxAppearance(product: Product, onProductSelectionChange: (Product, Boolean) -> Unit) {
+        binding.checkBox.setOnCheckedChangeListener(null)
+        binding.checkBox.isVisible = product.shouldDisplayCheckbox
+        binding.checkBox.isChecked = product.isCheckboxTicked
+        binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
+    }
+
+    private fun handleOverflowMenuAppearance(shouldDisplayCheckbox: Boolean) {
+        binding.imgMore.isVisible = !shouldDisplayCheckbox
+    }
+
+    private fun handleChangeDiscountButtonAppearance(shouldDisplayCheckbox: Boolean) {
+        binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
+    }
+
+    private fun handleCardSelectable(disableClick : Boolean) {
+        val labelType =  if (disableClick) HIGHLIGHT_LIGHT_GREY else HIGHLIGHT_LIGHT_RED
+        binding.labelDiscount.setLabelType(labelType)
+
+        val alpha = if (disableClick) ALPHA_DISABLED else ALPHA_ENABLED
+        binding.card.alpha = alpha
     }
 
     private fun handleProductType(product: Product) {

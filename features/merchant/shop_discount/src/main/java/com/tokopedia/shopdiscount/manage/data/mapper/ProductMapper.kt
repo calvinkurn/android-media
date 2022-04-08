@@ -30,7 +30,7 @@ class ProductMapper @Inject constructor() {
                 product.picture,
                 product.stock,
                 product.warehouses.size,
-                0,
+                product.isVariant,
                 product.startDate.formatStartDate(),
                 product.endDate.formatEndDate(),
                 productType,

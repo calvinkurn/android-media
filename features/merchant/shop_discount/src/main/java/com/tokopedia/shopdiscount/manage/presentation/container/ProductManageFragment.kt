@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -101,6 +102,19 @@ class ProductManageFragment : BaseDaggerFragment() {
         setupTicker()
         setupSearchBar()
         setupToolbar()
+        setupTabs()
+    }
+
+    private fun setupTabs() {
+        binding?.run {
+            viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    viewModel.setSelectedTabPosition(position)
+                    refreshSearchBarTitle()
+                }
+            })
+        }
     }
 
     private fun setupTicker() {
@@ -126,11 +140,21 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             searchBar.searchBarTextField.isFocusable = false
             searchBar.searchBarTextField.setOnClickListener {
+                val tab = viewModel.getSelectedTab()
                 SearchProductActivity.start(
-                    requireActivity()
+                    requireActivity(),
+                    tab.name,
+                    tab.discountStatusId
                 )
             }
-            searchBar.setOnClickListener { SearchProductActivity.start(requireActivity()) }
+            searchBar.setOnClickListener {
+                val tab = viewModel.getSelectedTab()
+                SearchProductActivity.start(
+                    requireActivity(),
+                    tab.name,
+                    tab.discountStatusId
+                )
+            }
         }
     }
 
@@ -154,6 +178,7 @@ class ProductManageFragment : BaseDaggerFragment() {
 
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
+                    viewModel.setTabs(discountStatusWithCounter)
                 }
                 is Fail -> {
                     binding?.ticker?.gone()
@@ -165,6 +190,11 @@ class ProductManageFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun refreshSearchBarTitle() {
+        val tab = viewModel.getSelectedTab()
+        binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
     }
 
     private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->

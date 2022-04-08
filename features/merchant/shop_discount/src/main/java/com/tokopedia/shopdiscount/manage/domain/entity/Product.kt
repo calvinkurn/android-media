@@ -14,11 +14,14 @@ data class Product(
     val imageUrl: String,
     val totalStock: String,
     val locationCount: Int,
-    val variantCount: Int,
+    val hasVariant : Boolean,
     val discountStartDate: String,
     val discountEndDate: String,
     val productType: ProductType,
     val hasSameDiscountPercentageAmount: Boolean,
     val hasSameDiscountedPriceAmount: Boolean,
-    val hasSameOriginalPrice: Boolean
+    val hasSameOriginalPrice: Boolean,
+    val isCheckboxTicked : Boolean = false,
+    val shouldDisplayCheckbox : Boolean = false,
+    val disableClick: Boolean = false
 )

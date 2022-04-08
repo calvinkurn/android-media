@@ -89,18 +89,30 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgInformation"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="@dimen/unify_space_16"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="@id/tpgStockAndLocation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tpgStockAndLocation"
         app:typographyType="small"
         tools:text="25 Sep 2022 08:00 - 31 Des 2022 08:00 WIB" />
+
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:src="@drawable/ic_info"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgInformation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tpgInformation"
+        app:layout_constraintTop_toTopOf="@+id/tpgInformation" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnUpdateDiscount"
@@ -117,10 +129,11 @@
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/sd_more_menu"
         app:layout_constraintBottom_toBottomOf="@+id/btnUpdateDiscount"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/unify_space_16"
