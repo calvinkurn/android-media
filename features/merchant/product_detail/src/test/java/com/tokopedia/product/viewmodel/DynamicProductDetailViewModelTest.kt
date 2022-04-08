@@ -28,9 +28,13 @@ import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirIma
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
+import com.tokopedia.product.detail.common.data.model.product.Stock
+import com.tokopedia.product.detail.common.data.model.product.VariantBasic
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
@@ -38,6 +42,11 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookie
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieData
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieError
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieRequest
+import com.tokopedia.product.detail.data.model.affiliate.AffiliateCookieResponse
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
@@ -62,6 +71,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
@@ -1083,7 +1093,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         val productKey = "productYehez"
         val productParams = ProductParams("", shopDomain, productKey, "", "", "")
         val userLocation = UserLocationRequest("123")
-        val tokoNow = TokoNowParam("456","789", "now15")
+        val tokoNow = TokoNowParam("456", "789", "now15")
 
         `co every p1 success`(dataP1)
         coEvery {
@@ -1117,9 +1127,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coEvery {
             getPdpLayoutUseCase.requestParams
         } returns GetPdpLayoutUseCase.createParams(productParams.productId
-            ?: "", productParams.shopDomain ?: "", productParams.productName
-            ?: "", productParams.warehouseId ?: "", "", userLocation, extParam.encodeToUtf8(),
-            tokoNow)
+                ?: "", productParams.shopDomain ?: "", productParams.productName
+                ?: "", productParams.warehouseId ?: "", "", userLocation, extParam.encodeToUtf8(),
+                tokoNow)
 
         viewModel.getProductP1(productParams, userLocationLocal = getUserLocationCache(), extParam = extParam)
 
@@ -1449,6 +1459,221 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify { viewModel.hitAffiliateTracker(anyString(), anyString()) }
     }
 
+    //region affiliate cookie
+    @Test
+    fun `assert all request params affiliate cookie`() {
+        val mockResponse = AffiliateCookie(
+                AffiliateCookieResponse(
+                        data = AffiliateCookieData(
+                                status = 1
+                        )
+                )
+        )
+
+        coEvery {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        } returns mockResponse
+
+        coEvery {
+            TrackApp.getInstance().gtm.irisSessionId
+        } returns  "iris"
+
+        val mockProductInfoP1 = DynamicProductInfoP1(
+                basic = BasicInfo(
+                        shopID = "123",
+                        productID = "321",
+                        category = Category(
+                                detail = listOf(Category.Detail(
+                                        id = "123"
+                                ),
+                                        Category.Detail(
+                                                id = "312"
+                                        ))
+                        )
+                ),
+                data = ComponentData(
+                        variant = VariantBasic(
+                                isVariant = true
+                        ),
+                        stock = Stock(
+                                value = 10
+                        )
+                )
+        )
+
+        viewModel.hitAffiliateCookie(
+                productInfo = mockProductInfoP1,
+                deviceId = "123",
+                affiliateUuid = "123",
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
+        )
+
+        val slotParams = slot<Map<String, Any>>()
+        coVerify {
+            createAffiliateCookieUseCase.executeOnBackground(capture(slotParams))
+        }
+
+        val slotParamsCaptured = slotParams.captured["input"] as AffiliateCookieRequest
+        Assert.assertEquals(slotParamsCaptured.affiliateDetail.affiliateUniqueId, "123")
+        Assert.assertEquals(slotParamsCaptured.header.deviceId, "123")
+        Assert.assertEquals(slotParamsCaptured.header.irisSessionId, "iris")
+        Assert.assertEquals(slotParamsCaptured.header.uuid, "1111")
+        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.channel, "affiliate channel")
+        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.linkType, "pdp")
+        Assert.assertEquals(slotParamsCaptured.affiliateLinkDetail.linkIdentifier, "0")
+        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.categoryId, "312")
+        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.productId, "321")
+        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.stockQty.toInt(), 10)
+        Assert.assertEquals(slotParamsCaptured.affiliateProductDetail.isVariant, true)
+        Assert.assertEquals(slotParamsCaptured.affiliateShopDetail.shopId, "123")
+    }
+
+    @Test
+    fun `success hit affiliate cookie`() {
+        val mockResponse = AffiliateCookie(
+                AffiliateCookieResponse(
+                        data = AffiliateCookieData(
+                                status = 1
+                        )
+                )
+        )
+        coEvery {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        } returns mockResponse
+
+        coEvery {
+            TrackApp.getInstance().gtm.irisSessionId
+        } returns  "iris"
+
+        viewModel.hitAffiliateCookie(
+                productInfo = DynamicProductInfoP1(),
+                deviceId = "123",
+                affiliateUuid = "123",
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
+        )
+
+        coVerify {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.affiliateCookie.value as Success).data, true)
+    }
+
+    @Test
+    fun `success hit affiliate cookie with error code`() {
+        val mockResponse = AffiliateCookie(
+                AffiliateCookieResponse(
+                        data = AffiliateCookieData(
+                                status = 0,
+                                error = AffiliateCookieError(errorMessage = "gagal bro")
+                        )
+                )
+        )
+        coEvery {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        } returns mockResponse
+
+        coEvery {
+            TrackApp.getInstance().gtm.irisSessionId
+        } returns  "iris"
+
+        viewModel.hitAffiliateCookie(
+                productInfo = DynamicProductInfoP1(),
+                deviceId = "123",
+                affiliateUuid = "123",
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
+        )
+
+        coVerify {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.affiliateCookie.value as Fail).throwable.message, "gagal bro")
+    }
+
+    @Test
+    fun `fail hit affiliate cookie affiliateuuid empty`() {
+        val mockResponse = AffiliateCookie(
+                AffiliateCookieResponse(
+                        data = AffiliateCookieData(
+                                status = 0,
+                                error = AffiliateCookieError(errorMessage = "gagal bro")
+                        )
+                )
+        )
+        coEvery {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        } returns mockResponse
+
+        coEvery {
+            TrackApp.getInstance().gtm.irisSessionId
+        } returns  "iris"
+
+        val mockProductInfoP1 = DynamicProductInfoP1(
+                basic = BasicInfo(
+                        shopID = "123",
+                        productID = "321",
+                        category = Category(
+                                detail = listOf(Category.Detail(
+                                        id = "123"
+                                ),
+                                        Category.Detail(
+                                                id = "312"
+                                        ))
+                        )
+                ),
+                data = ComponentData(
+                        variant = VariantBasic(
+                                isVariant = true
+                        ),
+                        stock = Stock(
+                                value = 10
+                        )
+                )
+        )
+
+        viewModel.hitAffiliateCookie(
+                productInfo = mockProductInfoP1,
+                deviceId = "123",
+                affiliateUuid = "",
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
+        )
+
+        coVerify(inverse = true) {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        }
+    }
+
+    @Test
+    fun `fail hit affiliate cookie return throwable`() {
+        coEvery {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        } throws Throwable("gagal bro")
+
+        coEvery {
+            TrackApp.getInstance().gtm.irisSessionId
+        } returns  "iris"
+
+        viewModel.hitAffiliateCookie(
+                productInfo = DynamicProductInfoP1(),
+                deviceId = "123",
+                affiliateUuid = "123",
+                uuid = "1111",
+                affiliateChannel = "affiliate channel"
+        )
+
+        coVerify {
+            createAffiliateCookieUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.affiliateCookie.value as Fail).throwable.message,
+                "gagal bro")
+    }
+    //endregion
 
     /**
      * UpdateCartCounter
@@ -1643,8 +1868,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
         verify(exactly = 1) {
             ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                isSuccess = capture(isSuccess),
-                errorMessage = capture(errorMessage))
+                    isSuccess = capture(isSuccess),
+                    errorMessage = capture(errorMessage))
         }
 
         Assert.assertTrue(viewModel.topAdsRecomChargeData.value is Fail)
@@ -1652,7 +1877,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals(errorMessage.captured, "error")
 
         Assert.assertEquals((viewModel.topAdsRecomChargeData.value as Fail).throwable.message,
-            "error")
+                "error")
     }
 
     @Test
@@ -1681,9 +1906,9 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify { getTopadsIsAdsUseCase.executeOnBackground() }
         coVerify(exactly = 1) {
             ProductDetailServerLogger.logBreadCrumbTopAdsIsAds(
-                isSuccess = capture(isSuccess),
-                errorCode = capture(errorCode),
-                isTopAds = capture(isTopAds))
+                    isSuccess = capture(isSuccess),
+                    errorCode = capture(errorCode),
+                    isTopAds = capture(isTopAds))
         }
 
         Assert.assertTrue(expectedResponse.data.status.error_code in 200..300 && expectedResponse.data.productList[0].isCharge)
@@ -1860,24 +2085,24 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         val expectedResponse = PlayWidget()
         val expectedState = PlayWidgetState(
-            model = PlayWidgetUiModel(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
-                    true,
-                    1000,
-                    true,
-                    1,
-                    1,
-                    2,
-                    1
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
+                        true,
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
-            ),
-            isLoading = false,
+                isLoading = false,
         )
 
 
@@ -1922,13 +2147,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         coEvery {
             playWidgetTools.getWidgetFromNetwork(
-                widgetType = widgetType
+                    widgetType = widgetType
             )
         } returns expectedResponse
 
         coEvery {
             playWidgetTools.mapWidgetToModel(
-                expectedResponse
+                    expectedResponse
             )
         } throws expectedThrowable
 
@@ -1941,24 +2166,24 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `play widget toggle reminder success`() {
 
         val fakeState = PlayWidgetState(
-            model = PlayWidgetUiModel(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
-                    true,
-                    1000,
-                    true,
-                    1,
-                    1,
-                    2,
-                    1
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
+                        true,
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
-            ),
-            isLoading = false,
+                isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -1994,24 +2219,24 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `play widget toggle reminder fail cause by map reminder return false`() {
 
         val fakeState = PlayWidgetState(
-            model = PlayWidgetUiModel(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
-                    true,
-                    1000,
-                    true,
-                    1,
-                    1,
-                    2,
-                    1
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
+                        true,
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
-            ),
-            isLoading = false,
+                isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
@@ -2053,24 +2278,24 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `play widget toggle reminder fail cause by exception`() {
 
         val fakeState = PlayWidgetState(
-            model = PlayWidgetUiModel(
-                "title",
-                "action title",
-                "applink",
-                true,
-                PlayWidgetConfigUiModel(
-                    true,
-                    1000,
-                    true,
-                    1,
-                    1,
-                    2,
-                    1
+                model = PlayWidgetUiModel(
+                        "title",
+                        "action title",
+                        "applink",
+                        true,
+                        PlayWidgetConfigUiModel(
+                                true,
+                                1000,
+                                true,
+                                1,
+                                1,
+                                2,
+                                1
+                        ),
+                        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                        listOf()
                 ),
-                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-                listOf()
-            ),
-            isLoading = false,
+                isLoading = false,
         )
         val fakeChannelId = "123"
         val fakeReminderType = PlayWidgetReminderType.Reminded
