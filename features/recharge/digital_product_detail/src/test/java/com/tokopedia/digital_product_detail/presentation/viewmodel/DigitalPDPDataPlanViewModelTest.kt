@@ -691,6 +691,36 @@ class DigitalPDPDataPlanViewModelTest: DigitalPDPDataPlanViewModelTestFixture() 
         verifyGetFilterTagComponentSuccess(initialFilter)
     }
 
+    @Test
+    fun `when filter not changed not return changed status` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        viewModel.updateFilterData(initialFilter)
+
+        val result = viewModel.isFilterChanged(initialFilter)
+        verifyFilterIsNotChanged(result)
+    }
+
+    @Test
+    fun `when filter changed return changed status` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val changedFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList()
+        changedFilter[0].filterTagDataCollections[0].isSelected = true
+        viewModel.updateFilterData(initialFilter)
+
+        val result = viewModel.isFilterChanged(changedFilter)
+        verifyFilterIsChanged(result)
+    }
+
+    @Test
+    fun `when filter changed size return changed status` () {
+        val initialFilter = dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents
+        val changedFilter = listOf(dataFactory.getCatalogInputMultiTabData().multitabData.productInputs.first().filterTagComponents.toMutableList().removeAt(1))
+        viewModel.updateFilterData(initialFilter)
+
+        val result = viewModel.isFilterChanged(changedFilter)
+        verifyFilterIsChanged(result)
+    }
+
     companion object {
         const val MENU_ID = 290
     }
