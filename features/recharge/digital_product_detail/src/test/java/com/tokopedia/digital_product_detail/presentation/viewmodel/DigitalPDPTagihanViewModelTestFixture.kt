@@ -247,22 +247,6 @@ abstract class DigitalPDPTagihanViewModelTestFixture {
         Assert.assertEquals(expectedResponse, actualResponse)
     }
 
-    protected fun verifyGetInquiryProductLoading(expectedResponse: RechargeNetworkResult.Loading){
-        val actualResponse = viewModel.inquiry.value
-        Assert.assertEquals(expectedResponse, actualResponse)
-    }
-
-    protected fun verifyGetInquiryProductSuccess(expectedResponse: TopupBillsEnquiryData) {
-        val actualResponse = viewModel.inquiry.value
-        Assert.assertEquals(expectedResponse, (actualResponse as RechargeNetworkResult.Success).data)
-    }
-
-    protected fun verifyGetInquiryProductFail() {
-        val actualResponse = viewModel.inquiry.value
-        Assert.assertTrue(actualResponse is RechargeNetworkResult.Fail)
-    }
-
-
     protected fun verifyValidateClientNumberTrue() {
         Assert.assertTrue(viewModel.isEligibleToBuy)
         Assert.assertEquals(viewModel.clientNumberValidatorMsg.value?.first, EMPTY)

@@ -451,6 +451,14 @@ abstract class DigitalPDPDataPlanViewModelTestFixture {
         Assert.assertEquals(expected.idemPotencyKey, actual.idemPotencyKey)
     }
 
+    fun verifyFilterIsChanged(isChanged: Boolean) {
+        Assert.assertTrue(isChanged)
+    }
+
+    fun verifyFilterIsNotChanged(isChanged: Boolean) {
+        Assert.assertFalse(isChanged)
+    }
+
     protected fun TestCoroutineScope.skipPrefixOperatorDelay() {
         advanceTimeBy(DigitalPDPConstant.DELAY_PREFIX_TIME)
     }

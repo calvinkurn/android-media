@@ -71,13 +71,6 @@ class TagihanDataFactory {
         )
     }
 
-    fun getInquiry(): TopupBillsEnquiryData {
-        return gson.fromJson(
-            gson.JsonToString(GET_INQUIRY),
-            TopupBillsEnquiryData::class.java
-        )
-    }
-
     /* mirror get_tagihan_product_mock.json */
     fun getCheckoutPassData(): DigitalCheckoutPassData {
         return DigitalCheckoutPassData().apply {
@@ -142,7 +135,6 @@ class TagihanDataFactory {
         const val GET_TAGIHAN_PRODUCT = "tagihan/get_tagihan_product_mock.json"
         const val GET_TAGIHAN_PRODUCT_WITH_PROMO = "tagihan/get_tagihan_product_with_promo_mock.json"
         const val GET_ADD_TO_CART = "tagihan/get_add_to_cart_mock.json"
-        const val GET_INQUIRY = "tagihan/get_inquiry_mock.json"
 
         const val CATEGORY_ID = "3"
         const val PRODUCT_ID = "291"
