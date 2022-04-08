@@ -27,6 +27,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
@@ -160,7 +161,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
-
+                    binding?.searchBar?.visible()
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
                     viewModel.storeTabsData(discountStatusWithCounter)
@@ -170,6 +171,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
+                    binding?.searchBar?.gone()
 
                     displayError(it.throwable)
                 }
@@ -184,8 +186,9 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun refreshSearchBarTitle() {
-        val currentTabPosition = getCurrentTabPosition()
+        val currentTabPosition = viewModel.getSelectedTabPosition()
         val tab = viewModel.getSelectedTab(currentTabPosition)
+        binding?.searchBar?.isVisible = tab.count > ZERO
         binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
     }
 
@@ -299,7 +302,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToSearchProductPage() {
-        val currentTabPosition = getCurrentTabPosition()
+        val currentTabPosition = viewModel.getSelectedTabPosition()
         val tab = viewModel.getSelectedTab(currentTabPosition)
         SearchProductActivity.start(
             requireActivity(),
@@ -311,6 +314,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun getTabsMeta() {
         binding?.shimmer?.content?.visible()
         binding?.groupContent?.gone()
+        binding?.searchBar?.gone()
         viewModel.getSlashPriceProductsMeta()
     }
 }
