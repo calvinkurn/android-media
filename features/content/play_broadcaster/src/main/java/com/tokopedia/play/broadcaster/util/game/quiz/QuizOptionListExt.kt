@@ -17,14 +17,12 @@ object QuizOptionListExt {
 
         val isAutoSelect: Boolean
         val isAutoAdd: Boolean
-        val isNeedUpdateOptionalIcon: Boolean
 
         val newOptions = updateQuizOption(order, newText, isFirstSelectQuizOption)
                         .setupAutoSelectField(order, newText).also { isAutoSelect = it.second }.first
                         .setupAutoAddField(quizConfig).also { isAutoAdd = it.size > size }
-                        .isChangedOptionalField(order).also { isNeedUpdateOptionalIcon = it.second }.first
 
-        return Pair(newOptions, isAutoSelect || isAutoAdd || isNeedUpdateOptionalIcon)
+        return Pair(newOptions, isAutoSelect || isAutoAdd)
     }
 
     fun List<QuizFormDataUiModel.Option>.updateQuizOption(
@@ -73,13 +71,6 @@ object QuizOptionListExt {
         }
 
         return newOptions
-    }
-
-    private fun List<QuizFormDataUiModel.Option>.isChangedOptionalField(
-        order: Int,
-    ) : Pair<List<QuizFormDataUiModel.Option>, Boolean> {
-        val isNeedUpdateOptionalIcon = first { it.order == order }.isMandatory.not()
-        return Pair(this, isNeedUpdateOptionalIcon)
     }
 
     fun List<QuizFormDataUiModel.Option>.setupEditable(

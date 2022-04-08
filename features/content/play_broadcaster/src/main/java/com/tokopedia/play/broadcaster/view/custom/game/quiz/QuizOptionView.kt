@@ -54,8 +54,10 @@ class QuizOptionView : ConstraintLayout {
             setRawInputType(InputType.TYPE_CLASS_TEXT)
 
             afterTextChanged {
-                if(flagTriggerTextChange)
+                if(flagTriggerTextChange) {
+                    updateIconChoice(it)
                     mTextOnChangedListener?.invoke(order, it)
+                }
                 else flagTriggerTextChange = true
             }
         }
@@ -112,9 +114,7 @@ class QuizOptionView : ConstraintLayout {
         set(value) {
             field = value
             binding.apply {
-                tvQuizOptionChoice.showWithCondition(!value && (isMandatory || !optionTextEmpty()))
-                icQuizOptionOptional.showWithCondition(!value && !isMandatory && optionTextEmpty())
-                icQuizOptionChecked.showWithCondition(value)
+                updateIconChoice()
 
                 root.background = ContextCompat.getDrawable(
                     context,
@@ -177,7 +177,11 @@ class QuizOptionView : ConstraintLayout {
         mOnCheckedListener = listener
     }
 
-    private fun optionTextEmpty() = binding.etQuizOption.text.toString().isEmpty()
+    private fun updateIconChoice(text: String = binding.etQuizOption.text.toString()) {
+        binding.tvQuizOptionChoice.showWithCondition(!isCorrect && (isMandatory || text.isNotEmpty()))
+        binding.icQuizOptionOptional.showWithCondition(!isCorrect && !isMandatory && text.isEmpty())
+        binding.icQuizOptionChecked.showWithCondition(isCorrect)
+    }
 
     private fun <T> needChange(prev: T, curr: T, block: () -> Unit) {
         if(prev != curr && isEditable) block()
