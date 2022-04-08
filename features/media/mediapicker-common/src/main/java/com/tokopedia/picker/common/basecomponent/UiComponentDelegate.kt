@@ -15,13 +15,13 @@ import kotlin.reflect.KProperty
 class UiComponentDelegate<Ui: BaseUiComponent>(
     private val lifecycleOwner: LifecycleOwner,
     private val componentCreation: (ViewGroup) -> Ui,
-    eagerComponent: Boolean,
+    isEagerComponent: Boolean,
 ) : ReadOnlyProperty<LifecycleOwner, Ui> {
 
     private var uiComponent: Ui? = null
 
     init {
-        if (eagerComponent) {
+        if (isEagerComponent) {
             lifecycleOwner.addSafeObserver(buildImmediateLifecycleObserver())
         }
     }

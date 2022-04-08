@@ -8,16 +8,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.databinding.ActivityAlbumBinding
+import com.tokopedia.media.picker.di.DaggerPickerComponent
+import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
+import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.component.NavToolbarComponent
 import com.tokopedia.picker.common.component.ToolbarTheme
 import com.tokopedia.picker.common.uimodel.AlbumUiModel
-import com.tokopedia.media.databinding.ActivityAlbumBinding
-import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
-import com.tokopedia.media.picker.ui.activity.album.adapter.AlbumAdapter
-import com.tokopedia.media.picker.ui.fragment.OnAlbumClickListener
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -101,7 +100,6 @@ class AlbumActivity : BaseActivity(), NavToolbarComponent.Listener {
     private fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }

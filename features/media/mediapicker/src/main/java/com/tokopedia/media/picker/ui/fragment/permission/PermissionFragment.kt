@@ -14,14 +14,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.R
-import com.tokopedia.picker.common.types.PageType
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.FragmentPermissionBinding
 import com.tokopedia.media.picker.di.DaggerPickerComponent
-import com.tokopedia.media.picker.di.module.PickerModule
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.adapter.PermissionAdapter
 import com.tokopedia.media.picker.ui.fragment.permission.recyclers.utils.ItemDividerDecoration
 import com.tokopedia.media.picker.ui.uimodel.PermissionUiModel
-import com.tokopedia.picker.common.ParamCacheManager
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -191,7 +190,6 @@ open class PermissionFragment : BaseDaggerFragment() {
     override fun initInjector() {
         DaggerPickerComponent.builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .pickerModule(PickerModule())
             .build()
             .inject(this)
     }

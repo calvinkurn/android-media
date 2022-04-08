@@ -4,20 +4,11 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.media.picker.data.repository.*
 import com.tokopedia.media.picker.di.scope.PickerScope
-import com.tokopedia.picker.common.ParamCacheManager
 import dagger.Module
 import dagger.Provides
 
 @Module
-class PickerModule {
-
-    @Provides
-    @PickerScope
-    fun provideParamCacheManager(
-        @ApplicationContext context: Context
-    ): ParamCacheManager {
-        return ParamCacheManager(context)
-    }
+object PickerModule {
 
     @Provides
     @PickerScope

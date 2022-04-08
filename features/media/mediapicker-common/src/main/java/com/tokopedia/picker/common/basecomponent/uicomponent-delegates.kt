@@ -8,7 +8,7 @@ fun <Ui: BaseUiComponent> LifecycleOwner.uiComponent(
 ): UiComponentDelegate<Ui> {
     return UiComponentDelegate(
         lifecycleOwner = this,
-        eagerComponent = false,
+        isEagerComponent = false,
         componentCreation = componentCreation,
     )
 }

@@ -10,11 +10,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.R
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.databinding.ActivityPreviewBinding
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerActionType
 import com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
 import com.tokopedia.media.preview.di.DaggerPreviewComponent
-import com.tokopedia.media.preview.di.module.PreviewModule
 import com.tokopedia.media.preview.ui.component.PreviewPagerComponent
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.basecomponent.uiComponent
@@ -272,7 +272,6 @@ class PickerPreviewActivity : BaseActivity()
     private fun initInjector() {
         DaggerPreviewComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .previewModule(PreviewModule())
             .build()
             .inject(this)
     }

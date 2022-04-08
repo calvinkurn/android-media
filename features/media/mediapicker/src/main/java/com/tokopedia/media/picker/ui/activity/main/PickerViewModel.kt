@@ -3,8 +3,8 @@ package com.tokopedia.media.picker.ui.activity.main
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
-import com.tokopedia.picker.common.ParamCacheManager
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
