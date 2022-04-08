@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -91,6 +92,15 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
         parentActivity = activity as? HasViewModel<MultipleFragmentsViewModel>
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val actvt = activity
+        if (actvt != null && actvt is BaseToolbarActivity) {
+            actvt.title = getFragmentTitle()
+            actvt.setUpActionBar(getFragmentToolbar())
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

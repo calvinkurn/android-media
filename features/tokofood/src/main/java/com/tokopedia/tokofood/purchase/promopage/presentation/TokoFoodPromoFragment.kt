@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
+import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -65,6 +66,15 @@ class TokoFoodPromoFragment : BaseListFragment<Visitable<*>, TokoFoodPromoAdapte
 
         fun createInstance(): TokoFoodPromoFragment {
             return TokoFoodPromoFragment()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val actvt = activity
+        if (actvt != null && actvt is BaseToolbarActivity) {
+            actvt.title = getFragmentTitle()
+            actvt.setUpActionBar(getFragmentToolbar())
         }
     }
 
