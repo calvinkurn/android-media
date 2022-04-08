@@ -7,8 +7,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 
 class ProfileFollowUnfollowViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm,FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private final var fragmentList1: ArrayList<Fragment> = ArrayList()
-    private final var fragmentTitleList1: ArrayList<String> = ArrayList()
+    private final val fragmentList1: MutableList<Fragment> = mutableListOf()
+    private final val fragmentTitleList1: MutableList<String> = mutableListOf()
 
     // returns which item is selected from arraylist of fragments.
     override fun getItem(position: Int): Fragment {
@@ -23,7 +23,7 @@ class ProfileFollowUnfollowViewPagerAdapter(fm: FragmentManager) : FragmentState
 
     // returns the number of items present in arraylist.
     override fun getCount(): Int {
-        return 2;
+        return fragmentList1.size
     }
 
     // this function adds the fragment and title in 2 separate  arraylist.

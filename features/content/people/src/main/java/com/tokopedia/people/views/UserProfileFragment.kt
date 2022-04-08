@@ -99,6 +99,7 @@ class UserProfileFragment : BaseDaggerFragment(),
     private var globalErrorPost: LocalLoad? = null
     private var isSwipeRefresh: Boolean? = null
     private var isNewlyCreated: Boolean? = false
+    private var shouldRefreshRecyclerView: Boolean? = false
     private var isViewMoreClickedBio: Boolean? = false
     private var userProfileTracker: UserProfileTracker? = null
     private var screenShotDetector: ScreenshotDetector? = null
@@ -137,6 +138,8 @@ class UserProfileFragment : BaseDaggerFragment(),
         userPostContainer = view.findViewById(R.id.vp_rv_post)
         globalError = view.findViewById(R.id.global_error)
         globalErrorPost = view.findViewById(R.id.global_error_post)
+        appBarLayout = view?.findViewById(R.id.app_bar_layout)
+
         initObserver()
         initListener()
         setHeader()
@@ -159,11 +162,15 @@ class UserProfileFragment : BaseDaggerFragment(),
         refreshLandingPageData(true)
         container?.displayedChild = PAGE_LOADING
 
+        appBarLayout?.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener {appBarLayout, verticalOffset ->
+            shouldRefreshRecyclerView = verticalOffset == 0
+        })
+
         view.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
             ?.setOnChildScrollUpCallback(object : SwipeRefreshLayout.OnChildScrollUpCallback {
                 override fun canChildScrollUp(parent: SwipeRefreshLayout, child: View?): Boolean {
                     if (recyclerviewPost != null) {
-                        return recyclerviewPost!!.canScrollVertically(-1)
+                        return recyclerviewPost!!.canScrollVertically(-1) || !shouldRefreshRecyclerView!!
                     }
                     return false
                 }
@@ -640,7 +647,6 @@ class UserProfileFragment : BaseDaggerFragment(),
         val textFollowingCount = view?.findViewById<TextView>(R.id.text_following_count)
 
         btnAction = view?.findViewById<UnifyButton>(R.id.btn_action_follow)
-        appBarLayout = view?.findViewById(R.id.app_bar_layout)
 
         if (data.profileHeader.profile.username.isNotBlank()) {
             textUserName?.show()
@@ -1009,10 +1015,10 @@ class UserProfileFragment : BaseDaggerFragment(),
     override fun onShareOptionClicked(shareModel: ShareModel) {
         var desc = userName
 
-        if (desc.isBlank()) {
-            desc = "Lihat foto & video menarik dari Tokopedia Merchandise, yuk! \uD83D\uDE0D"
+        desc = if (desc.isBlank()) {
+            "Lihat foto & video menarik dari Tokopedia $displayName, yuk! 😍"
         } else {
-            desc = "Lihat foto & video menarik dari Tokopedia $displayName @($userName), yuk! 😍"
+            "Lihat foto & video menarik dari Tokopedia $displayName (@$userName), yuk! 😍"
         }
 
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {

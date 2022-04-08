@@ -171,7 +171,7 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        return ""
+        return SCREEN
     }
 
 
@@ -182,11 +182,10 @@ class FollowerFollowingListingFragment : BaseDaggerFragment() {
             .inject(this)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+ 
 
     companion object {
+        const val SCREEN = "FollowerFollowingListFragment"
         fun newInstance(extras: Bundle): Fragment {
             val fragment = FollowerFollowingListingFragment()
             fragment.arguments = extras
