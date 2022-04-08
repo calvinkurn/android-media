@@ -41,6 +41,7 @@ import com.tokopedia.similarsearch.recyclerview.SimilarSearchItemDecoration
 import com.tokopedia.similarsearch.tracking.SimilarSearchTracking
 import com.tokopedia.similarsearch.utils.asObjectDataLayerImpressionAndClick
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.similar_search_fragment_layout.*
 import kotlinx.android.synthetic.main.similar_search_toolbar_layout.*
 
@@ -242,7 +243,10 @@ internal class SimilarSearchFragment: TkpdBaseV4Fragment(), SimilarProductItemLi
             }
 
             override fun onButtonWishlistClicked() {
-                similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+                context?.let {
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) similarSearchViewModel?.onViewToggleWishlistV2OriginalProduct()
+                    else similarSearchViewModel?.onViewToggleWishlistOriginalProduct()
+                }
             }
 
             override fun onButtonBuyClicked() {
