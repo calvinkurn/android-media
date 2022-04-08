@@ -1018,7 +1018,7 @@ class UserProfileFragment : BaseDaggerFragment(),
         desc = if (desc.isBlank()) {
             "Lihat foto & video menarik dari Tokopedia $displayName, yuk! 😍"
         } else {
-            "Lihat foto & video menarik dari Tokopedia $displayName @($userName), yuk! 😍"
+            "Lihat foto & video menarik dari Tokopedia $displayName (@$userName), yuk! 😍"
         }
 
         val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {

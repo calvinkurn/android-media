@@ -32,9 +32,7 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
         return FollowerFollowingListingFragment.newInstance(bundle ?: Bundle())
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+
 
     companion object {
 
