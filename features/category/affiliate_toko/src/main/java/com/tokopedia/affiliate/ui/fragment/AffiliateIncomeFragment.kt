@@ -326,7 +326,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             AFFILIATE_WITHDRAWAL,
             ""
         )) {
-            AFFILIATE_WITHDRAWAL -> tarikSaldoBtn?.isEnabled = true
+            AFFILIATE_WITHDRAWAL -> if(!affiliateIncomeViewModel.getIsBlackListed()) tarikSaldoBtn?.isEnabled = true
             else ->{
                 tarikSaldoBtn?.isEnabled = false
                 initTicker()
