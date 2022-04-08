@@ -142,6 +142,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
                 adapter?.updateAll(enabledMultiSelect)
             }
             tpgCancelMultiSelect.setOnClickListener {
+                viewModel.removeAllSelection()
                 viewModel.setMultiSelectEnabled(false)
                 tpgMultiSelect.visible()
                 tpgCancelMultiSelect.gone()
@@ -259,11 +260,10 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         adapter?.update(selectedProduct, updatedProduct)
 
         val items = adapter?.getItems() ?: emptyList()
-        val selectedProductCount = viewModel.findSelectedProducts(items).size
+        val selectedProductCount = viewModel.getSelectedProductCount()
 
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
-        viewModel.setSelectedProductCount(selectedProductCount)
 
         handleBulkManageButtonVisibility(selectedProductCount)
 
