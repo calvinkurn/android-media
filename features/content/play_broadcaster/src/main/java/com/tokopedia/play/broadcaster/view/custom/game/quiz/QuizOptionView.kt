@@ -107,11 +107,14 @@ class QuizOptionView : ConstraintLayout {
             }
         }
 
+    var isMandatory: Boolean = true
+
     var isCorrect: Boolean = false
         set(value) {
             field = value
             binding.apply {
-                tvQuizOptionChoice.showWithCondition(!value)
+                tvQuizOptionChoice.showWithCondition(!value && (isMandatory || !optionTextEmpty()))
+                icQuizOptionOptional.showWithCondition(!value && !isMandatory && optionTextEmpty())
                 icQuizOptionChecked.showWithCondition(value)
 
                 root.background = ContextCompat.getDrawable(
@@ -174,6 +177,8 @@ class QuizOptionView : ConstraintLayout {
     fun setOnCheckedListener(listener: (Int) -> Unit) {
         mOnCheckedListener = listener
     }
+
+    private fun optionTextEmpty() = binding.etQuizOption.text.toString().isEmpty()
 
     private fun <T> needChange(prev: T, curr: T, block: () -> Unit) {
         if(prev != curr && isEditable) block()

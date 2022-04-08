@@ -29,6 +29,15 @@
             tools:text="A" />
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/ic_quiz_option_optional"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_NN300"
+            app:icon_color_night_enable="@color/Unify_NN900"
+            app:icon_name="ADD_CIRCLE" />
+
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ic_quiz_option_checked"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

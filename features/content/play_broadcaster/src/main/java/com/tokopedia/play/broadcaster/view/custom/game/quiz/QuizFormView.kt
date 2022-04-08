@@ -264,6 +264,7 @@ class QuizFormView : ConstraintLayout {
             textHint = if(option.isMandatory) context.getString(R.string.play_bro_quiz_hint_text, option.order + 1)
                         else context.getString(R.string.play_bro_quiz_hint_add_new_option)
             maxLength = quizConfig.maxChoiceLength
+            isMandatory = option.isMandatory
             isCorrect = option.isSelected
 
             setFocus(option.isFocus)
