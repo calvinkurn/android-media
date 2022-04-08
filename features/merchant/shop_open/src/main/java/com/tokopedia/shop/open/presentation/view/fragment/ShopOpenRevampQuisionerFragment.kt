@@ -17,9 +17,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
@@ -438,7 +438,7 @@ class ShopOpenRevampQuisionerFragment :
                 setSecondaryCTAText(getString(R.string.open_shop_logout_button))
                 setSecondaryCTAClickListener {
                     if (GlobalConfig.isSellerApp()) {
-                        RouteManager.route(exitDialog.context, ApplinkConstInternalGlobal.LOGOUT)
+                        RouteManager.route(exitDialog.context, ApplinkConstInternalUserPlatform.LOGOUT)
                     }
                     it.finish()
                 }

@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
@@ -172,7 +172,7 @@ class TopchatRoomDeeplinkTest {
     @Test
     fun test_chatroom_internal_deeplink_with_msgId() {
         // Given
-        val applink = "${ApplinkConstInternalGlobal.TOPCHAT}/$exMessageId"
+        val applink = "${ApplinkConstInternalMarketplace.TOPCHAT}/$exMessageId"
 
         // When
         val intent = RouteManager.getIntent(context, applink)
@@ -189,7 +189,7 @@ class TopchatRoomDeeplinkTest {
 
         // When
         val intent = RouteManager.getIntent(
-            context, ApplinkConstInternalGlobal.TOPCHAT_ROOM, msgId
+            context, ApplinkConstInternalMarketplace.TOPCHAT_ROOM, msgId
         )
 
         // Then

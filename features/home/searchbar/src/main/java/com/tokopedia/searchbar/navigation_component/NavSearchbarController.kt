@@ -1,13 +1,7 @@
 package com.tokopedia.searchbar.navigation_component
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
-import android.os.Build
 import android.text.TextUtils
 import android.view.View
-import android.view.View.FOCUSABLE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -25,11 +19,12 @@ import com.tokopedia.searchbar.helper.EasingInterpolator
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
-import com.tokopedia.searchbar.util.NavUtil
-import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifycomponents.setImage
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.LazyThreadSafetyMode.NONE
 import kotlin.coroutines.CoroutineContext
 
 class NavSearchbarController(val view: View,
@@ -58,13 +53,19 @@ class NavSearchbarController(val view: View,
     }
 
     private lateinit var animationJob: Job
-    var etSearch: EditText? = null
-    var iconClear: IconUnify? = null
+    val etSearch : EditText? by lazy(NONE) {
+        view.findViewById(R.id.et_search)
+    }
+    private val iconClear: IconUnify? by lazy {
+        view.findViewById(R.id.icon_clear)
+    }
+    
+    private val layoutSearch: View? by lazy(NONE) {
+        view.findViewById(R.id.layout_search)
+    }
 
     init {
-        view.layout_search.visibility = VISIBLE
-        etSearch = view.et_search
-        iconClear = view.findViewById(R.id.icon_clear)
+        layoutSearch?.visibility = VISIBLE
     }
 
     override val coroutineContext: CoroutineContext
