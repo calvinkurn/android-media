@@ -153,11 +153,11 @@ open class UserPostBaseAdapter(
     }
 
     override fun onLabelPromoClicked(view: View, item: PlayWidgetChannelUiModel) {
-        RouteManager.route(view.context, item.appLink)
+       //add tracker later
     }
 
     override fun onLabelPromoImpressed(view: View, item: PlayWidgetChannelUiModel) {
-
+        //add tracker later
     }
 
 }
