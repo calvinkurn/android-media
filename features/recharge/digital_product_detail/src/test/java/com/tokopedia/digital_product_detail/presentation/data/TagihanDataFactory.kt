@@ -11,7 +11,7 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperat
 import com.tokopedia.digital_product_detail.data.model.data.RechargeProduct
 import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
 import com.tokopedia.digital_product_detail.presentation.util.JsonToString
-import com.tokopedia.recharge_component.model.denom.MenuDetailModel
+import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
 
 class TagihanDataFactory {
 

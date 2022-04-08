@@ -1,6 +1,6 @@
 package com.tokopedia.digital_product_detail.domain.repository
 
-import com.tokopedia.digital_product_detail.data.model.data.perso.PersoFavNumberGroup
+import com.tokopedia.digital_product_detail.domain.model.FavoriteGroupModel
 import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 
 interface RechargeFavoriteNumberRepository {
@@ -8,5 +8,5 @@ interface RechargeFavoriteNumberRepository {
         favoriteNumberTypes: List<FavoriteNumberType>,
         categoryIds: List<Int>,
         operatorIds: List<Int> = emptyList(),
-    ): PersoFavNumberGroup
+    ): FavoriteGroupModel
 }
