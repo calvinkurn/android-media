@@ -265,6 +265,11 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet)
                 ?: TooltipBottomSheet.createInstance()
         tooltipBottomSheet.init(requireContext(), tooltip)
+        tooltipBottomSheet.setOnShowListener {
+            statisticPage?.let {
+                StatisticTracker.sendTooltipImpressionEvent(it)
+            }
+        }
         tooltipBottomSheet.show(childFragmentManager, TAG_TOOLTIP)
     }
 
@@ -362,14 +367,14 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendTableImpressionEvent(
         model: TableWidgetUiModel,
+        position: Int,
         slidePosition: Int,
         maxSlidePosition: Int,
         isSlideEmpty: Boolean
     ) {
-        val position = adapter.data.indexOf(model)
         StatisticTracker.sendTableImpressionEvent(model, position, slidePosition, isSlideEmpty)
         getCategoryPage()?.let { categoryPage ->
-            StatisticTracker.sendTableSlideEvent(categoryPage, slidePosition + 1, maxSlidePosition)
+            StatisticTracker.sendTableSlideEvent(categoryPage, slidePosition.plus(Int.ONE), maxSlidePosition)
         }
     }
 
@@ -393,6 +398,36 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
 
     override fun sendSectionTooltipClickEvent(model: SectionWidgetUiModel) {
         StatisticTracker.sendSectionTooltipClickEvent(model.title)
+    }
+
+    override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
+        statisticPage?.let {
+            StatisticTracker.sendMultiLineGraphImpressionEvent(it, element)
+        }
+    }
+
+    override fun sendTickerImpression(tickers: List<TickerItemUiModel>) {
+        statisticPage?.let {
+            StatisticTracker.sendTickerImpressionEvent(it)
+        }
+    }
+
+    override fun sendTickerCtaClickEvent(ticker: TickerItemUiModel) {
+        statisticPage?.let {
+            StatisticTracker.sendTickerCtaClickEvent(it)
+        }
+    }
+
+    override fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {
+        statisticPage?.let {
+            StatisticTracker.sendAnnouncementImpressionEvent(it)
+        }
+    }
+
+    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
+        statisticPage?.let {
+            StatisticTracker.sendAnnouncementCtaClickEvent(it)
+        }
     }
 
     override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
@@ -424,6 +459,10 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
             }
             sendSelectedFilterClickEvent(filter)
         }.show(childFragmentManager, WidgetFilterBottomSheet.TABLE_FILTER_TAG)
+
+        statisticPage?.let {
+            StatisticTracker.sendShowTableTableFilterClickEvent(it, element)
+        }
     }
 
     fun setSelectedWidget(widget: String) {

@@ -229,7 +229,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import rx.subscriptions.CompositeSubscription
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -262,7 +263,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         deeplinkUrl: String? = null,
                         layoutId: String? = null,
                         extParam: String? = null,
-                        query: String? = null) = DynamicProductDetailFragment().also {
+                        query: String? = null,
+                        affiliateChannel: String? = null) = DynamicProductDetailFragment().also {
             it.arguments = Bundle().apply {
                 productId?.let { pid -> putString(ProductDetailConstant.ARG_PRODUCT_ID, pid) }
                 warehouseId?.let { whId -> putString(ProductDetailConstant.ARG_WAREHOUSE_ID, whId) }
@@ -272,6 +274,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 trackerListName?.let { listName -> putString(ProductDetailConstant.ARG_TRACKER_LIST_NAME, listName) }
                 affiliateString?.let { affiliateString -> putString(ProductDetailConstant.ARG_AFFILIATE_STRING, affiliateString) }
                 affiliateUniqueId?.let { affiliateUniqueId -> putString(ProductDetailConstant.ARG_AFFILIATE_UNIQUE_ID, affiliateUniqueId) }
+                affiliateChannel?.let { affiliateChannel -> putString(ProductDetailConstant.ARG_CHANNEL, affiliateChannel) }
                 deeplinkUrl?.let { deeplinkUrl -> putString(ProductDetailConstant.ARG_DEEPLINK_URL, deeplinkUrl) }
                 layoutId?.let { layoutId -> putString(ProductDetailConstant.ARG_LAYOUT_ID, layoutId) }
                 extParam?.let { extParam -> putString(ProductDetailConstant.ARG_EXT_PARAM, extParam) }
@@ -334,6 +337,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldRefreshShippingBottomSheet = false
     private var uuid = ""
     private var urlQuery: String = ""
+    private var affiliateChannel: String = ""
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -440,6 +444,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeTopAdsIsChargeData()
         observeDeleteCart()
         observePlayWidget()
+        observeAffiliateCookie()
     }
 
     override fun loadData(forceRefresh: Boolean) {
@@ -447,7 +452,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             context?.let {
                 (it as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
                 viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId),
-                        forceRefresh, layoutId, ChooseAddressUtils.getLocalizingAddressData(it), affiliateUniqueString = affiliateUniqueId, uuid = uuid, urlQuery = urlQuery, extParam = extParam)
+                        forceRefresh, layoutId, ChooseAddressUtils.getLocalizingAddressData(it), urlQuery = urlQuery, extParam = extParam)
             }
         }
     }
@@ -470,6 +475,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             layoutId = it.getString(ProductDetailConstant.ARG_LAYOUT_ID, "")
             extParam = it.getString(ProductDetailConstant.ARG_EXT_PARAM, "")
             urlQuery = it.getString(ProductDetailConstant.ARG_QUERY_PARAMS, "")
+            affiliateChannel = it.getString(ProductDetailConstant.ARG_CHANNEL, "")
         }
         activity?.let {
             sharedViewModel = ViewModelProvider(it).get(ProductDetailSharedViewModel::class.java)
@@ -515,6 +521,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun reloadFintechWidget() {
+        if (pdpUiUpdater == null || pdpUiUpdater?.fintechWidgetMap == null) return
         if (pdpUiUpdater?.fintechWidgetMap?.isLoggedIn != viewModel.isUserSessionActive) {
             productId?.let {
                 pdpUiUpdater?.updateFintechDataWithProductId(
@@ -1396,7 +1403,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
             } else {
                 productInfo?.basic?.productID?.let {
-                    toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist)
+                    toasterWishlistText = if (isProductOos()) getString(R.string.toaster_success_add_wishlist_from_fab) else getString(R.string.toaster_success_add_wishlist)
                     addWishList()
                     productInfo.let {
                         DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -1532,6 +1539,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     onSuccessUpdateAddress()
                 }
             })
+        }
+    }
+
+    private fun observeAffiliateCookie() {
+        viewModel.affiliateCookie.observe(viewLifecycleOwner) {
+            it.doSuccessOrFail({
+                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
+                        isSuccess = true
+                )
+            }) { throwable ->
+                ProductDetailServerLogger.logBreadCrumbAffiliateCookie(
+                        isSuccess = false,
+                        errorMessage = throwable.message ?: ""
+                )
+            }
         }
     }
 
@@ -1929,6 +1951,14 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         p1.basic.shopID,
                         p1.shopTypeString,
                         p1.basic.productID)
+
+                viewModel.hitAffiliateCookie(
+                        productInfo = p1,
+                        deviceId = viewModel.deviceId,
+                        affiliateUuid = affiliateUniqueId,
+                        uuid = uuid,
+                        affiliateChannel = affiliateChannel
+                )
             }
 
             onSuccessGetDataP2(it, boeData, ratesData)

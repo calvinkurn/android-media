@@ -52,6 +52,10 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         }
 
+        if (kycType.isEmpty()) {
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+        }
+
         initViews(view, savedInstanceState)
     }
 
@@ -93,9 +97,9 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         val intent = RouteManager.getIntent(requireContext(),
                 ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
                 projectId.toString(),
-                kycType,
                 redirectUrl
         )
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
         startActivityForResult(intent, KYC_REQUEST_CODE)
     }
 

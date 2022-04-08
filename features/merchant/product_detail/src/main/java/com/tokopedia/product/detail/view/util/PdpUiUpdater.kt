@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.pdp.fintech.view.FintechPriceUrlDataModel
+import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
@@ -215,7 +215,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
                     talkCount = it.basic.stats.countTalk.toIntOrZero()
-                    paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
+                    itemSoldFmt = it.basic.txStats.itemSoldFmt
                 }
             }
 
@@ -224,7 +224,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     rating = it.basic.stats.rating
                     ratingCount = it.basic.stats.countReview.toIntOrZero()
                     stock = it.basic.totalStockFmt
-                    paymentVerifiedCount = it.basic.txStats.itemSoldPaymentVerified.toIntOrZero()
+                    itemSoldFmt = it.basic.txStats.itemSoldFmt
                 }
             }
 
@@ -316,16 +316,16 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         loggedIn: Boolean
     ) {
         productInfo?.let { productDetail ->
-            val productIdToPriceURLMap = HashMap<String, FintechPriceUrlDataModel>()
+            val productIdToPriceURLMap = HashMap<String, FintechPriceDataModel>()
             val productCategoryId: String = productDetail.basic.category.id
             if (variantData == null) {
                 productIdToPriceURLMap[productDetail.basic.productID] =
-                    FintechPriceUrlDataModel(productDetail.data.price.value.toString())
+                    FintechPriceDataModel(productDetail.data.price.value.toString())
 
             } else {
                 for (i in variantData.children.indices) {
                     productIdToPriceURLMap[variantData.children[i].productId] =
-                        FintechPriceUrlDataModel(
+                        FintechPriceDataModel(
                             variantData.children[i].price.toString()
                         )
                 }

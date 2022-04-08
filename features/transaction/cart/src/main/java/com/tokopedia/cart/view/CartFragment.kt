@@ -44,7 +44,9 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -127,7 +129,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_F
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -415,6 +416,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
+        Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroy()
     }
 
@@ -923,7 +925,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                        IconBuilder(IconBuilderFlag(pageSource = CART_PAGE))
                                 .addIcon(
                                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                                         disableDefaultGtmTracker = true,
