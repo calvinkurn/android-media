@@ -3,7 +3,13 @@ package com.tokopedia.media.picker.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.media.picker.data.repository.*
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.data.loader.LoaderDataSource
+import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
+import com.tokopedia.media.picker.data.repository.AlbumRepository
+import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
+import com.tokopedia.media.picker.data.repository.MediaRepository
 import dagger.Module
 import dagger.Provides
 
@@ -12,24 +18,39 @@ object PickerModule {
 
     @Provides
     @ActivityScope
-    fun provideDeviceInfoRepository(): DeviceInfoRepository {
-        return DeviceInfoRepositoryImpl()
+    fun provideLoaderDataSource(
+        @ApplicationContext context: Context,
+        cacheManager: ParamCacheManager
+    ) : LoaderDataSource {
+        return LoaderDataSourceImpl(context, cacheManager)
     }
+
+    @Provides
+    @ActivityScope
+    fun provideDeviceInfoRepository(
+        dispatcher: CoroutineDispatchers
+    ) = DeviceInfoRepository(dispatcher)
 
     @Provides
     @ActivityScope
     fun provideAlbumRepository(
-        @ApplicationContext context: Context
-    ): AlbumRepository {
-        return AlbumRepositoryImpl(context)
-    }
+        loaderDataSource: LoaderDataSource,
+        dispatcher: CoroutineDispatchers
+    ) = AlbumRepository(
+        loaderDataSource,
+        dispatcher
+    )
 
     @Provides
     @ActivityScope
     fun provideMediaRepository(
-        @ApplicationContext context: Context
+        loaderDataSource: LoaderDataSource,
+        dispatcher: CoroutineDispatchers
     ): MediaRepository {
-        return MediaRepositoryImpl(context)
+        return MediaRepository(
+            loaderDataSource,
+            dispatcher
+        )
     }
 
 }
