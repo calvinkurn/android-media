@@ -2,6 +2,7 @@ package com.tokopedia.home_component.mapper
 
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.CardUnify2
 
 object ProductHighlightModelMapper {
      fun mapToProductCardModel(channelGrid: ChannelGrid): ProductCardModel {
@@ -30,7 +31,8 @@ object ProductHighlightModelMapper {
                  isOutOfStock = isOutOfStock,
                  ratingCount = rating,
                  reviewCount = countReview,
-                 countSoldRating = ratingFloat
+                 countSoldRating = ratingFloat,
+                 animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
              )
          }
      }

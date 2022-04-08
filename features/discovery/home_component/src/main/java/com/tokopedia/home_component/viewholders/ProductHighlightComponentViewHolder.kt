@@ -57,9 +57,7 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun initView() {
-        masterProductCardListView = itemView.findViewById<ProductCardListView?>(R.id.master_product_card_deals).apply {
-            setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
-        }
+        masterProductCardListView = itemView.findViewById<ProductCardListView?>(R.id.master_product_card_deals)
     }
 
     private fun setDealsChannelInfo(productHighlightDataModel: ProductHighlightDataModel) {

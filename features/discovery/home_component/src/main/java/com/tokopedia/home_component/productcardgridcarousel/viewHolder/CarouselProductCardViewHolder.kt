@@ -27,7 +27,6 @@ class CarouselProductCardViewHolder (view: View,
 
     private fun setLayout(context: Context, element: CarouselProductCardDataModel){
         productCardView?.run{
-            setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {

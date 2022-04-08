@@ -185,6 +185,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         cartExtension.setProductModel(productCardModel)
         video.setProductModel(productCardModel)
+        productCardModel.animationOnPress?.let {
+            cardViewProductCard?.animateOnPress = it
+        }
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -311,9 +314,5 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart.isEnabled = false
         buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
-    }
-
-    override fun setCardInteraction(animation: Int) {
-        cardViewProductCard?.animateOnPress = animation
     }
 }

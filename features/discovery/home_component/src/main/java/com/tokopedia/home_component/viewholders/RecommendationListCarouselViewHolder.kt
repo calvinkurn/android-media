@@ -211,7 +211,6 @@ class RecommendationListCarouselViewHolder(itemView: View,
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
-            recommendationCard.setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
                 if (!isCacheData) {
@@ -226,23 +225,24 @@ class RecommendationListCarouselViewHolder(itemView: View,
                     }
             }
                 recommendationCard.setProductModel(
-                        ProductCardModel(
-                                productImageUrl = recommendation.recommendationImageUrl,
-                                productName = recommendation.recommendationTitle,
-                                discountPercentage = recommendation.recommendationDiscountLabel,
-                                slashedPrice = recommendation.recommendationSlashedPrice,
-                                formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.grid.hasBuyButton,
-                                isTopAds = recommendation.isTopAds,
-                                isOutOfStock = recommendation.grid.isOutOfStock,
-                                ratingCount = recommendation.grid.rating,
-                                reviewCount = recommendation.grid.countReview,
-                                countSoldRating = recommendation.grid.ratingFloat,
-                                shopLocation = recommendation.grid.shop.shopLocation,
-                                shopBadgeList = recommendation.grid.badges.map {
-                                    ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                                }
-                        )
+                    ProductCardModel(
+                        productImageUrl = recommendation.recommendationImageUrl,
+                        productName = recommendation.recommendationTitle,
+                        discountPercentage = recommendation.recommendationDiscountLabel,
+                        slashedPrice = recommendation.recommendationSlashedPrice,
+                        formattedPrice = recommendation.recommendationPrice,
+                        hasAddToCartButton = recommendation.grid.hasBuyButton,
+                        isTopAds = recommendation.isTopAds,
+                        isOutOfStock = recommendation.grid.isOutOfStock,
+                        ratingCount = recommendation.grid.rating,
+                        reviewCount = recommendation.grid.countReview,
+                        countSoldRating = recommendation.grid.ratingFloat,
+                        shopLocation = recommendation.grid.shop.shopLocation,
+                        shopBadgeList = recommendation.grid.badges.map {
+                            ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
+                        },
+                        animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                    )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
                 addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)

@@ -32,7 +32,6 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
         }
 
         productCardView?.run{
-            setCardInteraction(CardUnify2.ANIMATE_OVERLAY_BOUNCE)
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.product.slashedPrice,
@@ -55,7 +54,8 @@ class HomeRecommendationItemViewHolder(itemView: View) : SmartAbstractViewHolder
                                     imageUrl = element.product.freeOngkirInformation.imageUrl
                             ),
                             labelGroupList = productCardModelLabelGroupList,
-                            hasThreeDots = true
+                            hasThreeDots = true,
+                            animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {

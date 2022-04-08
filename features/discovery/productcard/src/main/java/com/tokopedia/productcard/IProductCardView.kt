@@ -24,6 +24,4 @@ interface IProductCardView {
     fun getProductImageView(): ImageView?
 
     fun getProductCardVideo(): ProductCardVideo
-
-    fun setCardInteraction(animation: Int)
 }
