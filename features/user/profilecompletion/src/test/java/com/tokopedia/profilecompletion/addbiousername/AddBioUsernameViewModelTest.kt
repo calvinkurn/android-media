@@ -309,7 +309,6 @@ class AddBioUsernameViewModelTest {
         //Then
         coVerify(exactly = 0) {
             validateUsecase(any())
-            assertTrue(viewModel.validationUsernameJob?.isCancelled == true)
             assertTrue(result)
         }
     }
