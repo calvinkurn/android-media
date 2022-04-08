@@ -1,4 +1,4 @@
-package com.tokopedia.play_common.view.game.follow
+package com.tokopedia.play.view.custom.interactive.follow
 
 import com.tokopedia.play_common.view.game.setupGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz

@@ -1,13 +1,10 @@
-package com.tokopedia.play_common.view.game.follow
+package com.tokopedia.play.view.custom.interactive.follow
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.tokopedia.play_common.R
-import com.tokopedia.play_common.databinding.ViewInteractiveFollowBinding
-import com.tokopedia.play_common.view.RoundedLinearLayout
+import com.tokopedia.play.databinding.ViewInteractiveFollowBinding
 import com.tokopedia.play_common.view.game.GameHeaderView
 
 /**
