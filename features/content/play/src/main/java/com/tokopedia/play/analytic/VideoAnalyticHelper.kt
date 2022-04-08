@@ -74,7 +74,12 @@ class VideoAnalyticHelper(
         }
 
         if(bufferTrackingModel.bufferCount > 0 && watchDurationModel.cumulationDuration > 30){
-            log.sendAll(channelData.id, (channelData.videoMetaInfo.videoPlayer as PlayVideoPlayerUiModel.General).params.videoUrl)
+            val url = when (channelData.videoMetaInfo.videoPlayer) {
+                is PlayVideoPlayerUiModel.General -> channelData.videoMetaInfo.videoPlayer.params.videoUrl
+                is PlayVideoPlayerUiModel.YouTube -> channelData.videoMetaInfo.videoPlayer.youtubeId
+                else -> ""
+            }
+            log.sendAll(channelData.id, url)
         }
     }
 
