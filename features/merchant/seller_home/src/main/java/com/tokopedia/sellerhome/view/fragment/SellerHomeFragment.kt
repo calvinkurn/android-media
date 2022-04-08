@@ -58,12 +58,12 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
-import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
+import com.tokopedia.sellerhome.common.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
@@ -71,7 +71,7 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
-import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
 import com.tokopedia.sellerhomecommon.common.DateFilterUtil
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
@@ -1942,8 +1942,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             val isInvoked = widget.impressHolder.isInvoke
             when (widget) {
                 !is SectionWidgetUiModel,
-                !is TickerWidgetUiModel,
-                !is WhiteSpaceUiModel -> {
+                !is TickerWidgetUiModel -> {
                     if (isInvoked) {
                         widget.copyWidget().apply { impressHolder = ImpressHolder() }
                     } else {
@@ -2019,7 +2018,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-                this !is DescriptionWidgetUiModel && this !is WhiteSpaceUiModel
+                this !is DescriptionWidgetUiModel
     }
 
     private fun setRecommendationCoachMarkEligibility() {

@@ -103,7 +103,6 @@ class ManageAddressTest {
                 onView(RecyclerViewMatcher(R.id.address_list)
                         .atPositionOnView(pos, R.id.btn_secondary))
                         .check(matches(isDisplayed())).perform(click())
-                pressBack()
             }
         }
     }
