@@ -178,6 +178,10 @@ class EntrypointFragment : BaseDaggerFragment() {
                     val emptyVariantProductIds = inventoryError.emptyVariantProductIds.map { it.toString() } // product that stock variant is 0
                     if (!bundleInfo.isNullOrEmpty()) {
                         val productBundleFragment = when {
+                            inventoryError.type == InventoryErrorType.BUNDLE_EMPTY -> {
+                                showEmpty()
+                                this
+                            }
                             viewModel.isSingleProductBundle(bundleInfo.orEmpty()) -> {
                                 val selectedProductId = longSelectedProductIds.firstOrNull().orZero()
                                 SingleProductBundleFragment.newInstance(viewModel.parentProductID.toString(), bundleInfo.orEmpty(),
