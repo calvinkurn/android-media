@@ -229,6 +229,7 @@ import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.variant_common.util.VariantCommonMapper
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -335,6 +336,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private var shouldRefreshShippingBottomSheet = false
     private var uuid = ""
     private var urlQuery: String = ""
+    private var isUsingWishlistV2: Boolean = false
 
     //Prevent several method at onResume to being called when first open page.
     private var firstOpenPage: Boolean? = null
@@ -395,6 +397,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     addFragmentLifecycleObserver = true,
                     permissionListener = shareProductInstance?.universalSharePermissionListener
             )
+        }
+
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingWishlistV2 = true
         }
     }
 
@@ -1388,9 +1394,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         if (viewModel.isUserSessionActive) {
             if (isActive) {
                 productInfo?.basic?.productID?.let {
-                    viewModel.removeWishList(it,
-                            onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
-                            onErrorRemoveWishList = this::onErrorRemoveWishList)
+                    removeWishlist(it)
                     DynamicProductDetailTracking.Click.eventPDPRemoveToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                 }
 
@@ -2874,7 +2878,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun onErrorRemoveWishList(throwable: Throwable) {
+    private fun onErrorRemoveWishList(errorMsg: String?) {
+        view?.showToasterError(getErrorMessage(errorMsg), ctaText = getString(com.tokopedia.design.R.string.oke))
+    }
+
+    private fun onErrorRemoveWishListV2(throwable: Throwable) {
         view?.showToasterError(getErrorMessage(throwable),
                 ctaText = getString(com.tokopedia.design.R.string.oke))
     }
@@ -2895,7 +2903,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
     }
 
-    private fun onErrorAddWishList(throwable: Throwable) {
+    private fun onErrorAddWishList(errorMessage: String?) {
+        view?.showToasterError(getErrorMessage(errorMessage),
+            ctaText = getString(com.tokopedia.design.R.string.oke))
+    }
+
+    private fun onErrorAddWishListV2(throwable: Throwable) {
         view?.showToasterError(getErrorMessage(throwable),
                 ctaText = getString(com.tokopedia.design.R.string.oke))
     }
@@ -3731,8 +3744,25 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun addWishList() {
-        viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID
+        if (isUsingWishlistV2) {
+            viewModel.addWishListV2(viewModel.getDynamicProductInfoP1?.basic?.productID
+                ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishListV2)
+        } else {
+            viewModel.addWishList(viewModel.getDynamicProductInfoP1?.basic?.productID
                 ?: "", onSuccessAddWishlist = this::onSuccessAddWishlist, onErrorAddWishList = this::onErrorAddWishList)
+        }
+    }
+
+    private fun removeWishlist(productId: String) {
+        if (isUsingWishlistV2) {
+            viewModel.removeWishListV2(productId,
+                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+                onErrorRemoveWishList = this::onErrorRemoveWishListV2)
+        } else {
+            viewModel.removeWishList(productId,
+                onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
+                onErrorRemoveWishList = this::onErrorRemoveWishList)
+        }
     }
 
     private fun isProductOos(): Boolean {

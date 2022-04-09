@@ -66,6 +66,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 open class AddToCartDoneBottomSheet :
@@ -444,10 +445,16 @@ open class AddToCartDoneBottomSheet :
     }
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+        var isUsingWishlistV2 = false
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingWishlistV2 = true
+        }
         if (isAddWishlist) {
-            addToCartDoneViewModel.addWishList(item.productId.toString(), callback)
+            if (isUsingWishlistV2) addToCartDoneViewModel.addWishListV2(item.productId.toString(), callback)
+            else addToCartDoneViewModel.addWishList(item.productId.toString(), callback)
         } else {
-            addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
+            if (isUsingWishlistV2) addToCartDoneViewModel.removeWishListV2(item.productId.toString(), callback)
+            else addToCartDoneViewModel.removeWishList(item.productId.toString(), callback)
         }
         DynamicProductDetailTracking.Click.eventAddToCartRecommendationWishlist(item, addToCartDoneViewModel.isLoggedIn(), isAddWishlist)
     }

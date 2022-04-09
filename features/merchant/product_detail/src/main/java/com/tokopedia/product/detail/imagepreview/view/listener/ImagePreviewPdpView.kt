@@ -8,6 +8,8 @@ interface ImagePreviewPdpView {
 
     fun addWishlist()
     fun removeWishlist()
+    fun addWishlistV2()
+    fun removeWishlistV2()
 
     fun onSuccessAddWishlist()
     fun onSuccessRemoveWishlist()

@@ -66,6 +66,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import java.util.*
 import javax.inject.Inject
 
@@ -341,10 +342,16 @@ class OfficialHomeFragment :
 
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if (viewModel.isLoggedIn()) {
+            var isUsingV2 = false
+            context?.let {
+                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
+            }
+
             if (isAddWishlist) {
-                viewModel.addWishlist(item, callback)
+                viewModel.addWishlist(item, callback, isUsingV2)
             } else {
-                viewModel.removeWishlist(item, callback)
+                if (isUsingV2) viewModel.removeWishlistV2(item, callback)
+                else viewModel.removeWishlist(item, callback)
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)

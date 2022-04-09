@@ -8,6 +8,7 @@ import dagger.Component
 @Component(
     modules = [
         ImagePreviewPdpModule::class,
+        ImagePreviewPdpWishlistModule::class,
         ImagePreviewPdpViewModelModule::class
     ],
     dependencies = [
