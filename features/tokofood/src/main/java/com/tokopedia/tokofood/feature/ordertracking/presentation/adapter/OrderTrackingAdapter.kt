@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -27,8 +26,8 @@ class OrderTrackingAdapter(
     }
 
     fun updateItem(
-        oldItem: Visitable<BaseOrderTrackingTypeFactory>,
-        newItem: Visitable<BaseOrderTrackingTypeFactory>
+        oldItem: BaseOrderTrackingTypeFactory,
+        newItem: BaseOrderTrackingTypeFactory
     ) {
         val index = visitables.indexOf(oldItem)
         if (index != RecyclerView.NO_POSITION) {
@@ -40,7 +39,7 @@ class OrderTrackingAdapter(
     fun expandOrderDetail(newFoodItemList: List<BaseOrderTrackingTypeFactory>) {
         val foodItemCount = visitables.filterIsInstance<FoodItemUiModel>().count()
         if (foodItemCount == Int.ONE) {
-            val foodItemFirstIndex = visitables.indexOfFirst { it is FoodItemUiModel }
+            val foodItemFirstIndex = visitables.indexOfFirst { it is FoodItemUiModel } + Int.ONE
             visitables.addAll(foodItemFirstIndex, newFoodItemList)
             notifyItemRangeInserted(foodItemFirstIndex, newFoodItemList.size)
         }
@@ -49,12 +48,11 @@ class OrderTrackingAdapter(
     fun collapseOrderDetail() {
         val foodItemCount = visitables.filterIsInstance<FoodItemUiModel>().count()
         if (foodItemCount > Int.ONE) {
-            val foodItemFirstIndex = visitables.indexOfFirst { it is FoodItemUiModel }
-            val foodItemLastIndex = visitables.indexOfLast { it is FoodItemUiModel }
-            val startRemovedIndex = foodItemFirstIndex + Int.ONE
+            val foodItemFirstIndex = visitables.indexOfFirst { it is FoodItemUiModel } + Int.ONE
+            val foodItemLastIndex = visitables.indexOfLast { it is FoodItemUiModel } + Int.ONE
             val removedCount = foodItemLastIndex - foodItemFirstIndex
-            visitables.subList(startRemovedIndex, foodItemLastIndex).clear()
-            notifyItemRangeRemoved(startRemovedIndex, removedCount)
+            visitables.subList(foodItemFirstIndex, foodItemLastIndex).clear()
+            notifyItemRangeRemoved(foodItemFirstIndex, removedCount)
         }
     }
 

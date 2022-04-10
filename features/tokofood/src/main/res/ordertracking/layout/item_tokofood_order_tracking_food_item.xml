@@ -12,8 +12,8 @@
         app:typographyType="body_3"
         android:textColor="@color/Unify_NN950"
         tools:text="Milo Macchiato"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 

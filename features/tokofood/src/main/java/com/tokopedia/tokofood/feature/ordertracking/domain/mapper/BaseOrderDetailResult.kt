@@ -37,7 +37,7 @@ abstract class BaseOrderDetailResult {
         additionalTickerInfo:
         List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.AdditionalTickerInfo>?
     ) {
-        add(TickerInfoData( additionalTickerInfo?.map {
+        add(TickerInfoData(additionalTickerInfo?.map {
             TickerData(
                 title = "",
                 description = it.notes,
@@ -146,7 +146,7 @@ abstract class BaseOrderDetailResult {
         return StepperStatusUiModel(
             isIconActive = isIconActive,
             isLineActive = isLineActive,
-            IconUnify.HOURGLASS
+            iconName = IconUnify.HOURGLASS
         )
     }
 
@@ -157,7 +157,7 @@ abstract class BaseOrderDetailResult {
         return StepperStatusUiModel(
             isIconActive = isIconActive,
             isLineActive = isLineActive,
-            IconUnify.COOK
+            iconName = IconUnify.COOK
         )
     }
 
@@ -168,7 +168,7 @@ abstract class BaseOrderDetailResult {
         return StepperStatusUiModel(
             isIconActive = isIconActive,
             isLineActive = isLineActive,
-            IconUnify.DRIVER
+            iconName = IconUnify.DRIVER
         )
     }
 
@@ -179,7 +179,7 @@ abstract class BaseOrderDetailResult {
         return StepperStatusUiModel(
             isIconActive = isIconActive,
             isLineActive = isLineActive,
-            IconUnify.PRODUCT_MOVE
+            iconName = IconUnify.PRODUCT_MOVE
         )
     }
 
@@ -211,7 +211,7 @@ abstract class BaseOrderDetailResult {
             OrderStatusType.AWAITING_MERCHANT_ACCEPTANCE,
             OrderStatusType.MERCHANT_ACCEPTED, OrderStatusType.SEARCHING_DRIVER -> {
                 listOf(
-                    getHourGlassStepperStatus(isLineActive = false),
+                    getHourGlassStepperStatus(isLineActive = true),
                     getCookStepperStatus(isIconActive = false, isLineActive = false),
                     getDriverStepperStatus(isIconActive = false, isLineActive = false),
                     getProductMoveStepperStatus()
@@ -220,7 +220,7 @@ abstract class BaseOrderDetailResult {
             OrderStatusType.OTW_PICKUP, OrderStatusType.DRIVER_ARRIVED,
             OrderStatusType.PICKUP_REQUESTED, OrderStatusType.ORDER_PLACED -> {
                 listOf(
-                    getHourGlassStepperStatus(isLineActive = false),
+                    getHourGlassStepperStatus(isLineActive = true),
                     getCookStepperStatus(isIconActive = true, isLineActive = true),
                     getDriverStepperStatus(isIconActive = false, isLineActive = false),
                     getProductMoveStepperStatus()
@@ -228,14 +228,17 @@ abstract class BaseOrderDetailResult {
             }
             OrderStatusType.OTW_DESTINATION, OrderStatusType.FRAUD_CHECK -> {
                 listOf(
-                    getHourGlassStepperStatus(isLineActive = false),
+                    getHourGlassStepperStatus(isLineActive = true),
                     getCookStepperStatus(isIconActive = true, isLineActive = true),
                     getDriverStepperStatus(isIconActive = true, isLineActive = true),
                     getProductMoveStepperStatus()
                 )
             }
             else -> listOf(
-                getHourGlassStepperStatus(isIconActive = true, isLineActive = false)
+                getHourGlassStepperStatus(isLineActive = false),
+                getCookStepperStatus(isIconActive = false, isLineActive = false),
+                getDriverStepperStatus(isIconActive = false, isLineActive = false),
+                getProductMoveStepperStatus()
             )
         }
     }
@@ -244,7 +247,7 @@ abstract class BaseOrderDetailResult {
         foodList:
         List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.Item>
     ) {
-        addAll(foodList.map {
+        addAll(foodList.take(Int.ONE).map {
             FoodItemUiModel(
                 foodName = it.displayName,
                 quantity = it.quantity.toString(),
@@ -285,9 +288,14 @@ abstract class BaseOrderDetailResult {
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addThickDividerUiModel() =
         add(ThickDividerUiModel())
 
-    protected fun MutableList<BaseOrderTrackingTypeFactory>.addThinDividerUiModel() =
-        add(ThinDividerUiModel())
+    protected fun MutableList<BaseOrderTrackingTypeFactory>.addThinDividerUiModel(marginTop: Int) =
+        add(ThinDividerUiModel(marginTop))
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addThinDividerMarginUiModel() =
         add(ThinDividerMarginUiModel())
+
+    companion object {
+        const val MARGIN_TOP_TWENTY = 20
+        const val MARGIN_TOP_EIGHT = 8
+    }
 }

@@ -44,6 +44,6 @@ class RestaurantUserAddressViewHolder(view: View):
     }
 
     private fun ItemTokofoodOrderTrackingRestoUserAddressBinding.setDestinationAddress(address: String) {
-        tvOrderTrackingPhoneNumber.text = address
+        tvOrderTrackingDetailAddress.text = address
     }
 }

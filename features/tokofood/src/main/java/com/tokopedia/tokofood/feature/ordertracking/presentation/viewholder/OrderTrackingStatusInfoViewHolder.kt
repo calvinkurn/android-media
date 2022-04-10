@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingStatusInfoSectionBinding
@@ -105,17 +104,12 @@ class OrderTrackingStatusInfoViewHolder(
         }
 
         binding.rvOrderStatusStepper.run {
-            setHasFixedSize(true)
             setRecycledViewPool(recyclerViewPollerListener.parentPool)
             layoutManager = gridLayoutManager
             adapter = stepperStatusAdapter
         }
 
         stepperStatusAdapter?.setStepperList(item.stepperStatusList)
-    }
-
-    interface Listener {
-        fun getRecyclerViewPoolStatusInfo(): RecyclerView.RecycledViewPool
     }
 
 

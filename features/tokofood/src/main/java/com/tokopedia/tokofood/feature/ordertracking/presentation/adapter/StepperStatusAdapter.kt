@@ -73,25 +73,23 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
             if (stepperStatusList.size == adapterPosition + Int.ONE) {
                 hideStepperLine()
             } else {
-                setStepperIcon(item.isIconActive)
-                setupStepperIcon(item.isIconActive)
                 setupStepperLine(item.isLineActive)
             }
+            setupStepperIcon(item.isIconActive)
         }
 
         fun updateStepperIcon(isActive: Boolean) {
-            setupStepperIcon(isActive)
+            binding.icOrderTrackingStatus.run {
+                setColorFilter(
+                    if (isActive) stepperColor.first else stepperColor.second
+                )
+            }
         }
 
         fun updateStepperLine(isActive: Boolean) {
-            setupStepperLine(isActive)
-        }
-
-        private fun setStepperIcon(isActive: Boolean) {
-            with(binding) {
-                icOrderTrackingStatus.setImage(
-                    stepperStatusItem?.iconName,
-                    newLightEnable = if (isActive) stepperColor.first else stepperColor.second
+            binding.viewOrderTrackingStatusLine.run {
+                setColorFilter(
+                    if (isActive) stepperColor.first else stepperColor.second
                 )
             }
         }
@@ -107,9 +105,11 @@ class StepperStatusAdapter : RecyclerView.Adapter<StepperStatusAdapter.StepperSt
 
         private fun setupStepperLine(isActive: Boolean) {
             with(binding) {
-                viewOrderTrackingStatusLine.setBackgroundColor(
-                    if (isActive) stepperColor.first else stepperColor.second
-                )
+                viewOrderTrackingStatusLine.run {
+                    setColorFilter(
+                        if (isActive) stepperColor.first else stepperColor.second
+                    )
+                }
             }
         }
 

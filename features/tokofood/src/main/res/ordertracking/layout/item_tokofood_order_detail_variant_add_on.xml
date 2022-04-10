@@ -7,8 +7,8 @@
 
     <View
         android:id="@+id/icVariantAddOn"
-        android:layout_width="30dp"
-        android:layout_height="20dp"
+        android:layout_width="15dp"
+        android:layout_height="10dp"
         android:layout_marginTop="2dp"
         android:background="@drawable/ic_variant_add_on"
         android:layout_marginStart="16dp"
@@ -31,7 +31,7 @@
         android:id="@+id/guidelineVariantAddon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintGuide_percent="0.4"
+        app:layout_constraintGuide_percent="0.15"
         android:orientation="horizontal"/>
 
 

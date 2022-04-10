@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
@@ -89,10 +90,19 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     override fun onToggleClicked(
-        orderDetailToggleCtaUiModel: OrderDetailToggleCtaUiModel,
+        orderDetailToggleCta: OrderDetailToggleCtaUiModel,
         isExpandable: Boolean
     ) {
-
+        if (isExpandable) {
+            val newFoodItems = viewModel.foodItems.slice(Int.ONE..viewModel.foodItems.size - Int.ONE)
+            val newToggleCta = orderDetailToggleCta.copy(isExpand = true)
+            orderTrackingAdapter.expandOrderDetail(newFoodItems)
+            orderTrackingAdapter.updateItem(orderDetailToggleCta, newToggleCta)
+        } else {
+            val newToggleCta = orderDetailToggleCta.copy(isExpand = false)
+            orderTrackingAdapter.collapseOrderDetail()
+            orderTrackingAdapter.updateItem(orderDetailToggleCta, newToggleCta)
+        }
     }
 
     override fun onTickerLinkClick(linkUrl: String) {

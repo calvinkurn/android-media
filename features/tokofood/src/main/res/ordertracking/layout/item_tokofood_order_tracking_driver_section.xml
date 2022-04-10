@@ -56,7 +56,6 @@
         android:id="@+id/rvDriverInformation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toStartOf="@id/icDriverCall"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackingDriverName"
         app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingDriverPlatNumber"

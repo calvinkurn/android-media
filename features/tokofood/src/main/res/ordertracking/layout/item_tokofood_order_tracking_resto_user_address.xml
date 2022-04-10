@@ -81,6 +81,7 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tvOrderTrackingDetailAddress"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"
         app:layout_constraintTop_toBottomOf="@id/tvOrderTrackingAddressTitle"
         tools:text="0812345678"/>
@@ -97,6 +98,7 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:layout_marginBottom="16dp"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvOrderTrackerMerchantName"

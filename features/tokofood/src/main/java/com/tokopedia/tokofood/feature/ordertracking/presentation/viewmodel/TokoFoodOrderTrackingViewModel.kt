@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,12 +24,14 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val orderDetailResult: LiveData<Result<OrderDetailResultUiModel>>
         get() = _orderDetailResult
 
+    var foodItems = listOf<BaseOrderTrackingTypeFactory>()
 
     fun fetchOrderDetail(json: String) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
                 getTokoFoodOrderDetailUseCase.get().executeTemp(json)
             }
+            foodItems = orderDetailResult.foodItemList
             _orderDetailResult.value = Success(orderDetailResult)
         }, onError = {
             _orderDetailResult.value = Fail(it)

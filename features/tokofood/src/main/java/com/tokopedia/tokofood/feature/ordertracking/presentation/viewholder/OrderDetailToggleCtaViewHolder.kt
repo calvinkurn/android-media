@@ -2,8 +2,6 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingOrderDetailToggleBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
@@ -75,7 +73,7 @@ class OrderDetailToggleCtaViewHolder(
 
     interface OrderDetailToggleCtaListener {
         fun onToggleClicked(
-            orderDetailToggleCtaUiModel: OrderDetailToggleCtaUiModel,
+            orderDetailToggleCta: OrderDetailToggleCtaUiModel,
             isExpandable: Boolean
         )
     }
