@@ -15,6 +15,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -39,8 +41,10 @@ class PdpDialogViewModelTest {
     val rule: TestRule = InstantTaskExecutorRule()
 
     val recommendationProductUseCase: GamingRecommendationProductUseCase = mockk()
-    val addWishListUseCase: AddToWishlistV2UseCase = mockk()
-    val removeWishListUseCase: DeleteWishlistV2UseCase = mockk()
+    val addWishListUseCase: AddWishListUseCase = mockk()
+    val removeWishListUseCase: RemoveWishListUseCase = mockk()
+    val addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk()
+    val deleteWishlistV2UseCase: DeleteWishlistV2UseCase = mockk()
     val topAdsWishlishedUseCase: TopAdsWishlishedUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
     private var deleteWishlistObserver = mockk<Observer<Result<DeleteWishlistV2Response>>>(relaxed = true)
@@ -53,7 +57,8 @@ class PdpDialogViewModelTest {
     }
 
     private fun getRealViewModel(): PdpDialogViewModel {
-        return (PdpDialogViewModel(recommendationProductUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase, userSessionInterface, dispatcher))
+        return (PdpDialogViewModel(recommendationProductUseCase, addWishListUseCase,
+            removeWishListUseCase, addToWishlistV2UseCase, deleteWishlistV2UseCase, topAdsWishlishedUseCase, userSessionInterface, dispatcher))
     }
 
     private fun prepareViewModel() {
@@ -138,7 +143,7 @@ class PdpDialogViewModelTest {
         val recommendationItem: RecommendationItem = RecommendationItem(isTopAds = true)
         val callback: ((Boolean, Throwable?) -> Unit) = { s, t -> }
         coEvery { topAdsWishlishedUseCase.execute(any(), any()) } just runs
-        viewModel.addToWishlist(recommendationItem, callback)
+        viewModel.addToWishlist(recommendationItem, callback, true)
         verify { topAdsWishlishedUseCase.execute(any(), any()) }
     }
 
@@ -150,12 +155,12 @@ class PdpDialogViewModelTest {
         val userId = "1"
         every { userSessionInterface.userId } returns userId
         coEvery {
-            addWishListUseCase.setParams(recommendationItem.productId.toString(), userId)
-            addWishListUseCase.executeOnBackground() }
-        viewModel.addToWishlist(recommendationItem, callback)
+            addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userId)
+            addToWishlistV2UseCase.executeOnBackground() }
+        viewModel.addToWishlist(recommendationItem, callback, true)
         coVerify {
-            addWishListUseCase.setParams(recommendationItem.productId.toString(), userId)
-            addWishListUseCase.executeOnBackground()}
+            addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userId)
+            addToWishlistV2UseCase.executeOnBackground()}
     }
 
     @Test
@@ -202,9 +207,9 @@ class PdpDialogViewModelTest {
         val response = DeleteWishlistV2Response(data = DeleteWishlistV2Response.Data(responseData))
         every { userSessionInterface.userId } returns userId
 
-        every { removeWishListUseCase.setParams(any(), any())} answers {}
+        every { deleteWishlistV2UseCase.setParams(any(), any())} answers {}
 
-        every { removeWishListUseCase.execute(any(), any()) } answers {
+        every { deleteWishlistV2UseCase.execute(any(), any()) } answers {
             firstArg<(DeleteWishlistV2Response) -> Unit>().invoke(result)
         }
 
