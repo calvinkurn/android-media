@@ -29,6 +29,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
     private var openPage : String? = DESCRIPTION
     var catalogId : String = ""
     var catalogName : String = ""
+    private var jumpTo : Int = 0
 
     private var tabLayout : TabLayout? = null
     private var viewPager : ViewPager2? = null
@@ -47,10 +48,11 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
         const val DESCRIPTION = "DESCRIPTION"
         const val SPECIFICATION = "SPECIFICATION"
         const val OPEN_PAGE = "OPEN_PAGE"
+        private const val JUMP_TO = "JUMP_TO"
         const val PAGE_DESCRIPTION = 0
         const val PAGE_SPECIFICATIONS = 1
         fun newInstance(catalogName : String, catalogId :String, description: String, specifications: ArrayList<FullSpecificationsComponentData>,
-                        openPage : String): CatalogSpecsAndDetailBottomSheet {
+                        openPage : String, jumpTo : Int = 0): CatalogSpecsAndDetailBottomSheet {
             return CatalogSpecsAndDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putString(ARG_CATALOG_NAME, catalogName)
@@ -58,6 +60,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
                     putString(DESCRIPTION, description)
                     putParcelableArrayList(SPECIFICATION, specifications)
                     putString(OPEN_PAGE,openPage)
+                    putInt(JUMP_TO , jumpTo)
                 }
             }
         }
@@ -93,9 +96,10 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetUnify() {
             openPage = arguments?.getString(OPEN_PAGE)
             catalogId = arguments?.getString(ARG_CATALOG_ID) ?: ""
             catalogName = arguments?.getString(ARG_CATALOG_NAME) ?: ""
+            jumpTo = arguments?.getInt(JUMP_TO) ?: 0
         }
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications,jumpTo))
     }
 
     private fun initViews() {
