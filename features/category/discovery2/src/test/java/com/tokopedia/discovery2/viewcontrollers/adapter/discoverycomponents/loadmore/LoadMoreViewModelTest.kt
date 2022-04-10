@@ -10,7 +10,6 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -97,21 +96,18 @@ class LoadMoreViewModelTest {
         verify { getComponent(componentsItem.id, componentsItem.pageEndPoint) }
         TestCase.assertEquals(viewModel.syncData.value, true)
 
-        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
         viewModel.onAttachToViewHolder()
         TestCase.assertEquals(viewModel.syncData.value, true)
 
-        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
         } returns false
         viewModel.onAttachToViewHolder()
         TestCase.assertEquals(viewModel.syncData.value, false)
 
-        viewModel.merchantVoucherUseCase = merchantVoucherUseCase
         every { componentsItem.loadForHorizontal } returns true
         coEvery {
             merchantVoucherUseCase.getPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
@@ -131,14 +127,12 @@ class LoadMoreViewModelTest {
         verify { getComponent(componentsItem.id, componentsItem.pageEndPoint) }
         TestCase.assertEquals(viewModel.syncData.value, true)
 
-        viewModel.productCardUseCase = productCardUseCase
         coEvery {
             productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
         } returns true
         viewModel.onAttachToViewHolder()
         TestCase.assertEquals(viewModel.syncData.value, true)
 
-        viewModel.productCardUseCase = productCardUseCase
         coEvery {
             productCardUseCase.getProductCardsUseCase(componentsItem.id, componentsItem.pageEndPoint)
         } returns false

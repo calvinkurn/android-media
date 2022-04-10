@@ -44,10 +44,12 @@ class TextComponentViewModelTest {
         val item = DataItem()
         list.add(item)
         every { componentsItem.data } returns list
+
         TestCase.assertEquals(viewModel.getTextComponentLiveData().value == componentsItem.data?.firstOrNull(), true)
 
         every { componentsItem.data } returns null
         val viewModelTest = spyk(TextComponentViewModel(application, componentsItem, 0))
+
         assert(viewModelTest.getTextComponentLiveData().value == null)
     }
 

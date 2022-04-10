@@ -1,16 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard
 
 import android.app.Application
-import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.user.session.UserSession
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -87,20 +83,22 @@ class ShopCardModelTest {
     }
 
     @Test
-    fun `test for fetchShopCardData`(){
+    fun `test for fetchShopCardData`() {
         viewModel.shopCardUseCase = shopCardUseCase
-        runBlocking {
-            coEvery {
-                shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)} throws Exception("Error")
-            viewModel.fetchShopCardData()
-            TestCase.assertEquals(viewModel.hideShimmer().value,true)
-            TestCase.assertEquals(viewModel.getShopLoadState().value, true)
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+        viewModel.fetchShopCardData()
 
-            coEvery {
-                shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)} returns true
-            viewModel.fetchShopCardData()
-            TestCase.assertEquals(viewModel.getShopList() != null, true)
-        }
+        TestCase.assertEquals(viewModel.hideShimmer().value, true)
+        TestCase.assertEquals(viewModel.getShopLoadState().value, true)
+
+        coEvery {
+            shopCardUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.fetchShopCardData()
+
+        TestCase.assertEquals(viewModel.getShopList() != null, true)
     }
 
     @Test
@@ -168,42 +166,43 @@ class ShopCardModelTest {
     }
 
     @Test
-    fun `test for fetchShopCardPaginatedData`(){
+    fun `test for fetchShopCardPaginatedData`() {
         viewModel.shopCardUseCase = shopCardUseCase
-        runBlocking {
-            coEvery {
-                shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint) } throws Exception("Error")
-            viewModel.fetchShopCardPaginatedData()
-            coVerify { shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint) }
-            TestCase.assertEquals(viewModel.getShopList() != null, true)
-            TestCase.assertEquals(viewModel.isLoadingData(), false)
-            every { viewModel.getShopList() } returns null
-            viewModel.fetchShopCardPaginatedData()
-            TestCase.assertEquals(viewModel.isLoadingData(), true)
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
+        viewModel.fetchShopCardPaginatedData()
+        coVerify { shopCardUseCase.getShopCardPaginatedData(componentsItem.id, componentsItem.pageEndPoint) }
+        TestCase.assertEquals(viewModel.getShopList() != null, true)
+        TestCase.assertEquals(viewModel.isLoadingData(), false)
+        every { viewModel.getShopList() } returns null
+        viewModel.fetchShopCardPaginatedData()
+        TestCase.assertEquals(viewModel.isLoadingData(), true)
 
 
-            coEvery {
-                shopCardUseCase.getShopCardPaginatedData(
-                        componentsItem.id, componentsItem.pageEndPoint) } returns true
-            viewModel.fetchShopCardPaginatedData()
-            val list = ArrayList<ComponentsItem>()
-            every { viewModel.getShopList() } returns list
-            viewModel.fetchShopCardPaginatedData()
-            TestCase.assertEquals(viewModel.isLoadingData(), false)
-            every { viewModel.getShopList() } returns null
-            viewModel.fetchShopCardPaginatedData()
-            TestCase.assertEquals(viewModel.isLoadingData(), true)
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        viewModel.fetchShopCardPaginatedData()
+        val list = ArrayList<ComponentsItem>()
+        every { viewModel.getShopList() } returns list
+        viewModel.fetchShopCardPaginatedData()
+        TestCase.assertEquals(viewModel.isLoadingData(), false)
+        every { viewModel.getShopList() } returns null
+        viewModel.fetchShopCardPaginatedData()
+        TestCase.assertEquals(viewModel.isLoadingData(), true)
 
 
-            coEvery {
-                shopCardUseCase.getShopCardPaginatedData(
-                        componentsItem.id, componentsItem.pageEndPoint) } returns false
-            viewModel.fetchShopCardPaginatedData()
-            TestCase.assertEquals(viewModel.getShopList() == null, true)
-            every { viewModel.getShopList() } returns null
-            viewModel.fetchShopCardPaginatedData()
-            TestCase.assertEquals(viewModel.isLoadingData(), true)
-        }
+        coEvery {
+            shopCardUseCase.getShopCardPaginatedData(
+                    componentsItem.id, componentsItem.pageEndPoint)
+        } returns false
+        viewModel.fetchShopCardPaginatedData()
+        TestCase.assertEquals(viewModel.getShopList() == null, true)
+        every { viewModel.getShopList() } returns null
+        viewModel.fetchShopCardPaginatedData()
+        TestCase.assertEquals(viewModel.isLoadingData(), true)
     }
 
     @Test

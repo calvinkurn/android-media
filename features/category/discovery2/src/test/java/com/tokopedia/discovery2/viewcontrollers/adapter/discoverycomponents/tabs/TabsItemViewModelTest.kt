@@ -37,6 +37,7 @@ class TabsItemViewModelTest {
     @Test
     fun `component value is present in live data`() {
         viewModel.onAttachToViewHolder()
+
         assert(viewModel.getComponentLiveData().value == componentsItem)
     }
 
@@ -52,10 +53,14 @@ class TabsItemViewModelTest {
         item.isSelected = true
         list.add(item)
         coEvery { componentsItem.data } returns list
+
         viewModel.setSelectionTabItem(true)
+
         assert(viewModel.getSelectionChangeLiveData().value == true)
 
+
         viewModel.setSelectionTabItem(false)
+
         assert(viewModel.getSelectionChangeLiveData().value == false)
     }
 

@@ -28,21 +28,26 @@ class YouTubeViewViewModelTest {
     @Test
     fun `test for video id`() {
         every { componentsItem.data } returns null
+
         assert(viewModel.getVideoId().value == null)
+
         val list = ArrayList<DataItem>()
         every { componentsItem.data } returns list
+
         assert(viewModel.getVideoId().value == null)
+
         val item = DataItem()
         list.add(item)
         assert(viewModel.getVideoId().value === item)
     }
+
     @Test
-    fun `test for position passed to VM`(){
+    fun `test for position passed to VM`() {
         assert(viewModel.position == 99)
     }
 
     @Test
-    fun `test for shouldAutoPlay`(){
+    fun `test for shouldAutoPlay`() {
         every { componentsItem.autoPlayController?.shouldAutoPlay(componentsItem.id) } returns true
         assert(viewModel.shouldAutoPlay())
 
@@ -51,7 +56,7 @@ class YouTubeViewViewModelTest {
     }
 
     @Test
-    fun `test for shouldPause`(){
+    fun `test for shouldPause`() {
         every { componentsItem.autoPlayController?.shouldPause(componentsItem.id) } returns true
         assert(viewModel.shouldPause())
 
@@ -60,7 +65,7 @@ class YouTubeViewViewModelTest {
     }
 
     @Test
-    fun `test for autoPlayNext`(){
+    fun `test for autoPlayNext`() {
         viewModel.autoPlayNext()
         verify { componentsItem.autoPlayController?.autoPlayNext(componentsItem.id) }
 
@@ -70,7 +75,7 @@ class YouTubeViewViewModelTest {
     }
 
     @Test
-    fun `test for isAutoPlayEnabled`(){
+    fun `test for isAutoPlayEnabled`() {
         every { componentsItem.autoPlayController?.isAutoPlayEnabled } returns true
         assert(viewModel.isAutoPlayEnabled())
 
@@ -79,22 +84,23 @@ class YouTubeViewViewModelTest {
     }
 
     @Test
-    fun `test for disableAutoplay`(){
-        componentsItem.autoPlayController?.isAutoPlayEnabled = false
+    fun `test for disableAutoplay`() {
         viewModel.disableAutoplay()
+
         TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == false, true)
 
-        componentsItem.autoPlayController?.isAutoPlayEnabled = true
         viewModel.disableAutoplay()
+
         TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == false, true)
 
         every { componentsItem.autoPlayController } returns null
         viewModel.disableAutoplay()
-        TestCase.assertEquals(componentsItem.autoPlayController == null, true)
+
+        TestCase.assertEquals(componentsItem.autoPlayController?.isAutoPlayEnabled == null, true)
     }
 
     @Test
-    fun `test for pauseOtherVideos`(){
+    fun `test for pauseOtherVideos`() {
         every { componentsItem.autoPlayController?.pauseAutoPlayedVideo(componentsItem.id) } returns true
         assert(viewModel.pauseOtherVideos())
 
@@ -103,16 +109,16 @@ class YouTubeViewViewModelTest {
     }
 
     @Test
-    fun `test for currentlyAutoPlaying`(){
+    fun `test for currentlyAutoPlaying`() {
 
         every { componentsItem.autoPlayController } returns null
-        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true )
+        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true)
 
         every { componentsItem.autoPlayController?.currentlyAutoPlaying } returns null
-        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true )
+        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == null, true)
 
         every { componentsItem.autoPlayController?.currentlyAutoPlaying?.value } returns "currentLvAuto"
-        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == "currentLvAuto", true )
+        TestCase.assertEquals(viewModel.currentlyAutoPlaying()?.value == "currentLvAuto", true)
 
     }
 

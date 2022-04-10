@@ -9,7 +9,6 @@ import com.tokopedia.discovery2.usecase.bannerusecase.BannerUseCase
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
 import org.junit.Before
@@ -42,25 +41,30 @@ class BannerCarouselViewModelTest {
     }
 
     @Test
-    fun `test for fetchBannerData`(){
+    fun `test for fetchBannerData`() {
         viewModel.bannerUseCase = bannerUseCase
         every { componentsItem.properties?.dynamic } returns true
-        runBlocking {
-            coEvery {
-                bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)} throws Exception("Error")
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.hideShimmer.value ,true)
-            TestCase.assertEquals(viewModel.getTitleLiveData().value, "")
+        coEvery {
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } throws Exception("Error")
 
-            coEvery {
-                bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)} returns true
-            list.clear()
-            list.add(mockedDataItem)
-            every { componentsItem.data } returns list
-            every { componentsItem.properties?.bannerTitle } returns "title"
-            viewModel.onAttachToViewHolder()
-            TestCase.assertEquals(viewModel.getComponents().value != null, true)
-        }
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.hideShimmer.value, true)
+        TestCase.assertEquals(viewModel.getTitleLiveData().value, "")
+
+
+        coEvery {
+            bannerUseCase.loadFirstPageComponents(componentsItem.id, componentsItem.pageEndPoint)
+        } returns true
+        list.clear()
+        list.add(mockedDataItem)
+        every { componentsItem.data } returns list
+        every { componentsItem.properties?.bannerTitle } returns "title"
+
+        viewModel.onAttachToViewHolder()
+
+        TestCase.assertEquals(viewModel.getComponents().value != null, true)
     }
 
     @Test
@@ -76,6 +80,12 @@ class BannerCarouselViewModelTest {
         val bannerUseCase = mockk<BannerUseCase>()
         viewModel.bannerUseCase = bannerUseCase
         assert(viewModel.bannerUseCase === bannerUseCase)
+    }
+
+    @Test
+    fun `test for reload`() {
+        viewModel.reload()
+        assert(componentsItem.noOfPagesLoaded == 0)
     }
 
     @Test

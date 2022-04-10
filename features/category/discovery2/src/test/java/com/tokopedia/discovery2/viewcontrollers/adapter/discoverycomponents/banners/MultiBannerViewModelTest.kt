@@ -3,6 +3,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ban
 import android.app.Application
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.push.PushSubscriptionResponse
@@ -141,41 +142,27 @@ class MultiBannerViewModelTest {
 
     @Test
     fun `test for banner width`(){
-        every { componentsItem.data } returns null
-        assert(viewModel.getBannerUrlWidth() == null)
-        list.clear()
+        mockkObject(Utils)
+        every { Utils.extractDimension(any(),any()) } returns 100
+        val list = mutableListOf(DataItem(imageUrlDynamicMobile = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"))
         every { componentsItem.data } returns list
-        assert(viewModel.getBannerUrlWidth() == null)
-        list.add(dataItem)
-        every { dataItem.imageUrlDynamicMobile } returns null
-        assert(viewModel.getBannerUrlWidth() == null)
-        every { dataItem.imageUrlDynamicMobile } returns ""
-        assert(viewModel.getBannerUrlWidth() == null)
-        every { dataItem.imageUrlDynamicMobile } returns "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"
-        assert(viewModel.getBannerUrlWidth() == null)
-//        Todo:: Need to find a way to call Uri.parse in mockk.
-//        every { dataItem.imageUrlDynamicMobile } returns "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp?width=900&height=180"
-//        assert(viewModel.getBannerUrlWidth() == 900)
+
+        assert(viewModel.getBannerUrlWidth() == 100)
+
+        unmockkObject(Utils)
     }
 
 
     @Test
     fun `test for banner height`(){
-        every { componentsItem.data } returns null
-        assert(viewModel.getBannerUrlHeight()==null)
-        list.clear()
+        mockkObject(Utils)
+        every { Utils.extractDimension(any()) } returns 100
+        val list = mutableListOf(DataItem(imageUrlDynamicMobile = "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"))
         every { componentsItem.data } returns list
-        assert(viewModel.getBannerUrlHeight() == null)
-        list.add(dataItem)
-        every { dataItem.imageUrlDynamicMobile } returns null
-        assert(viewModel.getBannerUrlHeight() == null)
-        every { dataItem.imageUrlDynamicMobile } returns ""
-        assert(viewModel.getBannerUrlHeight() == null)
-        every { dataItem.imageUrlDynamicMobile } returns "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp"
-        assert(viewModel.getBannerUrlHeight() == null)
-        //        Todo:: Need to find a way to call Uri.parse in mockk.
-//        every { dataItem.imageUrlDynamicMobile } returns "https://images.tokopedia.net/img/cache/900/QBrNqa/2021/11/30/4a521cc9-560d-4763-9ff2-85a1c22abcf8.png.webp?width=900&height=180"
-//        assert(viewModel.getBannerUrlHeight() == 180)
+
+        assert(viewModel.getBannerUrlHeight() == 100)
+
+        unmockkObject(Utils)
     }
 
     @Test

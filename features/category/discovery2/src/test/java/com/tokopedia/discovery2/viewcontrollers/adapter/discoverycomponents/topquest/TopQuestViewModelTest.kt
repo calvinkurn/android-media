@@ -46,14 +46,16 @@ class TopQuestViewModelTest {
     }
 
     @Test
-    fun `test for onResume`(){
+    fun `test for onResume`() {
         viewModel.shouldUpdate = true
         viewModel.loggedInUpdate = true
         viewModel.onResume()
+
         assert(viewModel.updateQuestData.value == true)
 
         viewModel.loggedInUpdate = true
         viewModel.onResume()
+
         assert(!viewModel.loggedInUpdate)
 
     }

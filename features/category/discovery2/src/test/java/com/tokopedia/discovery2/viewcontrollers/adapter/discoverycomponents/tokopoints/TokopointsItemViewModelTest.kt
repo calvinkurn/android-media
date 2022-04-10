@@ -5,8 +5,6 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.textcomponent.TextComponentViewModel
 import io.mockk.*
 import junit.framework.TestCase
 import kotlinx.coroutines.Dispatchers
@@ -46,8 +44,21 @@ class TokopointsItemViewModelTest {
         list.add(item)
         every { componentsItem.data } returns list
         viewModel.onAttachToViewHolder()
+
         TestCase.assertEquals(viewModel.getDataItemValue().value?.slug == componentsItem.data?.firstOrNull()?.slug, true)
 
+    }
+
+    @Test
+    fun `test for onTokopointsItemClicked`() {
+        val list = mutableListOf(DataItem(slug = "xyz"))
+        every { componentsItem.data } returns list
+        every { viewModel.navigate(any(),any()) } just runs
+        viewModel.onAttachToViewHolder()
+
+        viewModel.onTokopointsItemClicked(context)
+
+        verify { viewModel.navigate(any(),any()) }
     }
 
     @After

@@ -39,6 +39,7 @@ class TabsViewModelTest {
 
         val dynamicTabsUseCase = mockk<DynamicTabsUseCase>()
         viewModel.dynamicTabsUseCase = dynamicTabsUseCase
+
         assert(viewModel.dynamicTabsUseCase === dynamicTabsUseCase)
     }
 
@@ -57,6 +58,7 @@ class TabsViewModelTest {
     @Test
     fun `test for reInitTabComponentData`(){
         viewModel.reInitTabComponentData()
+
         assert(viewModel.reInitTabComponentData() == componentsItem.reInitComponentItems())
     }
 
@@ -64,7 +66,9 @@ class TabsViewModelTest {
     fun `test for reInitTabTargetComponents`(){
         viewModel.dynamicTabsUseCase = dynamicTabsUseCase
         coEvery { dynamicTabsUseCase.updateTargetProductComponent(any(),any()) } returns true
+
         viewModel.reInitTabTargetComponents()
+
         assert(dynamicTabsUseCase.updateTargetProductComponent(componentsItem.id, componentsItem.pageEndPoint))
     }
 
