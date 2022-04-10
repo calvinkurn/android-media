@@ -25,9 +25,7 @@ class ProductMediaViewHolder(private val view: View,
 
             val optionIdAnchor = element.variantOptionIdScrollAnchor
             val scrollPosition = if (optionIdAnchor.isNotEmpty()) {
-                element.listOfMedia.indexOfFirst {
-                    it.variantOptionId == optionIdAnchor
-                }.takeIf { it > -1 } ?: 0
+                element.indexOfSelectedVariantOptionId()
             } else element.initialScrollPosition
 
             viewMediaPager.setup(element.listOfMedia,
@@ -49,10 +47,10 @@ class ProductMediaViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
-                val index = element.listOfMedia.indexOfFirst {
-                    it.variantOptionId == element.variantOptionIdScrollAnchor
-                }.takeIf { it > -1 } ?: 0
-                binding.viewMediaPager.scrollToPosition(index, true)
+                binding.viewMediaPager.scrollToPosition(
+                    element.indexOfSelectedVariantOptionId(),
+                    true
+                )
             }
         }
     }

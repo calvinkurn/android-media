@@ -19,6 +19,15 @@ data class ProductMediaDataModel(
 
     fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == VIDEO_TYPE }
 
+    /**
+     * Not Found will return 0
+     */
+    fun indexOfSelectedVariantOptionId(): Int {
+        return listOfMedia.indexOfFirst {
+            it.variantOptionId == variantOptionIdScrollAnchor
+        }.takeIf { it > -1 } ?: 0
+    }
+
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
