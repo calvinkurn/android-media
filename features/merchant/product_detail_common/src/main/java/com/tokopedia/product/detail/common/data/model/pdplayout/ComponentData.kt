@@ -171,7 +171,7 @@ data class ComponentData(
                 url = media.uRLOriginal
                 thumbnailUrl = media.uRLOriginal
                 type = ProductDetailGallery.Item.Type.Image
-            } else{
+            } else {
                 url = media.videoURLAndroid
                 thumbnailUrl = media.uRLThumbnail
                 type = ProductDetailGallery.Item.Type.Video
