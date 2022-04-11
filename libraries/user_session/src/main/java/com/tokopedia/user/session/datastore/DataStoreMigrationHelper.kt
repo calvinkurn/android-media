@@ -5,7 +5,10 @@ import kotlinx.coroutines.runBlocking
 
 class DataStoreMigrationHelper {
 
-    fun migrateToDataStore(userSessionDataStore: UserSessionDataStore, userSessionInterface: UserSessionInterface) {
+    fun migrateToDataStore(
+	userSessionDataStore: UserSessionDataStore,
+	userSessionInterface: UserSessionInterface
+    ) {
 	runBlocking {
 	    if (userSessionInterface.isLoggedIn) {
 		try {

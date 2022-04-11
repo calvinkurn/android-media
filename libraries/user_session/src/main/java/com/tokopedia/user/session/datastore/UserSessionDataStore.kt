@@ -3,14 +3,6 @@ package com.tokopedia.user.session.datastore
 import kotlinx.coroutines.flow.Flow
 
 interface UserSessionDataStore {
-    
-    companion object {
-	const val LOGIN_METHOD_EMAIL = "email"
-	const val LOGIN_METHOD_GOOGLE = "google"
-	const val LOGIN_METHOD_PHONE = "phone"
-	const val LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock"
-    }
-
     /**
      * SETTER METHOD
      */
@@ -63,15 +55,15 @@ interface UserSessionDataStore {
     suspend fun setRefreshToken(refreshToken: String)
 
     suspend fun setLoginSession(
-        isLogin: Boolean,
-        userId: String,
-        fullName: String,
-        shopId: String,
-        isMsisdnVerified: Boolean,
-        shopName: String,
-        email: String,
-        shopIsGold: Boolean,
-        phoneNumber: String
+	isLogin: Boolean,
+	userId: String,
+	fullName: String,
+	shopId: String,
+	isMsisdnVerified: Boolean,
+	shopName: String,
+	email: String,
+	shopIsGold: Boolean,
+	phoneNumber: String
     )
 
     suspend fun setIsMSISDNVerified(isMsisdnVerified: Boolean)

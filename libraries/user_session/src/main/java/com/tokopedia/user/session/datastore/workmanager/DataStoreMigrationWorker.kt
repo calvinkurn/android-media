@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParameters): CoroutineWorker(appContext, workerParams) {
+class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParameters) :
+    CoroutineWorker(appContext, workerParams) {
 
     private fun getDataStoreMigrationPreference(context: Context): SharedPreferences {
 	return context.getSharedPreferences(DATA_STORE_PREF, Context.MODE_PRIVATE)
@@ -24,17 +25,19 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
     val userSession = UserSession(applicationContext)
 
-    private fun isNeedMigration(): Boolean = !getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
+    private fun isMigrationSuccess(): Boolean =
+	getDataStoreMigrationPreference(applicationContext).getBoolean(KEY_MIGRATION_STATUS, false)
 
-    private fun isEnableDataStore(): Boolean = UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
+    private fun isEnableDataStore(): Boolean =
+	UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
 
     override suspend fun doWork(): Result {
-	if(isEnableDataStore()) {
+	if (isEnableDataStore()) {
 	    return withContext(Dispatchers.IO) {
 		try {
 		    if (userSession.isLoggedIn) {
 			val syncResult = checkDataSync()
-			if (isNeedMigration() &&
+			if (isMigrationSuccess() &&
 			    (dataStore.getUserId().first().isEmpty() || syncResult.isNotEmpty())
 			) {
 			    migrateData()
@@ -59,14 +62,16 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	    DataStoreMigrationHelper().migrateToDataStore(dataStore, userSession)
 	    //Check if still difference between the data
 	    val migrationResult = checkDataSync()
-	    if(migrationResult.isEmpty()) {
-		getDataStoreMigrationPreference(applicationContext).edit().putBoolean(KEY_MIGRATION_STATUS, true).apply()
+	    if (migrationResult.isEmpty()) {
+		getDataStoreMigrationPreference(applicationContext).edit()
+		    .putBoolean(KEY_MIGRATION_STATUS, true).apply()
 		logMigrationResultSuccess()
 	    } else {
-		getDataStoreMigrationPreference(applicationContext).edit().putBoolean(KEY_MIGRATION_STATUS, false).apply()
+		getDataStoreMigrationPreference(applicationContext).edit()
+		    .putBoolean(KEY_MIGRATION_STATUS, false).apply()
 		logMigrationResultFailed(migrationResult)
 	    }
-	}catch (e: Exception) {
+	} catch (e: Exception) {
 	    e.printStackTrace()
 	    logMigrationException(e)
 	}
@@ -74,112 +79,120 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 
     private suspend fun checkDataSync(): List<String> {
 	val result = mutableListOf<String>()
-        val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
+	val dataStore = UserSessionDataStoreClient.getInstance(applicationContext)
 	val userSession = UserSession(applicationContext)
 
-	if(dataStore.getName().first().trim() != userSession.name.trim()) {
+	if (dataStore.getName().first().trim() != userSession.name.trim()) {
 	    result.add("name")
 	}
-	if(dataStore.getAccessToken().first().trim() != userSession.accessToken.trim()) {
+	if (dataStore.getAccessToken().first().trim() != userSession.accessToken.trim()) {
 	    result.add("accessToken")
 	}
-	if(dataStore.getRefreshToken().first().trim() != userSession.freshToken.trim()) {
+	if (dataStore.getRefreshToken().first().trim() != userSession.freshToken.trim()) {
 	    result.add("refreshToken")
 	}
-	if(dataStore.getEmail().first().trim() != userSession.email.trim()) {
+	if (dataStore.getEmail().first().trim() != userSession.email.trim()) {
 	    result.add("email")
 	}
-	if(dataStore.getUserId().first().trim() != userSession.userId.trim()) {
+	if (dataStore.getUserId().first().trim() != userSession.userId.trim()) {
 	    result.add("userId")
 	}
-	if(dataStore.getShopId().first().trim() != userSession.shopId.trim()) {
+	if (dataStore.getShopId().first().trim() != userSession.shopId.trim()) {
 	    result.add("shopId")
 	}
-	if(dataStore.getShopName().first().trim() != userSession.shopName.trim()) {
+	if (dataStore.getShopName().first().trim() != userSession.shopName.trim()) {
 	    result.add("shopName")
 	}
-	if(dataStore.isGoldMerchant().first() != userSession.isGoldMerchant) {
+	if (dataStore.isGoldMerchant().first() != userSession.isGoldMerchant) {
 	    result.add("isGoldMerchant")
 	}
-	if(dataStore.isAffiliate().first() != userSession.isAffiliate) {
+	if (dataStore.isAffiliate().first() != userSession.isAffiliate) {
 	    result.add("isAffiliate")
 	}
-	if(dataStore.getTempPhoneNumber().first().trim() != userSession.tempPhoneNumber.trim()) {
+	if (dataStore.getTempPhoneNumber().first().trim() != userSession.tempPhoneNumber.trim()) {
 	    result.add("tempPhoneNumber")
 	}
-	if(dataStore.getTempEmail().first().trim() != userSession.tempEmail.trim()) {
+	if (dataStore.getTempEmail().first().trim() != userSession.tempEmail.trim()) {
 	    result.add("tempEmail")
 	}
-	if(dataStore.isFirstTimeUser().first() != userSession.isFirstTimeUser) {
+	if (dataStore.isFirstTimeUser().first() != userSession.isFirstTimeUser) {
 	    result.add("isFirstTimeUser")
 	}
-	if(dataStore.isMsisdnVerified().first() != userSession.isMsisdnVerified) {
+	if (dataStore.isMsisdnVerified().first() != userSession.isMsisdnVerified) {
 	    result.add("isMsisdnVerified")
 	}
-	if(dataStore.hasPassword().first() != userSession.hasPassword()) {
+	if (dataStore.hasPassword().first() != userSession.hasPassword()) {
 	    result.add("hasPassword")
 	}
-	if(dataStore.getProfilePicture().first().trim() != userSession.profilePicture.trim()) {
+	if (dataStore.getProfilePicture().first().trim() != userSession.profilePicture.trim()) {
 	    result.add("profilePicture")
 	}
-	if(dataStore.hasShownSaldoWithdrawalWarning().first() != userSession.hasShownSaldoWithdrawalWarning()) {
+	if (dataStore.hasShownSaldoWithdrawalWarning()
+		.first() != userSession.hasShownSaldoWithdrawalWarning()
+	) {
 	    result.add("saldoWithdrawalWaring")
 	}
-	if(dataStore.hasShownSaldoIntroScreen().first() != userSession.hasShownSaldoIntroScreen()) {
+	if (dataStore.hasShownSaldoIntroScreen()
+		.first() != userSession.hasShownSaldoIntroScreen()
+	) {
 	    result.add("hasShownSaldoIntroScreen")
 	}
-	if(dataStore.getGCToken().first().trim() != userSession.gcToken?.trim()) {
+	if (dataStore.getGCToken().first().trim() != userSession.gcToken?.trim()) {
 	    result.add("gcToken")
 	}
-	if(dataStore.getShopAvatar().first().trim() != userSession.shopAvatar.trim()) {
+	if (dataStore.getShopAvatar().first().trim() != userSession.shopAvatar.trim()) {
 	    result.add("shopAvatar")
 	}
-	if(dataStore.isPowerMerchantIdle().first() != userSession.isPowerMerchantIdle) {
+	if (dataStore.isPowerMerchantIdle().first() != userSession.isPowerMerchantIdle) {
 	    result.add("isPowerMerchantIdle")
 	}
-	if(dataStore.getAutofillUserData().first().trim() != userSession.autofillUserData.trim()) {
+	if (dataStore.getAutofillUserData().first().trim() != userSession.autofillUserData.trim()) {
 	    result.add("autofillUserData")
 	}
-	if(dataStore.getLoginMethod().first().trim() != userSession.loginMethod.trim()) {
+	if (dataStore.getLoginMethod().first().trim() != userSession.loginMethod.trim()) {
 	    result.add("loginMethod")
 	}
-	if(dataStore.isShopOfficialStore().first() != userSession.isShopOfficialStore) {
+	if (dataStore.isShopOfficialStore().first() != userSession.isShopOfficialStore) {
 	    result.add("isShopOfficialStore")
 	}
-	if(dataStore.getDeviceId().first().trim() != userSession.deviceId.trim()) {
+	if (dataStore.getDeviceId().first().trim() != userSession.deviceId.trim()) {
 	    result.add("deviceId")
 	}
-	if(dataStore.getFcmTimestamp().first() != userSession.fcmTimestamp) {
+	if (dataStore.getFcmTimestamp().first() != userSession.fcmTimestamp) {
 	    result.add("fcmTimestamp")
 	}
-	if(dataStore.isShopOwner().first() != userSession.isShopOwner) {
+	if (dataStore.isShopOwner().first() != userSession.isShopOwner) {
 	    result.add("isShopOwner")
 	}
-	if(dataStore.isShopAdmin().first() != userSession.isShopAdmin) {
+	if (dataStore.isShopAdmin().first() != userSession.isShopAdmin) {
 	    result.add("isShopAdmin")
 	}
-	if(dataStore.isLocationAdmin().first() != userSession.isLocationAdmin) {
+	if (dataStore.isLocationAdmin().first() != userSession.isLocationAdmin) {
 	    result.add("isLocationAdmin")
 	}
-	if(dataStore.isMultiLocationShop().first() != userSession.isMultiLocationShop) {
+	if (dataStore.isMultiLocationShop().first() != userSession.isMultiLocationShop) {
 	    result.add("isMultiLocationShop")
 	}
-	if(dataStore.isLoggedIn().first() != userSession.isLoggedIn) {
+	if (dataStore.isLoggedIn().first() != userSession.isLoggedIn) {
 	    result.add("isLoggedIn")
 	}
-	if(dataStore.getPhoneNumber().first().trim() != userSession.phoneNumber.trim()) {
+	if (dataStore.getPhoneNumber().first().trim() != userSession.phoneNumber.trim()) {
 	    result.add("phoneNumber")
 	}
-	if(dataStore.getTokenType().first().trim() != userSession.tokenType.trim()) {
+	if (dataStore.getTokenType().first().trim() != userSession.tokenType.trim()) {
 	    result.add("tokenType")
 	}
-	if(dataStore.getTwitterAccessTokenSecret().first().trim() != userSession.twitterAccessTokenSecret?.trim()) {
+	if (dataStore.getTwitterAccessTokenSecret().first()
+		.trim() != userSession.twitterAccessTokenSecret?.trim()
+	) {
 	    result.add("twitterAccessTokenSecret")
 	}
-	if(dataStore.getTwitterShouldPost().first() != userSession.twitterShouldPost) {
+	if (dataStore.getTwitterShouldPost().first() != userSession.twitterShouldPost) {
 	    result.add("twitterShouldPost")
 	}
-	if(dataStore.getTwitterAccessToken().first().trim() != userSession.twitterAccessToken?.trim()) {
+	if (dataStore.getTwitterAccessToken().first()
+		.trim() != userSession.twitterAccessToken?.trim()
+	) {
 	    result.add("twitterAccessToken")
 	}
 
@@ -187,7 +200,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     private fun logMigrationResultSuccess() {
-	    ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
+	ServerLogger.log(
+	    Priority.P2, USER_SESSION_LOGGER_TAG,
 	    mapOf(
 		"type" to "migration_result_success"
 	    )
@@ -195,7 +209,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     private fun logMigrationResultFailed(result: List<String>) {
-	ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
+	ServerLogger.log(
+	    Priority.P2, USER_SESSION_LOGGER_TAG,
 	    mapOf(
 		"type" to "migration_result_failed",
 		"total_difference" to result.size.toString(),
@@ -205,7 +220,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     private fun logSyncResult(result: List<String>) {
-	ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
+	ServerLogger.log(
+	    Priority.P2, USER_SESSION_LOGGER_TAG,
 	    mapOf(
 		"type" to "sync_result",
 		"total_difference" to result.size.toString(),
@@ -215,7 +231,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     private fun logMigrationException(ex: Exception) {
-	ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
+	ServerLogger.log(
+	    Priority.P2, USER_SESSION_LOGGER_TAG,
 	    mapOf(
 		"type" to "migration_result_exception",
 		"error" to Log.getStackTraceString(ex)
@@ -224,7 +241,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
     }
 
     private fun logWorkerError(ex: Exception) {
-	ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE",
+	ServerLogger.log(
+	    Priority.P2, USER_SESSION_LOGGER_TAG,
 	    mapOf(
 		"type" to "worker_error",
 		"error" to Log.getStackTraceString(ex)
@@ -238,6 +256,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 	const val DATA_STORE_PREF = "DATA_STORE_MIGRATION_PREF"
 	const val KEY_MIGRATION_STATUS = "data_store_migration_status"
 
+	const val USER_SESSION_LOGGER_TAG = "USER_SESSION_DATA_STORE"
+
 	fun scheduleWorker(context: Context) {
 	    try {
 		val periodicWorker = PeriodicWorkRequest
@@ -250,7 +270,8 @@ class DataStoreMigrationWorker(appContext: Context, workerParams: WorkerParamete
 		    ExistingPeriodicWorkPolicy.KEEP,
 		    periodicWorker
 		)
-	    } catch (ex: Exception) { }
+	    } catch (ex: Exception) {
+	    }
 	}
     }
 }

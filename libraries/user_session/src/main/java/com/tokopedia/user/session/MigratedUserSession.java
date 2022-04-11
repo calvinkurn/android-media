@@ -1,5 +1,7 @@
 package com.tokopedia.user.session;
 
+import static com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker.USER_SESSION_LOGGER_TAG;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -102,7 +104,7 @@ public class MigratedUserSession {
 		HashMap<String, String> data = new HashMap<>();
 		data.put("type", "set_long_exception");
 		data.put("error", Log.getStackTraceString(e));
-		ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE", data);
+		ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
 	    }
 	}
 	Pair<String, String> newKeys = convertToNewKey(prefName, keyName);
@@ -153,7 +155,7 @@ public class MigratedUserSession {
 		HashMap<String, String> data = new HashMap<>();
 		data.put("type", "set_string_exception");
 		data.put("error", Log.getStackTraceString(e));
-		ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE", data);
+		ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
 	    }
 	}
 
@@ -252,7 +254,7 @@ public class MigratedUserSession {
 		HashMap<String, String> data = new HashMap<>();
 		data.put("type", "set_boolean_exception");
 		data.put("error", Log.getStackTraceString(e));
-		ServerLogger.log(Priority.P2, "USER_SESSION_DATA_STORE", data);
+		ServerLogger.log(Priority.P2, USER_SESSION_LOGGER_TAG, data);
 	    }
 	}
 
