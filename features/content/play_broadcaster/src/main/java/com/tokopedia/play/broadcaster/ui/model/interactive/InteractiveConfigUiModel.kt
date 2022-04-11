@@ -12,8 +12,9 @@ data class GameConfigUiModel(
 
         fun isNoGameActive(): Boolean = !tapTapConfig.isActive && !quizConfig.isActive
 
+        @OptIn(ExperimentalStdlibApi::class)
         fun generateGameTypeList(): List<GameType> {
-                return mutableListOf<GameType>().apply {
+                return buildList {
                         if(quizConfig.isActive) add(GameType.Quiz)
                         if(tapTapConfig.isActive) add(GameType.Taptap)
                 }
