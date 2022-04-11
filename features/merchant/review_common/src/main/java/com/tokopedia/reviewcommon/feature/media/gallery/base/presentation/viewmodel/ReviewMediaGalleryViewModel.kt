@@ -186,14 +186,14 @@ class ReviewMediaGalleryViewModel @Inject constructor(
         withContext(dispatchers.computation) {
             val mediaItems: MutableList<MediaItemUiModel> = response?.let { responseData ->
                 responseData.reviewMedia.mapIndexedNotNull { index, reviewMedia ->
-                    if (reviewMedia.imageId.isNotBlank() && reviewMedia.imageId.toLongOrZero().isMoreThanZero()) {
+                    if ((reviewMedia.imageId.isNotBlank() && reviewMedia.imageId.toLongOrNull() == null) || reviewMedia.imageId.toLongOrZero().isMoreThanZero()) {
                         responseData.getReviewImageByID(
                             imageId = reviewMedia.imageId,
                             imageNumber = reviewMedia.mediaNumber,
                             showSeeMore = showSeeMore && index == responseData.reviewMedia.size - 1,
                             totalMediaCount = totalMediaCount
                         )
-                    } else if (reviewMedia.videoId.isNotBlank() && reviewMedia.videoId.toLongOrZero().isMoreThanZero()) {
+                    } else if ((reviewMedia.videoId.isNotBlank() && reviewMedia.videoId.toLongOrNull() == null) || reviewMedia.videoId.toLongOrZero().isMoreThanZero()) {
                         responseData.getReviewVideoByID(
                             videoId = reviewMedia.videoId,
                             videoNumber = reviewMedia.mediaNumber,

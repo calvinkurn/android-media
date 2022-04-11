@@ -311,14 +311,14 @@ class ReviewGalleryFragment :
 
     private fun mapToUiModel(productrevGetReviewImage: ProductrevGetReviewMedia): List<ReviewGalleryMediaThumbnailUiModel> {
         return productrevGetReviewImage.reviewMedia.mapNotNull {
-            if (it.imageId.isNotBlank() && it.imageId.toLongOrZero().isMoreThanZero()) {
+            if ((it.imageId.isNotBlank() && it.imageId.toLongOrNull() == null) || it.imageId.toLongOrZero().isMoreThanZero()) {
                 getReviewGalleryImageThumbnailUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
                     it.feedbackId,
                     it.imageId,
                     it.mediaNumber
                 )
-            } else if (it.videoId.isNotBlank() && it.videoId.toLongOrZero().isMoreThanZero()) {
+            } else if ((it.videoId.isNotBlank() && it.videoId.toLongOrNull() == null) || it.videoId.toLongOrZero().isMoreThanZero()) {
                 getReviewGalleryVideoThumbnailUiModelBasedOnDetail(
                     productrevGetReviewImage.detail,
                     it.feedbackId,
