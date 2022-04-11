@@ -106,7 +106,6 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselContract
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.performancemonitoring.stopPerformanceMonitoring
@@ -138,7 +137,6 @@ import javax.inject.Inject
 class ProductListFragment: BaseDaggerFragment(),
     OnItemChangeView,
     ProductListSectionContract.View,
-    InspirationCarouselContract.View,
     ProductListener,
     TickerListener,
     SuggestionListener,
@@ -179,8 +177,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     var presenter: ProductListSectionContract.Presenter? = null
-        @Inject set
-    var inspirationCarouselPresenter: InspirationCarouselContract.Presenter? = null
         @Inject set
 
     @Inject
@@ -280,7 +276,6 @@ class ProductListFragment: BaseDaggerFragment(),
         savedInstanceState: Bundle?,
     ): View? {
         presenter?.attachView(this)
-        inspirationCarouselPresenter?.attachView(this)
 
         if (irisSession == null && container != null)
             irisSession = IrisSession(container.context)
@@ -1181,7 +1176,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.detachView()
-        inspirationCarouselPresenter?.detachView()
     }
 
     override fun getScreenName(): String {
@@ -1409,7 +1403,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onInspirationCarouselListProductImpressed(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        inspirationCarouselPresenter?.onInspirationCarouselProductImpressed(product)
+        presenter?.onInspirationCarouselProductImpressed(product)
     }
 
     private fun createCarouselTrackingUnificationData(
@@ -1424,7 +1418,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onInspirationCarouselListProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        inspirationCarouselPresenter?.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product)
     }
 
     override fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
@@ -1494,13 +1488,13 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onInspirationCarouselGridProductImpressed(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        inspirationCarouselPresenter?.onInspirationCarouselProductImpressed(product)
+        presenter?.onInspirationCarouselProductImpressed(product)
     }
 
     override fun onInspirationCarouselGridProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        inspirationCarouselPresenter?.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product)
     }
 
     override fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
@@ -1544,7 +1538,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onInspirationCarouselChipsProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
-        inspirationCarouselPresenter?.onInspirationCarouselProductClick(product)
+        presenter?.onInspirationCarouselProductClick(product)
     }
 
     private fun createInspirationCarouselChipsProductDataLayer(
@@ -1560,7 +1554,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onImpressedInspirationCarouselChipsProduct(
         product: InspirationCarouselDataView.Option.Product,
     ) {
-        inspirationCarouselPresenter?.onInspirationCarouselProductImpressed(product)
+        presenter?.onInspirationCarouselProductImpressed(product)
     }
 
     override fun onInspirationCarouselChipsSeeAllClicked(

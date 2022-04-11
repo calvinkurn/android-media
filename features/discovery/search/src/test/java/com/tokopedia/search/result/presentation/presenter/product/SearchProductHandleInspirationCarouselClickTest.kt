@@ -8,16 +8,12 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselContract
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenter
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.just
-import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
-import org.junit.Before
 import org.junit.Test
 import rx.Subscriber
 
@@ -29,19 +25,9 @@ private const val chipProducts1 =
 internal class SearchProductHandleInspirationCarouselClickTest :
     ProductListPresenterTestFixtures() {
 
-    private val inspirationCarouselView = mockk<InspirationCarouselContract.View>(relaxed = true)
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList: List<Visitable<*>> by lazy { visitableListSlot.captured }
     private val className = "SearchClassName"
-
-    private lateinit var inspirationCarouselPresenter: InspirationCarouselPresenter
-
-    @Before
-    override fun setUp() {
-        super.setUp()
-        inspirationCarouselPresenter = InspirationCarouselPresenter(topAdsUrlHitter)
-        inspirationCarouselPresenter.attachView(inspirationCarouselView)
-    }
 
     @Test
     fun `Click top ads inspiration carousel list`() {
@@ -112,7 +98,7 @@ internal class SearchProductHandleInspirationCarouselClickTest :
     }
 
     private fun `Given class name`() {
-        every { inspirationCarouselView.className } returns className
+        every { productListView.className } returns className
     }
 
     private fun `Given view already load data`() {
@@ -122,12 +108,12 @@ internal class SearchProductHandleInspirationCarouselClickTest :
     }
 
     private fun `When inspiration carousel product clicked`(product: InspirationCarouselDataView.Option.Product) {
-        inspirationCarouselPresenter.onInspirationCarouselProductClick(product)
+        productListPresenter.onInspirationCarouselProductClick(product)
     }
 
     private fun `Then verify inspiration carousel product top ads clicked`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            inspirationCarouselView.className
+            productListView.className
 
             topAdsUrlHitter.hitClickUrl(
                 className,
@@ -142,25 +128,25 @@ internal class SearchProductHandleInspirationCarouselClickTest :
 
     private fun `Then verify interaction for Inspiration Carousel Product List click`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            inspirationCarouselView.redirectionStartActivity(product.applink, product.url)
-            inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
+            productListView.redirectionStartActivity(product.applink, product.url)
+            productListView.trackEventClickInspirationCarouselListItem(product)
         }
 
         verify(exactly = 0) {
-            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
-            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            productListView.trackEventClickInspirationCarouselGridItem(product)
+            productListView.trackEventClickInspirationCarouselChipsItem(product)
         }
     }
 
     private fun `Then verify interaction for Inspiration Carousel Product Grid click`(product: InspirationCarouselDataView.Option.Product) {
         verify {
-            inspirationCarouselView.redirectionStartActivity(product.applink, product.url)
-            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
+            productListView.redirectionStartActivity(product.applink, product.url)
+            productListView.trackEventClickInspirationCarouselGridItem(product)
         }
 
         verify(exactly = 0) {
-            inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
-            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            productListView.trackEventClickInspirationCarouselListItem(product)
+            productListView.trackEventClickInspirationCarouselChipsItem(product)
         }
     }
 
@@ -168,13 +154,13 @@ internal class SearchProductHandleInspirationCarouselClickTest :
         product: InspirationCarouselDataView.Option.Product
     ) {
         verify {
-            inspirationCarouselView.redirectionStartActivity(product.applink, product.url)
-            inspirationCarouselView.trackEventClickInspirationCarouselChipsItem(product)
+            productListView.redirectionStartActivity(product.applink, product.url)
+            productListView.trackEventClickInspirationCarouselChipsItem(product)
         }
 
         verify(exactly = 0) {
-            inspirationCarouselView.trackEventClickInspirationCarouselListItem(product)
-            inspirationCarouselView.trackEventClickInspirationCarouselGridItem(product)
+            productListView.trackEventClickInspirationCarouselListItem(product)
+            productListView.trackEventClickInspirationCarouselGridItem(product)
         }
     }
 

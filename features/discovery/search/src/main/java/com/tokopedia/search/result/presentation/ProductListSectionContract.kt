@@ -111,6 +111,12 @@ interface ProductListSectionContract {
             inspirationCarouselOption: InspirationCarouselDataView.Option,
         )
         fun modifyApplinkToSearchResult(applink: String): String
+        fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product)
+        fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product)
     }
 
     interface Presenter : CustomerPresenter<View>{
@@ -141,6 +147,8 @@ interface ProductListSectionContract {
         fun onBroadMatchItemClick(broadMatchItemDataView: BroadMatchItemDataView)
         fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
         fun onBroadMatchSeeMoreClick(broadMatchDataView: BroadMatchDataView)
+        fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
+        fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
         fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
         fun onViewResumed()
