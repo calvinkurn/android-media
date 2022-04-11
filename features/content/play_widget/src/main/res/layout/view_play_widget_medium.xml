@@ -84,7 +84,7 @@
             android:id="@+id/play_widget_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/play_widget_dp_12"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
             android:clipToPadding="false"
             android:paddingStart="@dimen/spacing_lvl4"
             android:paddingEnd="@dimen/spacing_lvl3"
