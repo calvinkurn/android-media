@@ -33,8 +33,9 @@ class SearchProductViewModel @Inject constructor(
 
     private var totalProduct = 0
     private var selectedProduct : Product? = null
-    private var isMultiSelectEnabled = false
+    private var isOnMultiSelectMode = false
     private var shouldDisableProductSelection = false
+    private var selectedProductIds : MutableList<String> = mutableListOf()
 
     fun getSlashPriceProducts(
         page: Int,
@@ -51,16 +52,20 @@ class SearchProductViewModel @Inject constructor(
                     keyword = keyword
                 )
                 val response = getSlashPriceProductListUseCase.executeOnBackground()
-                val formattedProduct = productMapper.map(response)
-                val multiSelectAwareProduct =
-                    formattedProduct.map { it.copy(shouldDisplayCheckbox = isMultiSelectEnabled) }
-                val selectionEnabledProduct = multiSelectAwareProduct.map { it.copy(disableClick = shouldDisableProductSelection) }
-                Pair(response.getSlashPriceProductList.totalProduct, selectionEnabledProduct)
+                val mappedProduct = productMapper.map(response)
+                val formattedProduct =
+                    mappedProduct.map {
+                        it.copy(
+                            shouldDisplayCheckbox = isMultiSelectEnabled,
+                            disableClick = shouldDisableProductSelection,
+                            isCheckboxTicked = it.id in selectedProductIds
+                        )
+                    }
+                Pair(response.getSlashPriceProductList.totalProduct, formattedProduct)
             }
 
             val (totalProduct, formattedProduct) = result
             val productData = ProductData(totalProduct, formattedProduct)
-            //val productData = ProductData((0..1).random(), emptyList())
             _products.value = Success(productData)
 
         }, onError = {
@@ -68,12 +73,12 @@ class SearchProductViewModel @Inject constructor(
         })
     }
 
-    fun deleteDiscount(discountStatusId: Int, productId : String) {
+    fun deleteDiscount(discountStatusId: Int, productIds : List<String>) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 deleteDiscountUseCase.setParams(
                     discountStatusId = discountStatusId,
-                    productIds = listOf(productId)
+                    productIds = productIds
                 )
                 deleteDiscountUseCase.executeOnBackground()
             }
@@ -101,12 +106,12 @@ class SearchProductViewModel @Inject constructor(
         return selectedProduct
     }
 
-    fun setMultiSelectEnabled(isMultiSelectEnabled: Boolean) {
-        this.isMultiSelectEnabled = isMultiSelectEnabled
+    fun setInMultiSelectMode(isOnMultiSelectMode: Boolean) {
+        this.isOnMultiSelectMode = isOnMultiSelectMode
     }
 
-    fun isMultiSelectEnabled(): Boolean {
-        return isMultiSelectEnabled
+    fun isOnMultiSelectMode(): Boolean {
+        return isOnMultiSelectMode
     }
 
     fun setDisableProductSelection(shouldDisableProductSelection: Boolean) {
@@ -131,14 +136,6 @@ class SearchProductViewModel @Inject constructor(
         }
     }
 
-    fun findUnselectedProduct(products : List<Product>) : List<Product> {
-        return products.filter { !it.isCheckboxTicked }
-    }
-
-    fun findSelectedProducts(products: List<Product>) : List<Product> {
-        return products.filter { it.isCheckboxTicked }
-    }
-
     fun disableProducts(products: List<Product>): List<Product> {
         return products.map { product ->
             if (!product.isCheckboxTicked) {
@@ -159,4 +156,23 @@ class SearchProductViewModel @Inject constructor(
         }
     }
 
+    fun getSelectedProductIds() : List<String> {
+        return selectedProductIds
+    }
+
+    fun getSelectedProductCount(): Int {
+        return selectedProductIds.size
+    }
+
+    fun addProductToSelection(product : Product) {
+        this.selectedProductIds.add(product.id)
+    }
+
+    fun removeProductFromSelection(product: Product) {
+        this.selectedProductIds.remove(product.id)
+    }
+
+    fun removeAllProductFromSelection() {
+        this.selectedProductIds.clear()
+    }
 }

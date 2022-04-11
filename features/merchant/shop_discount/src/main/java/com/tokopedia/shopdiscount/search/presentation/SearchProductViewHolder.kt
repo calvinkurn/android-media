@@ -48,6 +48,7 @@ class SearchProductViewHolder(private val binding: SdItemSearchProductBinding) :
         binding.checkBox.setOnCheckedChangeListener(null)
         binding.checkBox.isVisible = product.shouldDisplayCheckbox
         binding.checkBox.isChecked = product.isCheckboxTicked
+        binding.checkBox.isClickable = !product.disableClick
         binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
     }
 

@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shopdiscount.databinding.SdItemSearchProductBinding
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import java.lang.Exception
+import java.util.function.Predicate
 
 class SearchProductAdapter(
     private val onProductClicked: (Product) -> Unit,
@@ -72,17 +74,32 @@ class SearchProductAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
+    fun refresh(items: List<Product>) {
+        this.products.clear()
+        this.products.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
         this.products = mutableListOf()
         notifyDataSetChanged()
     }
 
     fun delete(product: Product) {
-        val products = this.products.toMutableList()
         val index = products.indexOf(product)
         products.remove(product)
         notifyItemRemoved(index)
         notifyItemRangeChanged(index, itemCount)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun bulkDelete(deletedProductId : List<String>){
+        val products = this.products.toMutableList()
+        products
+            .filter { it.id in deletedProductId }
+            .forEach { product -> this.products.remove(product) }
+        notifyDataSetChanged()
     }
 
     fun showLoading() {

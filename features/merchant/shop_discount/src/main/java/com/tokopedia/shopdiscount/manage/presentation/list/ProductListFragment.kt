@@ -27,7 +27,6 @@ import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
-import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.extension.smoothSnapToPosition
@@ -46,9 +45,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
         private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
         private const val SCROLL_WIDGET_MARGIN = 24F
         private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
-
-        private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance(
@@ -165,25 +161,9 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     private fun handleProducts(data: ProductData) {
         if (data.totalProduct == Int.ZERO) {
-            val title = if (discountStatusId == DiscountStatus.PAUSED) {
-                getString(R.string.sd_no_paused_discount_title)
-            } else {
-                getString(R.string.sd_no_paused_discount_description)
-            }
-
-            val description = if (discountStatusId == DiscountStatus.PAUSED) {
-                getString(R.string.sd_no_discount_title)
-            } else {
-                getString(R.string.sd_no_discount_description)
-            }
-
-            binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-            binding?.emptyState?.setTitle(title)
-            binding?.emptyState?.setDescription(description)
 
             binding?.recyclerView?.gone()
             binding?.tpgTotalProduct?.gone()
-            binding?.emptyState?.visible()
         } else {
             renderList(data.products, data.products.size == getPerPage())
         }
@@ -244,7 +224,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
 
     override fun loadData(page: Int) {
         binding?.globalError?.gone()
-        binding?.emptyState?.gone()
         viewModel.getSlashPriceProducts(page, discountStatusId)
     }
 
@@ -253,17 +232,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     }
 
     override fun onShowLoading() {
-        binding?.emptyState?.gone()
         adapter?.showLoading()
     }
 
     override fun onHideLoading() {
-        binding?.emptyState?.gone()
         adapter?.hideLoading()
     }
 
     override fun onDataEmpty() {
-        binding?.emptyState?.visible()
     }
 
     override fun onGetListError(message: String) {
@@ -287,11 +263,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     }
 
     private fun displayDeleteConfirmationDialog(product: Product) {
+        val title = getString(R.string.sd_delete_confirmation_title)
         val dialog = CancelDiscountDialog(requireContext())
         dialog.setOnDeleteConfirmed {
             viewModel.deleteDiscount(discountStatusId, product.id)
         }
-        dialog.show()
+        dialog.show(title)
     }
 
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {

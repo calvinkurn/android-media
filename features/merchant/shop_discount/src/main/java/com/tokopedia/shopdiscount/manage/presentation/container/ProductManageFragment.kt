@@ -27,6 +27,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
@@ -47,6 +48,9 @@ class ProductManageFragment : BaseDaggerFragment() {
         private const val ALPHA_VISIBLE = 1F
         private const val ALPHA_INVISIBLE = 0F
         private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
+        private const val ONE_PRODUCT = 1
+        private const val EMPTY_STATE_IMAGE_URL =
+            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -95,13 +99,11 @@ class ProductManageFragment : BaseDaggerFragment() {
         applyUnifyBackgroundColor()
         setupViews()
         observeProductsMeta()
-        viewModel.getSlashPriceProductsMeta()
     }
 
     private fun setupViews() {
-        setupTicker()
         setupSearchBar()
-        setupToolbar()
+        setupHeader()
         setupTabs()
     }
 
@@ -111,13 +113,17 @@ class ProductManageFragment : BaseDaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.setSelectedTabPosition(position)
-                    refreshSearchBarTitle()
+
+                    val currentTabPosition = viewModel.getSelectedTabPosition()
+                    val tab = viewModel.getSelectedTab(currentTabPosition)
+                    refreshSearchBarTitle(tab)
+                    handleEmptyState(tab)
                 }
             })
         }
     }
 
-    private fun setupTicker() {
+    private fun displayTicker() {
         val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
 
         binding?.run {
@@ -139,26 +145,12 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun setupSearchBar() {
         binding?.run {
             searchBar.searchBarTextField.isFocusable = false
-            searchBar.searchBarTextField.setOnClickListener {
-                val tab = viewModel.getSelectedTab()
-                SearchProductActivity.start(
-                    requireActivity(),
-                    tab.name,
-                    tab.discountStatusId
-                )
-            }
-            searchBar.setOnClickListener {
-                val tab = viewModel.getSelectedTab()
-                SearchProductActivity.start(
-                    requireActivity(),
-                    tab.name,
-                    tab.discountStatusId
-                )
-            }
+            searchBar.searchBarTextField.setOnClickListener { navigateToSearchProductPage() }
+            searchBar.setOnClickListener { navigateToSearchProductPage() }
         }
     }
 
-    private fun setupToolbar() {
+    private fun setupHeader() {
         val shopIcon = IconUnify(requireContext(), IconUnify.SHOP_INFO)
         binding?.run {
             header.addCustomRightContent(shopIcon)
@@ -171,20 +163,21 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.productsMeta.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    binding?.ticker?.visible()
+                    displayTicker()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
-
+                    binding?.searchBar?.visible()
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
-                    viewModel.setTabs(discountStatusWithCounter)
+                    viewModel.storeTabsData(discountStatusWithCounter)
                 }
                 is Fail -> {
                     binding?.ticker?.gone()
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
+                    binding?.searchBar?.gone()
 
                     displayError(it.throwable)
                 }
@@ -192,18 +185,52 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun refreshSearchBarTitle() {
-        val tab = viewModel.getSelectedTab()
+    override fun onResume() {
+        super.onResume()
+        viewModel.setSelectedTabPosition(getCurrentTabPosition())
+        getTabsMetadata()
+    }
+
+    private fun refreshSearchBarTitle(tab : PageTab) {
+        binding?.searchBar?.isVisible = tab.count > ZERO
         binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
     }
 
+
+    private fun handleEmptyState(tab: PageTab) {
+        if (tab.count == ZERO) {
+            binding?.emptyState?.visible()
+            showEmptyState(tab.discountStatusId)
+        } else {
+            binding?.emptyState?.gone()
+        }
+    }
+
+    private fun showEmptyState(discountStatusId : Int) {
+        val title = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_paused_discount_title)
+        } else {
+            getString(R.string.sd_no_paused_discount_description)
+        }
+
+        val description = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_discount_title)
+        } else {
+            getString(R.string.sd_no_discount_description)
+        }
+
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(title)
+        binding?.emptyState?.setDescription(description)
+    }
+
     private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
+        val meta = tabs.find { it.discountStatusId == discountStatusId }
+        val decreasedProductCount = totalProduct - ONE_PRODUCT
+        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
+
         val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
         val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
-
-        val meta = tabs.find { it.discountStatusId == discountStatusId }
-        val decreasedProductCount = totalProduct - 1
-        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
 
         val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
         previouslySelectedTab?.setCustomText(updatedTabName)
@@ -227,6 +254,7 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
+        val previouslySelectedPosition = viewModel.getSelectedTabPosition()
 
         binding?.run {
             viewPager.adapter = pagerAdapter
@@ -234,6 +262,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
             TabsUnifyMediator(tabsUnify, viewPager) { tab, position ->
                 tab.setCustomText(fragments[position].first)
+                if (previouslySelectedPosition == position) {
+                    tab.select()
+                }
             }
         }
     }
@@ -262,7 +293,7 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.run {
             globalError.visible()
             globalError.setType(GlobalError.SERVER_ERROR)
-            globalError.setActionClickListener { viewModel.getSlashPriceProductsMeta() }
+            globalError.setActionClickListener { getTabsMetadata() }
             root showError throwable
         }
 
@@ -295,5 +326,28 @@ class ProductManageFragment : BaseDaggerFragment() {
                     }
                 })
         }
+    }
+
+    private fun getCurrentTabPosition(): Int {
+        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+        return tabLayout?.selectedTabPosition.orZero()
+    }
+
+    private fun navigateToSearchProductPage() {
+        val currentTabPosition = viewModel.getSelectedTabPosition()
+        val tab = viewModel.getSelectedTab(currentTabPosition)
+        SearchProductActivity.start(
+            requireActivity(),
+            tab.name,
+            tab.discountStatusId
+        )
+    }
+
+    private fun getTabsMetadata() {
+        binding?.shimmer?.content?.visible()
+        binding?.groupContent?.gone()
+        binding?.searchBar?.gone()
+        binding?.globalError?.gone()
+        viewModel.getSlashPriceProductsMeta()
     }
 }

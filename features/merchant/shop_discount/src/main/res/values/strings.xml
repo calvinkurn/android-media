@@ -37,11 +37,13 @@
     <string name="sd_no_paused_discount_title">Produk Diskon Toko-mu dialokasikan ke campaign lain</string>
     <string name="sd_no_paused_discount_description">Buat Diskon Toko baru untuk produk tokomu yang lain, yuk!</string>
     <string name="sd_delete_confirmation_title">Yakin hapus produk dari Diskon Toko?</string>
+    <string name="sd_bulk_delete_confirmation_title">Yakin hapus %s produk dari Diskon Toko?</string>
     <string name="sd_delete_confirmation_description">Produk-produk yang dihapus akan kembali ke harga normal.</string>
     <string name="sd_positive_delete">Ya, Hapus</string>
     <string name="sd_cancel">Batalkan</string>
     <string name="sd_delete">Hapus</string>
     <string name="sd_discount_deleted">Produk berhasil dihapus dari Diskon Toko.</string>
+    <string name="sd_bulk_discount_deleted">%s produk berhasil dihapus dari Diskon Toko.</string>
     <string name="sd_manage">Atur</string>
     <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
     <string name="sd_with_variant">Ada Varian Diskon</string>
@@ -54,6 +56,7 @@
     <string name="sd_max_product_selection_reached">Kamu cuma bisa pilih 5 produk sekaligus.</string>
     <string name="sd_ok">Oke</string>
     <string name="sd_selected_product_counter">%s Produk Dipilih</string>
+    <string name="sd_select_product">Pilih Produk</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

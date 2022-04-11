@@ -15,8 +15,9 @@ class CancelDiscountDialog(context: Context)  {
         this.onDeleteConfirmed = callback
     }
 
-    fun show() = with(dialog) {
-        setTitle(context.getString(R.string.sd_delete_confirmation_title))
+
+    fun show(title : String) = with(dialog) {
+        setTitle(title)
         setDescription(context.getString(R.string.sd_delete_confirmation_description))
         setPrimaryCTAText(context.getString(R.string.sd_positive_delete))
         setPrimaryCTAClickListener {

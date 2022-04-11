@@ -39,9 +39,9 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         private const val PAGE_SIZE = 10
         private const val FIRST_PAGE = 1
         private const val MAX_PRODUCT_SELECTION = 5
-
+        private const val ONE_PRODUCT = 1
         private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
+            "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
 
         @JvmStatic
         fun newInstance(
@@ -70,7 +70,6 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SearchProductViewModel::class.java) }
-    private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
     private val productAdapter by lazy {
         SearchProductAdapter(
             onProductClicked,
@@ -106,8 +105,13 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     }
 
     private fun setupView() {
+        setupMultiSelection()
+        setupToolbar()
+        setupSearchBar()
+    }
+
+    private fun setupSearchBar() {
         binding?.run {
-            imgBack.setOnClickListener { activity?.onBackPressed() }
             searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     loadInitialData()
@@ -117,28 +121,35 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             }
             searchBar.clearListener = { clearSearchBar() }
             searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
-            tpgMultiSelect.setOnClickListener {
-                viewModel.setMultiSelectEnabled(true)
-                tpgMultiSelect.gone()
-                tpgCancelMultiSelect.visible()
-                val currentItems = adapter?.getItems() ?: emptyList()
-                val enabledMultiSelect = viewModel.enableMultiSelect(currentItems)
-                adapter?.updateAll(enabledMultiSelect)
-            }
-            tpgCancelMultiSelect.setOnClickListener {
-                viewModel.setMultiSelectEnabled(false)
-                tpgMultiSelect.visible()
-                tpgCancelMultiSelect.gone()
-                val currentItems = adapter?.getItems() ?: emptyList()
-                val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
-                adapter?.updateAll(disabledMultiSelect)
-                binding?.cardView?.gone()
-                binding?.tpgTotalProduct?.text =
-                    String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
-            }
         }
     }
 
+    private fun setupToolbar() {
+        binding?.run {
+            imgBack.setOnClickListener { activity?.onBackPressed() }
+        }
+    }
+
+    private fun setupMultiSelection() {
+        binding?.run {
+            tpgMultiSelect.setOnClickListener {
+                viewModel.removeAllProductFromSelection()
+                viewModel.setInMultiSelectMode(true)
+                enableMultiSelect()
+            }
+            tpgCancelMultiSelect.setOnClickListener {
+                viewModel.removeAllProductFromSelection()
+                viewModel.setInMultiSelectMode(false)
+                disableMultiSelect()
+                binding?.tpgTotalProduct?.text =
+                    String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
+            }
+            btnManage.setOnClickListener {
+
+            }
+            btnDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
+        }
+    }
 
 
     private fun observeProducts() {
@@ -149,8 +160,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
                     binding?.shimmer?.content?.gone()
                     handleProducts(it.data)
                     viewModel.setTotalProduct(it.data.totalProduct)
-                    binding?.tpgTotalProduct?.text =
-                        String.format(getString(R.string.sd_total_product), it.data.totalProduct)
+                    updateCounter(it.data.totalProduct)
                 }
                 is Fail -> {
                     binding?.groupContent?.gone()
@@ -175,6 +185,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         }
     }
 
+
     private fun handleProducts(data: ProductData) {
         if (data.totalProduct == Int.ZERO) {
             binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
@@ -197,12 +208,35 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     private fun handleDeleteDiscountResult(isDeletionSuccess: Boolean) {
         if (isDeletionSuccess) {
-            binding?.recyclerView showToaster getString(R.string.sd_discount_deleted)
-            onDiscountRemoved(discountStatusId, viewModel.getTotalProduct())
-            productAdapter.delete(viewModel.getSelectedProduct() ?: return)
-            val updatedTotalProduct = viewModel.getTotalProduct() - 1
+            val deletionWording = if (viewModel.isOnMultiSelectMode()) {
+                val deletedProductCount = viewModel.getSelectedProductCount()
+                String.format(getString(R.string.sd_bulk_discount_deleted), deletedProductCount)
+            } else {
+                getString(R.string.sd_discount_deleted)
+            }
+
+            if (viewModel.isOnMultiSelectMode()) {
+                productAdapter.bulkDelete(viewModel.getSelectedProductIds())
+            } else {
+                productAdapter.delete(viewModel.getSelectedProduct() ?: return)
+            }
+
+            val updatedTotalProduct = if (viewModel.isOnMultiSelectMode()) {
+                viewModel.getTotalProduct() - viewModel.getSelectedProductCount()
+            } else {
+                viewModel.getTotalProduct() - ONE_PRODUCT
+            }
+
+
+            binding?.recyclerView showToaster deletionWording
             binding?.tpgTotalProduct?.text =
                 String.format(getString(R.string.sd_total_product), updatedTotalProduct)
+            binding?.cardView?.gone()
+            viewModel.removeAllProductFromSelection()
+            viewModel.setTotalProduct(updatedTotalProduct)
+            viewModel.setInMultiSelectMode(false)
+            viewModel.setDisableProductSelection(false)
+            disableMultiSelect()
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
@@ -234,16 +268,22 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     }
 
     private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
+        if (isSelected) {
+            viewModel.addProductToSelection(selectedProduct)
+        } else {
+            viewModel.removeProductFromSelection(selectedProduct)
+        }
+
         val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
         adapter?.update(selectedProduct, updatedProduct)
 
         val items = adapter?.getItems() ?: emptyList()
-        val selectedProductCount = viewModel.findSelectedProducts(items).size
+        val selectedProductCount = viewModel.getSelectedProductCount()
 
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
-        handleBulkManageButtonVisibility(selectedProductCount)
+        binding?.cardView?.isVisible = selectedProductCount > 0
 
         if (selectedProductCount == 0) {
             binding?.tpgTotalProduct?.text =
@@ -263,19 +303,12 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     private fun disableProductSelection(products : List<Product>) {
         val toBeDisabledProducts = viewModel.disableProducts(products)
-        adapter?.updateAll(toBeDisabledProducts)
+        adapter?.refresh(toBeDisabledProducts)
     }
 
     private fun enableProductSelection(products : List<Product>) {
         val toBeEnabledProducts = viewModel.enableProduct(products)
-        adapter?.updateAll(toBeEnabledProducts)
-    }
-
-    private fun handleBulkManageButtonVisibility(selectedProductCount : Int) {
-        binding?.cardView?.isVisible = selectedProductCount > 0
-
-        val counter = String.format(getString(R.string.sd_manage_with_counter), selectedProductCount)
-        binding?.btnManage?.text = counter
+        adapter?.refresh(toBeEnabledProducts)
     }
 
     private fun guard(disableClick: Boolean, block : () -> Unit) {
@@ -320,7 +353,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             page,
             discountStatusId,
             keyword,
-            viewModel.isMultiSelectEnabled(),
+            viewModel.isOnMultiSelectMode(),
             viewModel.shouldDisableProductSelection()
         )
     }
@@ -363,11 +396,25 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     }
 
     private fun displayDeleteConfirmationDialog(product: Product) {
+        val title = getString(R.string.sd_delete_confirmation_title)
         val dialog = CancelDiscountDialog(requireContext())
         dialog.setOnDeleteConfirmed {
-            viewModel.deleteDiscount(discountStatusId, product.id)
+            viewModel.deleteDiscount(discountStatusId, listOf(product.id))
         }
-        dialog.show()
+        dialog.show(title)
+    }
+
+    private fun displayBulkDeleteConfirmationDialog() {
+        val title = getString(R.string.sd_bulk_delete_confirmation_title)
+        val dialog = CancelDiscountDialog(requireContext())
+        val toBeDeletedProductIds = viewModel.getSelectedProductIds()
+        val dialogTitle = String.format(title, toBeDeletedProductIds.size)
+
+        dialog.setOnDeleteConfirmed {
+            viewModel.deleteDiscount(discountStatusId, toBeDeletedProductIds)
+        }
+
+        dialog.show(dialogTitle)
     }
 
     private fun showProductDetailBottomSheet(product: Product) {
@@ -386,8 +433,37 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
             FIRST_PAGE,
             discountStatusId,
             EMPTY_STRING,
-            viewModel.isMultiSelectEnabled(),
+            viewModel.isOnMultiSelectMode(),
             viewModel.shouldDisableProductSelection()
         )
+    }
+
+    private fun updateCounter(totalProduct: Int) {
+        if (viewModel.isOnMultiSelectMode()) {
+            binding?.tpgTotalProduct?.text =
+                String.format(getString(R.string.sd_selected_product_counter), viewModel.getSelectedProductCount())
+        } else {
+            binding?.tpgTotalProduct?.text =
+                String.format(getString(R.string.sd_total_product), totalProduct)
+        }
+    }
+
+    private fun enableMultiSelect() {
+        binding?.tpgMultiSelect?.gone()
+        binding?.tpgCancelMultiSelect?.visible()
+
+        val currentItems = adapter?.getItems() ?: emptyList()
+        val enabledMultiSelect = viewModel.enableMultiSelect(currentItems)
+        productAdapter.updateAll(enabledMultiSelect)
+    }
+
+    private fun disableMultiSelect() {
+        binding?.tpgMultiSelect?.visible()
+        binding?.tpgCancelMultiSelect?.gone()
+
+        val currentItems = adapter?.getItems() ?: emptyList()
+        val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
+        productAdapter.updateAll(disabledMultiSelect)
+        binding?.cardView?.gone()
     }
 }
