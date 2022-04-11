@@ -68,6 +68,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -103,8 +106,10 @@ open class TopChatViewModel @Inject constructor(
     private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
     private val chatSrwUseCase: GetSmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
-    private var addWishListUseCase: AddToWishlistV2UseCase,
-    private var removeWishListUseCase: DeleteWishlistV2UseCase,
+    private var addWishListUseCase: AddWishListUseCase,
+    private var removeWishListUseCase: RemoveWishListUseCase,
+    private var addToWishlistV2UseCase: AddToWishlistV2UseCase,
+    private var deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private var getChatUseCase: GetChatUseCase,
     private var unsendReplyUseCase: UnsendReplyUseCase,
     private val dispatcher: CoroutineDispatchers,
@@ -765,24 +770,38 @@ open class TopChatViewModel @Inject constructor(
     fun addToWishList(
         productId: String,
         userId: String,
+        wishlistActionListener: WishListActionListener
+    ) {
+        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
+    }
+
+    fun addToWishListV2(
+        productId: String,
+        userId: String,
         wishlistActionListener: WishlistV2ActionListener
     ) {
-        addWishListUseCase.setParams(productId, userId)
-        addWishListUseCase.execute(
-                onSuccess = {
-                    wishlistActionListener.onSuccessAddWishlist(productId)},
-                onError = {
-                    wishlistActionListener.onErrorAddWishList(it, productId)
-                })
+        addToWishlistV2UseCase.setParams(productId, userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = {
+                wishlistActionListener.onSuccessAddWishlist(productId)},
+            onError = {
+                wishlistActionListener.onErrorAddWishList(it, productId)
+            })
     }
 
     fun removeFromWishList(
+        productId: String, userId: String, wishListActionListener: WishListActionListener
+    ) {
+        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
+    }
+
+    fun removeFromWishListV2(
         productId: String, userId: String, wishListActionListener: WishlistV2ActionListener
     ) {
-        removeWishListUseCase.setParams(productId, userId)
-        removeWishListUseCase.execute(
-                onSuccess = { wishListActionListener.onSuccessRemoveWishlist(productId) },
-                onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
+        deleteWishlistV2UseCase.setParams(productId, userId)
+        deleteWishlistV2UseCase.execute(
+            onSuccess = { wishListActionListener.onSuccessRemoveWishlist(productId) },
+            onError = { wishListActionListener.onErrorRemoveWishlist(it, productId) })
     }
 
     fun getExistingChat(messageId: String, isInit: Boolean = false) {
