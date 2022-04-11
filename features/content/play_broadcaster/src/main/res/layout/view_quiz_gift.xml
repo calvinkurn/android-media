@@ -88,16 +88,6 @@
             app:layout_constraintTop_toTopOf="@id/ic_quiz_input_gift"
             app:typographyType="body_2" />
 
-        <FrameLayout
-            android:id="@+id/fl_divider"
-            android:layout_width="1dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="@dimen/spacing_lvl3"
-            android:background="@color/Unify_Static_White"
-            app:layout_constraintBottom_toBottomOf="@id/ic_quiz_input_gift"
-            app:layout_constraintStart_toEndOf="@id/tv_bro_quiz_gift_input_label"
-            app:layout_constraintTop_toTopOf="@id/ic_quiz_input_gift" />
-
         <EditText
             android:id="@+id/et_bro_quiz_gift"
             android:layout_width="0dp"
@@ -112,7 +102,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ic_close_input_gift"
-            app:layout_constraintStart_toEndOf="@id/fl_divider"
+            app:layout_constraintStart_toEndOf="@id/tv_bro_quiz_gift_input_label"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.iconunify.IconUnify
