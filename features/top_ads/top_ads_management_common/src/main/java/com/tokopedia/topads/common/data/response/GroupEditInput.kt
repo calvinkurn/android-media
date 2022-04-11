@@ -20,7 +20,7 @@ data class GroupEditInput(
     data class Group(
 
             @field:SerializedName("type")
-            var type: String = "",
+            var type: String? = "",
 
             @field:SerializedName("adOperations")
             var adOperations: List<AdOperationsItem>? = null,

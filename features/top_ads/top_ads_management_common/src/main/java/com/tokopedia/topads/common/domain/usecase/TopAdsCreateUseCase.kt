@@ -113,11 +113,21 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     }
 
     fun createRequestParamMoveGroup(
-        action: String, groupId: String, source: String,
-        productIds: List<String>, productAction: String,
+        groupID: String, source: String, productIds: List<String>, productAction: String,
     ): RequestParams {
         val input = TopadsManagePromoGroupProductInput().apply {
-            groupInput?.action = action
+            shopID = userSession.shopId
+            this.groupID = groupID
+            this.source = source
+            groupInput = GroupEditInput(ACTION_EDIT, GroupEditInput.Group(
+                null, productIds.map { productId ->
+                    GroupEditInput.Group.AdOperationsItem(
+                        GroupEditInput.Group.AdOperationsItem.Ad(productId),
+                        productAction
+                    )
+                }, null, null, null, null, null, null
+            ))
+            keywordOperation = null
         }
         return input.convertToRequestParam()
     }

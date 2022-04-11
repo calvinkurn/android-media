@@ -433,7 +433,10 @@ class ProductTabFragment : BaseDaggerFragment() {
             }
             ACTION_MOVE -> {
                 totalProductCount -= getAdIds().size
-                viewModel.setProductAction(::onSuccessAction, actionActivate, getAdIds(), resources, selectedFilter)
+                viewModel.setProductActionMoveGroup(
+                    arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString(),
+                    adapter.getSelectedItemsProductId(), ::onSuccessAction
+                )
                 if (totalProductCount == 0) {
                     activity?.finish()
                 }
