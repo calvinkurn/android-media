@@ -13,11 +13,23 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodFragment
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
+import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
+import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
+import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoFoodHomeFragment: BaseTokofoodFragment() {
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
+
+    private val adapter by lazy {
+        TokoFoodHomeAdapter(
+            typeFactory = TokoFoodHomeAdapterTypeFactory(
+
+            ),
+            differ = TokoFoodHomeListDiffer()
+        )
+    }
 
     private var navToolbar: NavToolbar? = null
 
