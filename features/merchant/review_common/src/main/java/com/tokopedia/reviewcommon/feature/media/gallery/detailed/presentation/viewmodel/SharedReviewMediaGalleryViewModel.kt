@@ -305,11 +305,11 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun restoreState(savedState: Bundle) {
         _detailedReviewMediaResult.value = savedState.getSavedState(SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT, _detailedReviewMediaResult.value)
-        _productID.value = savedState.getSavedState(SAVED_STATE_PRODUCT_ID, _productID.value) ?: _productID.value
-        _showSeeMore.value = savedState.getSavedState(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value) ?: _showSeeMore.value
-        _orientationUiState.value = savedState.getSavedState(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value) ?: _orientationUiState.value
-        _overlayVisibility.value = savedState.getSavedState(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value) ?: _overlayVisibility.value
-        _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value) ?: _showDetailedReviewActionMenuBottomSheet.value
+        _productID.value = savedState.getSavedState(SAVED_STATE_PRODUCT_ID, _productID.value)!!
+        _showSeeMore.value = savedState.getSavedState(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)!!
+        _orientationUiState.value = savedState.getSavedState(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)!!
+        _overlayVisibility.value = savedState.getSavedState(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)!!
+        _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)!!
     }
 
     fun tryGetPreloadedData(cacheManager: CacheManager) {

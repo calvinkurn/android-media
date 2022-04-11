@@ -130,7 +130,7 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
     }
 
     fun restoreState(savedInstanceState: Bundle) {
-        _muted.value = savedInstanceState.getSavedState(SAVED_STATE_MUTED, _muted.value) ?: _muted.value
+        _muted.value = savedInstanceState.getSavedState(SAVED_STATE_MUTED, _muted.value)!!
     }
 
     fun updateOverlayVisibility(visible: Boolean) {

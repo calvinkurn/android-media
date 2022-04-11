@@ -1,10 +1,9 @@
-package com.tokopedia.reviewcommon.feature.media.player.controller.presenter.viewmodel
+package com.tokopedia.reviewcommon.feature.media.player.controller.presentation.viewmodel
 
 import android.os.Bundle
 import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
-import com.tokopedia.reviewcommon.feature.media.player.controller.presentation.viewmodel.ReviewMediaPlayerControllerViewModel
 import com.tokopedia.reviewcommon.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.model.VideoMediaItemUiModel
 import io.mockk.every

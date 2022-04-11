@@ -1,10 +1,9 @@
-package com.tokopedia.reviewcommon.feature.media.player.controller.presenter.viewmodel
+package com.tokopedia.reviewcommon.feature.media.player.controller.presentation.viewmodel
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.reviewcommon.TestHelper
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductRevGetDetailedReviewMediaResponse
-import com.tokopedia.reviewcommon.feature.media.player.controller.presentation.viewmodel.ReviewMediaPlayerControllerViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import org.junit.Before
 

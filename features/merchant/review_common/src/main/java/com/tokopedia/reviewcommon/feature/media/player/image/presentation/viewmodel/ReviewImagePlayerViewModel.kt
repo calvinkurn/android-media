@@ -22,9 +22,9 @@ class ReviewImagePlayerViewModel @Inject constructor(
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
 
-        private const val SAVED_STATE_IMAGE_URI = "savedStateImageUri"
-        private const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
-        private const val SAVED_STATE_TOTAL_MEDIA_COUNT = "savedStateTotalMediaCount"
+        const val SAVED_STATE_IMAGE_URI = "savedStateImageUri"
+        const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
+        const val SAVED_STATE_TOTAL_MEDIA_COUNT = "savedStateTotalMediaCount"
     }
 
     private val _imageUri = MutableStateFlow("")
@@ -63,18 +63,16 @@ class ReviewImagePlayerViewModel @Inject constructor(
         outState.putInt(SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value)
     }
 
-    fun restoreSavedState(savedState: Bundle?) {
-        savedState?.run {
-            _imageUri.value = savedState.getSavedState(
-                SAVED_STATE_IMAGE_URI, _imageUri.value
-            ) ?: _imageUri.value
-            _showSeeMore.value = savedState.getSavedState(
-                SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value
-            ) ?: _showSeeMore.value
-            _totalMediaCount.value = savedState.getSavedState(
-                SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value
-            ) ?: _totalMediaCount.value
-        }
+    fun restoreSavedState(savedState: Bundle) {
+        _imageUri.value = savedState.getSavedState(
+            SAVED_STATE_IMAGE_URI, _imageUri.value
+        )!!
+        _showSeeMore.value = savedState.getSavedState(
+            SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value
+        )!!
+        _totalMediaCount.value = savedState.getSavedState(
+            SAVED_STATE_TOTAL_MEDIA_COUNT, _totalMediaCount.value
+        )!!
     }
 
     fun getImpressHolder(): ImpressHolder {
