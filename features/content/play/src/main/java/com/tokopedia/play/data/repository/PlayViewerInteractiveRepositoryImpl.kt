@@ -2,6 +2,7 @@ package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.domain.interactive.AnswerQuizUseCase
 import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
@@ -20,6 +21,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
         private val postInteractiveTapUseCase: PostInteractiveTapUseCase,
         private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
+        private val answerQuizUseCase: AnswerQuizUseCase,
         private val mapper: PlayUiModelMapper,
         private val dispatchers: CoroutineDispatchers,
         private val interactiveStorage: PlayInteractiveStorage
@@ -44,5 +46,11 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     override suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel = withContext(dispatchers.io) {
         val response = getInteractiveLeaderboardUseCase.execute(channelId)
         return@withContext mapper.mapInteractiveLeaderboard(response)
+    }
+
+    override suspend fun answerQuiz(interactiveId: String, choiceId: String): String = withContext(dispatchers.io) {
+        return@withContext answerQuizUseCase.apply {
+                setRequestParams(answerQuizUseCase.createParam(interactiveId, choiceId))
+        }.executeOnBackground().data.correctAnswerID
     }
 }

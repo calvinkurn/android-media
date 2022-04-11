@@ -14,4 +14,6 @@ interface PlayViewerInteractiveRepository : PlayInteractiveStorage {
     suspend fun postInteractiveTap(channelId: String, interactiveId: String): Boolean
 
     suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel
+
+    suspend fun answerQuiz(interactiveId: String, choiceId: String): String
 }
