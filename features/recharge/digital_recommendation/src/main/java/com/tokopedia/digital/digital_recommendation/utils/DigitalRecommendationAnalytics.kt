@@ -87,7 +87,7 @@ class DigitalRecommendationAnalytics {
             ))
             putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
             putString(DigitalRecommendationKeys.CURRENT_SITE, DigitalRecommendationValues.CURRENT_SITE)
-            putString(DigitalRecommendationKeys.ITEM_LIST, getItemListThankYouPage(digitalRecommendationModel.tracking.itemType))
+            putString(DigitalRecommendationKeys.ITEM_LIST, getItemListThankYouPage(digitalRecommendationModel.tracking.itemType, page))
             putParcelableArrayList(DigitalRecommendationKeys.ITEMS, getItemsThankYouPage(index, digitalRecommendationModel))
             putString(DigitalRecommendationKeys.USER_ID, userId)
         }
@@ -113,7 +113,7 @@ class DigitalRecommendationAnalytics {
             ))
             putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
             putString(DigitalRecommendationKeys.CURRENT_SITE, DigitalRecommendationValues.CURRENT_SITE)
-            putString(DigitalRecommendationKeys.ITEM_LIST, getItemListThankYouPage(digitalRecommendationModel.tracking.itemType))
+            putString(DigitalRecommendationKeys.ITEM_LIST, getItemListThankYouPage(digitalRecommendationModel.tracking.itemType, page))
             putParcelableArrayList(DigitalRecommendationKeys.ITEMS, getItemsThankYouPage(index, digitalRecommendationModel))
             putString(DigitalRecommendationKeys.USER_ID, userId)
         }
@@ -121,8 +121,12 @@ class DigitalRecommendationAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DigitalRecommendationEvents.SELECT_CONTENT, data)
     }
 
-    private fun getItemListThankYouPage(recommendationLogic: String): String{
-        return "/ - order complete dg - $recommendationLogic"
+    private fun getItemListThankYouPage(recommendationLogic: String, page: DigitalRecommendationPage?): String{
+        return "/ - ${if (page == DigitalRecommendationPage.DG_THANK_YOU_PAGE){
+            DigitalRecommendationValues.ITEM_LIST_THANKYOU_PAGE_DG
+        }else{
+            DigitalRecommendationValues.ITEM_LIST_THANKYOU_PAGE_PG
+        } } - $recommendationLogic"
     }
 
     private fun getEventCategory(page: DigitalRecommendationPage?): String{
@@ -244,6 +248,9 @@ class DigitalRecommendationAnalytics {
         const val CATEGORY_THANKYOU_PAGE_PG = "order complete - pg"
 
         const val CURRENT_SITE = "tokopediadigital"
+
+        const val ITEM_LIST_THANKYOU_PAGE_DG = "order complete dg"
+        const val ITEM_LIST_THANKYOU_PAGE_PG = "order complete pg"
 
     }
 }
