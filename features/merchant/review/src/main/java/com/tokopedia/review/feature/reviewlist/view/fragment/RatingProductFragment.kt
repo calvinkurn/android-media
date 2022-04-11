@@ -219,6 +219,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
 
     override fun onResume() {
         super.onResume()
+        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         }
@@ -318,7 +319,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             emptyStateReviewProduct.root.hide()
         }
         showLoading()
-        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
     }
 
     override fun loadData(page: Int) {
