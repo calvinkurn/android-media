@@ -87,6 +87,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderSuccessData(data: ProductEducationalResponse) {
+        setTitle(data.title)
         infoImg?.loadImage(data.icon)
         context?.let {
             infoTxt?.text = HtmlLinkHelper(it, data.description).spannedString
