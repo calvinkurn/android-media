@@ -34,7 +34,6 @@ internal class ProductCardCartExtension(private val productCardView: View) {
     val quantityEditorNonVariant by lazy {
         findView<QuantityEditorUnify?>(R.id.quantityEditorNonVariant)
     }
-    val buttonAddVariant by lazy { findView<UnifyButton?>(R.id.buttonAddVariant) }
     val textVariantQuantity by lazy { findView<Typography?>(R.id.textVariantQuantity) }
 
     var addToCartClickListener: ((View) -> Unit)? = null
@@ -64,8 +63,10 @@ internal class ProductCardCartExtension(private val productCardView: View) {
                 buttonAddToCart?.configureButtonAddToCart()
             }
 
-            else ->
+            else -> {
+                val buttonAddToCart = findView<UnifyButton?>(R.id.buttonAddToCart)
                 buttonAddToCart?.gone()
+            }
         }
     }
 
@@ -248,6 +249,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
         if(productCardModel.hasVariant()) {
             findView<ViewStub?>(R.id.buttonAddVariantStub)?.inflate()
         }
+        val buttonAddVariant = findView<UnifyButton?>(R.id.buttonAddVariant)
         buttonAddVariant?.showWithCondition(productCardModel.hasVariant())
 
         textVariantQuantity?.shouldShowWithAction(productCardModel.hasVariantWithQuantity()) {

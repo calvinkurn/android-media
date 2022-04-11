@@ -12,13 +12,13 @@ internal fun View.renderProductCardFooter(
     productCardModel: ProductCardModel,
     isProductCardList: Boolean,
 ) {
-    val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
     val buttonRemoveFromWishlist = findViewById<FrameLayout?>(R.id.buttonRemoveFromWishlist)
     renderNotifyButton(productCardModel)
 
     if (isProductCardList) {
         renderDeleteProductButton(productCardModel)
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
+        val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
         buttonSimilarProduct?.hide()
     } else {
         val buttonDeleteProduct = findViewById<UnifyButton?>(R.id.buttonDeleteProduct)

@@ -123,6 +123,11 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         View.inflate(context, R.layout.product_card_grid_layout, this)
     }
 
+    override fun setOnClickListener(l: OnClickListener?) {
+        cardViewProductCard.setOnClickListener(l)
+        super.setOnClickListener(l)
+    }
+
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 

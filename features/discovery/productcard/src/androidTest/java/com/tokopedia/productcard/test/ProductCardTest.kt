@@ -59,6 +59,7 @@ internal class ProductCardTest {
     }
 
     private fun ViewInteraction.checkProductCardAtPosition(position: Int, elementMatchers: Map<Int, Matcher<View?>>): ViewInteraction {
+        println("hahaha ${position}")
         return perform(scrollToPosition<ProductCardGridActivityTest.ViewHolder>(position))
                 .check(matches(productCardInPosition(position, elementMatchers)))
     }
