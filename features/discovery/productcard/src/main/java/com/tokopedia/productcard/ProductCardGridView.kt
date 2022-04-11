@@ -38,9 +38,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         ProductCardVideo(this)
     }
     private val cardViewProductCard: CardUnify2? by lazy(NONE) {
-        findViewById<CardUnify2?>(R.id.cardViewProductCard).apply {
-            animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
-        }
+        findViewById<CardUnify2?>(R.id.cardViewProductCard)
     }
     private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
         findViewById(R.id.constraintLayoutProductCard)
@@ -261,5 +259,10 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getProductCardVideo(): ProductCardVideo {
         return video
+    }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        super.setOnClickListener(l)
+        cardViewProductCard?.setOnClickListener(l)
     }
 }

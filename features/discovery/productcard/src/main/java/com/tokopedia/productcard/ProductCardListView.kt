@@ -313,4 +313,9 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart.text = context.getString(R.string.product_card_out_of_stock)
     }
+
+    override fun setOnClickListener(l: OnClickListener?) {
+        super.setOnClickListener(l)
+        cardViewProductCard?.setOnClickListener(l)
+    }
 }

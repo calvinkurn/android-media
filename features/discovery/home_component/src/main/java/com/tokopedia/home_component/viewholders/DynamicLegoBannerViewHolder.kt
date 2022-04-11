@@ -237,7 +237,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
 
         private fun setLegoClickListener(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
-            holder.itemView.setOnClickListener{
+            val clickListener = View.OnClickListener {
                 when (layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> {
                         listener?.onClickGridSixImage(channel, grid, position, parentPosition)
@@ -253,6 +253,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     }
                 }
             }
+            if(getItemViewType(position) == LEGO_LANDSCAPE) holder.itemView.setOnClickListener(clickListener)
+            else holder.imageView.setOnClickListener(clickListener)
         }
 
         override fun getItemCount(): Int {

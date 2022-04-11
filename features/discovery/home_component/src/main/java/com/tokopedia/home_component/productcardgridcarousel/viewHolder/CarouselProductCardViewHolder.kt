@@ -9,7 +9,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.CardUnify2
 
 class CarouselProductCardViewHolder (view: View,
                                      private val channels: ChannelModel):
