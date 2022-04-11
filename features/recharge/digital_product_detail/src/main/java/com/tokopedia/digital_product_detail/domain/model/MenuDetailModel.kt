@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_component.model.denom
+package com.tokopedia.digital_product_detail.domain.model
 
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.data.TopupBillsCatalog
