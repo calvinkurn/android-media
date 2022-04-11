@@ -48,7 +48,7 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
         question: String,
         prize: String,
         runningTime: Long,
-        choices: List<Pair<String, Boolean>>
+        choices: List<Choice>
     ): PostInteractiveCreateSessionResponse {
         setRequestParams(
             createParams(
@@ -56,19 +56,10 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
                 question = question,
                 prize = prize,
                 runningTime = runningTime,
-                choices = mapChoices(choices),
+                choices = choices,
             )
         )
         return executeOnBackground()
-    }
-
-    private fun mapChoices(choices: List<Pair<String, Boolean>>): List<Choice> {
-        return choices.map {
-            Choice(
-                text = it.first,
-                correct = it.second,
-            )
-        }
     }
 
     data class Choice(

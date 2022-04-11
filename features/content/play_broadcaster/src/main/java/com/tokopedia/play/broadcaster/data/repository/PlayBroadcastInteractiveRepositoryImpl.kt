@@ -79,7 +79,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         question: String,
         prize: String,
         runningTime: Long,
-        choices: List<Pair<String, Boolean>>
+        choices: List<PostInteractiveCreateQuizUseCase.Choice>
     ) {
         createInteractiveQuizUseCase.execute(
             channelId = channelId,

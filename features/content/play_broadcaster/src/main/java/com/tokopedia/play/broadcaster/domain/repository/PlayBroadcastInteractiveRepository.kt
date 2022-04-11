@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -25,6 +26,6 @@ interface PlayBroadcastInteractiveRepository {
         question: String,
         prize: String,
         runningTime: Long,
-        choices: List<Pair<String, Boolean>>
+        choices: List<PostInteractiveCreateQuizUseCase.Choice>
     )
 }

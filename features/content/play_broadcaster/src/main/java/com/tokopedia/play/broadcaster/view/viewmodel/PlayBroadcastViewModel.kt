@@ -1116,7 +1116,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 question = quizData.title,
                 prize = quizData.gift,
                 runningTime = quizData.duration,
-                choices = quizData.options.map { Pair(it.text, it.isSelected) }
+                choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
             )
 
             handleActiveInteractive()
