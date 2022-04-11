@@ -16,15 +16,24 @@
         android:paddingVertical="@dimen/spacing_lvl3"
         tools:viewBindingIgnore="true">
 
+        <View
+            android:id="@+id/view_green"
+            android:layout_width="4dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_coupon_list_item"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/programStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_12"
-            android:layout_marginTop="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/view_green"
+            app:layout_constraintStart_toEndOf="@id/view_green"
+            app:layout_constraintTop_toTopOf="@id/view_green"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif" />
@@ -57,7 +66,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
                 app:typographyType="small"
-                tools:text="Program Aktif" />
+                tools:text="Periode Program" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programStartDate"
@@ -70,7 +79,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                tools:text="Program Aktif" />
+                tools:text="1 Mar 2020" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programStartTime"
@@ -82,7 +91,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                tools:text="Program Aktif" />
+                tools:text="00:30 WIB" />
         </LinearLayout>
 
         <LinearLayout
@@ -107,7 +116,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
-                tools:text="Program Aktif" />
+                tools:text="1 Sep 2021" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programEndTime"
@@ -119,7 +128,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
                 app:typographyWeight="reguler"
-                tools:text="Program Aktif" />
+                tools:text="00:30 WIB" />
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -140,7 +149,6 @@
             app:layout_constraintStart_toEndOf="@id/ivMemberStatistics"
             app:layout_constraintTop_toTopOf="@id/ivMemberStatistics">
 
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberLabel"
                 android:layout_width="wrap_content"
@@ -151,7 +159,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                tools:text="Pertambahan member" />
+                tools:text="Tambahan member" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
@@ -163,7 +171,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                tools:text="Program Aktif" />
+                tools:text="+128" />
         </LinearLayout>
 
         <LinearLayout
@@ -186,7 +194,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                tools:text="Pertambahan member" />
+                tools:text="Jumlah transaksi" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberTransaksivalue"
@@ -198,7 +206,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler"
-                tools:text="Program Aktif" />
+                tools:text="2.345" />
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify

@@ -1,6 +1,5 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +9,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.model.CheckEligibility
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPEN_BS
-import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -60,7 +55,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment() {
         tokomemberEligibilityViewModel.eligibilityCheckResultLiveData.observe(viewLifecycleOwner, {
             when(it){
                 is Success ->{
-                    checkEligibility(it.data)
+
                 }
                 is Fail ->{
                     it.throwable.message
@@ -68,40 +63,6 @@ class TokomemberDashCouponFragment : BaseDaggerFragment() {
             }
         })
     }
-
-    private fun checkEligibility(data: CheckEligibility?) {
-        if(data?.eligibilityCheckData?.isEligible == true)
-        {
-            if (data.eligibilityCheckData.message.title.isNullOrEmpty() and data.eligibilityCheckData.message.subtitle.isNullOrEmpty())
-            {
-
-                val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
-                intent.putExtra(BUNDLE_OPEN_BS, true)
-                intent.putExtra(BUNDLE_SHOP_ID, shopId)
-                startActivity(intent)
-                requireActivity().finish()
-//                startActivity(Intent(requireContext(), TokomemberDashHomeActivity::class.java))
-//                requireActivity().finish()
-                // redirect to dashboard
-            }
-            else{
-
-                val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
-                startActivity(intent)
-                requireActivity().finish()
-                // redirect to intro page
-            }
-        }
-        else{
-            val intent = Intent(requireContext(), TokomemberDashIntroActivity::class.java)
-            intent.putExtra(BUNDLE_OPEN_BS, true)
-            intent.putExtra(BUNDLE_SHOP_ID, shopId)
-            startActivity(intent)
-            requireActivity().finish()
-            // redirect to intro page + bottomsheet
-        }
-    }
-
 
     override fun getScreenName() = ""
 

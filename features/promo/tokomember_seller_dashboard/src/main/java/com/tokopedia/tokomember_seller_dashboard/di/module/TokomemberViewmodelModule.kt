@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateCardViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashIntroViewModel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberEligibilityViewModel
@@ -43,4 +44,10 @@ abstract class TokomemberViewmodelModule {
     @IntoMap
     @ViewModelKey(TokomemberEligibilityViewModel::class)
     abstract fun tokomemberEligibilityViewModel(viewModel: TokomemberEligibilityViewModel): ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TokomemberDashHomeViewmodel::class)
+    abstract fun tokomemberDashHomeViewmodel(viewModel: TokomemberDashHomeViewmodel): ViewModel
 }

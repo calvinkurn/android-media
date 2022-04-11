@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramFormData
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
 import javax.inject.Inject
 
 class TokomemberDashGetProgramFormUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
@@ -25,7 +26,15 @@ class TokomemberDashGetProgramFormUsecase @Inject constructor(graphqlRepository:
         })
     }
 
-    private fun getRequestParams(programID: Int ,shopId: Int ,actionType: String ): Map<String, Any> {
+    fun getProgramList(
+        success: (ProgramList) -> Unit,
+        onFail: (Throwable) -> Unit,
+        shopId: Int, cardId: Int, status: Int, page: Int, pageSize: Int
+    ){
+
+    }
+
+    private fun getRequestParams(programID: Int, shopId: Int, actionType: String): Map<String, Any> {
         return mapOf(PROGRAM_ID to programID , SHOP_ID to shopId, ACTION_TYPE to actionType )
     }
 
