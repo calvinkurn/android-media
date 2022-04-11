@@ -187,7 +187,7 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
-    private fun sendEnhancedECommerce(step: Int, cartMap: Map<String, Any>, eventLabel: String) {
+    private fun sendEnhancedECommerce(step: Int, cartMap: Map<String, Any>, eventLabel: String, userId: String, promoFlag: Boolean) {
         val dataLayer = getGtmData(
                 ConstantTransactionAnalytics.EventName.CHECKOUT,
                 ConstantTransactionAnalytics.EventCategory.CART,
@@ -196,6 +196,8 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         dataLayer[ConstantTransactionAnalytics.Key.E_COMMERCE] = cartMap
         dataLayer[ConstantTransactionAnalytics.Key.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         dataLayer[KEY_SESSION_IRIS] = irisSession.getSessionId()
+        dataLayer[ExtraKey.USER_ID] = userId
+        dataLayer[ExtraKey.PROMO_FLAG] = promoFlag.toString()
         sendEnhancedEcommerce(dataLayer)
     }
 
@@ -207,52 +209,52 @@ class CheckoutAnalyticsCart(context: Context) : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun enhancedECommerceCartLoadedStep0(cartMap: Map<String, Any>) {
-        sendEnhancedECommerce(0, cartMap, "")
+    fun enhancedECommerceCartLoadedStep0(cartMap: Map<String, Any>, userId: String, promoFlag: Boolean) {
+        sendEnhancedECommerce(0, cartMap, "", userId, promoFlag)
         flushEnhancedECommerce()
     }
 
-    fun enhancedECommerceGoToCheckoutStep1SuccessDefault(cartMap: Map<String, Any>, eligibleCod: Boolean) {
+    fun enhancedECommerceGoToCheckoutStep1SuccessDefault(cartMap: Map<String, Any>, eligibleCod: Boolean, userId: String, promoFlag: Boolean) {
         if (eligibleCod) {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD, userId, false)
         } else {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_DEFAULT)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_DEFAULT, userId, false)
         }
         flushEnhancedECommerce()
     }
 
-    fun enhancedECommerceGoToCheckoutStep1SuccessCheckAll(cartMap: Map<String, Any>, eligibleCod: Boolean) {
+    fun enhancedECommerceGoToCheckoutStep1SuccessCheckAll(cartMap: Map<String, Any>, eligibleCod: Boolean, userId: String, promoFlag: Boolean) {
         if (eligibleCod) {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD, userId, promoFlag)
         } else {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_CHECK_ALL)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_CHECK_ALL, userId, promoFlag)
         }
         flushEnhancedECommerce()
     }
 
-    fun enhancedECommerceGoToCheckoutStep1SuccessPartialShop(cartMap: Map<String, Any>, eligibleCod: Boolean) {
+    fun enhancedECommerceGoToCheckoutStep1SuccessPartialShop(cartMap: Map<String, Any>, eligibleCod: Boolean, userId: String, promoFlag: Boolean) {
         if (eligibleCod) {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD, userId, promoFlag)
         } else {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP, userId, promoFlag)
         }
         flushEnhancedECommerce()
     }
 
-    fun enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(cartMap: Map<String, Any>, eligibleCod: Boolean) {
+    fun enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(cartMap: Map<String, Any>, eligibleCod: Boolean, userId: String, promoFlag: Boolean) {
         if (eligibleCod) {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD, userId, promoFlag)
         } else {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT, userId, promoFlag)
         }
         flushEnhancedECommerce()
     }
 
-    fun enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(cartMap: Map<String, Any>, eligibleCod: Boolean) {
+    fun enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(cartMap: Map<String, Any>, eligibleCod: Boolean, userId: String, promoFlag: Boolean) {
         if (eligibleCod) {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD, userId, promoFlag)
         } else {
-            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT)
+            sendEnhancedECommerce(1, cartMap, ConstantTransactionAnalytics.EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT, userId, promoFlag)
         }
         flushEnhancedECommerce()
     }
