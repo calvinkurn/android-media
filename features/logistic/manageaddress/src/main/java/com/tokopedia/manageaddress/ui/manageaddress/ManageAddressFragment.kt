@@ -519,9 +519,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             viewModel.checkUserEligibilityForAnaRevamp()
         } else {
             ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
-//            uncomment when dev is ready
-//            viewModel.checkUserEligibilityForEditAddressRevamp(data)
-            goToEditAddress(true, data)
+            viewModel.checkUserEligibilityForEditAddressRevamp(data)
         }
     }
 
