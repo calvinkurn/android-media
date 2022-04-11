@@ -13,7 +13,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ImageView
-        android:src="@drawable/tokopedianow_ic_sharing_education_background"
+        android:id="@+id/image_background"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"

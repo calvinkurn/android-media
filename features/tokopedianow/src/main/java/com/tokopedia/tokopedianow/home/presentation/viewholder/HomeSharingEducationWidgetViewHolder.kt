@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -39,6 +40,12 @@ class HomeSharingEducationWidgetViewHolder(
                 iCloseSharingEducation.setOnClickListener {
                     listener?.onCloseBtnSharingEducationClicked(element.id)
                 }
+                val background = VectorDrawableCompat.create(
+                    itemView.resources,
+                    R.drawable.tokopedianow_ic_sharing_education_background,
+                    itemView.context.theme
+                )
+                imageBackground.setImageDrawable(background)
             }
         }
     }

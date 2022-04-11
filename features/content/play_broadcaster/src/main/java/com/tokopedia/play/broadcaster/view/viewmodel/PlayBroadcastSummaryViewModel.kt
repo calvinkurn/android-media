@@ -35,7 +35,8 @@ import kotlinx.coroutines.flow.*
  */
 
 class PlayBroadcastSummaryViewModel @AssistedInject constructor(
-    @Assisted val channelId: String,
+    @Assisted("channelId") val channelId: String,
+    @Assisted("channelTitle") val channelTitle: String,
     @Assisted val productSectionList: List<ProductTagSectionUiModel>,
     @Assisted private val summaryLeaderboardInfo: SummaryLeaderboardInfo,
     private val dispatcher: CoroutineDispatchers,
@@ -51,14 +52,12 @@ class PlayBroadcastSummaryViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         fun create(
-            channelId: String,
+            @Assisted("channelId") channelId: String,
+            @Assisted("channelTitle") channelTitle: String,
             productSectionList: List<ProductTagSectionUiModel>,
             summaryLeaderboardInfo: SummaryLeaderboardInfo,
         ): PlayBroadcastSummaryViewModel
     }
-
-    val channelTitle: String
-        get() = _channelSummary.value.title
 
     val shopName: String
         get() = userSession.shopName

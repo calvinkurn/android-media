@@ -170,6 +170,7 @@
 
     <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
+    <string name="toaster_success_add_wishlist">Barang berhasil disimpan di Wishlist!</string>
     <string name="pdp_video_divider"> / </string>
 
     <string name="pdp_shipping_weight_checkout_label">Total ongkir akhir akan dihitung saat checkout.</string>

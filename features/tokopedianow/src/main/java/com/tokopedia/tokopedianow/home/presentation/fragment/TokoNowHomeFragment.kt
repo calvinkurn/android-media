@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -697,8 +698,13 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun showHeaderBackground() {
+        val background = VectorDrawableCompat.create(
+            resources,
+            R.drawable.tokopedianow_ic_header_background,
+            context?.theme
+        )
+        ivHeaderBackground?.setImageDrawable(background)
         ivHeaderBackground?.show()
-        ivHeaderBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
     }
 
     private fun hideHeaderBackground() {
@@ -1010,7 +1016,8 @@ class TokoNowHomeFragment: Fragment(),
                 warehouseId = chooseAddressData.tokonow.warehouseId.toString(),
                 shopId = chooseAddressData.tokonow.shopId.toString(),
                 warehouses = TokonowWarehouseMapper.mapWarehousesResponseToLocal(chooseAddressData.tokonow.warehouses),
-                serviceType = chooseAddressData.tokonow.serviceType
+                serviceType = chooseAddressData.tokonow.serviceType,
+                lastUpdate = chooseAddressData.tokonow.tokonowLastUpdate
             )
         }
         checkIfChooseAddressWidgetDataUpdated()
