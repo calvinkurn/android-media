@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductEducational(
-        @SerializedName("pdpGetEducationalBottomsheet")
+        @SerializedName("getPDPEducationalBottomsheet")
         @Expose
         val response: ProductEducationalResponse = ProductEducationalResponse()
 )
