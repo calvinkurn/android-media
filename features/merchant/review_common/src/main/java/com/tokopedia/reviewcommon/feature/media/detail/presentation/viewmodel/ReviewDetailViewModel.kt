@@ -3,7 +3,6 @@ package com.tokopedia.reviewcommon.feature.media.detail.presentation.viewmodel
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel.ReviewDetailBasicInfoUiModel
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel.ReviewDetailSupplementaryInfoUiModel
@@ -32,8 +31,8 @@ class ReviewDetailViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
 
-        private const val SAVED_STATE_EXPANDED = "savedStateExpanded"
-        private const val SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET = "savedStateShowExpandedReviewDetailBottomSheet"
+        const val SAVED_STATE_EXPANDED = "savedStateExpanded"
+        const val SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET = "savedStateShowExpandedReviewDetailBottomSheet"
     }
 
     private val _expanded = MutableStateFlow(false)
@@ -93,10 +92,9 @@ class ReviewDetailViewModel @Inject constructor(
         currentMediaItem: MediaItemUiModel?,
         getDetailedReviewMediaResult: ProductrevGetReviewMedia?
     ): ReviewDetailUiModel? {
-        val currentMediaItemNumber = currentMediaItem?.mediaNumber.orZero()
         return getDetailedReviewMediaResult?.let { resultData ->
-            resultData.reviewMedia.find { it.mediaNumber == currentMediaItemNumber }?.let { item ->
-                resultData.getReviewDetailWithID(item.feedbackId, expanded)
+            currentMediaItem?.let {
+                resultData.getReviewDetailWithID(it.feedbackId, expanded)
             }
         }
     }
@@ -230,11 +228,11 @@ class ReviewDetailViewModel @Inject constructor(
     fun restoreSavedState(savedState: Bundle) {
         _expanded.value = savedState.getSavedState(
             SAVED_STATE_EXPANDED, _expanded.value
-        ) ?: _expanded.value
+        )!!
         _showExpandedReviewDetailBottomSheet.value = savedState.getSavedState(
             SAVED_STATE_SHOW_EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET,
             _showExpandedReviewDetailBottomSheet.value
-        ) ?: _showExpandedReviewDetailBottomSheet.value
+        )!!
     }
 
     fun getFeedbackID(): String? {

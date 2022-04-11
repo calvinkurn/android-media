@@ -1,0 +1,462 @@
+{
+  "data": {
+    "productrevGetReviewImage": {
+      "list": [
+        {
+          "videoID": "69084337",
+          "feedbackID": "636127713",
+          "imageSiblings": [
+            "69084337"
+          ],
+          "imageNumber": 1
+        },
+        {
+          "videoID": "69039064",
+          "feedbackID": "635850305",
+          "imageSiblings": [
+            "69039064"
+          ],
+          "imageNumber": 2
+        },
+        {
+          "videoID": "68934131",
+          "feedbackID": "635130150",
+          "imageSiblings": [
+            "68934131"
+          ],
+          "imageNumber": 3
+        },
+        {
+          "videoID": "68923025",
+          "feedbackID": "635059927",
+          "imageSiblings": [
+            "68923025"
+          ],
+          "imageNumber": 4
+        },
+        {
+          "videoID": "68904645",
+          "feedbackID": "634943309",
+          "imageSiblings": [
+            "68904645"
+          ],
+          "imageNumber": 5
+        },
+        {
+          "videoID": "68892499",
+          "feedbackID": "634862136",
+          "imageSiblings": [
+            "68892499"
+          ],
+          "imageNumber": 6
+        },
+        {
+          "videoID": "68891779",
+          "feedbackID": "634856431",
+          "imageSiblings": [
+            "68891779"
+          ],
+          "imageNumber": 7
+        },
+        {
+          "videoID": "68890488",
+          "feedbackID": "634846966",
+          "imageSiblings": [
+            "68890488",
+            "68890489"
+          ],
+          "imageNumber": 8
+        },
+        {
+          "videoID": "68890489",
+          "feedbackID": "634846966",
+          "imageSiblings": [
+            "68890488",
+            "68890489"
+          ],
+          "imageNumber": 9
+        },
+        {
+          "videoID": "68882657",
+          "feedbackID": "634775909",
+          "imageSiblings": [
+            "68882657"
+          ],
+          "imageNumber": 10
+        }
+      ],
+      "detail": {
+        "review": [
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "0",
+              "fullName": "m***s",
+              "image": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+              "url": ""
+            },
+            "feedbackID": "634775909",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "sangat puas ... ga sampe 2 jam sdh smpe ....👍👍👍",
+            "createTime": 1648623661,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": true,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "0",
+              "fullName": "J***y",
+              "image": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+              "url": ""
+            },
+            "feedbackID": "634773236",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "ok",
+            "createTime": 1648623167,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": true,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "115181331",
+              "fullName": "Sri",
+              "image": "https://accounts.tokopedia.com/image/v1/u/115181331/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/115181331"
+            },
+            "feedbackID": "636127713",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "packing aman dg kardus tebal, cma ada kslhn pahaman, msh jauh dr alamat kurir blng &#34; dah sampe sesuai titik&#34; tp untung kurir mau lanjut anterin sesuai alamat, dg minta di shareloc dl, mksh ya tokped, seller dn kurir.",
+            "createTime": 1648746150,
+            "createTimestamp": "Hari ini",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [
+              {
+                "key": "total-complete-review",
+                "formatted": "10 ulasan lengkap",
+                "count": 10
+              },
+              {
+                "key": "total-likes",
+                "formatted": "1 terbantu",
+                "count": 1
+              }
+            ],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "107238917",
+              "fullName": "johan",
+              "image": "https://accounts.tokopedia.com/image/v1/u/107238917/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/107238917"
+            },
+            "feedbackID": "635130150",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "sudah sampai , seperti biasa proses cepet , packing oke dan produk oke",
+            "createTime": 1648651333,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [
+              {
+                "key": "total-complete-review",
+                "formatted": "698 ulasan lengkap",
+                "count": 698
+              },
+              {
+                "key": "total-likes",
+                "formatted": "21 terbantu",
+                "count": 21
+              }
+            ],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "104861564",
+              "fullName": "sugini",
+              "image": "https://accounts.tokopedia.com/image/v1/u/104861564/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/104861564"
+            },
+            "feedbackID": "635059927",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "wadidau bener tokopedia now ,super kilat,sangat rekomended bgt,hayo yg belum nyoba buktikan sendiri,barang pastinya oke punya",
+            "createTime": 1648646875,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [
+              {
+                "key": "total-complete-review",
+                "formatted": "3 ulasan lengkap",
+                "count": 3
+              }
+            ],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "199706017",
+              "fullName": "mama",
+              "image": "https://accounts.tokopedia.com/image/v1/u/199706017/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/199706017"
+            },
+            "feedbackID": "634943309",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "",
+            "createTime": 1648639709,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "0",
+              "fullName": "I***n",
+              "image": "https://ecs7.tokopedia.net/img/cache/100-square/default_v3-usrnophoto.png",
+              "url": ""
+            },
+            "feedbackID": "634846966",
+            "variantName": "",
+            "description": "",
+            "rating": 1,
+            "review": "penempelam stiker barcode di tempat yang kurang tepat.",
+            "createTime": 1648632176,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": true,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "13777791",
+              "fullName": "shafyanti",
+              "image": "https://accounts.tokopedia.com/image/v1/u/13777791/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/13777791"
+            },
+            "feedbackID": "635850305",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "Barang sudah saya terima dengan baik. Terima kasih",
+            "createTime": 1648727559,
+            "createTimestamp": "Hari ini",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [
+              {
+                "key": "total-complete-review",
+                "formatted": "77 ulasan lengkap",
+                "count": 77
+              },
+              {
+                "key": "total-likes",
+                "formatted": "5 terbantu",
+                "count": 5
+              }
+            ],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "141895721",
+              "fullName": "Nurul",
+              "image": "https://accounts.tokopedia.com/image/v1/u/141895721/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/141895721"
+            },
+            "feedbackID": "634862136",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "Paket sudah sampai\nTerima kasih",
+            "createTime": 1648633657,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [
+              {
+                "key": "total-complete-review",
+                "formatted": "62 ulasan lengkap",
+                "count": 62
+              },
+              {
+                "key": "total-likes",
+                "formatted": "1 terbantu",
+                "count": 1
+              }
+            ],
+            "badRatingReasonFmt": ""
+          },
+          {
+            "shopID": "11530573",
+            "user": {
+              "userID": "160888429",
+              "fullName": "wahyu",
+              "image": "https://accounts.tokopedia.com/image/v1/u/160888429/user_thumbnail/desktop",
+              "url": "https://www.tokopedia.com/people/160888429"
+            },
+            "feedbackID": "634856431",
+            "variantName": "",
+            "description": "",
+            "rating": 5,
+            "review": "wooow .... Tokopedia now tetap oke, susu nya orisinil \n.. kurir baik, packing nya bagus bngt ... Succes sll yaa tokopedia ku, aamiin",
+            "createTime": 1648633124,
+            "createTimestamp": "1 hari lalu",
+            "updateTime": 0,
+            "updateTimestamp": "",
+            "isUpdated": false,
+            "isReportable": true,
+            "isAnonymous": false,
+            "isLiked": false,
+            "totalLike": 0,
+            "userStats": [
+              {
+                "key": "total-complete-review",
+                "formatted": "10 ulasan lengkap",
+                "count": 10
+              },
+              {
+                "key": "total-likes",
+                "formatted": "2 terbantu",
+                "count": 2
+              }
+            ],
+            "badRatingReasonFmt": ""
+          }
+        ],
+        "image": [],
+        "video": [
+          {
+            "attachmentID": "69084337",
+            "url": "https://vod.tokopedia.com/view/adaptive.m3u8?id=93e7ecae8bfe49a8b1be143b00f274a9",
+            "feedbackID": "636127713"
+          },
+          {
+            "attachmentID": "69039064",
+            "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            "feedbackID": "635850305"
+          },
+          {
+            "attachmentID": "68934131",
+            "url": "https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-fashion-woman-with-silver-makeup-39875-large.mp4",
+            "feedbackID": "635130150"
+          },
+          {
+            "attachmentID": "68923025",
+            "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            "feedbackID": "635059927"
+          },
+          {
+            "attachmentID": "68904645",
+            "url": "https://assets.mixkit.co/videos/preview/mixkit-winter-fashion-cold-looking-woman-concept-video-39874-large.mp4",
+            "feedbackID": "634943309"
+          },
+          {
+            "attachmentID": "68892499",
+            "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "feedbackID": "634862136"
+          },
+          {
+            "attachmentID": "68891779",
+            "url": "https://assets.mixkit.co/videos/preview/mixkit-mysterious-pale-looking-fashion-woman-at-winter-39878-large.mp4",
+            "feedbackID": "634856431"
+          },
+          {
+            "attachmentID": "68890488",
+            "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+            "feedbackID": "634846966"
+          },
+          {
+            "attachmentID": "68890489",
+            "url": "https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4",
+            "feedbackID": "634846966"
+          },
+          {
+            "attachmentID": "68882657",
+            "url": "https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-woman-in-a-pool-1259-large.mp4",
+            "feedbackID": "634775909"
+          }
+        ],
+        "imageCountFmt": "Lainnya 763+",
+        "imageCount": 773
+      },
+      "hasNext": false,
+      "hasPrev": false
+    }
+  }
+}
