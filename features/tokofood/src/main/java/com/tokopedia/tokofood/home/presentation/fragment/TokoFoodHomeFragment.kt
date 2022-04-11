@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -16,6 +18,9 @@ import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodBannerComponentCallback
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodCategoryWidgetV2ComponentCallback
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodLegoComponentCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class TokoFoodHomeFragment: BaseTokofoodFragment() {
@@ -25,13 +30,16 @@ class TokoFoodHomeFragment: BaseTokofoodFragment() {
     private val adapter by lazy {
         TokoFoodHomeAdapter(
             typeFactory = TokoFoodHomeAdapterTypeFactory(
-
+                createLegoBannerCallback(),
+                createBannerCallback(),
+                createCategoryWidgetCallback()
             ),
             differ = TokoFoodHomeListDiffer()
         )
     }
 
     private var navToolbar: NavToolbar? = null
+    private var rvHome: RecyclerView? = null
 
     override fun getFragmentTitle(): String? {
         return null
@@ -54,11 +62,22 @@ class TokoFoodHomeFragment: BaseTokofoodFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUi()
         setupNavToolbar()
+        setupRecycleView()
     }
 
     private fun setupUi() {
         view?.apply {
             navToolbar = binding?.navToolbar
+            rvHome = binding?.rvHome
+        }
+    }
+
+    private fun setupRecycleView() {
+        context?.let {
+            rvHome?.apply {
+                adapter = this@TokoFoodHomeFragment.adapter
+                layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
+            }
         }
     }
 
@@ -98,5 +117,22 @@ class TokoFoodHomeFragment: BaseTokofoodFragment() {
     private fun onClickListTransactionButton() {
         //TODO CLICK LIST TRANSACTION
     }
+
+
+    // region TokoFood Home Component Callback
+
+    private fun createLegoBannerCallback(): TokoFoodLegoComponentCallback {
+        return TokoFoodLegoComponentCallback()
+    }
+
+    private fun createBannerCallback(): TokoFoodBannerComponentCallback {
+        return TokoFoodBannerComponentCallback()
+    }
+
+    private fun createCategoryWidgetCallback(): TokoFoodCategoryWidgetV2ComponentCallback {
+        return TokoFoodCategoryWidgetV2ComponentCallback()
+    }
+
+    // endregion
 
 }
