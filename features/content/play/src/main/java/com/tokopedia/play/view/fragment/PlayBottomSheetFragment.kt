@@ -522,14 +522,6 @@ class PlayBottomSheetFragment @Inject constructor(
                                 bottomSheetType = BottomInsetsType.ProductSheet,
                                 toasterType = Toaster.TYPE_ERROR,
                                 message = ErrorHandler.getErrorMessage(requireContext(), event.error))
-                        analytic.clickProductAction(
-                            product = event.product,
-                            cartId = event.cartId,
-                            productAction = ProductAction.Buy,
-                            bottomInsetsType = bottomInsetsType,
-                            shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
-                            sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty,
-                        )
                         }
                         is AtcSuccessEvent -> {
                             val bottomInsetsType = if (event.isVariant) {
