@@ -38,17 +38,13 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy {
-        activity?.let {
-            ViewModelProvider(it, viewModelFactory)
-        }
-    }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
     /**
      * [key] used for unique instance viewModel
      */
-    private val viewModel by lazy { viewModelFragmentProvider?.get(key, CategoryViewModel::class.java) }
-    private val viewModelShared by lazy { viewModelFragmentProvider?.get(ExplicitProfileSharedViewModel::class.java) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(key, CategoryViewModel::class.java) }
+    private val viewModelShared by lazy { viewModelFragmentProvider.get(ExplicitProfileSharedViewModel::class.java) }
 
     private var viewBinding by autoClearedNullable<FragmentExplicitProfileCategoryBinding>()
     private val adapterQuestion = SectionAdapter(this)
@@ -86,12 +82,12 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
         initViews()
         showMainView(false)
         if (templateName.isNotEmpty()) {
-            viewModel?.getQuestion(templateName)
+            viewModel.getQuestion(templateName)
         }
     }
 
     private fun initObservers() {
-        viewModel?.questions?.observe(viewLifecycleOwner) {
+        viewModel.questions.observe(viewLifecycleOwner) {
             when(it) {
                 is ExplicitProfileResult.Loading -> {
                     showLoading(true)
@@ -126,10 +122,10 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
             showMainView(it.sections.isNotEmpty())
 
             viewBinding?.apply {
-                tickerCategory.setHtmlDescription(it.description)
+                tickerCategory.setHtmlDescription(it.property.title)
             }
 
-            viewModelShared?.setDefaultTemplatesData(it)
+            viewModelShared.setDefaultTemplatesData(it)
 
             adapterQuestion.clearAllItems()
             adapterQuestion.setItems(it.sections)
@@ -164,7 +160,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
         }
 
         templeDataModel?.let {
-            viewModelShared?.onAnswerChange(it)
+            viewModelShared.onAnswerChange(it)
         }
     }
 
@@ -195,7 +191,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel?.questions?.removeObservers(this)
+        viewModel.questions.removeObservers(this)
     }
 
     companion object {
