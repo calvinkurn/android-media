@@ -56,8 +56,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
     private var textFieldStaticLabel: String = ""
-
-    private var isClearableState = false
     private var inputFieldType: InputFieldType? = null
 
     private var customInputNumberFormatter: ((String) -> String)? = null
@@ -72,6 +70,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             clearIconView.setOnClickListener {
                 this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon() })
             }
+            editText.imeOptions = EditorInfo.IME_ACTION_DONE
         }
     }
 
@@ -99,8 +98,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                         hideClearIcon()
                         clearErrorState()
                         // if manual input
-                        if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
-                            isClearableState = false
+                        if (abs(before - count) == 1) {
                             isManualInput = true
                         }
                         setLoading(s?.toString()?.isNotEmpty() == true)
@@ -110,13 +108,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
                 setOnEditorActionListener { _, actionId, keyEvent ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        if(isLoading){
-                            isClearableState = true
-                        } else {
-                            clearFocus()
-                            hideIndicatorIcon()
-                            showClearIcon()
-                        }
+                        clearFocus()
                         hideSoftKeyboard()
                     }
                     true
@@ -127,7 +119,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                     if (item is TopupBillsAutoCompleteContactDataView) {
                         setContactName(item.name)
                         mAutoCompleteListener?.onClickAutoComplete(item.name.isNotEmpty())
-                        isClearableState = true
                     }
                 }
             }
@@ -170,14 +161,13 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             }
             sortFilterItem.listener = {
                 setContactName(number.clientName)
-                setInputNumber(number.clientNumber, true)
+                setInputNumber(number.clientNumber)
                 if (number.clientName.isEmpty()) {
                     mFilterChipListener?.onClickFilterChip(false, number.operatorId)
                 } else {
                     mFilterChipListener?.onClickFilterChip(true, number.operatorId)
                 }
                 clearFocusAutoComplete()
-                isClearableState = true
             }
             sortFilter.add(sortFilterItem)
         }
@@ -240,8 +230,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint = textFieldStaticLabel
     }
 
-    fun setInputNumber(inputNumber: String, isAutoFill: Boolean = false) {
-        isClearableState = isAutoFill
+    fun setInputNumber(inputNumber: String) {
         val number = customInputNumberFormatter?.invoke(inputNumber) ?: inputNumber
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.setText(number)
     }
@@ -268,16 +257,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     fun isInputFieldEmpty(): Boolean = binding.clientNumberWidgetBase
         .clientNumberWidgetInputField.editText.text.isEmpty()
 
-    fun showIndicatorIcon() {
-        if (isClearableState) {
-            hideCheckIcon()
-            showClearIcon()
-        } else {
-            hideClearIcon()
-            showCheckIcon()
-        }
-    }
-
     fun setErrorInputField(errorMessage: String) {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.run {
             val temp = textInputLayout.helperText.toString()
@@ -302,7 +281,6 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
 
     private fun onClickClearIcon(){
         clearErrorState()
-        hideIndicatorIcon()
         mInputFieldListener?.onClearInput()
     }
 
@@ -314,35 +292,12 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         this.customInputNumberFormatter = func
     }
 
-    private fun showClearIcon() {
+    fun showClearIcon() {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.clearIconView.showClearIconUnify()
     }
 
-    private fun hideClearIcon() {
+    fun hideClearIcon() {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.clearIconView.hideClearIconUnify()
-    }
-
-    fun hideIndicatorIcon(shouldShowClearIcon: Boolean = false) {
-        if (shouldShowClearIcon && isClearableState) showClearIcon() else hideClearIcon()
-        hideCheckIcon()
-    }
-
-    fun setClearable() {
-        binding.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-            isClearableState = true
-            if (!isLoading) {
-                clearFocus()
-                hideIndicatorIcon(true)
-            }
-        }
-    }
-
-    private fun showCheckIcon() {
-        binding.clientNumberWidgetBase.clientNumberWidgetInputField.icon1.show()
-    }
-
-    private fun hideCheckIcon() {
-        binding.clientNumberWidgetBase.clientNumberWidgetInputField.icon1.hide()
     }
 
     fun clearFocusAutoComplete() {

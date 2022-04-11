@@ -1,14 +1,12 @@
 package com.tokopedia.digital_product_detail.presentation.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -149,7 +147,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpTagihanListrikClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -230,11 +228,10 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.first.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
                     setErrorInputField(msg.first)
                     if (msg.second) {
                         showErrorToaster(MessageErrorException(msg.first))
@@ -279,7 +276,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
                 inputNumberActionType = InputNumberActionType.NOTHING
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             }
         }
 
@@ -382,11 +379,11 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber, true)
+                    setInputNumber(prefill.clientNumber)
                 }
             }
         }
@@ -658,7 +655,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -891,7 +888,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
                     val scanResult = data.getStringExtra(DigitalPDPConstant.EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
                         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
-                            setInputNumber(scanResult, true)
+                            setInputNumber(scanResult)
                         }
                     }
                 }

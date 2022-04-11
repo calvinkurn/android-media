@@ -171,7 +171,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpTokenListrikClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -325,11 +325,10 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpTokenListrikClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon()
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -570,11 +569,11 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
-                    setInputNumber(prefill.clientNumber, true)
+                    setInputNumber(prefill.clientNumber)
                 }
             }
         }
@@ -787,7 +786,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
 
         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 
@@ -880,7 +879,12 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
     }
 
     override fun isKeyboardShown(): Boolean {
-        return keyboardWatcher.isKeyboardOpened
+        context?.let {
+            val inputMethodManager =
+                it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            return inputMethodManager.isAcceptingText
+        }
+        return false
     }
     //endregion
 
@@ -1137,7 +1141,7 @@ class DigitalPDPTokenListrikFragment : BaseDaggerFragment(),
                     val scanResult = data.getStringExtra(EXTRA_QR_PARAM)
                     if (!scanResult.isNullOrEmpty()) {
                         binding?.rechargePdpTokenListrikClientNumberWidget?.run {
-                            setInputNumber(scanResult, true)
+                            setInputNumber(scanResult)
                         }
                     }
                 }

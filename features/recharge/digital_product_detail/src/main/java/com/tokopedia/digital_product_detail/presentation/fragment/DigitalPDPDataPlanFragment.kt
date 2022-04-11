@@ -199,7 +199,7 @@ class DigitalPDPDataPlanFragment :
                 }
 
                 override fun onKeyboardHidden() {
-                    binding?.rechargePdpPaketDataClientNumberWidget?.setClearable()
+                    // do nothing
                 }
             })
         }
@@ -233,7 +233,7 @@ class DigitalPDPDataPlanFragment :
         if (!clientNumber.isNullOrEmpty()) {
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
                 inputNumberActionType = InputNumberActionType.NOTHING
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             }
         }
 
@@ -448,11 +448,10 @@ class DigitalPDPDataPlanFragment :
         viewModel.clientNumberValidatorMsg.observe(viewLifecycleOwner, { msg ->
             binding?.rechargePdpPaketDataClientNumberWidget?.run {
                 setLoading(false)
+                showClearIcon()
                 if (msg.isEmpty()) {
-                    showIndicatorIcon()
                     clearErrorState()
                 } else {
-                    hideIndicatorIcon(shouldShowClearIcon = true)
                     setErrorInputField(msg)
                     onHideBuyWidget()
                 }
@@ -572,7 +571,7 @@ class DigitalPDPDataPlanFragment :
         inputNumberActionType = InputNumberActionType.NOTHING
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             if (clientNumber.isNotEmpty()) {
-                setInputNumber(clientNumber, true)
+                setInputNumber(clientNumber)
             } else {
                 if (isInputFieldEmpty()) {
                     setContactName(prefill.clientName)
@@ -950,7 +949,7 @@ class DigitalPDPDataPlanFragment :
 
         binding?.rechargePdpPaketDataClientNumberWidget?.run {
             setContactName(clientName)
-            setInputNumber(clientNumber, true)
+            setInputNumber(clientNumber)
         }
     }
 

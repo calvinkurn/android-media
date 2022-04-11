@@ -57,8 +57,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
     private var autoCompleteAdapter: TopupBillsAutoCompleteAdapter? = null
 
     private var textFieldStaticLabel: String = ""
-
-    private var isClearableState = false
     private var inputFieldType: InputFieldType? = null
 
     // this custom formatter will be used when user call getInputNumber & setInputNumber
@@ -74,6 +72,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             clearIconView.setOnClickListener {
                 this.onClickClearIconUnify(textFieldStaticLabel, { onClickClearIcon()})
             }
+            editText.imeOptions = EditorInfo.IME_ACTION_DONE
         }
     }
 
@@ -112,7 +111,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                         clearErrorState()
                         // if manual input
                         if (abs(before - count) == 1 && mInputFieldListener?.isKeyboardShown() == true) {
-                            isClearableState = false
                             isManualInput = true
                         }
                         setLoading(s?.toString()?.isNotEmpty() == true)
@@ -133,7 +131,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     if (item is TopupBillsAutoCompleteContactDataView) {
                         setContactName(item.name)
                         mAutoCompleteListener?.onClickAutoComplete(item.name.isNotEmpty())
-                        isClearableState = true
                     }
                 }
             }
@@ -177,7 +174,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
             sortFilterItem.listener = {
                 setContactName(number.clientName)
-                setInputNumber(number.clientNumber, true)
+                setInputNumber(number.clientNumber)
 
                 if (number.clientName.isEmpty()) {
                     mFilterChipListener?.onClickFilterChip(false, number.operatorId)
@@ -185,7 +182,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
                     mFilterChipListener?.onClickFilterChip(true, number.operatorId)
                 }
                 clearFocusAutoComplete()
-                isClearableState = true
             }
             sortFilter.add(sortFilterItem)
         }
@@ -216,7 +212,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     private fun onClickClearIcon(){
         clearErrorState()
-        hideIndicatorIcon()
         hideOperatorIcon()
         mInputFieldListener?.onClearInput()
     }
@@ -237,9 +232,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
             inputFieldType = type
             clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
                 editText.inputType = type.inputType
-                icon1.run {
-                    setImageDrawable(getIconUnifyDrawable(context, IconUnify.CHECK))
-                }
                 icon2.run {
                     setImageDrawable(getIconUnifyDrawable(context, type.iconUnifyId))
                     setOnClickListener { mInputFieldListener?.onClickNavigationIcon() }
@@ -255,8 +247,7 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.textInputLayout.hint = textFieldStaticLabel
     }
 
-    fun setInputNumber(inputNumber: String, isAutoFill: Boolean = false) {
-        isClearableState = isAutoFill
+    fun setInputNumber(inputNumber: String) {
         val number = customInputNumberFormatter?.invoke(inputNumber) ?: inputNumber
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.editText.setText(number)
     }
@@ -278,39 +269,6 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
 
     fun setLoading(isLoading: Boolean) {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
-    }
-
-    fun showIndicatorIcon() {
-        if (isClearableState) {
-            hideCheckIcon()
-            showClearIcon()
-        } else {
-            hideClearIcon()
-            showCheckIcon()
-        }
-    }
-
-    fun hideIndicatorIcon(shouldShowClearIcon: Boolean = false) {
-        if (shouldShowClearIcon && isClearableState) showClearIcon() else hideClearIcon()
-        hideCheckIcon()
-    }
-
-    fun setClearable() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.run {
-            isClearableState = true
-            if (!isLoading) {
-                clearFocus()
-                hideIndicatorIcon(true)
-            }
-        }
-    }
-
-    private fun showCheckIcon() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.icon1.show()
-    }
-
-    private fun hideCheckIcon() {
-        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.icon1.hide()
     }
 
     fun isErrorMessageShown(): Boolean = binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.isInputError
@@ -370,11 +328,11 @@ class RechargeClientNumberWidget @JvmOverloads constructor(@NotNull context: Con
         this.customInputNumberFormatter = func
     }
 
-    private fun showClearIcon() {
+    fun showClearIcon() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.clearIconView.showClearIconUnify()
     }
 
-    private fun hideClearIcon() {
+    fun hideClearIcon() {
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetInputField.clearIconView.hideClearIconUnify()
     }
 
