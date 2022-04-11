@@ -37,14 +37,9 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy {
-        activity?.let {
-            ViewModelProvider(it, viewModelFactory)
-        }
-    }
-
-    private val viewModel by lazy { viewModelFragmentProvider?.get(ExplicitProfileViewModel::class.java) }
-    private val viewModelShared by lazy { viewModelFragmentProvider?.get(ExplicitProfileSharedViewModel::class.java) }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelFragmentProvider.get(ExplicitProfileViewModel::class.java) }
+    private val viewModelShared by lazy { viewModelFragmentProvider.get(ExplicitProfileSharedViewModel::class.java) }
 
     private var viewBinding by autoClearedNullable<FragmentExplicitProfileBinding>()
     private var pageAdapter: ExplicitProfilePageAdapter? = null
@@ -72,11 +67,11 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
         setupToolbar()
         setupViews()
 
-        viewModel?.getAllCategories()
+        viewModel.getAllCategories()
     }
 
     private fun initObservers() {
-        viewModel?.explicitCategories?.observe(viewLifecycleOwner) {
+        viewModel.explicitCategories.observe(viewLifecycleOwner) {
             when(it) {
                 is ExplicitProfileResult.Loading -> {
                     showLoading(true)
@@ -92,7 +87,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
             }
         }
 
-        viewModel?.saveAnswers?.observe(viewLifecycleOwner) {
+        viewModel.saveAnswers.observe(viewLifecycleOwner) {
             when(it) {
                 is ExplicitProfileResult.Loading -> {
                     showLoading(true)
@@ -111,7 +106,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModelShared?.userAnswers?.collectLatest {
+            viewModelShared.userAnswers.collectLatest {
                 onSelectionAnswersChange(it)
             }
         }
@@ -135,7 +130,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
 
             btnSave.setOnClickListener {
                 if (templatesDataModel.isNotEmpty()) {
-                    viewModel?.saveShoppingPreferences(templatesDataModel)
+                    viewModel.saveShoppingPreferences(templatesDataModel)
                 }
             }
         }
@@ -236,7 +231,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
             }?.sections = newTemplateDataModel.sections
         }
 
-        viewModelShared?.isAnswersSameWithDefault()?.let {
+        viewModelShared.isAnswersSameWithDefault().let {
             viewBinding?.btnSave?.isEnabled = !it
         }
     }
@@ -261,7 +256,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
                 setDescription(getString(R.string.explicit_profile_back_dialog_desc))
                 setPrimaryCTAText(getString(R.string.explicit_profile_save))
                 setPrimaryCTAClickListener {
-                    viewModel?.saveShoppingPreferences(templatesDataModel)
+                    viewModel.saveShoppingPreferences(templatesDataModel)
                     this.dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.explicit_profile_back_dialog_exit))
@@ -274,7 +269,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        if (viewModelShared?.isAnswersSameWithDefault() != true) {
+        if (!viewModelShared.isAnswersSameWithDefault()) {
             showDialogDiscard()
         } else {
             successSaveShoppingPreference(false)
@@ -284,7 +279,8 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel?.explicitCategories?.removeObservers(this)
+        viewModel.explicitCategories.removeObservers(this)
+        viewModel.saveAnswers.removeObservers(this)
         pageAdapter?.clearFragments()
     }
 
