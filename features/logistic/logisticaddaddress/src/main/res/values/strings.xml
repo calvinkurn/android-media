@@ -209,4 +209,6 @@
     <string name="error_district_pinpoint_mismatch"><![CDATA[Oops, kota & kecamatan harus sama dengan pinpoint.]]></string>
     <string name="change_pinpoint_outside_district"><![CDATA[Pinpoint, kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.]]></string>
     <string name="change_pinpoint_edit_address">Pinpoint-mu berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.</string>
+    <string name="pinpoint_title">Pinpoint</string>
+    <string name="success_add_phone_number">Nomor HP berhasil ditambahkan!</string>
 </resources>

@@ -158,6 +158,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
             val phoneNumberOnly = removeSpecialChars(contact?.contactNumber.toString())
             binding?.formAccount?.etNomorHp?.textFieldInput?.setText(phoneNumberOnly)
+            view?.let { view -> Toaster.build(view, getString(R.string.success_add_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
         } else if (requestCode == REQUEST_PINPONT_PAGE && resultCode == Activity.RESULT_OK) {
             val isResetToSearchPage = data?.getBooleanExtra(EXTRA_RESET_TO_SEARCH_PAGE, false) ?: false
             if (isResetToSearchPage) {
@@ -402,6 +403,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 showPositiveLayout()
 
                 cardAddress.addressDistrict.text = formattedAddress
+                cardAddress.tvPinpointTitle.visibility = View.VISIBLE
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
@@ -457,6 +459,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
+        val addressDetail = if (data.addressDetailNotes.isEmpty()) data.address1 else data.addressDetailStreet
+
         if (!isPositiveFlow) {
             setOnTouchLabelAddress(ANA_NEGATIVE)
             setupRvLabelAlamatChips()
@@ -484,7 +488,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
                 }
                 formAddressNegative.etLabel.textFieldInput.setText(data.addrName)
-                formAddressNegative.etAlamat.textFieldInput.setText(data.addressDetailStreet)
+                formAddressNegative.etAlamat.textFieldInput.setText(addressDetail)
                 formAddressNegative.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddressNegative.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etLabel.textFieldWrapper, null))
                 formAddressNegative.etAlamat.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etAlamat.textFieldWrapper, null))
@@ -504,7 +508,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
 
                 cardAddress.addressDistrict.text = formattedAddress
-                formAddress.etAlamatNew.textFieldInput.setText(data.addressDetailStreet)
+                formAddress.etAlamatNew.textFieldInput.setText(addressDetail)
                 formAddress.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddress.etLabel.textFieldInput.setText(data.addrName)
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
@@ -699,6 +703,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.isNotEmpty() && s.length < 9) {
                     setWrapperError(wrapper, textWatcher)
+                } else if (s.isEmpty() && isEdit) {
+                    setWrapperError(wrapper, getString(R.string.tv_error_field))
                 } else {
                     setWrapperError(wrapper, null)
                 }
@@ -1131,7 +1137,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
         binding?.run {
             if (isPositiveFlow) {
-                formAddress.rvLabelAlamatChips.visibility = View.GONE
+                if (!isEdit) {
+                    formAddress.rvLabelAlamatChips.visibility = View.GONE
+                }
                 formAddress.etLabel.textFieldInput.run {
                     if (!isEdit) {
                         AddNewAddressRevampAnalytics.onClickChipsLabelAlamatPositive(userSession.userId)
@@ -1142,7 +1150,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     setSelection(formAddress.etLabel.textFieldInput.text.length)
                 }
             } else {
-                formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
+                if (!isEdit) {
+                    formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
+                }
                 formAddressNegative.etLabel.textFieldInput.run {
                     if (!isEdit) {
                         AddNewAddressRevampAnalytics.onClickChipsLabelAlamatNegative(userSession.userId)
