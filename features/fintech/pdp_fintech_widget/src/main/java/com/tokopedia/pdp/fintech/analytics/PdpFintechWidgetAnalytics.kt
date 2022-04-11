@@ -46,7 +46,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
             clickEvent,
             eventCategory,
             clickPdpFintechWidget,
-            "$productId - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl"
+            "$productId - true - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl"
         )
         sendGeneralEvent(map)
 
