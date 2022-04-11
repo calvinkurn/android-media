@@ -1,0 +1,99 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_height="44dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_toolbar_purchase"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_back_arrow"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            app:icon_name="ARROW_BACK"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_shop_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@+id/icon_back_arrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="Kopi Janji Jiwa, Priok" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_shop_distance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="@+id/text_shop_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_shop_name"
+            app:typographyType="body_3"
+            tools:text="Jarak Pengiriman: 0,5 km" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_toolbar_purchase_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_toolbal_purchase_1"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_toolbal_purchase_2"
+            android:layout_width="168dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toEndOf="@+id/loader_toolbal_purchase_1"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loader_toolbal_purchase_3"
+            android:layout_width="115dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toStartOf="@+id/loader_toolbal_purchase_2"
+            app:layout_constraintTop_toBottomOf="@+id/loader_toolbal_purchase_2"
+            app:loader_corner_radius="4dp"
+            app:loader_type="rect" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

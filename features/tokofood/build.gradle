@@ -43,13 +43,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.filter)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.searchbar)
-    implementation projectOrAar(rootProject.ext.features.minicart)
     implementation projectOrAar(rootProject.ext.features.atc_common)
     implementation projectOrAar(rootProject.ext.features.productDetailCommon)
     implementation projectOrAar(rootProject.ext.features.stickyLogin)
     implementation projectOrAar(rootProject.ext.features.cart_common)
     implementation projectOrAar(rootProject.ext.features.carouselProductCard)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
+    implementation projectOrAar(rootProject.ext.features.logisticCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -77,6 +77,9 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.list
     implementation rootProject.ext.unifyDependencies.dateFilter
+    implementation rootProject.ext.unifyDependencies.explore_promo
+    implementation rootProject.ext.unifyDependencies.total_amount
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -96,6 +99,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.miscDependencies.flexBoxLayout
 
     implementation rootProject.ext.networkDependencies.glide
 

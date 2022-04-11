@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
+
+    <com.tokopedia.unifycomponents.TextAreaUnify2
+        android:id="@+id/text_field_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_text_field_counter="200"
+        app:unify_text_field_input_type="text"
+        app:unify_text_field_label="Contoh: Jangan pedas, ya!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_save_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Simpan"
+        app:layout_constraintTop_toBottomOf="@+id/text_field_note" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.home.presentation.TokoFoodHomeFragment
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 
 class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
 
@@ -20,7 +21,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
     }
 
     override fun getRootFragment(): Fragment {
-        return TokoFoodHomeFragment()
+        return TokoFoodPurchaseFragment.createInstance()
     }
 
     override fun mapUriToFragment(uri: Uri): Fragment? {

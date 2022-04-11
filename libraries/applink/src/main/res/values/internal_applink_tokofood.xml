@@ -7,4 +7,5 @@
 
     <!--path-->
     <string name="path_tokofood_discovery" translatable="false">/discovery</string>
+    <string name="path_tokofood_purchase" translatable="false">/purchase</string>
 </resources>
