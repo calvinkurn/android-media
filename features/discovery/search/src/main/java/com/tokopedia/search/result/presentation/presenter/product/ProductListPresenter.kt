@@ -2254,8 +2254,10 @@ class ProductListPresenter @Inject constructor(
         if(product.isOrganicAds) sendTrackingImpressInspirationCarouselAds(product)
 
         when(product.layout) {
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID -> view.trackEventImpressionInspirationCarouselGridItem(product)
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS -> view.trackEventImpressionInspirationCarouselChipsItem(product)
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID ->
+                view.trackEventImpressionInspirationCarouselGridItem(product)
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
+                view.trackEventImpressionInspirationCarouselChipsItem(product)
             else -> view.trackEventImpressionInspirationCarouselListItem(product)
         }
     }
@@ -2277,8 +2279,10 @@ class ProductListPresenter @Inject constructor(
         view.redirectionStartActivity(product.applink, product.url)
 
         when(product.layout) {
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID -> view.trackEventClickInspirationCarouselGridItem(product)
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS -> view.trackEventClickInspirationCarouselChipsItem(product)
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID ->
+                view.trackEventClickInspirationCarouselGridItem(product)
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
+                view.trackEventClickInspirationCarouselChipsItem(product)
             else -> view.trackEventClickInspirationCarouselListItem(product)
         }
 

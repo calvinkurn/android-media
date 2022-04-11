@@ -1433,7 +1433,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 trackingQueue,
                 product.inspirationCarouselType,
                 queryKey,
-                products
+                products,
             )
         }
     }

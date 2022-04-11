@@ -34,7 +34,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList("list",true)
-        `When broad match product impressed`(inspirationCarouselProduct)
+        `When inspiration carousel product impressed`(inspirationCarouselProduct)
 
         `Then verify inspiration carousel product top ads impressed`(inspirationCarouselProduct)
         `Then verify interaction for Inspiration Carousel Product List impression`(
@@ -48,7 +48,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList("list",false)
-        `When broad match product impressed`(inspirationCarouselProduct)
+        `When inspiration carousel product impressed`(inspirationCarouselProduct)
 
         `Then verify interaction for Inspiration Carousel Product List impression`(
             inspirationCarouselProduct
@@ -90,7 +90,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         productListPresenter.loadData(mapOf())
     }
 
-    private fun `When broad match product impressed`(product: InspirationCarouselDataView.Option.Product) {
+    private fun `When inspiration carousel product impressed`(product: InspirationCarouselDataView.Option.Product) {
         productListPresenter.onInspirationCarouselProductImpressed(product)
     }
 
@@ -150,7 +150,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList("grid",true)
-        `When broad match product impressed`(inspirationCarouselProduct)
+        `When inspiration carousel product impressed`(inspirationCarouselProduct)
 
         `Then verify inspiration carousel product top ads impressed`(inspirationCarouselProduct)
         `Then verify interaction for Inspiration Carousel Product Grid impression`(
@@ -164,7 +164,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList("grid",false)
-        `When broad match product impressed`(inspirationCarouselProduct)
+        `When inspiration carousel product impressed`(inspirationCarouselProduct)
 
         `Then verify interaction for Inspiration Carousel Product Grid impression`(
             inspirationCarouselProduct
@@ -179,7 +179,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList("chips",true)
-        `When broad match product impressed`(inspirationCarouselProduct)
+        `When inspiration carousel product impressed`(inspirationCarouselProduct)
 
         `Then verify inspiration carousel product top ads impressed`(inspirationCarouselProduct)
         `Then verify interaction for Inspiration Carousel Product Chips Item impression`(
@@ -193,7 +193,7 @@ internal class SearchProductHandleInspirationCarouselImpressionTest :
         `Given View already load data with inspiration carousel`(searchProductModel)
 
         val inspirationCarouselProduct = findInspirationCarouselProductFromVisitableList("chips",false)
-        `When broad match product impressed`(inspirationCarouselProduct)
+        `When inspiration carousel product impressed`(inspirationCarouselProduct)
 
         `Then verify interaction for Inspiration Carousel Product Chips Item impression`(
             inspirationCarouselProduct
