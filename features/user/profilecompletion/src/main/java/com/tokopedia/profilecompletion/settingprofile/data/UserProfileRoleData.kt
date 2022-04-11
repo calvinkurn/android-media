@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserProfileRoleData(
-        @SerializedName("userProfileRole")
-        @Expose
-        var profileRoleData: ProfileRoleData = ProfileRoleData()
+    @SerializedName("userProfileRole")
+    @Expose
+    var profileRoleData: ProfileRoleData = ProfileRoleData()
 )

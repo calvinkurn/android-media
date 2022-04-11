@@ -4,6 +4,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.presentation.data.TagihanDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -17,6 +18,7 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     private val dataFactory = TagihanDataFactory()
     private val mapAtcFactory = DigitalAtcMapper()
+    private val persoMapperFactory = DigitalPersoMapper()
 
     @Test
     fun `given menuDetail loading state then should get loading state`() {
@@ -54,53 +56,31 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData()
-        onGetFavoriteNumber_thenReturn(response)
+        val response = dataFactory.getFavoriteNumberData(false)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf(), listOf())
-        verifyGetFavoriteNumberRepoChipsGetCalled()
-        verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
+        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
+        verifyGetFavoriteNumberChipsRepoGetCalled()
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give fail result`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
+    fun `when getting favoriteNumber without prefill (or any type) should run and give success result with empty default`() {
+        val response = dataFactory.getFavoriteNumberData(false)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf(), listOf())
-        verifyGetFavoriteNumberRepoChipsGetCalled()
-        verifyGetFavoriteNumberFail()
+        viewModel.getFavoriteNumbers(listOf(), listOf(), listOf())
+        verifyGetFavoriteNumberChipsRepoGetCalled()
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
-
-    @Test
-    fun `given autoComplete loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setAutoCompleteLoading()
-        verifyGetAutoCompleteLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting autoComplete should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
-            val response = dataFactory.getFavoriteNumberData()
-            onGetAutoComplete_thenReturn(response)
-
-            viewModel.getAutoComplete(listOf(), listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
-        }
-
-    @Test
-    fun `when getting autoComplete should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
-            onGetAutoComplete_thenReturn(NullPointerException())
-
-            viewModel.getAutoComplete(listOf(), listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteFail()
-        }
 
     @Test
     fun `given catalogSelectGroup loading state then should get loading state`() {
@@ -279,42 +259,6 @@ class DigitalPDPTagihanViewModelTest: DigitalPDPTagihanViewModelTestFixture() {
     fun `given validatorJob null when implicit setValidatorJob executed should update validatorJob to non-null`() {
         viewModel.validatorJob = Job()
         verifyValidatorJobIsNotNull()
-    }
-
-    @Test
-    fun `when getting inquiry should run and give success result`() {
-        val response = dataFactory.getInquiry()
-        onGetInquiry_thenReturn(response)
-
-        viewModel.inquiry(
-            TagihanDataFactory.PRODUCT_ID,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
-            mapOf()
-        )
-        val expectedResult = dataFactory.getInquiry()
-        verifyInquiryProductRepoGetCalled()
-        verifyGetInquiryProductSuccess(expectedResult)
-    }
-
-    @Test
-    fun `given inquiry loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setInquiryLoading()
-        verifyGetInquiryProductLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting inquiry should run and give fail result`() {
-        onGetInquiry_thenReturn(NullPointerException())
-
-        viewModel.inquiry(
-            TagihanDataFactory.PRODUCT_ID,
-            TagihanDataFactory.VALID_CLIENT_NUMBER,
-            mapOf()
-        )
-        verifyInquiryProductRepoGetCalled()
-        verifyGetInquiryProductFail()
     }
 
     @Test

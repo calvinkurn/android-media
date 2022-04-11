@@ -67,6 +67,9 @@ enum class ComponentNames(val componentName: String) {
     ProductCardSingle("product_card_single"),
     ProductCardSingleItem("product_card_single_item"),
 
+//    Empty Item for MixLeft
+    MixLeftEmptyItem("mix_left_empty_item"),
+
     //Quick Filter
     QuickFilter("chips_filter_v2"),
 

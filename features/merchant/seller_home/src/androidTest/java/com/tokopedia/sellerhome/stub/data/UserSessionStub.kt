@@ -20,6 +20,7 @@ class UserSessionStub @Inject constructor(
     private var mockSasShop = true
     private var mockIsLoggedIn = true
 
+    override fun isShopOwner(): Boolean = true
 
     override fun getUserId(): String {
         return mockUserId

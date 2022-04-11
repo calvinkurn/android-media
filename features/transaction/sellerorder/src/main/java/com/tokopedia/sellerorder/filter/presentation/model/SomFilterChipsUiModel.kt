@@ -1,12 +1,11 @@
 package com.tokopedia.sellerorder.filter.presentation.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
+@kotlinx.parcelize.Parcelize
 data class SomFilterChipsUiModel(
         val idList: List<Int> = listOf(),
-        val id: Int = 0,
+        val id: Long = 0,
         val name: String = "", //equal order_status
         val key: String = "", //equal key of status_list
         var idFilter: String = "",
@@ -14,7 +13,7 @@ data class SomFilterChipsUiModel(
         val amount: Int = 0,
         var childStatus: List<ChildStatusUiModel> = listOf()
 ): Parcelable {
-    @Parcelize
+    @kotlinx.parcelize.Parcelize
     data class ChildStatusUiModel(
             val childId: List<Int> = listOf(),
             val key: String = "",

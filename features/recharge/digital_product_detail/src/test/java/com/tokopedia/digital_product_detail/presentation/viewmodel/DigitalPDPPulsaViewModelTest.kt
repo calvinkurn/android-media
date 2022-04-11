@@ -5,6 +5,7 @@ import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -22,6 +23,7 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     private val dataFactory = PulsaDataFactory()
     private val mapperFactory = DigitalDenomMapper()
+    private val persoMapperFactory = DigitalPersoMapper()
     private val mapAtcFactory = DigitalAtcMapper()
 
     @Test
@@ -90,53 +92,30 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
     @Test
     fun `when getting favoriteNumber should run and give success result`() {
-        val response = dataFactory.getFavoriteNumberData()
-        onGetFavoriteNumber_thenReturn(response)
+        val response = dataFactory.getFavoriteNumberData(false)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberSuccess(response.persoFavoriteNumber.items)
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
     }
 
     @Test
-    fun `when getting favoriteNumber should run and give success fail`() {
-        onGetFavoriteNumber_thenReturn(NullPointerException())
+    fun `when getting favoriteNumber without prefill should run and give success result`() {
+        val response = dataFactory.getFavoriteNumberData(false)
+        val mappedResponse = persoMapperFactory.mapDigiPersoFavoriteToModel(response)
+        onGetFavoriteNumber_thenReturn(mappedResponse)
 
-        viewModel.getFavoriteNumber(listOf())
+        viewModel.getFavoriteNumbers(listOf(), listOf())
         verifyGetFavoriteNumberChipsRepoGetCalled()
-        verifyGetFavoriteNumberFail()
+        verifyGetFavoriteNumberChipsSuccess(mappedResponse.favoriteChips)
+        verifyGetFavoriteNumberListSuccess(mappedResponse.autoCompletes)
+        verifyGetFavoriteNumberPrefillSuccess(mappedResponse.prefill)
+        verifyGetFavoriteNumberPrefillEmpty()
     }
-
-    @Test
-    fun `given autoComplete loading state then should get loading state`() {
-        val loadingResponse = RechargeNetworkResult.Loading
-
-        viewModel.setAutoCompleteLoading()
-        verifyGetAutoCompleteLoading(loadingResponse)
-    }
-
-    @Test
-    fun `when getting autoComplete should run and give success result`() =
-        testCoroutineRule.runBlockingTest {
-            val response = dataFactory.getFavoriteNumberData()
-            onGetAutoComplete_thenReturn(response)
-
-            viewModel.getAutoComplete(listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteSuccess(response.persoFavoriteNumber.items)
-        }
-
-    @Test
-    fun `when getting autoComplete should run and give success fail`() =
-        testCoroutineRule.runBlockingTest {
-            onGetAutoComplete_thenReturn(NullPointerException())
-
-            viewModel.getAutoComplete(listOf())
-            skipAutoCompleteDelay()
-            verifyGetFavoriteNumberListRepoGetCalled()
-            verifyGetAutoCompleteFail()
-        }
 
     @Test
     fun `given catalogPrefixSelect loading state then should get loading state`() {
@@ -301,6 +280,25 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
 
         viewModel.onResetSelectedProduct()
         verifySelectedGridProductEmpty()
+    }
+
+    @Test
+    fun `given selectedFullProduct position default when updateSelectedPositionId should update position `() {
+        viewModel.selectedGridProduct = SelectedProduct()
+        val newPosition = 2
+
+        viewModel.updateSelectedPositionId(newPosition)
+        verifyUpdateSelectedPositionIdTrue(newPosition)
+    }
+
+    @Test
+    fun `given selectedFullProduct position null when updateSelectedPositionId should not update position `() {
+        viewModel.selectedGridProduct = SelectedProduct()
+        val newPosition = null
+        val defaultPosition = -1
+
+        viewModel.updateSelectedPositionId(newPosition)
+        verifyUpdateSelectedPositionIdTrue(defaultPosition)
     }
 
     @Test

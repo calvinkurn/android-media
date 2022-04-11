@@ -1,39 +1,32 @@
 package com.tokopedia.digital_product_detail.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberData
+import com.tokopedia.digital_product_detail.data.mapper.DigitalPersoMapper
 import com.tokopedia.digital_product_detail.domain.repository.RechargeFavoriteNumberRepository
-import com.tokopedia.common.topupbills.favorite.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.digital_product_detail.domain.model.FavoriteGroupModel
+import com.tokopedia.digital_product_detail.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RechargeFavoriteNumberRepositoryImpl @Inject constructor(
     private val getRechargeFavoriteNumberUseCase: GetRechargeFavoriteNumberUseCase,
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val digitalPersoMapper: DigitalPersoMapper
 ): RechargeFavoriteNumberRepository {
 
-    override suspend fun getFavoriteNumberChips(
+    override suspend fun getFavoriteNumbers(
+        favoriteNumberTypes: List<FavoriteNumberType>,
         categoryIds: List<Int>,
         operatorIds: List<Int>
-    ): TopupBillsPersoFavNumberData = withContext(dispatchers.io) {
-
-        return@withContext getRechargeFavoriteNumberUseCase.apply {
-            setRequestParams(categoryIds, operatorIds, CHANNEL_FAVORITE_NUMBER_CHIP)
+    ): FavoriteGroupModel = withContext(dispatchers.io) {
+        val data = getRechargeFavoriteNumberUseCase.apply {
+            clearRequests()
+            favoriteNumberTypes.forEach {
+                addFavoriteNumberByChannel(it, categoryIds, operatorIds)
+            }
         }.executeOnBackground()
-    }
 
-    override suspend fun getFavoriteNumberList(
-        categoryIds: List<Int>,
-        operatorIds: List<Int>
-    ): TopupBillsPersoFavNumberData = withContext(dispatchers.io) {
-
-        return@withContext getRechargeFavoriteNumberUseCase.apply {
-            setRequestParams(categoryIds, operatorIds, CHANNEL_FAVORITE_NUMBER_LIST)
-        }.executeOnBackground()
-    }
-
-    companion object {
-        const val CHANNEL_FAVORITE_NUMBER_CHIP = "favorite_number_chips"
-        const val CHANNEL_FAVORITE_NUMBER_LIST = "favorite_number_list"
+        return@withContext digitalPersoMapper.mapDigiPersoFavoriteToModel(data)
     }
 }

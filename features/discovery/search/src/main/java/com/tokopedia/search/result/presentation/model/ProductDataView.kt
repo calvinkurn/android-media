@@ -31,6 +31,7 @@ class ProductDataView {
     var lastFilterDataView = LastFilterDataView()
     var pageComponentId = ""
     var violation: ViolationDataView? = null
+    var backendFilters: String = ""
 
     fun isAdvancedNegativeKeywordSearch(): Boolean {
         if (keywordProcess.isNullOrEmpty()) return false

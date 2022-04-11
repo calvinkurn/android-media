@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
 
 internal class CarouselProductCardItemDecorator(val dimen : Int? = null) : RecyclerView.ItemDecoration() {
+    var isMixLeftPresent = false
     override fun getItemOffsets(outRect: Rect,
                                 view: View,
                                 parent: RecyclerView,
@@ -20,5 +21,7 @@ internal class CarouselProductCardItemDecorator(val dimen : Int? = null) : Recyc
         } else if (itemCount > 0 && itemPosition == itemCount - 1) {
             outRect.right = dimen ?: view.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         }
+        if(isMixLeftPresent)
+            outRect.bottom = view.context.resources.getDimensionPixelSize(R.dimen.dp_10)
     }
 }

@@ -24,8 +24,8 @@
     <string name="tokopedianow_home_choose_address_widget_coachmark_description">Biar pengalaman belanja lebih asyik &amp; dapatkan rekomendasi barang terdekat dari alamatmu.</string>
     <string name="tokopedianow_home_share_thumbnail_title">Tokopedia NOW!</string>
     <string name="tokopedianow_home_share_thumbnail_title_ss">Screenshot dan link tersimpan</string>
-    <string name="tokopedianow_home_share_title">Supermarket Online - Grocery Online Terlengkap | Tokopedia NOW!</string>
-    <string name="tokopedianow_home_share_desc">Nikmati Pengalaman Belanja Kebutuhan Sehari-hari Online Selama 24 Jam Terlengkap . Dapatkan Promo Khusus &amp; Pengiriman 2 Jam Tiba Hanya di Tokopedia NOW!</string>
+    <string name="tokopedianow_home_share_title">Belanja Sembako Online Langsung Kirim Sekarang | Tokopedia Now</string>
+    <string name="tokopedianow_home_share_desc">Belanja kebutuhan sehari-hari 🛒✨. Dapatkan Promo Khusus ✅, Bebas Ongkir ✅ dan 2 jam sampai tujuan ✈️ Hanya di Tokopedia Now</string>
     <string name="tokopedianow_home_share_main_text">Belanja di Tokopedia NOW! sampai dalam 2 jam. Produknya pasti tersedia, lho! </string>
 
     <string name="tokopedianow_search_title">Hasil pencarian di Tokopedia NOW!</string>
@@ -58,7 +58,7 @@
     <string name="tokopedianow_home_educational_information_duration_bottomsheet"><![CDATA[<font color=\'%2$s\'><b>%1$s tiba.</b></font> Terima belanjaan dalam %1$s setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
     <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Stok pasti tersedia.</b></font> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
-    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">Pelajari</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">di sini</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_title">Untungnya pakai Tokopedia NOW!</string>
 
@@ -131,7 +131,21 @@
     <string name="tokopedianow_search_category_title_two_hours">Belanja 2 Jam Tiba</string>
     <string name="tokopedianow_search_category_subtitle">Tiba dalam %1$s</string>
 
+    <string name="tokopedianow_category_share_main_text">Belanja %1$s di Tokopedia NOW! sampai dalam 2 jam. Produknya pasti tersedia, lho!</string>
+    <string name="tokopedianow_category_share_title">Jual %1$s Langsung Kirim Sekarang | Tokopedia Now</string>
+    <string name="tokopedianow_category_share_desc">Belanja %1$s terlengkap dan berkualitas 🛒✨. Dapatkan Promo Khusus ✅, Bebas Ongkir ✅ dan 2 jam sampai tujuan ✈️ Hanya di Tokopedia Now</string>
+
     <string name="tokopedianow_15m_empty_state_title">Tunggu Tokopedia NOW! 15 menit tiba tersedia di lokasimu</string>
     <string name="tokopedianow_15m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_15m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
+
+    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu belanja di Tokopedia NOW!, <b>dapat kupon cashback hingga Rp200rb.</b> <font color=\'%1$s\'><a href=\'%2$s\'>Selengkapnya</a></font>]]></string>
+    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan <b>kupon cashback Rp20rb</b>!]]></string>
+    <string name="tokopedianow_home_referral_widget_button_text_sender">Bagikan ke Temanmu</string>
+    <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
+    <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
+    <string name="tokopedianow_home_referral_share_title">Bagi Link Referral Tokopedia NOW &amp; Dapatkan Cashback 20rb</string>
+    <string name="tokopedianow_home_referral_share_desc">Jangan simpan sendiri, cashback kamu akan bertambah kalau kamu ajak temanmu bergabung</string>
+    <string name="tokopedianow_home_referral_share_main_text">ngajak kamu pakai Tokopedia NOW!. Belanja kebutuhan harian, 2 jam tiba &amp; gratis ongkir. Cuma pakai link ini, dapat kupon cashback Rp20 rb setelah transaksi! </string>
+    <string name="tokopedianow_home_referral_share_your_friend">Temanmu</string>
 </resources>
