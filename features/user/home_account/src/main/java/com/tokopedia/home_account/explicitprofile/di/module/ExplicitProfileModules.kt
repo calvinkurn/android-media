@@ -3,7 +3,6 @@ package com.tokopedia.home_account.explicitprofile.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_account.explicitprofile.trackers.ExplicitProfileAnalytics
@@ -15,14 +14,12 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class ExplicitProfileModules(
-    val context: Context
-) {
+object ExplicitProfileModules {
 
     @Provides
     @ActivityScope
     @ApplicationContext
-    fun provideContext(): Context = context
+    fun provideContext(@ApplicationContext context: Context): Context = context
 
     @Provides
     @ActivityScope
@@ -36,11 +33,13 @@ class ExplicitProfileModules(
 
     @Provides
     @ActivityScope
-    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphQlRepository(@ApplicationContext repository: GraphqlRepository): GraphqlRepository {
+        return repository
+    }
 
     @Provides
     @ActivityScope
-    fun provideMultipleRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+    fun provideMultipleRequestGraphqlUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
 
