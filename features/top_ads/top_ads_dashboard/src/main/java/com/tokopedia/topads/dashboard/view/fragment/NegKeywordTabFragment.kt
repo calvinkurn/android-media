@@ -50,6 +50,9 @@ private const val CLICK_TAMBAH_KATA_KUNCI_NEGATIVE = "click - tambah kata kunci 
 class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getInt(TopAdsDashboardConstant.GROUP_ID, 0).toString()
+    }
 
     companion object {
 
@@ -183,7 +186,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -191,7 +194,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordAction(actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId, actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 

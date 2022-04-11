@@ -25,6 +25,7 @@ import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetGroupListUseCase
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.model.DataStatistic
@@ -39,7 +40,6 @@ import timber.log.Timber
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.collections.HashMap
 
 /**
@@ -295,6 +295,23 @@ class GroupDetailViewModel @Inject constructor(
                 e?.printStackTrace()
             }
         })
+    }
+
+    fun setKeywordActionForGroup(
+        groupId: String,action: String, keywordIds: List<String>,
+        resources: Resources, onSuccess: (() -> Unit)
+    ) {
+
+        if(action != TopAdsDashboardConstant.ACTION_DELETE) {
+            setKeywordAction(action, keywordIds, resources, onSuccess)
+            return
+        }
+
+        val param = topAdsCreateUseCase.createRequestParam(
+            TopAdsDashboardConstant.ACTION_DELETE, TopAdsDashboardConstant.SOURCE_DASH,
+            groupId, keywordIds
+        )
+        topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
     }
 
     fun setKeywordAction(action: String, keywordIds: List<String>, resources: Resources, onSuccess: (() -> Unit)) {

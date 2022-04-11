@@ -61,7 +61,8 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
     RestRequestUseCase() {
 
     fun executeQuery(
-        param: RequestParams?, className: String, onSuccess: () -> Unit, onError: (String) -> Unit,
+        param: RequestParams?, className: String,
+        onSuccess: () -> Unit, onError: ((String) -> Unit)? = null,
     ) {
         execute(param, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onNext(typeResponse: Map<Type, RestResponse>) {
@@ -78,7 +79,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                         ServerLogger.log(Priority.P1, javaClass.name, mapOf(
                             TopAdsCommonConstant.ERROR to "error executing topadsManagePromoGroupProduct -> $error"
                         ))
-                        onError(error)
+                        onError?.invoke(error)
                     }
                 }
             }
@@ -89,7 +90,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                     TopAdsCommonConstant.ERROR to
                             (e?.message ?: "error executing topadsManagePromoGroupProduct gql")
                 ))
-                onError(e?.message ?: "")
+                onError?.invoke(e?.message ?: "")
             }
         })
     }
