@@ -73,8 +73,9 @@ public class AppModule {
         return new GraphqlUseCase();
     }
 
+    @ApplicationScope
     @Provides
     public UserSessionDataStore provideUserSessionDataStore(@ApplicationContext Context context) {
-        return UserSessionDataStoreClient.INSTANCE.getInstance(context);
+        return UserSessionDataStoreClient.getInstance(context);
     }
 }
