@@ -85,21 +85,45 @@
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_16"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnManage"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_8"
-            android:layout_marginEnd="@dimen/unify_space_16"
-            android:layout_marginBottom="@dimen/unify_space_16"
-            android:text="@string/sd_manage"
-            app:unifyButtonSize="medium"
-            app:unifyButtonVariant="filled" />
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="@string/sd_delete"
+                app:unifyButtonSize="medium"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/unify_space_8"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnManage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="@string/change_discount"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="filled" />
+
+        </LinearLayout>
+
 
     </androidx.cardview.widget.CardView>
 

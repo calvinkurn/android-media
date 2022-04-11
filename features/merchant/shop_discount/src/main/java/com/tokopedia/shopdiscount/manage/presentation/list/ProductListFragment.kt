@@ -263,11 +263,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductListAdapter, Product>(
     }
 
     private fun displayDeleteConfirmationDialog(product: Product) {
+        val title = getString(R.string.sd_delete_confirmation_title)
         val dialog = CancelDiscountDialog(requireContext())
         dialog.setOnDeleteConfirmed {
             viewModel.deleteDiscount(discountStatusId, product.id)
         }
-        dialog.show()
+        dialog.show(title)
     }
 
     fun setOnScrollDownListener(onScrollDown: () -> Unit = {}) {
