@@ -163,6 +163,9 @@ public class AddAddressFragment extends BaseDaggerFragment
             getActivity().finish();
         } else {
             if (!isEdit()) sendAnalyticsScreenName(getScreenName());
+            else {
+                OldEditAddressAnalytics.INSTANCE.sendViewEditAddressPageOldEvent();
+            }
         }
     }
 
@@ -456,11 +459,17 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void errorSaveAddress() {
+        if (isEdit()) {
+            OldEditAddressAnalytics.INSTANCE.sendClickButtonSimpanEditAddressOldEvent(false);
+        }
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(false);
     }
 
     @Override
     public void successSaveAddress() {
+        if (isEdit()) {
+            OldEditAddressAnalytics.INSTANCE.sendClickButtonSimpanEditAddressOldEvent(true);
+        }
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(true);
     }
 

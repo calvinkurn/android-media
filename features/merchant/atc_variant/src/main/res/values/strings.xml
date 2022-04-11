@@ -20,4 +20,6 @@
     <string name="atc_variant_tokocabang">Dilayani Tokopedia</string>
     <string name="atc_variant_select_empty_variant_message">Pilih varian lain yang tersedia, ya.</string>
 
+    <string name="atc_variant_tag_main_image">Gambar Utama</string>
+
 </resources>
