@@ -1,17 +1,18 @@
 package com.tokopedia.play_common.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.os.Build
 import android.util.AttributeSet
-import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import com.tokopedia.play_common.R
 
 /**
  * Created by jegul on 30/06/21
  */
-open class RoundedFrameLayout : FrameLayout {
+open class RoundedLinearLayout : LinearLayout {
 
     private val roundedHelper = RoundedLayoutHelper()
 
@@ -25,24 +26,24 @@ open class RoundedFrameLayout : FrameLayout {
 
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs == null) return
-        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedFrameLayout)
+        val attributeArray = context.obtainStyledAttributes(attrs, R.styleable.RoundedLinearLayout)
 
         val wholeRadius = attributeArray.getDimension(
-            R.styleable.RoundedFrameLayout_rfl_cornerRadius, 0f
+            R.styleable.RoundedLinearLayout_rll_cornerRadius, 0f
         )
         roundedHelper.setCornerRadius(wholeRadius)
 
         val topLeft = attributeArray.getDimension(
-            R.styleable.RoundedFrameLayout_rfl_topLeftRadius, -1f
+            R.styleable.RoundedLinearLayout_rll_topLeftRadius, -1f
         )
         val topRight = attributeArray.getDimension(
-            R.styleable.RoundedFrameLayout_rfl_topRightRadius, -1f
+            R.styleable.RoundedLinearLayout_rll_topRightRadius, -1f
         )
         val bottomLeft = attributeArray.getDimension(
-            R.styleable.RoundedFrameLayout_rfl_bottomLeftRadius, -1f
+            R.styleable.RoundedLinearLayout_rll_bottomLeftRadius, -1f
         )
         val bottomRight = attributeArray.getDimension(
-            R.styleable.RoundedFrameLayout_rfl_bottomRightRadius, -1f
+            R.styleable.RoundedLinearLayout_rll_bottomRightRadius, -1f
         )
         roundedHelper.setCornerRadius(
             topLeft = if (topLeft != -1f) topLeft else wholeRadius,
@@ -65,6 +66,7 @@ open class RoundedFrameLayout : FrameLayout {
         canvas.restoreToCount(save)
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     override fun dispatchDraw(canvas: Canvas) {
         setRoundedOutlineProvider()
         super.dispatchDraw(canvas)
