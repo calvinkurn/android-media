@@ -95,23 +95,6 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         })
     }
 
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
-        val query = ManageGroupAdsQuery.GQL_QUERY
-        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
-        val headers = HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restReferralRequest =
-            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setHeaders(headers)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
-    }
-
     fun createRequestParam(
         action: String, source: String, groupIdParam: String, keywordIds: List<String>,
     ): RequestParams? {
@@ -119,6 +102,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             shopID = userSession.shopId
             this.source = source
             this.groupID = groupIdParam
+            this.groupInput = null
             keywordOperation =
                 keywordIds.map { id -> KeywordEditInput(action, KeywordEditInput.Keyword(id)) }
         }
@@ -132,7 +116,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         val input = TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             source = ParamObject.PARAM_SOURCE_RECOM
-            groupInput.group = GroupEditInput.Group().also { group ->
+            groupInput?.group = GroupEditInput.Group().also { group ->
                 group.adOperations = productIds.map { productId ->
                     GroupEditInput.Group.AdOperationsItem(
                         GroupEditInput.Group.AdOperationsItem.Ad(productId), action = ACTION_ADD
@@ -140,7 +124,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
                 }
                 group.name = currentGroupName
                 group.status = PUBLISHED
-                groupInput.action = ACTION_CREATE
+                groupInput?.action = ACTION_CREATE
                 group.bidSettings = listOf(
                     GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid.toFloat()),
                     GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid.toFloat())
@@ -210,7 +194,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         //always
         val input = TopadsManagePromoGroupProductInput()
         val groupInput = input.groupInput
-        val group = groupInput.group
+        val group = groupInput?.group
         if (groupId != null)
             input.groupID = groupId.toString()
         input.shopID = userSession.shopId
@@ -218,7 +202,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             input.source = source
         }
         if (groupAction != null) {
-            groupInput.action = groupAction
+            groupInput?.action = groupAction
         }
         // if only group name is edited
         if (isNameEdited == true) {
@@ -340,16 +324,33 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         }
 
         input.groupInput = groupInput
-        input.groupInput.group = group
+        input.groupInput?.group = group
         if (productList.isNullOrEmpty())
-            input.groupInput.group?.adOperations = null
+            input.groupInput?.group?.adOperations = null
         else
-            input.groupInput.group?.adOperations = productList
+            input.groupInput?.group?.adOperations = productList
         if (keywordList.isNullOrEmpty())
             input.keywordOperation = null
         else
             input.keywordOperation = keywordList
         return input
+    }
+
+    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
+        val tempRequest = ArrayList<RestRequest>()
+        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
+        val query = ManageGroupAdsQuery.GQL_QUERY
+        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
+        val headers = HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restReferralRequest =
+            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+                .setBody(request)
+                .setHeaders(headers)
+                .setRequestType(RequestType.POST)
+                .build()
+        tempRequest.add(restReferralRequest)
+        return tempRequest
     }
 
     private fun TopadsManagePromoGroupProductInput.convertToRequestParam(): RequestParams {

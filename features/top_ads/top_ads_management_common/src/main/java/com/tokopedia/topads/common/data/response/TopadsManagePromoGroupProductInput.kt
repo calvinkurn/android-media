@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 class TopadsManagePromoGroupProductInput(
 
         @field:SerializedName("groupOperation")
-        var groupInput: GroupEditInput = GroupEditInput(),
+        var groupInput: GroupEditInput? = GroupEditInput(),
         @field:SerializedName("keywordOperation")
         var keywordOperation: List<KeywordEditInput?>? = listOf(),
         @field:SerializedName("groupID")
