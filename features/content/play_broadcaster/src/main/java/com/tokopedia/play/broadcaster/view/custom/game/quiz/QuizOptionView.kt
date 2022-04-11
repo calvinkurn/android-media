@@ -63,6 +63,11 @@ class QuizOptionView : ConstraintLayout {
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        updateIconChoice()
+    }
+
     var flagTriggerTextChange = true
 
     var order: Int = -1
