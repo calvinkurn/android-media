@@ -123,7 +123,8 @@ class PlayUserInteractionFragment @Inject constructor(
         RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        KebabMenuViewComponent.Listener
+        KebabMenuViewComponent.Listener,
+        InteractiveActiveViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -151,7 +152,7 @@ class PlayUserInteractionFragment @Inject constructor(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
 
     /**
      * Interactive
@@ -651,6 +652,10 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun setupObserve() {
+        //TODO() should be from web socket
+        interactiveActiveView?.show()
+        interactiveActiveView?.setQuiz()
+
         observeVideoMeta()
         observeVideoProperty()
         observeChannelInfo()
@@ -1665,6 +1670,11 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+    }
+
+    override fun onInteractiveWidgetClicked(viewComponent: InteractiveActiveViewComponent) {
+        val dialog = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayInteractiveQuizFragment::class.java.name) as PlayInteractiveQuizFragment
+        dialog.show(childFragmentManager)
     }
 
     companion object {

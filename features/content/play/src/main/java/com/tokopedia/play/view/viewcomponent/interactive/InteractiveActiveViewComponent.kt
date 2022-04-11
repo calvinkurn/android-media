@@ -13,9 +13,18 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class InteractiveActiveViewComponent(
     container: ViewGroup,
+    listener: Listener
 ) : ViewComponent(container, R.id.widget_game_small) {
 
     private val widget = rootView as GameSmallWidgetView
+
+    init {
+        widget.setListener(object : GameSmallWidgetView.Listener{
+            override fun onWidgetClicked(view: GameSmallWidgetView) {
+                listener.onInteractiveWidgetClicked(this@InteractiveActiveViewComponent)
+            }
+        })
+    }
 
     fun setOngoingGiveaway() {
         //TODO("Stitch with real code")
@@ -43,5 +52,9 @@ class InteractiveActiveViewComponent(
             durationInMs = 7000,
             onDurationEnd = {},
         )
+    }
+
+    interface Listener{
+        fun onInteractiveWidgetClicked(viewComponent: InteractiveActiveViewComponent)
     }
 }
