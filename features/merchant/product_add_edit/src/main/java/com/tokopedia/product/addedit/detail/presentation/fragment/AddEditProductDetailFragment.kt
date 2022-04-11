@@ -11,12 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ImageView
-import android.widget.ScrollView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
+import androidx.core.widget.doOnTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -57,6 +55,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
+import com.tokopedia.product.addedit.databinding.FragmentAddEditProductDetailLayoutBinding
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
@@ -73,6 +72,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SPECIFICATION
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_DETAIL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
@@ -103,6 +103,7 @@ import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipCardViewSelectable
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
+import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
@@ -116,11 +117,13 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
@@ -136,8 +139,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         const val AMOUNT_CATEGORY_RECOM_DEFAULT = 3
         private fun getDurationUnit(type: Int) =
                 when (type) {
-                    UNIT_DAY -> com.tokopedia.product.addedit.R.string.label_day
-                    UNIT_WEEK -> com.tokopedia.product.addedit.R.string.label_week
+                    UNIT_DAY -> R.string.label_day
+                    UNIT_WEEK -> R.string.label_week
                     else -> -1
                 }
     }
@@ -148,6 +151,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
+    private var binding by autoClearedNullable<FragmentAddEditProductDetailLayoutBinding>()
+
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = true
     private var countTouchPhoto = 0
@@ -155,7 +160,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private var isFragmentVisible = false
     private var needToSetCategoryName = false
 
-    private var scrollViewParent: ScrollView? = null
+    private val scrollViewParent by lazy { binding?.scrollViewParent }
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -190,9 +195,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     // product price
     private var productPriceField: TextFieldUnify? = null
-    private var productPriceEditIcon: ImageView? = null
-    private var productPriceBulkEditDialog: DialogUnify? = null
+    private var productPriceLayout: ViewGroup? = null
     private var productPriceRecommendation: TooltipCardViewSelectable? = null
+    private var productPriceVariantTicker: Ticker? = null
 
     // product wholesale price
     private var productWholeSaleSwitch: SwitchUnify? = null
@@ -204,6 +209,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     // product stock
     private var productStockField: TextFieldUnify? = null
     private var productMinOrderField: TextFieldUnify? = null
+    private var tvProductStockHeader: Typography? = null
 
     // product pre order
     private var preOrderSwitch: SwitchUnify? = null
@@ -283,7 +289,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_detail_layout, container, false)
+        binding = FragmentAddEditProductDetailLayoutBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -298,391 +305,22 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         // to check whether current fragment is visible or not
         isFragmentVisible = true
 
-        scrollViewParent = view.findViewById(R.id.scrollViewParent)
-
-        // add edit product photo views
-        addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
-        productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, viewModel.productPhotoPaths, this)
-        productPhotosView?.let {
-            it.adapter = productPhotoAdapter
-            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            val photoItemTouchHelperCallback = PhotoItemTouchHelperCallback(it)
-            photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
-            photoItemTouchHelper?.attachToRecyclerView(it)
-        }
-
-        // add edit product name views
-        productNameField = view.findViewById(R.id.tfu_product_name)
-        productNameRecView = view.findViewById(R.id.rv_product_name_rec)
-        productNameRecShimmering = view.findViewById(R.id.product_name_rec_shimmering)
-        typoCorrection = view.findViewById(R.id.typo_correction)
-        productNameRecAdapter = NameRecommendationAdapter(this)
-        productNameRecView?.let {
-            it.adapter = productNameRecAdapter
-            it.layoutManager = LinearLayoutManager(context)
-        }
-        productNameField?.editText?.apply {
-            setHorizontallyScrolling(false)
-            isSingleLine = false
-            imeOptions = EditorInfo.IME_ACTION_DONE
-            setRawInputType(InputType.TYPE_CLASS_TEXT)
-        }
-        setupProductNameValidationBottomsheet()
-
-        // add edit product category views
-        productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
-        productCategoryRecListView = view.findViewById(R.id.lvu_product_category_rec)
-        productCategoryPickerButton = view.findViewById(R.id.tv_category_picker_button)
-        context?.let {
-            categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
-            categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
-            categoryAlertDialog?.setDefaultMaxWidth()
-            categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
-            categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
-            categoryAlertDialog?.setPrimaryCTAClickListener {
-                // tutup button clicked
-                ProductEditMainTracking.clickSaveOtherCategory(shopId)
-                categoryAlertDialog?.dismiss()
-            }
-        }
-
-        productCategoryPickerButton?.setOnClickListener {
-            // is editing
-            if (viewModel.isEditing) {
-                ProductEditMainTracking.clickOtherCategory(shopId)
-            }
-            // is adding
-            else {
-                ProductAddMainTracking.clickOtherCategory(shopId)
-            }
-
-            if (viewModel.hasVariants) {
-                showImmutableCategoryDialog()
-            } else {
-                if (viewModel.selectedSpecificationList.value.orEmpty().isNotEmpty()) {
-                    showChangeCategoryDialog {
-                        startCategoryActivity(REQUEST_CODE_CATEGORY)
-                    }
-                } else {
-                    startCategoryActivity(REQUEST_CODE_CATEGORY)
-                }
-            }
-        }
-
-        // add product specification button
-        productSpecificationLayout = view.findViewById(R.id.add_edit_product_specification_layout)
-        productSpecificationTextView = view.findViewById(R.id.tv_product_specification)
-        productSpecificationHeaderTextView = view.findViewById(R.id.tv_product_specification_header)
-        addProductSpecificationButton = view.findViewById(R.id.tv_add_product_specification)
-        productSpecificationReloadLayout = view.findViewById(R.id.reload_product_specification_layout)
-        productSpecificationReloadButton = view.findViewById(R.id.tv_reload_specification_button)
-        tooltipSpecificationRequired = view.findViewById(R.id.tooltipSpecificationRequired)
-
-        // add edit product price views
-        productPriceField = view.findViewById(R.id.tfu_product_price)
-        productPriceEditIcon = view.findViewById(R.id.ic_edit_price)
-
-        // add edit product price recommendation views
-        productPriceRecommendation = view.findViewById(R.id.add_edit_product_product_recommendation_layout)
-
-        // add edit product wholesale views
-        productWholeSaleSwitch = view.findViewById(R.id.su_wholesale)
-        productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
-        productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
-        wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this, this,
-                onDeleteWholesale = {
-                    if (viewModel.isEditing) {
-                        ProductEditMainTracking.clickRemoveWholesale(shopId)
-                    } else {
-                        ProductAddMainTracking.clickRemoveWholesale(shopId)
-                    }
-                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
-                    val deletePosition = wholeSaleInputFormsAdapter?.getDeletePosition()
-                    wholeSaleInputFormsAdapter?.itemCount?.let {
-                        if (it == 1) {
-                            productWholeSaleSwitch?.isChecked = false
-                        }
-                        validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1, deletePosition
-                                ?: -1)
-                        // to avoid enable button submit when we delete the last of whole sale
-                        if (deletePosition == it - 1) {
-                            viewModel.isTheLastOfWholeSale.value = false
-                        }
-                    }
-                })
-
-        productWholeSaleInputFormsView?.apply {
-            adapter = wholeSaleInputFormsAdapter
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        }
-        addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
-        addNewWholeSalePriceButton?.setOnClickListener {
-            if (viewModel.isEditing) {
-                ProductEditMainTracking.clickAddWholesale(shopId)
-            } else {
-                ProductAddMainTracking.clickAddWholesale(shopId)
-            }
-
-            val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-            wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
-            wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
-            validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
-            updateAddNewWholeSalePriceButtonVisibility()
-        }
-
-        // add edit product stock views
-        productStockField = view.findViewById(R.id.tfu_available_stock)
-        productMinOrderField = view.findViewById(R.id.tfu_minimum_order)
-
-        // add edit product pre order state views
-        preOrderSwitch = view.findViewById(R.id.switch_preorder)
-        preOrderInputLayout = view.findViewById(R.id.preorder_input_layout)
-        preOrderDurationField = view.findViewById(R.id.tfu_duration)
-        preOrderDurationUnitField = view.findViewById(R.id.tfu_duration_unit)
-        // set input type no suggestion to prevent red underline on text
-        preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
-
-        // pre order checked change listener
-        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                // tracker
-                if (!isPreOrderFirstTime) {
-                    if (viewModel.isEditing) {
-                        ProductEditMainTracking.clickPreorderButton(shopId)
-                    } else {
-                        ProductAddMainTracking.clickPreorderButton(shopId)
-                    }
-                }
-
-                preOrderInputLayout?.visibility = View.VISIBLE
-            } else {
-                preOrderInputLayout?.visibility = View.GONE
-            }
-
-            viewModel.isPreOrderActivated.value = isChecked
-        }
-
-        preOrderDurationUnitField?.apply {
-            textFieldInput.setText(getDurationUnit(UNIT_DAY))
-            textFieldInput.isFocusable = false
-            textFieldInput.isActivated = false
-            textFieldInput.setOnClickListener {
-                showDurationUnitOption()
-            }
-        }
-
-        // add edit product conditions views
-        productConditionListView = view.findViewById(R.id.lvu_product_conditions)
-
-        // new condition
-        val newCondition = ListItemUnify(getString(R.string.label_new), "")
-        newCondition.isBold = false
-        newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
-
-        // secondhand condition
-        val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
-        secondHandCondition.isBold = false
-        secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
-        secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
-
-        // add new and secondhand condition to the view
-        productConditionListView?.setData(productConditions)
-
-        // add edit product sku views
-        productSkuField = view.findViewById(R.id.tfu_sku)
-
-        // add product showcase button
-        productShowCasesView = view.findViewById(R.id.tv_product_showcases)
-        addProductShowCaseButton = view.findViewById(R.id.tv_add_product_showcases)
-        productShowCasesReloadLayout = view.findViewById(R.id.reload_product_showcase_layout)
-        productShowCasesReloadButton = view.findViewById(R.id.tv_reload_showcases_button)
-
-        // submit button
-        submitButton = view.findViewById(R.id.btn_submit)
-        setupButton()
+        setupProductPhotoViews()
+        setupProductNameViews()
+        setupProductCategoryViews()
+        setupSpecificationViews()
+        setupProductPriceViews()
+        setupWholesaleViews()
+        setupStockViews()
+        setupPreOrderViews()
+        setupProductConditionViews()
+        setupProductSkuViews()
+        setupProductShowcaseViews()
+        setupProductSubmitButtonViews()
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
-
-        // execute getShopShowCasesUseCase when the showcases contains nameless show case
-        val productShowCases = viewModel.productShowCases.map { it.showcaseName }
-        if (productShowCases.contains("")) viewModel.getShopShowCasesUseCase()
-
-        addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
-
-        productNameField?.editText?.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) productNameRecView?.hide()
-        }
-
-        // product showcase
-        addProductShowCaseButton?.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, ShowcasePickerType.CHECKBOX)
-            bundle.putParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER, ArrayList(viewModel.productShowCases))
-            val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-            intent.putExtra(EXTRA_BUNDLE, bundle)
-            startActivityForResult(intent, SHOWCASE_PICKER_RESULT_REQUEST_CODE)
-        }
-
-        // product name text change listener
-        productNameField.afterTextChanged { editable ->
-            // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
-            if (needToSetCategoryName && editable.isNotBlank()) {
-                needToSetCategoryName = false
-            }
-
-            viewModel.setProductNameInput(editable)
-            showProductNameLoadingIndicator()
-        }
-
-        // product price text change listener
-        if (viewModel.productInputModel.variantInputModel.selections.isNotEmpty() &&
-                viewModel.productInputModel.variantInputModel.products.isNotEmpty()) {
-            productPriceField?.textFieldInput?.isEnabled = false
-            productPriceEditIcon?.visible()
-            productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceDialog() }
-        } else {
-            productPriceEditIcon?.hide()
-        }
-
-        // Set max length to 9 digits price
-        productPriceField?.let {
-            it.textFieldInput?.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PRICE))
-        }
-
-        productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // clean any kind of number formatting here
-                val productPriceInput = charSequence?.toString()?.replace(".", "")
-
-                productPriceInput?.let {
-                    // do the validation first
-                    viewModel.validateProductPriceInput(it)
-                    productPriceField?.textFieldInput?.let { editText ->
-                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
-                                charSequence.length, count, this)
-                    }
-                    // product wholesale input validation
-                    viewModel.isWholeSalePriceActivated.value?.run {
-                        if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
-                    }
-                    // price recommendation
-                    val suggestedPrice  = viewModel.productPriceRecommendation.value?.suggestedPrice.orZero()
-                    if (it.toDoubleOrZero() == 0.toDouble() || suggestedPrice != it.toDoubleOrZero()) {
-                        productPriceRecommendation?.displaySuggestedPriceDeselected()
-                    } else {
-                        productPriceRecommendation?.displaySuggestedPriceSelected()
-                    }
-                }
-            }
-        })
-
-        // product whole sale checked change listener
-        productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.isWholeSalePriceActivated.value = isChecked
-
-            if (isChecked) {
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickWholesale(shopId)
-                } else {
-                    ProductAddMainTracking.clickWholesale(shopId)
-                }
-
-                if (viewModel.hasVariants) {
-                    showVariantWholesalePriceDialog()
-                } else {
-                    enableWholesale()
-                }
-            } else {
-                viewModel.isAddingValidationWholeSale = false
-                viewModel.isAddingWholeSale = false
-                viewModel.isTheLastOfWholeSale.value = false
-                viewModel.wholeSaleErrorCounter.value = 0
-            }
-        }
-
-        // product stock text change listener
-        productStockField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                val productStockInput = charSequence?.toString()
-                productStockInput?.let { viewModel.validateProductStockInput(it) }
-                val orderQuantityInput = productMinOrderField?.textFieldInput?.editableText.toString()
-                orderQuantityInput.let { productStockInput?.let { stockInput -> viewModel.validateProductMinOrderInput(stockInput, it) } }
-            }
-        })
-
-        // product minimum order text change listener
-        productMinOrderField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                val productStockInput = productStockField?.textFieldInput?.editableText.toString()
-                val orderQuantityInput = charSequence?.toString()
-                orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
-                productStockInput.let { viewModel.validateProductStockInput(it) }
-            }
-        })
-
-        // product pre order duration text change listener
-        preOrderDurationField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.isPreOrderActivated.value?.let {
-                    if (it) {
-                        val preOrderDurationInput = charSequence?.toString()
-                        preOrderDurationInput?.let { duration -> viewModel.validatePreOrderDurationInput(selectedDurationPosition, duration) }
-                    }
-                }
-            }
-        })
-
-        // product minimum order text change listener
-        productSkuField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-
-            override fun afterTextChanged(p0: Editable?) {}
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                val skuInput = charSequence?.toString()
-                skuInput?.let { viewModel.validateProductSkuInput(it) }
-            }
-        })
-
-        // product showcase refresh button
-        productShowCasesReloadButton?.setOnClickListener {
-            // prevent rapid reloading with isReloadingShowCase flag in view model
-            if (!viewModel.isReloadingShowCase) {
-                viewModel.getShopShowCasesUseCase()
-                viewModel.isReloadingShowCase = true
-            }
-        }
-
-        // Continue to add product description
-        submitButton?.setOnClickListener {
-            submitButton?.isLoading = true
-            validateInput()
-            validateSpecificationList()
-        }
-
+        initProductShowcaseValue()
         setupDefaultFieldMessage()
         setupSpecificationField()
         setupProductPriceRecommendationField()
@@ -962,6 +600,14 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                         viewModel.updateSelectedSpecification(detailInputModel.specifications.orEmpty())
                     }
                 }
+                REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT -> {
+                    val cacheManagerId = data.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()
+                    val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+
+                    viewModel.productInputModel = saveInstanceCacheManager.get(
+                        EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: return
+
+                }
             }
         }
     }
@@ -1063,7 +709,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun onFragmentResult() {
-        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, Observer { bundle ->
+        getNavigationResult(REQUEST_KEY_ADD_MODE)?.observe(viewLifecycleOwner, { bundle ->
             setNavigationResult(bundle, REQUEST_KEY_ADD_MODE)
             removeNavigationResult(REQUEST_KEY_ADD_MODE)
             findNavController().navigateUp()
@@ -1212,10 +858,17 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
         // product price
         val productPrice = detailInputModel.price
-        if (productPrice != 0.toBigInteger()) {
+        if (productPrice != Int.ZERO.toBigInteger()) {
             productPriceField?.textFieldInput?.setText(InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString()))
         }
-        if (viewModel.hasVariants) productPriceField?.textFieldInput?.isEnabled = false
+        if (viewModel.hasVariants) {
+            productPriceVariantTicker?.isVisible = true
+            productPriceLayout?.isVisible = false
+            productStockField?.isVisible = false
+            productSkuField?.isVisible = false
+            tvProductStockHeader?.text = getString(R.string.add_product_order_header)
+            productPriceVariantTicker?.setHtmlDescription(getString(R.string.text_has_variant_price_ticker))
+        }
 
         // product category
         if (detailInputModel.categoryName.isNotBlank()) {
@@ -1291,7 +944,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToProductNameInputStatus() {
-        viewModel.isProductNameInputError.observe(viewLifecycleOwner, Observer {
+        viewModel.isProductNameInputError.observe(viewLifecycleOwner, {
             val productNameInput = productNameField?.getEditableValue().toString()
             val validationResult = viewModel.productNameValidationResult
             productNameField?.isInputError = it
@@ -1346,35 +999,35 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToProductPriceInputStatus() {
-        viewModel.isProductPriceInputError.observe(viewLifecycleOwner, Observer {
+        viewModel.isProductPriceInputError.observe(viewLifecycleOwner, {
             productPriceField?.setError(it)
             productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
         })
     }
 
     private fun subscribeToWholeSaleSwitchStatus() {
-        viewModel.isWholeSalePriceActivated.observe(viewLifecycleOwner, Observer {
+        viewModel.isWholeSalePriceActivated.observe(viewLifecycleOwner, {
             if (it) productWholeSaleInputLayout?.visible()
             else productWholeSaleInputLayout?.hide()
         })
     }
 
     private fun subscribeToProductStockInputStatus() {
-        viewModel.isProductStockInputError.observe(viewLifecycleOwner, Observer {
+        viewModel.isProductStockInputError.observe(viewLifecycleOwner, {
             productStockField?.setError(it)
             productStockField?.setMessage(viewModel.productStockMessage)
         })
     }
 
     private fun subscribeToOrderQuantityInputStatus() {
-        viewModel.isOrderQuantityInputError.observe(viewLifecycleOwner, Observer {
+        viewModel.isOrderQuantityInputError.observe(viewLifecycleOwner, {
             productMinOrderField?.setError(it)
             productMinOrderField?.setMessage(viewModel.orderQuantityMessage)
         })
     }
 
     private fun subscribeToPreOrderSwitchStatus() {
-        viewModel.isPreOrderActivated.observe(viewLifecycleOwner, Observer {
+        viewModel.isPreOrderActivated.observe(viewLifecycleOwner, {
             isPreOrderFirstTime = false
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
@@ -1382,21 +1035,21 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToPreOrderDurationInputStatus() {
-        viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, Observer {
+        viewModel.isPreOrderDurationInputError.observe(viewLifecycleOwner, {
             preOrderDurationField?.setError(it)
             preOrderDurationField?.setMessage(viewModel.preOrderDurationMessage)
         })
     }
 
     private fun subscribeToProductSkuInputStatus() {
-        viewModel.isProductSkuInputError.observe(viewLifecycleOwner, Observer {
+        viewModel.isProductSkuInputError.observe(viewLifecycleOwner, {
             productSkuField?.setError(it)
             productSkuField?.setMessage(viewModel.productSkuMessage)
         })
     }
 
     private fun subscribeToShopShowCases() {
-        viewModel.shopShowCases.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.shopShowCases.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
                     // shop show cases; the source of truth
@@ -1486,7 +1139,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToInputStatus() {
-        viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
+        viewModel.isInputValid.observe(viewLifecycleOwner, {
             submitButton?.isEnabled = it
         })
     }
@@ -1571,7 +1224,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun subscribeToProductNameValidationFromNetwork() {
-        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, Observer {
+        viewModel.productNameValidationFromNetwork.observe(viewLifecycleOwner, {
             submitButton?.isLoading = false
             when(it) {
                 is Success -> {
@@ -1600,7 +1253,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             viewModel.validateProductNameInputFromNetwork(productNameField.getText())
         } else {
             submitButton?.isLoading = false
-            scrollViewParent?.post {
+            view?.post {
                 scrollViewParent?.smoothScrollTo(Int.ZERO, productSpecificationLayout?.top.orZero())
                 productSpecificationTextView?.text = MethodChecker.fromHtml(
                     getString(R.string.error_specification_signal_status_empty_red))
@@ -1645,6 +1298,363 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
     }
 
+    private fun setupProductSubmitButtonViews() {
+        submitButton = binding?.btnSubmit
+        setupButton()
+        // Continue to add product description
+        submitButton?.setOnClickListener {
+            submitButton?.isLoading = true
+            validateInput()
+            validateSpecificationList()
+        }
+    }
+
+    private fun setupProductShowcaseViews() {
+        productShowCasesView = binding?.addEditProductShowcaseLayout?.tvProductShowcases
+        addProductShowCaseButton = binding?.addEditProductShowcaseLayout?.tvAddProductShowcases
+        productShowCasesReloadLayout = binding?.addEditProductShowcaseLayout?.reloadProductShowcaseLayout
+        productShowCasesReloadButton = binding?.addEditProductShowcaseLayout?.tvReloadShowcasesButton
+
+        addProductShowCaseButton?.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_SHOWCASE_PICKER, ShowcasePickerType.CHECKBOX)
+            bundle.putParcelableArrayList(ShopShowcaseParamConstant.EXTRA_PRE_SELECTED_SHOWCASE_PICKER, ArrayList(viewModel.productShowCases))
+            val intent = RouteManager.getIntent(requireContext(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra(EXTRA_BUNDLE, bundle)
+            startActivityForResult(intent, SHOWCASE_PICKER_RESULT_REQUEST_CODE)
+        }
+
+        // product showcase refresh button
+        productShowCasesReloadButton?.setOnClickListener {
+            // prevent rapid reloading with isReloadingShowCase flag in view model
+            if (!viewModel.isReloadingShowCase) {
+                viewModel.getShopShowCasesUseCase()
+                viewModel.isReloadingShowCase = true
+            }
+        }
+    }
+
+    private fun setupProductSkuViews() {
+        productSkuField = binding?.addEditProductSkuLayout?.tfuSku
+        // product minimum order text change listener
+        productSkuField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
+            viewModel.validateProductSkuInput(text.toString())
+        }
+    }
+
+    private fun setupProductConditionViews() {
+        productConditionListView = binding?.addEditProductConditionLayout?.lvuProductConditions
+
+        // new condition
+        val newCondition = ListItemUnify(getString(R.string.label_new), "")
+        newCondition.isBold = false
+        newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+        newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
+
+        // secondhand condition
+        val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
+        secondHandCondition.isBold = false
+        secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
+        secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
+
+        // add new and secondhand condition to the view
+        productConditionListView?.setData(productConditions)
+    }
+
+    private fun setupPreOrderViews() {
+        preOrderSwitch = binding?.addEditProductPreorderLayout?.switchPreorder
+        preOrderInputLayout = binding?.addEditProductPreorderLayout?.preorderInputLayout
+        preOrderDurationField = binding?.addEditProductPreorderLayout?.tfuDuration
+        preOrderDurationUnitField = binding?.addEditProductPreorderLayout?.tfuDurationUnit
+
+        // set input type no suggestion to prevent red underline on text
+        preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+        // pre order checked change listener
+        preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // tracker
+                if (!isPreOrderFirstTime) {
+                    if (viewModel.isEditing) {
+                        ProductEditMainTracking.clickPreorderButton(shopId)
+                    } else {
+                        ProductAddMainTracking.clickPreorderButton(shopId)
+                    }
+                }
+
+                preOrderInputLayout?.visibility = View.VISIBLE
+            } else {
+                preOrderInputLayout?.visibility = View.GONE
+            }
+
+            viewModel.isPreOrderActivated.value = isChecked
+        }
+
+        preOrderDurationUnitField?.apply {
+            textFieldInput.setText(getDurationUnit(UNIT_DAY))
+            textFieldInput.isFocusable = false
+            textFieldInput.isActivated = false
+            textFieldInput.setOnClickListener {
+                showDurationUnitOption()
+            }
+        }
+
+        // product pre order duration text change listener
+        preOrderDurationField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
+            viewModel.isPreOrderActivated.value?.let {
+                if (it) {
+                    val preOrderDurationInput = text?.toString()
+                    preOrderDurationInput?.let { duration ->
+                        viewModel.validatePreOrderDurationInput(selectedDurationPosition, duration)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupStockViews() {
+        productStockField = binding?.addEditProductStockLayout?.tfuAvailableStock
+        productMinOrderField = binding?.addEditProductStockLayout?.tfuMinimumOrder
+        tvProductStockHeader = binding?.addEditProductStockLayout?.tvProductStockHeader
+
+        productStockField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
+            val productStockInput = text?.toString()
+            productStockInput?.let { viewModel.validateProductStockInput(it) }
+            val orderQuantityInput = productMinOrderField?.textFieldInput?.editableText.toString()
+            orderQuantityInput.let {
+                productStockInput?.let { stockInput ->
+                    viewModel.validateProductMinOrderInput(stockInput, it)
+                }
+            }
+        }
+
+        // product minimum order text change listener
+        productMinOrderField?.textFieldInput?.doOnTextChanged { text, _, _, _ ->
+            val productStockInput = productStockField?.textFieldInput?.editableText.toString()
+            val orderQuantityInput = text?.toString()
+            orderQuantityInput?.let { viewModel.validateProductMinOrderInput(productStockInput, it) }
+            productStockInput.let { viewModel.validateProductStockInput(it) }
+        }
+    }
+
+    private fun setupWholesaleViews() {
+        productWholeSaleSwitch = binding?.addEditProductWholesaleLayout?.suWholesale
+        productWholeSaleInputLayout = binding?.addEditProductWholesaleLayout?.wholesaleInputLayout
+        productWholeSaleInputFormsView = binding?.addEditProductWholesaleLayout?.rvWholesaleInputForms
+        addNewWholeSalePriceButton = binding?.addEditProductWholesaleLayout?.tvAddNewWholesalePrice
+        wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this, this,
+            onDeleteWholesale = {
+                if (viewModel.isEditing) {
+                    ProductEditMainTracking.clickRemoveWholesale(shopId)
+                } else {
+                    ProductAddMainTracking.clickRemoveWholesale(shopId)
+                }
+                addNewWholeSalePriceButton?.visibility = View.VISIBLE
+                val deletePosition = wholeSaleInputFormsAdapter?.getDeletePosition()
+                wholeSaleInputFormsAdapter?.itemCount?.let {
+                    if (it == 1) {
+                        productWholeSaleSwitch?.isChecked = false
+                    }
+                    validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, it - 1, deletePosition
+                        ?: -1)
+                    // to avoid enable button submit when we delete the last of whole sale
+                    if (deletePosition == it - 1) {
+                        viewModel.isTheLastOfWholeSale.value = false
+                    }
+                }
+            })
+
+        productWholeSaleInputFormsView?.apply {
+            adapter = wholeSaleInputFormsAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
+        addNewWholeSalePriceButton?.setOnClickListener {
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickAddWholesale(shopId)
+            } else {
+                ProductAddMainTracking.clickAddWholesale(shopId)
+            }
+
+            val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+            wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
+            wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+            validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount, isAddingWholeSale = true)
+            updateAddNewWholeSalePriceButtonVisibility()
+        }
+        // product whole sale checked change listener
+        productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.isWholeSalePriceActivated.value = isChecked
+
+            if (isChecked) {
+                if (viewModel.isEditing) {
+                    ProductEditMainTracking.clickWholesale(shopId)
+                } else {
+                    ProductAddMainTracking.clickWholesale(shopId)
+                }
+
+                if (viewModel.hasVariants) {
+                    showVariantWholesalePriceDialog()
+                } else {
+                    enableWholesale()
+                }
+            } else {
+                viewModel.isAddingValidationWholeSale = false
+                viewModel.isAddingWholeSale = false
+                viewModel.isTheLastOfWholeSale.value = false
+                viewModel.wholeSaleErrorCounter.value = 0
+            }
+        }
+    }
+
+    private fun setupProductPriceViews() {
+        productPriceLayout = binding?.addEditProductPriceLayout?.root
+        productPriceField = binding?.addEditProductPriceLayout?.tfuProductPrice
+        productPriceVariantTicker = binding?.addEditProductPriceVariantTicker
+        productPriceRecommendation = binding?.addEditProductProductRecommendationLayout
+        productNameField.afterTextChanged { editable ->
+            // make sure when user is typing the field, the behaviour to get categories is not blocked by this variable
+            if (needToSetCategoryName && editable.isNotBlank()) {
+                needToSetCategoryName = false
+            }
+
+            viewModel.setProductNameInput(editable)
+            showProductNameLoadingIndicator()
+        }
+
+        // Set max length to 9 digits price
+        productPriceField?.let {
+            it.textFieldInput.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(MAX_LENGTH_PRICE))
+        }
+
+        productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {}
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                // clean any kind of number formatting here
+                val productPriceInput = charSequence?.toString()?.replace(".", "")
+
+                productPriceInput?.let {
+                    // do the validation first
+                    viewModel.validateProductPriceInput(it)
+                    productPriceField?.textFieldInput?.let { editText ->
+                        InputPriceUtil.applyPriceFormatToInputField(editText, it, start,
+                            charSequence.length, count, this)
+                    }
+                    // product wholesale input validation
+                    viewModel.isWholeSalePriceActivated.value?.run {
+                        if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
+                    }
+                    // price recommendation
+                    val suggestedPrice  = viewModel.productPriceRecommendation.value?.suggestedPrice.orZero()
+                    if (it.toDoubleOrZero() == Int.ZERO.toDouble() || suggestedPrice != it.toDoubleOrZero()) {
+                        productPriceRecommendation?.displaySuggestedPriceDeselected()
+                    } else {
+                        productPriceRecommendation?.displaySuggestedPriceSelected()
+                    }
+                }
+            }
+        })
+
+        productPriceVariantTicker?.setOnClickListener {
+            showVariantDetailActivity()
+        }
+    }
+
+    private fun showVariantDetailActivity() {
+        context?.run {
+            val cacheManager = SaveInstanceCacheManager(this, true).apply {
+                put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+            }
+            val intent = AddEditProductVariantDetailActivity.createInstance(this, cacheManager.id)
+            startActivityForResult(intent, REQUEST_CODE_VARIANT_DETAIL_DIALOG_EDIT)
+        }
+    }
+
+    private fun setupSpecificationViews() {
+        productSpecificationLayout = binding?.addEditProductSpecificationLayout?.root
+        productSpecificationTextView = binding?.addEditProductSpecificationLayout?.tvProductSpecification
+        productSpecificationHeaderTextView = binding?.addEditProductSpecificationLayout?.tvProductSpecificationHeader
+        addProductSpecificationButton = binding?.addEditProductSpecificationLayout?.tvAddProductSpecification
+        productSpecificationReloadLayout = binding?.addEditProductSpecificationLayout?.reloadProductSpecificationLayout
+        productSpecificationReloadButton = binding?.addEditProductSpecificationLayout?.tvReloadSpecificationButton
+        tooltipSpecificationRequired = binding?.addEditProductSpecificationLayout?.tooltipSpecificationRequired
+    }
+
+    private fun setupProductCategoryViews() {
+        productCategoryLayout = binding?.addEditProductCategoryLayout?.root
+        productCategoryRecListView = binding?.addEditProductCategoryLayout?.lvuProductCategoryRec
+        productCategoryPickerButton = binding?.addEditProductCategoryLayout?.tvCategoryPickerButton
+        context?.let {
+            categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
+            categoryAlertDialog?.setDefaultMaxWidth()
+            categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
+            categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
+            categoryAlertDialog?.setPrimaryCTAClickListener {
+                // tutup button clicked
+                ProductEditMainTracking.clickSaveOtherCategory(shopId)
+                categoryAlertDialog?.dismiss()
+            }
+        }
+        productCategoryPickerButton?.setOnClickListener {
+            // is editing
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickOtherCategory(shopId)
+            }
+            // is adding
+            else {
+                ProductAddMainTracking.clickOtherCategory(shopId)
+            }
+
+            if (viewModel.hasVariants) {
+                showImmutableCategoryDialog()
+            } else {
+                if (viewModel.selectedSpecificationList.value.orEmpty().isNotEmpty()) {
+                    showChangeCategoryDialog {
+                        startCategoryActivity(REQUEST_CODE_CATEGORY)
+                    }
+                } else {
+                    startCategoryActivity(REQUEST_CODE_CATEGORY)
+                }
+            }
+        }
+    }
+
+    private fun setupProductNameViews() {
+        productNameField = binding?.addEditProductNameLayout?.tfuProductName
+        productNameRecView = binding?.addEditProductNameLayout?.rvProductNameRec
+        productNameRecShimmering = binding?.addEditProductNameLayout?.productNameRecShimmering
+        typoCorrection = binding?.addEditProductNameLayout?.typoCorrection
+        productNameRecAdapter = NameRecommendationAdapter(this)
+        productNameRecView?.let {
+            it.adapter = productNameRecAdapter
+            it.layoutManager = LinearLayoutManager(context)
+        }
+        productNameField?.editText?.apply {
+            setHorizontallyScrolling(false)
+            isSingleLine = false
+            imeOptions = EditorInfo.IME_ACTION_DONE
+            setRawInputType(InputType.TYPE_CLASS_TEXT)
+        }
+        productNameField?.editText?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) productNameRecView?.hide()
+        }
+        setupProductNameValidationBottomsheet()
+    }
+
+    private fun setupProductPhotoViews() {
+        addProductPhotoButton = binding?.addEditProductPhotoLayout?.tvAddProductPhoto
+        productPhotosView = binding?.addEditProductPhotoLayout?.rvProductPhotos
+        productPhotoAdapter = ProductPhotoAdapter(viewModel.getMaxProductPhotos(), true, viewModel.productPhotoPaths, this)
+        productPhotosView?.let {
+            it.adapter = productPhotoAdapter
+            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            val photoItemTouchHelperCallback = PhotoItemTouchHelperCallback(it)
+            photoItemTouchHelper = ItemTouchHelper(photoItemTouchHelperCallback)
+            photoItemTouchHelper?.attachToRecyclerView(it)
+        }
+        addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
+    }
+
     private fun setupDefaultFieldMessage() {
         // Setup default message for stock if shop admin or owner
         viewModel.setupMultiLocationShopValues()
@@ -1668,6 +1678,12 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         productSpecificationReloadButton?.setOnClickListener {
             getAnnotationCategory()
         }
+    }
+
+    private fun initProductShowcaseValue() {
+        // execute getShopShowCasesUseCase when the showcases contains nameless show case
+        val productShowCases = viewModel.productShowCases.map { it.showcaseName }
+        if (productShowCases.contains("")) viewModel.getShopShowCasesUseCase()
     }
 
     private fun setupProductPriceRecommendationField() {
@@ -1818,55 +1834,50 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
         if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
         validateWholeSaleInput(viewModel, productWholeSaleInputFormsView, productWholeSaleInputFormsView?.childCount)
-        viewModel.shouldUpdateVariant = true
     }
 
     private fun disableWholesale() {
         productWholeSaleSwitch?.isChecked = false
-        viewModel.shouldUpdateVariant = false
     }
 
     private fun showDurationUnitOption() {
-        fragmentManager?.let {
-            val optionPicker = OptionPicker()
-            optionPicker.setCloseClickListener {
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickCancelPreOrderDuration(shopId)
-                } else {
-                    ProductAddMainTracking.clickCancelPreOrderDuration(shopId)
-                }
-                optionPicker.dismiss()
+        val optionPicker = OptionPicker()
+        optionPicker.setCloseClickListener {
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickCancelPreOrderDuration(shopId)
+            } else {
+                ProductAddMainTracking.clickCancelPreOrderDuration(shopId)
             }
-            val title = getString(R.string.label_duration)
-            val options: ArrayList<String> = ArrayList()
-            options.add(getString(getDurationUnit(UNIT_DAY)))
-            options.add(getString(getDurationUnit(UNIT_WEEK)))
+            optionPicker.dismiss()
+        }
+        val title = getString(R.string.label_duration)
+        val options: ArrayList<String> = ArrayList()
+        options.add(getString(getDurationUnit(UNIT_DAY)))
+        options.add(getString(getDurationUnit(UNIT_WEEK)))
 
-            optionPicker.apply {
-                setSelectedPosition(selectedDurationPosition)
-                setDividerVisible(true)
-                setTitle(title)
-                setItemMenuList(options)
-                show(it, null)
-
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickPreorderDropDownMenu(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderDropDownMenu(shopId)
-                }
+        optionPicker.apply {
+            setSelectedPosition(selectedDurationPosition)
+            setDividerVisible(true)
+            setTitle(title)
+            setItemMenuList(options)
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickPreorderDropDownMenu(shopId)
+            } else {
+                ProductAddMainTracking.clickPreorderDropDownMenu(shopId)
             }
+        }
+        optionPicker.show(childFragmentManager, null)
 
-            optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
-                } else {
-                    ProductAddMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
-                }
-                preOrderDurationUnitField?.textFieldInput?.setText(selectedText)
-                selectedDurationPosition = selectedPosition
-                val preOrderDurationInput = preOrderDurationField?.textFieldInput?.editableText.toString()
-                viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
+        optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
+            } else {
+                ProductAddMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
             }
+            preOrderDurationUnitField?.textFieldInput?.setText(selectedText)
+            selectedDurationPosition = selectedPosition
+            val preOrderDurationInput = preOrderDurationField?.textFieldInput?.editableText.toString()
+            viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
         }
     }
 
@@ -2026,32 +2037,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         }
     }
 
-    private fun showEditAllVariantPriceDialog() {
-        if (productPriceBulkEditDialog == null) {
-            setupEditAllVariantDialog()
-        }
-        productPriceBulkEditDialog?.show()
-    }
-
-    private fun setupEditAllVariantDialog() {
-        context?.run {
-            productPriceBulkEditDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            productPriceBulkEditDialog?.setTitle(getString(R.string.label_change_price_dialog_title))
-            productPriceBulkEditDialog?.setDescription(getString(R.string.label_change_price_dialog_message))
-            productPriceBulkEditDialog?.setPrimaryCTAText(getString(R.string.action_cancel))
-            productPriceBulkEditDialog?.setSecondaryCTAText(getString(R.string.action_change_price))
-
-            productPriceBulkEditDialog?.setPrimaryCTAClickListener {
-                productPriceBulkEditDialog?.dismiss()
-            }
-            productPriceBulkEditDialog?.setSecondaryCTAClickListener {
-                productPriceField?.textFieldInput?.isEnabled = true
-                viewModel.shouldUpdateVariant = true
-                productPriceBulkEditDialog?.dismiss()
-            }
-        }
-    }
-
     private fun submitInput() {
         inputAllDataInProductInputModel()
         setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE)
@@ -2066,14 +2051,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun setFragmentResultWithBundle(requestKey: String, dataBackPressed: Int = DETAIL_DATA) {
-        val variantInputModel = viewModel.productInputModel.variantInputModel
-        if (viewModel.shouldUpdateVariant) {
-            variantInputModel.products.forEach {
-                it.price = productPriceField.getTextBigIntegerOrZero()
-            }
-            viewModel.shouldUpdateVariant = false
-        }
-        viewModel.productInputModel.variantInputModel = variantInputModel
         arguments?.let {
             val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
             SaveInstanceCacheManager(requireContext(), cacheManagerId).put(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)

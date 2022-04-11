@@ -94,6 +94,7 @@
     <string name="label_price_recommendation_price_description">Rekomendasi ini untuk &lt;b>“%1s”&lt;/b> </string>
     <string name="label_price_recommendation_apply">Terapkan</string>
     <string name="label_price_recommendation_next">Pelajari Selengkapnya</string>
+    <string name="text_has_variant_price_ticker">Harga, stok, dan SKU bisa kamu atur di <![CDATA[<b><font color=\'#42b549\'>halaman varian</font></b>]]> karena produk ini punya varian.</string>
     <string-array name="array_price_recommendation_content_titles">
         <item>Didapat dari analisis sistem Tokopedia pada produk serupa di Tokopedia</item>
         <item>Harga yang ditampilkan adalah harga paling kompetitif</item>
@@ -133,6 +134,7 @@
 
     <!-- add edit product stock -->
     <string name="add_product_stock_header">Stok</string>
+    <string name="add_product_order_header">Pemesanan</string>
     <string name="label_available_stock">Stok tersedia</string>
     <string name="label_minimum_order">Minimum pemesanan</string>
     <string name="error_empty_product_stock">Stok tidak boleh kosong</string>
