@@ -80,7 +80,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                 containerAddOn.removeAllViews()
                 element.addOns.forEach {
                     val productAddOnView = SubItemPurchaseAddOnBinding.inflate(LayoutInflater.from(itemView.context))
-                    productAddOnView.textAddOnDetail.text = it
+                    productAddOnView.addOns.text = it
                     containerAddOn.addView(productAddOnView.root)
                 }
                 containerAddOn.show()

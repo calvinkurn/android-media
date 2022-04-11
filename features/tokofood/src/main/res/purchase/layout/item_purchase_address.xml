@@ -13,13 +13,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Alamat Pengiriman"
-        app:layout_constraintEnd_toStartOf="@+id/text_change_shipping_address"
+        app:layout_constraintEnd_toStartOf="@+id/chooseAddressButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_change_shipping_address"
+        android:id="@+id/chooseAddressButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pilih Alamat Lain"

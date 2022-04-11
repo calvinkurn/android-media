@@ -18,7 +18,7 @@ class TokoFoodPurchaseAddressViewHolder(private val viewBinding: ItemPurchaseAdd
 
     override fun bind(element: TokoFoodPurchaseAddressTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            textChangeShippingAddress.setOnClickListener {
+            chooseAddressButton.setOnClickListener {
                 listener.onTextChangeShippingAddressClicked()
             }
             textAddressName.text = element.addressName
