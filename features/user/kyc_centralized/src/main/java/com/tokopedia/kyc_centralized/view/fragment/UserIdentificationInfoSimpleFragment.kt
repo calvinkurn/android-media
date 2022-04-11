@@ -19,6 +19,7 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
@@ -26,7 +27,11 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
     private var projectId = 0
     private var mainView: ConstraintLayout? = null
     private var layoutBenefit: View? = null
+    private var loader: LoaderUnify? = null
     private var defaultStatusBarColor = 0
+    private var showWrapperLayout = false
+    private var redirectUrl = ""
+    private var kycType = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,41 +45,71 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        projectId = activity?.intent?.data?.getQueryParameter(
-                ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
-        initViews(view)
+        activity?.intent?.data?.let {
+            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).toIntOrZero()
+            showWrapperLayout = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO).toBoolean()
+            redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
+            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+        }
+
+        if (kycType.isEmpty()) {
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+        }
+
+        initViews(view, savedInstanceState)
     }
 
-    private fun initViews(view: View) {
+    private fun initViews(view: View, savedInstanceState: Bundle?) {
         mainView = view.findViewById(R.id.uii_simple_main_view)
         val mainImage: ImageUnify? = view.findViewById(R.id.uii_simple_main_image)
         val button: UnifyButton? = view.findViewById(R.id.uii_simple_button)
         layoutBenefit = view.findViewById(R.id.layout_benefit)
+        loader = view.findViewById(R.id.loader)
 
-        mainView?.hide()
-        mainImage?.loadImage(KycUrl.ICON_WAITING)
-
-        button?.setOnClickListener { _ ->
-            activity?.setResult(Activity.RESULT_OK)
-            activity?.finish()
+        if (showWrapperLayout) {
+            loader?.hide()
+            mainView?.hide()
+            layoutBenefit?.show()
+            mainImage?.loadImage(KycUrl.ICON_WAITING)
+            button?.setOnClickListener { _ ->
+                finishAndRedirectKycResult()
+            }
+            setupKycBenefitView(view)
+        } else {
+            loader?.show()
+            //If savedInstanceState is null, then first time open (solve problem in ONE UI 3.1)
+            if (savedInstanceState == null) {
+                startKyc()
+            }
         }
-        setupKycBenefitView(view)
     }
 
     private fun setupKycBenefitView(view: View) {
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
-        KycOnBoardingViewInflater.setupKycBenefitView(view, mainAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
             startKyc()
         }, closeButtonAction = {
             activity?.onBackPressed()
-        })
+        }, onCheckedChanged = {})
     }
 
     private fun startKyc() {
         val intent = RouteManager.getIntent(requireContext(),
-                ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
-        intent.putExtra("", "")
+                ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
+                projectId.toString(),
+                redirectUrl
+        )
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
         startActivityForResult(intent, KYC_REQUEST_CODE)
+    }
+
+    private fun finishAndRedirectKycResult() {
+        activity?.let {
+            it.setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+            })
+            it.finish()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -82,9 +117,13 @@ class UserIdentificationInfoSimpleFragment: BaseDaggerFragment() {
         if(requestCode == KYC_REQUEST_CODE) {
             when(resultCode) {
                 Activity.RESULT_OK -> {
-                    layoutBenefit?.hide()
-                    mainView?.show()
-                    KycOnBoardingViewInflater.restoreStatusBar(activity, defaultStatusBarColor)
+                    if (showWrapperLayout) {
+                        layoutBenefit?.hide()
+                        mainView?.show()
+                        KycOnBoardingViewInflater.restoreStatusBar(activity, defaultStatusBarColor)
+                    } else {
+                        finishAndRedirectKycResult()
+                    }
                 }
                 else -> {
                     activity?.setResult(resultCode)

@@ -5,5 +5,4 @@ package com.tokopedia.play.view.uimodel.recom
  */
 data class PlayPinnedInfoUiModel(
         val pinnedMessage: PinnedMessageUiModel,
-        val pinnedProduct: PinnedProductUiModel
 )

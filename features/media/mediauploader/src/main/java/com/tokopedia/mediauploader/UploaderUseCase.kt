@@ -3,7 +3,7 @@ package com.tokopedia.mediauploader
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isImage
+import com.tokopedia.mediauploader.common.util.isVideoFormat
 import com.tokopedia.mediauploader.common.util.request
 import com.tokopedia.mediauploader.image.ImageUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
@@ -31,10 +31,10 @@ class UploaderUseCase @Inject constructor(
         sourceId = params.getString(PARAM_SOURCE_ID, "")
         file = params.getObject(PARAM_FILE_PATH) as File
 
-        return if (file.isImage()) {
-            imageUploader()
-        } else {
+        return if (isVideoFormat(file.absolutePath)) {
             videoUploader(withTranscode)
+        } else {
+            imageUploader()
         }
     }
 

@@ -1,18 +1,16 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_On_Boarding: String = """mutation onboardAffiliate(${'$'}channel: OnBoardingRequest!) {
-  onboardAffiliate(channel: ${"$"}channel) {
-     data {
-      status 
-      error {
-        error_type 
-        message
-        cta_text
-        cta_link {
-          desktop
-          mobile
-          android
-          ios
+val GQL_Affiliate_On_Boarding: String = """mutation onboardAffiliate(${'$'}channel: [OnboardAffiliateChannelRequest!]!) {
+  onboardAffiliate(input: {Channel : ${"$"}channel}) {
+     data: Data {
+      status: Status
+      error: Error {
+        message: Message
+        ctaText: CtaText
+        errorType: ErrorType
+        ctaLink: CtaLink {
+          desktopURL: DesktopURL
+          mobileURL: MobileURL
         }
       }
     }

@@ -81,12 +81,6 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        getBranchDefferedDeeplink();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
@@ -158,7 +152,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @NotNull
-    private boolean getBranchDefferedDeeplink() {
+    public boolean getBranchDefferedDeeplink() {
         LinkerDeeplinkData linkerDeeplinkData = new LinkerDeeplinkData();
         linkerDeeplinkData.setReferrable(SplashScreen.this.getIntent().getData());
         linkerDeeplinkData.setActivity(SplashScreen.this);

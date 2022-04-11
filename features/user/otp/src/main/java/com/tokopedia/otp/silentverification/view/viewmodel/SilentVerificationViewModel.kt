@@ -14,7 +14,7 @@ import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -90,19 +90,19 @@ class SilentVerificationViewModel @Inject constructor(
     }
 
     fun verifyBoku(network: Network, url: String) {
-        launchCatchError(block = {
-            getEvUrlUsecase.apply {
-                setNetworkSocketFactory(network)
-                setUrl(url)
+        launch {
+            try {
+                getEvUrlUsecase.apply {
+                    setNetworkSocketFactory(network)
+                    setUrl(url)
+                }
+                val result = getEvUrlUsecase(Unit)
+                _bokuVerificationResponse.value = Success(result)
+            } catch (e: Throwable) {
+                e.printStackTrace()
+                _bokuVerificationResponse.value = Fail(e)
             }
-            val result = withContext(dispatcher.io) {
-                getEvUrlUsecase.executeOnBackground()
-            }
-            _bokuVerificationResponse.postValue(Success(result))
-        }, onError = {
-            it.printStackTrace()
-            _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
-        })
+        }
     }
 
     companion object {

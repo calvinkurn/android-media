@@ -22,45 +22,50 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
+import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL
+import com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_NETWORK
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.data.model.response.KycData
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
-import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
-import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_FACE_EMPTY
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FILE_PATH_KTP_EMPTY
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
+import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
+import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
 import com.tokopedia.user_identification_common.KycCommonUrl
 import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
-import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
 import com.tokopedia.utils.file.FileUtil
-import java.net.SocketTimeoutException
+import timber.log.Timber
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * @author by alvinatin on 15/11/18.
@@ -71,6 +76,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var errorUploadLayout: RelativeLayout? = null
     private var resultImageKtp: ImageView? = null
     private var resultImageFace: ImageView? = null
+    private var mainImage: ImageView? = null
     private var resultTextKtp: TextView? = null
     private var resultTextFace: TextView? = null
     private var bulletTextLayout: LinearLayout? = null
@@ -82,6 +88,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private var analytics: UserIdentificationCommonAnalytics? = null
     private var listRetake: ArrayList<Int> = arrayListOf()
     private var isSocketTimeoutException: Boolean = false
+    private var kycType = ""
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -90,7 +97,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val kycUploadViewModel by lazy { viewModelFragmentProvider.get(KycUploadViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,6 +107,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         }
         if (arguments != null && savedInstanceState == null) {
             stepperModel = arguments?.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(BaseUserIdentificationStepperFragment.EXTRA_KYC_STEPPER_MODEL)
         }
@@ -134,7 +142,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun initObserver() {
-        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        kycUploadViewModel.kycResponseLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     sendSuccessTimberLog()
@@ -147,35 +155,54 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
                     sendErrorTimberLog(it.throwable)
                 }
             }
-        })
+        }
 
-        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        kycUploadViewModel.encryptImageLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     uploadButton?.isEnabled = true
                     when (retakeActionCode) {
                         NOT_RETAKE -> {
-                            //if liveness, upload the files immediately
-                            if (!isKycSelfie) {
-                                uploadKycFiles()
-                            }
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = true,
+                                    isFaceFileUsingEncryption = true
+                            )
                         }
                         RETAKE_KTP -> {
+                            retakeActionCode = RETAKE_KTP_AND_FACE
                             goToLivenessOrSelfie()
                         }
                         RETAKE_FACE -> {
-                            uploadKycFiles()
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = false,
+                                    isFaceFileUsingEncryption = true
+                            )
+                        }
+                        RETAKE_KTP_AND_FACE -> {
+                            uploadKycFiles(
+                                    isKtpFileUsingEncryption = true,
+                                    isFaceFileUsingEncryption = true
+                            )
                         }
                     }
                 }
                 is Fail -> {
+                    ErrorHandler.getErrorMessage(
+                            activity,
+                            it.throwable,
+                            ErrorHandler.Builder().apply {
+                                className = UserIdentificationFormFinalFragment::class.java.name
+                            }.build()
+                    )
                     NetworkErrorHelper.showRedSnackbar(activity, resources.getString(R.string.error_text_image_fail_to_encrypt))
+                    Timber.w(it.throwable, "$LIVENESS_TAG: ENCRYPT ERROR")
                 }
             }
-        })
+        }
     }
 
     private fun sendErrorTimberLog(throwable: Throwable) {
+        Timber.w(throwable, "$LIVENESS_TAG: LIVENESS_UPLOAD_RESULT")
         if (!isKycSelfie) {
             ServerLogger.log(Priority.P2, "LIVENESS_UPLOAD_RESULT", mapOf("type" to "ErrorUpload",
                     "ktpPath" to stepperModel?.ktpFile.orEmpty(),
@@ -196,23 +223,19 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun sendSuccessTimberLog() {
-        if (isKycSelfie) {
-            ServerLogger.log(Priority.P2, "KYC_SELFIE_UPLOAD_RESULT",
-                    mapOf("type" to "SuccessUpload",
-                            "ktpPath" to stepperModel?.ktpFile.orEmpty(),
-                            "facePath" to stepperModel?.faceFile.orEmpty(),
-                            "tkpdProjectId" to projectId.toString()))
-            analytics?.eventClickUploadPhotosTradeIn("success")
-        }
+        analytics?.eventClickUploadPhotosTradeIn("success")
+        ServerLogger.log(Priority.P2, "KYC_UPLOAD_RESULT",
+                mapOf(
+                        "type" to "SuccessUpload",
+                        "method" to if (isKycSelfie) "selfie" else "liveness",
+                        "ktpPath" to stepperModel?.ktpFile.orEmpty(),
+                        "facePath" to stepperModel?.faceFile.orEmpty(),
+                        "tkpdProjectId" to projectId.toString())
+        )
     }
 
     override fun initInjector() {
-        if (activity != null) {
-            val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
-            daggerUserIdentificationComponent.inject(this)
-        }
+        getComponent(UserIdentificationCommonComponent::class.java).inject(this)
     }
 
     private fun openCameraView(viewMode: Int, requestCode: Int) {
@@ -222,43 +245,51 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     private fun openLivenessView() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LIVENESS_DETECTION, projectId.toString())
         startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
     }
 
     private fun encryptImage() {
         if (isUsingEncrypt()) {
             uploadButton?.isEnabled = false
-            kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+            kycUploadViewModel.encryptImage(stepperModel?.faceFile.toEmptyStringIfNull(), KYC_IV_FACE_CACHE)
         }
     }
 
     private fun setContentView() {
         loadingLayout?.visibility = View.GONE
-        if (isKycSelfie) {
-            hideLoading()
-            setKycSelfieView()
-        } else {
-            //if not using encryption, send immediately, else wait for encrypt and show loading
-            if (!isUsingEncrypt()) {
-                uploadKycFiles()
-            } else {
-                showLoading()
-            }
-        }
         if (activity is UserIdentificationFormActivity) {
             (activity as UserIdentificationFormActivity)
                     .updateToolbarTitle(getString(R.string.title_kyc_form_upload))
         }
     }
 
-    private fun uploadKycFiles() {
+    private fun uploadKycFiles(
+            isKtpFileUsingEncryption: Boolean,
+            isFaceFileUsingEncryption: Boolean
+    ) {
         showLoading()
         stepperModel?.let {
             if (isSocketTimeoutException) {
                 isSocketTimeoutException = false
             }
-            kycUploadViewModel.uploadImages(it.ktpFile, it.faceFile, projectId.toString(), isUsingEncrypt())
+            if (isUsingEncrypt()) {
+                kycUploadViewModel.uploadImages(
+                        it.ktpFile,
+                        it.faceFile,
+                        projectId.toString(),
+                        isKtpFileUsingEncryption,
+                        isFaceFileUsingEncryption
+                )
+            } else {
+                kycUploadViewModel.uploadImages(
+                        it.ktpFile,
+                        it.faceFile,
+                        projectId.toString(),
+                        isKtpFileUsingEncryption = false,
+                        isFaceFileUsingEncryption = false
+                )
+            }
         }
     }
 
@@ -274,7 +305,10 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         generateLink()
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickUploadPhotos()
-            uploadKycFiles()
+            uploadKycFiles(
+                    isKtpFileUsingEncryption = false,
+                    isFaceFileUsingEncryption = false
+            )
         }
     }
 
@@ -328,6 +362,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private fun setFaceRetakeButtonListener() {
         uploadButton?.setOnClickListener { v: View? ->
             analytics?.eventClickChangeSelfieFinalFormPage()
+            retakeActionCode = RETAKE_FACE
             goToLivenessOrSelfie()
         }
     }
@@ -359,8 +394,8 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
             buttonText: String,
             listMessage: ArrayList<String>?
     ) {
-        ImageHandler.LoadImage(resultImageKtp, urlKtp)
-        ImageHandler.LoadImage(resultImageFace, urlFace)
+        resultImageKtp?.loadImage(urlKtp)
+        resultImageFace?.loadImage(urlFace)
         if (colorKtp != null) {
             resultTextKtp?.setTextColor(colorKtp)
         }
@@ -387,7 +422,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     private val isKycSelfie: Boolean
         get() {
             try {
-                if(allowedSelfie) return allowedSelfie
+                if (allowedSelfie || kycType == KYC_TYPE_KTP_WITH_SELFIE) return true
                 if (UserIdentificationFormActivity.isSupportedLiveness) {
                     return remoteConfig.getBoolean(RemoteConfigKey.KYC_USING_SELFIE)
                 }
@@ -402,6 +437,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         mainLayout = view.findViewById(R.id.layout_main)
         resultImageKtp = view.findViewById(R.id.result_image_ktp)
         resultImageFace = view.findViewById(R.id.result_image_face)
+        mainImage = view.findViewById(R.id.main_image)
         resultTextKtp = view.findViewById(R.id.result_text_ktp)
         resultTextFace = view.findViewById(R.id.result_text_face)
         bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
@@ -422,24 +458,29 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         when (requestCode) {
             KYCConstant.REQUEST_CODE_CAMERA_KTP -> {
                 retakeActionCode = RETAKE_KTP
-                stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
+                stepperModel?.ktpFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).orEmpty()
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImageKtp(stepperModel?.ktpFile.toEmptyStringIfNull())
+                    kycUploadViewModel.encryptImage(stepperModel?.ktpFile.orEmpty(), KYC_IV_KTP_CACHE)
                 } else {
                     goToLivenessOrSelfie()
                 }
             }
             KYCConstant.REQUEST_CODE_CAMERA_FACE -> {
-                retakeActionCode = RETAKE_FACE
-                if (!isKycSelfie) {
-                    stepperModel?.faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).toEmptyStringIfNull()
+                if (retakeActionCode != RETAKE_FACE) {
+                    retakeActionCode = RETAKE_KTP_AND_FACE
+                }
+                stepperModel?.faceFile = if (!isKycSelfie) {
+                    data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH).orEmpty()
                 } else {
-                    stepperModel?.faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).toEmptyStringIfNull()
+                    data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT).orEmpty()
                 }
                 if (isUsingEncrypt()) {
-                    kycUploadViewModel.encryptImageFace(stepperModel?.faceFile.toEmptyStringIfNull())
+                    kycUploadViewModel.encryptImage(stepperModel?.faceFile.orEmpty(), KYC_IV_FACE_CACHE)
                 } else {
-                    uploadKycFiles()
+                    uploadKycFiles(
+                            isKtpFileUsingEncryption = true,
+                            isFaceFileUsingEncryption = true
+                    )
                 }
             }
             else -> {
@@ -519,49 +560,65 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     override fun trackOnBackPressed() {}
 
     private fun setFailedResult(throwable: Throwable) {
-        val errorCode = KycUploadErrorCodeUtil.getErrorCode(throwable)
-        if(errorCode == KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT) {
-            setViews(getString(R.string.kyc_upload_failed_reason_encrypt_title),
-                "${getString(R.string.kyc_upload_failed_reason_encrypt)} ($errorCode)",
-                com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL)
-            kyc_upload_error_button?.setOnClickListener {
-                deleteTmpFile(deleteKtp = true, deleteFace = true)
-                stepperListener?.finishPage()
+        val message = ErrorHandler.getErrorMessage(
+                context,
+                throwable,
+                ErrorHandler.Builder().apply {
+                    className = UserIdentificationFormFinalFragment::class.java.name
+
+                }.build()
+        )
+
+        when {
+            message.contains("timeout") -> {
+                isSocketTimeoutException = true
+                analytics?.eventClickConnectionTimeout()
+                setViews(getString(R.string.kyc_upload_failed_title), message, SCAN_FACE_FAIL_NETWORK)
             }
-        } else {
-            when (throwable) {
-                is SocketTimeoutException -> {
-                    isSocketTimeoutException = true
-                    setViews(getString(R.string.kyc_upload_failed_reason_bad_network_title),
-                        getString(R.string.kyc_upload_failed_reason_bad_network),
-                        com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_NETWORK)
+            message.contains(FAILED_ENCRYPTION) -> {
+                setViews(
+                        getString(R.string.kyc_upload_failed_title),
+                        getString(R.string.kyc_upload_failed_reason_encrypt),
+                        SCAN_FACE_FAIL_GENERAL
+                )
+            }
+            else -> {
+                setViews(getString(R.string.kyc_upload_failed_title), message, SCAN_FACE_FAIL_GENERAL)
+            }
+        }
+
+        view?.findViewById<UnifyButton>(R.id.kyc_upload_error_button)?.setOnClickListener {
+            when {
+                message.contains(FAILED_ENCRYPTION) || message.contains(FILE_PATH_KTP_EMPTY) -> {
+                    deleteTmpFile(deleteKtp = true, deleteFace = true)
+                    stepperListener?.finishPage()
+                }
+                message.contains(FILE_PATH_FACE_EMPTY) -> {
+                    retakeActionCode = RETAKE_FACE
+                    goToLivenessOrSelfie()
+                }
+                !isKycSelfie -> {
+                    retakeActionCode = RETAKE_FACE
+                    openLivenessView()
                 }
                 else -> {
-                    setViews(getString(R.string.kyc_upload_failed_reason_general_title),
-                        "${getString(R.string.kyc_upload_failed_reason_general)} ($errorCode)",
-                        com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL)
-                }
-            }
-            kyc_upload_error_button?.setOnClickListener {
-                if (!isKycSelfie) {
-                    analytics?.eventClickConnectionTimeout()
-                    openLivenessView()
-                } else {
-                    uploadKycFiles()
+                    uploadKycFiles(
+                            isKtpFileUsingEncryption = false,
+                            isFaceFileUsingEncryption = false
+                    )
                 }
             }
         }
     }
 
     private fun setViews(failedReasonTitle: String, failedReason: String, failedImage: String) {
-        kyc_upload_error_title?.text = failedReasonTitle
-        kyc_upload_error_subtitle?.text = failedReason
-        main_image?.let {
-            ImageHandler.LoadImage(main_image, failedImage)
-        }
+        view?.findViewById<Typography>(R.id.kyc_upload_error_title)?.text = failedReasonTitle
+        view?.findViewById<Typography>(R.id.kyc_upload_error_subtitle)?.text = failedReason
+        mainImage?.loadImage(failedImage)
     }
 
     fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
+        Timber.d("$LIVENESS_TAG: deleting ktp ($deleteKtp) face ($deleteFace)")
         if(deleteKtp && deleteFace) {
             FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
         } else {
@@ -583,11 +640,15 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         private const val NOT_RETAKE = 0
         private const val RETAKE_KTP = 1
         private const val RETAKE_FACE = 2
+        private const val RETAKE_KTP_AND_FACE = 3
 
-        fun createInstance(projectid: Int): Fragment {
-            val fragment = UserIdentificationFormFinalFragment()
-            projectId = projectid
-            return fragment
+        fun createInstance(projectid: Int, kycType: String): Fragment {
+            return UserIdentificationFormFinalFragment().apply {
+                arguments = Bundle().apply {
+                    projectId = projectid
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                }
+            }
         }
     }
 }

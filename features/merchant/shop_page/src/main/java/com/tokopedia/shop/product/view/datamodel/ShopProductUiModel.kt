@@ -88,14 +88,14 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     constructor(gmFeaturedProduct: GMFeaturedProduct) {
         id = gmFeaturedProduct.productId
         name = gmFeaturedProduct.name
-        displayedPrice = gmFeaturedProduct.price
+        displayedPrice = gmFeaturedProduct.price?.toString()
         imageUrl = gmFeaturedProduct.imageUri
         productUrl = gmFeaturedProduct.uri
 
         totalReview = gmFeaturedProduct.totalReview
         rating = gmFeaturedProduct.rating
-        if (gmFeaturedProduct.cashbackDetail != null) {
-            cashback = gmFeaturedProduct.cashbackDetail.cashbackPercent
+        gmFeaturedProduct.cashbackDetail?.let { cashbackDetail ->
+            cashback = cashbackDetail.cashbackPercent
         }
         isWholesale = gmFeaturedProduct.isWholesale
         isPo = gmFeaturedProduct.isPreorder

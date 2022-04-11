@@ -126,7 +126,7 @@ class VerifyFingerprintActivity: BaseActivity() {
     }
 
     private fun showBiometricPrompt() {
-        BiometricPromptHelper.showBiometricPrompt(this,
+        BiometricPromptHelper.showBiometricPromptActivity(this,
             onSuccess = {
                 onFingerprintValid()
             }, onFailed = {

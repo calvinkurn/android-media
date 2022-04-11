@@ -3,10 +3,7 @@ package com.tokopedia.topads.view.model
 import android.content.Context
 import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.topads.common.data.model.ResponseCreateGroup
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
@@ -15,7 +12,6 @@ import com.tokopedia.topads.view.RequestHelper
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,7 +41,7 @@ class SummaryViewModelTest {
     fun setUp() {
         repository = mockk()
         context = mockk(relaxed = true)
-        viewModel = spyk(SummaryViewModel(context, rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, topAdsCreateUseCase, repository))
+        viewModel = spyk(SummaryViewModel(rule.dispatchers,validGroupUseCase, topAdsGetShopDepositUseCase, topAdsCreateUseCase))
         mockkObject(RequestHelper)
         every { RequestHelper.getGraphQlRequest(any(), any(), any()) } returns mockk(relaxed = true)
         every { RequestHelper.getCacheStrategy() } returns mockk(relaxed = true)

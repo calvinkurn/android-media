@@ -11,6 +11,7 @@ object ApplinkConstInternalMechant {
     const val QUERY_PARAM_BUNDLE_ID = "bundleId"
     const val QUERY_PARAM_PAGE_SOURCE = "source"
     const val SOURCE_PDP = "pdp"
+    const val SOURCE_SHOP_PAGE = "shop-page"
 
     // Add Edit Product Query Params
     const val QUERY_PARAM_ID = "id"
@@ -29,8 +30,9 @@ object ApplinkConstInternalMechant {
 
     const val MERCHANT_PRODUCT_DRAFT = "${INTERNAL_MERCHANT}/product-draft"
 
-    // Product Bundle
+    // Product Service Widget
     const val MERCHANT_PRODUCT_BUNDLE = "${INTERNAL_MERCHANT}/product-bundle/{product_id}/"
+    const val MERCHANT_GIFTING = "${INTERNAL_MERCHANT}/gifting/{addon_id}/"
 
     // Official Store Brandlist
     const val BRANDLIST = "${INTERNAL_MERCHANT}/official-store/brand/{category_id}/"

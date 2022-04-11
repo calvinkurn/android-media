@@ -15,6 +15,7 @@ import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewAct
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineNegKeyFragment
+import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineShopFragment
 import dagger.Component
 
 /**
@@ -27,10 +28,11 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface TopAdsDashboardComponent {
 
+    fun inject(topAdsInsightShopKeywordRecommendationFragment: TopAdsInsightShopKeywordRecommendationFragment)
     fun inject(topAdsProductIklanFragment: TopAdsProductIklanFragment)
     fun inject(topAdsCreditHistoryFragment: TopAdsCreditHistoryFragment)
     fun inject(topAdsEditAutoTopUpFragment: TopAdsEditAutoTopUpFragment)
-    fun inject(berandaTabFragment: BerandaTabFragment)
+    fun inject(fragment: TopAdsDashboardBerandaFragment)
     fun inject(topAdsDashGroupFragment: TopAdsDashGroupFragment)
     fun inject(topAdsDashWithoutGroupFragment: TopAdsDashWithoutGroupFragment)
     fun inject(productTabFragment: ProductTabFragment)
@@ -39,6 +41,7 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsHeadlineKeyFragment: TopAdsHeadlineKeyFragment)
     fun inject(headlineNegKeyFragment: TopAdsHeadlineNegKeyFragment)
     fun inject(topAdsHeadlineBaseFragment: TopAdsHeadlineBaseFragment)
+    fun inject(topAdsHeadlineShopFragment: TopAdsHeadlineShopFragment)
     fun inject(topAdsBaseTabFragment: TopAdsBaseTabFragment)
     fun inject(topAdsRecommendationFragment: TopAdsRecommendationFragment)
     fun inject(topadsKeywordInsightBase: TopadsInsightBaseKeywordFragment)
@@ -57,4 +60,5 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsAddCreditActivity: TopAdsAddCreditActivity)
     fun inject(topAdsChooseNominalBottomSheet: TopAdsChooseNominalBottomSheet)
     fun inject(topAdsRecomGroupBottomSheet: TopAdsRecomGroupBottomSheet)
+    fun inject(topAdsDashDeletedGroupFragment: TopAdsDashDeletedGroupFragment)
 }

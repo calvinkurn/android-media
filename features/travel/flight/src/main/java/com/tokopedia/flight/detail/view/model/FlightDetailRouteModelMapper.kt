@@ -1,8 +1,7 @@
 package com.tokopedia.flight.detail.view.model
 
-import com.tokopedia.flight.orderlist.data.cloud.entity.OrderStopDetailEntity
-import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
+import com.tokopedia.flight.detail.data.OrderStopDetailEntity
+import com.tokopedia.flight.orderdetail.data.RouteEntity
 import com.tokopedia.flight.search.data.cloud.single.Route
 import com.tokopedia.flight.search.data.cloud.single.StopDetailEntity
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
@@ -13,7 +12,8 @@ import javax.inject.Inject
  * @author by alvarisi on 12/8/17.
  */
 class FlightDetailRouteModelMapper @Inject constructor(
-        private val flightDetailRouteInfoViewModelMapper: FlightDetailRouteInfoModelMapper) {
+    private val flightDetailRouteInfoViewModelMapper: FlightDetailRouteInfoModelMapper
+) {
 
     private fun transform(route: Route?): FlightDetailRouteModel? {
         var flightDetailRouteViewModel: FlightDetailRouteModel? = null
@@ -34,7 +34,8 @@ class FlightDetailRouteModelMapper @Inject constructor(
             flightDetailRouteViewModel.flightNumber = route.flightNumber
             flightDetailRouteViewModel.layover = route.layover
             flightDetailRouteViewModel.isRefundable = route.isRefundable
-            flightDetailRouteViewModel.infos = flightDetailRouteInfoViewModelMapper.transform(route.infos)
+            flightDetailRouteViewModel.infos =
+                flightDetailRouteInfoViewModelMapper.transform(route.infos)
             flightDetailRouteViewModel.amenities = route.amenities
             flightDetailRouteViewModel.stopOver = route.stops
             flightDetailRouteViewModel.stopOverDetail = transform(route.stopDetails, null)
@@ -43,40 +44,48 @@ class FlightDetailRouteModelMapper @Inject constructor(
         return flightDetailRouteViewModel
     }
 
-    private fun transform(stopDetails: List<StopDetailEntity>?, orderStopDetails: List<OrderStopDetailEntity>?): List<FlightStopOverViewModel> {
-        val details: MutableList<FlightStopOverViewModel> = ArrayList()
-        var viewModel: FlightStopOverViewModel? = null
+    private fun transform(
+        stopDetails: List<StopDetailEntity>?,
+        orderStopDetails: List<OrderStopDetailEntity>?
+    ): List<FlightStopOverModel> {
+        val details: MutableList<FlightStopOverModel> = ArrayList()
         if (stopDetails != null) {
             for (entity in stopDetails) {
-                viewModel = transform(entity)
-                if (viewModel != null) details.add(viewModel)
+                val viewModel: FlightStopOverModel? = transform(entity)
+                viewModel?.let {
+                    details.add(it)
+                }
             }
         }
         if (orderStopDetails != null) {
             for (entity in orderStopDetails) {
-                viewModel = transform(entity)
-                if (viewModel != null) details.add(viewModel)
+                val viewModel: FlightStopOverModel? = transform(entity)
+                viewModel?.let {
+                    details.add(it)
+                }
             }
         }
         return details
     }
 
-    private fun transform(entity: StopDetailEntity?): FlightStopOverViewModel? {
-        var viewModel: FlightStopOverViewModel? = null
+    private fun transform(entity: StopDetailEntity?): FlightStopOverModel? {
+        var viewModel: FlightStopOverModel? = null
         if (entity != null) {
-            viewModel = FlightStopOverViewModel()
-            viewModel.airportCode = entity.code
-            viewModel.cityName = entity.city
+            viewModel = FlightStopOverModel(
+                airportCode = entity.code,
+                cityName = entity.city
+            )
         }
         return viewModel
     }
 
-    private fun transform(entity: OrderStopDetailEntity?): FlightStopOverViewModel? {
-        var viewModel: FlightStopOverViewModel? = null
+    private fun transform(entity: OrderStopDetailEntity?): FlightStopOverModel? {
+        var viewModel: FlightStopOverModel? = null
         if (entity != null) {
-            viewModel = FlightStopOverViewModel()
-            viewModel.airportCode = entity.code
-            viewModel.cityName = entity.city
+            viewModel = FlightStopOverModel(
+                airportCode = entity.code,
+                cityName = entity.city
+            )
         }
         return viewModel
     }
@@ -116,7 +125,8 @@ class FlightDetailRouteModelMapper @Inject constructor(
             flightDetailRouteViewModel.flightNumber = route.flightNumber
             flightDetailRouteViewModel.isRefundable = route.isRefundable
             flightDetailRouteViewModel.stopOver = route.stops
-            flightDetailRouteViewModel.infos = flightDetailRouteInfoViewModelMapper.transform(route.freeAmenities)
+            flightDetailRouteViewModel.infos =
+                flightDetailRouteInfoViewModelMapper.transform(route.freeAmenities)
             flightDetailRouteViewModel.stopOverDetail = transform(null, route.stopDetailEntities)
             flightDetailRouteViewModel.operatingAirline = route.operatingAirline
             if (route.departureTerminal.isNotEmpty()) {

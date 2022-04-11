@@ -35,15 +35,19 @@ class VideoUploaderManager @Inject constructor(
         val videoPolicy = sourcePolicy.videoPolicy
 
         if (videoPolicy != null) {
-            val extensions = videoPolicy.extension.split(",")
             val maxSizeOfSimpleUpload = videoPolicy.thresholdSizeOfVideo()
             val maxFileSize = videoPolicy.maxFileSize
+
+            val extensions = videoPolicy
+                .extension
+                .split(",")
+                .map { it.drop(1) }
 
             return when {
                 !file.exists() -> {
                     UploadResult.Error(FILE_NOT_FOUND)
                 }
-                !extensions.contains(filePath.fileExtension()) -> {
+                !extensions.contains(filePath.fileExtension().lowercase()) -> {
                     UploadResult.Error(formatNotAllowedMessage(videoPolicy.extension))
                 }
                 file.isMaxFileSize(maxFileSize) -> {

@@ -27,14 +27,18 @@ object InternalReviewUtils {
     fun getUniqueKey(key: String, userId: String): String = key + userId
 
     fun getConnectionStatus(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val network = connectivityManager.activeNetwork
-            val capabilities = connectivityManager.getNetworkCapabilities(network)
-            capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
-        } else {
-            val activeNetwork = connectivityManager.activeNetworkInfo // Deprecated in 29
-            activeNetwork != null && activeNetwork.isConnectedOrConnecting // // Deprecated in 28
+        return try {
+            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val network = connectivityManager.activeNetwork
+                val capabilities = connectivityManager.getNetworkCapabilities(network)
+                capabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) ?: false
+            } else {
+                val activeNetwork = connectivityManager.activeNetworkInfo // Deprecated in 29
+                activeNetwork != null && activeNetwork.isConnectedOrConnecting // // Deprecated in 28
+            }
+        } catch (e: SecurityException) {
+            false
         }
     }
 

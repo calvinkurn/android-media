@@ -1,11 +1,11 @@
 package com.tokopedia.broadcaster.tracker
 
 import android.content.Context
+import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.log.data.NetworkLogDataSource
 import com.tokopedia.broadcaster.log.data.mapper.mapToData
-import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
-import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.config.GlobalConfig
 import java.util.*
@@ -77,7 +77,7 @@ class BroadcasterStatistic : LivePusherStatistic {
 
     private fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
-    fun update(context: Context, url: String, config: BroadcasterConfig) {
+    fun update(context: Context?, url: String, config: BroadcasterConfig) {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
@@ -120,9 +120,11 @@ class BroadcasterStatistic : LivePusherStatistic {
         )
 
         if (GlobalConfig.DEBUG) {
-            NetworkLogDataSource
-                .instance(context.applicationContext)
-                .logChucker(dataUIModel.mapToData())
+            context?.applicationContext?.let {
+                NetworkLogDataSource
+                    .instance(it)
+                    .logChucker(dataUIModel.mapToData())
+            }
         }
 
         // track data to new relic

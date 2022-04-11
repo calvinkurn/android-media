@@ -3,11 +3,9 @@ package com.tokopedia.flight.homepage.presentation.activity
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -20,19 +18,18 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.flight.R
+import com.tokopedia.flight.airport.presentation.adapter.viewholder.FlightCountryViewHolder
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.utils.date.DateUtil
 import org.hamcrest.Matchers
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.text.SimpleDateFormat
 
 /**
  * @author by furqan on 04/08/2020
@@ -163,8 +160,10 @@ class FlightHomepageActivityTest {
 
         // click on flight departure airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightOriginAirport)).perform(click())
+        Thread.sleep(2000)
 
         // click on Padang, to set Padang as Departure Airport
+        onView(withId(R.id.rvFlightAirport)).check(matches(isDisplayed()))
         onView(withText("Padang, Indonesia")).perform(click())
         Thread.sleep(1000)
     }
@@ -174,9 +173,11 @@ class FlightHomepageActivityTest {
 
         // click on flight arrival airport to open bottom sheet to select airport
         onView(withId(R.id.tvFlightDestinationAirport)).perform(click())
-
+        Thread.sleep(2000)
         // click on Palembang, to set Palembang as Arrival Airport
+        onView(withId(R.id.rvFlightAirport)).check(matches(isDisplayed()))
         onView(withText("Palembang, Indonesia")).perform(click())
+
         Thread.sleep(1000)
     }
 
@@ -187,11 +188,10 @@ class FlightHomepageActivityTest {
         onView(withId(R.id.tvFlightDepartureDate)).perform(click())
         Thread.sleep(500)
 
-        // select today
-        val sdf = SimpleDateFormat("d")
-        val dateToday = sdf.format(DateUtil.getCurrentDate())
-        onView(getElementFromMatchAtPosition(withText(dateToday), 1)).perform(click())
-
+        // select static date - 8
+        onView(getElementFromMatchAtPosition(withText("8"), 1)).check(matches(isDisplayed()))
+        Thread.sleep(3000)
+        onView(getElementFromMatchAtPosition(withText("8"), 1)).perform(click())
         Thread.sleep(3000)
     }
 
@@ -229,6 +229,7 @@ class FlightHomepageActivityTest {
 
         // click on flight class to open bottom sheet to set passengers class
         onView(withId(R.id.tvFlightClass)).perform(click())
+        Thread.sleep(1000)
 
         // set class, Bisnis
         onView(withId(R.id.radioBisnisClass)).perform(click())

@@ -4,15 +4,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.databinding.LayoutListEmailExtensionBinding
-import com.tokopedia.utils.view.binding.viewBinding
+import kotlinx.android.synthetic.main.layout_list_email_extension.view.*
 
 class EmailExtensionAdapter(
         private var list: List<String>,
         private val listener: ClickListener,
         private val maxShowingItems: Int
 ): RecyclerView.Adapter<EmailExtensionAdapter.ViewHolder>() {
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(View.inflate(parent.context, R.layout.layout_list_email_extension, null))
@@ -35,11 +33,8 @@ class EmailExtensionAdapter(
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-
-        private val binding: LayoutListEmailExtensionBinding? by viewBinding()
-
         fun bind(extension: String, listener: ClickListener?, position: Int) {
-            binding?.textEmailExtension?.text = extension
+            itemView.textEmailExtension.text = extension
             itemView.setOnClickListener {
                 listener?.onExtensionClick(extension, position)
             }

@@ -1,0 +1,209 @@
+[
+  {
+    "data": {
+      "ProductListMeta": {
+        "header": {
+          "processTime": 0.056153796,
+          "messages": [],
+          "reason": "",
+          "errorCode": ""
+        },
+        "data": {
+          "tab": [
+            {
+              "id": "ALL",
+              "name": "Semua Produk",
+              "value": 355
+            },
+            {
+              "id": "ACTIVE",
+              "name": "Aktif",
+              "value": 285
+            },
+            {
+              "id": "INACTIVE",
+              "name": "Nonaktif",
+              "value": 69
+            },
+            {
+              "id": "VIOLATION",
+              "name": "Pelanggaran",
+              "value": 1
+            }
+          ],
+          "filter": [
+            {
+              "id": "page",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "pageSize",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "status",
+              "name": "",
+              "value": [
+                "ACTIVE",
+                "INACTIVE",
+                "VIOLATION"
+              ]
+            },
+            {
+              "id": "keyword",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "menu",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "category",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "logistic",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "preorder",
+              "name": "",
+              "value": []
+            },
+            {
+              "id": "isNewOnly",
+              "name": "Baru",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isUsedOnly",
+              "name": "Bekas",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isEmptyStockOnly",
+              "name": "Stok Kurang",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isVariantOnly",
+              "name": "Dengan Varian",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isCashbackOnly",
+              "name": "Dengan Cashback",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isWholesaleOnly",
+              "name": "Grosir",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isPreorderOnly",
+              "name": "Pre Order",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isFeaturedOnly",
+              "name": "Produk Unggulan",
+              "value": [
+                "true",
+                "false"
+              ]
+            },
+            {
+              "id": "isCampaignOnly",
+              "name": "Dengan Campaign",
+              "value": [
+                "true",
+                "false"
+              ]
+            }
+          ],
+          "sort": [
+            {
+              "id": "DEFAULT",
+              "name": "Urutkan",
+              "value": "DESC"
+            },
+            {
+              "id": "UPDATE_TIME",
+              "name": "Terakhir Diubah",
+              "value": "DESC"
+            },
+            {
+              "id": "SOLD",
+              "name": "Terlaris",
+              "value": "DESC"
+            },
+            {
+              "id": "SOLD",
+              "name": "Kurang Diminati",
+              "value": "ASC"
+            },
+            {
+              "id": "PRICE",
+              "name": "Harga Tertinggi",
+              "value": "DESC"
+            },
+            {
+              "id": "PRICE",
+              "name": "Harga Terendah",
+              "value": "ASC"
+            },
+            {
+              "id": "NAME",
+              "name": "Nama: A - Z",
+              "value": "ASC"
+            },
+            {
+              "id": "NAME",
+              "name": "Nama: Z - A",
+              "value": "DESC"
+            },
+            {
+              "id": "STOCK",
+              "name": "Stok Tersedikit",
+              "value": "ASC"
+            },
+            {
+              "id": "STOCK",
+              "name": "Stok Terbanyak",
+              "value": "DESC"
+            }
+          ]
+        }
+      },
+      "status": "OK"
+    }
+  }
+]

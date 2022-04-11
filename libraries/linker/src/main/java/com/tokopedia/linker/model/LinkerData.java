@@ -20,6 +20,8 @@ public class LinkerData implements Parcelable {
     public static final String PROMO_TYPE = "Promo";
     public static final String HOTEL_TYPE = "Hotel";
     public static final String ENTERTAINMENT_TYPE = "Entertainment";
+    public static final String NOW_TYPE = "Now";
+    public static final String WEBVIEW_TYPE = "Webview";
 
     public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
@@ -30,6 +32,7 @@ public class LinkerData implements Parcelable {
     public static final String GROUPCHAT_TYPE = "tokopedia_play";
     public static final String INDI_CHALLENGE_TYPE = "tokopedia_challenge";
     public static final String PLAY_BROADCASTER = "play_broadcaster";
+    public static final String PLAY_VIEWER = "play_viewer";
     public static final String MERCHANT_VOUCHER = "merchant_voucher";
     public static final String LABEL_PRODUCT_SHARE = "Product Share";
     public static final String LABEL_SPACE_SHARE = "%20Share";

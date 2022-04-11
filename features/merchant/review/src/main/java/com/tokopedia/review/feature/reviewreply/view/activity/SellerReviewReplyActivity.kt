@@ -16,7 +16,7 @@ import com.tokopedia.review.feature.reviewreply.di.component.ReviewReplyComponen
 import com.tokopedia.review.feature.reviewreply.di.module.ReviewReplyModule
 import com.tokopedia.review.feature.reviewreply.view.fragment.SellerReviewReplyFragment
 
-class SellerReviewReplyActivity : BaseSimpleActivity(), HasComponent<ReviewReplyComponent>, ReviewSellerPerformanceMonitoringListener {
+open class SellerReviewReplyActivity : BaseSimpleActivity(), HasComponent<ReviewReplyComponent>, ReviewSellerPerformanceMonitoringListener {
 
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 

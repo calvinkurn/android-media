@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/transaction_history_parent_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginRight="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/transaction_history_heading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:text="@string/affiliate_komisi_produk"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/transaction_history_amount"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/transaction_history_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Komisi Produk Affiliate" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/transaction_history_amount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toTopOf="@id/transaction_history_notes"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/transaction_history_chevron"
+        app:layout_constraintTop_toBottomOf="@id/transaction_history_heading"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="+Rp224.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/transaction_history_notes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@id/transaction_history_date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/transaction_history_chevron"
+        app:layout_constraintTop_toBottomOf="@id/transaction_history_amount"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="VAIA Sepatu Heels Callya Pink 7CM - Merah Muda, 36 - (14 produk terjual)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/transaction_history_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:layout_marginRight="@dimen/spacing_lvl6"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="@id/divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/transaction_history_chevron"
+        app:layout_constraintTop_toBottomOf="@id/transaction_history_notes"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        tools:text="22 Des 2020, 10:30 WIB" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/transaction_history_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/transaction_history_heading"
+        app:layout_constraintRight_toRightOf="parent"
+        app:labelType="highlight_light_green"
+        app:labelTitle="Sample Label"/>
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/transaction_history_chevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:rotation="270"
+        app:icon_name="CHEVRON_DOWN"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_2"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/transaction_history_date" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

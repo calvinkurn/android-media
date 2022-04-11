@@ -30,7 +30,6 @@
       android:id="@+id/imgHeader"
       android:layout_width="@dimen/updateinactivephone_280dp"
       android:layout_height="@dimen/updateinactivephone_210dp"
-      android:src="@drawable/ic_success_page"
       android:layout_marginTop="@dimen/layout_lvl8"
       app:layout_constraintTop_toBottomOf="@+id/toolbarInactivePhone"
       app:layout_constraintLeft_toLeftOf="parent"

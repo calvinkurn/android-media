@@ -3,7 +3,7 @@ package com.tokopedia.play_common.sse
 import android.content.Context
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analyticsdebugger.debugger.SSELogger
-import com.tokopedia.authentication.HEADER_RELEASE_TRACK
+import com.tokopedia.network.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play_common.sse.base.OkSse
 import com.tokopedia.play_common.sse.base.ServerSentEvent

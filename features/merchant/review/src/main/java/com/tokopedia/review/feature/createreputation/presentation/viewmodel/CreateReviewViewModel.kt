@@ -5,6 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
@@ -15,10 +19,12 @@ import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
+import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRatingCategoryUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevGetPostSubmitBottomSheetUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
@@ -28,6 +34,7 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.usecase.coroutines.Result
@@ -49,12 +56,13 @@ class CreateReviewViewModel @Inject constructor(
     private val editReviewUseCase: ProductrevEditReviewUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase,
-    private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase
+    private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase,
+    private val getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase,
 ) : BaseViewModel(coroutineDispatcherProvider.io) {
 
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
-        const val LOCAL_IMAGE_SOURCE = "storage"
+        const val HTTP_PREFIX = "http"
         const val MAX_IMAGE_COUNT = 5
     }
 
@@ -97,7 +105,24 @@ class CreateReviewViewModel @Inject constructor(
     val badRatingCategories: LiveData<Result<List<BadRatingCategory>>>
         get() = _badRatingCategories
 
+    private var _postSubmitUiState = MutableLiveData<PostSubmitUiState>()
+    val postSubmitUiState: LiveData<PostSubmitUiState>
+        get() = _postSubmitUiState
+
     private val selectedBadRatingCategories = mutableSetOf<String>()
+
+    private fun mergeImagePickerResultWithOriginalImages(
+        imagePickerResult: MutableList<String>,
+        imagesFedIntoPicker: MutableList<String>
+    ): List<String> {
+        return imagePickerResult.mapIndexed { index, result ->
+            if (result.endsWith(ReviewConstants.TEMP_IMAGE_EXTENSION)) {
+                imagesFedIntoPicker[index]
+            } else {
+                result
+            }
+        }
+    }
 
     fun submitReview(
         rating: Int,
@@ -193,16 +218,16 @@ class CreateReviewViewModel @Inject constructor(
         imagesFedIntoPicker: MutableList<String>
     ): MutableList<BaseImageReviewUiModel> {
         // Remove old image
-        originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
-
-        when (imagePickerResult.size) {
+        val mergedImagePaths = mergeImagePickerResultWithOriginalImages(imagePickerResult, imagesFedIntoPicker)
+        originalImages = mergedImagePaths.filter { it.startsWith(HTTP_PREFIX) }.toMutableList()
+        when (mergedImagePaths.size) {
             MAX_IMAGE_COUNT -> {
-                imageData = (imagePickerResult.map {
+                imageData = (mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(imagePickerResult.map {
+                imageData.addAll(mergedImagePaths.map {
                     ImageReviewUiModel(it)
                 })
                 imageData.add(DefaultImageReviewUiModel())
@@ -327,13 +352,22 @@ class CreateReviewViewModel @Inject constructor(
         return userSessionInterface.userId
     }
 
-    fun isUserEligible(): Boolean {
-        return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
+    fun hasIncentive(): Boolean {
+        return incentiveOvo.getSuccessData()?.let {
+            it.productrevIncentiveOvo?.amount.isMoreThanZero()
+        }.orFalse()
+    }
+
+    fun hasOngoingChallenge(): Boolean {
+        return incentiveOvo.getSuccessData()?.let {
+            it.productrevIncentiveOvo?.amount.isZero()
+        }.orFalse()
     }
 
     fun isTemplateAvailable(): Boolean {
-        return ((reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty()
-            ?: false) && !isUserEligible()
+        return reviewTemplates.value.takeIfInstanceOf<CoroutineSuccess<List<String>>>()?.let {
+            it.data.isNotEmpty()
+        }.orFalse()
     }
 
     fun getImageCount(): Int {
@@ -348,6 +382,36 @@ class CreateReviewViewModel @Inject constructor(
             _badRatingCategories.postValue(CoroutineSuccess(data.productrevGetBadRatingCategory.list))
         }) {
             _badRatingCategories.postValue(CoroutineFail(it))
+        }
+    }
+
+    fun getPostSubmitBottomSheetData(reviewText: String, feedbackId: String) {
+        launchCatchError(block = {
+            val hasPendingIncentive = hasPendingIncentive()
+            val data = withContext(coroutineDispatcherProvider.io) {
+                getPostSubmitBottomSheetUseCase.setParams(
+                    feedbackId = feedbackId,
+                    reviewText = reviewText,
+                    imagesTotal = getImageCount(),
+                    isInboxEmpty = hasPendingIncentive.not(),
+                    incentiveAmount = getIncentiveAmount()
+                )
+                getPostSubmitBottomSheetUseCase.executeOnBackground().productrevGetPostSubmitBottomSheetResponse
+            }
+            if (data == null) {
+                _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouToaster(null))
+            } else {
+                if (data.isShowBottomSheet()) {
+                    _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouBottomSheet(
+                        data = data,
+                        hasPendingIncentive = hasPendingIncentive
+                    ))
+                } else {
+                    _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouToaster(data))
+                }
+            }
+        }) {
+            _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouToaster(null))
         }
     }
 
@@ -564,5 +628,30 @@ class CreateReviewViewModel @Inject constructor(
             filePath = filePath
         )
         return uploaderUseCase(params)
+    }
+
+    private fun getIncentiveAmount(): Int {
+        return incentiveOvo.getSuccessData()?.productrevIncentiveOvo?.amount.orZero()
+    }
+
+    private suspend fun hasPendingIncentive(): Boolean {
+        return try {
+            withContext(coroutineDispatcherProvider.io) {
+                getProductIncentiveOvo.getIncentiveOvo(
+                    productId = "",
+                    reputationId = ""
+                )?.productrevIncentiveOvo != null
+            }
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private inline fun <reified T: Any> Any?.takeIfInstanceOf(): T? {
+        return if (this is T) this else null
+    }
+
+    private inline fun <reified T: Any> LiveData<Result<T>?>.getSuccessData(): T? {
+        return value.takeIfInstanceOf<CoroutineSuccess<T>>()?.data
     }
 }

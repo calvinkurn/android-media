@@ -6,14 +6,17 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.home_account.base.HomeAccountTest
-import com.tokopedia.home_account.utils.ViewUtils
-import org.junit.Test
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.tokopedia.home_account.base.HomeAccountTest
 import com.tokopedia.home_account.utils.QueryUtils
+import com.tokopedia.home_account.utils.ViewUtils
+import com.tokopedia.test.application.annotations.CassavaTest
+import org.junit.Test
 
+@CassavaTest
 class HomeAccountInstrumentTest : HomeAccountTest() {
 
     //1.Cassava Test ID - 759
@@ -72,6 +75,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_instant_payment() {
         runTest {
+            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT)
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT))
     }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.relatedpost.RelatedPostTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostUIViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -118,6 +119,10 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     public int type(DynamicPostViewModel dynamicPostViewModel) {
         return DynamicPostViewHolder.Companion.getLAYOUT();
     }
+    @Override
+    public int type(DynamicPostUiModel dynamicPostUiModel) {
+        return DynamicPostUIViewHolder.Companion.getLAYOUT();
+    }
 
     @Override
     public int type(KolCommentViewModel kolCommentViewModel) {
@@ -218,10 +223,7 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
         return 0;
     }
 
-    @Override
-    public int type(@NotNull DynamicPostUiModel dynamicPostUiModel) {
-        return 0;
-    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int viewType) {
@@ -232,7 +234,14 @@ public class KolPostDetailTypeFactoryImpl extends BaseAdapterTypeFactory
                     pollOptionListener, gridItemListener, videoViewListener,
                     feedMultipleImageViewListener, userSession
             );
-        } else if (viewType == KolCommentViewHolder.LAYOUT) {
+        }else if (viewType == DynamicPostUIViewHolder.Companion.getLAYOUT()) {
+            abstractViewHolder = new KolPostDetailViewHolder(view,
+                    listener, cardTitleListener, imagePostListener, youtubePostListener,
+                    pollOptionListener, gridItemListener, videoViewListener,
+                    feedMultipleImageViewListener, userSession
+            );
+        }
+        else if (viewType == KolCommentViewHolder.LAYOUT) {
             abstractViewHolder = new KolCommentViewHolder(view, kolCommentListener, false);
         } else if (viewType == SeeAllCommentsViewHolder.LAYOUT) {
             abstractViewHolder = new SeeAllCommentsViewHolder(view, seeAll);

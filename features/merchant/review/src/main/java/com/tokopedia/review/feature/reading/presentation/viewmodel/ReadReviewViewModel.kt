@@ -7,13 +7,25 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
+import com.tokopedia.review.feature.reading.data.ProductReviewResponse
+import com.tokopedia.review.feature.reading.data.ProductReviewUser
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductReviewList
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopReviewList
+import com.tokopedia.review.feature.reading.data.ShopReview
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetProductReviewListUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetShopRatingAndTopicsUseCase
 import com.tokopedia.review.feature.reading.domain.usecase.GetShopReviewListUseCase
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
-import com.tokopedia.review.feature.reading.presentation.uimodel.*
+import com.tokopedia.review.feature.reading.presentation.uimodel.FilterType
+import com.tokopedia.review.feature.reading.presentation.uimodel.SelectedFilters
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortFilterBottomSheetType
+import com.tokopedia.review.feature.reading.presentation.uimodel.SortTypeConstants
+import com.tokopedia.review.feature.reading.presentation.uimodel.ToggleLikeUiModel
 import com.tokopedia.review.feature.reading.utils.ReadReviewUtils
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -166,18 +178,17 @@ class ReadReviewViewModel @Inject constructor(
         badRatingReasonFmt = shopReview.badRatingReasonFmt
     }
 
-    fun toggleLikeReview(reviewId: String, shopId: String, likeStatus: Int, index: Int) {
+    fun toggleLikeReview(reviewId: String, likeStatus: Int, index: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(
-                reviewId, shopId, productId.value
-                    ?: "", ReadReviewUtils.invertLikeStatus(likeStatus)
+                reviewId, ReadReviewUtils.invertLikeStatus(likeStatus)
             )
             val data = toggleLikeReviewUseCase.executeOnBackground()
             _toggleLikeReview.postValue(
                 Success(
                     ToggleLikeUiModel(
-                        data.toggleProductReviewLike.likeStatus,
-                        data.toggleProductReviewLike.totalLike,
+                        data.productrevLikeReview.likeStatus,
+                        data.productrevLikeReview.totalLike,
                         index
                     )
                 )
@@ -187,21 +198,19 @@ class ReadReviewViewModel @Inject constructor(
         }
     }
 
-    fun toggleLikeShopReview(reviewId: String, shopId: String, productId: String, likeStatus: Int, index: Int) {
+    fun toggleLikeShopReview(reviewId: String, likeStatus: Int, index: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(
-                    reviewId,
-                    shopId,
-                    productId,
-                    ReadReviewUtils.invertLikeStatus(likeStatus)
+                reviewId,
+                ReadReviewUtils.invertLikeStatus(likeStatus)
             )
             val data = toggleLikeReviewUseCase.executeOnBackground()
 
             _toggleLikeReview.postValue(
                     Success(
                             ToggleLikeUiModel(
-                                    data.toggleProductReviewLike.likeStatus,
-                                    data.toggleProductReviewLike.totalLike,
+                                    data.productrevLikeReview.likeStatus,
+                                    data.productrevLikeReview.totalLike,
                                     index
                             )
                     )

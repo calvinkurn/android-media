@@ -19,6 +19,7 @@ import com.tokopedia.product.addedit.specification.domain.model.AnnotationCatego
 import com.tokopedia.product.addedit.specification.domain.model.DrogonAnnotationCategoryV2
 import com.tokopedia.product.addedit.specification.domain.model.Values
 import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.util.getPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
@@ -196,12 +197,42 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When check is duplicate Expect should return expected result`() {
+    fun `When check is duplicate Expect should return expected result`() = runBlocking {
         viewModel.setIsDuplicate(true)
-        assertEquals(true, viewModel.isDuplicate)
-
         viewModel.isDuplicate = true
-        assertEquals(true, viewModel.isDuplicate)
+
+        val mGetProductResult = viewModel.getPrivateProperty<AddEditProductPreviewViewModel,
+                MediatorLiveData<Result<Product>>>("mGetProductResult")
+        mGetProductResult?.value = Success(Product())
+
+        // assert product Id is reset to 0 when at duplicate product
+        assertTrue(viewModel.productInputModel.value?.productId == 0L)
+    }
+
+    @Test
+    fun `When check isDataChanged true Expect should return expected result`() = runBlocking {
+        viewModel.productInputModel.value = ProductInputModel(productId = 123L, isDataChanged = true)
+
+        val mGetProductResult = viewModel.getPrivateProperty<AddEditProductPreviewViewModel,
+                MediatorLiveData<Result<Product>>>("mGetProductResult")
+        mGetProductResult?.value = Success(Product())
+        mGetProductResult?.value = Fail(Throwable())
+
+        // assert product Id is not changed
+        assertTrue(viewModel.productInputModel.value?.productId == 123L)
+    }
+
+    @Test
+    fun `When check isDataChanged false Expect should return expected result`() = runBlocking {
+        viewModel.productInputModel.value = ProductInputModel(productId = 123L, isDataChanged = false)
+
+        val mGetProductResult = viewModel.getPrivateProperty<AddEditProductPreviewViewModel,
+                MediatorLiveData<Result<Product>>>("mGetProductResult")
+        mGetProductResult?.value = Success(Product())
+        mGetProductResult?.value = Fail(Throwable())
+
+        // assert product Id is changed
+        assertTrue(viewModel.productInputModel.value?.productId != 123L)
     }
 
     @Test

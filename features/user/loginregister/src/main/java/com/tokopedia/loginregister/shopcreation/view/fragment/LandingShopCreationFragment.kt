@@ -21,12 +21,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_LANDING_SHOP_CREATION
-import com.tokopedia.loginregister.databinding.FragmentLandingShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.domain.pojo.ShopInfoByID
@@ -37,10 +37,10 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -57,6 +57,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private lateinit var mainView: View
     private lateinit var baseView: View
     private lateinit var sharedPrefs: SharedPreferences
+    private var btnDeletedShop: Typography? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -76,11 +77,14 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
 
-    private val binding: FragmentLandingShopCreationBinding? by viewBinding()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_landing_shop_creation, container, false)
         toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
+        buttonOpenShop = view.findViewById(R.id.btn_continue)
+        landingImage = view.findViewById(R.id.landing_shop_creation_image)
+        loading = view.findViewById(R.id.loading)
+        mainView = view.findViewById(R.id.main_view)
+        btnDeletedShop = view.findViewById(R.id.deletedShopInfo2)
         activity?.let {
             baseView = it.findViewById(R.id.base_view)
         }
@@ -91,7 +95,6 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setViewBinding()
         initObserver()
         initView()
     }
@@ -130,7 +133,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         if (GlobalConfig.isSellerApp()) {
             activity?.let {
                 if (userSession.isLoggedIn) {
-                    RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
+                    RouteManager.route(it, ApplinkConstInternalUserPlatform.LOGOUT)
                     it.finish()
                 } else if(it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
                     RouteManager.route(it, ApplinkConst.LOGIN)
@@ -154,6 +157,10 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         ImageHandler.LoadImage(landingImage, LANDING_PICT_URL)
+
+        btnDeletedShop?.setOnClickListener {
+            RouteManager.route(context, URL_DELETED_SHOP)
+        }
     }
 
     private fun initButtonListener() {
@@ -169,15 +176,6 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 shopCreationAnalytics.eventClickOpenShopLanding()
                 goToPhoneShopCreation()
             }
-        }
-    }
-
-    private fun setViewBinding() {
-        binding?.let {
-            buttonOpenShop = it.btnContinue
-            landingImage = it.landingShopCreationImage
-            loading = it.loading
-            mainView = it.mainView
         }
     }
 
@@ -354,6 +352,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         private const val CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED"
 
         private const val LANDING_PICT_URL = "https://ecs7.tokopedia.net/android/others/Illustration_buka_toko@3x.png"
+        private const val URL_DELETED_SHOP = "https://www.tokopedia.com/help/article/kebijakan-penonaktifan-toko-secara-permanen"
 
         private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"

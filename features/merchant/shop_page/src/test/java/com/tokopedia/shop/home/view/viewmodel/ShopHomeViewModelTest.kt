@@ -3,9 +3,14 @@ package com.tokopedia.shop.home.view.viewmodel
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartBundleUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.filter.common.data.DataValue
@@ -18,6 +23,7 @@ import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -32,7 +38,9 @@ import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.GetCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
@@ -48,6 +56,9 @@ import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.shop.sort.view.model.ShopProductSortModel
+import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
+import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -95,6 +106,9 @@ class ShopHomeViewModelTest {
     lateinit var addToCartOccUseCase: AddToCartOccMultiUseCase
 
     @RelaxedMockK
+    lateinit var addToCartBundleUseCase: AddToCartBundleUseCase
+
+    @RelaxedMockK
     lateinit var getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
 
     @RelaxedMockK
@@ -131,6 +145,7 @@ class ShopHomeViewModelTest {
     lateinit var context: Context
     private lateinit var viewModel: ShopHomeViewModel
 
+    private val mockExtParam = "fs_widget%3D23600"
     private val mockShopId = "1234"
     private val mockCampaignId = "123"
     private val mockPage = 2
@@ -148,40 +163,48 @@ class ShopHomeViewModelTest {
         )
     }
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
-    private val playWidgetUiModelMockData = PlayWidgetUiModel.Small(
+    private val playWidgetStateMockData = PlayWidgetState(
+        model = PlayWidgetUiModel(
             "title",
             "action title",
             "applink",
             true,
             PlayWidgetConfigUiModel(
-                    true,
-                    1000,
-                    true,
-                    1,
-                    1,
-                    2,
-                    1
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
             ),
-            true,
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
             listOf()
+        ),
+        widgetType = PlayWidgetType.Small,
+        isLoading = false,
     )
 
-    private val playWidgetMediumUiModelMockData = PlayWidgetUiModel.Medium(
-        "title",
-        "action title",
-        "applink",
-        true,
-        PlayWidgetConfigUiModel(
+    private val playWidgetStateMediumMockData = PlayWidgetState(
+        model = PlayWidgetUiModel(
+            "title",
+            "action title",
+            "applink",
             true,
-            1000,
-            true,
-            1,
-            1,
-            2,
-            1
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf()
         ),
-        PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-        listOf()
+        widgetType = PlayWidgetType.Medium,
+        isLoading = false,
     )
 
 
@@ -194,6 +217,7 @@ class ShopHomeViewModelTest {
                 testCoroutineDispatcherProvider,
                 addToCartUseCase,
                 addToCartOccUseCase,
+                addToCartBundleUseCase,
                 gqlCheckWishlistUseCaseProvider,
                 getYoutubeVideoUseCase,
                 getCampaignNotifyMeUseCase,
@@ -212,7 +236,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `when getShopPageHomeWidgetLayoutData success should return expected results`() {
         coEvery { gqlShopPageGetHomeType.executeOnBackground() } returns ShopPageGetHomeType()
-        viewModel.getShopPageHomeWidgetLayoutData(mockShopId)
+        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
         coVerify {
             gqlShopPageGetHomeType.executeOnBackground()
         }
@@ -222,7 +246,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `when getShopPageHomeWidgetLayoutData error should return expected results`() {
         coEvery { gqlShopPageGetHomeType.executeOnBackground() } throws Exception()
-        viewModel.getShopPageHomeWidgetLayoutData(mockShopId)
+        viewModel.getShopPageHomeWidgetLayoutData(mockShopId, mockExtParam)
         coVerify {
             gqlShopPageGetHomeType.executeOnBackground()
         }
@@ -437,6 +461,86 @@ class ShopHomeViewModelTest {
     }
 
     @Test
+    fun `check whether onFinishAddToCart is called when call addBundleToCart success`() {
+        val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
+
+        val mockBundleProductList = listOf(
+                ProductDetail(
+                        productId = "111",
+                        quantity = 1,
+                        shopId = "123",
+                        customerId = "321"
+                )
+        )
+
+        val mockAtcBundleParams = AddToCartBundleRequestParams(
+                shopId = "123",
+                bundleId = "222",
+                bundleQty = 1,
+                selectedProductPdp = "0",
+                productDetails = mockBundleProductList
+        )
+
+        coEvery {
+            addToCartBundleUseCase.setParams(mockAtcBundleParams)
+            addToCartBundleUseCase.executeOnBackground()
+        } throws Throwable()
+        viewModel.addBundleToCart(
+                shopId = "123",
+                userId = "321",
+                bundleId = "222",
+                productDetails = listOf(ShopHomeBundleProductUiModel()),
+                {},
+                onErrorAddToCart,
+                productQuantity = 1
+        )
+
+        verify { onErrorAddToCart.invoke(any()) }
+    }
+
+    @Test
+    fun `check whether onErrorAddToCart is called when call addBundleToCart throw exception`() {
+        val onFinishAddToCart: (AddToCartBundleModel) -> Unit = mockk(relaxed = true)
+
+        val mockBundleProductList = listOf(
+                ProductDetail(
+                        productId = "111",
+                        quantity = 1,
+                        shopId = "123",
+                        customerId = "321"
+                )
+        )
+
+        val mockAtcBundleParams = AddToCartBundleRequestParams(
+                shopId = "123",
+                bundleId = "222",
+                bundleQty = 1,
+                selectedProductPdp = "0",
+                productDetails = mockBundleProductList
+        )
+
+        coEvery {
+            addToCartBundleUseCase.setParams(mockAtcBundleParams)
+            addToCartBundleUseCase.executeOnBackground()
+        } returns AddToCartBundleModel(
+                status = "OK",
+                errorMessage = "",
+                addToCartBundleDataModel = AddToCartBundleDataModel(success = 1)
+        )
+        viewModel.addBundleToCart(
+                shopId = "123",
+                userId = "321",
+                bundleId = "222",
+                productDetails = listOf(ShopHomeBundleProductUiModel()),
+                onFinishAddToCart = onFinishAddToCart,
+                {},
+                productQuantity = 1
+        )
+
+        verify { onFinishAddToCart.invoke(any()) }
+    }
+
+    @Test
     fun `check whether getShopProductUseCase clearCache is called`() {
         viewModel.clearGetShopProductUseCase()
         verify { getShopProductUseCase.clearCache() }
@@ -648,7 +752,7 @@ class ShopHomeViewModelTest {
 
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -676,7 +780,7 @@ class ShopHomeViewModelTest {
 
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -704,7 +808,7 @@ class ShopHomeViewModelTest {
 
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -833,7 +937,7 @@ class ShopHomeViewModelTest {
     fun `check whether playWidgetObservable value is not null when get data is success`() {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -851,7 +955,7 @@ class ShopHomeViewModelTest {
         every { userSessionInterface.shopId } returns mockShopId
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -875,7 +979,7 @@ class ShopHomeViewModelTest {
                 BaseShopHomeWidgetUiModel.Header()
         ))
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -892,7 +996,7 @@ class ShopHomeViewModelTest {
         every { userSessionInterface.shopId } returns mockShopId
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -916,7 +1020,7 @@ class ShopHomeViewModelTest {
         val channelId = "123"
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -926,7 +1030,7 @@ class ShopHomeViewModelTest {
         ))
         coEvery {
             playWidgetTools.updateDeletedChannel(any(), channelId)
-        } returns playWidgetUiModelMockData
+        } returns playWidgetStateMockData
         viewModel.deleteChannel("123")
         coVerify {
             playWidgetTools.deleteChannel(channelId, any())
@@ -940,7 +1044,7 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -962,43 +1066,50 @@ class ShopHomeViewModelTest {
     fun `check if playWidgetObservableplay value is updated`() {
         val playWidgetMock = PlayWidget()
         val mockChannelId = "123"
-        val mockTotalView = "50"
-        val playWidgetUiModelMockDataWithTotalView = PlayWidgetUiModel.Small(
+        val mockTotalView = PlayWidgetTotalView("50", true)
+        val playWidgetUiModelMockDataWithTotalView = PlayWidgetState(
+            model = PlayWidgetUiModel(
                 "title",
                 "action title",
                 "applink",
                 true,
                 PlayWidgetConfigUiModel(
-                        true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2,
-                        1
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
                 ),
-                true,
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
                 listOf(
-                        PlayWidgetSmallChannelUiModel(
-                                mockChannelId,
-                                "",
-                                "",
-                                "",
-                                "",
-                                mockTotalView,
-                                true,
-                                PlayWidgetPromoType.Default(""),
-                                PlayWidgetVideoUiModel("", false, "", ""),
-                                PlayWidgetChannelType.Upcoming,
-                                false,
-                                "",
-                                ""
-                        )
+                    PlayWidgetChannelUiModel(
+                        mockChannelId,
+                        "",
+                        "",
+                        "",
+                        mockTotalView,
+                        PlayWidgetPromoType.Default("", false),
+                        PlayWidgetReminderType.NotReminded,
+                        PlayWidgetPartnerUiModel("", ""),
+                        PlayWidgetVideoUiModel("", false, "", ""),
+                        PlayWidgetChannelType.Upcoming,
+                        false,
+                        PlayWidgetShareUiModel("", false),
+                        "",
+                        "",
+                        "",
+                        false,
+                        PlayWidgetChannelTypeTransition(null, PlayWidgetChannelType.Upcoming)
+                    )
                 )
+            ),
+            isLoading = false,
         )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -1008,14 +1119,14 @@ class ShopHomeViewModelTest {
         ))
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
-            playWidgetTools.updateTotalView(playWidgetUiModelMockData, mockChannelId, mockTotalView)
+            playWidgetTools.updateTotalView(playWidgetStateMockData, mockChannelId, mockTotalView.totalViewFmt)
         } returns playWidgetUiModelMockDataWithTotalView
         viewModel.updatePlayWidgetTotalView(
                 mockChannelId,
-                mockTotalView
+                mockTotalView.totalViewFmt
         )
-        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Small)
-        assert((playWidgetUiModel?.items?.first() as? PlayWidgetSmallChannelUiModel)?.totalView == mockTotalView)
+        val playWidgetUiModel = viewModel.playWidgetObservable.value?.playWidgetState?.model
+        assert((playWidgetUiModel?.items?.first() as? PlayWidgetChannelUiModel)?.totalView == mockTotalView)
     }
 
     @Test
@@ -1043,50 +1154,50 @@ class ShopHomeViewModelTest {
     fun `check if playWidgetObservableplay value is updated when isReminder is changes`() {
         val playWidgetMock = PlayWidget()
         val mockChannelId = "123"
-        val mockTotalView = "50"
+        val mockTotalView = PlayWidgetTotalView("50", true)
         val mockReminderType = PlayWidgetReminderType.Reminded
-        val playWidgetUiModelMockDataWithReminder = PlayWidgetUiModel.Medium(
-            "title",
-            "action title",
-            "applink",
-            true,
-            PlayWidgetConfigUiModel(
+        val playWidgetUiModelMockDataWithReminder = PlayWidgetState(
+            model = PlayWidgetUiModel(
+                "title",
+                "action title",
+                "applink",
                 true,
-                1000,
-                true,
-                1,
-                1,
-                2,
-                1
-            ),
-            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
-            listOf(
-                PlayWidgetMediumChannelUiModel(
-                    mockChannelId,
-                    "",
-                    "",
-                    "",
-                    "",
-                    mockTotalView,
+                PlayWidgetConfigUiModel(
                     true,
-                    PlayWidgetPromoType.Default(""),
-                    mockReminderType,
-                    PlayWidgetPartnerUiModel("", ""),
-                    PlayWidgetVideoUiModel("", false, "", ""),
-                    PlayWidgetChannelType.Upcoming,
-                    false,
-                    PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
-                    PlayWidgetShareUiModel("", false),
-                    "",
-                    false,
-                    "",
-                    ""
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
+                ),
+                PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+                listOf(
+                    PlayWidgetChannelUiModel(
+                        mockChannelId,
+                        "",
+                        "",
+                        "",
+                        mockTotalView,
+                        PlayWidgetPromoType.Default("", false),
+                        mockReminderType,
+                        PlayWidgetPartnerUiModel("", ""),
+                        PlayWidgetVideoUiModel("", false, "", ""),
+                        PlayWidgetChannelType.Upcoming,
+                        true,
+                        PlayWidgetShareUiModel("", false),
+                        "",
+                        "",
+                        "",
+                        false,
+                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                    )
                 )
             )
         )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetMediumUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMediumMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -1096,14 +1207,14 @@ class ShopHomeViewModelTest {
         ))
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
-            playWidgetTools.updateActionReminder(playWidgetMediumUiModelMockData, mockChannelId, mockReminderType)
+            playWidgetTools.updateActionReminder(playWidgetStateMediumMockData, mockChannelId, mockReminderType)
         } returns playWidgetUiModelMockDataWithReminder
         viewModel.updatePlayWidgetReminder(
             mockChannelId,
             true
         )
-        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Medium)
-        assert((playWidgetUiModel?.items?.first() as? PlayWidgetMediumChannelUiModel)?.reminderType == mockReminderType)
+        val playWidgetUiModel = viewModel.playWidgetObservable.value?.playWidgetState?.model
+        assert((playWidgetUiModel?.items?.first() as? PlayWidgetChannelUiModel)?.reminderType == mockReminderType)
     }
 
 
@@ -1111,49 +1222,50 @@ class ShopHomeViewModelTest {
     fun `check if playWidgetObservableplay value is updated when isReminder is change to not reminded`() {
         val playWidgetMock = PlayWidget()
         val mockChannelId = "123"
-        val mockTotalView = "50"
+        val mockTotalView = PlayWidgetTotalView("50", true)
         val mockReminderType = PlayWidgetReminderType.NotReminded
-        val playWidgetUiModelMockDataWithReminder = PlayWidgetUiModel.Medium(
+        val playWidgetUiModelMockDataWithReminder = PlayWidgetState(
+            model = PlayWidgetUiModel(
                 "title",
                 "action title",
                 "applink",
                 true,
                 PlayWidgetConfigUiModel(
-                        true,
-                        1000,
-                        true,
-                        1,
-                        1,
-                        2,
-                        1
+                    true,
+                    1000,
+                    true,
+                    1,
+                    1,
+                    2,
+                    1
                 ),
                 PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
                 listOf(
-                        PlayWidgetMediumChannelUiModel(
-                                mockChannelId,
-                                "",
-                                "",
-                                "",
-                                "",
-                                mockTotalView,
-                                true,
-                                PlayWidgetPromoType.Default(""),
-                                mockReminderType,
-                                PlayWidgetPartnerUiModel("", ""),
-                                PlayWidgetVideoUiModel("", false, "", ""),
-                                PlayWidgetChannelType.Upcoming,
-                                false,
-                                PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
-                                PlayWidgetShareUiModel("", false),
-                                "",
-                                false,
-                                "",
-                                ""
-                        )
+                    PlayWidgetChannelUiModel(
+                        mockChannelId,
+                        "",
+                        "",
+                        "",
+                        mockTotalView,
+                        PlayWidgetPromoType.Default("", false),
+                        mockReminderType,
+                        PlayWidgetPartnerUiModel("", ""),
+                        PlayWidgetVideoUiModel("", false, "", ""),
+                        PlayWidgetChannelType.Upcoming,
+                        false,
+                        PlayWidgetShareUiModel("", false),
+                        "",
+                        "",
+                        "",
+                        false,
+                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                    )
                 )
+            ),
+            isLoading = false,
         )
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
-        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetMediumUiModelMockData
+        coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMediumMockData
         viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
                 "",
                 0,
@@ -1163,14 +1275,14 @@ class ShopHomeViewModelTest {
         ))
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
-            playWidgetTools.updateActionReminder(playWidgetMediumUiModelMockData, mockChannelId, mockReminderType)
+            playWidgetTools.updateActionReminder(playWidgetStateMediumMockData, mockChannelId, mockReminderType)
         } returns playWidgetUiModelMockDataWithReminder
         viewModel.updatePlayWidgetReminder(
                 mockChannelId,
                 false
         )
-        val playWidgetUiModel = (viewModel.playWidgetObservable.value?.widgetUiModel as? PlayWidgetUiModel.Medium)
-        assert((playWidgetUiModel?.items?.first() as? PlayWidgetMediumChannelUiModel)?.reminderType == mockReminderType)
+        val playWidgetUiModel = viewModel.playWidgetObservable.value?.playWidgetState?.model
+        assert((playWidgetUiModel?.items?.first() as? PlayWidgetChannelUiModel)?.reminderType == mockReminderType)
     }
 
     @Test
@@ -1198,7 +1310,7 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
-            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any()) } returns listOf(
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
                     ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
@@ -1211,10 +1323,93 @@ class ShopHomeViewModelTest {
                             )
                     ),
                     mockShopId,
-                    addressWidgetData
+                    addressWidgetData,
+                    false
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
+        }
+    }
+
+    @Test
+    fun `when getWidgetContentData success should return expected thematic widget`() {
+        runBlocking {
+            val widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+            val widgetType = WidgetType.CAMPAIGN
+            val widgetId = "2"
+            val layoutOrder = 0
+            val resultWidget = ThematicWidgetUiModel(
+                name = widgetName,
+                type = widgetType,
+                widgetId = widgetId,
+                layoutOrder = layoutOrder,
+                header = DynamicHeaderUiModel()
+            )
+
+            val shopHomeWidgetContentData = async {
+                viewModel.shopHomeWidgetContentData.first()
+            }
+            coEvery {
+                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
+            } returns ShopLayoutWidgetV2(
+                listWidget = listOf(
+                    ShopLayoutWidget.Widget(
+                        name = widgetName,
+                        type =  widgetType,
+                        widgetID = widgetId
+                    )
+                )
+            )
+
+            mockkObject(ShopPageHomeMapper)
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
+                resultWidget
+            )
+
+            viewModel.getWidgetContentData(
+                listOf(
+                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = widgetId,
+                        widgetType = widgetType,
+                        widgetName = widgetName
+                    )
+                ),
+                mockShopId,
+                addressWidgetData,
+                false
+            )
+            assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == resultWidget)
+        }
+    }
+
+    @Test
+    fun `when getWidgetContentData success should return null`() {
+        runBlocking {
+            val shopHomeWidgetContentData = async {
+                viewModel.shopHomeWidgetContentData.first()
+            }
+            coEvery {
+                getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
+            } returns ShopLayoutWidgetV2()
+
+            mockkObject(ShopPageHomeMapper)
+            every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false) } returns listOf(
+                ProductCardUiModel()
+            )
+
+            viewModel.getWidgetContentData(
+                listOf(
+                    ShopPageHomeWidgetLayoutUiModel.WidgetLayout(
+                        widgetId = "2",
+                        widgetType = WidgetType.CAMPAIGN,
+                        widgetName = WidgetName.BIG_CAMPAIGN_THEMATIC
+                    )
+                ),
+                mockShopId,
+                addressWidgetData,
+                false
+            )
+            assert((shopHomeWidgetContentData.await() as? Success)?.data?.values?.first() == null)
         }
     }
 
@@ -1235,7 +1430,8 @@ class ShopHomeViewModelTest {
                             ShopPageHomeWidgetLayoutUiModel.WidgetLayout()
                     ),
                     mockShopId,
-                    addressWidgetData
+                    addressWidgetData,
+                    false
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())

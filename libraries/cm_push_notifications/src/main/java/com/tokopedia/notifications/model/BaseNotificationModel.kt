@@ -151,7 +151,13 @@ data class BaseNotificationModel(
         var notificationProductType: String? = null,
 
         @ColumnInfo(name = "is_amplification")
-        var isAmplification: Boolean = false
+        var isAmplification: Boolean = false,
+
+        @ColumnInfo(name = "is_big_image")
+        var isBigImage: Boolean = false,
+
+        @ColumnInfo(name = "payloadExtra")
+        var payloadExtra: PayloadExtra? = null,
 
 ) : Parcelable {
 

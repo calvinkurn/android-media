@@ -1,0 +1,40 @@
+{
+  "readme": "Impression, item click banner carousel",
+  "mode": "exact",
+  "query": [
+    {
+      "promotions": [{
+        "creative_name": ".*",
+        "creative_slot": ".*",
+        "item_id": ".*",
+        "item_name": ".*",
+        "creative_url": ".*"
+      }],
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "view_item",
+      "userId": ".*",
+      "eventAction": "slider banner impression",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    },
+    {
+      "promotions": [{
+        "creative_name": ".*",
+        "creative_slot": ".*",
+        "item_id": ".*",
+        "item_name": ".*",
+        "creative_url": ".*"
+      }],
+      "businessUnit": "home & browse",
+      "eventCategory": "homepage",
+      "currentSite": "tokopediamarketplace",
+      "event": "select_content",
+      "userId": ".*",
+      "eventAction": "slider banner click",
+      "sessionIris": ".*",
+      "eventLabel": ".*"
+    }
+  ]
+}

@@ -6,11 +6,13 @@ import android.os.Build
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.util.Log
 import android.util.TypedValue
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.editor.main.Constant
 import com.tokopedia.imagepicker.editor.watermark.entity.TextUIModel
 import com.tokopedia.imagepicker.editor.watermark.utils.BitmapHelper.changeColor
+import timber.log.Timber
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 
@@ -113,11 +115,10 @@ object BitmapHelper {
             )
         }
 
-        var bitmapResult = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        val bitmapResult: Bitmap = if (boundWidth > 0 && boundHeight > 0)
+            Bitmap.createBitmap(boundWidth, height, Bitmap.Config.ARGB_8888)
+        else Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
 
-        if (boundWidth > 0 && boundHeight > 0) {
-            bitmapResult = Bitmap.createBitmap(boundWidth, height, Bitmap.Config.ARGB_8888)
-        }
 
         // create the bitmap canvas
         val canvas = Canvas(bitmapResult)
@@ -188,16 +189,6 @@ object BitmapHelper {
         )
     }
 
-    fun Bitmap.adjustRotation(orientationAngle: Double): Bitmap {
-        val matrix = Matrix()
-        matrix.setRotate(
-            orientationAngle.toFloat(),
-            (this.width / 2).toFloat(),
-            (this.height / 2).toFloat()
-        )
-        return Bitmap.createBitmap(this, 0, 0, this.width, this.height, matrix, true)
-    }
-
     fun Bitmap.combineBitmapWithPadding(other: Bitmap, mainBitmap: Bitmap): Bitmap {
         val scaledPaddingWidth = (0.2 * mainBitmap.width).toInt()
         val otherBitmap = other.addPadding(left = scaledPaddingWidth, right = scaledPaddingWidth)
@@ -238,26 +229,31 @@ object BitmapHelper {
     //formula to determine brightness 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
     // if total of dark pixel > total of pixel * 0.45 count that as dark image
     fun Bitmap.isDark(): Boolean {
-        var isDark = false
-        val darkThreshold = this.width * this.height * 0.45f
-        var darkPixels = 0
-        val pixels = IntArray(this.width * this.height)
-        this.getPixels(pixels, 0, this.width, 0, 0, this.width, this.height)
-        val luminanceThreshold = 150
-        for (i in pixels.indices) {
-            val color = pixels[i]
-            val r = Color.red(color)
-            val g = Color.green(color)
-            val b = Color.blue(color)
-            val luminance = 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
-            if (luminance < luminanceThreshold) {
-                darkPixels++
+        try {
+            val ratio = this.width / this.height
+            val widthBitmapChecker = 50
+            val heightBitmapChecker = widthBitmapChecker / ratio
+            val bitmapChecker = Bitmap.createScaledBitmap(this, widthBitmapChecker, heightBitmapChecker, false)
+            val darkThreshold = bitmapChecker.width * bitmapChecker.height * 0.45f
+            var darkPixels = 0
+            val pixels = IntArray(bitmapChecker.width * bitmapChecker.height)
+            bitmapChecker.getPixels(pixels, 0, bitmapChecker.width, 0, 0, bitmapChecker.width, bitmapChecker.height)
+            val luminanceThreshold = 150
+            for (i in pixels.indices) {
+                val color = pixels[i]
+                val r = Color.red(color)
+                val g = Color.green(color)
+                val b = Color.blue(color)
+                val luminance = 0.299 * r + 0.0f + 0.587 * g + 0.0f + 0.114 * b + 0.0f
+                if (luminance < luminanceThreshold) {
+                    darkPixels++
+                }
             }
+            bitmapChecker.recycle()
+            return darkPixels >= darkThreshold
+        } catch (t: Throwable) {
+            return false
         }
-        if (darkPixels >= darkThreshold) {
-            isDark = true
-        }
-        return isDark
     }
 
     fun Bitmap.changeColor(dstColor: Int): Bitmap {
@@ -265,7 +261,6 @@ object BitmapHelper {
         val height = this.height
         val srcHSV = FloatArray(3)
         val dstHSV = FloatArray(3)
-        val alpha = Color.alpha(dstColor)
         val dstBitmap = Bitmap.createBitmap(width, height, this.config)
         for (row in 0 until height) {
             for (col in 0 until width) {
@@ -277,6 +272,7 @@ object BitmapHelper {
                 dstBitmap.setPixel(col, row, Color.HSVToColor(sourceAlpha, dstHSV))
             }
         }
+        this.recycle()
         return dstBitmap
     }
 
@@ -339,26 +335,27 @@ object BitmapHelper {
      * otherwise, the scaling will be 0.15 from the mainBitmap
      */
     fun Bitmap.downscaleToAllowedDimension(type: Int): Bitmap? {
-        val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) {
-            1.0f
-        } else {
-            2.0f
+        try {
+            val scaleValue = if (type == Constant.TYPE_WATERMARK_TOPED) 1.0f else 2.0f
+
+            val inWidth = this.width
+            val inHeight = this.height
+            val newHeight = inHeight * scaleValue
+
+            val ratio = inHeight.toFloat() / inWidth
+            val newWidth = newHeight / ratio
+
+            val scaleWidth = newWidth / inWidth
+            val scaleHeight = newHeight / inHeight
+
+            val matrix = Matrix()
+            matrix.postScale(scaleWidth, scaleHeight)
+
+            return Bitmap.createBitmap(this, 0, 0, inWidth, inHeight, matrix, false)
+        } catch (e: Throwable) {
+            Timber.e(e)
+            return this
         }
-
-        val inWidth = this.width
-        val inHeight = this.height
-        val newHeight = inHeight * scaleValue
-
-        val ratio = inHeight.toFloat() / inWidth
-        val newWidth = newHeight / ratio
-
-        val scaleWidth = newWidth / inWidth
-        val scaleHeight = newHeight / inHeight
-
-        val matrix = Matrix()
-        matrix.postScale(scaleWidth, scaleHeight)
-
-        return Bitmap.createBitmap(this, 0, 0, inWidth, inHeight, matrix, false)
     }
 
     private fun Bitmap.scaleByDividedOfThreesHold(textLength: Int): Float {

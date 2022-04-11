@@ -28,6 +28,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
                                      private val topNavComponentListener: TopNavComponentListener)
@@ -171,16 +172,16 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
                     if (iconToolbar.imageRes != IconList.ID_INBOX) {
-                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                        DrawableCompat.setTint(wrappedDrawable, getDarkIconColor())
                     } else {
-                        val unifyColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        val unifyColor = getDarkIconColor()
                         unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
                     }
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
                     if (iconToolbar.imageRes != IconList.ID_INBOX) {
-                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                        DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, getLightIconColor()))
                     } else {
-                        val unifyColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+                        val unifyColor = getLightIconColor()
                         unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
                     }
                 }
@@ -191,14 +192,14 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 val drawable = getIconUnifyDrawable(
                         context = context,
                         iconId = iconToolbar.id,
-                        assetColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        assetColor = getDarkIconColor()
                 )
                 iconImage.imageDrawable = drawable
             } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
                 val drawable = getIconUnifyDrawable(
                         context = context,
                         iconId = iconToolbar.id,
-                        assetColor = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+                        assetColor = getLightIconColor()
                 )
                 iconImage.imageDrawable = drawable
             }
@@ -254,6 +255,24 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             }
         }
         iconImage.visibility = View.VISIBLE
+    }
+
+    private fun getLightIconColor(): Int {
+        val unifyColor = if (itemView.context.isDarkMode()) {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
+        } else {
+            ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
+        }
+        return unifyColor
+    }
+
+    private fun getDarkIconColor(): Int {
+        val unifyColor = if (itemView.context.isDarkMode()) {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        } else {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        }
+        return unifyColor
     }
 
     private fun constructCounterTagById(id: Int) =

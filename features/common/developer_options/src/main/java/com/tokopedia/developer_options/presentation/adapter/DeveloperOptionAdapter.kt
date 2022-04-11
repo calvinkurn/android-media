@@ -47,14 +47,17 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
+        const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
         const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
+        const val KEYWORD_VIEW_SERVER_LOGGER = "View Server Logger"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
         const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
+        const val KEYWORD_DATA_EXPLORER_ACTIVITY = "Data Explrorer Activity"
         const val KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER = "Home and Navigation Revamp Switcher"
         const val KEYWORD_NEW_NAVIGATION = "New Navigation"
         const val KEYWORD_ALWAYS_OS_EXPERIMENT = "Always OS Experiment"
@@ -65,6 +68,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_OLD_CART_CHECKOUT = "Old Cart Checkout"
         const val KEYWORD_NEW_CART_CHECKOUT = "New Cart Checkout Bundling"
         const val KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER = "Rollence AB Testing Manual Switcher"
+        const val KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS = "List AB Test Rollence Keys"
         const val KEYWORD_REQUEST_NEW_FCM_TOKEN = "Request New FCM Token"
         const val KEYWORD_RESET_ONBOARDING_NAVIGATION = "Reset OnBoarding Navigation"
         const val KEYWORD_TRANSLATOR = "Translator (ON/OFF)"
@@ -78,6 +82,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
+        const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
     }
 
     /**
@@ -97,6 +102,7 @@ class DeveloperOptionAdapter(
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
@@ -118,10 +124,12 @@ class DeveloperOptionAdapter(
         )),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
-        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
+        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(listOf(
             KEYWORD_LOGGING_TO_SERVER,
-            KEYWORD_SEND_LOG_TO_SERVER)
+            KEYWORD_SEND_LOG_TO_SERVER,
+            KEYWORD_VIEW_SERVER_LOGGER
+        )
         ),
         SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
@@ -131,6 +139,7 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         TranslatorUiModel(listOf(
             KEYWORD_API_KEY_SETTING,
             KEYWORD_VISIT_BELOW_FOR_API_KEY,
@@ -140,7 +149,10 @@ class DeveloperOptionAdapter(
         )),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
-        RollenceAbTestingManualSwitcherUiModel(listOf(KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER)),
+        RollenceAbTestingManualSwitcherUiModel(listOf(
+            KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER,
+            KEYWORD_LIST_AB_TEST_ROLLENCE_KEYS)
+        ),
         HomeAndNavigationRevampSwitcherUiModel(listOf(
             KEYWORD_TRANSLATOR,
             KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
