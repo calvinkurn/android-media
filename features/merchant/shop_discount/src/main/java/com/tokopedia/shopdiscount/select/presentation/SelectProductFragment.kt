@@ -49,7 +49,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         private const val MAX_PRODUCT_SELECTION = 5
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
-        private const val MARGIN_TOP_BOTTOM_VALUE_DIVIDER = 16
+
         @JvmStatic
         fun newInstance(): SelectProductFragment {
             return SelectProductFragment()
@@ -188,8 +188,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     }
 
     private val onProductClicked: (ReservableProduct) -> Unit = { product ->
-        viewModel.setSelectedProduct(product)
-        guard(product.disableClick) {
+        val isDisabled = product.disableClick || product.disabled
+        guard(isDisabled, product.disabledReason) {
             showProductDetailBottomSheet(product)
         }
     }
@@ -233,11 +233,15 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         adapter?.refresh(toBeEnabledProducts)
     }
 
-    private fun guard(disableClick: Boolean, block : () -> Unit) {
-        if (disableClick) {
+    private fun guard(isDisabled: Boolean, disableReason : String, block : () -> Unit) {
+        if (isDisabled) {
+            val reason = disableReason.ifEmpty {
+                getString(R.string.sd_select_product_max_count_reached)
+            }
+
             Toaster.build(
                 binding?.recyclerView ?: return,
-                getString(R.string.sd_select_product_max_count_reached),
+                reason,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
                 getString(R.string.sd_ok)
@@ -321,6 +325,10 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     }
 
     private fun clearSearchBar() {
+        val selectedProductCount = viewModel.getSelectedProductCount()
+        val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
+        viewModel.setDisableProductSelection(shouldDisableSelection)
+
         clearAllData()
         onShowLoading()
         binding?.shimmer?.content?.visible()

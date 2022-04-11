@@ -24,10 +24,8 @@ class SelectProductViewModel @Inject constructor(
     val products: LiveData<Result<List<ReservableProduct>>>
         get() = _products
 
-    private var totalProduct = 0
-    private var selectedProduct : ReservableProduct? = null
     private var shouldDisableProductSelection = false
-    private var selectedProductIds : MutableList<String> = mutableListOf()
+    private var selectedProductIds: MutableList<String> = mutableListOf()
 
     fun getProducts(
         page: Int,
@@ -44,11 +42,11 @@ class SelectProductViewModel @Inject constructor(
                 val mappedProduct = reservableProductMapper.map(response)
 
                 mappedProduct.map {
-                        it.copy(
-                            disableClick = shouldDisableProductSelection,
-                            isCheckboxTicked = it.id in selectedProductIds
-                        )
-                    }
+                    it.copy(
+                        disableClick = shouldDisableProductSelection && it.id !in selectedProductIds,
+                        isCheckboxTicked = it.id in selectedProductIds
+                    )
+                }
 
             }
 
@@ -58,20 +56,6 @@ class SelectProductViewModel @Inject constructor(
             _products.value = Fail(it)
         })
     }
-
-    fun setTotalProduct(totalProduct : Int) {
-        this.totalProduct = totalProduct
-    }
-
-
-    fun setSelectedProduct(selectedProduct: ReservableProduct) {
-        this.selectedProduct = selectedProduct
-    }
-
-    fun getSelectedProduct() : ReservableProduct?  {
-        return selectedProduct
-    }
-
 
     fun setDisableProductSelection(shouldDisableProductSelection: Boolean) {
         this.shouldDisableProductSelection = shouldDisableProductSelection
@@ -101,7 +85,7 @@ class SelectProductViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedProductIds() : List<String> {
+    fun getSelectedProductIds(): List<String> {
         return selectedProductIds
     }
 
@@ -109,15 +93,11 @@ class SelectProductViewModel @Inject constructor(
         return selectedProductIds.size
     }
 
-    fun addProductToSelection(product : ReservableProduct) {
+    fun addProductToSelection(product: ReservableProduct) {
         this.selectedProductIds.add(product.id)
     }
 
     fun removeProductFromSelection(product: ReservableProduct) {
         this.selectedProductIds.remove(product.id)
-    }
-
-    fun removeAllProductFromSelection() {
-        this.selectedProductIds.clear()
     }
 }
