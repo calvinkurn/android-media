@@ -1,6 +1,7 @@
 package com.tokopedia.play_common.view.game
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.InputFilter
 import android.text.InputType
 import android.util.AttributeSet
@@ -35,7 +36,6 @@ class GameHeaderView : ConstraintLayout {
     private val binding = ViewGameHeaderBinding.inflate(
         LayoutInflater.from(context),
         this,
-        true
     )
 
     private var onTextChanged: ((String) -> Unit)? = null
@@ -130,6 +130,14 @@ class GameHeaderView : ConstraintLayout {
             newLightEnable = color,
             newDarkEnable = color,
         )
+    }
+
+    fun setContentBackground(drawable: Drawable) {
+        binding.flPlayGameHeader.background = drawable
+    }
+
+    fun setIcon(icon: Drawable) {
+        binding.icPlayGameHeaderIcon.setImageDrawable(icon)
     }
 
     private fun setBackground() {
