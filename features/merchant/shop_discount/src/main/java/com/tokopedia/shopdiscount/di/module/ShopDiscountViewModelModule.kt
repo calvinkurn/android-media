@@ -11,6 +11,7 @@ import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageVie
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListViewModel
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
 import com.tokopedia.shopdiscount.search.presentation.SearchProductViewModel
+import com.tokopedia.shopdiscount.select.presentation.SelectProductViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -52,4 +53,9 @@ abstract class ShopDiscountViewModelModule {
     @IntoMap
     @ViewModelKey(SearchProductViewModel::class)
     internal abstract fun provideSearchProductViewModel(viewModel: SearchProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SelectProductViewModel::class)
+    internal abstract fun provideSelectProductViewModel(viewModel: SelectProductViewModel): ViewModel
 }

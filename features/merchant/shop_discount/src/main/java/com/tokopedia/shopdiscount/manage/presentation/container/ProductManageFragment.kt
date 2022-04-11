@@ -26,6 +26,7 @@ import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSell
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
+import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
@@ -105,6 +106,13 @@ class ProductManageFragment : BaseDaggerFragment() {
         setupSearchBar()
         setupHeader()
         setupTabs()
+        setupButton()
+    }
+
+    private fun setupButton() {
+        binding?.run {
+            btnCreateDiscount.setOnClickListener { SelectProductActivity.start(requireActivity()) }
+        }
     }
 
     private fun setupTabs() {
