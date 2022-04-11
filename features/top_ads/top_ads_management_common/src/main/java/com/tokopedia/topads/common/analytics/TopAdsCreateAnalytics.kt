@@ -7,7 +7,14 @@ import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
-
+const val ON = "on"
+const val OFF = "off"
+const val CLICK_AKTIFKAN_ATUR_MANUAL = "click aktifkan atur manual"
+const val CLICK_BATALKAN_ATUR_MANUAL = "click batalkan atur manual"
+const val CLICK_BATALKAN_ATUR_OTOMATIS = "click batalkan atur otomatis"
+const val CLICK_AKTIFKAN_ATUR_OTOMATIS = "click aktifkan atur otomatis"
+const val CLICK_TOGGLE_ATUR_OTOMATIS = "click toggle atur otomatis"
+private const val CLICK_TOP_ADS = "clickTopAds"
 private const val KEY_EVENT = "event"
 private const val KEY_EVENT_SCREEN_NAME = "screenName"
 private const val KEY_OPEN_SCREEN_EVENT = "openScreen"
@@ -392,6 +399,18 @@ class TopAdsCreateAnalytics {
                     "position" to position+1))
         }
         return list
+    }
+
+    fun sendAutoBidToggleTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {
+        val map = mapOf(
+            KEY_EVENT to CLICK_TOP_ADS,
+            KEY_EVENT_CATEGORY to KEY_EVENT_CATEGORY_GROUP_DETAIL,
+            KEY_EVENT_ACTION to eventAction,
+            KEY_EVENT_LABEL to eventLabel,
+            KEY_BUSINESS_UNIT_EVENT to KEY_BUSINESS_UNIT,
+            KEY_CURRENT_SITE_EVENT to KEY_CURRENT_SITE)
+
+        getTracker().sendGeneralEvent(map)
     }
 
     fun sendTopAdsGroupDetailEvent(eventAction: String, eventLabel: String) {

@@ -77,6 +77,9 @@ data class Properties(
         val backgroundColor: String? = null,
 
         @SerializedName("shop_info")
-        val shopInfo: String? = null
+        val shopInfo: String? = null,
+
+        @SerializedName("mix_left")
+        val mixLeft: MixLeft? = null,
 
 )

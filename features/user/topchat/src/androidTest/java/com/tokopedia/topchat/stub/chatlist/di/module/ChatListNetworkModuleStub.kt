@@ -14,6 +14,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatlist.di.ChatListScope
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -152,12 +154,20 @@ class ChatListNetworkModuleStub(
     @Provides
     fun provideTopChatWebSocket(
             userSession: UserSessionInterface,
-            client: OkHttpClient
+            client: OkHttpClient,
+            abTestPlatform: AbTestPlatform
     ): TopchatWebSocket {
         val webSocketUrl = ChatUrl.CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
                 "?os_type=1" +
                 "&device_id=" + userSession.deviceId +
                 "&user_id=" + userSession.userId
-        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken, "chatlist")
+        return DefaultTopChatWebSocket(client, webSocketUrl, userSession.accessToken,
+            "chatlist", abTestPlatform)
+    }
+
+    @ChatListScope
+    @Provides
+    fun provideAbTestPlatform() : AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

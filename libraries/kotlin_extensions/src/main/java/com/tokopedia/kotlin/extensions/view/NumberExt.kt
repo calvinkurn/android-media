@@ -22,13 +22,33 @@ fun Number.numberFormatted(maximumFractionDigits: Int, roundingMode: RoundingMod
 
 fun Number.thousandFormatted(
         digit: Int = 2,
-        roundingMode: RoundingMode = RoundingMode.HALF_EVEN
+        roundingMode: RoundingMode = RoundingMode.HALF_EVEN,
+        hasSpace: Boolean = false
 ): String {
     if (toDouble() < 1000) return numberFormatted(digit, roundingMode)
 
     val exp = (Math.log(this.toDouble()) / Math.log(1000.00)).toInt()
     val number = this.toDouble() / Math.pow(1000.00, exp.toDouble())
-    return "${number.numberFormatted(digit, roundingMode)}${listOf("rb", "jt", "M", "T")[exp - 1]}"
+
+    if (hasSpace) {
+        return "${number.numberFormatted(digit, roundingMode)}${
+            listOf(
+                " rb",
+                " jt",
+                " M",
+                " T"
+            )[exp - 1]
+        }"
+    } else {
+        return "${number.numberFormatted(digit, roundingMode)}${
+            listOf(
+                "rb",
+                "jt",
+                "M",
+                "T"
+            )[exp - 1]
+        }"
+    }
 }
 
 fun Number.getNumberFormatted(): String {
