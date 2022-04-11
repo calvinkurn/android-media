@@ -114,13 +114,13 @@ class GameHeaderView : ConstraintLayout {
             Type.TAPTAP -> {
                 Pair(
                     IconUnify.GIFT,
-                    ContextCompat.getColor(context, R.color.play_bro_giveaway_icon_color)
+                    ContextCompat.getColor(context, R.color.play_dms_giveaway_icon_color)
                 )
             }
             else -> {
                 Pair(
                     IconUnify.QUIZ,
-                    ContextCompat.getColor(context, R.color.play_bro_quiz_icon_color)
+                    ContextCompat.getColor(context, R.color.play_dms_quiz_icon_color)
                 )
             }
         }
