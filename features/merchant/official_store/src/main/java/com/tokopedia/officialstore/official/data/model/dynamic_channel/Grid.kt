@@ -35,7 +35,7 @@ data class Grid(
         @Expose @SerializedName("badges") val badges: Array<Badges>? = arrayOf(),
         @Expose
         @SerializedName("expiredTime")
-        val expiredTime: String = "",
+        val expiredTime: String? = "",
         // Impression purposed
         var isImpressed: Boolean = false
 ) : Parcelable

@@ -11,21 +11,21 @@ import com.google.gson.annotations.SerializedName
 data class Shop(
     @Expose
     @SerializedName("shopID")
-    val shopId: String = "",
+    val shopId: String? = "",
     @Expose
     @SerializedName("name")
-    val name: String = "",
+    val name: String? = "",
     @Expose
     @SerializedName("applink")
-    val applink: String = "",
+    val applink: String? = "",
     @SerializedName("imageUrl")
-    val imageUrl: String = "",
+    val imageUrl: String? = "",
     @Expose
     @SerializedName("url")
-    val url: String = "",
+    val url: String? = "",
     @Expose
     @SerializedName("city")
-    val city: String = "",
+    val city: String? = "",
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
