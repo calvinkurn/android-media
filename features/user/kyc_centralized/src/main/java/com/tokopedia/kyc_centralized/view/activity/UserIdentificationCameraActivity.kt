@@ -36,7 +36,9 @@ class UserIdentificationCameraActivity : BaseSimpleActivity() {
     }
 
     private fun isUseCropAndCompression(): Boolean {
-        return getAbTestPlatform().getString(CROP_AND_COMPRESSION_ROLLOUT).isNotEmpty()
+        return getAbTestPlatform()
+                .getString(CROP_AND_COMPRESSION_ROLLOUT)
+                .contains(CROP_AND_COMPRESSION_ROLLOUT)
     }
 
     private fun getAbTestPlatform(): AbTestPlatform {
