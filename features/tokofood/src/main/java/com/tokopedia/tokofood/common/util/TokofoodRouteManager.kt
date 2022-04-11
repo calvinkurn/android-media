@@ -17,8 +17,6 @@ object TokofoodRouteManager {
             var f: BaseMultiFragment? = null
             if (uri.path == "/home") { // tokopedia://tokofood/home
                 f = TokoFoodHomeFragment()
-            } else if (uri.path == "/b") { // tokopedia://tokofood/b
-
             }
             if (f != null) {
                 f.arguments = Bundle().apply {

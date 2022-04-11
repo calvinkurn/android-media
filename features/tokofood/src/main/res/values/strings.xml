@@ -5,6 +5,12 @@
     <!-- Home -->
     <string name="home_usp_powered_by">Powered by</string>
 
+    <!-- Purchase -->
+    <string name="text_purchase_message_need_pinpoint"><![CDATA[Pengiriman &amp; estimasi tiba akan tampil di sini setelah pinpoint terdeteksi. <b><font color=#00AA5B>Atur Pinpoint</font></b>]]></string>
+    <string name="text_purchase_add_notes">Tambah Catatan</string>
+    <string name="text_purchase_change_notes">Ubah Catatan</string>
+    <string name="text_purchase_change_notes_and_variant">Ubah Catatan/Varian</string>
+
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
     <string name="order_tracking_invoice_date_label">Tanggal Pembelian</string>
