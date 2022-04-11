@@ -150,6 +150,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final int WISHLIST_MENU = 3;
     public static final String DEFAULT_NO_SHOP = "0";
     public static final String BROADCAST_FEED = "BROADCAST_FEED";
+    public static final String FEED_IS_VISIBLE = "FEED_IS_VISIBLE";
     public static final String BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY";
     public static final String PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED";
     public static final String PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED";
@@ -1344,6 +1345,7 @@ public class MainParentActivity extends BaseActivity implements
         else{
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
+            intent.putExtra(FEED_IS_VISIBLE, true);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
