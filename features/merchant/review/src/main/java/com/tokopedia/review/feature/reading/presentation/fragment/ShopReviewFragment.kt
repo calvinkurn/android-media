@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
 
@@ -40,6 +41,27 @@ class ShopReviewFragment : ReadReviewFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         showShopPageReviewHeader()
+        hideHeaderOnScrolled()
+    }
+
+    private fun hideHeaderOnScrolled() {
+        view?.let {
+            val recyclerView = getRecyclerView(it) ?: return
+
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+
+                    val canScrollVertically = recyclerView.canScrollVertically(RecyclerView.NO_POSITION)
+                    if (canScrollVertically && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                        reviewHeader?.hideRatingContainer()
+                    } else if (!canScrollVertically){
+                        reviewHeader?.showRatingContainer()
+                    }
+                }
+            })
+        }
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = false
