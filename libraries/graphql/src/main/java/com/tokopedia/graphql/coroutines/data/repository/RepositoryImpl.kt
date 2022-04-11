@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
+import android.text.TextUtils
 import android.util.Log
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
@@ -7,6 +8,7 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.LoggingUtils
@@ -81,8 +83,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
         val tempRequest = requests.regroup(indexOfEmptyCached)
 
         originalResponse?.forEachIndexed { index, jsonElement ->
-            val operationName =
-                CacheHelper.getQueryName(tempRequest.getOrNull(index)?.query.orEmpty())
+            val operationName = CommonUtils.getFullOperationName(tempRequest.getOrNull(index))
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
@@ -139,7 +140,7 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             copyRequests.addAll(requests);
 
             for (i in 0 until copyRequests.size) {
-                operationName = CacheHelper.getQueryName(copyRequests.getOrNull(i)?.query.orEmpty())
+                operationName = CommonUtils.getFullOperationName(copyRequests.getOrNull(i))
 
                 if (copyRequests[i].isNoCache) {
                     continue

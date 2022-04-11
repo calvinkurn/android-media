@@ -2,8 +2,10 @@ package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
@@ -63,6 +65,22 @@ data class OpenSelectedSharingOptionEvent(val linkerShareResult: LinkerShareResu
 object CloseShareExperienceBottomSheet: PlayViewerNewUiEvent()
 object ErrorGenerateShareLink: PlayViewerNewUiEvent()
 
+/**
+ * Status
+ */
+data class BuySuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section? = null,
+) : PlayViewerNewUiEvent()
+data class AtcSuccessEvent(
+    val product: PlayProductUiModel.Product,
+    val isVariant: Boolean,
+    val cartId: String,
+    val sectionInfo: ProductSectionUiModel.Section? = null,
+) : PlayViewerNewUiEvent()
+
 //---------------------
 
 sealed class UiString {
@@ -79,3 +97,6 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
+
+object OpenKebabEvent: PlayViewerNewUiEvent()
+object OpenUserReportEvent: PlayViewerNewUiEvent()

@@ -23,25 +23,32 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.internal_review.factory.createReviewHelper
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getResColor
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoring
 import com.tokopedia.seller.active.common.plt.som.SomListLoadTimeMonitoringActivity
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitoring
-import com.tokopedia.sellerhome.common.*
+import com.tokopedia.sellerhome.common.DeepLinkHandler
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
+import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
 import com.tokopedia.sellerhome.di.component.DaggerHomeDashboardComponent
 import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
@@ -90,17 +97,9 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     private val sellerReviewHelper by lazy { createReviewHelper(applicationContext) }
-
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
-
-    private val sellerHomeRouter: SellerHomeRouter? by lazy {
-        val applicationContext = applicationContext
-        return@lazy if (applicationContext is SellerHomeRouter)
-            applicationContext
-        else
-            null
-    }
+    private val sellerHomeRouter by lazy { applicationContext as? SellerHomeRouter }
 
     private val menu = mutableListOf<BottomMenu>()
 
@@ -117,13 +116,13 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     private var statusBarCallback: StatusBarCallback? = null
     private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
     private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
+    private var binding: ActivitySahSellerHomeBinding? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
     override var loadTimeMonitoringListener: LoadTimeMonitoringListener? = null
-    override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
-    private var binding: ActivitySahSellerHomeBinding? = null
+    override var performanceMonitoringSomListPlt: SomListLoadTimeMonitoring? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setActivityOrientation()
@@ -141,17 +140,16 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
 
         setupDefaultPage(savedInstanceState)
 
-        // if redirected from any seller migration entry point, no need to show the update dialog
-        val isRedirectedFromSellerMigrationEntryPoint =
-            !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)
-                .isNullOrBlank()
-
-        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
+        checkAppUpdate()
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+    }
+
+    override fun checkAppUpdateAndInApp() {
+        // no op, this activity already uses UpdateCheckerHelper
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -226,28 +224,28 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     override fun menuClicked(position: Int, id: Int): Boolean {
         when (position) {
             FragmentType.HOME -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
                 showToolbarNotificationBadge()
                 checkForSellerAppReview(FragmentType.HOME)
             }
             FragmentType.PRODUCT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastProductManagePage, TrackingConstant.CLICK_PRODUCT)
             }
             FragmentType.CHAT -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
             }
             FragmentType.ORDER -> {
                 if (navigator?.getCurrentSelectedPage() != FragmentType.ORDER) {
                     initSomListLoadTimeMonitoring()
                 }
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 onBottomNavSelected(lastSomTab, TrackingConstant.CLICK_ORDER)
             }
             FragmentType.OTHER -> {
-                UpdateShopActiveService.startService(this)
+                UpdateShopActiveWorker.execute(this)
                 showOtherSettingsFragment()
             }
         }
@@ -338,7 +336,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
     }
 
     private fun handleAppLink(intent: Intent?) {
-        DeepLinkHandler.handleAppLink(this, intent) { page ->
+        DeepLinkHandler.handleAppLink( intent) { page ->
             val pageType = page.type
 
             when (pageType) {
@@ -519,7 +517,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             if (result is Success) {
                 result.data.let { isRoleEligible ->
                     if (!isRoleEligible) {
-                        RouteManager.route(this, ApplinkConstInternalGlobal.LOGOUT)
+                        RouteManager.route(this, ApplinkConstInternalUserPlatform.LOGOUT)
                         finish()
                     }
                 }
@@ -644,7 +642,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         if (intent.data == null) {
             initPerformanceMonitoringSellerHome()
         } else {
-            DeepLinkHandler.handleAppLink(this, intent) {
+            DeepLinkHandler.handleAppLink(intent) {
                 if (it.type == FragmentType.HOME) {
                     initPerformanceMonitoringSellerHome()
                 } else if (it.type == FragmentType.ORDER) {
@@ -695,5 +693,14 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 SellerHomeOnApplyInsetsListener(sahContainer, sahBottomNav)
             )
         }
+    }
+
+    private fun checkAppUpdate() {
+        // if redirected from any seller migration entry point, no need to show the update dialog
+        val isRedirectedFromSellerMigrationEntryPoint =
+            !intent.data?.getQueryParameter(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME)
+                .isNullOrBlank()
+
+        UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
     }
 }

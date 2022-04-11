@@ -24,13 +24,8 @@ import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyErrorDetailUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageInfoUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyMessageUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -159,6 +154,11 @@ object CartUiModelMapper {
                         enable = availableGroup.shipmentInformation.enableBoAffordability,
                         errorText = cartData.messages.errorBoAffordability
                 )
+                addOnText = availableGroup.giftingAddOn.tickerText
+                addOnImgUrl = availableGroup.giftingAddOn.iconUrl
+                if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
+                    addOnId = availableGroup.giftingAddOn.addOnIds[0]
+                }
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -368,6 +368,7 @@ object CartUiModelMapper {
             productImage = product.productImage.imageSrc100Square
             productId = product.productId
             productInformation = product.productInformation
+            productInformationWithIcon = product.productInformationWithIcon
             productAlertMessage = product.productAlertMessage
             productPrice = product.productPrice
             productOriginalPrice = product.productOriginalPrice
@@ -548,7 +549,8 @@ object CartUiModelMapper {
         return LastApplyAdditionalInfoUiModel(
                 messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
                 errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail),
-                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo)
+                emptyCartInfo = mapEmptyCartInfo(promoAdditionalInfo.emptyCartInfo),
+                usageSummaries = mapUsageSummaries(promoAdditionalInfo.usageSummaries),
         )
     }
 
@@ -569,6 +571,18 @@ object CartUiModelMapper {
                 message = promoEmptyCartInfo.message,
                 detail = promoEmptyCartInfo.detail
         )
+    }
+
+    private fun mapUsageSummaries(promoUsageSummaries: List<UsageSummaries>): List<LastApplyUsageSummariesUiModel> {
+        return promoUsageSummaries.map {
+            LastApplyUsageSummariesUiModel(
+                    description = it.desc,
+                    type = it.type,
+                    amountStr = it.amountStr,
+                    amount = it.amount,
+                    currencyDetailsStr = it.currencyDetailsStr
+            )
+        }
     }
 
     fun mapSummaryTransactionUiModel(cartData: CartData): SummaryTransactionUiModel {

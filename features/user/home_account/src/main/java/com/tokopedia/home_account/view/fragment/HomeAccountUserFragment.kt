@@ -324,7 +324,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onEditProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
-        goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
+        goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {
@@ -368,6 +368,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             AccountConstants.SettingCode.SETTING_DARK_MODE -> {
                 setupDarkMode(isActive)
+            }
+            AccountConstants.SettingCode.SETTING_PLAY_WIDGET_AUTOPLAY -> {
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_PLAY_WIDGET_AUTOPLAY, isActive)
             }
             else -> {
             }
@@ -500,7 +503,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                     })
                 } else {
                     activity?.supportFragmentManager?.run {
-                        biometricOfferingDialog?.show(this, "")
+                        if(biometricOfferingDialog?.isAdded == false) {
+                            biometricOfferingDialog?.show(this, "")
+                        }
                     }
 
                     val reason = if(data?.hasExtra(RegisterFingerprintActivity.RESULT_INTENT_REGISTER_BIOM) == true) {
@@ -667,12 +672,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             if(activity != null) {
                 if(BiometricPromptHelper.isBiometricAvailable(requireActivity())) {
                     homeAccountAnalytic.trackOnShowBiometricOffering()
-                    if(biometricOfferingDialog != null) {
+                    if(biometricOfferingDialog != null && biometricOfferingDialog?.isAdded == false) {
                         activity?.supportFragmentManager?.run {
                             biometricOfferingDialog?.show(this, "")
                         }
                     } else {
-                        biometricOfferingDialog = FingerprintDialogHelper.createBiometricOfferingDialog(
+                        biometricOfferingDialog =
+                            FingerprintDialogHelper.createBiometricOfferingDialog(
                                 requireActivity(),
                                 onPrimaryBtnClicked = {
                                     biometricTracker.trackClickOnAktivasi()
@@ -680,7 +686,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                         requireContext(),
                                         ApplinkConstInternalUserPlatform.REGISTER_BIOMETRIC
                                     )
-                                    startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+                                    startActivityForResult(
+                                        intent,
+                                        REQUEST_CODE_REGISTER_BIOMETRIC
+                                    )
                                     biometricOfferingDialog?.dismiss()
                                 },
                                 onSecondaryBtnClicked = {
@@ -692,6 +701,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                                     biometricTracker.trackClickOnCloseBtnOffering()
                                 })
                     }
+
                 } else {
                     showDialogLogout()
                 }
@@ -1219,7 +1229,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun doLogout() {
         activity?.let {
-            startActivity(RouteManager.getIntent(it, ApplinkConstInternalGlobal.LOGOUT))
+            startActivity(RouteManager.getIntent(it, ApplinkConstInternalUserPlatform.LOGOUT))
         }
     }
 
@@ -1551,7 +1561,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun gotoSettingProfile() {
         val intent =
-            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+            RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 
