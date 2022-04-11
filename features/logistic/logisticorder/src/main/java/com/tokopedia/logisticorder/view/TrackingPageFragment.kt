@@ -202,24 +202,27 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun setLastDriverData(lastDriver: LastDriverModel) {
         binding?.tippingGojekLayout?.run {
-            driverLayout.visibility = View.GONE
-            imgFindDriver.visibility = View.VISIBLE
-            btnInformation.visibility = View.GONE
+            tippingLayout.visibility = View.GONE
+            driverLayout.visibility = View.VISIBLE
 
-            tippingText.text = lastDriver.name
-            tippingDescription.text = lastDriver.licenseNumber
             if (lastDriver.photo.isNotEmpty()) {
-                imgFindDriver.setImageUrl(lastDriver.photo)
+                imgDriver.setImageUrl(lastDriver.photo)
             }
-            btnTipping.let {
-                it.text = getString(R.string.last_driver_button)
-                it.setOnClickListener {
-                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:${lastDriver.phone}")
-                    }
-                    startActivity(callIntent)
+            driverName.text = lastDriver.name
+            driverPhone.text = getString(R.string.driver_description_template, lastDriver.phone, lastDriver.licenseNumber)
+            btnCall.setOnClickListener {
+                val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                    this.data = Uri.parse("tel:${lastDriver.phone}")
                 }
+                startActivity(callIntent)
             }
+            btnChat.setOnClickListener {
+                val chatIntent = Intent(Intent.ACTION_VIEW).apply {
+                    this.data = Uri.parse("sms:${lastDriver.phone}")
+                }
+                startActivity(chatIntent)
+            }
+
         }
     }
 
@@ -236,6 +239,21 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
                 driverName.text = tippingData.tippingLastDriver.name
                 driverPhone.text = getString(R.string.driver_description_template, tippingData.tippingLastDriver.phone, tippingData.tippingLastDriver.licenseNumber)
+            }
+
+            if (tippingData.tippingLastDriver.phone.isNotEmpty()) {
+                btnCall.setOnClickListener {
+                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
+                        this.data = Uri.parse("tel:${tippingData.tippingLastDriver.phone}")
+                    }
+                    startActivity(callIntent)
+                }
+                btnChat.setOnClickListener {
+                    val chatIntent = Intent(Intent.ACTION_VIEW).apply {
+                        this.data = Uri.parse("sms:${tippingData.tippingLastDriver.phone}")
+                    }
+                    startActivity(chatIntent)
+                }
             }
 
             btnTipping.text = when (tippingData.status) {
