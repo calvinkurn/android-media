@@ -78,14 +78,12 @@ data class ThanksPageData(
         val isNewUser: Boolean,
         @SerializedName("is_mub")
         val isMonthlyNewUser: Boolean,
-        @SerializedName("custom_data")
-        val thanksCustomization: ThanksCustomization?,
-        @SerializedName("custom_data_url")
-        val customDataUrl: CustomAppLinkData,
         @SerializedName("custom_data_applink")
-        val customDataAppLink: CustomAppLinkData,
+        val customDataAppLink: CustomAppLinkData?,
         @SerializedName("custom_data_message")
-        val customDataMessage: CustomDataMessage,
+        val customDataMessage: CustomDataMessage?,
+        @SerializedName("custom_data_other")
+        val customDataOther: CustomDataOther?,
         @SerializedName("config_flag")
         val configFlag: String?,
         @SerializedName("config_list")
@@ -106,27 +104,37 @@ data class ThanksPageData(
 @Parcelize
 data class CustomAppLinkData(
     @SerializedName("auto_redirect")
-    val autoRedirect: String,
+    val autoRedirect: String?,
     @SerializedName("home")
-    val home: String,
+    val home: String?,
     @SerializedName("order")
-    val order: String,
+    val order: String?,
     @SerializedName("pms")
-    val pms: String,
+    val pms: String?,
 ): Parcelable
 
 @Parcelize
 data class CustomDataMessage(
     @SerializedName("loader_text")
-    val loaderText: String,
+    val loaderText: String?,
     @SerializedName("subtitle")
-    val subtitle: String,
+    val subtitle: String?,
     @SerializedName("title")
-    val titel: String,
+    val title: String?,
     @SerializedName("title_home_button")
-    val titleHomeButton: String,
+    val titleHomeButton: String?,
     @SerializedName("title_order_button")
-    val titleOrderButton: String,
+    val titleOrderButton: String?,
+    @SerializedName("wtv_text")
+    val wtvText: String?
+): Parcelable
+
+@Parcelize
+data class CustomDataOther(
+    @SerializedName("delay_duration")
+    val delayDuration: String?,
+    @SerializedName("tracking_data")
+    val trackingData: String?
 ): Parcelable
 
 @Parcelize
@@ -458,25 +466,6 @@ data class PaymentItem(
         }
     }
 }
-
-@Parcelize
-data class ThanksCustomization(
-        @SerializedName("tracking_data")
-        val trackingData: String?,
-        @SerializedName("custom_order_url_app")
-        val customOrderUrlApp: String?,
-        @SerializedName("custom_home_url_app")
-        val customHomeUrlApp: String?,
-        @SerializedName("custom_title")
-        val customTitle: String?,
-        @SerializedName("custom_subtitle")
-        val customSubtitle: String?,
-        @SerializedName("custom_title_order_button")
-        val customTitleOrderButton: String?,
-        @SerializedName("custom_wtv_text")
-        val customWtvText: String?,
-        @SerializedName("custom_title_home_button")
-        val customHomeButtonTitle: String?) : Parcelable
 
 @Parcelize
 data class ConfigFlag(

@@ -133,20 +133,9 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
     push_gtm
     new_user
     is_mub
-    custom_data_url
     custom_data_applink
     custom_data_message
     custom_data_other
-    custom_data{
-       tracking_data
-       custom_order_url_app
-       custom_home_url_app
-       custom_title
-       custom_subtitle
-       custom_title_order_button
-       custom_wtv_text
-       custom_title_home_button
-    }
     config_flag
     config_list
     gateway_additional_data{

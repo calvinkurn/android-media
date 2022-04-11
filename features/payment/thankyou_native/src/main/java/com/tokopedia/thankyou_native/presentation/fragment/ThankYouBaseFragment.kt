@@ -19,9 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
-import com.tokopedia.localizationchooseaddress.domain.model.WarehouseModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
-import com.tokopedia.localizationchooseaddress.domain.response.Warehouse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.thankyou_native.R
@@ -31,7 +29,10 @@ import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThankPageTopTickerData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
-import com.tokopedia.thankyou_native.helper.*
+import com.tokopedia.thankyou_native.helper.ThanksPageHelper
+import com.tokopedia.thankyou_native.helper.addContainer
+import com.tokopedia.thankyou_native.helper.attachTopAdsHeadlinesView
+import com.tokopedia.thankyou_native.helper.getTopAdsHeadlinesView
 import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
 import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
@@ -49,7 +50,10 @@ import com.tokopedia.thankyou_native.recommendationdigital.presentation.view.IDi
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -382,19 +386,19 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     fun setUpHomeButton(homeButton: TextView?) {
         if (thanksPageData.configFlagData?.shouldHideHomeButton == false) {
             homeButton?.let {
-                thanksPageData.thanksCustomization?.let {
-                    it.customHomeButtonTitle?.apply {
+                thanksPageData.customDataMessage?.let {
+                    it.titleHomeButton?.apply {
                         if (isNotBlank())
                             homeButton.text = this
                     }
                 }
 
                 homeButton.setOnClickListener {
-                    thanksPageData.thanksCustomization?.let {
-                        if (it.customHomeUrlApp.isNullOrBlank())
+                    thanksPageData.customDataAppLink?.let {
+                        if (it.home.isNullOrBlank())
                             gotoHomePage()
                         else
-                            launchApplink(it.customHomeUrlApp)
+                            launchApplink(it.home)
                     } ?: run {
                         gotoHomePage()
                     }
