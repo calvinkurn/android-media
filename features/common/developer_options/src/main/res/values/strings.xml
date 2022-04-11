@@ -19,9 +19,11 @@
 
     <string name="pdp_layout_id">Change Layout ID PDP</string>
     <string name="pdp_vbs">Go To Variant Bottom Sheet</string>
+    <string name="pdp_educational">Go To Educational Bottom Sheet</string>
     <string name="pdp_route">Route to PDP</string>
     <string name="pdp_layout_id_edittext_placeholder">Layout ID PDP</string>
     <string name="pdp_product_id_edittext_placeholder">Product Id</string>
+    <string name="pdp_type_edittext_placeholder">Type</string>
     <string name="pdp_shop_id_edittext_placeholder">Shop Id</string>
     <string name="pdp_page_source_edittext_placeholder">Page Source</string>
     <string name="pdp_true_false_atc_edittext_placeholder">true/false</string>
