@@ -4,11 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayInteractiveTimePickerBinding
 import com.tokopedia.play.broadcaster.databinding.ViewQuizFormBinding
@@ -182,6 +180,9 @@ class QuizFormView : ConstraintLayout {
 
     fun setFormState(quizFormState: QuizFormStateUiModel) {
         when(quizFormState) {
+            QuizFormStateUiModel.Nothing -> {
+                binding.viewQuizGift.hideCoackmark()
+            }
             QuizFormStateUiModel.Preparation -> {
                 binding.groupActionBar.visibility = View.VISIBLE
                 binding.viewGameHeader.isEditable = true
