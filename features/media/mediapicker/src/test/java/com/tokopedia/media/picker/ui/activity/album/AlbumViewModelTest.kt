@@ -3,13 +3,14 @@ package com.tokopedia.media.picker.ui.activity.album
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.picker.data.entity.Album
 import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -21,17 +22,21 @@ class AlbumViewModelTest {
 
     private val testDispatcher = CoroutineTestDispatchers
     private val albumRepository = mockk<AlbumRepository>()
-    private val viewModel = AlbumViewModel(
+    private val viewModel: AlbumViewModel = AlbumViewModel(
         albumRepository,
         testDispatcher
     )
 
-    private val pickerParam = PickerParam()
-
     @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        Dispatchers.setMain(testDispatcher.main)
+        Dispatchers.setMain(CoroutineTestDispatchers.main)
+    }
+
+    @ExperimentalCoroutinesApi
+    @After
+    fun reset() {
+        Dispatchers.resetMain()
     }
 
     @Test
@@ -39,7 +44,7 @@ class AlbumViewModelTest {
         // Given
 
         // When
-        coEvery { albumRepository.invoke(any()) } returns albumCollection
+        coEvery { albumRepository.invoke(Unit) } returns albumCollection
 
         viewModel.fetch()
         val result = viewModel.albums.value
@@ -54,7 +59,7 @@ class AlbumViewModelTest {
         // Given
 
         // When
-        coEvery { albumRepository.invoke(any()) } returns albumCollection
+        coEvery { albumRepository.invoke(Unit) } returns albumCollection
         viewModel.fetch()
 
         // Then
