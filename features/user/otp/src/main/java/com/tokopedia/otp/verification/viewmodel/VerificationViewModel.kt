@@ -15,10 +15,14 @@ import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.sessioncommon.data.pin.PinStatusParam
+import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
+import com.tokopedia.sessioncommon.domain.usecase.GetPinStatusUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -29,6 +33,8 @@ open class VerificationViewModel @Inject constructor(
         private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
         private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
         private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
+        private val getPinStatusUseCase: GetPinStatusUseCase,
+        private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
         private val otpValidateUseCase: OtpValidateUseCase,
         private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
         private val sendOtpUseCase: SendOtpUseCase,
@@ -267,6 +273,18 @@ open class VerificationViewModel @Inject constructor(
             _otpValidateResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
         })
+    }
+
+    fun getPinStatus(id: String, type: String) {
+        launch {
+            try {
+                val param = PinStatusParam(id = id, type = type)
+                val result = getPinStatusUseCase(param)
+
+            } catch (e: Exception) {
+
+            }
+        }
     }
 
     public override fun onCleared() {

@@ -20,10 +20,14 @@ open class GeneratePublicKeyUseCase(private val graphqlUseCase: GraphqlUseCase<G
         graphqlUseCase.setGraphqlQuery(GenerateKeyQuery.generateKeyQuery)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(GenerateKeyPojo::class.java)
+        setParams()
+    }
+
+    fun setParams(module: String = "pwd") {
+        params.putString(PARAM_MODULE, module)
     }
 
     override suspend fun executeOnBackground(): GenerateKeyPojo {
-        params.putString(PARAM_MODULE, "pwd")
         graphqlUseCase.clearCache()
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
