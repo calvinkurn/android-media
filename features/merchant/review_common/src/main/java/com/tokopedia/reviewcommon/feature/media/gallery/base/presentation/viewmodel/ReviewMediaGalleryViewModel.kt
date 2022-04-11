@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.extension.isMoreThanZero
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
@@ -168,8 +169,9 @@ class ReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun restoreUiState(savedInstanceState: Bundle) {
-        savedInstanceState.getParcelable<ViewPagerUiState>(
-            SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE
+        savedInstanceState.getSavedState(
+            SAVED_STATE_MEDIA_GALLERY_VIEW_PAGER_UI_STATE,
+            _viewPagerUiState.value
         )?.let { savedReviewMediaGalleryViewPagerUiState ->
             _viewPagerUiState.value = savedReviewMediaGalleryViewPagerUiState
         }
@@ -186,17 +188,17 @@ class ReviewMediaGalleryViewModel @Inject constructor(
                 responseData.reviewMedia.mapIndexedNotNull { index, reviewMedia ->
                     if (reviewMedia.imageId.isNotBlank() && reviewMedia.imageId.toLongOrZero().isMoreThanZero()) {
                         responseData.getReviewImageByID(
-                            reviewMedia.imageId,
-                            reviewMedia.mediaNumber,
-                            showSeeMore && index == responseData.reviewMedia.size - 1,
-                            totalMediaCount
+                            imageId = reviewMedia.imageId,
+                            imageNumber = reviewMedia.mediaNumber,
+                            showSeeMore = showSeeMore && index == responseData.reviewMedia.size - 1,
+                            totalMediaCount = totalMediaCount
                         )
                     } else if (reviewMedia.videoId.isNotBlank() && reviewMedia.videoId.toLongOrZero().isMoreThanZero()) {
                         responseData.getReviewVideoByID(
-                            reviewMedia.videoId,
-                            reviewMedia.mediaNumber,
-                            showSeeMore && index == responseData.reviewMedia.size - 1,
-                            totalMediaCount
+                            videoId = reviewMedia.videoId,
+                            videoNumber = reviewMedia.mediaNumber,
+                            showSeeMore = showSeeMore && index == responseData.reviewMedia.size - 1,
+                            totalMediaCount = totalMediaCount
                         )
                     } else {
                         null

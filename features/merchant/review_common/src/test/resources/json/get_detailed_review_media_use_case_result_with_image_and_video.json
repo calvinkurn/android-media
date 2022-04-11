@@ -77,7 +77,7 @@
           "imageNumber": 9
         },
         {
-          "videoID": "68882657",
+          "imageID": "68882657",
           "feedbackID": "634775909",
           "imageSiblings": [
             "68882657"
@@ -399,7 +399,13 @@
             "badRatingReasonFmt": ""
           }
         ],
-        "image": [],
+        "image": [
+          {
+            "attachmentID": "68882657",
+            "url": "https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-woman-in-a-pool-1259-large.mp4",
+            "feedbackID": "634775909"
+          }
+        ],
         "video": [
           {
             "attachmentID": "69084337",
@@ -445,11 +451,6 @@
             "attachmentID": "68890489",
             "url": "https://assets.mixkit.co/videos/preview/mixkit-girl-in-neon-sign-1232-large.mp4",
             "feedbackID": "634846966"
-          },
-          {
-            "attachmentID": "68882657",
-            "url": "https://assets.mixkit.co/videos/preview/mixkit-portrait-of-a-woman-in-a-pool-1259-large.mp4",
-            "feedbackID": "634775909"
           }
         ],
         "imageCountFmt": "Lainnya 763+",

@@ -45,7 +45,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
 
         viewModel.retryGetReviewMedia()
 
-        Assert.assertEquals(getDetailedReviewMediaResult1stPage, viewModel.detailedReviewMediaResult.first())
+        Assert.assertEquals(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia, viewModel.detailedReviewMediaResult.first())
     }
 
     @Test

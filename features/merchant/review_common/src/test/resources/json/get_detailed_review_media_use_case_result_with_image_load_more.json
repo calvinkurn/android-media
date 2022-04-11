@@ -3,13 +3,13 @@
     "productrevGetReviewImage": {
       "list": [
         {
-          "imageID": "10000",
+          "videoID": "10000",
           "feedbackID": "20000",
           "imageSiblings": [],
           "imageNumber": 11
         },
         {
-          "imageID": "10001",
+          "videoID": "10001",
           "feedbackID": "20001",
           "imageSiblings": [],
           "imageNumber": 12
@@ -434,7 +434,7 @@
         "imageCount": 773
       },
       "hasNext": true,
-      "hasPrev": false
+      "hasPrev": true
     }
   }
 }
