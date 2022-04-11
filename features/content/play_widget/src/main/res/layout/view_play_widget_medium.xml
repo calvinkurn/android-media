@@ -16,14 +16,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/play_widget_medium_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/play_widget_dp_12"
             android:ellipsize="end"
             android:lines="1"
             android:maxEms="12"
@@ -31,13 +31,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_3"
+            app:typographyType="heading_4"
             app:typographyWeight="bold"
             tools:text="Tonton keseruannya"
-            tools:visibility="gone"
+            tools:visibility="visible"
             />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/play_widget_medium_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,12 +45,12 @@
             android:gravity="end"
             android:text="@string/lihat_semua"
             android:textColor="@color/Unify_G500"
-            android:textSize="@dimen/fontSize_lvl3"
-            android:textStyle="bold"
+            app:typographyWeight="bold"
+            app:typographyType="body_3"
             app:layout_constraintBottom_toBottomOf="@+id/play_widget_medium_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/play_widget_medium_title"
-            tools:visibility="gone"
+            tools:visibility="visible"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -84,7 +84,7 @@
             android:id="@+id/play_widget_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/play_widget_dp_12"
             android:clipToPadding="false"
             android:paddingStart="@dimen/spacing_lvl4"
             android:paddingEnd="@dimen/spacing_lvl3"
