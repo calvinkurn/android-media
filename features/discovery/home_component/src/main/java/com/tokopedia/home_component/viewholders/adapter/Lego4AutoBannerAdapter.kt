@@ -15,6 +15,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
@@ -66,7 +67,7 @@ class Lego4AutoBannerAdapter(
 
         fun bind(item: Lego4AutoItem, parentPosition: Int, listener: Lego4AutoBannerListener?, channelModel: ChannelModel, isCacheData: Boolean) {
             itemName.text = item.grid.name
-            itemImage.loadImageRounded(item.grid.imageUrl, 10f)
+            itemImage.loadImageNormal(item.grid.imageUrl)
             itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
             if (item.grid.textColor.isNotEmpty()) {
                 itemName.setTextColor(Color.parseColor(item.grid.textColor))
