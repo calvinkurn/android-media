@@ -13,6 +13,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.data.model.response.GetWishlistV2Response
 
 interface ICartListView : CustomerView {
@@ -76,7 +77,9 @@ interface ICartListView : CustomerView {
 
     fun renderRecentView(recommendationWidget: RecommendationWidget?)
 
-    fun renderWishlist(wishlists: List<GetWishlistV2Response.WishlistV2.Item>?, forceReload: Boolean)
+    fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
+
+    fun renderWishlistV2(wishlists: List<GetWishlistV2Response.WishlistV2.Item>?, forceReload: Boolean)
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 
