@@ -60,6 +60,96 @@ import kotlin.collections.ArrayList
 class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterface) :
     RestRequestUseCase() {
 
+    fun executeQuery(
+        param: RequestParams?, className: String, onSuccess: () -> Unit, onError: (String) -> Unit,
+    ) {
+        execute(param, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as? DataResponse<FinalAdResponse>
+                response?.data?.topadsManageGroupAds?.let {
+                    if (it.groupResponse.errors.isNullOrEmpty() && it.keywordResponse.errors.isNullOrEmpty()
+                    ) {
+                        onSuccess()
+                    } else {
+                        val error = (it.groupResponse.errors?.firstOrNull()?.title ?: "") +
+                                (it.keywordResponse.errors?.firstOrNull()?.title ?: "")
+                        ServerLogger.log(Priority.P1, javaClass.name, mapOf(
+                            TopAdsCommonConstant.ERROR to "error executing topadsManagePromoGroupProduct -> $error"
+                        ))
+                        onError(error)
+                    }
+                }
+            }
+
+            override fun onCompleted() {}
+            override fun onError(e: Throwable?) {
+                ServerLogger.log(Priority.P1, className, mapOf(
+                    TopAdsCommonConstant.ERROR to
+                            (e?.message ?: "error executing topadsManagePromoGroupProduct gql")
+                ))
+                onError(e?.message ?: "")
+            }
+        })
+    }
+
+    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
+        val tempRequest = ArrayList<RestRequest>()
+        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
+        val query = ManageGroupAdsQuery.GQL_QUERY
+        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
+        val headers = HashMap<String, String>()
+        headers["Content-Type"] = "application/json"
+        val restReferralRequest =
+            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
+                .setBody(request)
+                .setHeaders(headers)
+                .setRequestType(RequestType.POST)
+                .build()
+        tempRequest.add(restReferralRequest)
+        return tempRequest
+    }
+
+    fun setParam(): RequestParams? {
+        val input = TopadsManagePromoGroupProductInput().apply {
+
+        }
+        return input.convertToRequestParam()
+    }
+
+    fun setParam(
+        productIds: List<String>, currentGroupName: String, priceBid: Double,
+        suggestedBidValue: Double,
+    ): RequestParams? {
+        val input = TopadsManagePromoGroupProductInput().apply {
+            shopID = userSession.shopId
+            source = ParamObject.PARAM_SOURCE_RECOM
+            groupInput.group = GroupEditInput.Group().also { group ->
+                group.adOperations = productIds.map { productId ->
+                    GroupEditInput.Group.AdOperationsItem(
+                        GroupEditInput.Group.AdOperationsItem.Ad(productId), action = ACTION_ADD
+                    )
+                }
+                group.name = currentGroupName
+                group.status = PUBLISHED
+                groupInput.action = ACTION_CREATE
+                group.bidSettings = listOf(
+                    GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid.toFloat()),
+                    GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid.toFloat())
+                )
+                group.suggestionBidSettings = listOf(
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH,
+                        suggestedBidValue.toFloat()),
+                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE,
+                        suggestedBidValue.toFloat()),
+                )
+            }
+            keywordOperation = null
+        }
+        return input.convertToRequestParam()
+    }
+
     fun setParam(
         source: String?, dataProduct: Bundle,
         dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>,
@@ -255,77 +345,10 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         return input
     }
 
-    override fun buildRequest(requestParams: RequestParams?): MutableList<RestRequest> {
-        val tempRequest = ArrayList<RestRequest>()
-        val token = object : TypeToken<DataResponse<FinalAdResponse>>() {}.type
-        val query = ManageGroupAdsQuery.GQL_QUERY
-        val request = GraphqlRequest(query, FinalAdResponse::class.java, requestParams?.parameters)
-        val headers = HashMap<String, String>()
-        headers["Content-Type"] = "application/json"
-        val restReferralRequest =
-            RestRequest.Builder(TopAdsCommonConstant.TOPADS_GRAPHQL_TA_URL, token)
-                .setBody(request)
-                .setHeaders(headers)
-                .setRequestType(RequestType.POST)
-                .build()
-        tempRequest.add(restReferralRequest)
-        return tempRequest
-    }
-
-    fun executeQuery(
-        param: RequestParams?, block: (FinalAdResponse?) -> Unit,
-    ) {
-        execute(param, object : Subscriber<Map<Type, RestResponse>>() {
-            override fun onNext(typeResponse: Map<Type, RestResponse>) {
-                val token = object : TypeToken<DataResponse<FinalAdResponse?>>() {}.type
-                val restResponse: RestResponse? = typeResponse[token]
-                val response = restResponse?.getData() as? DataResponse<FinalAdResponse>
-                block(response?.data)
-            }
-
-            override fun onCompleted() {}
-            override fun onError(e: Throwable?) {
-                ServerLogger.log(Priority.P1, javaClass.name, mapOf(
-                    TopAdsCommonConstant.ERROR to
-                            (e?.message ?: "error executing topadsManagePromoGroupProduct gql")
-                ))
-            }
-        })
-    }
-
-    fun setParam(
-        productIds: List<String>, currentGroupName: String, priceBid: Double,
-        suggestedBidValue: Double
-    ): RequestParams? {
-        val input = TopadsManagePromoGroupProductInput().apply {
-            shopID = userSession.shopId
-            source = ParamObject.PARAM_SOURCE_RECOM
-            groupInput.group = GroupEditInput.Group().also { group ->
-                group.adOperations = productIds.map { productId ->
-                    GroupEditInput.Group.AdOperationsItem(
-                        GroupEditInput.Group.AdOperationsItem.Ad(productId), action = ACTION_ADD
-                    )
-                }
-                group.name = currentGroupName
-                group.status = PUBLISHED
-                groupInput.action = ACTION_CREATE
-                group.bidSettings = listOf(
-                    GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_SEARCH, priceBid.toFloat()),
-                    GroupEditInput.Group.TopadsGroupBidSetting(PRODUCT_BROWSE, priceBid.toFloat())
-                )
-                group.suggestionBidSettings = listOf(
-                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_SEARCH,
-                        suggestedBidValue.toFloat()),
-                    GroupEditInput.Group.TopadsSuggestionBidSetting(PRODUCT_BROWSE,
-                        suggestedBidValue.toFloat()),
-                )
-            }
-            keywordOperation = null
-        }
-
+    private fun TopadsManagePromoGroupProductInput.convertToRequestParam(): RequestParams {
         val param = RequestParams.create()
         val variable: HashMap<String, Any> = HashMap()
-        variable[INPUT] = input
+        variable[INPUT] = this
         param.putAll(variable)
         return param
     }

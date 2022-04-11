@@ -451,33 +451,16 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
     fun createGroup(
         productIds: List<String>, currentGroupName: String, priceBid: Double,
-        suggestedBidValue: Double, response: (error: String?) -> Unit
+        suggestedBidValue: Double, response: (error: String?) -> Unit,
     ) {
         val param =
             topAdsCreateUseCase.setParam(productIds, currentGroupName, priceBid, suggestedBidValue)
 
-        topAdsCreateUseCase.executeQuery(param) { data ->
-            if(data == null) {
-                ServerLogger.log(Priority.P1, javaClass.name, mapOf(
-                    TopAdsCommonConstant.ERROR to  "received null response for topadsManagePromoGroupProduct"
-                ))
-                return@executeQuery
-            }
-
-            data.topadsManageGroupAds.apply {
-                if (groupResponse.errors.isNullOrEmpty() && keywordResponse.errors.isNullOrEmpty()
-                ) {
-                    response(null)
-                } else {
-                    val error = (groupResponse.errors?.firstOrNull()?.title ?: "") +
-                            (keywordResponse.errors?.firstOrNull()?.title ?: "")
-                    ServerLogger.log(Priority.P1, javaClass.name, mapOf(
-                        TopAdsCommonConstant.ERROR to "error executing topadsManagePromoGroupProduct -> $error"
-                    ))
-                    response(error)
-                }
-            }
-        }
+        topAdsCreateUseCase.executeQuery(param, javaClass.name, {
+            response(null)
+        }, {
+            response(it)
+        })
     }
 
     fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit)) {
