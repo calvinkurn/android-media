@@ -14,11 +14,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.*
@@ -454,7 +451,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         suggestedBidValue: Double, response: (error: String?) -> Unit,
     ) {
         val param =
-            topAdsCreateUseCase.setParam(productIds, currentGroupName, priceBid, suggestedBidValue)
+            topAdsCreateUseCase.createRequestParam(productIds, currentGroupName, priceBid, suggestedBidValue)
 
         topAdsCreateUseCase.executeQuery(param, javaClass.name, {
             response(null)

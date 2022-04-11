@@ -111,14 +111,20 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         return tempRequest
     }
 
-    fun setParam(): RequestParams? {
+    fun createRequestParam(
+        action: String, source: String, groupIdParam: String, keywordIds: List<String>,
+    ): RequestParams? {
         val input = TopadsManagePromoGroupProductInput().apply {
-
+            shopID = userSession.shopId
+            this.source = source
+            this.groupID = groupIdParam
+            keywordOperation =
+                keywordIds.map { id -> KeywordEditInput(action, KeywordEditInput.Keyword(id)) }
         }
         return input.convertToRequestParam()
     }
 
-    fun setParam(
+    fun createRequestParam(
         productIds: List<String>, currentGroupName: String, priceBid: Double,
         suggestedBidValue: Double,
     ): RequestParams? {
