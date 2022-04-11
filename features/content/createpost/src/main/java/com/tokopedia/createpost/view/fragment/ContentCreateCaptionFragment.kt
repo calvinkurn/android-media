@@ -5,8 +5,9 @@ import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -17,6 +18,8 @@ import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.createpost.view.adapter.CaptionPagePreviewImageAdapter
+import com.tokopedia.createpost.view.util.ConnectionLiveData
+import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.gone
@@ -28,6 +31,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     private var contentPreviewRv : RecyclerView? = null
     private var adapter: CaptionPagePreviewImageAdapter? =
         CaptionPagePreviewImageAdapter(onItemClick = this::onItemClick)
+    private var sheet :FeedNetworkErrorBottomSheet? = null
 
 
     override fun fetchContentForm() {
@@ -57,13 +61,26 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
     ): View? {
         val v = inflater.inflate(R.layout.content_caption_page_preview, container, false)
         initialiseViews(v)
+        setUpConnectionListener()
         return v
+    }
+
+    private fun setUpConnectionListener(){
+        val connectionLiveData = context?.let { ConnectionLiveData(it) }
+        connectionLiveData?.observe(context as AppCompatActivity) {
+            if (!it) {
+                sheet?.show((context as FragmentActivity).supportFragmentManager, "")
+            } else {
+                if(sheet?.isVisible==true)
+                    sheet?.dismiss()
+            }
+        }
     }
 
     private fun initialiseViews(v: View) {
         captionTxt = v.findViewById(R.id.caption)
         contentPreviewRv = v.findViewById(R.id.content_post_image_rv)
-
+        sheet = FeedNetworkErrorBottomSheet.newInstance()
     }
 
 
