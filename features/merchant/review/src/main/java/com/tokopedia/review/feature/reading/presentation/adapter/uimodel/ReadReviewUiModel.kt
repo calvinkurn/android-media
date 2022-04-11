@@ -14,7 +14,7 @@ data class ReadReviewUiModel(
         val productImage: String = "",
         val productName: String = "",
         val productId: String = "",
-        val mediaThumbnails: ReviewMediaThumbnailUiModel,
+        val mediaThumbnails: ReviewMediaThumbnailUiModel = ReviewMediaThumbnailUiModel(),
         val impressHolder: ImpressHolder = ImpressHolder()
 ) : Visitable<ReadReviewAdapterTypeFactory> {
 

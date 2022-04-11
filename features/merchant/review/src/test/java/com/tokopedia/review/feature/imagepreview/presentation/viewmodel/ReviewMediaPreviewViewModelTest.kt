@@ -2,8 +2,8 @@ package com.tokopedia.review.feature.imagepreview.presentation.viewmodel
 
 import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.data.ToggleLikeReviewResponse
-import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
-import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImageResponse
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductRevGetDetailedReviewMediaResponse
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
@@ -47,7 +47,7 @@ class ReviewMediaPreviewViewModelTest : ReviewMediaPreviewViewModelTestFixture()
     @Test
     fun `when setPage should call getProductReviews and return expected results`() {
         val page = ArgumentMatchers.anyInt()
-        val expectedResponse = ProductrevGetReviewImageResponse()
+        val expectedResponse = ProductRevGetDetailedReviewMediaResponse()
 
         onGetReviewImagesSuccess_thenReturn(expectedResponse)
 
@@ -55,7 +55,7 @@ class ReviewMediaPreviewViewModelTest : ReviewMediaPreviewViewModelTestFixture()
         viewModel.setProductId(ArgumentMatchers.anyString())
 
         verifyGetReviewImagesUseCaseExecuted()
-        verifyReviewImagesSuccessEquals(Success(expectedResponse.productrevGetReviewImage))
+        verifyReviewImagesSuccessEquals(Success(expectedResponse.productrevGetReviewMedia))
     }
 
     @Test
@@ -96,12 +96,12 @@ class ReviewMediaPreviewViewModelTest : ReviewMediaPreviewViewModelTestFixture()
         coEvery { toggleLikeReviewUseCase.executeOnBackground() } throws throwable
     }
 
-    private fun onGetReviewImagesSuccess_thenReturn(expectedResponse: ProductrevGetReviewImageResponse) {
-        coEvery { getReviewImagesUseCase.executeOnBackground() } returns expectedResponse
+    private fun onGetReviewImagesSuccess_thenReturn(expectedResponse: ProductRevGetDetailedReviewMediaResponse) {
+        coEvery { getDetailedReviewMediaUseCase.executeOnBackground() } returns expectedResponse
     }
 
     private fun onGetReviewsImagesFail_thenReturn(throwable: Throwable) {
-        coEvery { getReviewImagesUseCase.executeOnBackground() } throws throwable
+        coEvery { getDetailedReviewMediaUseCase.executeOnBackground() } throws throwable
     }
 
     private fun verifyToggleLikeDislikeUseCaseExecuted() {
@@ -109,7 +109,7 @@ class ReviewMediaPreviewViewModelTest : ReviewMediaPreviewViewModelTestFixture()
     }
 
     private fun verifyGetReviewImagesUseCaseExecuted() {
-        coVerify { getReviewImagesUseCase.executeOnBackground() }
+        coVerify { getDetailedReviewMediaUseCase.executeOnBackground() }
     }
 
     private fun verifyToggleLikeReviewSuccessEquals(expectedSuccessValue: Success<ProductrevLikeReview>) {
@@ -120,7 +120,7 @@ class ReviewMediaPreviewViewModelTest : ReviewMediaPreviewViewModelTestFixture()
         viewModel.toggleLikeReviewReview.verifyErrorEquals(expectedErrorValue)
     }
 
-    private fun verifyReviewImagesSuccessEquals(expectedSuccessValue: Success<ProductrevGetReviewImage>) {
+    private fun verifyReviewImagesSuccessEquals(expectedSuccessValue: Success<ProductrevGetReviewMedia>) {
         viewModel.reviewImages.verifySuccessEquals(expectedSuccessValue)
     }
 

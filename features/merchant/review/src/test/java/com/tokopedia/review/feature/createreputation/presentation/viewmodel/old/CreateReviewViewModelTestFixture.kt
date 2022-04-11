@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.createreputation.presentation.fragment
+package com.tokopedia.review.feature.createreputation.presentation.viewmodel.old
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.mediauploader.UploaderUseCase
@@ -10,7 +10,6 @@ import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTem
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevGetPostSubmitBottomSheetUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
-import com.tokopedia.review.feature.createreputation.presentation.viewmodel.old.CreateReviewViewModel
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface

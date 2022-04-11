@@ -1,8 +1,7 @@
-package com.tokopedia.review.feature.createreputation.presentation.fragment
+package com.tokopedia.review.feature.createreputation.presentation.viewmodel.old
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.review.common.data.ProductrevGetReviewDetail
 import com.tokopedia.review.common.data.ProductrevGetReviewDetailResponseWrapper
@@ -894,7 +893,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetOvoIncentive_thenReturn(null)
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -902,7 +901,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetOvoIncentive_thenReturn(ProductRevIncentiveOvoDomain(null))
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -910,7 +909,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetOvoIncentiveError_thenReturn(mockk())
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), true, any()) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -919,7 +918,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getProductIncentiveOvo()
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -928,7 +927,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getProductIncentiveOvo()
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -937,7 +936,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getProductIncentiveOvo()
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -946,7 +945,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getProductIncentiveOvo()
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), Int.ZERO) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     @Test
@@ -956,7 +955,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         onGetPostSubmitBottomSheetData_thenReturn(mockk())
         viewModel.getProductIncentiveOvo()
         viewModel.getPostSubmitBottomSheetData("", "")
-        verify { getPostSubmitBottomSheetUseCase.setParams(any(), any(), any(), any(), amount) }
+        verify { getPostSubmitBottomSheetUseCase.setParams(any()) }
     }
 
     private fun fillInImages() {
