@@ -107,7 +107,7 @@
             android:hint="@string/play_bro_quiz_gift_hint"
             android:inputType="textCapWords"
             android:textColor="@color/play_dms_bro_quiz_gift_text"
-            android:textColorHint="@color/play_bro_quiz_header_title_hint"
+            android:textColorHint="@color/play_dms_quiz_header_title_hint"
             android:textSize="@dimen/fontSize_lvl3"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

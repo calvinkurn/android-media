@@ -39,8 +39,8 @@
     <color name="play_dms_product_tag_empty_stock_bg">#6631353B</color>
 
     <!-- Game -->
-    <color name="play_bro_quiz_header_title_hint">#80FFFFFF</color>
-    <color name="play_bro_quiz_header_title">#FFFFFF</color>
+    <color name="play_dms_quiz_header_title_hint">#80FFFFFF</color>
+    <color name="play_dms_quiz_header_title">#FFFFFF</color>
 
     <color name="play_dms_giveaway_icon_color">#F36819</color>
     <color name="play_dms_giveaway_widget_gradient_start">#B3E02954</color>
