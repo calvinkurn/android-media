@@ -49,12 +49,12 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
 
-        private const val SAVED_STATE_PRODUCT_ID = "savedStateProductId"
-        private const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
-        private const val SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT = "savedStateGetDetailedReviewMediaResult"
-        private const val SAVED_STATE_ORIENTATION_UI_STATE = "savedStateOrientationUiState"
-        private const val SAVED_STATE_OVERLAY_VISIBILITY = "savedStateOverlayVisibility"
-        private const val SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET = "savedStateShowActionMenuBottomSheet"
+        const val SAVED_STATE_PRODUCT_ID = "savedStateProductId"
+        const val SAVED_STATE_SHOW_SEE_MORE = "savedStateShowSeeMore"
+        const val SAVED_STATE_GET_DETAILED_REVIEW_MEDIA_RESULT = "savedStateGetDetailedReviewMediaResult"
+        const val SAVED_STATE_ORIENTATION_UI_STATE = "savedStateOrientationUiState"
+        const val SAVED_STATE_OVERLAY_VISIBILITY = "savedStateOverlayVisibility"
+        const val SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET = "savedStateShowActionMenuBottomSheet"
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_SHOP_ID = "extrasShopId"
@@ -299,7 +299,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         outState.putString(SAVED_STATE_PRODUCT_ID, _productID.value)
         outState.putBoolean(SAVED_STATE_SHOW_SEE_MORE, _showSeeMore.value)
         outState.putSerializable(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)
-        outState.putSerializable(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)
+        outState.putBoolean(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)
         outState.putBoolean(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
     }
 
@@ -313,41 +313,39 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun tryGetPreloadedData(cacheManager: CacheManager) {
-        launchCatchError(block = {
-            _mediaNumberToLoad.value = cacheManager.get(
-                EXTRAS_TARGET_MEDIA_NUMBER,
-                Int::class.java,
-                INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
-            ) ?: INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
-            _showSeeMore.value = cacheManager.get(
-                EXTRAS_SHOW_SEE_MORE,
-                Boolean::class.java,
-                _showSeeMore.value
-            ) ?: _showSeeMore.value
-            _detailedReviewMediaResult.value = cacheManager.get(
-                EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT,
-                ProductrevGetReviewMedia::class.java,
-                _detailedReviewMediaResult.value
-            ) ?: _detailedReviewMediaResult.value
-            _productID.value = cacheManager.getString(
-                EXTRAS_PRODUCT_ID,
-                _productID.value
-            ) ?: _productID.value
-            _shopID.value = cacheManager.getString(
-                EXTRAS_SHOP_ID,
-                _shopID.value
-            ) ?: _shopID.value
-            _isProductReview.value = cacheManager.get(
-                EXTRAS_IS_PRODUCT_REVIEW,
-                Boolean::class.java,
-                _isProductReview.value
-            ) ?: _isProductReview.value
-            _isFromGallery.value = cacheManager.get(
-                EXTRAS_IS_FROM_GALLERY,
-                Boolean::class.java,
-                _isFromGallery.value
-            ) ?: _isFromGallery.value
-        }, onError = {})
+        _mediaNumberToLoad.value = cacheManager.get(
+            EXTRAS_TARGET_MEDIA_NUMBER,
+            Int::class.java,
+            INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
+        ) ?: INITIAL_MEDIA_NUMBER_TO_LOAD_VALUE
+        _showSeeMore.value = cacheManager.get(
+            EXTRAS_SHOW_SEE_MORE,
+            Boolean::class.java,
+            _showSeeMore.value
+        ) ?: _showSeeMore.value
+        _detailedReviewMediaResult.value = cacheManager.get(
+            EXTRAS_PRELOADED_DETAILED_REVIEW_MEDIA_RESULT,
+            ProductrevGetReviewMedia::class.java,
+            _detailedReviewMediaResult.value
+        ) ?: _detailedReviewMediaResult.value
+        _productID.value = cacheManager.getString(
+            EXTRAS_PRODUCT_ID,
+            _productID.value
+        ) ?: _productID.value
+        _shopID.value = cacheManager.getString(
+            EXTRAS_SHOP_ID,
+            _shopID.value
+        ) ?: _shopID.value
+        _isProductReview.value = cacheManager.get(
+            EXTRAS_IS_PRODUCT_REVIEW,
+            Boolean::class.java,
+            _isProductReview.value
+        ) ?: _isProductReview.value
+        _isFromGallery.value = cacheManager.get(
+            EXTRAS_IS_FROM_GALLERY,
+            Boolean::class.java,
+            _isFromGallery.value
+        ) ?: _isFromGallery.value
     }
 
     fun updateCurrentMediaItem(mediaItem: MediaItemUiModel?) {
