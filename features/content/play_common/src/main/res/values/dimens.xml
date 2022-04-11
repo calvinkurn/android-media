@@ -2,6 +2,8 @@
 <resources>
     <dimen name="dp_3">3dp</dimen>
     <dimen name="dp_1">1dp</dimen>
+    <dimen name="play_dp_6">6dp</dimen>
+    <dimen name="play_dp_12">12dp</dimen>
     <dimen name="play_dp_14">14dp</dimen>
 
     <dimen name="play_spacing_size">1dp</dimen>

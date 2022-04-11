@@ -27,6 +27,11 @@ android {
     testOptions {
         animationsDisabled = true
     }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
 }
 
 dependencies {
