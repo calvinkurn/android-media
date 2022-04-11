@@ -29,12 +29,12 @@ private const val chipProducts1 =
 internal class SearchProductHandleInspirationCarouselImpressionTest :
     ProductListPresenterTestFixtures() {
 
-    protected val inspirationCarouselView = mockk<InspirationCarouselContract.View>(relaxed = true)
+    private val inspirationCarouselView = mockk<InspirationCarouselContract.View>(relaxed = true)
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList: List<Visitable<*>> by lazy { visitableListSlot.captured }
     private val className = "SearchClassName"
 
-    protected lateinit var inspirationCarouselPresenter: InspirationCarouselPresenter
+    private lateinit var inspirationCarouselPresenter: InspirationCarouselPresenter
 
     @Before
     override fun setUp() {
