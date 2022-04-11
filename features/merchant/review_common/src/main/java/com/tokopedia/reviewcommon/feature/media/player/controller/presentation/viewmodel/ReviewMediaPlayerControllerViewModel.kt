@@ -28,7 +28,7 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
     companion object {
         private const val STATE_FLOW_STOP_TIMEOUT_MILLIS = 5000L
 
-        private const val SAVED_STATE_MUTED = "savedStateMuted"
+        const val SAVED_STATE_MUTED = "savedStateMuted"
     }
 
     private val _currentMediaItem = MutableStateFlow<MediaItemUiModel?>(null)
