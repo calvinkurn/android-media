@@ -8,7 +8,7 @@ object ExplicitProfileComponentsBuilder {
     fun getComponent(context: Context) : ExplicitProfileComponents {
         return DaggerExplicitProfileComponents.builder()
             .baseAppComponent((context as BaseMainApplication).baseAppComponent)
-            .explicitProfileModules(ExplicitProfileModules(context))
+            .explicitProfileModules(ExplicitProfileModules)
             .build()
     }
 }
