@@ -2,9 +2,9 @@ package com.tokopedia.reviewcommon.feature.media.player.video.presentation.viewm
 
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlayerUiState
@@ -24,8 +24,8 @@ class ReviewVideoPlayerViewModel @Inject constructor(
     companion object {
         private const val FLOW_TIMEOUT_MILLIS = 5000L
 
-        private const val SAVED_STATE_VIDEO_PLAYER_UI_STATE = "savedStateVideoPlayerUiState"
-        private const val SAVED_STATE_PLAYBACK_UI_STATE = "savedStatePlaybackUiState"
+        const val SAVED_STATE_VIDEO_PLAYER_UI_STATE = "savedStateVideoPlayerUiState"
+        const val SAVED_STATE_PLAYBACK_UI_STATE = "savedStatePlaybackUiState"
     }
 
     private val _videoPlaybackUiState: MutableStateFlow<ReviewVideoPlaybackUiState> =
@@ -78,6 +78,20 @@ class ReviewVideoPlayerViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
             initialValue = _videoThumbnailUiState.value
         )
+
+    private fun restoreSavedPlaybackUiState(savedInstanceState: Bundle) {
+        _videoPlaybackUiState.value = savedInstanceState.getSavedState(
+            SAVED_STATE_PLAYBACK_UI_STATE,
+            _videoPlaybackUiState.value
+        )!!
+    }
+
+    private fun restoreVideoPlayerUiState(savedInstanceState: Bundle) {
+        _videoPlayerUiState.value = savedInstanceState.getSavedState(
+            SAVED_STATE_VIDEO_PLAYER_UI_STATE,
+            _videoPlayerUiState.value
+        )!!
+    }
 
     fun setVideoUri(videoUri: String) {
         _videoPlayerUiState.value = ReviewVideoPlayerUiState.Initial(videoUri)
@@ -169,18 +183,6 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         }
     }
 
-    fun restoreSavedPlaybackUiState(savedPlaybackUiState: ReviewVideoPlaybackUiState?) {
-        if (savedPlaybackUiState != null) {
-            _videoPlaybackUiState.value = savedPlaybackUiState
-        }
-    }
-
-    fun restoreVideoPlayerUiState(savedVideoPlayerUiState: ReviewVideoPlayerUiState?) {
-        if (savedVideoPlayerUiState != null) {
-            _videoPlayerUiState.value = savedVideoPlayerUiState
-        }
-    }
-
     fun updateVideoThumbnail(bitmap: Bitmap?) {
         _videoThumbnailUiState.update {
             when (it) {
@@ -222,25 +224,15 @@ class ReviewVideoPlayerViewModel @Inject constructor(
 
     fun saveUiState(outState: Bundle) {
         _videoPlaybackUiState.value.let {
-            if (it is Parcelable) {
-                outState.putParcelable(SAVED_STATE_PLAYBACK_UI_STATE, it)
-            }
+            outState.putParcelable(SAVED_STATE_PLAYBACK_UI_STATE, it)
         }
         _videoPlayerUiState.value.let {
-            if (it is Parcelable) {
-                outState.putParcelable(SAVED_STATE_VIDEO_PLAYER_UI_STATE, it)
-            }
+            outState.putParcelable(SAVED_STATE_VIDEO_PLAYER_UI_STATE, it)
         }
     }
 
     fun restoreUiState(savedInstanceState: Bundle) {
-        val savedVideoPlayerUiState = savedInstanceState.getParcelable(
-            SAVED_STATE_VIDEO_PLAYER_UI_STATE
-        ) as? ReviewVideoPlayerUiState
-        val savedPlaybackUiState = savedInstanceState.getParcelable(
-            SAVED_STATE_PLAYBACK_UI_STATE
-        ) as? ReviewVideoPlaybackUiState
-        restoreVideoPlayerUiState(savedVideoPlayerUiState)
-        restoreSavedPlaybackUiState(savedPlaybackUiState)
+        restoreVideoPlayerUiState(savedInstanceState)
+        restoreSavedPlaybackUiState(savedInstanceState)
     }
 }
