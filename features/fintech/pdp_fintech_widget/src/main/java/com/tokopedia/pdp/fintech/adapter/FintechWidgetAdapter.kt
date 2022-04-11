@@ -175,8 +175,9 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 chipsData[adapterPosition].gatewayId,
                 chipsData[adapterPosition].name,
                 chipsData[adapterPosition].userStatus,
-                chipsData[adapterPosition].linkingStatus
-            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName, linkingStatus ->
+                chipsData[adapterPosition].linkingStatus,
+                chipsData[adapterPosition].installmentAmount
+            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName, linkingStatus,installmentAmount ->
 
                 widgetClickListner.clickedWidget(
                     FintechRedirectionWidgetDataClass(
@@ -188,7 +189,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                         widgetBottomSheet = bottomSheetWidgetDetail,
                         userStatus = userStatus,
                         linkingStatus = linkingStatus,
-                        gatewayPartnerName = partnerName
+                        gatewayPartnerName = partnerName,
+                        installmentAmout = installmentAmount
                     )
                 )
             }
@@ -198,7 +200,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
     // Null Checker
-    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any, T9 : Any, R : Any> safeLet(
+    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any, T9 : Any,  T10 : Any,R : Any> safeLet(
         p1: T1?,
         p2: T2?,
         p3: T3?,
@@ -208,9 +210,10 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         p7: T7?,
         p8: T8?,
         p9: T9?,
-        block: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R?
+        p10: T10?,
+        block: (T1, T2, T3, T4, T5, T6, T7, T8, T9,T10) -> R?
     ): R? {
-        return if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null && p9 != null) block(
+        return if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null && p9 != null && p10 != null) block(
             p1,
             p2,
             p3,
@@ -219,7 +222,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
             p6,
             p7,
             p8,
-            p9
+            p9,
+            p10
         ) else null
     }
 }

@@ -144,6 +144,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     this.productID,
                     fintechRedirectionWidgetDataClass.linkingStatus,
                     fintechRedirectionWidgetDataClass.userStatus, "NON-BRANDED",
+                    fintechRedirectionWidgetDataClass.installmentAmout,
                     "${fintechRedirectionWidgetDataClass.tenure}",
                     fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
                 )
@@ -154,6 +155,7 @@ class PdpFintechWidget @JvmOverloads constructor(
                     this.productID,
                     fintechRedirectionWidgetDataClass.linkingStatus,
                     fintechRedirectionWidgetDataClass.userStatus, "BRANDED",
+                    fintechRedirectionWidgetDataClass.installmentAmout,
                     "${fintechRedirectionWidgetDataClass.tenure}",
                     fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
                 )

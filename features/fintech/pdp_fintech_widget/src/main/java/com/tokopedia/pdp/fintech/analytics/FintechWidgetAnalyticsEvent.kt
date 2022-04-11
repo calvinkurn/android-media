@@ -21,6 +21,7 @@ sealed class FintechWidgetAnalyticsEvent {
         val linkingStatus: String?,
         val userStatus: String?,
         val chipType: String?,
+        val installmentAmount:String?,
         val tenure: String?,
         val partner: String?,
         val redirectionUrl:String?

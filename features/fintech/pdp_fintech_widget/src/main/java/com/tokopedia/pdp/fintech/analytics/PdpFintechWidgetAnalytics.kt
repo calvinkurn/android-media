@@ -28,7 +28,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
                 analyticsEvent.ctaWording
             )
             is FintechWidgetAnalyticsEvent.PdpWidgetClick -> sendPdpCLickEvent(analyticsEvent.productId,
-                analyticsEvent.linkingStatus,analyticsEvent.userStatus,analyticsEvent.chipType,analyticsEvent.tenure,analyticsEvent.partner,analyticsEvent.redirectionUrl)
+                analyticsEvent.linkingStatus,analyticsEvent.userStatus,analyticsEvent.chipType,analyticsEvent.installmentAmount,analyticsEvent.tenure,analyticsEvent.partner,analyticsEvent.redirectionUrl)
         }
     }
 
@@ -37,6 +37,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         linkingStatus: String?,
         userStatus: String?,
         chipType: String?,
+        installmentAmount:String?,
         tenure: String?,
         partner: String?,
         redirectionUrl: String?
@@ -45,7 +46,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
             clickEvent,
             eventCategory,
             clickPdpFintechWidget,
-            "$productId - $linkingStatus - $userStatus - $chipType - $tenure - $partner - $redirectionUrl"
+            "$productId - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl"
         )
         sendGeneralEvent(map)
 
