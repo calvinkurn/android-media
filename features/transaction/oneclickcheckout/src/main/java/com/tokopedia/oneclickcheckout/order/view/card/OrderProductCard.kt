@@ -27,7 +27,13 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class OrderProductCard(private val binding: CardOrderProductBinding, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : RecyclerView.ViewHolder(binding.root), CoroutineScope {
@@ -234,6 +240,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tfNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
             tfNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
             tfNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            tfNote.setPlaceholder(product.placeholderNote)
             tfNote.setCounter(product.maxCharNote)
             if (noteTextWatcher != null) {
                 tfNote.editText.removeTextChangedListener(noteTextWatcher)

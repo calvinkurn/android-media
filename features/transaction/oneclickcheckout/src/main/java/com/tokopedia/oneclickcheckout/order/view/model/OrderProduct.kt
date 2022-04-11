@@ -26,6 +26,7 @@ data class OrderProduct(
         var weightActual: Int = 0,
         var notes: String = "",
         var maxCharNote: Int = 0,
+        var placeholderNote: String = "",
         var isEditingNotes: Boolean = false,
         var cashback: String = "",
         var warehouseId: Long = 0,

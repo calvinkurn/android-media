@@ -76,7 +76,7 @@
     <string name="occ_pinpoint_error_action">Atur</string>
 
     <string name="occ_lbl_notes_placeholder">Tulis Catatan</string>
-    <string name="occ_lbl_notes_label">Tulis Catatan untuk Barang Ini</string>
+    <string name="occ_lbl_notes_label">Catatan untuk Barang Ini</string>
     <string name="occ_lbl_notes_edit">Ubah</string>
 
     <!--AFPB-->

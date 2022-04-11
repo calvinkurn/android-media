@@ -163,6 +163,7 @@ class GetOccCartMapper @Inject constructor() {
             isFreeOngkir = product.freeShipping.eligible
             wholesalePriceList = mapWholesalePrice(product.wholesalePrice)
             maxCharNote = data.maxCharNote
+            placeholderNote = data.placeholderNote
             notes = if (product.productNotes.length > data.maxCharNote) {
                 Utils.getHtmlFormat(product.productNotes.substring(0, data.maxCharNote))
             } else {
