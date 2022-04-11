@@ -204,7 +204,9 @@ class EntrypointFragment : BaseDaggerFragment() {
                     } else {
                         showEmpty()
                     }
-                    showInventoryErrorDialog(inventoryError)
+                    if (layoutError?.isShown == false) {
+                        showInventoryErrorDialog(inventoryError)
+                    }
                 }
                 is Fail -> {
                     // TODO: log error
