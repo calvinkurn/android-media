@@ -105,7 +105,6 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:background="@null"
             android:hint="@string/play_bro_quiz_gift_hint"
-            android:ems="10"
             android:inputType="textCapWords"
             android:textColor="@color/play_dms_bro_quiz_gift_text"
             android:textColorHint="@color/play_bro_quiz_header_title_hint"
