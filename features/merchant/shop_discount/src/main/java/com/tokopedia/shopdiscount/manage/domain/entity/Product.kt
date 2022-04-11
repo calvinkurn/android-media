@@ -23,5 +23,6 @@ data class Product(
     val hasSameOriginalPrice: Boolean,
     val isCheckboxTicked : Boolean = false,
     val shouldDisplayCheckbox : Boolean = false,
-    val disableClick: Boolean = false
+    val disableClick: Boolean = false,
+    val sku: String
 )

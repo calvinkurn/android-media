@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card"
@@ -59,18 +59,19 @@
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/labelVariantCount"
+            android:paddingStart="@dimen/unify_space_4"
+            android:paddingEnd="@dimen/unify_space_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:text="@string/sd_has_variant"
             android:visibility="gone"
             app:labelType="highlight_light_grey"
-            app:layout_constraintBottom_toBottomOf="@+id/tpgSkuNumber"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@id/tpgSkuNumber"
             app:layout_constraintStart_toEndOf="@+id/tpgSkuNumber"
-            app:layout_constraintTop_toTopOf="@+id/tpgSkuNumber"
-            android:text="@string/sd_has_variant"
+            app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -80,15 +81,15 @@
             android:layout_marginTop="@dimen/unify_space_4"
             app:layout_constraintLeft_toRightOf="@id/labelVariantCount"
             app:layout_constraintStart_toStartOf="@+id/tpgSkuNumber"
-            app:layout_constraintTop_toBottomOf="@+id/tpgSkuNumber"
+            app:layout_constraintTop_toBottomOf="@+id/labelVariantCount"
             tools:text="Rp100.000.000-Rp150.000.000" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageUnify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/unify_space_16"
             android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginBottom="@dimen/unify_space_16"
             android:src="@drawable/ic_product"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tpgPrice"
@@ -122,4 +123,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.tokopedia.unifycomponents.CardUnify2>
+</androidx.cardview.widget.CardView>

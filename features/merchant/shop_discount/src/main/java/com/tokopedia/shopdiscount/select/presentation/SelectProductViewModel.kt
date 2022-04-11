@@ -5,10 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
-import com.tokopedia.shopdiscount.manage.domain.entity.Product
-import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
-import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListUseCase
+import com.tokopedia.shopdiscount.select.data.mapper.ReservableProductMapper
+import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
+import com.tokopedia.shopdiscount.select.domain.usecase.GetSlashPriceProductListToReserveUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,50 +16,43 @@ import javax.inject.Inject
 
 class SelectProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val getSlashPriceProductListUseCase: GetSlashPriceProductListUseCase,
-    private val productMapper: ProductMapper
+    private val getSlashPriceProductListToReserveUseCase: GetSlashPriceProductListToReserveUseCase,
+    private val reservableProductMapper: ReservableProductMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _products = MutableLiveData<Result<ProductData>>()
-    val products: LiveData<Result<ProductData>>
+    private val _products = MutableLiveData<Result<List<ReservableProduct>>>()
+    val products: LiveData<Result<List<ReservableProduct>>>
         get() = _products
 
     private var totalProduct = 0
-    private var selectedProduct : Product? = null
-    private var isOnMultiSelectMode = false
+    private var selectedProduct : ReservableProduct? = null
     private var shouldDisableProductSelection = false
     private var selectedProductIds : MutableList<String> = mutableListOf()
 
-    fun getSlashPriceProducts(
+    fun getProducts(
         page: Int,
-        discountStatus: Int,
         keyword: String,
-        isMultiSelectEnabled: Boolean,
         shouldDisableProductSelection: Boolean
     ) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                getSlashPriceProductListUseCase.setRequestParams(
+                getSlashPriceProductListToReserveUseCase.setParams(
                     page = page,
-                    status = discountStatus,
                     keyword = keyword
                 )
-                val response = getSlashPriceProductListUseCase.executeOnBackground()
-                val mappedProduct = productMapper.map(response)
-                val formattedProduct =
-                    mappedProduct.map {
+                val response = getSlashPriceProductListToReserveUseCase.executeOnBackground()
+                val mappedProduct = reservableProductMapper.map(response)
+
+                mappedProduct.map {
                         it.copy(
-                            shouldDisplayCheckbox = isMultiSelectEnabled,
                             disableClick = shouldDisableProductSelection,
                             isCheckboxTicked = it.id in selectedProductIds
                         )
                     }
-                Pair(response.getSlashPriceProductList.totalProduct, formattedProduct)
+
             }
 
-            val (totalProduct, formattedProduct) = result
-            val productData = ProductData(totalProduct, formattedProduct)
-            _products.value = Success(productData)
+            _products.value = Success(result)
 
         }, onError = {
             _products.value = Fail(it)
@@ -72,21 +64,14 @@ class SelectProductViewModel @Inject constructor(
     }
 
 
-    fun setSelectedProduct(selectedProduct: Product) {
+    fun setSelectedProduct(selectedProduct: ReservableProduct) {
         this.selectedProduct = selectedProduct
     }
 
-    fun getSelectedProduct() : Product?  {
+    fun getSelectedProduct() : ReservableProduct?  {
         return selectedProduct
     }
 
-    fun setInMultiSelectMode(isOnMultiSelectMode: Boolean) {
-        this.isOnMultiSelectMode = isOnMultiSelectMode
-    }
-
-    fun isOnMultiSelectMode(): Boolean {
-        return isOnMultiSelectMode
-    }
 
     fun setDisableProductSelection(shouldDisableProductSelection: Boolean) {
         this.shouldDisableProductSelection = shouldDisableProductSelection
@@ -96,7 +81,7 @@ class SelectProductViewModel @Inject constructor(
         return shouldDisableProductSelection
     }
 
-    fun disableProducts(products: List<Product>): List<Product> {
+    fun disableProducts(products: List<ReservableProduct>): List<ReservableProduct> {
         return products.map { product ->
             if (!product.isCheckboxTicked) {
                 product.copy(disableClick = true)
@@ -106,7 +91,7 @@ class SelectProductViewModel @Inject constructor(
         }
     }
 
-    fun enableProduct(products: List<Product>): List<Product> {
+    fun enableProduct(products: List<ReservableProduct>): List<ReservableProduct> {
         return products.map { product ->
             if (!product.isCheckboxTicked) {
                 product.copy(disableClick = false)
@@ -124,11 +109,11 @@ class SelectProductViewModel @Inject constructor(
         return selectedProductIds.size
     }
 
-    fun addProductToSelection(product : Product) {
+    fun addProductToSelection(product : ReservableProduct) {
         this.selectedProductIds.add(product.id)
     }
 
-    fun removeProductFromSelection(product: Product) {
+    fun removeProductFromSelection(product: ReservableProduct) {
         this.selectedProductIds.remove(product.id)
     }
 

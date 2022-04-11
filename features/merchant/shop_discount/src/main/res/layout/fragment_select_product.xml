@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_is_show_shadow="false"
+        app:unify_header_is_show_shadow="true"
         app:unify_header_title="@string/sd_select_product" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -42,7 +42,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ticker"
         app:layout_scrollFlags="scroll|snap"
-        app:search_bar_clearable="false"
+        app:search_bar_clearable="true"
         app:search_bar_placeholder="@string/sd_search_product_or_sku"
         app:search_bar_show_icon="false" />
 
@@ -115,7 +115,7 @@
     <com.tokopedia.empty_state.EmptyStateUnify
         android:id="@+id/emptyState"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"

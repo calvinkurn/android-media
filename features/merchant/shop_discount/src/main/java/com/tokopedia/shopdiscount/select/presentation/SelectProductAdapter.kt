@@ -5,22 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.shopdiscount.databinding.SdItemSearchProductBinding
 import com.tokopedia.shopdiscount.databinding.SdItemSelectProductBinding
-import com.tokopedia.shopdiscount.manage.domain.entity.Product
-import com.tokopedia.shopdiscount.utils.constant.ZERO
+import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 
 class SelectProductAdapter(
-    private val onProductClicked: (Product) -> Unit,
-    private val onProductSelectionChange : (Product, Boolean) -> Unit
+    private val onProductClicked: (ReservableProduct) -> Unit,
+    private val onProductSelectionChange : (ReservableProduct, Boolean) -> Unit
 ) : RecyclerView.Adapter<SelectProductViewHolder>() {
 
-    private var products: MutableList<Product> = mutableListOf()
+    private var products: MutableList<ReservableProduct> = mutableListOf()
     private var isLoading = false
-
-    companion object {
-        private const val FIRST_ITEM = 0
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectProductViewHolder {
         val binding =
@@ -45,12 +39,12 @@ class SelectProductAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun addData(items: List<Product>) {
+    fun addData(items: List<ReservableProduct>) {
         this.products.addAll(items)
         notifyDataSetChanged()
     }
 
-    fun update(product: Product, updatedProduct: Product) {
+    fun update(product: ReservableProduct, updatedProduct: ReservableProduct) {
         try {
             val position = products.indexOf(product)
             this.products[position] = updatedProduct
@@ -60,14 +54,8 @@ class SelectProductAdapter(
         }
     }
 
-    fun updateAll(items: List<Product>) {
-        this.products.clear()
-        this.products.addAll(items)
-        notifyItemRangeChanged(FIRST_ITEM, items.size)
-    }
-
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh(items: List<Product>) {
+    fun refresh(items: List<ReservableProduct>) {
         this.products.clear()
         this.products.addAll(items)
         notifyDataSetChanged()
@@ -90,7 +78,7 @@ class SelectProductAdapter(
         isLoading = false
     }
 
-    fun getItems(): List<Product> {
+    fun getItems(): List<ReservableProduct> {
         return products
     }
 }
