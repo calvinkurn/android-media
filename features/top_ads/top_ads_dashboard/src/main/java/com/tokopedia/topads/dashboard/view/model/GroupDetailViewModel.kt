@@ -268,6 +268,9 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
+        if(action == TopAdsDashboardConstant.ACTION_MOVE) {
+            return
+        }
         val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
@@ -307,9 +310,8 @@ class GroupDetailViewModel @Inject constructor(
             return
         }
 
-        val param = topAdsCreateUseCase.createRequestParam(
-            TopAdsDashboardConstant.ACTION_DELETE, TopAdsDashboardConstant.SOURCE_DASH,
-            groupId, keywordIds
+        val param = topAdsCreateUseCase.createRequestParamActionDelete(
+            TopAdsDashboardConstant.SOURCE_DASH, groupId, keywordIds
         )
         topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
     }

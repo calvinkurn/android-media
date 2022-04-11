@@ -349,7 +349,7 @@ class TopAdsDashboardPresenterTest {
             secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
         }
         every {
-            topAdsCreateUseCase.createRequestParam(any<List<String>>(), any(), any(), any())
+            topAdsCreateUseCase.createRequestParamActionCreate(any<List<String>>(), any(), any(), any())
         } returns fakeRequest
 
         presenter.createGroup(mockk(), "", 0.0, 0.0) {
@@ -371,7 +371,7 @@ class TopAdsDashboardPresenterTest {
             secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
         }
         every {
-            topAdsCreateUseCase.createRequestParam(any<List<String>>(), any(), any(), any())
+            topAdsCreateUseCase.createRequestParamActionCreate(any<List<String>>(), any(), any(), any())
         } returns fakeRequest
 
         presenter.createGroup(mockk(), "", 0.0, 0.0) {
@@ -390,7 +390,7 @@ class TopAdsDashboardPresenterTest {
             secondArg<(FinalAdResponse?) -> Unit>().invoke(null)
         }
         every {
-            topAdsCreateUseCase.createRequestParam(any<List<String>>(), any(), any(), any())
+            topAdsCreateUseCase.createRequestParamActionCreate(any<List<String>>(), any(), any(), any())
         } returns fakeRequest
 
         var success = true
