@@ -10,5 +10,5 @@
     android:paddingEnd="@dimen/spacing_lvl2"
     android:paddingBottom="@dimen/spacing_lvl1"
     android:layout_margin="@dimen/spacing_lvl2"
-    app:chipSize="medium"
+    app:chipSize="small"
     app:chipType="normal" />
