@@ -138,4 +138,14 @@
     <string name="tokopedianow_15m_empty_state_title">Tunggu Tokopedia NOW! 15 menit tiba tersedia di lokasimu</string>
     <string name="tokopedianow_15m_empty_state_desc">Nantikan kabar dari kami, ya. Saat ini, kamu bisa nikmati layanan 2 jam tiba dulu.</string>
     <string name="tokopedianow_15m_empty_state_primary_btn">Belanja 2 Jam Tiba</string>
+
+    <string name="tokopedianow_home_referral_widget_desc_sender"><![CDATA[Ajak temanmu belanja di Tokopedia NOW!, <b>dapat kupon cashback hingga Rp200rb.</b> <font color=\'%1$s\'><a href=\'%2$s\'>Selengkapnya</a></font>]]></string>
+    <string name="tokopedianow_home_referral_widget_desc_receiver"><![CDATA[Kamu sudah dapat referral dari temanmu. Yuk, belanja sekarang, dapatkan <b>kupon cashback Rp20rb</b>!]]></string>
+    <string name="tokopedianow_home_referral_widget_button_text_sender">Bagikan ke Temanmu</string>
+    <string name="tokopedianow_home_referral_widget_button_text_receiver">Cek Detail</string>
+    <string name="tokopedianow_home_referral_toaster">Oops, referral sedang ada kendala. Tunggu sebentar dan coba lagi nanti, ya.</string>
+    <string name="tokopedianow_home_referral_share_title">Bagi Link Referral Tokopedia NOW &amp; Dapatkan Cashback 20rb</string>
+    <string name="tokopedianow_home_referral_share_desc">Jangan simpan sendiri, cashback kamu akan bertambah kalau kamu ajak temanmu bergabung</string>
+    <string name="tokopedianow_home_referral_share_main_text">ngajak kamu pakai Tokopedia NOW!. Belanja kebutuhan harian, 2 jam tiba &amp; gratis ongkir. Cuma pakai link ini, dapat kupon cashback Rp20 rb setelah transaksi! </string>
+    <string name="tokopedianow_home_referral_share_your_friend">Temanmu</string>
 </resources>
