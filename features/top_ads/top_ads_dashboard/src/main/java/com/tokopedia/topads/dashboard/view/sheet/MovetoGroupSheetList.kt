@@ -27,7 +27,7 @@ class MovetoGroupSheetList {
     private var adapter: MovetoGroupAdapter? = null
     var onItemClick: (() -> Unit)? = null
     var onItemSearch: ((search: String) -> Unit)? = null
-    var groupId = 0
+    private var groupId = 0
     private var searchTextField: EditText? = null
 
     private fun setupView(context: Context) {
