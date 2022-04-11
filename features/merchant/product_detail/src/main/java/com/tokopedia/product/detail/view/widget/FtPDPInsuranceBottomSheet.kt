@@ -91,8 +91,8 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify(), HasComponent<ProductDetail
 
 
     private fun setDefaultParams() {
-        isDragable = false
-        isHideable = false
+        isDragable = true
+        isHideable = true
         showCloseIcon = false
         showKnob = true
         showHeader = false
