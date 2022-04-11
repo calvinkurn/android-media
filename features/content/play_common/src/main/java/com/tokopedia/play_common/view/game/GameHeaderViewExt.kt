@@ -12,7 +12,7 @@ fun GameHeaderView.setupGiveaway(title: String) {
     getIconUnifyDrawable(
         context = context,
         iconId = IconUnify.GIFT,
-        assetColor = MethodChecker.getColor(context, R.color.play_bro_giveaway_icon_color)
+        assetColor = MethodChecker.getColor(context, R.color.play_dms_giveaway_icon_color)
     )?.let(::setIcon)
 
     this.title = title
@@ -23,7 +23,7 @@ fun GameHeaderView.setupQuiz(title: String) {
     getIconUnifyDrawable(
         context = context,
         iconId = IconUnify.QUIZ,
-        assetColor = MethodChecker.getColor(context, R.color.play_bro_quiz_icon_color)
+        assetColor = MethodChecker.getColor(context, R.color.play_dms_quiz_icon_color)
     )?.let(::setIcon)
 
     this.title = title
