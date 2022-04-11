@@ -54,7 +54,7 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
                 itemView.setOnClickListener {  }
             }
 
-            textPromoItemTitleTokofood.text = element.title
+            promoBenefitDetail.text = element.title
             textTimeValidityTokofood.text = element.timeValidityWording
         }
     }
@@ -70,19 +70,19 @@ class TokoFoodPromoItemViewHolder(private val viewBinding: ItemTokofoodPromoCard
 
     private fun renderPromoEnabled(viewBinding: ItemTokofoodPromoCardBinding) {
         with(viewBinding) {
-            textPromoItemTitleTokofood.setTextColor(colorTextEnabledDefault)
+            promoBenefitDetail.setTextColor(colorTextEnabledDefault)
             textTimeValidityTokofood.setTextColor(colorTextEnabledLowEmphasis)
-            cardPromoItemTokofood.cardType = CardUnify.TYPE_BORDER_ACTIVE
-            cardPromoItemTokofood.setCardBackgroundColor(colorBackgroundSelected)
+            promoCell.cardType = CardUnify.TYPE_BORDER_ACTIVE
+            promoCell.setCardBackgroundColor(colorBackgroundSelected)
         }
     }
 
     private fun renderPromoDisabled(viewBinding: ItemTokofoodPromoCardBinding) {
         with(viewBinding) {
-            textPromoItemTitleTokofood.setTextColor(colorTextDisabled)
+            promoBenefitDetail.setTextColor(colorTextDisabled)
             textTimeValidityTokofood.setTextColor(colorTextDisabled)
-            cardPromoItemTokofood.cardType = CardUnify.TYPE_BORDER
-            cardPromoItemTokofood.setCardBackgroundColor(colorBackgroundDisabled)
+            promoCell.cardType = CardUnify.TYPE_BORDER
+            promoCell.setCardBackgroundColor(colorBackgroundDisabled)
         }
     }
 

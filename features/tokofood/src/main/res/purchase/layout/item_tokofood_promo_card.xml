@@ -8,7 +8,7 @@
     android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:id="@+id/card_promo_item_tokofood"
+        android:id="@+id/promoCell"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
@@ -56,7 +56,7 @@
                 tools:text="Keuntungan Terbaik" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_promo_item_title_tokofood"
+                android:id="@+id/promoBenefitDetail"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -78,7 +78,7 @@
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo_tokofood"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_promo_item_title_tokofood"
+                app:layout_constraintTop_toBottomOf="@+id/promoBenefitDetail"
                 tools:visibility="visible">
 
                 <com.tokopedia.iconunify.IconUnify
