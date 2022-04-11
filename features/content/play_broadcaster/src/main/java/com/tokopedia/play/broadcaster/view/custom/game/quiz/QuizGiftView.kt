@@ -47,16 +47,18 @@ class QuizGiftView : ConstraintLayout {
         this,
         true,
     )
+    private val bindingGift = binding.layoutQuizGift
+    private val bindingGiftInput = binding.layoutQuizGiftInput
 
     private var mOnChangedListener: ((String) -> Unit)? = null
 
     private val coachMark: CoachMark2 = CoachMark2(context)
 
     init {
-        binding.clLabelView.setOnClickListener {
+        bindingGift.root.setOnClickListener {
             isEditable {
-                binding.clLabelView.hide()
-                binding.clInputView.show()
+                bindingGift.root.hide()
+                bindingGiftInput.root.show()
                 if(isShowCoachmark) {
                     isShowCoachmark = false
                     showCoachmark()
@@ -65,15 +67,15 @@ class QuizGiftView : ConstraintLayout {
             }
         }
 
-        binding.icCloseInputGift.setOnClickListener {
+        bindingGiftInput.icCloseInputGift.setOnClickListener {
             isEditable {
-                binding.clLabelView.show()
-                binding.clInputView.hide()
-                binding.etBroQuizGift.setText("")
+                bindingGift.root.show()
+                bindingGiftInput.root.hide()
+                bindingGiftInput.etBroQuizGift.setText("")
             }
         }
 
-        binding.etBroQuizGift.afterTextChanged {
+        bindingGiftInput.etBroQuizGift.afterTextChanged {
             mOnChangedListener?.invoke(it)
         }
     }
@@ -83,27 +85,27 @@ class QuizGiftView : ConstraintLayout {
             if(field != value) {
                 field = value
 
-                binding.etBroQuizGift.filters = arrayOf(InputFilter.LengthFilter(value))
+                bindingGiftInput.etBroQuizGift.filters = arrayOf(InputFilter.LengthFilter(value))
             }
         }
 
     var gift: String = ""
         set(value) {
-            binding.etBroQuizGift.setText(value)
-            binding.etBroQuizGift.setSelection(value.length)
+            bindingGiftInput.etBroQuizGift.setText(value)
+            bindingGiftInput.etBroQuizGift.setSelection(value.length)
         }
 
     var isEditable: Boolean = true
         set(value) {
             field = value
 
-            binding.etBroQuizGift.apply {
+            bindingGiftInput.etBroQuizGift.apply {
                 isFocusable = value
                 isFocusableInTouchMode = value
                 isEnabled = value
             }
 
-            binding.icCloseInputGift.showWithCondition(isEditable)
+            bindingGiftInput.icCloseInputGift.showWithCondition(isEditable)
             adjustFieldSize(value)
         }
 
@@ -114,16 +116,16 @@ class QuizGiftView : ConstraintLayout {
     }
 
     fun hideGiftTextFieldIfEmpty() {
-        binding.etBroQuizGift.apply {
+        bindingGiftInput.etBroQuizGift.apply {
             if(text.toString().isEmpty()) {
-                binding.clLabelView.show()
-                binding.clInputView.hide()
+                bindingGift.root.show()
+                bindingGiftInput.root.hide()
             }
         }
     }
 
     private fun adjustFieldSize(isEditable: Boolean) {
-        binding.etBroQuizGift.apply {
+        bindingGiftInput.etBroQuizGift.apply {
             layoutParams = layoutParams.apply {
                 width = if(isEditable) 0 else WRAP_CONTENT
             }
@@ -155,7 +157,7 @@ class QuizGiftView : ConstraintLayout {
     }
 
     private fun setFocus(isFocus: Boolean) {
-        binding.etBroQuizGift.apply {
+        bindingGiftInput.etBroQuizGift.apply {
             if(isFocus) requestFocus()
             else clearFocus()
         }
@@ -165,8 +167,8 @@ class QuizGiftView : ConstraintLayout {
 
     private fun showKeyboard(isShow: Boolean) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (isShow) imm.showSoftInput(binding.etBroQuizGift, InputMethodManager.SHOW_IMPLICIT)
-        else imm.hideSoftInputFromWindow(binding.etBroQuizGift.windowToken, 0)
+        if (isShow) imm.showSoftInput(bindingGiftInput.etBroQuizGift, InputMethodManager.SHOW_IMPLICIT)
+        else imm.hideSoftInputFromWindow(bindingGiftInput.etBroQuizGift.windowToken, 0)
     }
 
     companion object {
