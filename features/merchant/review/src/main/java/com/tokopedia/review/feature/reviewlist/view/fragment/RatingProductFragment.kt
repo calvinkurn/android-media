@@ -333,6 +333,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
         swipeToRefresh?.isRefreshing = false
         clearAllData()
         loadInitialData()
+        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
