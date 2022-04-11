@@ -173,8 +173,8 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
                 chipsData[adapterPosition].productCode,
                 chipsData[adapterPosition].cta?.bottomsheet,
                 chipsData[adapterPosition].gatewayId,
-                chipsData[adapterPosition].name,
                 chipsData[adapterPosition].userStatus,
+                chipsData[adapterPosition].name,
                 chipsData[adapterPosition].linkingStatus,
                 chipsData[adapterPosition].installmentAmount
             ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName, linkingStatus,installmentAmount ->
