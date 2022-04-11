@@ -10,6 +10,7 @@ import com.tokopedia.home_account.explicitprofile.data.QuestionDataModel
 import com.tokopedia.home_account.explicitprofile.data.SectionsDataModel
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsAdapter
 import com.tokopedia.home_account.explicitprofile.features.categories.sections.chips.ChipsViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SectionViewHolder(
@@ -29,7 +30,6 @@ class SectionViewHolder(
 
         itemViewBinding?.apply {
             sectionTitle.text = sectionsDataModel.property.title
-            sectionInfoIcon.setOnClickListener { sectionListener.onClickInfo(sectionsDataModel) }
             sectionQuestionList.apply {
                 layoutManager = flexboxLayoutManager
                 adapter = chipsAdapter
@@ -37,6 +37,12 @@ class SectionViewHolder(
 
             chipsAdapter.clearAllItems()
             chipsAdapter.addItems(sectionsDataModel.questions)
+
+            if (sectionsDataModel.property.infoHeader.isEmpty()) {
+                sectionInfoIcon.hide()
+            } else {
+                sectionInfoIcon.setOnClickListener { sectionListener.onClickInfo(sectionsDataModel) }
+            }
         }
     }
 
