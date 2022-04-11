@@ -114,7 +114,7 @@ class GameHeaderView : ConstraintLayout {
             Type.TAPTAP -> {
                 Pair(
                     IconUnify.GIFT,
-                    ContextCompat.getColor(context, R.color.play_bro_taptap_icon_color)
+                    ContextCompat.getColor(context, R.color.play_bro_giveaway_icon_color)
                 )
             }
             else -> {
@@ -136,9 +136,9 @@ class GameHeaderView : ConstraintLayout {
         binding.flPlayGameHeader.background = ContextCompat.getDrawable(
             context,
             when(type) {
-                Type.TAPTAP -> R.drawable.bg_play_taptap_header
+                Type.TAPTAP -> R.drawable.bg_play_giveaway_header
                 Type.QUIZ -> R.drawable.bg_play_quiz_header
-                else -> R.drawable.bg_play_taptap_header
+                else -> R.drawable.bg_play_giveaway_header
             }
         )
     }

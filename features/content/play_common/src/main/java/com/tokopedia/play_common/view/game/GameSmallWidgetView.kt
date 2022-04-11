@@ -1,8 +1,10 @@
 package com.tokopedia.play_common.view.game
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
@@ -15,12 +17,16 @@ import java.util.Calendar
 /**
  * @author by astidhiyaa on 04/04/22
  */
-class GameSmallWidgetView : LinearLayout {
+class GameSmallWidgetView : FrameLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val binding = ViewGameInteractiveBinding.inflate(LayoutInflater.from(context))
+    private val binding = ViewGameInteractiveBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
     private var listener: Listener? = null
 
     init {
@@ -29,19 +35,10 @@ class GameSmallWidgetView : LinearLayout {
         }
     }
 
-    var question: String = ""
+    var description: String = ""
         set(value) {
             field = value
-            binding.tvEngagementQuestion.text = value
-        }
-
-    var type: PlayGameType = PlayGameType.Unknown
-        set(value) {
-            field = value
-
-            setBackground()
-            setQuizIcon()
-            setTimerType()
+            binding.tvEngagementDesc.text = value
         }
 
     private fun setBackground(){
@@ -93,6 +90,28 @@ class GameSmallWidgetView : LinearLayout {
         }
     }
 
+    /**
+     * Setting the variant of the timer based on variant supported by TimerUnifySingle
+     * defined in [TimerUnifySingle.Companion]
+     *
+     * @param variant - the integer variant supported by TimerUnifySingle
+     */
+    fun setTimerVariant(variant: Int) {
+        binding.timerEngagementTools.timerVariant = variant
+    }
+
+    fun setContentBackground(drawable: Drawable) {
+        binding.flBackground.background = drawable
+    }
+
+    fun setIcon(icon: Drawable) {
+        binding.ivEngagementTools.setImageDrawable(icon)
+    }
+
+    fun setTimerInfo(info: String) {
+        binding.tvEngagementTimerInfo.text = info
+    }
+
     fun cancelTimer(){
         binding.timerEngagementTools.timer?.cancel()
     }
@@ -103,11 +122,5 @@ class GameSmallWidgetView : LinearLayout {
 
     interface Listener{
         fun onWidgetClicked(view: GameSmallWidgetView)
-    }
-
-    enum class PlayGameType {
-        TapTap,
-        Quiz,
-        Unknown
     }
 }
