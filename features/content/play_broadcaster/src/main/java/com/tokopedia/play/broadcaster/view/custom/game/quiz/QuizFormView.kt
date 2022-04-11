@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
@@ -18,6 +19,7 @@ import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
+import com.tokopedia.play_common.util.extension.changeConstraint
 import com.tokopedia.play_common.util.extension.marginLp
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.game.GameHeaderView
@@ -98,6 +100,18 @@ class QuizFormView : ConstraintLayout {
 
         binding.viewQuizGift.setOnTextChangeListener {
             eventBus.emit(Event.GiftChanged(it))
+        }
+
+        binding.viewQuizGift.setOnExpandInputFieldListener { isExpand ->
+            binding.clQuizForm.changeConstraint {
+                val (objectStart, objectEnd) = if(isExpand)
+                    Pair(ConstraintSet.PARENT_ID, ConstraintSet.PARENT_ID)
+                else
+                    Pair(binding.glQuizFormLeft.id, binding.glQuizFormRight.id)
+
+                connect(binding.viewQuizGift.id, ConstraintSet.START, objectStart, ConstraintSet.START)
+                connect(binding.viewQuizGift.id, ConstraintSet.END, objectEnd, ConstraintSet.END)
+            }
         }
 
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
