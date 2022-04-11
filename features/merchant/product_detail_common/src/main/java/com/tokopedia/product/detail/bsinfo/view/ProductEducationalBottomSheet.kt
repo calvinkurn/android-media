@@ -102,6 +102,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
             infoBtn1?.setOnClickListener {
                 goToApplinkOrWebView(value.buttonApplink, value.buttonWebLink)
             }
+            infoBtn1?.show()
         }
 
         data.educationalButtons.getOrNull(1)?.let { value ->
@@ -110,6 +111,7 @@ class ProductEducationalBottomSheet : BottomSheetUnify() {
             infoBtn2?.setOnClickListener {
                 goToApplinkOrWebView(value.buttonApplink, value.buttonWebLink)
             }
+            infoBtn2?.show()
         }
     }
 
