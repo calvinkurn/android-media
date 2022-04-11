@@ -22,7 +22,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,6 +54,12 @@ class GalleryViewModelTest{
         viewModel = GalleryViewModel(
             galleryRepository,
             CoroutineTestDispatchers)
+    }
+
+    @ExperimentalCoroutinesApi
+    @After
+    fun reset() {
+        Dispatchers.resetMain()
     }
 
     @ExperimentalCoroutinesApi
