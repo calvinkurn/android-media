@@ -51,5 +51,5 @@ object ApplinkConstInternalUserPlatform {
      * ExplicitProfileActivity
      * @Applink : tokopedia-android-internal://global/explicit-profile
      **/
-    const val EXPLICIT_PROFILE = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/explicit-profile"
+    const val EXPLICIT_PROFILE = "${NEW_INTERNAL_USER}/explicit-profile"
 }
