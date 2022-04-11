@@ -112,7 +112,7 @@ object OfficialStoreDynamicChannelComponentMapper {
                             backColor = it.backColor,
                             productImageUrl = it.productImageUrl,
                             benefit = ChannelBenefit(it.benefit.type, it.benefit.value),
-                            expiredTime = it.expiredTime
+                            expiredTime = it.expiredTime?: ""
                     )
                 }
         )
