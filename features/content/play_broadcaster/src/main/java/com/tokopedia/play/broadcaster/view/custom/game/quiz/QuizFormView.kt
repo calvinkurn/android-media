@@ -191,7 +191,7 @@ class QuizFormView : ConstraintLayout {
                 binding.viewGameHeader.isEditable = true
                 binding.viewQuizGift.isEditable = true
                 binding.viewQuizGift.layoutParams = binding.viewQuizGift.layoutParams.apply {
-                    width = 0
+                    width = LayoutParams.MATCH_CONSTRAINT
                 }
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN

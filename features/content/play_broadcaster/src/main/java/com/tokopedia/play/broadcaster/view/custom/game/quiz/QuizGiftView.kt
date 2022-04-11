@@ -10,6 +10,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
 import androidx.core.content.ContextCompat
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
@@ -127,7 +128,7 @@ class QuizGiftView : ConstraintLayout {
     private fun adjustFieldSize(isEditable: Boolean) {
         bindingGiftInput.etBroQuizGift.apply {
             layoutParams = layoutParams.apply {
-                width = if(isEditable) 0 else WRAP_CONTENT
+                width = if(isEditable) MATCH_CONSTRAINT else WRAP_CONTENT
             }
             hint = if(isEditable) context.getString(R.string.play_bro_quiz_gift_hint) else ""
         }
@@ -169,9 +170,5 @@ class QuizGiftView : ConstraintLayout {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (isShow) imm.showSoftInput(bindingGiftInput.etBroQuizGift, InputMethodManager.SHOW_IMPLICIT)
         else imm.hideSoftInputFromWindow(bindingGiftInput.etBroQuizGift.windowToken, 0)
-    }
-
-    companion object {
-        private const val MAX_TEXT_THRESHOLD = 15
     }
 }
