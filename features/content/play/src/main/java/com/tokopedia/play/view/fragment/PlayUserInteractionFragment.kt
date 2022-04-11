@@ -654,7 +654,9 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun setupObserve() {
         //TODO() should be from web socket
         interactiveActiveView?.show()
-        interactiveActiveView?.setQuiz()
+        interactiveActiveView?.setQuiz(question = "Pertanyaan nya, apakah kak Wonu unyu?", durationInMs = 3000, timerInfo = "Berakhir dalam", onDurationEnd = {
+            //hide then show hasil quiz
+        } )
 
         observeVideoMeta()
         observeVideoProperty()

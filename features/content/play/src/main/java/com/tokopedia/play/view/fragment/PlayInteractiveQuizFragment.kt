@@ -19,6 +19,8 @@ import com.tokopedia.play.view.quiz.QuizListAdapter
 import com.tokopedia.play.view.quiz.QuizOptionItemDecoration
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -29,6 +31,7 @@ class PlayInteractiveQuizFragment @Inject constructor(): DialogFragment() {
     private lateinit var gameHeaderView: GameHeaderView
     private lateinit var rvQuizOption: RecyclerView
     private lateinit var quizAdapter: QuizListAdapter
+    private lateinit var timerQuiz: TimerUnifySingle
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +56,7 @@ class PlayInteractiveQuizFragment @Inject constructor(): DialogFragment() {
 
         gameHeaderView = view.findViewById(R.id.quiz_header)
         rvQuizOption = view.findViewById(R.id.rv_quiz_question)
+        timerQuiz = view.findViewById(R.id.timer_quiz_option)
 
         setUpView()
     }
@@ -66,12 +70,17 @@ class PlayInteractiveQuizFragment @Inject constructor(): DialogFragment() {
         gameHeaderView.isEditable = false
         gameHeaderView.type = GameHeaderView.Type.QUIZ
 
+        val gCal = Calendar.getInstance()
+        gCal.add(Calendar.MILLISECOND, 10000)
+        timerQuiz.targetDate = gCal
+
         //TODO() testing purpose should be from the parameters
 
         val list = mutableListOf<QuizChoicesUiModel.Complete>()
         list.add(0, QuizChoicesUiModel.Complete("1", "Pertanyaan Answere",PlayQuizOptionState.Answered(true)))
         list.add(1, QuizChoicesUiModel.Complete("2", "Pertanyaan Default",PlayQuizOptionState.Default('b')))
-        list.add(1, QuizChoicesUiModel.Complete("3", "Pertanyaan Result",PlayQuizOptionState.Result(false)))
+        list.add(2, QuizChoicesUiModel.Complete("3", "Pertanyaan Result",PlayQuizOptionState.Result(false)))
+        list.add(3, QuizChoicesUiModel.Complete("4", "Pertanyaan Answer",PlayQuizOptionState.Answered(false)))
 
         rvQuizOption.apply {
             quizAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{

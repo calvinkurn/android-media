@@ -12,21 +12,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
     </com.tokopedia.play_common.view.game.GameHeaderView>
+
+    <include
+        android:id="@+id/layout_timer"
+        layout="@layout/view_middle_timer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/quiz_header"
+        app:layout_constraintStart_toStartOf="@+id/quiz_header"
+        app:layout_constraintTop_toBottomOf="@id/quiz_header"
+        app:timer_unify_single_type="minute_digit"
+        app:timer_unify_single_variant="main"
+        tools:timer_unify_single_remainingMinutes="10" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_quiz_question"
-        android:padding="@dimen/spacing_lvl4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         android:background="@color/Unify_N0"
+        android:padding="@dimen/spacing_lvl4"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/item_quiz_option"
         app:layout_constraintEnd_toEndOf="@+id/quiz_header"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/quiz_header"
-        app:layout_constraintTop_toBottomOf="@+id/quiz_header" />
+        app:layout_constraintTop_toBottomOf="@+id/layout_timer"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_quiz_option" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
