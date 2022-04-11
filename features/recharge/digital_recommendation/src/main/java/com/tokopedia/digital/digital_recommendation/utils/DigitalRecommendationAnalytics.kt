@@ -151,9 +151,9 @@ class DigitalRecommendationAnalytics {
             userType,
             data.tracking.itemType,
             index + 1,
-            data.tracking.categoryId,
-            data.tracking.operatorId,
-            data.tracking.productId,
+            data.tracking.categoryId.ifEmpty { "0" },
+            data.tracking.operatorId.ifEmpty { "0" },
+            data.tracking.productId.ifEmpty { "0" },
             data.unify.priceData.slashedPrice.ifEmpty { data.unify.priceData.price },
             data.unify.priceData.price,
             data.unify.campaign.text
@@ -174,9 +174,9 @@ class DigitalRecommendationAnalytics {
         additionalTrackingData.userType,
         additionalTrackingData.widgetPosition,
         index + 1,
-        data.tracking.categoryId,
-        data.tracking.operatorId,
-        data.tracking.productId,
+        data.tracking.categoryId.ifEmpty { "0" },
+        data.tracking.operatorId.ifEmpty { "0" },
+        data.tracking.productId.ifEmpty { "0" },
         when (page) {
             DigitalRecommendationPage.PHYSICAL_GOODS -> additionalTrackingData.pgCategories.joinToString(separator = ",")
             DigitalRecommendationPage.DIGITAL_GOODS -> additionalTrackingData.dgCategories.joinToString(separator = ",")
