@@ -9,6 +9,8 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 /**
  * Created by kenny.hadisaputra on 05/04/22
  */
+private const val SMALL_WIDGET_BG_ALPHA = (0.7f * 255).toInt()
+
 private fun GameSmallWidgetView.setupGiveaway() {
     getIconUnifyDrawable(
         context = context,
@@ -18,7 +20,7 @@ private fun GameSmallWidgetView.setupGiveaway() {
 
     setContentBackground(
         MethodChecker.getDrawable(context, R.drawable.bg_play_giveaway_header).apply {
-            alpha = (0.7f * 255).toInt()
+            alpha = SMALL_WIDGET_BG_ALPHA
         }
     )
 }
@@ -61,7 +63,7 @@ fun GameSmallWidgetView.setupQuiz(
 
     setContentBackground(
         MethodChecker.getDrawable(context, R.drawable.bg_play_quiz_header).apply {
-            alpha = (0.7f * 255).toInt()
+            alpha = SMALL_WIDGET_BG_ALPHA
         }
     )
     setTimerInfo(timerInfo)
