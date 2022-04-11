@@ -18,20 +18,9 @@ object CmInAppBundleConvertor {
 
     const val HOURS_24_IN_MILLIS = 24 * 60 * 60 * 1000L
 
-    fun getCmInApp(remoteMessage: RemoteMessage): CMInApp? {
-        return try {
-            val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-            val map = remoteMessage.data
-            getCmInAppModel(gson, map)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
     fun getCmInApp(serializedCMInAppData: SerializedCMInAppData): CMInApp? {
         return try {
             val cmInApp = CMInApp()
-            cmInApp.isAmplification = true
 
             if(serializedCMInAppData.id == null || serializedCMInAppData.id == 0L){
                 return null
@@ -99,7 +88,7 @@ object CmInAppBundleConvertor {
         }
     }
 
-    private fun getCmInAppModel(gson: Gson, map: Map<String, String>): CMInApp? {
+    fun getCmInAppModel(gson: Gson, map: Map<String, String>): CMInApp? {
 
         val cmInApp = CMInApp()
         if (!map.containsKey(Payload.NOTIFICATION_ID)) return null

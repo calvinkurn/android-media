@@ -233,7 +233,7 @@ object PayloadConverter {
         return NotificationTargetPriorities(appPriorities, isAdvanceTarget)
     }
 
-    private fun isBooleanTrue(data: Bundle, key: String): Boolean {
+    public fun isBooleanTrue(data: Bundle, key: String): Boolean {
         return try {
             return data.containsKey(key) && data.getString(key)?.toBoolean() == true
         } catch (e: Exception) {

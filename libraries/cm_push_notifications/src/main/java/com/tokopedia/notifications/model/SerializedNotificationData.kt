@@ -3,7 +3,6 @@ package com.tokopedia.notifications.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import kotlinx.android.parcel.Parcelize
 
@@ -197,6 +196,19 @@ data class SerializedNotificationData(
 
     @SerializedName(NOTIFICATION_SOUND)
     @Expose
-    var notificationSound: String? = null
+    var notificationSound: String? = null,
+
+    @SerializedName(MAIN_APP_PRIORITY)
+    @Expose
+    val mainAppPriority: String?,
+
+    @SerializedName(SELLER_APP_PRIORITY)
+    @Expose
+    val sellerAppPriority: String?,
+
+    @SerializedName(ADVANCE_TARGET)
+    @Expose
+    val isAdvanceTargeting : String?
+
 
 ) : Parcelable

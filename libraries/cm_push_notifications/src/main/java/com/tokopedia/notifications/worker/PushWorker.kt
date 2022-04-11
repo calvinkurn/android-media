@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.util.Log
 import androidx.work.*
-import com.tokopedia.notifications.PushController
+import com.tokopedia.notifications.push.PushController
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.CMNotificationCacheHandler
 import com.tokopedia.notifications.common.CMRemoteConfigUtils
