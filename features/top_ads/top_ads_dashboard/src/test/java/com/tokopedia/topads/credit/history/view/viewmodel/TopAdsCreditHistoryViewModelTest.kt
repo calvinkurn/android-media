@@ -53,7 +53,7 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `getCreditHistory success check, livedata should be success`() {
-        val expectedValue = spyk(TopAdsCreditHistory())
+        val expectedValue = TopAdsCreditHistory()
         val mockObject = mockk<TopAdsCreditHistory.CreditsResponse>(relaxed = true)
 
         every { mockObject.response.errors } returns emptyList()
@@ -71,7 +71,7 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `getCreditHistory non empty error check, livedata should be fail`() {
-        val expectedValue = spyk(TopAdsCreditHistory())
+        val expectedValue = TopAdsCreditHistory()
         val mockObject = mockk<TopAdsCreditHistory.CreditsResponse>(relaxed = true)
 
         every { mockObject.response.errors } returns listOf(Error())
@@ -88,7 +88,7 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `getCreditHistory on error exception check, livedata should be fail`() {
-        val actual = spyk(Exception("it"))
+        val actual = Exception("it")
 
         every {
             topAdsCreditHistoryUseCase.execute(captureLambda(), any())
@@ -136,7 +136,7 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `getAutoTopUpStatus success - response not null and error is empty test, livedata should contain data`() {
-        val mockObject = spyk(AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus())))
+        val mockObject = AutoTopUpData.Response(AutoTopUpData(AutoTopUpStatus()))
 
         every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(mockObject)
@@ -149,7 +149,7 @@ class TopAdsCreditHistoryViewModelTest {
     @Test
     fun `getAutoTopUpStatus response not null and error not empty test, livedata should be fail`() {
 
-        val actual = spyk(AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error()))))
+        val actual = AutoTopUpData.Response(AutoTopUpData(errors = listOf(Error())))
 
         every { autoTopUpUSeCase.execute(captureLambda(),any()) } answers {
             firstArg<(AutoTopUpData.Response) -> Unit>().invoke(actual)
@@ -181,7 +181,7 @@ class TopAdsCreditHistoryViewModelTest {
 
     @Test
     fun `getShopDeposit on success should contain value in livedata`() {
-        val actual = spyk(Deposit(TopadsDashboardDeposits(DepositAmount(0,"10"))))
+        val actual = Deposit(TopadsDashboardDeposits(DepositAmount(0,"10")))
 
         every { topAdsGetShopDepositUseCase.execute(captureLambda(), any()) } answers {
             firstArg<(Deposit) -> Unit>().invoke(actual)
