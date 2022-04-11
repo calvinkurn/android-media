@@ -10,7 +10,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.constant.AddressConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
-import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
@@ -61,9 +60,9 @@ class ManageAddressViewModel @Inject constructor(
     val setChosenAddress: LiveData<Result<ChosenAddressModel>>
         get() = _setChosenAddress
 
-    private val _eligibleForAnaRevamp = MutableLiveData<Result<EligibleForAddressFeatureModel>>()
-    val eligibleForAnaRevamp: LiveData<Result<EligibleForAddressFeatureModel>>
-        get() = _eligibleForAnaRevamp
+    private val _eligibleForAddressFeature = MutableLiveData<Result<EligibleForAddressFeatureModel>>()
+    val eligibleForAddressFeature: LiveData<Result<EligibleForAddressFeatureModel>>
+        get() = _eligibleForAddressFeature
 
     private val compositeSubscription = CompositeSubscription()
 
@@ -153,10 +152,10 @@ class ManageAddressViewModel @Inject constructor(
     fun checkUserEligibilityForAnaRevamp() {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAnaRevamp.value = Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.ANA_REVAMP_FEATURE_ID, null))
+                _eligibleForAddressFeature.value = Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.ANA_REVAMP_FEATURE_ID, null))
             },
             {
-                _eligibleForAnaRevamp.value = Fail(it)
+                _eligibleForAddressFeature.value = Fail(it)
             },
             AddressConstant.ANA_REVAMP_FEATURE_ID
         )
@@ -165,10 +164,10 @@ class ManageAddressViewModel @Inject constructor(
     fun checkUserEligibilityForEditAddressRevamp(data: RecipientAddressModel) {
         eligibleForAddressUseCase.eligibleForAddressFeature(
             {
-                _eligibleForAnaRevamp.value = Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID, data))
+                _eligibleForAddressFeature.value = Success(EligibleAddressFeatureMapper.mapResponseToModel(it, AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID, data))
             },
             {
-                _eligibleForAnaRevamp.value = Fail(it)
+                _eligibleForAddressFeature.value = Fail(it)
             },
             AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
         )

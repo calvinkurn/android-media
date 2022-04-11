@@ -329,7 +329,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             }
         })
 
-        viewModel.eligibleForAnaRevamp.observe(viewLifecycleOwner, Observer {
+        viewModel.eligibleForAddressFeature.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     when(it.data.featureId) {
