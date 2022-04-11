@@ -45,7 +45,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         val map = TrackAppUtils.gtmData(
             clickEvent,
             eventCategory,
-            clickPdpFintechWidget,
+            CLICK_FINTECH_PDP_WIDGET,
             "$productId - true - $linkingStatus - $userStatus - $chipType - $installmentAmount - $tenure - $partner - $redirectionUrl"
         )
         sendGeneralEvent(map)
@@ -108,7 +108,7 @@ class PdpFintechWidgetAnalytics @Inject constructor(
         const val KEY_CURRENT_SITE = "currentSite"
         const val FINTECH_PAYLATER_BUSIONNES = "fintechPaylater"
         const val FINTECH_PAYLATER_CURRENTSITE = "TokopediaFintech"
-        const val clickPdpFintechWidget = "bnpl chips - click buyer"
+        const val CLICK_FINTECH_PDP_WIDGET = "bnpl chips - click buyer"
     }
 
 
