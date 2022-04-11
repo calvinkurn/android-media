@@ -112,23 +112,25 @@ class QuizOptionView : ConstraintLayout {
 
     var isCorrect: Boolean = false
         set(value) {
-            field = value
-            binding.apply {
-                updateIconChoice()
+            needChange(field, value) {
+                field = value
+                binding.apply {
+                    updateIconChoice()
 
-                root.background = ContextCompat.getDrawable(
-                    context,
-                    if(value) R.drawable.bg_quiz_option_selected
-                    else R.drawable.bg_quiz_option
-                )
-
-                etQuizOption.setTextColor(
-                    ContextCompat.getColor(
+                    root.background = ContextCompat.getDrawable(
                         context,
-                        if(value) unifyR.color.Unify_Static_White
-                        else unifyR.color.Unify_NN950
+                        if(value) R.drawable.bg_quiz_option_selected
+                        else R.drawable.bg_quiz_option
                     )
-                )
+
+                    etQuizOption.setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            if(value) unifyR.color.Unify_Static_White
+                            else unifyR.color.Unify_NN950
+                        )
+                    )
+                }
             }
         }
 
