@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.sellerhome.domain.gqlquery.GqlGetShopOperationalHour
 import com.tokopedia.sellerhome.domain.model.GetShopOperationalHourResponse
 import com.tokopedia.sellerhome.domain.model.ShopOperationalHourResponse
 import com.tokopedia.usecase.RequestParams
@@ -21,24 +22,13 @@ class GetShopOperationalHourUseCase @Inject constructor(
         private const val PARAM_TYPE = "type"
 
         private const val ERROR_MESSAGE = "Failed to get shop operational hour"
-
-        private const val QUERY = "query getShopOperationalHourStatus(\$shopID: String!, \$type: Int!) {\n" +
-            "  getShopOperationalHourStatus(shopID: \$shopID, type: \$type) {\n" +
-            "      statusActive\n" +
-            "      startTime\n" +
-            "      endTime\n" +
-            "      error {\n" +
-            "        message\n" +
-            "      }\n" +
-            "  }\n" +
-            "}"
     }
 
     init {
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(GqlGetShopOperationalHour)
         setTypeClass(GetShopOperationalHourResponse::class.java)
     }
 

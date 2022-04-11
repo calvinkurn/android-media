@@ -1,6 +1,5 @@
 package com.tokopedia.notifications.inApp.viewEngine
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
@@ -11,7 +10,7 @@ import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.AmplificationCMInApp
+import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.SerializedCMInAppData
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,10 +55,9 @@ class CMInAppController(
     fun processAndSaveCMInAppAmplificationData(dataString: String?) {
         try {
             val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-            val amplificationCMInApp = gson.fromJson(dataString, AmplificationCMInApp::class.java)
+            val amplificationCMInApp = gson.fromJson(dataString, SerializedCMInAppData::class.java)
             val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
             cmInApp?.let {
-                cmInApp.isAmplification = true
                 IrisAnalyticsEvents.sendAmplificationInAppEvent(
                     applicationContext, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp)
                 downloadImagesAndUpdateDB(applicationContext, cmInApp)
