@@ -42,11 +42,11 @@
     <color name="play_bro_quiz_header_title_hint">#80FFFFFF</color>
     <color name="play_bro_quiz_header_title">#FFFFFF</color>
 
-    <color name="play_bro_taptap_icon_color">#F36819</color>
-    <color name="play_bro_taptap_header_gradient_start">#E02954</color>
-    <color name="play_bro_taptap_header_gradient_end">#F36819</color>
+    <color name="play_bro_giveaway_icon_color">#F36819</color>
+    <color name="play_bro_giveaway_header_gradient_start">#B3E02954</color>
+    <color name="play_bro_giveaway_header_gradient_end">#B3F05E22</color>
 
     <color name="play_bro_quiz_icon_color">#9342ED</color>
-    <color name="play_bro_quiz_header_gradient_start">#9B40DE</color>
-    <color name="play_bro_quiz_header_gradient_end">#D72C65</color>
+    <color name="play_bro_quiz_header_gradient_start">#B39342ED</color>
+    <color name="play_bro_quiz_header_gradient_end">#B3CD2F79</color>
 </resources>
