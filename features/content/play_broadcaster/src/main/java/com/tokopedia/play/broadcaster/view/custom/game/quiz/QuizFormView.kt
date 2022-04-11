@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -102,18 +103,6 @@ class QuizFormView : ConstraintLayout {
             eventBus.emit(Event.GiftChanged(it))
         }
 
-        binding.viewQuizGift.setOnExpandInputFieldListener { isExpand ->
-            binding.clQuizForm.changeConstraint {
-                val (objectStart, objectEnd) = if(isExpand)
-                    Pair(ConstraintSet.PARENT_ID, ConstraintSet.PARENT_ID)
-                else
-                    Pair(binding.glQuizFormLeft.id, binding.glQuizFormRight.id)
-
-                connect(binding.viewQuizGift.id, ConstraintSet.START, objectStart, ConstraintSet.START)
-                connect(binding.viewQuizGift.id, ConstraintSet.END, objectEnd, ConstraintSet.END)
-            }
-        }
-
         bottomSheetHeaderBinding.ivSheetClose.setOnClickListener {
             eventBus.emit(Event.Back)
         }
@@ -201,6 +190,9 @@ class QuizFormView : ConstraintLayout {
                 binding.groupActionBar.visibility = View.VISIBLE
                 binding.viewGameHeader.isEditable = true
                 binding.viewQuizGift.isEditable = true
+                binding.viewQuizGift.layoutParams = binding.viewQuizGift.layoutParams.apply {
+                    width = 0
+                }
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_HIDDEN
             }
@@ -211,6 +203,9 @@ class QuizFormView : ConstraintLayout {
                     isEditable = false
                     hideGiftTextFieldIfEmpty()
                     hideCoackmark()
+                }
+                binding.viewQuizGift.layoutParams = binding.viewQuizGift.layoutParams.apply {
+                    width = WRAP_CONTENT
                 }
 
                 bottomSheetBehaviour.state = BottomSheetBehavior.STATE_EXPANDED

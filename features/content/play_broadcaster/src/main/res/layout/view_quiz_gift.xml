@@ -93,6 +93,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:background="@null"
             android:hint="@string/play_bro_quiz_gift_hint"
             android:inputType="textCapWords"
@@ -100,6 +101,7 @@
             android:textColorHint="@color/play_dms_quiz_header_title_hint"
             android:textSize="@dimen/fontSize_lvl3"
             android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ic_close_input_gift"
             app:layout_constraintStart_toEndOf="@id/tv_bro_quiz_gift_input_label"
@@ -115,8 +117,6 @@
             app:icon_name="CLEAR"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1"
-            app:layout_constraintStart_toEndOf="@id/et_bro_quiz_gift"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

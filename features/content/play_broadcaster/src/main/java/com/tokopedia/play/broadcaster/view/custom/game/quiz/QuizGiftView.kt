@@ -1,9 +1,12 @@
 package com.tokopedia.play.broadcaster.view.custom.game.quiz
 
 import android.content.Context
+import android.graphics.Typeface
 import android.text.InputFilter
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -18,6 +21,7 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
 import kotlinx.android.synthetic.main.view_quiz_gift.view.*
+import kotlin.math.max
 
 /**
  * Created By : Jonathan Darwin on April 01, 2022
@@ -45,7 +49,6 @@ class QuizGiftView : ConstraintLayout {
     )
 
     private var mOnChangedListener: ((String) -> Unit)? = null
-    private var mOnExpandListener: ((Boolean) -> Unit)? = null
 
     private val coachMark: CoachMark2 = CoachMark2(context)
 
@@ -71,7 +74,6 @@ class QuizGiftView : ConstraintLayout {
         }
 
         binding.etBroQuizGift.afterTextChanged {
-            mOnExpandListener?.invoke(it.length >= MAX_TEXT_THRESHOLD)
             mOnChangedListener?.invoke(it)
         }
     }
@@ -81,7 +83,7 @@ class QuizGiftView : ConstraintLayout {
             if(field != value) {
                 field = value
 
-                binding.etBroQuizGift.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+                binding.etBroQuizGift.filters = arrayOf(InputFilter.LengthFilter(value))
             }
         }
 
@@ -102,6 +104,7 @@ class QuizGiftView : ConstraintLayout {
             }
 
             binding.icCloseInputGift.showWithCondition(isEditable)
+            adjustFieldSize(value)
         }
 
     var isShowCoachmark: Boolean = true
@@ -110,16 +113,21 @@ class QuizGiftView : ConstraintLayout {
         mOnChangedListener = listener
     }
 
-    fun setOnExpandInputFieldListener(listener: (Boolean) -> Unit) {
-        mOnExpandListener = listener
-    }
-
     fun hideGiftTextFieldIfEmpty() {
         binding.etBroQuizGift.apply {
             if(text.toString().isEmpty()) {
                 binding.clLabelView.show()
                 binding.clInputView.hide()
             }
+        }
+    }
+
+    private fun adjustFieldSize(isEditable: Boolean) {
+        binding.etBroQuizGift.apply {
+            layoutParams = layoutParams.apply {
+                width = if(isEditable) 0 else WRAP_CONTENT
+            }
+            hint = if(isEditable) context.getString(R.string.play_bro_quiz_gift_hint) else ""
         }
     }
 
