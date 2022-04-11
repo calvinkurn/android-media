@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -22,8 +23,12 @@ import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodBannerComp
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodCategoryWidgetV2ComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodLegoComponentCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class TokoFoodHomeFragment: BaseTokofoodFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var binding by autoClearedNullable<FragmentTokofoodHomeBinding>()
 
