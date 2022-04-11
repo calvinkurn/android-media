@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -10,35 +11,13 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on April 06, 2022
  */
+@GqlQuery(PostInteractiveCreateQuizUseCase.QUERY_NAME, PostInteractiveCreateQuizUseCase.QUERY)
 class PostInteractiveCreateQuizUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
 ) : RetryableGraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
-    private val query = """
-        mutation PostInteractiveCreateQuizUseCase(
-            ${"$$PARAM_CHANNEL_ID"}: String!, 
-            ${"$$PARAM_QUESTION"}: String!, 
-            ${"$$PARAM_PRIZE"}: String, 
-            ${"$$PARAM_RUNNING_TIME"}: Int!,
-            ${"$$PARAM_CHOICES"}: [PlayInteractiveQuizChoiceInput!]!
-        ) {
-          playInteractiveSellerCreateQuiz(input: {
-            channelID: ${"$$PARAM_CHANNEL_ID"},
-            question: ${"$$PARAM_QUESTION"},
-            prize: ${"$$PARAM_PRIZE"},
-            runningTime: ${"$$PARAM_RUNNING_TIME"},
-            choices: ${"$$PARAM_CHOICES"},
-          }){
-            meta {
-              status
-              message
-            }
-          }
-        }
-    """
-
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(PostInteractiveCreateQuizUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(PostInteractiveCreateSessionResponse::class.java)
     }
@@ -73,6 +52,29 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
         private const val PARAM_PRIZE = "prize"
         private const val PARAM_RUNNING_TIME = "runningTime"
         private const val PARAM_CHOICES = "choices"
+        const val QUERY_NAME = "PostInteractiveCreateQuizUseCaseQuery"
+        const val QUERY = """
+            mutation PostInteractiveCreateQuizUseCase(
+                ${"$$PARAM_CHANNEL_ID"}: String!, 
+                ${"$$PARAM_QUESTION"}: String!, 
+                ${"$$PARAM_PRIZE"}: String, 
+                ${"$$PARAM_RUNNING_TIME"}: Int!,
+                ${"$$PARAM_CHOICES"}: [PlayInteractiveQuizChoiceInput!]!
+            ) {
+              playInteractiveSellerCreateQuiz(input: {
+                channelID: ${"$$PARAM_CHANNEL_ID"},
+                question: ${"$$PARAM_QUESTION"},
+                prize: ${"$$PARAM_PRIZE"},
+                runningTime: ${"$$PARAM_RUNNING_TIME"},
+                choices: ${"$$PARAM_CHOICES"},
+              }){
+                meta {
+                  status
+                  message
+                }
+              }
+            }
+        """
 
         fun createParams(
             channelId: String,
