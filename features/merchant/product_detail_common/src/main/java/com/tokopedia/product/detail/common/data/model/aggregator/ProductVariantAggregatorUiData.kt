@@ -5,9 +5,11 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailGallery
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.VariantOption
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 
 /**
@@ -73,5 +75,34 @@ data class ProductVariantAggregatorUiData(
 
     fun isAggregatorEmpty(): Boolean {
         return (!variantData.hasChildren && !variantData.hasVariant) || cardRedirection.isEmpty() || nearestWarehouse.isEmpty()
+    }
+
+    private fun getFirstLevelVariantOptions(): List<VariantOption> {
+        return variantData.variants.firstOrNull()?.options ?: emptyList()
+    }
+
+    fun getFirstLevelVariantImage(variantOptionId: String): String?{
+        if(variantOptionId.isEmpty()) return null
+        return getFirstLevelVariantOptions().firstOrNull {
+            it.id == variantOptionId
+        }?.picture?.original?.takeIf { it.isNotEmpty() }
+    }
+
+    fun getVariantGalleryItems(): List<ProductDetailGallery.Item> {
+        val variantOptions = getFirstLevelVariantOptions()
+        return variantOptions.mapNotNull { option ->
+            val optionId = option.id ?: "0"
+            val imageUrl = option.picture?.original
+            val tag = option.value ?: ""
+
+            imageUrl?.takeIf { it.isNotEmpty() }?.let {
+                ProductDetailGallery.Item(
+                    id = optionId,
+                    url = imageUrl,
+                    tag = tag,
+                    type = ProductDetailGallery.Item.Type.Image
+                )
+            }
+        }
     }
 }
