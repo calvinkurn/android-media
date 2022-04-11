@@ -104,7 +104,10 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
             this.groupID = groupIdParam
             this.groupInput = null
             keywordOperation =
-                keywordIds.map { id -> KeywordEditInput(action, KeywordEditInput.Keyword(id)) }
+                keywordIds.map { id ->
+                    KeywordEditInput(action,
+                        KeywordEditInput.Keyword(id, null, null, null, null, null))
+                }
         }
         return input.convertToRequestParam()
     }
