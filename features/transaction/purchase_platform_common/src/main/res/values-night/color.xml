@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="pp_dms_tickerunify_announcement_background_color">@color/Unify_BN950</color>
+    <color name="pp_dms_tickerunify_announcement_stroke_color">@color/Unify_BN800</color>
+    <color name="pp_dms_tickerunify_content_text_color">@color/Unify_NN0</color>
+    <color name="pp_dms_tickerunify_information_icon_color">@color/Unify_BN400</color>
+    <color name="pp_dms_tickerunify_error_background_color">@color/Unify_RN950</color>
+    <color name="pp_dms_tickerunify_error_icon_color">@color/Unify_RN500</color>
+    <color name="pp_dms_tickerunify_error_stroke_color">@color/Unify_RN800</color>
+</resources>
