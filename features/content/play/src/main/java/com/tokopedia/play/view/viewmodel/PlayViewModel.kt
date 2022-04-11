@@ -2070,7 +2070,7 @@ class PlayViewModel @AssistedInject constructor(
         product: PlayProductUiModel.Product,
         action: ProductAction
     ) {
-        if (product.isVariantAvailable) openVariantDetail(product, action)
+        if (product.isVariantAvailable) openVariantDetail(product, action, sectionInfo)
         else {
             needLogin {
                 addProductToCart(product) { cartId ->
@@ -2094,8 +2094,8 @@ class PlayViewModel @AssistedInject constructor(
 
         addProductToCart(selectedVariant.data.variantDetail) { cartId ->
             _uiEvent.emit(
-                if (action == ProductAction.Buy) BuySuccessEvent(selectedVariant.data.variantDetail, true, cartId)
-                else AtcSuccessEvent(selectedVariant.data.variantDetail, true, cartId)
+                if (action == ProductAction.Buy) BuySuccessEvent(selectedVariant.data.variantDetail, true, cartId, selectedVariant.data.sectionInfo)
+                else AtcSuccessEvent(selectedVariant.data.variantDetail, true, cartId, selectedVariant.data.sectionInfo)
             )
         }
     }
@@ -2305,10 +2305,16 @@ class PlayViewModel @AssistedInject constructor(
     private fun openVariantDetail(
         product: PlayProductUiModel.Product,
         action: ProductAction,
+        sectionUiModel: ProductSectionUiModel.Section,
     ) {
         _selectedVariant.value = NetworkResult.Loading
         viewModelScope.launchCatchError(block = {
             _selectedVariant.value = NetworkResult.Success(repo.getVariant(product))
+            _selectedVariant.update {
+                if(it is NetworkResult.Success){
+                    it.copy(data = it.data.copy(sectionInfo = sectionUiModel))
+                } else it
+            }
         }) {
             _selectedVariant.value = NetworkResult.Fail(it)
         }
