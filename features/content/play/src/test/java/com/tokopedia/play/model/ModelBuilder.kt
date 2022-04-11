@@ -8,8 +8,10 @@ import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.PlayShareInfoUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
@@ -1245,14 +1247,16 @@ class ModelBuilder {
             parentVariant: ProductVariant? = null,
             stockWording: String? = "Stok tersedia",
             listOfVariantCategory: List<VariantCategory> = emptyList(),
-            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf()
+            mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf(),
+            sectionUiModel: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
     ) = VariantSheetUiModel(
             product = product,
             action = action,
             parentVariant = parentVariant,
             stockWording = stockWording,
             listOfVariantCategory = listOfVariantCategory,
-            mapOfSelectedVariants = mapOfSelectedVariants
+            mapOfSelectedVariants = mapOfSelectedVariants,
+            section = sectionUiModel
     )
 
     fun buildProductLineUiModel(
@@ -1385,7 +1389,7 @@ class ModelBuilder {
         val userReportOpt = PlayUserReportReasoningUiModel.Reasoning(
             title = title, reasoningId = reasoningId, detail = detail, submissionData = submissionData
         )
-        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt))
+        return PlayUserReportUiModel.Loaded(listOf(userReportOpt, userReportOpt), ResultState.Success)
     }
 
     fun generateResponseSectionGql(

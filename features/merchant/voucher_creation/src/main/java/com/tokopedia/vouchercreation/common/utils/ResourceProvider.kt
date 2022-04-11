@@ -26,4 +26,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context : Con
     fun getFormattedProductStatistic(): String {
         return context.getString(R.string.mvc_formatted_product_statistic)
     }
+
+    fun getProductPrice() : String {
+        return context.getString(R.string.placeholder_rupiah)
+    }
 }

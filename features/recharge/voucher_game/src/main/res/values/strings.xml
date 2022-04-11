@@ -16,4 +16,5 @@
     <string name="vg_product_view_detail">Lihat Detail</string>
     <string name="vg_product_detail_title">Detail Produk</string>
     <string name="vg_product_detail_url">Info lebih lanjut</string>
+    <string name="vg_product_label_out_of_stock">Stok Habis</string>
 </resources>

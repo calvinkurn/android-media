@@ -13,6 +13,7 @@ import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
+import com.tokopedia.homenav.mainnav.domain.model.AffiliateUserDetailData
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.navigation_common.model.wallet.WalletStatus
@@ -40,7 +41,8 @@ fun createViewModel (
         getUohOrdersNavUseCase: GetUohOrdersNavUseCase? = null,
         getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null,
         getShopInfoUseCase: GetShopInfoUseCase? = null,
-        accountAdminInfoUseCase: AccountAdminInfoUseCase? = null
+        accountAdminInfoUseCase: AccountAdminInfoUseCase? = null,
+        getAffiliateUserUseCase: GetAffiliateUserUseCase? = null
 ): MainNavViewModel {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -77,6 +79,10 @@ fun createViewModel (
         coEvery { it.executeOnBackground() }.answers { Pair(AdminDataResponse(), ShopData()) }
     }
 
+    val getAffiliateUserUseCaseMock = getOrUseDefault(getAffiliateUserUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
+    }
+
     return MainNavViewModel(
             baseDispatcher = Lazy {dispatchers },
             clientMenuGenerator = clientMenuGeneratorMock,
@@ -87,7 +93,8 @@ fun createViewModel (
             getProfileDataUseCase = getProfileDataUseCaseMock,
             getCategoryGroupUseCase = getBuListDataUseCaseMock,
             getShopInfoUseCase = getShopInfoUseCaseMock,
-            accountAdminInfoUseCase = accountAdminInfoUseCaseMock
+            accountAdminInfoUseCase = accountAdminInfoUseCaseMock,
+            getAffiliateUserUseCase = getAffiliateUserUseCaseMock
     )
 }
 
@@ -99,7 +106,8 @@ fun createProfileDataUseCase (
     getTokopointStatusFiltered: GetTokopointStatusFiltered? = null,
     getShopInfoUseCase: GetShopInfoUseCase? = null,
     getWalletEligibilityUseCase: GetWalletEligibilityUseCase? = null,
-    getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase? = null
+    getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase? = null,
+    getAffiliateUserUseCase: GetAffiliateUserUseCase? = null
 ): UseCase<AccountHeaderDataModel> {
     val userSessionMock = getOrUseDefault(userSession) {
         every { it.isLoggedIn } returns true
@@ -128,6 +136,9 @@ fun createProfileDataUseCase (
     val getWalletAppBalanceMock = getOrUseDefault(getWalletAppBalanceUseCase) {
         coEvery { it.executeOnBackground() }.answers { WalletAppData() }
     }
+    val getAffiliateUserUseCaseMock = getOrUseDefault(getAffiliateUserUseCase) {
+        coEvery { it.executeOnBackground() }.answers { Success(AffiliateUserDetailData()) }
+    }
 
     return GetProfileDataUseCase(
         accountHeaderMapper = accountHeaderMapper,
@@ -137,7 +148,8 @@ fun createProfileDataUseCase (
         getTokopointStatusFiltered = getTokopointStatusFilteredMock.get(),
         getShopInfoUseCase = getShopInfoUseCaseMock.get(),
         getWalletAppBalanceUseCase = getWalletAppBalanceMock.get(),
-        getWalletEligibilityUseCase = getWalletEligibilityUseCaseMock.get()
+        getWalletEligibilityUseCase = getWalletEligibilityUseCaseMock.get(),
+        getAffiliateUserUseCase = getAffiliateUserUseCaseMock.get()
     )
 }
 

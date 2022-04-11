@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.sellerhome.domain.gqlquery.GqlShareInfoOther
 import com.tokopedia.sellerhome.domain.mapper.OtherMenuShopShareMapper
 import com.tokopedia.sellerhome.domain.model.ShopShareOtherResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
@@ -17,28 +18,6 @@ class ShareInfoOtherUseCase @Inject constructor(
 ): GraphqlUseCase<ShopShareOtherResponse>(graphqlRepository) {
 
     companion object {
-        private val QUERY = """
-            query GetUserShop(${'$'}shopId: Int!) {
-              shopInfoByID(
-                input: {
-                  shopIDs: [${'$'}shopId]
-                  fields: ["shop-snippet", "location", "core", "branch-link"]
-                }
-              ) {
-                result {
-                  shopSnippetURL
-                  location
-                  branchLinkDomain
-                  shopCore {
-                    description
-                    tagLine
-                    url
-                  }
-                }
-              }
-            }
-        """.trimIndent()
-
         private const val SHOP_ID_KEY = "shopId"
     }
 
@@ -46,7 +25,7 @@ class ShareInfoOtherUseCase @Inject constructor(
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         setCacheStrategy(cacheStrategy)
 
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(GqlShareInfoOther)
         setTypeClass(ShopShareOtherResponse::class.java)
     }
 

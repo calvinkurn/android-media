@@ -156,7 +156,8 @@
     <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
     <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
     <string name="play_broadcast_set_schedule">Simpan Jadwal</string>
-    <string name="play_broadcast_schedule_set_success">Jadwal berhasil disimpan. Kembali lagi ketika mulai siaran, ya!</string>
+    <string name="play_broadcast_schedule_set_success">Live berhasil dijadwalkan! Kamu akan terima notifikasi sebelum Live dimulai.</string>
+    <string name="play_broadcast_schedule_edit_success">Jadwal Live-mu berhasil disimpan!</string>
     <string name="play_broadcast_start_streaming_action">Mulai</string>
     <string name="play_broadcast_cancel_streaming_action">Batal</string>
     <string name="play_broadcast_early_streaming_dialog_title">Mulai siarannya sekarang?</string>
@@ -164,7 +165,9 @@
     <string name="play_broadcast_delete_schedule_action">Hapus</string>
     <string name="play_broadcast_delete_schedule_dialog_title">Yakin mau hapus jadwal?</string>
     <string name="play_broadcast_delete_schedule_dialog_desc">Jika dihapus, maka pengingat siaran untuk calon penontonmu batal dikirimkan.</string>
-    <string name="play_broadcast_schedule_deleted">Jadwal sudah dihapus</string>
+    <string name="play_broadcast_schedule_deleted">Jadwal Live berhasil dihapus</string>
+    <string name="play_bro_schedule_info">Kamu bisa tentukan jadwal kalau kamu belum mau Live sekarang. Jadi bisa siap-siap, deh.</string>
+    <string name="play_bro_schedule_delete">Hapus Jadwal</string>
 
     <string name="album">Album</string>
 
@@ -220,6 +223,7 @@
     <string name="play_bro_title_label">Judul</string>
     <string name="play_bro_cover_label">Cover</string>
     <string name="play_bro_product_label">Produk</string>
+    <string name="play_bro_schedule_label">Atur Jadwal</string>
     <string name="play_bro_save">Simpan</string>
 
     <string name="play_bro_title_form_hint">Tulis Judul Live</string>
@@ -261,4 +265,10 @@
     <string name="play_bro_add_tag_title">Tambah Tag</string>
     <string name="play_bro_select_tag_title">Pilih tag agar videomu mudah ditemukan</string>
     <string name="play_bro_cant_post_video_message">Karena durasi kurang dari 60 detik, Live-mu tidak bisa di-posting jadi video.</string>
+
+    <!-- Tag Recommendation -->
+    <string name="play_bro_tag_recommendation_error_title">Tag ini gagal ditampilkan</string>
+    <string name="play_bro_tag_recommendation_error_desc">Klik ikon di samping untuk coba lagi</string>
+    <string name="play_bro_tag_recommendation_empty_title">Oops, belum ada tag yang cocok untuk videomu</string>
+    <string name="play_bro_tag_recommendation_empty_desc">Tenang, kamu tetap bisa posting videomu.</string>
 </resources>
