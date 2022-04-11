@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
@@ -185,9 +186,22 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 if(isLoggedIn)
                 listComponents.addAll(setupMerchantVoucherList(component))
             }
+            ComponentNames.ProductCardSingle.componentName -> {
+                if (shouldAddRecomSingleProduct(component)) {
+                    listComponents.add(component)
+                }
+            }
             else -> listComponents.add(component)
         }
         return listComponents
+    }
+
+    private fun shouldAddRecomSingleProduct(component: ComponentsItem): Boolean {
+        if (queryParameterMap.containsKey(RECOM_PRODUCT_ID) && !queryParameterMap[RECOM_PRODUCT_ID].isNullOrEmpty()) {
+            component.recomQueryProdId = queryParameterMap[RECOM_PRODUCT_ID]
+            return true
+        }
+        return false
     }
 
     private fun saveSectionPosition(pageEndPoint: String, sectionId: String, position: Int) {

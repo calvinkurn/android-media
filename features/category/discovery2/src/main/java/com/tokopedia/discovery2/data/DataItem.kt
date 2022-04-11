@@ -298,6 +298,12 @@ data class DataItem(
         @SerializedName("shop_location")
         var shopLocation: String? = "",
 
+        @SerializedName("shop_url_desktop")
+        var shopURLDesktop: String? = "",
+
+        @SerializedName("url_desktop")
+        var productURLDesktop: String? = "",
+
         @SerializedName("discount_percentage")
         var discountPercentage: String? = "",
 

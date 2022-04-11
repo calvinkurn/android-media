@@ -145,22 +145,19 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 hasVisitShop = true,
                 hasShareProduct = true,
                 isWishlisted = it.isWishList,
-                productId = it.id.toString(),
+                productId = it.productId.toString(),
                 isTopAds = it.isTopads ?: false,
                 topAdsWishlistUrl = it.wishlistUrl ?: "",
                 productPosition = position,
                 shop = ProductCardOptionsModel.Shop(
                     it.shopId ?: "",
                     it.shopName ?: "",
-//                    todo:: Add handling for shopURL
-                    shopUrl = ""
+                    it.shopURLDesktop ?: ""
                 ),
-                productName = it.name?:"",
+                productName = it.name ?: "",
                 productImageUrl = it.imageUrlMobile ?: "",
-//                todo:: Need to add product URL
-                productUrl = "",
-//                Todo:: Add formatted pricing
-                formattedPrice = "",
+                productUrl = it.productURLDesktop ?: "",
+                formattedPrice = it.price ?: "",
 //                Todo:: Need to add params for ATC option
 
             )

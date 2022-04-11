@@ -62,6 +62,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val ACTIVE_TAB = "activeTab"
         const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
+        const val RECOM_PRODUCT_ID = "recomProdId"
         const val PIN_PRODUCT = "pinProduct"
         const val CATEGORY_ID = "category_id"
         const val EMBED_CATEGORY = "embedCategory"

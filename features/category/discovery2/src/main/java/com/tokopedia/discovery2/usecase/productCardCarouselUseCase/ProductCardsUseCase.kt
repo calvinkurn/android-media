@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.usecase.productCardCarouselUseCase
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_PRODUCT_ID
 import com.tokopedia.discovery2.Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.addAddressQueryMap
@@ -46,6 +47,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             componentId,
                             pageEndPoint,
                             it.nextPageKey,
+                            it.recomQueryProdId,
                             it.userAddressData),
                     pageEndPoint, it.name)
             it.showVerticalLoader = productListData.isNotEmpty()
@@ -80,6 +82,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             componentId,
                             pageEndPoint,
                             component1.nextPageKey,
+                            component1.recomQueryProdId,
                             component.userAddressData),
                     pageEndPoint,
                     component1.name)
@@ -119,6 +122,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                             componentId,
                             pageEndPoint,
                             it.nextPageKey,
+                            it.recomQueryProdId,
                             it.userAddressData),
                     pageEndPoint,
                     it.name)
@@ -142,6 +146,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
                                      componentId: String,
                                      pageEndPoint: String,
                                      nextPageKey : String?,
+                                     recomProdId: String?,
                                      userAddressData: LocalCacheModel?): MutableMap<String, Any> {
 
         val queryParameterMap = mutableMapOf<String, Any>()
@@ -192,8 +197,8 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
         queryParameterMap.putAll(addAddressQueryMap(userAddressData))
         if (userAddressData?.warehouse_id?.isNotEmpty() == true)
             queryParameterMap[RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
-//      Todo::  get prod id from query param
-        queryParameterMap["rpc_ProductId"] = 15205211
+        if (!recomProdId.isNullOrEmpty())
+            queryParameterMap[RPC_PRODUCT_ID] = recomProdId
         return queryParameterMap
     }
 
