@@ -127,6 +127,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                     if (item is TopupBillsAutoCompleteContactDataView) {
                         setContactName(item.name)
                         mAutoCompleteListener?.onClickAutoComplete(item.name.isNotEmpty())
+                        isClearableState = true
                     }
                 }
             }
@@ -176,6 +177,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                     mFilterChipListener?.onClickFilterChip(true, number.operatorId)
                 }
                 clearFocusAutoComplete()
+                isClearableState = true
             }
             sortFilter.add(sortFilterItem)
         }
