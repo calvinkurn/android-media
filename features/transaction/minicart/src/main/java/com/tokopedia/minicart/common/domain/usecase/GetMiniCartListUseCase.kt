@@ -75,6 +75,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                     }
                   }
                   max_char_note
+                  placeholder_note
                   header_title
                   beli_button_config {
                     button_type
