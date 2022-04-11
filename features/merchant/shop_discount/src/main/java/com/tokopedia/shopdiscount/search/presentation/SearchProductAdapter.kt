@@ -8,8 +8,6 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shopdiscount.databinding.SdItemSearchProductBinding
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.utils.constant.ZERO
-import java.lang.Exception
-import java.util.function.Predicate
 
 class SearchProductAdapter(
     private val onProductClicked: (Product) -> Unit,
@@ -93,13 +91,16 @@ class SearchProductAdapter(
         notifyItemRangeChanged(index, itemCount)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun bulkDelete(deletedProductId : List<String>){
+    fun bulkDelete(deletedProductId: List<String>) {
         val products = this.products.toMutableList()
         products
             .filter { it.id in deletedProductId }
-            .forEach { product -> this.products.remove(product) }
-        notifyDataSetChanged()
+            .forEach { product ->
+                val index = products.indexOf(product)
+                this.products.remove(product)
+                notifyItemRemoved(index)
+            }
+        notifyItemRangeChanged(ZERO, itemCount)
     }
 
     fun showLoading() {
