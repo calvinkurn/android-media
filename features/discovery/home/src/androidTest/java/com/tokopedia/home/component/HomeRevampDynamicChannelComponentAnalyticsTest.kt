@@ -498,7 +498,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 
