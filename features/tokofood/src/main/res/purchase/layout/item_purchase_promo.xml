@@ -9,7 +9,7 @@
     android:paddingBottom="12dp">
 
     <com.tokopedia.explorepromo.ExplorePromo
-        android:id="@+id/explore_promo_purchase"
+        android:id="@+id/usePromoButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="-5dp"

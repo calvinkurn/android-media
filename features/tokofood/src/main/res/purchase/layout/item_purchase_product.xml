@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_purchase_product"
+    android:id="@+id/productCell"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_product_name"
+        android:id="@+id/productName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -34,8 +34,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_product_name"
-        app:layout_constraintTop_toBottomOf="@+id/text_product_name"
+        app:layout_constraintStart_toStartOf="@+id/productName"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
         tools:layout_height="20dp" />
 
     <com.google.android.flexbox.FlexboxLayout
@@ -46,11 +46,11 @@
         android:foregroundGravity="center_vertical"
         app:flexWrap="wrap"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_product_name"
+        app:layout_constraintStart_toStartOf="@+id/productName"
         app:layout_constraintTop_toBottomOf="@+id/container_add_on">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_product_price"
+            android:id="@+id/productPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
@@ -60,7 +60,7 @@
             tools:text="Rp40.000" />
 
         <com.tokopedia.unifycomponents.Label
-            android:id="@+id/label_slash_price_percentage"
+            android:id="@+id/slashPriceInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
@@ -68,7 +68,7 @@
             tools:text="50%" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_product_original_price"
+            android:id="@+id/productSlashPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -78,7 +78,7 @@
     </com.google.android.flexbox.FlexboxLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_notes"
+        android:id="@+id/notes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -91,18 +91,18 @@
         tools:text="Pesanannya jangan sampai salah ya! udah haus haus haus haus haus bang..." />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_notes_or_variant_action"
+        android:id="@+id/addNotesButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="19dp"
         android:textColor="@color/Unify_GN500"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_notes"
+        app:layout_constraintTop_toBottomOf="@+id/notes"
         app:typographyType="heading_6"
         tools:text="Tambah Pesanan" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/button_delete_product"
+        android:id="@+id/deleteProductButton"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="16dp"
@@ -117,9 +117,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintBottom_toBottomOf="@+id/text_notes_or_variant_action"
+        app:layout_constraintBottom_toBottomOf="@+id/addNotesButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/text_notes_or_variant_action"
+        app:layout_constraintTop_toTopOf="@+id/addNotesButton"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.DividerUnify
@@ -129,6 +129,6 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_notes_or_variant_action" />
+        app:layout_constraintTop_toBottomOf="@+id/addNotesButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

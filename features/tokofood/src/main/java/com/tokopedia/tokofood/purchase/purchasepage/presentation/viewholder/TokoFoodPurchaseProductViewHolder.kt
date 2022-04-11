@@ -52,15 +52,15 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
             val nextItem = listener.getNextItems(adapterPosition, 1).firstOrNull()
             nextItem?.let {
                 val constraintSet = ConstraintSet()
-                constraintSet.clone(containerPurchaseProduct)
+                constraintSet.clone(productCell)
                 if (element.isUnavailable) {
                     constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
                     constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
                 } else {
                     constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.text_notes_or_variant_action, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.addNotesButton, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
                 }
-                constraintSet.applyTo(containerPurchaseProduct)
+                constraintSet.applyTo(productCell)
             }
         }
     }
@@ -69,8 +69,8 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
         with(viewBinding) {
             imageProduct.setImageUrl(element.imageUrl)
             imageProduct.renderAlphaProductItem(element)
-            textProductName.text = element.name
-            textProductName.renderAlphaProductItem(element)
+            productName.text = element.name
+            productName.renderAlphaProductItem(element)
         }
     }
 
@@ -94,21 +94,25 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     private fun renderProductPrice(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.originalPrice > 0) {
-                textProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.originalPrice, false).removeDecimalSuffix()
-                textProductOriginalPrice.paintFlags = textProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                textProductOriginalPrice.show()
-                textProductOriginalPrice.renderAlphaProductItem(element)
+                productSlashPrice.run {
+                    text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.originalPrice, false).removeDecimalSuffix()
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    show()
+                    renderAlphaProductItem(element)
+                }
             } else {
-                textProductOriginalPrice.gone()
+                productSlashPrice.gone()
             }
-            textProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.price, false).removeDecimalSuffix()
-            textProductPrice.renderAlphaProductItem(element)
+            productPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.price, false).removeDecimalSuffix()
+            productPrice.renderAlphaProductItem(element)
             if (element.discountPercentage.isNotBlank()) {
-                labelSlashPricePercentage.text = element.discountPercentage
-                labelSlashPricePercentage.show()
-                labelSlashPricePercentage.renderAlphaProductItem(element)
+                slashPriceInfo.run {
+                    text = element.discountPercentage
+                    show()
+                    renderAlphaProductItem(element)
+                }
             } else {
-                labelSlashPricePercentage.gone()
+                slashPriceInfo.gone()
             }
         }
     }
@@ -116,36 +120,36 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     private fun renderProductNotes(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isUnavailable) {
-                textNotes.gone()
-                textNotesOrVariantAction.gone()
+                notes.gone()
+                addNotesButton.gone()
                 return
             }
 
             if (element.notes.isNotBlank()) {
-                textNotes.text = element.notes
-                textNotes.show()
+                notes.text = element.notes
+                notes.show()
             } else {
-                textNotes.gone()
+                notes.gone()
             }
 
             if (element.hasAddOnsOption) {
-                textNotesOrVariantAction.text = getString(R.string.text_purchase_change_notes_and_variant)
-                textNotesOrVariantAction.setOnClickListener {
+                addNotesButton.text = getString(R.string.text_purchase_change_notes_and_variant)
+                addNotesButton.setOnClickListener {
                     listener.onTextChangeNoteAndVariantClicked()
                 }
             } else {
                 if (element.notes.isNotBlank()) {
-                    textNotesOrVariantAction.text = getString(R.string.text_purchase_change_notes)
+                    addNotesButton.text = getString(R.string.text_purchase_change_notes)
                 } else {
-                    textNotesOrVariantAction.text = getString(R.string.text_purchase_add_notes)
+                    addNotesButton.text = getString(R.string.text_purchase_add_notes)
                 }
-                textNotesOrVariantAction.setOnClickListener {
+                addNotesButton.setOnClickListener {
                     listener.onTextChangeNotesClicked(element)
                 }
             }
-            textNotesOrVariantAction.show()
-            textNotes.renderAlphaProductItem(element)
-            textNotesOrVariantAction.renderAlphaProductItem(element)
+            addNotesButton.show()
+            notes.renderAlphaProductItem(element)
+            addNotesButton.renderAlphaProductItem(element)
 
             setNotesConstraint(viewBinding, element)
         }
@@ -154,15 +158,15 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     private fun setNotesConstraint(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             val constraintSet = ConstraintSet()
-            constraintSet.clone(containerPurchaseProduct)
+            constraintSet.clone(productCell)
             if (element.addOns.isNotEmpty()) {
-                constraintSet.connect(R.id.text_notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                constraintSet.connect(R.id.text_notes, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                constraintSet.connect(R.id.notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                constraintSet.connect(R.id.notes, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
             } else {
-                constraintSet.connect(R.id.text_notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                constraintSet.connect(R.id.text_notes, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                constraintSet.connect(R.id.notes, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
+                constraintSet.connect(R.id.notes, ConstraintSet.TOP, R.id.image_product, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
             }
-            constraintSet.applyTo(containerPurchaseProduct)
+            constraintSet.applyTo(productCell)
         }
     }
 
@@ -214,16 +218,16 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
     private fun renderDelete(viewBinding: ItemPurchaseProductBinding, element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             if (element.isUnavailable) {
-                buttonDeleteProduct.gone()
+                deleteProductButton.gone()
                 return
             }
 
-            buttonDeleteProduct.show()
-            buttonDeleteProduct.setOnClickListener {
+            deleteProductButton.show()
+            deleteProductButton.setOnClickListener {
                 listener.onIconDeleteProductClicked(element)
             }
 
-            buttonDeleteProduct.renderAlphaProductItem(element)
+            deleteProductButton.renderAlphaProductItem(element)
         }
     }
 }

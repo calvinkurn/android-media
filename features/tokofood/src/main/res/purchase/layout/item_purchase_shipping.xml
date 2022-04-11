@@ -10,6 +10,7 @@
     android:paddingBottom="8dp">
 
     <com.tokopedia.unifycomponents.CardUnify
+        android:id="@+id/courierButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="-5dp"
