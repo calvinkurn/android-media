@@ -13,6 +13,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
@@ -99,6 +100,8 @@ class QuizGiftView : ConstraintLayout {
                 isFocusableInTouchMode = value
                 isEnabled = value
             }
+
+            binding.icCloseInputGift.showWithCondition(isEditable)
         }
 
     var isShowCoachmark: Boolean = true
