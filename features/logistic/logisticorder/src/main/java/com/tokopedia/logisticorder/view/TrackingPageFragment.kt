@@ -209,36 +209,30 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 imgDriver.setImageUrl(lastDriver.photo)
             }
             driverName.text = lastDriver.name
-            driverPhone.text = getString(R.string.driver_description_template, lastDriver.phone, lastDriver.licenseNumber)
+            driverPhone.text = lastDriver.licenseNumber
             btnCall.setOnClickListener {
                 val callIntent = Intent(Intent.ACTION_DIAL).apply {
                     this.data = Uri.parse("tel:${lastDriver.phone}")
                 }
                 startActivity(callIntent)
             }
-            btnChat.setOnClickListener {
-                val chatIntent = Intent(Intent.ACTION_VIEW).apply {
-                    this.data = Uri.parse("sms:${lastDriver.phone}")
-                }
-                startActivity(chatIntent)
-            }
-
         }
     }
 
     private fun setTippingData(data: TrackingDataModel) {
         val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
-
+            imgFindDriver.setImageUrl("https://images.tokopedia.net/img/android/tipping/Group 3125093.png")
             if (tippingData.tippingLastDriver.name.isEmpty()) {
                 driverLayout.visibility = View.GONE
-                imgFindDriver.visibility = View.VISIBLE
+                // todo
             } else {
                 driverLayout.visibility = View.VISIBLE
-                imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
-
+                if (tippingData.tippingLastDriver.photo.isNotEmpty()) {
+                    imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
+                }
                 driverName.text = tippingData.tippingLastDriver.name
-                driverPhone.text = getString(R.string.driver_description_template, tippingData.tippingLastDriver.phone, tippingData.tippingLastDriver.licenseNumber)
+                driverPhone.text = tippingData.tippingLastDriver.licenseNumber
             }
 
             if (tippingData.tippingLastDriver.phone.isNotEmpty()) {
@@ -248,12 +242,8 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                     }
                     startActivity(callIntent)
                 }
-                btnChat.setOnClickListener {
-                    val chatIntent = Intent(Intent.ACTION_VIEW).apply {
-                        this.data = Uri.parse("sms:${tippingData.tippingLastDriver.phone}")
-                    }
-                    startActivity(chatIntent)
-                }
+            } else {
+                btnCall.visibility = View.GONE
             }
 
             btnTipping.text = when (tippingData.status) {
@@ -269,7 +259,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             btnInformation.setOnClickListener {
                 DriverInfoBottomSheet().show(parentFragmentManager)
             }
-
+            btnTipping.isInverse = true
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
                     SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
