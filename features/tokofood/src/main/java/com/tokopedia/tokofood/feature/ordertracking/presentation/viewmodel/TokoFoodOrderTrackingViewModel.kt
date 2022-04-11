@@ -24,7 +24,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     val orderDetailResult: LiveData<Result<OrderDetailResultUiModel>>
         get() = _orderDetailResult
 
-    var foodItems = listOf<BaseOrderTrackingTypeFactory>()
+    private var foodItems = listOf<BaseOrderTrackingTypeFactory>()
 
     fun fetchOrderDetail(json: String) {
         launchCatchError(block = {
@@ -37,5 +37,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             _orderDetailResult.value = Fail(it)
         })
     }
+
+    fun getFoodItems() = foodItems
 
 }

@@ -24,8 +24,12 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTr
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.RecyclerViewPollerListener
+import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.OrderTrackingNavigator
+import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -51,6 +55,14 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
 
     private val orderTrackingAdapter by lazy {
         OrderTrackingAdapter(orderTrackingAdapterTypeFactory)
+    }
+
+    private val navigator by lazy {
+        OrderTrackingNavigator(this)
+    }
+
+    private val toolbarHandler: OrderTrackingToolbarHandler by lazy(LazyThreadSafetyMode.NONE) {
+        OrderTrackingToolbarHandler()
     }
 
     private var binding by autoClearedNullable<FragmentTokofoodOrderTrackingBinding>()
@@ -94,7 +106,8 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
         isExpandable: Boolean
     ) {
         if (isExpandable) {
-            val newFoodItems = viewModel.foodItems.slice(Int.ONE..viewModel.foodItems.size - Int.ONE)
+            val newFoodItems =
+                viewModel.getFoodItems().slice(Int.ONE..viewModel.getFoodItems().size - Int.ONE)
             val newToggleCta = orderDetailToggleCta.copy(isExpand = true)
             orderTrackingAdapter.expandOrderDetail(newFoodItems)
             orderTrackingAdapter.updateItem(orderDetailToggleCta, newToggleCta)
@@ -116,7 +129,8 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
                 is Success -> {
                     isCompletedOrder = it.data.isOrderCompleted
                     orderTrackingAdapter.updateOrderTracking(it.data.orderDetailList)
-                    setupViews(isCompletedOrder)
+                    setupViews(isCompletedOrder, it.data.actionButtonsUiModel)
+                    setToolbarLiveTracking(it.data.toolbarLiveTrackingUiModel, isCompletedOrder)
                 }
                 is Fail -> {
                     orderTrackingAdapter.showError(OrderTrackingErrorUiModel(it.throwable))
@@ -151,13 +165,23 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
         }
     }
 
-    private fun setupViews(isOrderCompleted: Boolean) {
-        if (isOrderCompleted) {
-            binding?.containerOrderTrackingHelpButton?.show()
-            binding?.containerOrderTrackingActionsButton?.hide()
-        } else {
-            binding?.containerOrderTrackingHelpButton?.hide()
-            binding?.containerOrderTrackingActionsButton?.show()
+    private fun setupViews(isOrderCompleted: Boolean, actionButtonsUiModel: ActionButtonsUiModel) {
+        binding?.run {
+            if (isOrderCompleted) {
+                containerOrderTrackingHelpButton.hide()
+                containerOrderTrackingActionsButton.apply {
+                    setOrderTrackingNavigator(navigator)
+                    setupActionButtons(actionButtonsUiModel, childFragmentManager)
+                    show()
+                }
+            } else {
+                containerOrderTrackingActionsButton.hide()
+                containerOrderTrackingHelpButton.apply {
+                    setOrderTrackingNavigator(navigator)
+                    setupHelpButton(actionButtonsUiModel.primaryActionButton)
+                    show()
+                }
+            }
         }
     }
 
@@ -168,6 +192,16 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
             supportActionBar?.run {
                 title = getString(R.string.title_tokofood_post_purchase)
             }
+        }
+    }
+
+    private fun setToolbarLiveTracking(
+        toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
+        isOrderCompleted: Boolean
+    ) {
+        if (!isOrderCompleted) {
+            toolbarHandler.setToolbarLiveTracking(toolbarLiveTrackingUiModel)
+            toolbarHandler.setToolbarScrolling(binding, isOrderCompleted)
         }
     }
 

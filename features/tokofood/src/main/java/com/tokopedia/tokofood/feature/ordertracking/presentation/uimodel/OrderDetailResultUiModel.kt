@@ -6,4 +6,6 @@ data class OrderDetailResultUiModel(
     val orderDetailList: List<BaseOrderTrackingTypeFactory>,
     val foodItemList: List<BaseOrderTrackingTypeFactory>,
     val isOrderCompleted: Boolean,
+    val actionButtonsUiModel: ActionButtonsUiModel,
+    val toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel
 )

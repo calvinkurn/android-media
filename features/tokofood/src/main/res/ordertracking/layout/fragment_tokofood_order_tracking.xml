@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderTrackingStickyHelpButton
+    <com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderDetailStickyActionButton
         android:id="@+id/containerOrderTrackingActionsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

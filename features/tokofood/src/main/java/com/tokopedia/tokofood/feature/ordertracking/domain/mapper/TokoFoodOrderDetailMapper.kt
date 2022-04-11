@@ -3,10 +3,11 @@ package com.tokopedia.tokofood.feature.ordertracking.domain.mapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.AddonVariantItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
-
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import javax.inject.Inject
 
 class TokoFoodOrderDetailMapper @Inject constructor(
@@ -35,7 +36,9 @@ class TokoFoodOrderDetailMapper @Inject constructor(
         return OrderDetailResultUiModel(
             orderDetailList,
             foodItems,
-            isOrderCompleted
+            isOrderCompleted,
+            mapToActionButtons(orderDetailResponse),
+            mapToToolbarLiveTrackingUiModel(orderDetailResponse)
         )
     }
 
@@ -64,4 +67,36 @@ class TokoFoodOrderDetailMapper @Inject constructor(
             AddonVariantItemUiModel(displayName = it.displayName, optionName = it.optionName)
         }.orEmpty()
     }
+
+    private fun mapToActionButtons(orderDetailResponse: TokoFoodOrderDetailResponse.TokofoodOrderDetail): ActionButtonsUiModel {
+        val primaryActionButton = orderDetailResponse.actionButtons.firstOrNull()
+        val secondaryActionButtons = orderDetailResponse.dotMenus
+        return ActionButtonsUiModel(
+            primaryActionButton = ActionButtonsUiModel.ActionButton(
+                label = primaryActionButton?.label.orEmpty(),
+                appUrl = primaryActionButton?.appUrl.orEmpty(),
+                type = primaryActionButton?.actionType.orEmpty()
+            ),
+            secondaryActionButton = secondaryActionButtons.map {
+                ActionButtonsUiModel.ActionButton(
+                    label = it.label,
+                    appUrl = it.appUrl,
+                    type = it.actionType
+                )
+            }
+        )
+    }
+
+    private fun mapToToolbarLiveTrackingUiModel(
+        orderDetailResponse:
+        TokoFoodOrderDetailResponse.TokofoodOrderDetail
+    ) = ToolbarLiveTrackingUiModel(
+        merchantName = orderDetailResponse.merchant.displayName,
+        orderStatusTitle = orderDetailResponse.orderStatus.title,
+        composeEstimation = StringBuilder().apply {
+            append(orderDetailResponse.eta.label)
+            append(" ")
+            append(orderDetailResponse.eta.time)
+        }.toString()
+    )
 }

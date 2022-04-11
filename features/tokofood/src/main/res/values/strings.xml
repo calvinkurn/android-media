@@ -23,6 +23,8 @@
 
     <string name="order_tracking_help_button_title">Bantuan</string>
     <string name="order_completed_buy_again_button_title">Beli Lagi</string>
+    <string name="secondary_action_bottomsheet_header">Lainnya</string>
+    <string name="order_tracking_toolbar_desc_with_eta">%1s • %2s</string>
 
     <!-- this string will removed-->
     <string name="order_detail_food_addon_item_value"><![CDATA[%1s <font color=\"%2$s\"><b>(%3$s add on)</b></font>]]></string>

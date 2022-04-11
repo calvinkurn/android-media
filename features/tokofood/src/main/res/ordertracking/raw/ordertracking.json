@@ -83,7 +83,7 @@
     ],
     "actionButtons": [
       {
-        "label": "Beli Lagi",
+        "label": "Bantuan",
         "actionType": "link",
         "appUrl": "tokopedia://food/merchant/{merchantId}",
         "webUrl": "https://tokopedia.com/food/merchant/{merchantId}"
