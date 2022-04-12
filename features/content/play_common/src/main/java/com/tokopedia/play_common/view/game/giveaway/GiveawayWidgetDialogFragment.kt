@@ -34,14 +34,14 @@ class GiveawayWidgetDialogFragment : DialogFragment() {
 
         val window = dialog?.window ?: return
         window.setLayout(
-            (0.6 * getScreenWidth()).toInt(),
+            (WIDTH_PERCENTAGE * getScreenWidth()).toInt(),
             WindowManager.LayoutParams.WRAP_CONTENT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     fun show(fragmentManager: FragmentManager) {
-        if (!isAdded) show(fragmentManager, TAG)
+        if (!isVisible) show(fragmentManager, TAG)
     }
 
     fun onView(updateFn: GiveawayWidgetView.() -> Unit) {
@@ -74,6 +74,8 @@ class GiveawayWidgetDialogFragment : DialogFragment() {
 
     companion object {
         private const val TAG = "GiveawayWidgetDialogFragment"
+
+        private const val WIDTH_PERCENTAGE = 0.6
 
         fun getOrCreate(fragmentManager: FragmentManager): GiveawayWidgetDialogFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? GiveawayWidgetDialogFragment
