@@ -340,12 +340,13 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                 }
             }
             addHeaderIcons(editable)
-            if (imageAttachments.isNotEmpty()) {
+            if (imageAttachments.isNotEmpty() || videoAttachments.isNotEmpty()) {
                 binding?.reviewDetailAttachedMedia?.apply {
                     val mappedImageAttachment = imageAttachments.map {
                         ReviewMediaImageThumbnailUiModel(
                             uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                thumbnailUrl = it.thumbnail
+                                thumbnailUrl = it.thumbnail,
+                                fullSizeUrl = it.fullSize
                             )
                         )
                     }

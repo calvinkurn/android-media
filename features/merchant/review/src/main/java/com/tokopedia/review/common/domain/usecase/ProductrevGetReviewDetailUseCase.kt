@@ -33,6 +33,9 @@ class ProductrevGetReviewDetailUseCase @Inject constructor(graphqlRepository: Gr
                         fullSize
                         thumbnail
                       }
+                      video {
+                        url
+                      }
                       editable
                       reviewerName
                       sentAsAnonymous
