@@ -38,11 +38,11 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SH
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
-import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
-import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
-import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
-import com.tokopedia.shop.note.view.model.ShopNoteUiModel
+import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
+import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
+import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
+import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

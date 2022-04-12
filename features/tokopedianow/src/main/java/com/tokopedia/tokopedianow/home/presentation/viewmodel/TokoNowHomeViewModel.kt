@@ -21,6 +21,7 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
@@ -52,6 +53,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLay
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingReferralData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeProgressBar
@@ -70,6 +72,8 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ValidateReferralUserUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetReferralSenderHomeUseCase
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SUCCESS_CODE
@@ -78,8 +82,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProgressBarUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -102,12 +107,15 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
     private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
     private val setUserPreferenceUseCase: SetUserPreferenceUseCase,
+    private val validateReferralUserUseCase: ValidateReferralUserUseCase,
+    private val getReferralSenderHomeUseCase: GetReferralSenderHomeUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
         private const val DEFAULT_INDEX = 1
+        private const val REFERRAL_SENDER = 1
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -132,6 +140,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _openScreenTracker
     val setUserPreference: LiveData<Result<SetUserPreferenceData>>
         get() = _setUserPreference
+    val sharingReferralUrlParam: LiveData<Result<String>>
+        get() = _sharingReferralUrlParam
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -144,6 +154,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
+    private val _sharingReferralUrlParam = MutableLiveData<Result<String>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -180,6 +191,35 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {
             _homeLayoutList.postValue(Fail(it))
         }
+    }
+
+    fun getReferralSenderHome(slug: String) {
+        launchCatchError(coroutineContext, block = {
+            val response = getReferralSenderHomeUseCase.execute(slug)
+            if(response.gamiReferralSenderHome.resultStatus.code == SUCCESS_CODE) {
+                _sharingReferralUrlParam.postValue(Success("$slug/${response.gamiReferralSenderHome.sharingMetaData.sharingUrl}"))
+            } else {
+                _sharingReferralUrlParam.postValue(Fail(MessageErrorException(response.gamiReferralSenderHome.resultStatus.reason)))
+            }
+        }) {
+            _sharingReferralUrlParam.postValue(Fail(it))
+        }
+    }
+
+    fun updateSharingReferral(item: HomeSharingReferralWidgetUiModel, isButtonLoading: Boolean) {
+        homeLayoutItemList.mapSharingReferralData(
+            item = item,
+            isSender = item.isSender,
+            isButtonLoading = isButtonLoading,
+            warehouseId = item.warehouseId,
+            isDisplayed = item.isDisplayed,
+            userStatus = item.userStatus
+        )
+        val data = HomeLayoutListUiModel(
+            items = getHomeVisitableList(),
+            state = TokoNowLayoutState.LOADED
+        )
+        _homeLayoutList.value = Success(data)
     }
 
     fun getProductRecomOoc() {
@@ -475,6 +515,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is HomeTickerUiModel -> getTickerDataAsync(item, localCacheModel).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, localCacheModel.warehouse_id).await()
+            is HomeSharingReferralWidgetUiModel -> getSharingReferralAsync(item, localCacheModel.warehouse_id).await()
             is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
             else -> removeUnsupportedLayout(item)
         }
@@ -567,6 +608,27 @@ class TokoNowHomeViewModel @Inject constructor(
             val response = getRepurchaseWidgetUseCase.execute(warehouseId)
             if(response.products.isNotEmpty()) {
                 homeLayoutItemList.mapSharingEducationData(item)
+            } else {
+                homeLayoutItemList.removeItem(item.id)
+            }
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private suspend fun getSharingReferralAsync(item: HomeSharingReferralWidgetUiModel, warehouseId: String): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val response = validateReferralUserUseCase.execute(item.slug)
+            if(response.gamiReferralValidateUser.resultStatus.code == SUCCESS_CODE) {
+                val status = response.gamiReferralValidateUser.status
+                val isSender = REFERRAL_SENDER == status
+                homeLayoutItemList.mapSharingReferralData(
+                    item = item,
+                    isSender = isSender,
+                    warehouseId = warehouseId,
+                    isDisplayed = false,
+                    userStatus = status.toString()
+                )
             } else {
                 homeLayoutItemList.removeItem(item.id)
             }

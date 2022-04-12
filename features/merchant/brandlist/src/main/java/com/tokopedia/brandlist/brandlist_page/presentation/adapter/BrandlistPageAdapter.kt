@@ -68,8 +68,10 @@ class BrandlistPageAdapter(
                 visitables.add(loadingModel)
             }
             recyclerView?.let {
-                it.post {
-                    notifyItemInserted(visitables.size)
+                if (!it.isComputingLayout) {
+                    it.post {
+                        notifyItemInserted(visitables.size)
+                    }
                 }
             }
         }
@@ -108,8 +110,10 @@ class BrandlistPageAdapter(
     }
 
     override fun updateEtalaseListViewHolderData() {
-        Handler().post {
-            notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
+        if (recyclerView?.isComputingLayout == false) {
+            Handler().post {
+                notifyItemChanged(ALL_BRAND_GROUP_HEADER_POSITION)
+            }
         }
     }
 }

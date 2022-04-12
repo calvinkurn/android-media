@@ -37,6 +37,7 @@ ext {
             affiliateCommon                 : ":features:content:affiliate_common",
             profile                         : ":features:content:profile",
             createpost                      : ":features:content:createpost",
+            people                          : ":features:content:people",
             createpostCommon                : ":features:content:createpost_common",
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
@@ -249,8 +250,8 @@ ext {
             inboxCommon                     : ":features:communication:inbox_common",
             notifCenter                     : ":features:communication:notifcenter",
             orderhistory                    : ":features:communication:orderhistory",
+            attachvoucher                   : ":features:communication:attachvoucher",
 
-            attachvoucher                   : ":features:user:attachvoucher",
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             fcm_common                      : ":features:user:fcm_common",
