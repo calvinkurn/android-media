@@ -4,7 +4,7 @@ import androidx.annotation.IntDef
 import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_CLOSE
 import com.tokopedia.tokomember.util.MembershipWidgetType.Companion.MEMBERSHIP_OPEN
 
-const val IO = "IO"
+const val IO_DISPATCHER = "IO_DISPATCHER"
 
 const val TM_REGISTRATION_SHOP_DATA ="""
      query membershipGetShopRegistrationWidget(${'$'}orderData: [MembershipOrderData]!) {

@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember.model.MembershipOrderData
 import com.tokopedia.tokomember.model.MembershipRegisterResponse
 import com.tokopedia.tokomember.model.MembershipShopResponse
@@ -20,7 +21,7 @@ class TokomemberRepository @Inject constructor(private val gql: GraphqlRepositor
     suspend fun registerMembership(cardId: String?): MembershipRegisterResponse {
         val variables = HashMap<String, Any>()
         if (!cardId.isNullOrEmpty()) {
-            variables[MembershipRegisterParams.CARD_ID] = cardId.toInt()
+            variables[MembershipRegisterParams.CARD_ID] = cardId.toIntOrZero()
         } else {
             throw IllegalArgumentException("Card Id must not be empty")
         }

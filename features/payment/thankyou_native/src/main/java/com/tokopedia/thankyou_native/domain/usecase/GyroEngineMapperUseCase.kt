@@ -22,7 +22,6 @@ class GyroEngineMapperUseCase @Inject constructor(
     private var queryParamTokomember: TokoMemberRequestParam? = null
     private var deferredTokomemberData: Deferred<MembershipShopResponse>? = null
     private var tokomemberModel: TokomemberModel ? = null
-    private var gyroRecommendationListItem = GyroRecommendation("", "", ArrayList())
 
     fun getFeatureListData(
         featureEngineData: FeatureEngineData?,
@@ -41,33 +40,46 @@ class GyroEngineMapperUseCase @Inject constructor(
     override suspend fun executeOnBackground(): GyroRecommendation {
 
         return withContext(coroutineContext) {
-            setTokomemberData(getTokomemberData())
             val gyroRecommendationList = async {
                 FeatureRecommendationMapper.getFeatureList(featureEngineData)
             }
-            gyroRecommendationList.await()?.gyroVisitable?.let { listTypeItem->
-                gyroRecommendationListItem.gyroVisitable.addAll(listTypeItem)
+            var gyroRecommendationListItem = gyroRecommendationList.await()
+            if (gyroRecommendationListItem == null) {
+                gyroRecommendationListItem = GyroRecommendation("", "", ArrayList())
             }
+            setTokomemberData(getTokomemberData() , gyroRecommendationListItem)
             gyroRecommendationListItem
         }
     }
 
-    private fun setTokomemberData(tokomemberData: List<GyroTokomemberItem>?) {
+    private fun setTokomemberData(tokomemberData: List<GyroTokomemberItem>?, gyroRecommendation: GyroRecommendation?) {
         if (tokomemberData?.isNotEmpty() == true &&
             (tokomemberData.getOrNull(TOKOMEMBER_WAITING_WIDGET)?.isShown == true ||
                     tokomemberData.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)?.isShown == true)
         ) {
-            gyroRecommendationListItem.gyroVisitable.add(
-                tokomemberData.getOrNull(
-                    TOKOMEMBER_WAITING_WIDGET
-                ) ?: GyroTokomemberItem()
-            )
+            if (queryParamTokomember?.isFirstElement == true) {
+                gyroRecommendation?.apply {
+                    gyroVisitable.add(
+                        0, tokomemberData.getOrNull(
+                            TOKOMEMBER_WAITING_WIDGET
+                        ) ?: GyroTokomemberItem()
+                    )
+                    title = queryParamTokomember?.sectionTitle ?: ""
+                    description = queryParamTokomember?.sectionSubtitle ?: ""
+                }
+            } else {
+                gyroRecommendation?.gyroVisitable?.add(
+                    tokomemberData.getOrNull(
+                        TOKOMEMBER_WAITING_WIDGET
+                    ) ?: GyroTokomemberItem()
+                )
+            }
             when (getMembershipType()) {
-                CLOSE_MEMBERSHIP -> gyroRecommendationListItem.gyroMembershipSuccessWidget =
+                CLOSE_MEMBERSHIP -> gyroRecommendation?.gyroMembershipSuccessWidget =
                     tokomemberData.getOrNull(TOKOMEMBER_WAITING_WIDGET)
                         ?: GyroTokomemberItem()
                 OPEN_MEMBERSHIP -> {
-                    gyroRecommendationListItem.gyroMembershipSuccessWidget =
+                    gyroRecommendation?.gyroMembershipSuccessWidget =
                         tokomemberData.getOrNull(TOKOMEMBER_SUCCESS_WIDGET)
                             ?: GyroTokomemberItem()
                 }

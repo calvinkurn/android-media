@@ -2,6 +2,7 @@ package com.tokopedia.thankyou_native.data.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -49,26 +50,44 @@ object FeatureRecommendationMapper {
     }
 
     fun getTokomemberRequestParams(thanksPageData: ThanksPageData, engineData: FeatureEngineData): TokoMemberRequestParam {
-        var index = 0
         val shopParams = ArrayList<MembershipOrderData>()
         var amount: Float
         var shopId = 0
+        var isFirstElement = false
+        var sectionSubTitle = ""
+        var sectionTitle = ""
 
         thanksPageData.shopOrder.forEach {
             amount = 0F
             it.purchaseItemList.forEach { orderItem ->
                 amount += orderItem.totalPrice
             }
-            shopId = it.storeId.toInt()
-            shopParams.add(index, MembershipOrderData(shopId, amount))
-            index++
+            shopId = it.storeId.toIntOrZero()
+            shopParams.add(MembershipOrderData(shopId, amount))
+        }
+        if (!engineData.featureEngineItem.isNullOrEmpty()) {
+            engineData.featureEngineItem.forEachIndexed { i, featureEngineItem ->
+                try {
+                    val jsonObject = JSONObject(featureEngineItem.detail)
+                    if (jsonObject[KEY_TYPE].toString().equals(TYPE_TOKOMEMBER, true)){
+                        if (i == 0) {
+                            isFirstElement = true
+                            sectionTitle = jsonObject[KEY_TITLE].toString()
+                            sectionSubTitle = jsonObject[KEY_SUBTITLE].toString()
+                        }
+                    }
+                } catch (e: Exception) { }
+            }
         }
         return TokoMemberRequestParam (
             pageType = PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
             source = TokomemberSource.THANK_YOU,
             paymentID = thanksPageData.paymentID,
             orderData = shopParams,
-            shopID = shopId
+            shopID = shopId,
+            isFirstElement = isFirstElement,
+            sectionTitle = sectionTitle,
+            sectionSubtitle = sectionSubTitle
         )
     }
 

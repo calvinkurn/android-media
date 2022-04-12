@@ -2,7 +2,7 @@ package com.tokopedia.tokomember.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.tokomember.util.IO
+import com.tokopedia.tokomember.util.IO_DISPATCHER
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,7 +13,7 @@ import javax.inject.Named
 class TokomemberDispatcherModule {
 
     @Provides
-    @Named(IO)
+    @Named(IO_DISPATCHER)
     fun provideWorkerDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
     @Provides
