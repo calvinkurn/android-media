@@ -37,7 +37,7 @@ class DimenUsageDetector : Detector(), XmlScanner {
         }
     }
 
-    private val dimenList = mutableListOf<Pair<String, String>>()
+    private val dimenMap = mutableMapOf<String, String>()
 
     override fun beforeCheckEachProject(context: Context) {
         context.project.resourceFolders.forEach { resFolder ->
@@ -56,7 +56,7 @@ class DimenUsageDetector : Detector(), XmlScanner {
                             val value = it.substringAfter("\">").substringBefore("</")
 
                             if (key.isNotBlank() && value.isNotBlank()) {
-                                dimenList.add(key to value)
+                                dimenMap[key] = value
                             }
                         }
                     }
@@ -113,9 +113,9 @@ class DimenUsageDetector : Detector(), XmlScanner {
      * */
     private fun reportIssue(context: XmlContext, attr: Attr) {
         val dimenName = attr.value.replace("@dimen/", "")
-        val isDimenExistOnLocalModule = dimenList.any { it.first == dimenName }
+        val isDimenNotExistOnLocalModule = dimenMap[dimenName].isNullOrBlank()
 
-        if (!isDimenExistOnLocalModule) {
+        if (isDimenNotExistOnLocalModule) {
             context.report(
                 XML_ISSUE,
                 context.getLocation(attr),
