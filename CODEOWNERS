@@ -7,6 +7,7 @@
 /features/content/kol/                  				@tokopedia/android-minionlance-dev
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
 /features/content/profile/              				@tokopedia/android-minionlance-dev
+/features/content/people/                               @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
 /features/category/       				                @tokopedia/android-miniondarth-dev
 /features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
