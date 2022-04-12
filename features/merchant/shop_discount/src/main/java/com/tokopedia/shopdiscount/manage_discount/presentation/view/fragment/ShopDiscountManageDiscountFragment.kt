@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -27,6 +28,7 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholde
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountSetupProductItemViewHolder
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
@@ -167,8 +169,19 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = this@ShopDiscountManageDiscountFragment.adapter
             itemAnimator = null
-//            setDecoration()
+            setDecoration()
         }
+    }
+
+    private fun RecyclerView.setDecoration() {
+        val dividerDrawable = MethodChecker.getDrawable(
+            context,
+            R.drawable.shop_discount_manage_discount_bg_line_separator_thin
+        )
+        val dividerItemDecoration = ShopDiscountProductDetailDividerItemDecoration(dividerDrawable)
+        if (itemDecorationCount > 0)
+            removeItemDecorationAt(0)
+        addItemDecoration(dividerItemDecoration)
     }
 
     private fun getSetupProductListData() {
