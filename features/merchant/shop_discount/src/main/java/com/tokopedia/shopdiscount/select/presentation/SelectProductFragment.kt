@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
@@ -34,7 +35,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, ReservableProduct>() {
@@ -65,6 +68,9 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
 
+    @Inject
+    lateinit var userSession : UserSessionInterface
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
     private val productAdapter by lazy {
@@ -82,6 +88,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val requestId = userSession.shopId + Date().time
+        viewModel.setRequestId(requestId)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -95,6 +107,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         super.onViewCreated(view, savedInstanceState)
         setupView()
         observeProducts()
+        observeReserveProducts()
     }
 
     private fun setupView() {
@@ -141,10 +154,11 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun setupButton() {
         binding?.run {
-            binding?.btnManage?.text =
-                String.format(getString(R.string.sd_manage_with_counter), ZERO)
+            binding?.btnManage?.text = String.format(getString(R.string.sd_manage_with_counter), ZERO)
             btnManage.setOnClickListener {
-
+                val requestId = viewModel.getRequestId()
+                val selectedProducts = viewModel.getSelectedProduct()
+                viewModel.reserveProduct(requestId, selectedProducts)
             }
         }
     }
@@ -163,6 +177,24 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                     binding?.groupContent?.gone()
                     binding?.shimmer?.content?.gone()
                     displayError()
+                    binding?.root showError it.throwable
+                }
+            }
+        }
+    }
+
+    private fun observeReserveProducts() {
+        viewModel.reserveProduct.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    ShopDiscountManageDiscountActivity.start(
+                        requireActivity(),
+                        viewModel.getRequestId(),
+                        2,
+                        "RESERVE"
+                    )
+                }
+                is Fail -> {
                     binding?.root showError it.throwable
                 }
             }
@@ -205,7 +237,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         adapter?.update(selectedProduct, updatedProduct)
 
         val items = adapter?.getItems() ?: emptyList()
-        val selectedProductCount = viewModel.getSelectedProductCount()
+        val selectedProductCount = viewModel.getSelectedProduct().size
 
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
@@ -277,7 +309,9 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         binding?.globalError?.gone()
         binding?.emptyState?.gone()
         val keyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+        val requestId = viewModel.getRequestId()
         viewModel.getProducts(
+            requestId,
             page,
             keyword,
             viewModel.shouldDisableProductSelection()
@@ -325,14 +359,16 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     }
 
     private fun clearSearchBar() {
-        val selectedProductCount = viewModel.getSelectedProductCount()
+        val selectedProductCount = viewModel.getSelectedProduct().size
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
         clearAllData()
         onShowLoading()
         binding?.shimmer?.content?.visible()
+        val requestId = viewModel.getRequestId()
         viewModel.getProducts(
+            requestId,
             FIRST_PAGE,
             EMPTY_STRING,
             viewModel.shouldDisableProductSelection(),

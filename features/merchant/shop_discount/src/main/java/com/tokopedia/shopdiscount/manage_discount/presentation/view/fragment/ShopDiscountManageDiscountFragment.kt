@@ -322,7 +322,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     private fun openBottomSheetBulkApply() {
-        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
+        val bottomSheet =
+            DiscountBulkApplyBottomSheet.newInstance(getString(R.string.shop_discount_manage_discount_edit_toolbar_title))
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
         }
