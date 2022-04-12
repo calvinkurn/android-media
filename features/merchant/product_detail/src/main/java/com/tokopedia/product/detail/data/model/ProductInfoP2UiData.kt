@@ -13,7 +13,6 @@ import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculatio
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationData
 import com.tokopedia.product.detail.data.model.merchantvouchersummary.MerchantVoucherSummary
 import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchaseProtectionInfo
-import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
@@ -51,7 +50,6 @@ data class ProductInfoP2UiData(
     var bebasOngkir: BebasOngkir = BebasOngkir(),
     var uspImageUrl: String = "",
     var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
-    var imageReviews: ImageReview? = null,
     var reviewMediaThumbnails: ReviewMediaThumbnailUiModel? = null,
     var detailedMediaResult: ProductrevGetReviewMedia? = null,
     var helpfulReviews: List<Review>? = null,

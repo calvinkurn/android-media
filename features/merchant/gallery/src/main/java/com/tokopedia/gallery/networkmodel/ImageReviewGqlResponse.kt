@@ -29,6 +29,9 @@ class ImageReviewGqlResponse {
         @SerializedName("imageID")
         @Expose
         var imageID: Int = 0
+        @SerializedName("videoID")
+        @Expose
+        var videoID: Int = 0
         @SerializedName("reviewID")
         @Expose
         var reviewID: Int = 0
@@ -45,12 +48,15 @@ class ImageReviewGqlResponse {
         @SerializedName("images")
         @Expose
         var images: List<Image>? = null
-        @SerializedName("imageCountFmt")
+        @SerializedName("videos")
         @Expose
-        var imageCountFmt: String = ""
-        @SerializedName("imageCount")
+        var videos: List<Video>? = null
+        @SerializedName("mediaCountFmt")
         @Expose
-        var imageCount: String = ""
+        var mediaCountFmt: String = ""
+        @SerializedName("mediaCount")
+        @Expose
+        var mediaCount: String = ""
     }
 
     class Image {
@@ -70,6 +76,19 @@ class ImageReviewGqlResponse {
         @SerializedName("reviewID")
         @Expose
         var reviewID: String = ""
+    }
+
+    class Video {
+
+        @SerializedName("attachmentID")
+        @Expose
+        var attachmentID: Int = 0
+        @SerializedName("url")
+        @Expose
+        var url: String? = ""
+        @SerializedName("feedbackID")
+        @Expose
+        var feedbackID: String? = ""
     }
 
     class Review {

@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -21,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationC
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
@@ -84,7 +84,7 @@ interface DynamicProductDetailListener {
      * ProductReviewViewHolder
      */
     fun onSeeAllLastItemMediaReview(componentTrackDataModel: ComponentTrackDataModel?)
-    fun onMediaReviewClick(listOfImage: List<ImageReviewItem>, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String, detailedMediaResult: ProductrevGetReviewMedia)
+    fun onMediaReviewClick(mediaThumbnailUiModel: ReviewMediaThumbnailUiModel, position: Int, componentTrackDataModel: ComponentTrackDataModel?, imageCount: String, detailedMediaResult: ProductrevGetReviewMedia)
     fun onReviewClick()
     fun onSeeAllTextView(componentTrackDataModel: ComponentTrackDataModel?)
 

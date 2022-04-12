@@ -47,7 +47,7 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
     override fun bind(element: ProductMostHelpfulReviewDataModel?) {
         this.element = element
         element?.let {
-            if (it.imageReviews == null && it.listOfReviews == null) {
+            if (it.mediaThumbnails == null && it.listOfReviews == null) {
                 showShimmering()
                 hideAllOtherElements()
                 return
@@ -59,14 +59,12 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                 listener.onImpressComponent(componentData)
             }
             setSeeAllReviewClickListener(componentData)
-            it.imageReviews?.let { images ->
-                renderImageReview(
-                    element.mediaThumbnails,
-                    element.formattedRating,
-                    element.totalRatingCount,
-                    element.totalReviewCount
-                )
-            }
+            renderImageReview(
+                element.mediaThumbnails,
+                element.formattedRating,
+                element.totalRatingCount,
+                element.totalReviewCount
+            )
             val reviewData = it.listOfReviews?.firstOrNull()
             reviewData?.let { review ->
                 setReviewStars(review)
@@ -231,9 +229,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                     if (item.uiState is ReviewMediaImageThumbnailUiState.ShowingSeeMore) {
                         listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
                     } else {
-                        it.imageReviews?.let { imageReviews ->
+                        it.mediaThumbnails?.let { mediaThumbnails ->
                             it.detailedMediaResult?.let { detailedMediaResult ->
-                                listener.onMediaReviewClick(imageReviews, position, getComponentTrackData(it), imageReviews.count().toString(), detailedMediaResult)
+                                listener.onMediaReviewClick(mediaThumbnails, position, getComponentTrackData(it), mediaThumbnails.mediaThumbnails.count().toString(), detailedMediaResult)
                             }
                         }
                     }
@@ -241,9 +239,9 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
                     if (item.uiState is ReviewMediaVideoThumbnailUiState.ShowingSeeMore) {
                         listener.onSeeAllLastItemMediaReview(getComponentTrackData(it))
                     } else {
-                        it.imageReviews?.let { imageReviews ->
+                        it.mediaThumbnails?.let { mediaThumbnails ->
                             it.detailedMediaResult?.let { detailedMediaResult ->
-                                listener.onMediaReviewClick(imageReviews, position, getComponentTrackData(it), imageReviews.count().toString(), detailedMediaResult)
+                                listener.onMediaReviewClick(mediaThumbnails, position, getComponentTrackData(it), mediaThumbnails.mediaThumbnails.count().toString(), detailedMediaResult)
                             }
                         }
                     }

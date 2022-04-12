@@ -393,6 +393,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             reviewImage{
               list{
                 imageID
+                videoID
                 reviewID
                 imageSibling
               }
@@ -423,8 +424,13 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                    uriLarge
                    reviewID
                  }
-                 imageCountFmt
-                 imageCount
+                 videos {
+                   attachmentID
+                   url
+                   feedbackID
+                 }
+                 mediaCountFmt
+                 mediaCount
                }
               hasNext
               hasPrev
@@ -572,7 +578,6 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.reviewMediaThumbnails = DynamicProductDetailMapper.generateReviewMediaThumbnails(reviewImage)
             p2UiData.detailedMediaResult = DynamicProductDetailMapper.generateDetailedMediaResult(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy

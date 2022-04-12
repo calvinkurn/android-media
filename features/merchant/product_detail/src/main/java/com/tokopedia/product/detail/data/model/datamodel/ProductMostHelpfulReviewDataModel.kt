@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.data.model.datamodel
 
 import android.os.Bundle
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
@@ -12,7 +11,6 @@ data class ProductMostHelpfulReviewDataModel(
         val type: String = "",
         val name: String = "",
         var listOfReviews: List<Review>? = null,
-        var imageReviews: List<ImageReviewItem>? = null,
         var mediaThumbnails: ReviewMediaThumbnailUiModel? = null,
         var detailedMediaResult: ProductrevGetReviewMedia? = null,
         var ratingScore: Float = 0F,
@@ -34,7 +32,6 @@ data class ProductMostHelpfulReviewDataModel(
     override fun equalsWith(newData: DynamicPdpDataModel): Boolean {
         return if (newData is ProductMostHelpfulReviewDataModel) {
             listOfReviews?.size == newData.listOfReviews?.size &&
-            imageReviews?.size == newData.imageReviews?.size &&
             mediaThumbnails == newData.mediaThumbnails &&
             detailedMediaResult == newData.detailedMediaResult
         } else {

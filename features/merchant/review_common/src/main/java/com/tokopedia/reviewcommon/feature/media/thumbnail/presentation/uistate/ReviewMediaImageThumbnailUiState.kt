@@ -4,16 +4,22 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 sealed interface ReviewMediaImageThumbnailUiState: Parcelable {
-    val uri: String
+    val reviewID: String
+    val thumbnailUrl: String
+    val fullSizeUrl: String
 
     @Parcelize
     data class Showing(
-        override val uri: String = ""
+        override val reviewID: String = "",
+        override val thumbnailUrl: String = "",
+        override val fullSizeUrl: String = "",
     ) : ReviewMediaImageThumbnailUiState
 
     @Parcelize
     data class ShowingSeeMore(
-        override val uri: String = "",
+        override val reviewID: String = "",
+        override val thumbnailUrl: String = "",
+        override val fullSizeUrl: String = "",
         val totalImageCount: Int = 0
     ) : ReviewMediaImageThumbnailUiState
 }

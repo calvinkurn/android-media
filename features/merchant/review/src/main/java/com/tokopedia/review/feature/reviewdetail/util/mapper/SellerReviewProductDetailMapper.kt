@@ -104,14 +104,14 @@ object SellerReviewProductDetailMapper {
                 mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
                     videoAttachment.videoUrl?.let { url ->
                         ReviewMediaVideoThumbnailUiModel(
-                            uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = url)
+                            uiState = ReviewMediaVideoThumbnailUiState.Showing(url = url)
                         )
                     }
                 }.plus(
                     it.imageAttachments.mapNotNull { imageAttachment ->
                         imageAttachment.thumbnailURL?.let { url ->
                             ReviewMediaImageThumbnailUiModel(
-                                uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
+                                uiState = ReviewMediaImageThumbnailUiState.Showing(thumbnailUrl = url)
                             )
                         }
                     }

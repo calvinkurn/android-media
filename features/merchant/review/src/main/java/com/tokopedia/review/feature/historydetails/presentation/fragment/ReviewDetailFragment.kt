@@ -345,7 +345,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                     val mappedImageAttachment = imageAttachments.map {
                         ReviewMediaImageThumbnailUiModel(
                             uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                uri = it.thumbnail
+                                thumbnailUrl = it.thumbnail
                             )
                         )
                     }
@@ -353,7 +353,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
                         it.url?.let { url ->
                             ReviewMediaVideoThumbnailUiModel(
                                 uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                                    uri = url
+                                    url = url
                                 )
                             )
                         }

@@ -84,7 +84,6 @@ object ProductDetailTestUtil {
             p2UiData.uspImageUrl = uspTokoCabangData.uspBoe.uspIcon
             p2UiData.merchantVoucherSummary = merchantVoucherSummary
             p2UiData.helpfulReviews = mostHelpFulReviewData.list
-            p2UiData.imageReviews = DynamicProductDetailMapper.generateImageReviewUiData(reviewImage)
             p2UiData.alternateCopy = cartRedirection.alternateCopy
             p2UiData.rating = rating
             p2UiData.ticker = ticker

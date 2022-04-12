@@ -237,7 +237,7 @@ class ReviewHistoryFragment :
                                     it.url?.let { url ->
                                         ReviewMediaVideoThumbnailUiModel(
                                             uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                                                uri = url
+                                                url = url
                                             )
                                         )
                                     }
@@ -245,7 +245,7 @@ class ReviewHistoryFragment :
                                     history.review.imageAttachments.map {
                                         ReviewMediaImageThumbnailUiModel(
                                             uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                                uri = it.thumbnail
+                                                thumbnailUrl = it.thumbnail
                                             )
                                         )
                                     }

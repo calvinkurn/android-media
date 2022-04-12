@@ -49,7 +49,7 @@ class ReviewMediaImageThumbnail @JvmOverloads constructor(
     private fun WidgetReviewMediaImageThumbnailBinding.setupImageThumbnail(
         uiState: ReviewMediaImageThumbnailUiState
     ) {
-        ivReviewMediaImageThumbnail.setImageUrl(uiState.uri)
+        ivReviewMediaImageThumbnail.setImageUrl(uiState.thumbnailUrl)
     }
 
     private fun WidgetReviewMediaImageThumbnailBinding.showImageThumbnail(

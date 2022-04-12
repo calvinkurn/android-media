@@ -59,7 +59,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
@@ -208,6 +207,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -1168,7 +1168,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onMediaReviewClick(
-        listOfImage: List<ImageReviewItem>,
+        mediaThumbnailUiModel: ReviewMediaThumbnailUiModel,
         position: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
         imageCount: String,
@@ -1176,7 +1176,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     ) {
         context?.let {
             DynamicProductDetailTracking.Click.eventClickReviewOnBuyersImage(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-                    ?: ComponentTrackDataModel(), listOfImage[position].reviewId)
+                    ?: ComponentTrackDataModel(), mediaThumbnailUiModel.mediaThumbnails[position].getReviewID())
             ReviewMediaGalleryRouter.routeToReviewMediaGallery(
                 context = it,
                 productID = viewModel.getDynamicProductInfoP1?.basic?.productID.orEmpty(),

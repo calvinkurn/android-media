@@ -92,7 +92,7 @@ class ReviewMediaVideoThumbnail @JvmOverloads constructor(
     ) {
         binding.loaderReviewMediaVideoThumbnail.show()
         reviewVideoPlayer.initializeVideoPlayer(
-            uiState.uri,
+            uiState.url,
             binding.playerViewReviewMediaVideoThumbnail,
             this@ReviewMediaVideoThumbnail,
             true

@@ -65,7 +65,9 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Re
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailVisitable
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -788,8 +790,16 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
         override fun onMediaItemClicked(item: ReviewMediaThumbnailVisitable, position: Int) {
             inboxReviewAdapter.findFeedbackInboxContainingThumbnail(item)?.let {
                 onMediaItemClicked(
-                    it.videoAttachments.map { it.videoUrl },
-                    it.imageAttachments.map { it.fullSizeURL },
+                    it.reviewMediaThumbnail
+                        .mediaThumbnails
+                        .filterIsInstance<ReviewMediaVideoThumbnailUiModel>().map {
+                            it.uiState.url
+                        },
+                    it.reviewMediaThumbnail
+                        .mediaThumbnails
+                        .filterIsInstance<ReviewMediaImageThumbnailUiModel>().map {
+                            it.uiState.fullSizeUrl
+                        },
                     it.feedbackId,
                     it.productID,
                     position

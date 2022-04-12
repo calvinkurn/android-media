@@ -77,14 +77,14 @@ object InboxReviewMapper {
                         mediaThumbnails = it.videoAttachments.mapNotNull { videoAttachment ->
                             videoAttachment.videoUrl?.let { url ->
                                 ReviewMediaVideoThumbnailUiModel(
-                                    uiState = ReviewMediaVideoThumbnailUiState.Showing(uri = url)
+                                    uiState = ReviewMediaVideoThumbnailUiState.Showing(url = url)
                                 )
                             }
                         }.plus(
                             it.imageAttachments.mapNotNull { attachment ->
                                 attachment.thumbnailURL?.let { url ->
                                     ReviewMediaImageThumbnailUiModel(
-                                        uiState = ReviewMediaImageThumbnailUiState.Showing(uri = url)
+                                        uiState = ReviewMediaImageThumbnailUiState.Showing(thumbnailUrl = url)
                                     )
                                 }
                             }
@@ -186,13 +186,14 @@ object InboxReviewMapper {
         val mappedReviewMediaThumbnail = ReviewMediaThumbnailUiModel(
             mediaThumbnails = data.videoAttachments.map { attachment ->
                 ReviewMediaVideoThumbnailUiModel(
-                    ReviewMediaVideoThumbnailUiState.Showing(uri = attachment.videoUrl)
+                    ReviewMediaVideoThumbnailUiState.Showing(url = attachment.videoUrl)
                 )
             }.plus(
                 data.imageAttachments.map { attachment ->
                     ReviewMediaImageThumbnailUiModel(
                         uiState = ReviewMediaImageThumbnailUiState.Showing(
-                            uri = attachment.thumbnailURL
+                            thumbnailUrl = attachment.thumbnailURL,
+                            fullSizeUrl = attachment.fullSizeURL
                         )
                     )
                 }
