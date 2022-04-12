@@ -53,7 +53,7 @@ internal fun View.setRippleEffect() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         foreground = with(TypedValue()) {
             context.theme.resolveAttribute(
-                R.attr.selectableItemBackground, this, true
+                android.R.attr.selectableItemBackground, this, true
             )
             ContextCompat.getDrawable(context, resourceId)
         }
