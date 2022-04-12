@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
-import com.tokopedia.shopdiscount.manage_discount.domain.DoSlashPriceProductReservationQuery
 import javax.inject.Inject
 
 class MutationDoSlashPriceProductReservationUseCase @Inject constructor(
