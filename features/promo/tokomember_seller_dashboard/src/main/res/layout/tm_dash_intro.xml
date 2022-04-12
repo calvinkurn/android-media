@@ -18,6 +18,17 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true">
 
+            <com.tokopedia.header.HeaderUnify
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unify_header_is_show_back_button="true"
+                app:unify_header_is_show_shadow="false"
+                app:unify_header_transparent_mode="true" />
+
             <RelativeLayout
                 android:id="@+id/containerBgvideo"
                 android:layout_width="match_parent"
@@ -64,17 +75,6 @@
                 </com.tokopedia.unifycomponents.CardUnify>
 
             </RelativeLayout>
-
-            <com.tokopedia.header.HeaderUnify
-                android:id="@+id/header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/unify_space_16"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_header_is_show_back_button="true"
-                app:unify_header_is_show_shadow="false"
-                app:unify_header_transparent_mode="true" />
 
             <com.tokopedia.unifycomponents.CardUnify
                 android:id="@+id/cardTokomember"

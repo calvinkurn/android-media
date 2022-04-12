@@ -20,7 +20,7 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
         holder.itemView.tag?.let {
             if (it is TokomemberIntroHeaderItem && !it.isVisited) {
                 it.isVisited = true
-            //    typeFactory.listener.onItemDisplayed(it, holder.adapterPosition)
+                typeFactory.listener.onItemDisplayed(it, holder.adapterPosition)
             }
         }
     }

@@ -38,6 +38,17 @@ data class TokomemberIntroTextItem(
     }
 }
 
+data class TokomemberIntroBenefitImageItem(
+    @SerializedName("imgUrl")
+    val imgUrl: String?,
+
+    ) : Visitable<TokomemberIntroFactory>, TokomemberIntroModel() {
+
+    override fun type(typeFactory: TokomemberIntroFactory): Int {
+        return typeFactory.type(this)
+    }
+}
+
 data class TokomemberIntroVideoItem(
     @SerializedName("url")
     val url: String?,

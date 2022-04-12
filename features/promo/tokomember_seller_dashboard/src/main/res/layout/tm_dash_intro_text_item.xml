@@ -17,12 +17,4 @@
         app:typographyType="body_2"
         tools:text="23% pembeli makin tertarik untuk belanja lagi dan jadi pelanggan setia di tokomu." />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/ivSection"
-        android:layout_width="match_parent"
-        android:layout_height="186dp"
-        android:layout_marginTop="34dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSection" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
