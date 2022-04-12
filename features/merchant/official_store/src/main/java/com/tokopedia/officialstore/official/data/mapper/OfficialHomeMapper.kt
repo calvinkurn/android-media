@@ -188,10 +188,28 @@ class OfficialHomeMapper (
                             )
                         )
                     }
+                    DynamicChannelLayout.LAYOUT_MERCHANT_VOUCHER -> {
+                        views.add(
+                            MerchantVoucherDataModel(
+                                OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                    officialStore.channel,
+                                    position
+                                )
+                            )
+                        )
+                    }
                     DynamicChannelLayout.LAYOUT_SPRINT_LEGO,
                     DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL -> views.add(
                         DynamicChannelDataModel(
                             officialStore
+                        )
+                    )
+                    DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING -> views.add(
+                        SpecialReleaseDataModel(
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                officialStore.channel,
+                                position
+                            )
                         )
                     )
                 }

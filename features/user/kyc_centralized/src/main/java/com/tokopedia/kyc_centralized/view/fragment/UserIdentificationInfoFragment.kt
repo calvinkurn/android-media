@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -29,7 +28,6 @@ import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
@@ -356,8 +354,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
                     activity,
                     ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
                     projectId.toString(),
-                    kycType
+                    redirectUrl
             )
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
             intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }

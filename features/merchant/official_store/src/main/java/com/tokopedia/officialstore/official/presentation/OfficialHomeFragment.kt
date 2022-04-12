@@ -193,6 +193,8 @@ class OfficialHomeFragment :
                 OSFeaturedBrandCallback(this, tracking),
                 OSFeaturedShopDCCallback(this),
                 recyclerView?.recycledViewPool,
+                OSMerchantVoucherCallback(this),
+                OSSpecialReleaseComponentCallback(this, userSession.userId),
                 onTopAdsHeadlineClicked)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter

@@ -110,7 +110,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                                 }
                                             }
                                         }
-                                        view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.logisticPromo, shippingRecommendationData.preOrderModel)
+                                        view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
                                         view!!.stopTrace()
                                     } else {
                                         view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
