@@ -9,28 +9,28 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class AddPinPojo(
-        @SerializedName("create_pin")
-        @Expose
-        var data: AddChangePinData = AddChangePinData()
+    @SerializedName("create_pin")
+    @Expose
+    var data: AddChangePinData = AddChangePinData()
 )
 
 data class ChangePinPojo(
-        @SerializedName("update_pin")
-        @Expose
-        var data: AddChangePinData = AddChangePinData()
+    @SerializedName("update_pin")
+    @Expose
+    var data: AddChangePinData = AddChangePinData()
 )
 
 data class AddChangePinData(
-        @SerializedName("success")
-        @Expose
-        var success: Boolean = false,
-        @SerializedName("errors")
-        @Expose
-        var errorAddChangePinData: List<ErrorAddChangePinData> = arrayListOf()
+    @SerializedName("success")
+    @Expose
+    var success: Boolean = false,
+    @SerializedName("errors")
+    @Expose
+    var errorAddChangePinData: List<ErrorAddChangePinData> = arrayListOf()
 )
 
 data class ErrorAddChangePinData(
-        @SerializedName("message")
-        @Expose
-        var message: String = ""
+    @SerializedName("message")
+    @Expose
+    var message: String = ""
 )

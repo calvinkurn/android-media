@@ -30,7 +30,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
         }
     }
 
-    fun createParams(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
+    fun createParams(clientNumbers: List<String>, dgCategoryIds: List<Int>, dgOperatorIds: List<Int>) {
         params = RequestParams.create().apply {
             putObject(
                 KEY_DIGI_PERSO_INPUT, DigiPersoRequestParam(
@@ -38,7 +38,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
                     clientNumbers = clientNumbers,
                     dgCategoryIDs = dgCategoryIds,
                     pgCategoryIDs = emptyList(),
-                    dgOperatorIds = emptyList()
+                    dgOperatorIds = dgOperatorIds
                 )
             )
         }

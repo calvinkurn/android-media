@@ -288,6 +288,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             context,
             com.tokopedia.common.topupbills.R.layout.item_topup_bills_autocomplete_number,
             mutableListOf(),
+            context.getString(com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return inputNumberField.editText.text.toString()

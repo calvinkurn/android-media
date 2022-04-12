@@ -6,12 +6,17 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsFeature
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.AD_TYPE_SHOP_ADS
+import com.tokopedia.topads.common.data.model.WhiteListUserResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
@@ -57,6 +62,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private lateinit var headlineAdsViePager: ViewPager
     private lateinit var headlineTabLayout: TabsUnify
     private var groupPagerAdapter: TopAdsDashboardBasePagerAdapter? = null
+    private var isDeletedTabEnabled: Boolean = false
+    private var noTabSpace:View? = null
 
 
     companion object {
@@ -76,6 +83,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     override fun setUpView(view: View) {
         headlineAdsViePager = view.findViewById(R.id.headlineAdsViePager)
         headlineTabLayout = view.findViewById(R.id.headlineTabLayout)
+        noTabSpace = view.findViewById(R.id.noTabSpace)
     }
 
     override fun getChildScreenName(): String {
@@ -137,6 +145,14 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         })
     }
 
+    private fun onSuccessWhiteListing(response: WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) {
+        response.data.forEach {
+            when(it.featureId) {
+                TopAdsFeature.DELETED_TAB_PRODUCT_HEADLINE -> isDeletedTabEnabled = true
+            }
+        }
+    }
+
     private fun renderHeadlineViewPager() {
         headlineAdsViePager.adapter = getHeadlineViewPagerAdapter()
         headlineTabLayout.setupWithViewPager(headlineAdsViePager)
@@ -146,23 +162,33 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         val list: ArrayList<FragmentTabItem> = arrayListOf()
         headlineTabLayout.getUnifyTabLayout().removeAllTabs()
         headlineTabLayout.addNewTab(TopAdsDashboardConstant.IKLAN_TOKO)
-        headlineTabLayout.addNewTab(TopAdsDashboardConstant.DIHAPUS)
+        headlineTabLayout.customTabMode = TabLayout.MODE_SCROLLABLE
         list.add(
             FragmentTabItem(
                 TopAdsDashboardConstant.IKLAN_TOKO,
                 TopAdsHeadlineShopFragment.createInstance()
             )
         )
-        list.add(
-            FragmentTabItem(
-                TopAdsDashboardConstant.DIHAPUS,
-                TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())
-            )
-        )
+        addDeletedTab(list)
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
         return adapter
+    }
+
+    private fun addDeletedTab(list: ArrayList<FragmentTabItem>) {
+        if (isDeletedTabEnabled){
+            headlineTabLayout.show()
+            noTabSpace?.hide()
+            headlineTabLayout.customTabMode = TabLayout.MODE_FIXED
+            headlineTabLayout.addNewTab(TopAdsDashboardConstant.DIHAPUS)
+            list.add(
+                FragmentTabItem(
+                    TopAdsDashboardConstant.DIHAPUS,
+                    TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())
+                )
+            )
+        }
     }
 
     private fun prepareBundle(): Bundle {
@@ -178,13 +204,15 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        presenter.getShopAdsInfo {
-            val info = it.topadsGetShopInfoV2.data.ads[1]
-            if (info.type == "headline") {
-                if (!info.isUsed) {
-                    showEmptyView()
-                } else {
-                    renderHeadlineViewPager()
+        presenter.getWhiteListedUser(::onSuccessWhiteListing){
+            presenter.getShopAdsInfo {
+                val info = it.topadsGetShopInfoV2.data.ads.getOrNull(1)
+                if (info?.type == "headline") {
+                    if (!info.isUsed) {
+                        showEmptyView()
+                    } else {
+                        renderHeadlineViewPager()
+                    }
                 }
             }
         }

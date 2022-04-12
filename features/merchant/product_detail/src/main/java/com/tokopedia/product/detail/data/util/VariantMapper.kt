@@ -121,21 +121,6 @@ object VariantMapper {
                 additionalInfo = newData?.thematicCampaign?.additionalInfo ?: ""
         )
 
-        val newMedia = if (newData?.hasPicture == true) {
-            val copyOfOldMedia = existingListMedia?.toMutableList()
-            val newMedia = Media(type = "image", uRL300 = newData.picture?.original
-                    ?: "", uRLOriginal = newData.picture?.original
-                    ?: "", uRLThumbnail = newData.picture?.original ?: "").apply {
-                id = (newData.productId + System.nanoTime())
-            }
-
-            copyOfOldMedia?.add(0, newMedia)
-
-            copyOfOldMedia ?: mutableListOf()
-        } else {
-            oldData.data.media
-        }
-
         val newPrice = oldData.data.price.copy(
                 value = newData?.price ?: 0.0
         )
@@ -150,7 +135,6 @@ object VariantMapper {
                 thematicCampaign = newThematicCampaign,
                 price = newPrice,
                 name = newData?.name ?: "",
-                media = newMedia,
                 stock = newStock,
                 isCod = newData?.isCod ?: false
         )
@@ -162,18 +146,6 @@ object VariantMapper {
             layoutName = oldData.layoutName,
             pdpSession = oldData.pdpSession
         )
-    }
-
-    fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {
-        val basic = oldData?.basic?.copy()
-        val data = oldData?.data?.copy(
-                media = media
-        )
-        return DynamicProductInfoP1(
-            basic = basic ?: BasicInfo(),
-            data = data ?: ComponentData(),
-            bestSellerContent = oldData?.bestSellerContent,
-            layoutName = oldData?.layoutName ?: "")
     }
 
     fun generateVariantString(variantData: ProductVariant?): String {
