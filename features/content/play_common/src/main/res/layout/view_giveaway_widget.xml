@@ -25,6 +25,21 @@
         app:rll_bottomRightRadius="@dimen/play_dp_12"
         >
 
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/timer_remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/play_dp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_engagement_timer_info"
+            app:timer_unify_single_text="@string/play_common_widget_interactive_end"
+            app:timer_unify_single_type="second"
+            app:timer_unify_single_variant="main"
+            tools:timer_unify_single_remainingMinutes="10"
+            />
+
         <FrameLayout
             android:layout_width="@dimen/play_giveaway_tap_bg_size"
             android:layout_height="@dimen/play_giveaway_tap_bg_size"
@@ -56,6 +71,7 @@
             android:gravity="center"
             android:text="@string/play_giveaway_tap_info"
             android:textAlignment="center"
+            android:textColor="@color/Unify_NN950"
             app:typographyType="heading_5"
             />
 
