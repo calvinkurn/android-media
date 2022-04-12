@@ -37,20 +37,24 @@ abstract class BaseOrderDetailResult {
         additionalTickerInfo:
         List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.AdditionalTickerInfo>?
     ) {
-        add(TickerInfoData(additionalTickerInfo?.map {
-            TickerData(
-                title = "",
-                description = it.notes,
-                type = Ticker.TYPE_INFORMATION,
-                isFromHtml = true
+        if (additionalTickerInfo?.isNotEmpty() == true) {
+            add(
+                TickerInfoData(additionalTickerInfo.map {
+                    TickerData(
+                        title = "",
+                        description = it.appText,
+                        type = Ticker.TYPE_INFORMATION,
+                        isFromHtml = true
+                    )
+                })
             )
-        }.orEmpty()))
+        }
     }
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addEstimationUiModel(
-        eta: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta
+        eta: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta?
     ) {
-        if (eta.time.isNotEmpty()) {
+        if (eta != null) {
             add(
                 OrderTrackingEstimationUiModel(
                     estimationLabel = eta.label,
@@ -67,7 +71,7 @@ abstract class BaseOrderDetailResult {
         add(
             InvoiceOrderNumberUiModel(
                 invoiceNumber = invoice.invoiceNumber,
-                goFoodOrderNumber = invoice.gofoodOrderNumber,
+                goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
                 paymentDate = paymentDate
             )
         )
@@ -90,19 +94,21 @@ abstract class BaseOrderDetailResult {
     ) = add(PaymentAmountUiModel(paymentAmount.label, paymentAmount.value))
 
     protected fun MutableList<BaseOrderTrackingTypeFactory>.addDriverSectionUiModel(
-        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails,
+        driverDetails: TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails?,
         phoneNumber: String
     ) {
-        add(
-            DriverSectionUiModel(
-                driverInformationList = mapToDriverInformationList(driverDetails.karma),
-                name = driverDetails.name,
-                photoUrl = driverDetails.photoUrl,
-                phone = phoneNumber,
-                licensePlateNumber = driverDetails.licensePlateNumber,
-                isCallable = true
+        if (driverDetails != null) {
+            add(
+                DriverSectionUiModel(
+                    driverInformationList = mapToDriverInformationList(driverDetails.karma),
+                    name = driverDetails.name,
+                    photoUrl = driverDetails.photoUrl,
+                    phone = phoneNumber,
+                    licensePlateNumber = driverDetails.licensePlateNumber,
+                    isCallable = true
+                )
             )
-        )
+        }
     }
 
     private fun mapToDriverInformationList(

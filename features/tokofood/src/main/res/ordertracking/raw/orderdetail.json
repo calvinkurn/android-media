@@ -75,26 +75,21 @@
     "additionalTickerInfo": [
       {
         "level": "info",
-        "notes": "This will be text for cancelation reason",
-        "urlText": "This will be link",
-        "appUrl": "tokopedia://food/merchant/{merchantId}",
-        "webUrl": "https://tokopedia.com/food/merchant/{merchantId}"
+        "appText": "This will be text for cancelation reason <a href='tokopedia://order/123'>This will be link/action</a>"
       }
     ],
     "actionButtons": [
       {
         "label": "Beli Lagi",
         "actionType": "link",
-        "appUrl": "tokopedia://food/merchant/{merchantId}",
-        "webUrl": "https://tokopedia.com/food/merchant/{merchantId}"
+        "appUrl": "tokopedia://food/merchant/{merchantId}"
       }
     ],
     "dotMenus": [
       {
         "label": "Bantuan",
         "actionType": "link",
-        "appUrl": "tokopedia://webview?url=https://www.tokopedia.com/help",
-        "webUrl": "https://tokopedia.com/help"
+        "appUrl": "tokopedia://webview?url=https://www.tokopedia.com/help"
       }
     ],
     "driverDetails": {

@@ -2,6 +2,8 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingInvoiceOrderNumberBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.InvoiceOrderNumberUiModel
@@ -46,7 +48,12 @@ class InvoiceOrderNumberViewHolder(view: View) :
     }
 
     private fun ItemTokofoodOrderTrackingInvoiceOrderNumberBinding.setOrderNumber(orderNumber: String) {
-        tvOrderNumberValue.text = orderNumber
+        if (orderNumber.isNotEmpty()) {
+            tvOrderNumberValue.show()
+            tvOrderNumberValue.text = orderNumber
+        } else {
+            tvOrderNumberValue.hide()
+        }
     }
 
     private fun ItemTokofoodOrderTrackingInvoiceOrderNumberBinding.setPaymentDate(paymentDate: String) {

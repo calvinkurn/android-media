@@ -15,19 +15,19 @@ data class TokoFoodOrderDetailResponse(
         val actionButtons: List<ActionButton> = listOf(),
         @SerializedName("additionalTickerInfo")
         @Expose
-        val additionalTickerInfo: List<AdditionalTickerInfo> = listOf(),
+        val additionalTickerInfo: List<AdditionalTickerInfo>? = listOf(),
         @SerializedName("destination")
         @Expose
         val destination: Destination = Destination(),
         @SerializedName("dotMenus")
         @Expose
-        val dotMenus: List<DotMenu> = listOf(),
+        val dotMenus: List<DotMenu>? = listOf(),
         @SerializedName("driverDetails")
         @Expose
-        val driverDetails: DriverDetails = DriverDetails(),
+        val driverDetails: DriverDetails? = DriverDetails(),
         @SerializedName("eta")
         @Expose
-        val eta: Eta = Eta(),
+        val eta: Eta? = Eta(),
         @SerializedName("invoice")
         @Expose
         val invoice: Invoice = Invoice(),
@@ -53,28 +53,16 @@ data class TokoFoodOrderDetailResponse(
             val appUrl: String = "",
             @SerializedName("label")
             @Expose
-            val label: String = "",
-            @SerializedName("webUrl")
-            @Expose
-            val webUrl: String = ""
+            val label: String = ""
         )
 
         data class AdditionalTickerInfo(
-            @SerializedName("appUrl")
-            @Expose
-            val appUrl: String = "",
             @SerializedName("level")
             @Expose
             val level: String = "",
-            @SerializedName("notes")
+            @SerializedName("appText")
             @Expose
-            val notes: String = "",
-            @SerializedName("urlText")
-            @Expose
-            val urlText: String = "",
-            @SerializedName("webUrl")
-            @Expose
-            val webUrl: String = ""
+            val appText: String = ""
         )
 
         data class Destination(
@@ -98,10 +86,7 @@ data class TokoFoodOrderDetailResponse(
             val appUrl: String = "",
             @SerializedName("label")
             @Expose
-            val label: String = "",
-            @SerializedName("webUrl")
-            @Expose
-            val webUrl: String = ""
+            val label: String = ""
         )
 
         data class DriverDetails(
@@ -140,7 +125,7 @@ data class TokoFoodOrderDetailResponse(
         data class Invoice(
             @SerializedName("gofoodOrderNumber")
             @Expose
-            val gofoodOrderNumber: String = "",
+            val gofoodOrderNumber: String? = "",
             @SerializedName("invoiceNumber")
             @Expose
             val invoiceNumber: String = ""

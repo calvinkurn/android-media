@@ -27,7 +27,7 @@
         app:unifyImageButtonVariant="ghost" />
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnOrderDetailPrimaryActions"
+        android:id="@+id/beliLagiButton"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl3"
@@ -39,5 +39,5 @@
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
-        tools:text="Chat Penjual" />
+        tools:text="Beli Lagi" />
 </androidx.constraintlayout.widget.ConstraintLayout>

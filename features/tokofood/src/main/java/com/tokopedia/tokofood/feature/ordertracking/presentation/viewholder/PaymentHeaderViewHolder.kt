@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.databinding.ItemTokofoodOrderDetailPaymentHeaderBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentHeaderUiModel
 
 class PaymentHeaderViewHolder(view: View): AbstractViewHolder<PaymentHeaderUiModel>(view) {
@@ -14,7 +13,6 @@ class PaymentHeaderViewHolder(view: View): AbstractViewHolder<PaymentHeaderUiMod
         val LAYOUT = R.layout.item_tokofood_order_detail_payment_header
     }
 
-    private val binding = ItemTokofoodOrderDetailPaymentHeaderBinding.bind(itemView)
 
     override fun bind(element: PaymentHeaderUiModel?) {}
 

@@ -77,13 +77,13 @@ class TokoFoodOrderDetailMapper @Inject constructor(
                 appUrl = primaryActionButton?.appUrl.orEmpty(),
                 type = primaryActionButton?.actionType.orEmpty()
             ),
-            secondaryActionButton = secondaryActionButtons.map {
+            secondaryActionButton = secondaryActionButtons?.map {
                 ActionButtonsUiModel.ActionButton(
                     label = it.label,
                     appUrl = it.appUrl,
                     type = it.actionType
                 )
-            }
+            }.orEmpty()
         )
     }
 
@@ -93,10 +93,12 @@ class TokoFoodOrderDetailMapper @Inject constructor(
     ) = ToolbarLiveTrackingUiModel(
         merchantName = orderDetailResponse.merchant.displayName,
         orderStatusTitle = orderDetailResponse.orderStatus.title,
-        composeEstimation = StringBuilder().apply {
-            append(orderDetailResponse.eta.label)
-            append(" ")
-            append(orderDetailResponse.eta.time)
-        }.toString()
+        composeEstimation = if (orderDetailResponse.eta != null) {
+            StringBuilder().apply {
+                append(orderDetailResponse.eta.label)
+                append(" ")
+                append(orderDetailResponse.eta.time)
+            }.toString()
+        } else ""
     )
 }

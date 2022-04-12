@@ -61,7 +61,7 @@ class OrderDetailStickyActionButton @JvmOverloads constructor(
     private fun setupPrimaryButton(
         actionButton: ActionButtonsUiModel.ActionButton
     ) {
-        binding?.btnOrderDetailPrimaryActions?.apply {
+        binding?.beliLagiButton?.apply {
             text = actionButton.label
             setOnClickListener(onPrimaryActionButtonClickListener(actionButton.appUrl))
             show()

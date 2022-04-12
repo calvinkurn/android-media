@@ -11,45 +11,12 @@ data class TokoFoodOrderStatusResponse(
     data class TokofoodOrderDetail(
         @SerializedName("eta")
         @Expose
-        val eta: Eta = Eta(),
+        val eta: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta(),
         @SerializedName("invoice")
         @Expose
-        val invoice: Invoice = Invoice(),
+        val invoice: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice(),
         @SerializedName("orderStatus")
         @Expose
-        val orderStatus: OrderStatus = OrderStatus(),
-    ) {
-        data class Eta(
-            @SerializedName("label")
-            @Expose
-            val label: String = "",
-            @SerializedName("time")
-            @Expose
-            val time: String = ""
-        )
-
-        data class Invoice(
-            @SerializedName("gofoodOrderNumber")
-            @Expose
-            val gofoodOrderNumber: String = "",
-            @SerializedName("invoiceNumber")
-            @Expose
-            val invoiceNumber: String = ""
-        )
-
-        data class OrderStatus(
-            @SerializedName("iconName")
-            @Expose
-            val iconName: String = "",
-            @SerializedName("status")
-            @Expose
-            val status: String = "",
-            @SerializedName("subtitle")
-            @Expose
-            val subtitle: String = "",
-            @SerializedName("title")
-            @Expose
-            val title: String = ""
-        )
-    }
+        val orderStatus: TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus = TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus(),
+    )
 }
