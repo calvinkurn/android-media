@@ -19,7 +19,13 @@ import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_WARNING
@@ -108,7 +114,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderShopName(cartShopHolderData: CartShopHolderData) {
         val shopName = cartShopHolderData.shopName
-        binding.tvShopName.text = shopName
+        binding.tvShopName.text = Utils.getHtmlFormat(shopName)
         binding.tvShopName.setOnClickListener {
             actionListener.onCartShopNameClicked(
                     cartShopHolderData.shopId,

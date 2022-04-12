@@ -94,7 +94,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     private fun renderProductNames() {
         binding.apply {
             ivProductImage.setImageUrl(product.productImageUrl)
-            tvProductName.text = product.productName
+            tvProductName.text = Utils.getHtmlFormat(product.productName)
             if (product.variant.isNotBlank()) {
                 tvProductVariant.text = product.variant
                 tvProductVariant.visible()

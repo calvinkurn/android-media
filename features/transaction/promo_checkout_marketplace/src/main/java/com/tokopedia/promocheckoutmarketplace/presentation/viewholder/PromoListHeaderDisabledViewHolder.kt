@@ -8,6 +8,7 @@ import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketpla
 import com.tokopedia.promocheckoutmarketplace.presentation.IconHelper
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.purchase_platform.common.utils.Utils
 
 class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoListHeaderDisabledBinding,
                                         private val listener: PromoCheckoutActionListener
@@ -26,7 +27,7 @@ class PromoListHeaderDisabledViewHolder(private val viewBinding: PromoCheckoutMa
                 iconPromoListHeader.gone()
             }
 
-            labelPromoListHeaderTitle.text = element.uiData.title
+            labelPromoListHeaderTitle.text = Utils.getHtmlFormat(element.uiData.title)
 
             itemView.setOnClickListener {}
         }

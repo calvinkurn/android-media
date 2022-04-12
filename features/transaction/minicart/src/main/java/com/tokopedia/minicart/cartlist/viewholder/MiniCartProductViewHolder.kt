@@ -98,7 +98,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
 
     private fun renderProductName(element: MiniCartProductUiModel) {
         with(viewBinding) {
-            textProductName.text = element.productName
+            textProductName.text = Utils.getHtmlFormat(element.productName)
             textProductName.setOnClickListener(productInfoClickListener(element))
         }
     }

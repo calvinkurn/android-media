@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Paint
 import android.text.Editable
-import android.text.Html
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -361,7 +360,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBinding
     }
 
     private fun renderProductName(data: CartItemHolderData) {
-        binding.textProductName.text = Html.fromHtml(data.productName)
+        binding.textProductName.text = Utils.getHtmlFormat(data.productName)
         binding.textProductName.setOnClickListener(getOnClickProductItemListener(adapterPosition, data))
         val marginTop = itemView.context.resources.getDimension(R.dimen.dp_2).toInt()
         if (data.isBundlingItem && !data.isMultipleBundleProduct && data.bundleLabelQuantity > 0) {
