@@ -62,6 +62,7 @@
     <string name="sd_search_product_or_sku">Cari produk atau SKU</string>
     <string name="sd_sku">SKU: %s</string>
     <string name="sd_select_product_max_count_reached">Atur 5 produk dulu, ya</string>
+    <string name="sd_please_wait">Mohon tunggu</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>

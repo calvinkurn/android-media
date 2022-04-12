@@ -17,11 +17,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.FragmentSelectProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
@@ -52,10 +54,15 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         private const val MAX_PRODUCT_SELECTION = 5
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
+        private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
 
         @JvmStatic
-        fun newInstance(): SelectProductFragment {
-            return SelectProductFragment()
+        fun newInstance(discountStatusId: Int): SelectProductFragment {
+            val fragment = SelectProductFragment()
+            fragment.arguments = Bundle().apply {
+                putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
+            }
+            return fragment
         }
 
     }
@@ -73,6 +80,11 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectProductViewModel::class.java) }
+
+    private val discountStatusId by lazy {
+        arguments?.getInt(BUNDLE_KEY_DISCOUNT_STATUS_ID).orZero()
+    }
+
     private val productAdapter by lazy {
         SelectProductAdapter(
             onProductClicked,
@@ -156,6 +168,9 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         binding?.run {
             binding?.btnManage?.text = String.format(getString(R.string.sd_manage_with_counter), ZERO)
             btnManage.setOnClickListener {
+                binding?.btnManage?.isLoading = true
+                binding?.btnManage?.loadingText = getString(R.string.sd_please_wait)
+
                 val requestId = viewModel.getRequestId()
                 val selectedProducts = viewModel.getSelectedProduct()
                 viewModel.reserveProduct(requestId, selectedProducts)
@@ -185,13 +200,14 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun observeReserveProducts() {
         viewModel.reserveProduct.observe(viewLifecycleOwner) {
+            binding?.btnManage?.isLoading = false
             when (it) {
                 is Success -> {
                     ShopDiscountManageDiscountActivity.start(
                         requireActivity(),
                         viewModel.getRequestId(),
-                        2,
-                        "RESERVE"
+                        discountStatusId,
+                        ShopDiscountManageDiscountMode.CREATE
                     )
                 }
                 is Fail -> {

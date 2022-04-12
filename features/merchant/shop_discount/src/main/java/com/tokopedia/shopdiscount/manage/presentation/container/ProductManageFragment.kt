@@ -111,7 +111,11 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private fun setupButton() {
         binding?.run {
-            btnCreateDiscount.setOnClickListener { SelectProductActivity.start(requireActivity()) }
+            btnCreateDiscount.setOnClickListener {
+                val currentTabPosition = viewModel.getSelectedTabPosition()
+                val tab = viewModel.getSelectedTab(currentTabPosition)
+                SelectProductActivity.start(requireActivity(), tab.discountStatusId)
+            }
         }
     }
 
