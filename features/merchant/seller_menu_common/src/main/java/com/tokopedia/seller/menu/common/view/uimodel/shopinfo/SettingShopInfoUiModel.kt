@@ -36,13 +36,8 @@ data class SettingShopInfoUiModel(private val partialShopInfo: PartialSettingRes
 
     val saldoBalanceUiModel by lazy {
         (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
-            BalanceUiModel(BalanceType.SALDO, it.othersBalance.totalBalance.orEmpty())
+            BalanceUiModel(BalanceType.SALDO, it.othersBalance.totalBalance)
         }
     }
 
-    val topadsBalanceUiModel by lazy {
-        (partialTopAdsInfo as? PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo)?.let {
-            TopadsBalanceUiModel(it.topAdsBalance.getCurrencyFormatted())
-        }
-    }
 }

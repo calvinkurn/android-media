@@ -1,8 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
 object ProductDetailConstant {
-    const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
-
     const val PARAM_PRODUCT_ID = "product_id"
 
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
@@ -29,7 +27,7 @@ object ProductDetailConstant {
     const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_UPDATE_IMAGE = 5
+    const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -114,6 +112,7 @@ object ProductDetailConstant {
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
+    const val ARG_CHANNEL = "ARG_CHANNEL"
 
     //Animation
     const val CART_MAX_COUNT = 99

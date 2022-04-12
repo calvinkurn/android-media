@@ -216,9 +216,11 @@ class BrandlistPageFragment :
             isChipSelected = false
             selectedChip = DEFAULT_SELECTED_CHIPS
             viewModel.resetAllBrandRequestParameter()
-            adapter?.notifyDataSetChanged()
-            adapter?.initAdapter(recyclerViewLastState)
-            category?.let { loadData(it, userSession.userId, true) }
+            if (recyclerView?.isComputingLayout == false) {
+                adapter?.notifyDataSetChanged()
+                adapter?.initAdapter(recyclerViewLastState)
+                category?.let { loadData(it, userSession.userId, true) }
+            }
         }
     }
 
@@ -235,7 +237,9 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingFeaturedBrand(it.data, adapter, this)
+                    if (recyclerView?.isComputingLayout == false) {
+                        BrandlistPageMapper.mappingFeaturedBrand(it.data, adapter, this)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -250,7 +254,9 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingPopularBrand(it.data, adapter, this)
+                    if (recyclerView?.isComputingLayout == false) {
+                        BrandlistPageMapper.mappingPopularBrand(it.data, adapter, this)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -265,7 +271,9 @@ class BrandlistPageFragment :
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    BrandlistPageMapper.mappingNewBrand(it.data, adapter, this)
+                    if (recyclerView?.isComputingLayout == false) {
+                        BrandlistPageMapper.mappingNewBrand(it.data, adapter, this)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -306,17 +314,23 @@ class BrandlistPageFragment :
                     val totalBrandPerCharacter = it.data.totalBrands
                     val totalBrandsFiltered = if (stateLoadBrands == LoadAllBrandState.LOAD_ALL_BRAND ||
                             stateLoadBrands == LoadAllBrandState.LOAD_INITIAL_ALL_BRAND) totalBrandsNumber else it.data.totalBrands
-                    BrandlistPageMapper.resetAllBrandData(adapter)
+                    if (recyclerView?.isComputingLayout == false) {
+                        BrandlistPageMapper.resetAllBrandData(adapter)
+                    }
 
                     swipeRefreshLayout?.isRefreshing = false
                     endlessScrollListener.updateStateAfterGetData()
 
-                    BrandlistPageMapper.mappingAllBrandGroupHeader(
+                    if (recyclerView?.isComputingLayout == false) {
+                        BrandlistPageMapper.mappingAllBrandGroupHeader(
                             adapter, this, totalBrandsFiltered, selectedChip, lastTimeChipIsClicked, recyclerViewLastState)
+                    }
 
                     if (totalBrandPerCharacter == 0) {
                         val emptyList = OfficialStoreAllBrands()
-                        BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+                        if (recyclerView?.isComputingLayout == false) {
+                            BrandlistPageMapper.mappingBrandNotFound(emptyList, isLoadMore, adapter)
+                        }
 
                         recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
                         stickySingleHeaderView?.let { headerView ->
@@ -327,7 +341,9 @@ class BrandlistPageFragment :
 
 
                     } else {
-                        BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+                        if (recyclerView?.isComputingLayout == false) {
+                            BrandlistPageMapper.mappingAllBrand(it.data, adapter, this, stateLoadBrands, isLoadMore)
+                        }
 
                         if (isChipSelected && !isLoadMore) {
                             recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
@@ -430,41 +446,49 @@ class BrandlistPageFragment :
     }
 
     override fun onClickedChip(position: Int, chipName: String, current: Long, recyclerViewState: Parcelable?) {
-        selectedChip = position
-        selectedCategoryName = categoryName
-        recyclerViewLastState = recyclerViewState
-        isChipSelected = true
-        lastTimeChipIsClicked = current
+        if (recyclerView?.isComputingLayout == false) {
+            selectedChip = position
+            selectedCategoryName = categoryName
+            recyclerViewLastState = recyclerViewState
+            isChipSelected = true
+            lastTimeChipIsClicked = current
 
-        resetCurrentBrandRecom()
-        showLoadingBrandRecom()
+            resetCurrentBrandRecom()
+            showLoadingBrandRecom()
 
-        if (position > 0 && position < 2) {     // Load Semua Brand
-            isLoadMore = false
-            selectedBrandLetter = defaultBrandLetter
-            setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
-            viewModel.resetAllBrandRequestParameter()
-            Handler().postDelayed({
-                viewModel.loadAllBrands(category)
-            }, 100)
+            if (position > 0 && position < 2) {     // Load Semua Brand
+                isLoadMore = false
+                selectedBrandLetter = defaultBrandLetter
+                setStateLoadBrands(LoadAllBrandState.LOAD_ALL_BRAND)
+                viewModel.resetAllBrandRequestParameter()
+                Handler().postDelayed({
+                    viewModel.loadAllBrands(category)
+                }, 100)
 
-        } else if (position >= 2) {     // Load per alphabet
-            isLoadMore = false
-            selectedBrandLetter = chipName
-            setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
-            viewModel.resetAllBrandRequestParameter()
-            Handler().postDelayed({
-                viewModel.loadBrandsPerAlphabet(category, chipName)
-            }, 100)
+            } else if (position >= 2) {     // Load per alphabet
+                isLoadMore = false
+                selectedBrandLetter = chipName
+                setStateLoadBrands(LoadAllBrandState.LOAD_BRAND_PER_ALPHABET)
+                viewModel.resetAllBrandRequestParameter()
+                Handler().postDelayed({
+                    viewModel.loadBrandsPerAlphabet(category, chipName)
+                }, 100)
+            }
         }
     }
 
     private fun showLoadingBrandRecom() {
-        BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+        if (recyclerView?.isComputingLayout == false) {
+            BrandlistPageMapper.mappingLoadingBrandRecomm(adapter)
+        }
     }
 
     private fun resetCurrentBrandRecom() {
-        BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+        recyclerView?.let {
+            if (!it.isComputingLayout) {
+                BrandlistPageMapper.mappingRemoveBrandRecom(adapter)
+            }
+        }
     }
 
     override fun onClickSearchButton() {

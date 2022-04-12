@@ -150,8 +150,6 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
-    implementation projectOrAar(rootProject.ext.features.sellerMenuCommon)
 
 }
 

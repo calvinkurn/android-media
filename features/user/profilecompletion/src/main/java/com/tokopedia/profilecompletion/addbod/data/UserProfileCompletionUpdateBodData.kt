@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class UserProfileCompletionUpdateBodData(
-        @SerializedName("userProfileCompletionUpdate")
-        @Expose
-        var addBodData: AddBodData = AddBodData()
+    @SerializedName("userProfileCompletionUpdate")
+    @Expose
+    var addBodData: AddBodData = AddBodData()
 )
