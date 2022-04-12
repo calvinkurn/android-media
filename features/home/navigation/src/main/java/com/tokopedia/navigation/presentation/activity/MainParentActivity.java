@@ -82,6 +82,7 @@ import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation.util.MainParentServerLogger;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -117,6 +118,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.android.BuildConfig;
 
 /**
  * Created by meta on 19/06/18.
@@ -195,6 +197,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
     private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
+    private static final String SUFFIX_ALPHA = "-alpha";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -222,7 +225,6 @@ public class MainParentActivity extends BaseActivity implements
     private Handler handler = new Handler();
     private FrameLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
-    private boolean useNewInbox = false;
     private boolean useNewNotificationOnNewInbox = false;
     private RemoteConfigInstance remoteConfigInstance;
 
@@ -235,6 +237,8 @@ public class MainParentActivity extends BaseActivity implements
     private PageLoadTimePerformanceCallback mainParentPageLoadTimePerformanceCallback;
 
     private boolean isOsExperiment;
+
+    private String embracePageName = "";
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -265,7 +269,6 @@ public class MainParentActivity extends BaseActivity implements
 
         super.onCreate(savedInstanceState);
         initInjector();
-        initInboxAbTest();
         presenter.get().setView(this);
         if (savedInstanceState != null) {
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
@@ -296,16 +299,6 @@ public class MainParentActivity extends BaseActivity implements
         AppAuthWorker.Companion.scheduleWorker(getApplicationContext(), false);
     }
 
-    private void initInboxAbTest() {
-        try {
-            useNewInbox = RemoteConfigInstance.getInstance().getABTestPlatform().getString(
-                    RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-            ).equals(RollenceKey.VARIANT_NEW_INBOX);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void installDFonBackground() {
         List<String> moduleNameList = new ArrayList<>();
         if (userSession.get().isLoggedIn()) {
@@ -321,7 +314,10 @@ public class MainParentActivity extends BaseActivity implements
         moduleNameList.add(DeeplinkDFMapper.DF_TRAVEL);
         moduleNameList.add(DeeplinkDFMapper.DF_ENTERTAINMENT);
         moduleNameList.add(DeeplinkDFMapper.DF_TOKOPEDIA_NOW);
-        moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_REVIEW);
+        moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_NONLOGIN);
+        if (BuildConfig.VERSION_NAME.endsWith(SUFFIX_ALPHA) && remoteConfig.get().getBoolean(RemoteConfigKey.ENABLE_APLHA_OBSERVER, true)) {
+            moduleNameList.add(DeeplinkDFMapper.DF_ALPHA_TESTING);
+        }
         DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
@@ -565,7 +561,7 @@ public class MainParentActivity extends BaseActivity implements
             Toaster.INSTANCE.showErrorWithAction(this.findViewById(android.R.id.content),
                     intent.getStringExtra(ApplinkConstInternalCategory.PARAM_EXTRA_SUCCESS),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.general_label_ok), (v) -> {
+                    getString(com.tokopedia.home.R.string.general_label_ok), (v) -> {
                     });
         }
     }
@@ -604,6 +600,7 @@ public class MainParentActivity extends BaseActivity implements
             Fragment currentFrag = manager.findFragmentByTag(backStateName);
             if (currentFrag != null && manager.getFragments().size() > 0) {
                 showSelectedFragment(fragment, manager, ft);
+
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
                 showSelectedFragment(fragment, manager, ft);
@@ -693,7 +690,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
-        addShortcuts();
+        addShortcutsAsync();
 
         if (currentFragment != null) {
             configureStatusBarBasedOnFragment(currentFragment);
@@ -862,8 +859,12 @@ public class MainParentActivity extends BaseActivity implements
             this.finish();
         } else {
             doubleTapExit = true;
-            Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+            try {
+                Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(() -> doubleTapExit = false, EXIT_DELAY_MILLIS);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -878,9 +879,6 @@ public class MainParentActivity extends BaseActivity implements
             if (fragment instanceof AllNotificationListener && notification != null) {
                 int totalInbox = notification.getTotalInbox();
                 int totalNotification = notification.getTotalNotif();
-                if (useNewInbox) {
-                    totalInbox = notification.totalNewInbox;
-                }
                 if (useNewNotificationOnNewInbox) {
                     totalNotification = notification.totalNotificationOnNewInbox;
                 }
@@ -967,7 +965,8 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    private void checkAppUpdateAndInApp() {
+    @Override
+    public void checkAppUpdateAndInApp() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // if download finished or flexible update is in progress, we do not need to show the update dialog
             AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
@@ -1041,8 +1040,11 @@ public class MainParentActivity extends BaseActivity implements
                 if (clipboard != null) {
                     clipboard.setPrimaryClip(clip);
                 }
-
-                Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                try {
+                    Toast.makeText(this, getResources().getString(R.string.coupon_copy_text), Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             RouteManager.route(this, applink);
@@ -1087,8 +1089,15 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = (Lazy<MainParentPresenter>) presenter;
     }
 
-    @NotNull
-    private boolean addShortcuts() {
+    private void addShortcutsAsync() {
+        WeaveInterface mainDaggerWeave = () -> {
+            addShortcuts();
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(mainDaggerWeave);
+    }
+
+    private void addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -1132,7 +1141,7 @@ public class MainParentActivity extends BaseActivity implements
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
@@ -1175,7 +1184,6 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
-        return true;
     }
 
     @Override
@@ -1305,21 +1313,27 @@ public class MainParentActivity extends BaseActivity implements
             currentFragment.setUserVisibleHint(false);
         }
         this.currentSelectedFragmentPosition = position;
+        String pageName = "";
+        String pageTitle = "";
+        if (menu.size() > index) {
+            pageTitle = menu.get(index).getTitle();
+        }
+
+        if (pageTitle.equals(getResources().getString(R.string.home))) {
+            pageName = "/";
+        } else if (pageTitle.equals(getResources().getString(R.string.official))) {
+            pageName = PAGE_OS_HOMEPAGE;
+        } else if (pageTitle.equals(getResources().getString(R.string.feed))) {
+            globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
+            pageName = PAGE_FEED;
+        } else if (pageTitle.equals(getResources().getString(R.string.uoh))) {
+            pageName = PAGE_DAFTAR_TRANSAKSI;
+        } else if (pageTitle.equals(getResources().getString(R.string.wishlist))) {
+            pageName = PAGE_WISHLIST;
+        }
+
         if (!isFirstNavigationImpression) {
-            String pageName = "";
-                if (menu.get(index).getTitle().equals(getResources().getString(R.string.home))) {
-                    pageName = "/";
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
-                    pageName = PAGE_OS_HOMEPAGE;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
-                   globalNavAnalytics.get().userVisitsFeed(Boolean.toString(userSession.get().isLoggedIn()), userSession.get().getUserId());
-                    pageName = PAGE_FEED;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.uoh))) {
-                    pageName = PAGE_DAFTAR_TRANSAKSI;
-                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.wishlist))) {
-                    pageName = PAGE_WISHLIST;
-                }
-                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
+            globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
         }
         isFirstNavigationImpression = false;
 
@@ -1355,6 +1369,8 @@ public class MainParentActivity extends BaseActivity implements
             this.currentFragment = fragment;
             selectFragment(fragment);
         }
+        this.embracePageName = pageTitle;
+        MainParentServerLogger.Companion.sendEmbraceBreadCrumb(embracePageName);
         return true;
     }
 
@@ -1367,6 +1383,11 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public boolean isOsExperiment() {
         return isOsExperiment;
+    }
+
+    @Override
+    public String currentVisibleFragment() {
+        return embracePageName;
     }
 
     public void populateBottomNavigationView() {

@@ -19,10 +19,10 @@ import org.junit.runner.RunWith
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
 class TokoNowHomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
-    override fun pageInteractionTest() {
+    override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
-            MacroIntent.TokopediaNow.PACKAGE_NAME,
-            MacroIntent.TokopediaNow.RV_RESOURCE_ID
+                MacroIntent.TokopediaNow.PACKAGE_NAME,
+                MacroIntent.TokopediaNow.RV_RESOURCE_ID
         )
     }
 

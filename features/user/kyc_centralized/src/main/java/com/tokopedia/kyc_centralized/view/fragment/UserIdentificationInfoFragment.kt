@@ -13,10 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -29,10 +27,11 @@ import com.tokopedia.kyc_centralized.KycUrl
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationAnalytics.Companion.createInstance
-import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
+import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationInfoActivity
 import com.tokopedia.kyc_centralized.view.customview.KycOnBoardingViewInflater
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationViewModel
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
@@ -65,7 +64,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private var analytics: UserIdentificationAnalytics? = null
     private var statusCode = 0
     private var projectId = -1
-    private var callback: String? = null
+    private var kycType = ""
+    private var redirectUrl: String? = null
     private var kycBenefitLayout: View? = null
     private var defaultStatusBarColor = 0
     private var allowedSelfie = false
@@ -87,7 +87,8 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         if (arguments != null) {
             isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
             projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID)?: KYCConstant.KYC_PROJECT_ID
-            callback = arguments?.getString(ApplinkConstInternalGlobal.PARAM_CALL_BACK)
+            redirectUrl = arguments?.getString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
+            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
         }
         if (isSourceSeller) {
             goToFormActivity()
@@ -98,10 +99,9 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        val daggerUserIdentificationComponent = DaggerUserIdentificationCommonComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-        daggerUserIdentificationComponent.inject(this)
+        ActivityComponentFactory.instance
+            .createActivityComponent(activity as Activity)
+            .inject(this)
     }
 
     private fun initView(parentView: View) {
@@ -209,25 +209,27 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         KycOnBoardingViewInflater.setupKycBenefitToolbar(activity)
         mainView?.hide()
         kycBenefitLayout?.show()
-        KycOnBoardingViewInflater.setupKycBenefitView(view, mainAction = {
+        KycOnBoardingViewInflater.setupKycBenefitView(requireActivity(), view, mainAction = {
             analytics?.eventClickOnNextOnBoarding()
             goToFormActivity()
         }, closeButtonAction = {
             activity?.onBackPressed()
+        }, onCheckedChanged = {
+            analytics?.eventClickKycTnc(it)
         })
         analytics?.eventViewOnKYCOnBoarding()
     }
 
     private fun showStatusVerified() {
-        ImageHandler.LoadImage(image, KycUrl.ICON_SUCCESS_VERIFY)
+        image?.loadImage(KycUrl.ICON_SUCCESS_VERIFY)
         title?.setText(R.string.kyc_verified_title)
         text?.setText(R.string.kyc_verified_text)
-        if (callback == null) {
+        if (redirectUrl == null) {
             button?.setText(R.string.kyc_verified_button)
             button?.setOnClickListener(onGoToTermsButton())
         } else {
             button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(callback))
+            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
         button?.buttonVariant = FILLED
         button?.buttonType = MAIN
@@ -236,15 +238,15 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusPending() {
-        ImageHandler.LoadImage(image, KycUrl.ICON_WAITING)
+        image?.loadImage(KycUrl.ICON_WAITING)
         title?.setText(R.string.kyc_pending_title)
         text?.setText(R.string.kyc_pending_text)
-        if (callback == null) {
+        if (redirectUrl == null) {
             button?.setText(R.string.kyc_pending_button)
             button?.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING))
         } else {
             button?.setText(R.string.camera_next_button)
-            button?.setOnClickListener(goToCallBackUrl(callback))
+            button?.setOnClickListener(goToCallBackUrl(redirectUrl))
         }
         button?.buttonVariant = GHOST
         button?.visibility = View.VISIBLE
@@ -253,7 +255,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusRejected(reasons: List<String>) {
-        ImageHandler.LoadImage(image, KycUrl.ICON_FAIL_VERIFY)
+        image?.loadImage(KycUrl.ICON_FAIL_VERIFY)
         title?.setText(R.string.kyc_failed_title)
         if (reasons.isNotEmpty()) {
             text?.setText(R.string.kyc_failed_text_with_reason)
@@ -298,7 +300,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showStatusBlacklist() {
-        ImageHandler.LoadImage(image, KycUrl.ICON_FAIL_VERIFY)
+        image?.loadImage(KycUrl.ICON_FAIL_VERIFY)
         title?.setText(R.string.kyc_failed_title)
         text?.setText(R.string.kyc_blacklist_text)
         button?.setText(R.string.kyc_blacklist_button)
@@ -348,7 +350,13 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun goToFormActivity() {
         if (activity != null) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, projectId.toString())
+            val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
+                    projectId.toString(),
+                    redirectUrl
+            )
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
             intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }
@@ -384,14 +392,15 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     companion object {
         private const val FLAG_ACTIVITY_KYC_FORM = 1301
         const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
-        fun createInstance(isSourceSeller: Boolean, projectid: Int, callback: String?): UserIdentificationInfoFragment {
-            val fragment = UserIdentificationInfoFragment()
-            val args = Bundle()
-            args.putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
-            args.putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
-            args.putString(ApplinkConstInternalGlobal.PARAM_CALL_BACK, callback)
-            fragment.arguments = args
-            return fragment
+        fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", redirectUrl: String?): UserIdentificationInfoFragment {
+            return UserIdentificationInfoFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
+                    putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
+                    putString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
+                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                }
+            }
         }
     }
 }

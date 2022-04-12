@@ -34,7 +34,7 @@ class FeedMultipleImageView @JvmOverloads constructor(
     private val itemDecoration: RecyclerView.ItemDecoration
 
     init {
-        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4))
+        itemDecoration = ItemOffsetDecoration(context.resources.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_4))
         init()
     }
 

@@ -33,29 +33,17 @@ public class HomePageTracking {
 
     public static final String FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     public static final String FORMAT_2_VALUE_UNDERSCORE = "%s_%s";
-    public static final String BELI_INI_ITU_CLICK = "beli ini itu click";
-    public static final String BAYAR_INI_ITU_CLICK = "bayar ini itu click";
-    public static final String PESAN_INI_ITU_CLICK = "pesan ini itu click";
-    public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
-    public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomepage";
-    private static final String EVENT_GIMMICK = "clickGimmick";
 
     public static final String CATEGORY_HOME_PAGE = "homepage";
-    private static final String CATEGORY_GIMMICK = "Gimmick";
 
     private static final String ACTION_CLICK_HOME_PAGE = "clickHomePage";
     private static final String ACTION_CLICK_VIEW_ALL_PROMO = "slider banner click view all";
-    private static final String ACTION_GIMMICK_CLICK = "Click";
     private static final String ACTION_CLICK_JUMP_RECOMENDATION = "cek rekomendasi jumper click";private static final String ACTION_CLICK_HOME_USE_CASE = "click 5 use cases";
-    private static final String ACTION_CLICK_TAB_EXPLORER = "click explorer tab";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_PRODUCT = "click view all on lego product";
-    private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
     private static final String ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL = "lego banner gif click view all";
-    private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
-    private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
 
     private static final String LABEL_EMPTY = "";
     public static final String EVENT = "event";
@@ -80,7 +68,6 @@ public class HomePageTracking {
     public static final String EVENT_LEGO_BANNER = "lego banner gif impression";
 
     public static final String EVENT_LEGO_BANNER_CLICK = "lego banner gif click";
-    public static final String CLICK = "click";
     public static final String LIST = "list";
     public static final String PROMOTIONS_NAME = "/ - p1 - lego banner gif - %s";
     public static final String EVENT_CLICK_TICKER = "clickTicker";
@@ -88,12 +75,7 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
     public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
 
-    public static final String ON = "on";
-    public static final String QR_CODE = "qr code";
     public static final String EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION = "click on allow geolocation";
-    public static final String EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION = "click on not allow geolocation";
-    public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
-    public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
 
     public static final String CHANNEL_ID = "channelId";
@@ -179,18 +161,6 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickTabExplorer(String title) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_TAB_EXPLORER,
-                    title
-            );
-        }
-    }
-
     public static void eventEnhancedClickDynamicIconHomePage(DynamicHomeIcon.DynamicIcon homeIconItem, int position) {
         ContextAnalytics tracker = getTracker();
         if (tracker != null) {
@@ -206,16 +176,6 @@ public class HomePageTracking {
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_PRODUCT);
         map.put(EVENT_LABEL, headerName);
-        map.put(CHANNEL_ID, channelId);
-        getTracker().sendGeneralEvent(map);
-    }
-
-    public static void eventClickSeeAllProductSprintBackground(String channelId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
-        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
-        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND);
-        map.put(EVENT_LABEL, LABEL_EMPTY);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
@@ -240,7 +200,6 @@ public class HomePageTracking {
             );
         }
     }
-
 
     public static Map<String, Object> getEventEnhancedClickSpotlightHomePage(int position,
                                                                              SpotlightItemDataModel spotlightItemDataModel) {
@@ -290,69 +249,6 @@ public class HomePageTracking {
         map.put(EVENT_LABEL, headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
-    }
-
-
-    public static void eventClickExplorerItem(String action, String label) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    action,
-                    label
-            );
-        }
-    }
-
-    public static void eventEnhancedImpressionFavoriteCategory(Map<String, Object> data) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(data);
-        }
-    }
-
-    public static void eventEnhancedClickFavoriteCategory(Map<String, Object> data) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendEnhanceEcommerceEvent(data);
-        }
-    }
-
-    public static void eventClickOpenShop() {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_OPEN_SHOP,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventClickEditShop() {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    ACTION_CLICK_EDIT_SHOP,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventHomeGimmick(String label) {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_GIMMICK,
-                    CATEGORY_GIMMICK,
-                    ACTION_GIMMICK_CLICK,
-                    label
-            );
-        }
     }
 
     public static void eventEnhanceImpressionLegoAndCuratedHomePage(
@@ -416,56 +312,6 @@ public class HomePageTracking {
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
                     tickerId
-            );
-        }
-    }
-
-    //on permission
-    public static void eventClickAllowGeolocation() {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    EVENT_ACTION_CLICK_ON_ALLOW_GEOLOCATION,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    //on permission
-    public static void eventClickNotAllowGeolocation() {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    EVENT_ACTION_CLICK_ON_NOT_ALLOW_GEOLOCATION,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventClickGeolocationComponent() {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT,
-                    LABEL_EMPTY
-            );
-        }
-    }
-
-    public static void eventClickCloseGeolocationComponent() {
-        ContextAnalytics tracker = getTracker();
-        if (tracker != null) {
-            tracker.sendGeneralEvent(
-                    EVENT_CLICK_HOME_PAGE,
-                    CATEGORY_HOME_PAGE,
-                    EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT,
-                    LABEL_EMPTY
             );
         }
     }

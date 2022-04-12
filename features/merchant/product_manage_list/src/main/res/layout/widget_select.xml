@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/check"/>
 
-    <ImageButton
+    <com.tokopedia.unifycomponents.UnifyImageButton
         android:id="@+id/check"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
@@ -31,6 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title"
         app:layout_constraintBottom_toBottomOf="@id/title"
+        app:unifyImageButtonVariant="image"
         android:contentDescription="@string/checklist_filter_see_all_product_manage" />
 
     <com.tokopedia.unifycomponents.DividerUnify

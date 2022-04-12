@@ -30,7 +30,8 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
             textAreaListener: TextAreaListener,
             text: String,
             incentiveHelper: String = "",
-            isUserEligible: Boolean = false,
+            hasIncentive: Boolean = false,
+            hasOngoingChallenge: Boolean = false,
             templates: List<String> = listOf(),
             placeholder: String = ""
         ): CreateReviewTextAreaBottomSheet {
@@ -38,7 +39,8 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                 this.text = text
                 this.textAreaListener = textAreaListener
                 this.incentiveHelper = incentiveHelper
-                this.isUserEligible = isUserEligible
+                this.hasIncentive = hasIncentive
+                this.hasOngoingChallenge = hasOngoingChallenge
                 this.templates = templates
                 this.placeholder = placeholder
             }
@@ -48,7 +50,8 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     private var text: String = ""
     private var textAreaListener: TextAreaListener? = null
     private var incentiveHelper = ""
-    private var isUserEligible = false
+    private var hasIncentive = false
+    private var hasOngoingChallenge = false
     private var templates: List<String> = listOf()
     private var placeholder: String = ""
 
@@ -101,30 +104,35 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                     }
 
                     override fun afterTextChanged(s: Editable?) {
-                        if (!isUserEligible) {
-                            return
-                        }
                         val textLength = s?.length ?: 0
                         incentiveHelper = when {
                             textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                                context?.getString(R.string.review_create_bottom_sheet_text_area_eligible)
-                                    ?: ""
+                                if (hasIncentive || hasOngoingChallenge) {
+                                    context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_incentive) ?: ""
+                                } else {
+                                    ""
+                                }
                             }
                             textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                                context?.getString(R.string.review_create_bottom_sheet_text_area_partial)
-                                    ?: ""
+                                if (hasIncentive || hasOngoingChallenge) {
+                                    context?.getString(R.string.review_create_bottom_sheet_text_area_partial_incentive) ?: ""
+                                } else {
+                                    ""
+                                }
                             }
                             else -> {
-                                context?.getString(R.string.review_create_bottom_sheet_text_area_empty)
-                                    ?: ""
+                                if (hasIncentive || hasOngoingChallenge) {
+                                    context?.getString(R.string.review_create_bottom_sheet_text_area_empty_incentive) ?: ""
+                                } else {
+                                    ""
+                                }
                             }
                         }
                         incentiveHelperText?.text = incentiveHelper
                     }
-
                 })
             }
-            if (isUserEligible) {
+            if (hasIncentive || hasOngoingChallenge) {
                 incentiveHelperText?.apply {
                     text = incentiveHelper
                     show()
@@ -174,7 +182,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     private fun setTemplates() {
-        if (templates.isEmpty() || isUserEligible) {
+        if (templates.isEmpty() || hasIncentive) {
             hideTemplates()
             return
         }

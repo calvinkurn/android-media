@@ -36,6 +36,9 @@ class SettingFingerprintViewModelTest {
     private var removeFingerprintObserver = mockk<Observer<Result<RemoveFingerprintData>>>(relaxed = true)
     val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
+    val navigateSuccessRegister = mockk<Observer<Void>>(relaxed = true)
+    val errorMessageRegister = mockk<Observer<String>>(relaxed = true)
+
     private val throwable = mockk<Throwable>(relaxed = true)
 
     @Before
@@ -53,6 +56,8 @@ class SettingFingerprintViewModelTest {
         viewModel.checkFingerprintStatus.observeForever(checkFingerprintObserver)
         viewModel.registerFingerprintResult.observeForever(registerFingerprintObserver)
         viewModel.removeFingerprintResult.observeForever(removeFingerprintObserver)
+        viewModel.navigateSuccessRegister.observeForever(navigateSuccessRegister)
+        viewModel.errorMessageRegister.observeForever(errorMessageRegister)
     }
 
     @Test
@@ -111,7 +116,7 @@ class SettingFingerprintViewModelTest {
         /* Then */
         verify {
             cryptographyUtils.generateFingerprintSignature(userSession.userId, userSession.deviceId)
-            registerFingerprintObserver.onChanged(Success(response.data))
+            navigateSuccessRegister.onChanged(any())
         }
     }
 
@@ -126,7 +131,9 @@ class SettingFingerprintViewModelTest {
         viewModel.registerFingerprint()
 
         /* Then */
-        verify { registerFingerprintObserver.onChanged(Fail(throwable)) }
+        verify {
+            errorMessageRegister.onChanged(throwable.message)
+        }
     }
 
     @Test
@@ -137,7 +144,9 @@ class SettingFingerprintViewModelTest {
         viewModel.registerFingerprint()
 
         /* Then */
-        assert(viewModel.registerFingerprintResult.value is Fail)
+        verify {
+            errorMessageRegister.onChanged("Terjadi Kesalahan, Silahkan coba lagi")
+        }
     }
 
     @Test
@@ -156,7 +165,7 @@ class SettingFingerprintViewModelTest {
 
         /* Then */
         verify {
-            registerFingerprintObserver.onChanged(any<Fail>())
+            errorMessageRegister.onChanged(errMsg)
         }
     }
 
@@ -175,9 +184,8 @@ class SettingFingerprintViewModelTest {
 
         /* Then */
         verify {
-            registerFingerprintObserver.onChanged(any<Fail>())
+            errorMessageRegister.onChanged(any())
         }
-        assert((viewModel.registerFingerprintResult.value as Fail).throwable is com.tokopedia.network.exception.MessageErrorException)
     }
 
     @Test

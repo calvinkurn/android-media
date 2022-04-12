@@ -11,7 +11,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
-import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCase
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCaseSeller
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailWishlistedUseCase
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -49,7 +49,7 @@ class FeedMediaPreviewViewModel @Inject constructor(baseDispatcher: CoroutineDis
     val postTagLive = MutableLiveData<PostTag>()
 
     fun getPostDetail(){
-        getPostDetailUseCase.execute(GetPostDetailUseCase
+        getPostDetailUseCase.execute(GetPostDetailUseCaseSeller
                 .createRequestParams(userSession.userId, "",
                         GetDynamicFeedUseCase.FeedV2Source.Detail, postId),
                 object : Subscriber<PostDetailViewModel>() {

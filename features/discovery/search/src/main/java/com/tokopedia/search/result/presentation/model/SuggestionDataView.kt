@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
+@Suppress("LongParameterList")
 class SuggestionDataView(
         val suggestionText: String = "",
         val suggestedQuery: String = "",

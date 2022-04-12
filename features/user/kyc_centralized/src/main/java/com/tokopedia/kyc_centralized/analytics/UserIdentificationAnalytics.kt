@@ -2,6 +2,9 @@ package com.tokopedia.kyc_centralized.analytics
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.user_identification_common.KYCConstant.Companion.CO_BRAND_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.Companion.GO_CICIL_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.Companion.HOME_CREDIT_PROJECT_ID
 
 /**
  * @author by alvinatin on 26/11/18.
@@ -14,6 +17,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val CLICK_KYC = "clickKYC"
         const val VIEW_TRADEIN = "viewTradeIn"
         const val CLICK_TRADEIN = "clickTradeIn"
+        const val CLICK_VERIFICATION = "clickVerification"
     }
 
     private object Action {
@@ -22,6 +26,8 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val CLICK_NEXT_ONBOARDING = "click on lanjut kyc onboarding"
         const val CLICK_ON_MULAI_ONBOARDING = "click on button mulai"
         const val VIEW_PENDING_PAGE = "view on menunggu verifikasi"
+
+        const val CLICK_ON_TNC_KYC = "click on tnc kyc"
 
         const val CLICK_ON_MENGERTI_PENDING_PAGE = "click on button mengerti"
         const val VIEW_SUCCESS_SNACKBAR_PENDING_PAGE = "view on success message verifikasi"
@@ -45,6 +51,9 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         const val labelTwo = "2"
         const val labelThree = "3"
         const val labelFour = "4"
+
+        const val LABEL_CHECK = "check"
+        const val LABEL_UNCHECK = "uncheck"
     }
 
     fun eventViewOnKYCOnBoarding() {
@@ -61,21 +70,35 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelOne
+                "${Label.labelOne} - $projectID - ${getKycType(projectID.toString())}"
         ))
+    }
+
+    fun eventClickKycTnc(isChecked: Boolean) {
+        val data = TrackAppUtils.gtmData(
+            Event.CLICK_VERIFICATION,
+            Category.KYC_PAGE,
+            Action.CLICK_ON_TNC_KYC,
+            if(isChecked) Label.LABEL_CHECK else Label.LABEL_UNCHECK
+        )
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun eventClickOnNextOnBoarding() {
         if (projectID == 4) {
             sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING, "")
-        } else {
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    Event.CLICK_ACCOUNT,
-                    Category.KYC_ONBOARDING_PAGE,
-                    Action.CLICK_ON_MULAI_ONBOARDING,
-                    ""
-            ))
         }
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_MULAI_ONBOARDING,
+                "click - $projectID - ${getKycType(projectID.toString())}"
+        ))
     }
 
     fun eventViewPendingPage() {
@@ -92,7 +115,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelTwo
+                "${Label.labelTwo} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -101,7 +124,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_MENGERTI_PENDING_PAGE,
-                ""
+                "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -128,7 +151,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelThree
+                "${Label.labelThree} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -137,7 +160,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
-                ""
+                "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -146,7 +169,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_KEMBALI_BLACKLIST_PAGE,
-                ""
+                "click - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -155,7 +178,7 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
                 Event.CLICK_ACCOUNT,
                 Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_ON_BUTTON_BACK,
-                Label.labelFour
+                "${Label.labelFour} - $projectID - ${getKycType(projectID.toString())}"
         ))
     }
 
@@ -195,11 +218,32 @@ class UserIdentificationAnalytics private constructor(private val projectID: Int
         ))
     }
 
+    private fun getKycType(projectID: String): String {
+        return if (
+                projectID == HOME_CREDIT_PROJECT_ID ||
+                projectID == CO_BRAND_PROJECT_ID ||
+                projectID == GO_CICIL_PROJECT_ID
+        ) {
+            TYPE_ALA_CARTE
+        } else {
+            TYPE_CKYC
+        }
+    }
+
     companion object {
         @JvmStatic
         fun createInstance(projectID: Int): UserIdentificationAnalytics {
             return UserIdentificationAnalytics(projectID)
         }
+
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+
+        private const val BUSSINESS_UNIT = "user platform"
+        private const val CURRENT_SITE = "tokopediamarketplace"
+
+        private const val TYPE_ALA_CARTE = "ala carte"
+        private const val TYPE_CKYC = "ckyc"
     }
 
 }

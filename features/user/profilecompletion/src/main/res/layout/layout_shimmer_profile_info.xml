@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_profile_info"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Unify_Background">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/shimmer_photo_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:cardCornerRadius="42dp">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:layout_width="84dp"
+            android:layout_height="84dp"
+            app:use_gradient="true"
+            app:unify_image_type="circle" />
+    </androidx.cardview.widget.CardView>
+
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_change_photo"
+        android:layout_width="117dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        app:use_gradient="true"
+        app:corners="24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_photo_profile"/>
+
+
+    <View
+        android:id="@+id/fragmentInfoDivider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_change_photo" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_profile_info_title"
+        android:layout_width="130dp"
+        app:use_gradient="true"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@id/fragmentInfoDivider1"
+        app:corners="24"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/shimmer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_profile_info_title"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+    <include
+        android:id="@+id/shimmer_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_name"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+    <include
+        android:id="@+id/shimmer_bio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_username"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+
+    <View
+        android:id="@+id/fragmentInfoDivider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/unify_space_32"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shimmer_bio" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmer_personal_info_title"
+        android:layout_width="130dp"
+        app:use_gradient="true"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@id/fragmentInfoDivider2"
+        app:corners="24"
+        android:layout_height="wrap_content"/>
+
+    <include
+        android:id="@+id/shimmer_user_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_personal_info_title"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+    <include
+        android:id="@+id/shimmer_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_user_id"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+    <include
+        android:id="@+id/shimmer_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_email"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+    <include
+        android:id="@+id/shimmer_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_phone"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+    <include
+        android:id="@+id/shimmer_dob"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shimmer_gender"
+        android:layout_marginTop="@dimen/unify_space_32"
+        layout="@layout/layout_shimmer_profile_item"/>
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

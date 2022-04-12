@@ -1,24 +1,40 @@
 package com.tokopedia.kol.feature.video.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.kol.feature.video.domain.usecase.GetVideoDetailUseCase
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kol.feature.video.view.subscriber.FollowSubscriber
 import com.tokopedia.kol.feature.video.view.subscriber.LikeSubscriber
-import com.tokopedia.kol.feature.video.view.subscriber.VideoDetailSubscriber
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by yfsx on 26/03/19.
  */
 class VideoDetailPresenter
-@Inject constructor(private val likeKolPostUseCase: LikeKolPostUseCase,
+@Inject constructor(private val baseDispatcher: CoroutineDispatchers,
+                    private val likeKolPostUseCase: LikeKolPostUseCase,
                     private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
-                    private val getVideoDetailUseCase: GetVideoDetailUseCase)
-    : VideoDetailContract.Presenter, BaseDaggerPresenter<VideoDetailContract.View>() {
+                    private val getVideoDetailUseCase: GetVideoDetailUseCase
+                   )
+    : VideoDetailContract.Presenter, BaseDaggerPresenter<VideoDetailContract.View>() ,CoroutineScope{
+
+    var getFeedNextPageResp = DynamicFeedDomainModel()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main + SupervisorJob()
+
 
     override fun attachView(view: VideoDetailContract.View?) {
         super.attachView(view)
@@ -28,12 +44,29 @@ class VideoDetailPresenter
         super.detachView()
         likeKolPostUseCase.unsubscribe()
         followKolPostGqlUseCase.unsubscribe()
-        getVideoDetailUseCase.unsubscribe()
     }
 
     override fun getFeedDetail(detailId: String) {
-        getVideoDetailUseCase.execute(GetVideoDetailUseCase.createRequestParams(getUserId(), detailId),
-                VideoDetailSubscriber(view))
+
+        launchCatchError(context = baseDispatcher.main,block = {
+            getFeedNextPageResp = withContext(baseDispatcher.io) {
+               getFeedDataResult(detailId)
+            }
+
+            view.onSuccessGetVideoDetail(getFeedNextPageResp.postList)
+
+        }) {
+            view.onErrorGetVideoDetail(it.message?:"")
+        }
+    }
+
+    private suspend fun getFeedDataResult(detailId: String): DynamicFeedDomainModel {
+        try {
+            return getVideoDetailUseCase.execute(cursor = "", detailId = detailId)
+        } catch (e: Throwable) {
+            Timber.e(e)
+            throw e
+        }
     }
 
     override fun followKol(id: Int) {

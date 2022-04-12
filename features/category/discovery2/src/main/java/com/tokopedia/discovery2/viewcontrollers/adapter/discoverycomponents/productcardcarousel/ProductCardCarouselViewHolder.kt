@@ -1,7 +1,10 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel
 
+import android.graphics.Color
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.MixLeft
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -16,14 +20,15 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mast
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomViewCreator
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.unifycomponents.LocalLoad
+import kotlin.math.abs
+
 
 class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
+    private var mixLeftData: MixLeft? = null
     private var mProductCarouselRecyclerView: RecyclerView = itemView.findViewById(R.id.products_rv)
     private var mHeaderView: FrameLayout = itemView.findViewById(R.id.header_view)
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
@@ -32,6 +37,10 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator()
     private var carouselEmptyState: LocalLoad? = null
     private var errorHolder: FrameLayout = itemView.findViewById(R.id.filter_error_view)
+    private var mixLeftBanner: ImageView = itemView.findViewById(R.id.parallax_image)
+    private var mixLeftBannerBG: ImageView = itemView.findViewById(R.id.banner_background_image)
+    private var mixLeftBannerCard: CardView = itemView.findViewById(R.id.parallax_image_card)
+    private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
 
     init {
         linearLayoutManager.initialPrefetchItemCount = PREFETCH_ITEM_COUNT
@@ -69,6 +78,40 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 }
             }
         })
+        mProductCarouselRecyclerView.addOnScrollListener(getParallaxEffect())
+    }
+
+    private fun getParallaxEffect(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(mixLeftBannerCard.isVisible) {
+                    if (linearLayoutManager.findFirstVisibleItemPosition() == 0 && dx != 0) {
+                        val firstView =
+                            linearLayoutManager.findViewByPosition(linearLayoutManager.findFirstVisibleItemPosition())
+                        firstView?.let {
+                            val distanceFromLeft = it.left
+                            val translateX = distanceFromLeft * 0.2f
+                            if (translateX <= 0) {
+                                mixLeftBannerCard.translationX = -translateX
+                                val itemSize = it.width.toFloat()
+                                val alpha = (abs(distanceFromLeft).toFloat() / itemSize * 0.85f)
+                                mixLeftBannerCard.alpha = 1 - alpha
+                                mixLeftBannerCard.scaleY = 1 - alpha
+                                mixLeftBannerCard.scaleX = 1 - alpha
+                            } else {
+                                mixLeftBannerCard.translationX = 0f
+                                mixLeftBannerCard.alpha = 1f
+                                mixLeftBannerCard.scaleY = 1f
+                                mixLeftBannerCard.scaleX = 1f
+                            }
+                        }
+                    } else if (linearLayoutManager.findFirstVisibleItemPosition() > 0 && dx != 0) {
+                        mixLeftBannerCard.alpha = 0f
+                    }
+                }
+            }
+        }
     }
 
     private fun addCardHeader(componentsItem: ComponentsItem?) {
@@ -98,7 +141,12 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel.getProductCardHeaderData().observe(lifecycle, { component ->
                 addCardHeader(component)
             })
+            mProductCarouselComponentViewModel.getMixLeftData().observe(lifecycle,{ mixLeft ->
+                mixLeftData = mixLeft
+                setupBackgroundData(mixLeft)
+            })
             mProductCarouselComponentViewModel.getProductCarouselItemsListData().observe(lifecycle, { item ->
+                setupMixLeft(item)
                 mDiscoveryRecycleAdapter.setDataList(item)
             })
             mProductCarouselComponentViewModel.syncData.observe(lifecycle, { sync ->
@@ -124,6 +172,54 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
         }
     }
 
+    private fun setupBackgroundData(mixLeft: MixLeft?) {
+        if (mixLeftData != null && !(mixLeftData?.backgroundImageUrl.isNullOrEmpty())) {
+            mixLeft?.let {
+                try {
+                    backgroundImage.loadImageWithoutPlaceholder(it.backgroundImageUrl)
+                    if (!it.backgroundColor.isNullOrEmpty())
+                        backgroundImage.setColorFilter(Color.parseColor(it.backgroundColor))
+                    backgroundImage.show()
+                }catch (e:Exception){
+                    backgroundImage.hide()
+                }
+            }
+        }else {
+            backgroundImage.hide()
+        }
+    }
+
+    private fun setupMixLeft(item: ArrayList<ComponentsItem>) {
+        if (item.isNotEmpty() && mixLeftData != null && !(mixLeftData?.bannerImageUrlMobile.isNullOrEmpty())) {
+            mixLeftData?.let {
+                setupMixLeftBannerBG(it.backgroundColor, it.bannerSuperGraphicImage)
+                if (!it.bannerImageUrlMobile.isNullOrEmpty())
+                    mixLeftBanner.loadImageWithoutPlaceholder(it.bannerImageUrlMobile)
+                mixLeftBannerCard.show()
+            }
+            carouselRecyclerViewDecorator.isMixLeftPresent = true
+        } else {
+            mixLeftBannerCard.hide()
+            carouselRecyclerViewDecorator.isMixLeftPresent = false
+        }
+    }
+
+    private fun setupMixLeftBannerBG(backgroundColor:String?,bannerSuperGraphicImage:String?){
+        if(backgroundColor.isNullOrEmpty() && bannerSuperGraphicImage.isNullOrEmpty()){
+            mixLeftBannerBG.hide()
+            return
+        }
+        try {
+            if (!backgroundColor.isNullOrEmpty())
+                mixLeftBannerBG.setBackgroundColor(Color.parseColor(backgroundColor))
+            if (!bannerSuperGraphicImage.isNullOrEmpty())
+                mixLeftBannerBG.loadImageWithoutPlaceholder(bannerSuperGraphicImage)
+            mixLeftBannerBG.show()
+        }catch (e:Exception){
+            mixLeftBannerBG.hide()
+        }
+    }
+
     private fun setMaxHeight(height: Int) {
         val carouselLayoutParams = mProductCarouselRecyclerView.layoutParams
         carouselLayoutParams?.height = height
@@ -138,6 +234,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
             mProductCarouselComponentViewModel.getProductLoadState().removeObservers(it)
             mProductCarouselComponentViewModel.getProductCardHeaderData().removeObservers(it)
             mProductCarouselComponentViewModel.atcFailed.removeObservers(it)
+            mProductCarouselComponentViewModel.getMixLeftData().removeObservers(it)
         }
     }
 
@@ -151,13 +248,14 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
     private fun handleErrorState() {
         addShimmer()
         mDiscoveryRecycleAdapter.notifyDataSetChanged()
+        mixLeftBannerCard.hide()
         if (mHeaderView.childCount > 0)
             mHeaderView.removeAllViews()
 
         if (mProductCarouselComponentViewModel.getProductList() == null) {
             carouselEmptyState?.run {
                 title?.text = context?.getString(R.string.discovery_product_empty_state_title).orEmpty()
-                description?.text = context?.getString(R.string.discovery_product_empty_state_description).orEmpty()
+                description?.text = context?.getString(R.string.discovery_section_empty_state_description).orEmpty()
                 refreshBtn?.setOnClickListener {
                     reloadComponent()
                 }
@@ -166,7 +264,7 @@ class ProductCardCarouselViewHolder(itemView: View, val fragment: Fragment) : Ab
                 errorHolder.gone()
             }
         } else if (mProductCarouselComponentViewModel.getProductList()?.isEmpty() == true
-            && mProductCarouselComponentViewModel.areFitterApplied()) {
+            && mProductCarouselComponentViewModel.areFiltersApplied()) {
             if (errorHolder.childCount > 0) {
                 errorHolder.removeAllViews()
             }

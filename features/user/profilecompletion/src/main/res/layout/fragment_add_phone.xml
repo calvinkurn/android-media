@@ -17,20 +17,21 @@
             android:id="@+id/add_phone_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+
             android:layout_marginTop="@dimen/spacing_lvl3"
+            android:textColor="@color/Unify_NN600"
             android:text="@string/warning_add_phone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_1" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/etPhone"
             app:text_field_input_type="phone"
             android:layout_width="match_parent"
             android:hint="@string/title_phone"
             android:layout_height="wrap_content"
-            app:text_field_label="@string/subtitle_phone_setting_profile"
+            app:unify_text_field_label="@string/subtitle_phone_setting_profile"
             app:text_field_message="@string/sample_phone"
             android:layout_marginTop="@dimen/spacing_lvl6" />
 
@@ -41,8 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:text="@string/button_next"
-            />
+            android:text="@string/button_next" />
 
     </LinearLayout>
 

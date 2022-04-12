@@ -13,10 +13,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dynamicfeatures.config.DFConfig
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
@@ -294,9 +294,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         progressTextPercent = view?.findViewById(R.id.progress_text_percent)
         progressBar = view?.findViewById(R.id.progress_bar)
         progressGroup = view?.findViewById(R.id.progress_group)
-        progressBar?.progressDrawable?.setColorFilter(
-                ContextCompat.getColor(requireContext(), R.color.tkpd_main_green),
-                android.graphics.PorterDuff.Mode.MULTIPLY)
+        progressBar?.progressDrawable?.setColorFilter(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.MULTIPLY)
     }
 
     /** Display a loading state to the user. */

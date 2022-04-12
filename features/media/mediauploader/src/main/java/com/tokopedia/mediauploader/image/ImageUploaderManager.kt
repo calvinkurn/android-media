@@ -33,10 +33,22 @@ class ImageUploaderManager @Inject constructor(
         val sourcePolicy = PolicyMapper.map(policyData.dataPolicy)
 
         if (sourcePolicy.imagePolicy != null) {
-            val extensions = sourcePolicy.imagePolicy.extension.split(",")
             val maxFileSize = sourcePolicy.imagePolicy.maxFileSize
             val maxRes = sourcePolicy.imagePolicy.maximumRes
             val minRes = sourcePolicy.imagePolicy.minimumRes
+
+            /*
+            * we need to remove the dot from first char.
+            * this is the example of whitelist extension from BE such as:
+            * .jpg, .png, .jpeg
+            *
+            * expected result is:
+            * jpg, png, jpeg
+            * */
+            val extensions = sourcePolicy.imagePolicy
+                .extension
+                .split(",")
+                .map { it.drop(1) }
 
             return when {
                 !file.exists() -> {
@@ -45,7 +57,7 @@ class ImageUploaderManager @Inject constructor(
                 file.isMaxFileSize(maxFileSize) -> {
                     UploadResult.Error(maxFileSizeMessage(maxFileSize))
                 }
-                !extensions.contains(filePath.fileExtension()) -> {
+                !extensions.contains(filePath.fileExtension().lowercase()) -> {
                     UploadResult.Error(formatNotAllowedMessage(sourcePolicy.imagePolicy.extension))
                 }
                 filePath.isMaxBitmapResolution(maxRes.width, maxRes.height) -> {

@@ -11,11 +11,11 @@ class SomListOrderAdapter(
         adapterTypeFactory: SomListAdapterTypeFactory
 ) : BaseListAdapter<Visitable<SomListAdapterTypeFactory>, SomListAdapterTypeFactory>(adapterTypeFactory) {
     fun updateOrders(items: List<Visitable<SomListAdapterTypeFactory>>) {
-        val diffCallback = SomListOrderDiffUtilCallback(visitables, items)
+        val diffCallback = SomListOrderDiffUtilCallback(visitables.toMutableList(), items)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-        diffResult.dispatchUpdatesTo(this)
         visitables.clear()
         visitables.addAll(items)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateOrder(newOrder: SomListOrderUiModel) {

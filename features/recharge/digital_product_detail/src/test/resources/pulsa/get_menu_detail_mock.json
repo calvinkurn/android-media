@@ -1,0 +1,222 @@
+{
+  "rechargeCatalogMenuDetail": {
+    "catalog": {
+      "id": 289,
+      "name": "pdp2022_pulsa",
+      "label": "Pulsa",
+      "icon": ""
+    },
+    "user_perso": {
+      "prefill": "087855812080",
+      "user_type": "new user",
+      "loyalty_status": "new user"
+    },
+    "recommendations": [
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+        "title": "10.000",
+        "clientNumber": "087855812080",
+        "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d2\u0026operator_id\u003d5\u0026product_id\u003d1136\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d5\u0026product_id\u003d1136\u0026client_number\u003d087855812080",
+        "productPrice": 11500,
+        "type": "",
+        "categoryId": 1,
+        "productId": 1136,
+        "isATC": false,
+        "description": "",
+        "operatorID": 5
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+        "title": "100.000",
+        "clientNumber": "08121111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d70\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d12\u0026product_id\u003d70\u0026client_number\u003d08121111111",
+        "productPrice": 100000,
+        "type": "",
+        "categoryId": 1,
+        "productId": 70,
+        "isATC": false,
+        "description": "",
+        "operatorID": 12
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+        "title": "25.000",
+        "clientNumber": "08121111112",
+        "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d68\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d12\u0026product_id\u003d68\u0026client_number\u003d08121111112",
+        "productPrice": 26500,
+        "type": "",
+        "categoryId": 1,
+        "productId": 68,
+        "isATC": false,
+        "description": "",
+        "operatorID": 12
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+        "title": "25.000",
+        "clientNumber": "0811111111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d2\u0026operator_id\u003d12\u0026product_id\u003d68\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d12\u0026product_id\u003d68\u0026client_number\u003d0811111111111",
+        "productPrice": 26500,
+        "type": "",
+        "categoryId": 1,
+        "productId": 68,
+        "isATC": false,
+        "description": "",
+        "operatorID": 12
+      },
+      {
+        "iconUrl": "https://images.tokopedia.net/img/SnKlQx/2022/2/2/3f060ab5-9a19-43e5-bbe1-d1bd21c274ed.png",
+        "title": "15.000",
+        "clientNumber": "081911111111",
+        "appLink": "tokopedia://digital/form?category_id\u003d1\u0026menu_id\u003d2\u0026operator_id\u003d5\u0026product_id\u003d1137\u0026template\u003dtelcopre",
+        "webLink": "https://pulsa.tokopedia.com/pulsa/?category_id\u003d1\u0026operator_id\u003d5\u0026product_id\u003d1137\u0026client_number\u003d081911111111",
+        "productPrice": 15500,
+        "type": "",
+        "categoryId": 1,
+        "productId": 1137,
+        "isATC": false,
+        "description": "",
+        "operatorID": 5
+      }
+    ],
+    "promos": [
+      {
+        "id": 5033,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2021/12/7/eda6e968-4ae4-4015-88c6-7b849afbf1a1.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-13",
+        "status": 1,
+        "title": "Khusus Pengguna Baru. Top Up Apa Saja, Cashback s.d 50rb.",
+        "subtitle": "Kode Promo: {COBATOPUP}",
+        "promo_code": "COBATOPUP"
+      },
+      {
+        "id": 1573,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/8/31/42484317/42484317_fa7e8881-26ca-411d-8371-86dd0aee2b1c.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-17/",
+        "status": 1,
+        "title": "Bayar Tagihan s.d Pulsa, Dapat Cashback terus-terusan.",
+        "subtitle": "kode promo : {BAYARTERUS}",
+        "promo_code": "BAYARTERUS"
+      },
+      {
+        "id": 2476,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2020/11/26/42484317/42484317_9716befc-4764-43e8-a2eb-44a0fede33fc.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-cashback-8/",
+        "status": 1,
+        "title": "Bayar Tagihan sampai Hiburan Dapat Kupon Belanja Fashion",
+        "subtitle": "kode promo : {FASHDG}",
+        "promo_code": "FASHDG"
+      },
+      {
+        "id": 2810,
+        "filename": "https://ecs7.tokopedia.net/img/banner/2021/1/15/66931192/66931192_39d3a19b-f32f-4f6a-96c8-50cb5890b74c.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-commonwealth",
+        "status": 1,
+        "title": "Diskon 5% hingga Rp250.000 dengan Debit Commonwealth",
+        "subtitle": "Kode promo: {COMMON50}",
+        "promo_code": "COMMON50"
+      },
+      {
+        "id": 4013,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/5/c756f11d-4b5a-46aa-aff7-27e2ac315753.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp500rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG500}",
+        "promo_code": "DIGIDG500"
+      },
+      {
+        "id": 4012,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp175rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG175}",
+        "promo_code": "DIGIDG175"
+      },
+      {
+        "id": 4011,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-digibank",
+        "status": 1,
+        "title": "Khusus hari Rabu, Diskon Rp50rb dengan Kartu Kredit Digital digibank by DBS",
+        "subtitle": "Kode promo: {DIGIDG50}",
+        "promo_code": "DIGIDG50"
+      },
+      {
+        "id": 3048,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 350rb dgn Kartu Kredit digibank DBS (min. 6jt)",
+        "subtitle": "Kode promo: {DIGIDG350}",
+        "promo_code": "DIGIDG350"
+      },
+      {
+        "id": 3047,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 100rb dgn Kartu Kredit digibank DBS (min. 3jt)",
+        "subtitle": "Kode promo: {DIGIDG100}",
+        "promo_code": "DIGIDG100"
+      },
+      {
+        "id": 3046,
+        "filename": "",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-dbs/",
+        "status": 1,
+        "title": "Hari Rabu, Diskon 25rb dgn Kartu Kredit digibank DBS (min. 750rb)",
+        "subtitle": "Kode promo: {DIGIDG25}",
+        "promo_code": "DIGIDG25"
+      },
+      {
+        "id": 5535,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/20/598749dc-6b4d-4d05-8eec-802a0e9794f3.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-hsbc-5/",
+        "status": 1,
+        "title": "Cashback Rp25rb dengan Kartu Kredit HSBC (min. 500rb)",
+        "subtitle": "Kode Promo: {HSBCDG25}",
+        "promo_code": "HSBCDG25"
+      },
+      {
+        "id": 2556,
+        "filename": "https://images.tokopedia.net/img/ULHhFV/2022/1/17/6b85ad05-17f1-46d7-b4cd-71b749338064.jpg",
+        "filename_webp": "",
+        "img_url": "https://www.tokopedia.com/promo/digital-citi/",
+        "status": 1,
+        "title": "Diskon Rp25.000 dengan Debit/Kartu Kredit Citibank (min. 500rb)",
+        "subtitle": "Kode promo: {CITIDG25}",
+        "promo_code": "CITIDG25"
+      }
+    ],
+    "tickers": [
+      {
+        "ID": 2361,
+        "Name": "Gangguan Smartfren",
+        "Content": "SMARTFREN - Mohon maaf saat ini sedang terjadi gangguan untuk transaksi Pulsa dan Paket Data Smartfren . Silahkan cek kembali secara berkala.",
+        "Type": "warning",
+        "Environment": "all",
+        "ActionText": "",
+        "ActionLink": ""
+      }
+    ],
+    "banners": [],
+    "express_checkout": false
+  }
+}

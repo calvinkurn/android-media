@@ -3,10 +3,7 @@ package com.tokopedia.broadcaster.tracker
 import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
-import kotlinx.coroutines.*
-import java.lang.Exception
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
 interface BroadcasterTracker {
     fun priority(): Priority
@@ -15,13 +12,9 @@ interface BroadcasterTracker {
     fun stopTrack()
 }
 
-class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
+class BroadcasterTrackerImpl : BroadcasterTracker {
 
-    private val mTrackerData = mutableListOf<LoggerUIModel>()
     private var trackerTimer: Timer? = null
-
-    override val coroutineContext: CoroutineContext
-        get() = SupervisorJob() + Dispatchers.IO
 
     override fun priority() = Priority.P2
 
@@ -30,18 +23,14 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
     override fun track(interval: Int, data: LoggerUIModel) {
         if (data.url.isEmpty()) return
 
-        mTrackerData.add(data)
-
         trackerTimer = Timer()
         trackerTimer?.schedule(object : TimerTask() {
             override fun run() {
-                launch {
-                    sendToNewRelic()
-
-                    withContext(Dispatchers.Main) {
-                        mTrackerData.clear()
-                    }
-                }
+                ServerLogger.log(
+                    priority = priority(),
+                    tag = tag(),
+                    message = data.toMap()
+                )
             }
 
         }, DELAYED_TIME, interval.toLong())
@@ -52,22 +41,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
             // cancel period task
             trackerTimer?.cancel()
             trackerTimer = null
-
-            // cancel coroutines
-            if (isActive) {
-                cancel()
-            }
         } catch (e: Exception) {}
-    }
-
-    private fun sendToNewRelic() {
-        mTrackerData.forEach {
-            ServerLogger.log(
-                priority = priority(),
-                tag = tag(),
-                message = it.toMap()
-            )
-        }
     }
 
     private fun LoggerUIModel.toMap(): Map<String, String> {

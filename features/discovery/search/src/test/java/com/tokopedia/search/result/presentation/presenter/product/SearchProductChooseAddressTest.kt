@@ -52,17 +52,17 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         `Then verify top of visitable list is choose address widget`()
     }
 
-    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel?) {
+    private fun `Setup choose address`(chooseAddressModel: LocalCacheModel) {
         `Given choose address is enabled`()
         `Given chosen address data`(chooseAddressModel)
     }
 
     private fun `Given choose address is enabled`() {
-        every { productListView.isChooseAddressWidgetEnabled } returns true
+        every { chooseAddressView.isChooseAddressWidgetEnabled } returns true
     }
 
     private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
-        every { productListView.chooseAddressData } returns chooseAddressModel
+        every { chooseAddressView.chooseAddressData } returns chooseAddressModel
     }
 
     private fun `Given search product API will return data`() {
@@ -100,12 +100,11 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     @Test
-    fun `Test choose address data is null`() {
-        `Setup choose address`(null)
+    fun `Test choose address data with empty values`() {
+        `Setup choose address`(LocalCacheModel())
         setUp()
 
         `Given search product API will return data`()
-        `Given visitable list will be captured`()
 
         `When load data`()
 
@@ -120,18 +119,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         parameters.shouldNotContain(SearchApiConst.USER_DISTRICT_ID)
         parameters.shouldNotContain(SearchApiConst.USER_POST_CODE)
         parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
-    }
-
-    @Test
-    fun `Test choose address data with empty values`() {
-        `Setup choose address`(LocalCacheModel())
-        setUp()
-
-        `Given search product API will return data`()
-
-        `When load data`()
-
-        `Then verify choose address data is not sent`(requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String, String>)
     }
 
     @Test
@@ -226,7 +213,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
 
     private fun `Then verify view will fetch new chosen address and reload data`() {
         verify {
-            productListView.chooseAddressData
+            chooseAddressView.chooseAddressData
             productListView.reloadData()
         }
     }
@@ -310,7 +297,9 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Given choose address data has updated`() {
-        every { productListView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData) } returns true
+        every {
+            chooseAddressView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData)
+        } returns true
     }
 
     private fun `When view is resumed`() {
@@ -318,7 +307,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Then verify check choose address data updated is called`() {
-        verify { productListView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData) }
+        verify { chooseAddressView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData) }
     }
 
     @Test

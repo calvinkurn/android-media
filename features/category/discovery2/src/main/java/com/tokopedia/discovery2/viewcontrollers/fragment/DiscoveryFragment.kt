@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.fragment
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -16,6 +17,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -31,11 +34,11 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
+import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
@@ -49,6 +52,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.lihatsemua.LihatSemuaViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemDecorator
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
@@ -76,21 +81,21 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.widget.MiniCartWidget
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.mvcwidget.IntentManger
 import com.tokopedia.mvcwidget.IntentManger.Keys.REGISTER_MEMBER_SUCCESS
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.mvcwidget.views.activities.TransParentActivity
-import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.widget.MiniCartWidget
-import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
+import com.tokopedia.play.widget.const.PlayWidgetConst
 import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -110,6 +115,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import com.tokopedia.unifyprinciples.R as RUnify
 
 
 private const val LOGIN_REQUEST_CODE = 35769
@@ -133,8 +139,11 @@ class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var autoScrollSectionID: String? = null
+    private var anchorViewHolder: AnchorTabsViewHolder? = null
     private lateinit var discoveryViewModel: DiscoveryViewModel
     private lateinit var mDiscoveryFab: CustomTopChatView
+    private lateinit var mAnchorHeaderView: FrameLayout
     private lateinit var recyclerView: StickyHeadRecyclerView
     private lateinit var typographyHeader: Typography
     private lateinit var ivShare: ImageView
@@ -153,6 +162,7 @@ class DiscoveryFragment :
     private var miniCartWidget: MiniCartWidget? = null
     private var miniCartData:MiniCartSimplifiedData? = null
     private var miniCartInitialized:Boolean = false
+    private var userPressed: Boolean = false
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -177,6 +187,7 @@ class DiscoveryFragment :
     private var shareType: Int = 1
 
     private var isManualScroll = true
+    private var stickyHeaderShowing = false
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -274,6 +285,7 @@ class DiscoveryFragment :
 
     private fun initView(view: View) {
         typographyHeader = view.findViewById(R.id.typography_header)
+        mAnchorHeaderView = view.findViewById(R.id.header_comp_holder)
         ivShare = view.findViewById(R.id.iv_share)
         ivSearch = view.findViewById(R.id.iv_search)
         view.findViewById<ImageView>(R.id.iv_back).setOnClickListener {
@@ -292,10 +304,14 @@ class DiscoveryFragment :
         mSwipeRefreshLayout.setOnRefreshListener(this)
         ivToTop.setOnClickListener(this)
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var dy = 0
+            var dx = 0
             var scrollDist = 0
             val MINIMUM = 25.toPx()
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+                this.dy = dy
+                this.dx = dx
                 if (dy >= 0) {
                     ivToTop.hide()
                     calculateScrollDepth(recyclerView)
@@ -308,7 +324,8 @@ class DiscoveryFragment :
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (!recyclerView.canScrollVertically(SCROLL_TOP_DIRECTION)
-                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    && newState == RecyclerView.SCROLL_STATE_IDLE
+                ) {
                     ivToTop.hide()
                 }
                 if (scrollDist > MINIMUM) {
@@ -316,6 +333,9 @@ class DiscoveryFragment :
                     chooseAddressWidgetDivider?.hide()
                     shouldShowChooseAddressWidget = false
                     scrollDist = 0
+                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                        scrollToLastSection()
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
@@ -323,9 +343,39 @@ class DiscoveryFragment :
                         shouldShowChooseAddressWidget = true
                     }
                     scrollDist = 0
+                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
+                    if(mAnchorHeaderView.childCount == 0){
+                        setupObserveAndShowAnchor()
+                    }
                 }
             }
         })
+        recyclerView.setOnTouchListenerRecyclerView{ v, event ->
+            userPressed = true
+            if(event.actionMasked == MotionEvent.ACTION_UP)
+                v.performClick()
+            false
+        }
+        recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener{
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                userPressed = true
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+                userPressed = true
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                userPressed = true
+            }
+        } )
+    }
+
+    private fun scrollToLastSection() {
+        if(!userPressed && !autoScrollSectionID.isNullOrEmpty()){
+            scrollToSection(autoScrollSectionID!!)
+        }
     }
 
     private fun calculateScrollDepth(recyclerView: RecyclerView) {
@@ -404,9 +454,59 @@ class DiscoveryFragment :
                try {
                    super.onLayoutChildren(recycler, state)
                } catch (e: Exception) {
-                   e.printStackTrace()
+                   Utils.logException(e)
                }
            }
+
+           override fun onItemsUpdated(
+                recyclerView: RecyclerView,
+                positionStart: Int,
+                itemCount: Int,
+                payload: Any?
+            ) {
+                try {
+                    super.onItemsUpdated(recyclerView, positionStart, itemCount, payload)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
+
+            override fun onItemsAdded(
+                recyclerView: RecyclerView,
+                positionStart: Int,
+                itemCount: Int
+            ) {
+                try {
+                    super.onItemsAdded(recyclerView, positionStart, itemCount)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
+
+            override fun onItemsRemoved(
+                recyclerView: RecyclerView,
+                positionStart: Int,
+                itemCount: Int
+            ) {
+                try {
+                    super.onItemsRemoved(recyclerView, positionStart, itemCount)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
+
+            override fun onItemsMoved(
+                recyclerView: RecyclerView,
+                from: Int,
+                to: Int,
+                itemCount: Int
+            ) {
+                try {
+                    super.onItemsMoved(recyclerView, from, to, itemCount)
+                }catch (e: Exception){
+                    Utils.logException(e)
+                }
+            }
        }
     }
 
@@ -425,12 +525,15 @@ class DiscoveryFragment :
                             discoveryAdapter.addDataList(ArrayList())
                             setPageErrorState(Fail(IllegalStateException()))
                         } else {
+                            hideGlobalError()
                             scrollToPinnedComponent(listComponent)
                         }
                     }
-                    hideGlobalError()
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
+                    recyclerView.post {
+                        scrollToLastSection()
+                    }
                 }
                 is Fail -> {
                     mProgressBar.hide()
@@ -488,6 +591,17 @@ class DiscoveryFragment :
                 }
                 is Fail -> {
                     bottomNav?.hide()
+                }
+            }
+        })
+
+        discoveryViewModel.getDiscoveryAnchorTabLiveData().observe(viewLifecycleOwner,{
+            when (it) {
+                is Success -> {
+                    setupAnchorTabComponent(it)
+                }
+                is Fail -> {
+                    resetAnchorTabs()
                 }
             }
         })
@@ -576,7 +690,35 @@ class DiscoveryFragment :
         })
     }
 
-    private fun showToaster(message: String,duration: Int= Toaster.LENGTH_SHORT, type: Int) {
+    private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
+        if(anchorViewHolder == null) {
+            val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
+            anchorViewHolder = AnchorTabsViewHolder(view, this)
+            val viewModel =
+                AnchorTabsViewModel(context?.applicationContext as Application, it.data, 0)
+            anchorViewHolder?.bindView(viewModel)
+            viewModel.onAttachToViewHolder()
+            anchorViewHolder?.onViewAttachedToWindow()
+        }
+        setupObserveAndShowAnchor()
+    }
+
+    private fun setupObserveAndShowAnchor() {
+        if (!stickyHeaderShowing)
+            anchorViewHolder?.let {
+                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
+                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+                    mAnchorHeaderView.removeAllViews()
+                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+                        anchorViewHolder?.itemView
+                    )
+                    mAnchorHeaderView.addView(it.itemView)
+                }
+            }
+    }
+
+    private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
         view?.let { view ->
             if (message.isNotBlank()) {
                 Toaster.build(
@@ -869,7 +1011,7 @@ class DiscoveryFragment :
                 globalError.setType(GlobalError.NO_CONNECTION)
             }
             is IllegalStateException -> {
-                globalError.setType(GlobalError.PAGE_FULL)
+                globalError.setType(GlobalError.PAGE_NOT_FOUND)
             }
             else -> {
                 globalError.setType(GlobalError.SERVER_ERROR)
@@ -903,6 +1045,7 @@ class DiscoveryFragment :
             if (!pinnedComponentId.isNullOrEmpty()) {
                 val position = discoveryViewModel.scrollToPinnedComponent(listComponent, pinnedComponentId)
                 if (position >= 0) {
+                    userPressed = true
                     recyclerView.smoothScrollToPosition(position)
                     isManualScroll = false
                 }
@@ -957,8 +1100,16 @@ class DiscoveryFragment :
         trackingQueue.sendAll()
         getDiscoveryAnalytics().clearProductViewIds(true)
         miniCartData = null
+        resetAnchorTabs()
+        discoveryViewModel.resetScroll()
         discoveryViewModel.clearPageData()
         fetchDiscoveryPageData()
+    }
+
+    private fun resetAnchorTabs(){
+        anchorViewHolder?.removeObservers(viewLifecycleOwner)
+        anchorViewHolder = null
+        mAnchorHeaderView.removeAllViews()
     }
 
     fun openLoginScreen(componentPosition: Int = -1) {
@@ -977,7 +1128,12 @@ class DiscoveryFragment :
         startActivityForResult(intent, OPEN_PLAY_CHANNEL)
     }
 
-    fun startMVCTransparentActivity(componentPosition: Int = -1, shopId:String, hashCodeForMVC:Int) {
+    fun startMVCTransparentActivity(
+        componentPosition: Int = -1,
+        shopId: String,
+        productId: String,
+        hashCodeForMVC: Int
+    ) {
         this.componentPosition =componentPosition
         context?.let {
             startActivityForResult(
@@ -986,7 +1142,8 @@ class DiscoveryFragment :
                     shopId,
                     MvcSource.DISCO,
                     ApplinkConst.SHOP.replace("{shop_id}", shopId),
-                    hashCode = hashCodeForMVC
+                    hashCode = hashCodeForMVC,
+                    productId = productId
                 ),
                 MvcView.REQUEST_CODE
             )
@@ -1034,9 +1191,9 @@ class DiscoveryFragment :
             OPEN_PLAY_CHANNEL -> {
                 if (data == null)
                     return
-                val channelId = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_CHANNEL_ID).orEmpty()
-                val totalView = data.getStringExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_TOTAL_VIEW).orEmpty()
-                val isReminder = data.getBooleanExtra(PlayWidgetCardMediumChannelViewHolder.KEY_EXTRA_IS_REMINDER, false)
+                val channelId = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_CHANNEL_ID).orEmpty()
+                val totalView = data.getStringExtra(PlayWidgetConst.KEY_EXTRA_TOTAL_VIEW).orEmpty()
+                val isReminder = data.getBooleanExtra(PlayWidgetConst.KEY_EXTRA_IS_REMINDER, false)
                 if (discoveryBaseViewModel is DiscoveryPlayWidgetViewModel){
                     val discoveryPlayWidgetViewModel = (discoveryBaseViewModel as DiscoveryPlayWidgetViewModel)
                     discoveryPlayWidgetViewModel.updatePlayWidgetTotalView(channelId, totalView)
@@ -1096,6 +1253,7 @@ class DiscoveryFragment :
     override fun onClick(view: View?) {
         when (view) {
             ivToTop -> {
+                userPressed = true
                 recyclerView.smoothScrollToPosition(DEFAULT_SCROLL_POSITION)
                 ivToTop.hide()
             }
@@ -1415,7 +1573,7 @@ class DiscoveryFragment :
             AtcVariantHelper.goToAtcVariant(
                 it,
                 productId,
-                AtcVariantHelper.DISCOVERY_PAGESOURCE,
+                VariantPageSource.DISCOVERY_PAGESOURCE,
                 true,
                 userAddressData?.shop_id?: "",
                 startActivitResult = { intent, reqCode ->
@@ -1424,4 +1582,57 @@ class DiscoveryFragment :
             )
         }
     }
+
+    fun scrollToSection(sectionID: String) {
+        autoScrollSectionID = sectionID
+        getSectionPositionMap(pageEndPoint)?.let {
+            it[sectionID]?.let { position ->
+                if (position >= 0) {
+                    userPressed = false
+                    anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, true)
+                    val smoothScroller: RecyclerView.SmoothScroller =
+                        object : LinearSmoothScroller(context) {
+                            override fun getVerticalSnapPreference(): Int {
+                                return SNAP_TO_START
+                            }
+                        }
+                    smoothScroller.targetPosition = position
+                    staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+                }
+            }
+        }
+    }
+
+    fun updateSelectedSection(sectionID: String) {
+        getSectionPositionMap(pageEndPoint)?.let {
+            it[sectionID]?.let { position ->
+                if (position >= 0) {
+                    anchorViewHolder?.viewModel?.updateSelectedSection(sectionID, false)
+                }
+            }
+        }
+    }
+
+    fun handleHideSection(sectionID: String) {
+        if (sectionID.isNotEmpty()) {
+            anchorViewHolder?.viewModel?.deleteSectionTab(sectionID)
+        }
+    }
+
+    fun getScrollLiveData(): LiveData<ScrollData> {
+        return discoveryViewModel.scrollState
+    }
+
+    fun stickyHeaderIsHidden() {
+        stickyHeaderShowing = false
+    }
+
+    fun showingStickyHeader() {
+        if (!stickyHeaderShowing) {
+            anchorViewHolder?.removeObservers(viewLifecycleOwner)
+            mAnchorHeaderView.removeAllViews()
+        }
+        stickyHeaderShowing = true
+    }
+
 }

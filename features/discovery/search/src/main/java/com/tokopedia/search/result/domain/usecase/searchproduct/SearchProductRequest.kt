@@ -6,10 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.search.result.domain.model.AceSearchProductModel
 import com.tokopedia.search.result.domain.model.HeadlineAdsModel
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
-import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
-import java.util.HashMap
 
 internal fun graphqlRequests(request: MutableList<GraphqlRequest>.() -> Unit) =
         mutableListOf<GraphqlRequest>().apply {
@@ -51,21 +48,6 @@ internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
     }
 }
 
-internal fun createHeadlineParams(
-    parameters: Map<String?, Any?>,
-    itemCount: Int,
-): String {
-    val headlineParams = HashMap(parameters)
-
-    headlineParams[TopAdsParams.KEY_EP] = SearchConstant.HeadlineAds.HEADLINE
-    headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = SearchConstant.HeadlineAds.HEADLINE_TEMPLATE_VALUE
-    headlineParams[TopAdsParams.KEY_ITEM] = itemCount
-    headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.HeadlineAds.HEADLINE_PRODUCT_COUNT
-    headlineParams[SearchConstant.HeadlineAds.INFINITESEARCH] = true
-
-    return UrlParamUtils.generateUrlParamString(headlineParams)
-}
-
 @GqlQuery("HeadlineAds", HEADLINE_ADS_QUERY)
 internal fun createHeadlineAdsRequest(headlineParams: String) =
     GraphqlRequest(
@@ -90,6 +72,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
             data {
                 isQuerySafe
                 autocompleteApplink
+                backendFilters
                 redirection {
                     redirectApplink
                 }
@@ -109,10 +92,12 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 related {
                     relatedKeyword
                     position
+                    trackingOption
                     otherRelated {
                         keyword
                         url
                         applink
+                        componentId
                         product {
                             id
                             name
@@ -123,6 +108,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                             priceStr
                             wishlist
                             ratingAverage
+                            componentId
                             labelGroups {
                                 title
                                 position
@@ -215,6 +201,15 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                     }
                     wishlist
                     applink
+                    customVideoURL
+                }
+                violation {
+                    headerText
+                    descriptionText
+                    imageURL
+                    ctaURL
+                    buttonText
+                    buttonType
                 }
             }
         }

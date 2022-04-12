@@ -17,19 +17,15 @@ import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
-import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -55,8 +51,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
     val singleAtcResult: LiveData<Pair<ProductListUiModel.ProductUiModel, Result<AtcMultiData>>>
         get() = _singleAtcResult
 
-    private val _multiAtcResult: MutableLiveData<Result<AtcMultiData>> = MutableLiveData()
-    val multiAtcResult: LiveData<Result<AtcMultiData>>
+    private val _multiAtcResult: MutableLiveData<MultiATCState> = MutableLiveData()
+    val multiAtcResult: LiveData<MultiATCState>
         get() = _multiAtcResult
 
     private fun getFinishOrderActionStatus(): String {
@@ -113,13 +109,20 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 val params = ArrayList(buyerOrderDetailResult.data.productListUiModel.productList.map {
                     it.mapToAddToCartParam()
                 })
-                _multiAtcResult.value = (atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
+                _multiAtcResult.value = mapMultiATCResult(atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params))
             } else {
-                _multiAtcResult.value = (Fail(MessageErrorException(resourceProvider.get().getErrorMessageNoProduct())))
+                _multiAtcResult.value = MultiATCState.Fail(message = StringRes(resourceProvider.get().getErrorMessageNoProduct()))
             }
         }, onError = {
-            _multiAtcResult.value = (Fail(it))
+            _multiAtcResult.value = MultiATCState.Fail(throwable = it)
         })
+    }
+
+    private fun mapMultiATCResult(result: Result<AtcMultiData>): MultiATCState {
+        return when (result) {
+            is Success -> MultiATCState.Success(result.data)
+            is Fail -> MultiATCState.Fail(throwable = result.throwable)
+        }
     }
 
     fun getSecondaryActionButtons(): List<ActionButtonsUiModel.ActionButton> {

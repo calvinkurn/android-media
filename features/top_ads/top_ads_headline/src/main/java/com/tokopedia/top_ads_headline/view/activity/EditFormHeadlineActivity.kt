@@ -23,7 +23,6 @@ import com.tokopedia.top_ads_headline.Constants.OTHERS
 import com.tokopedia.top_ads_headline.Constants.TAB_POSITION
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.HeadlineAdStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.di.HeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.fragment.AdContentFragment
@@ -31,6 +30,7 @@ import com.tokopedia.top_ads_headline.view.fragment.EditAdCostFragment
 import com.tokopedia.top_ads_headline.view.fragment.EditAdOthersFragment
 import com.tokopedia.top_ads_headline.view.viewmodel.EditFormHeadlineViewModel
 import com.tokopedia.top_ads_headline.view.viewmodel.SharedEditHeadlineViewModel
+import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.view.adapter.viewpager.TopAdsEditPagerAdapter
 import com.tokopedia.unifycomponents.LoaderUnify

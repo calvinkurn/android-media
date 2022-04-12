@@ -6,10 +6,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
@@ -20,6 +17,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class VariantDataValuePicker : LinearLayout {
 
@@ -41,6 +39,7 @@ class VariantDataValuePicker : LinearLayout {
 
     private var variantUnitLayout: LinearLayout? = null
     private var textFieldUnifyVariantUnit: TextFieldUnify? = null
+    private var typographyEmptyVariantValue: Typography? = null
     private var scrollViewVariantUnitValues: ScrollView? = null
     private var listUnifyVariantUnitValues: ListUnify? = null
     private var buttonSave: UnifyButton? = null
@@ -77,6 +76,7 @@ class VariantDataValuePicker : LinearLayout {
         textFieldUnifyVariantUnit = findViewById(R.id.textFieldUnifyVariantUnit)
         scrollViewVariantUnitValues = findViewById(R.id.scrollViewVariantUnitValues)
         listUnifyVariantUnitValues = findViewById(R.id.listUnifyVariantUnitValues)
+        typographyEmptyVariantValue = findViewById(R.id.typographyEmptyVariantValue)
         buttonSave = findViewById(R.id.buttonSave)
     }
 
@@ -112,6 +112,11 @@ class VariantDataValuePicker : LinearLayout {
             unit.variantUnitID == selectedVariantUnit.variantUnitID
         }?.unitValues ?: mutableListOf()
 
+        // set empty message visibility
+        typographyEmptyVariantValue?.isVisible = variantUnitValues.isEmpty()
+        typographyEmptyVariantValue?.text = context.getString(R.string.label_variant_value_empty,
+            variantData.name, variantData.name)
+
         // populate the listItemUnifyList with data
         variantUnitValues.forEach {
             val listItemUnify = ListItemUnify(it.value, "")
@@ -120,7 +125,11 @@ class VariantDataValuePicker : LinearLayout {
         }
 
         // add the add custom button at the last index
-        val addCustomValueTitle = context.getString(R.string.action_variant_add_button, variantData.name)
+        val addCustomValueTitle = if (variantUnitValues.isEmpty()) {
+            context.getString(R.string.action_variant_add_button_nodata, variantData.name)
+        } else {
+            context.getString(R.string.action_variant_add_button, variantData.name)
+        }
         val addCustomVariantUnitValueButton = ListItemUnify(addCustomValueTitle, "")
         listItemUnifyList.add(addCustomVariantUnitValueButton)
 

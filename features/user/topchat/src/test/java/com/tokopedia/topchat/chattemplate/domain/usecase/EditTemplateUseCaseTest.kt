@@ -1,124 +1,109 @@
 package com.tokopedia.topchat.chattemplate.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel
+import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
+import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Observable
-import rx.observers.TestSubscriber
+import org.junit.jupiter.api.assertThrows
 
 class EditTemplateUseCaseTest {
+
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     private lateinit var templateRepository: EditTemplateRepository
 
-    private lateinit var templateUseCase: EditTemplateUseCase
+    private lateinit var editTemplateUseCase: EditTemplateUseCase
+    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
+    private val testString = "Tokopedia saja!"
+    private val expectedThrowable = Throwable("Oops!")
+    private val testIndex = 1
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-        templateUseCase = EditTemplateUseCase(templateRepository)
+        editTemplateUseCase = EditTemplateUseCase(templateRepository, dispatchers)
     }
 
     @Test
-    fun `edit chat template buyer`() {
-        val expectedResult = mockk<EditTemplateUiModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
-        val testStringTemplate = "Tokopedia saja!"
+    fun should_get_template_data_when_success_edit_template_buyer() {
+        //Given
+        val expectedResponse = TemplateData().apply {
+            isIsEnable = true
+            isSuccess = true
+            templates = listOf(testString)
+        }
+        coEvery {
+            templateRepository.editTemplate(any(), any(), any())
+        } returns expectedResponse
 
-        every {
-            templateRepository.editTemplate(
-                    testIndex,
-                    EditTemplateUseCase.generateParam(testIndex, testStringTemplate, false).parameters,
-                    false)
-        } returns Observable.just(expectedResult)
+        runBlocking {
+            //When
+            val result = editTemplateUseCase.editTemplate(testIndex, testString, false)
 
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(
-                EditTemplateUseCase.generateParam(testIndex, testStringTemplate, false))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertValues(expectedResult)
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertCompleted()
+            //Then
+            Assert.assertEquals(result, expectedResponse)
+        }
     }
 
     @Test
-    fun `edit chat template seller`() {
-        val expectedResult = mockk<EditTemplateUiModel>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
-        val testStringTemplate = "Tokopedia saja!"
+    fun should_get_template_data_when_success_edit_template_seller() {
+        //Given
+        val expectedResponse = TemplateData().apply {
+            isIsEnable = true
+            isSuccess = true
+            templates = listOf(testString)
+        }
+        coEvery {
+            templateRepository.editTemplate(any(), any(), any())
+        } returns expectedResponse
 
-        every {
-            templateRepository.editTemplate(
-                    testIndex,
-                    EditTemplateUseCase.generateParam(testIndex, testStringTemplate, true).parameters,
-                    true)
-        } returns Observable.just(expectedResult)
+        runBlocking {
+            //When
+            val result = editTemplateUseCase.editTemplate(testIndex, testString, true)
 
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(
-                EditTemplateUseCase.generateParam(testIndex, testStringTemplate, true))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertValues(expectedResult)
-        testSubscriber.assertNoErrors()
-        testSubscriber.assertCompleted()
+            //Then
+            Assert.assertEquals(result, expectedResponse)
+        }
     }
 
     @Test
-    fun `error when edit chat template buyer`() {
-        val expectedError = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
-        val testStringTemplate = "Tokopedia saja!"
+    fun should_get_error_when_fail_to_edit_template_buyer() {
+        //Given
+        coEvery {
+            templateRepository.editTemplate(any(), any(), any())
+        } throws expectedThrowable
 
-        every {
-            templateRepository.editTemplate(
-                    testIndex,
-                    EditTemplateUseCase.generateParam(testIndex, testStringTemplate, false).parameters,
-                    false)
-        } returns Observable.error(expectedError)
-
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(
-                EditTemplateUseCase.generateParam(testIndex, testStringTemplate, false)).concatWith(Observable.error(expectedError))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertError(expectedError)
-        testSubscriber.assertNotCompleted()
+        //Then
+        assertThrows<Throwable> {
+            runBlocking {
+                val result = editTemplateUseCase.editTemplate(testIndex, testString, false)
+            }
+        }
     }
 
     @Test
-    fun `error when edit chat template seller`() {
-        val expectedError = mockk<Throwable>(relaxed = true)
-        val testSubscriber: TestSubscriber<EditTemplateUiModel> = TestSubscriber()
-        val testIndex = 0
-        val testStringTemplate = "Tokopedia saja!"
+    fun should_get_error_when_fail_to_edit_template_seller() {
+        //Given
+        coEvery {
+            templateRepository.editTemplate(any(), any(), any())
+        } throws expectedThrowable
 
-        every {
-            templateRepository.editTemplate(
-                    testIndex,
-                    EditTemplateUseCase.generateParam(testIndex, testStringTemplate, true).parameters,
-                    true)
-        } returns Observable.error(expectedError)
-
-        val observable: Observable<EditTemplateUiModel> = templateUseCase.getExecuteObservable(
-                EditTemplateUseCase.generateParam(testIndex, testStringTemplate, true)).concatWith(Observable.error(expectedError))
-
-        observable.subscribe(testSubscriber)
-
-        testSubscriber.assertError(expectedError)
-        testSubscriber.assertNotCompleted()
+        //Then
+        assertThrows<Throwable> {
+            runBlocking {
+                editTemplateUseCase.editTemplate(testIndex, testString, true)
+            }
+        }
     }
 }

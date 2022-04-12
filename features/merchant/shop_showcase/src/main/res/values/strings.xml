@@ -54,4 +54,9 @@
     <string name="empty_state_picker_title_text">Kamu belum ada etalase</string>
     <string name="empty_state_hint_text">Tambah &lt;b>\"%1$s\"&lt;/b></string>
     <string name="new_showcase_hint_button_content_desc">new_showcase_hint_button</string>
+
+    <!-- shop page showcase tab -->
+    <string name="shop_page_showcase_featured_text">Etalase Unggulan</string>
+    <string name="shop_page_showcase_all_text">Semua Etalase</string>
+    <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 </resources>

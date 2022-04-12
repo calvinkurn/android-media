@@ -27,7 +27,7 @@
     <color name="clr_E5E7E9">#E5E7E9</color>
     <color name="clr_f6f6f6">#f6f6f6</color>
     <color name="disco_lihat_clr_arrow">#525A67</color>
-    <color name="disco_lihat_bg">#FFFFFF</color>
+    <color name="discovery2_dms_lihat_bg">#FFFFFF</color>
 
     <color name="white">#FFFFFF</color>
     <color name="charcoal_grey_88">#e131353b</color>
@@ -60,5 +60,6 @@
     <color name="discovery2_dms_white_95">#f2ffffff</color>
     <color name="discovery2_dms_clr_262626">#262626</color>
     <color name="discovery2_dms_clr_2F89FC">#2F89FC</color>
+    <color name="discovery2_dms_shop_card_bg">@color/Unify_NN0</color>
 
 </resources>

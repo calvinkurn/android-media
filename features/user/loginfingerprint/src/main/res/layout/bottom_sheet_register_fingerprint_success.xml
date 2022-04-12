@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:padding="@dimen/unify_space_8"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/bottom_sheet_success_biom_main_img"
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:scaleType="fitCenter"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_biometric_offering_success_dialog"
+        android:textAlignment="center"
+        app:typographyType="heading_2"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/subtitle_biometric_offering_success_dialog"
+        android:textAlignment="center"
+        app:typographyType="body_2"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/bottom_sheet_success_biom_primary_btn"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_primary_biometric_offering_success_dialog"
+        android:layout_marginBottom="@dimen/unify_space_12"
+        />
+</LinearLayout>

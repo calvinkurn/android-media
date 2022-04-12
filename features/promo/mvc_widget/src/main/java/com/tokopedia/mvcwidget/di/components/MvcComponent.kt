@@ -14,6 +14,7 @@ annotation class MvcScope
 
 @MvcScope
 @Component(modules = [DispatcherModule::class, ViewModelModule::class])
+
 interface MvcComponent {
     fun inject(view: MvcView)
     fun inject(view: MvcDetailView)

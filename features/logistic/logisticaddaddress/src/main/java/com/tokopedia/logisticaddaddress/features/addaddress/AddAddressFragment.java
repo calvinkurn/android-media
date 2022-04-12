@@ -163,6 +163,9 @@ public class AddAddressFragment extends BaseDaggerFragment
             getActivity().finish();
         } else {
             if (!isEdit()) sendAnalyticsScreenName(getScreenName());
+            else {
+                OldEditAddressAnalytics.INSTANCE.sendViewEditAddressPageOldEvent();
+            }
         }
     }
 
@@ -456,11 +459,17 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void errorSaveAddress() {
+        if (isEdit()) {
+            OldEditAddressAnalytics.INSTANCE.sendClickButtonSimpanEditAddressOldEvent(false);
+        }
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(false);
     }
 
     @Override
     public void successSaveAddress() {
+        if (isEdit()) {
+            OldEditAddressAnalytics.INSTANCE.sendClickButtonSimpanEditAddressOldEvent(true);
+        }
         sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(true);
     }
 
@@ -694,7 +703,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressBar = view.findViewById(R.id.logistic_spinner);
-        new LogisticUserConsentHelper().displayUserConsent(requireContext(), tvUserConsent, getString(R.string.title_save));
+        LogisticUserConsentHelper.INSTANCE.displayUserConsent(requireContext(), userSession.getUserId(), tvUserConsent, getString(R.string.title_save), isEdit() ? LogisticUserConsentHelper.EDIT_ADDRESS : "");
 
     }
 

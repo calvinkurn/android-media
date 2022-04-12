@@ -143,7 +143,6 @@ class OvoWidgetView: FrameLayout {
             // error state wallet -> get use case error
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
-                listener?.onRefreshTokoCashButtonClicked()
             }
             tvTitleTokocash.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
             tvTitleTokocash.setText(R.string.home_header_tokocash_unable_to_load_label)
@@ -265,7 +264,7 @@ class OvoWidgetView: FrameLayout {
             // error state tokokpoint -> use case tokopoint error
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener?.onRefreshTokoPointButtonClicked()
+                listener?.onRetryMembership()
             }
             tvActionTokopoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tvActionTokopoint.visibility = View.VISIBLE
@@ -357,7 +356,7 @@ class OvoWidgetView: FrameLayout {
         if (element.tokopointsDrawerBBOHomeData == null && element.isTokoPointDataError) {
             bebasOngkirContainer.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
-                listener?.onRefreshTokoPointButtonClicked()
+                listener?.onRetryMembership()
             }
             tvActionTokopoint.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             tvActionTokopoint.visibility = View.VISIBLE

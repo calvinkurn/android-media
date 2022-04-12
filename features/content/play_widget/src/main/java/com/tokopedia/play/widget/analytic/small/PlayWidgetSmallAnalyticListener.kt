@@ -1,7 +1,7 @@
 package com.tokopedia.play.widget.analytic.small
 
 import com.tokopedia.play.widget.ui.PlayWidgetSmallView
-import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 
 /**
  * Created by jegul on 19/10/20
@@ -14,7 +14,7 @@ interface PlayWidgetSmallAnalyticListener {
 
     fun onClickChannelCard(
             view: PlayWidgetSmallView,
-            item: PlayWidgetSmallChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean
     ) {}
@@ -25,8 +25,23 @@ interface PlayWidgetSmallAnalyticListener {
 
     fun onImpressChannelCard(
             view: PlayWidgetSmallView,
-            item: PlayWidgetSmallChannelUiModel,
+            item: PlayWidgetChannelUiModel,
             channelPositionInList: Int,
             isAutoPlay: Boolean
     ) {}
+    fun onLabelPromoClicked(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+    }
+
+    fun onLabelPromoImpressed(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean
+    ) {
+    }
 }

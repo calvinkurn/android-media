@@ -8,6 +8,7 @@ import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRating
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevGetPostSubmitBottomSheetUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
@@ -48,6 +49,9 @@ abstract class CreateReviewViewModelTestFixture {
     @RelaxedMockK
     lateinit var getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase
 
+    @RelaxedMockK
+    lateinit var getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -82,7 +86,8 @@ abstract class CreateReviewViewModelTestFixture {
             editReviewUseCase,
             userSession,
             getReviewTemplatesUseCase,
-            getBadRatingCategoryUseCase
+            getBadRatingCategoryUseCase,
+            getPostSubmitBottomSheetUseCase
         )
     }
 }

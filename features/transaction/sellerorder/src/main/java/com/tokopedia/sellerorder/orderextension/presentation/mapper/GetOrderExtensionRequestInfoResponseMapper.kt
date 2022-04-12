@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.orderextension.presentation.mapper
 
+import androidx.annotation.DimenRes
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.orderextension.domain.models.GetOrderExtensionRequestInfoResponse
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
@@ -26,7 +27,8 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         success = true,
         completed = false,
         refreshOnDismiss = false,
-        message = ""
+        message = "",
+        throwable = null
     )
 
     fun mapSuccessResponseToUiModel(
@@ -45,12 +47,9 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         success = response.isSuccess(),
         completed = response.isSuccess().not(),
         refreshOnDismiss = false,
-        message = response.message.orEmpty()
+        message = response.message.orEmpty(),
+        throwable = null
     )
-
-    fun mapError(throwable: Throwable): String {
-        return resourceProvider.getErrorMessageFromThrowable(throwable)
-    }
 
     private fun createDefaultCommentErrorChecker(): List<OrderExtensionRequestInfoUiModel.CommentUiModel.ErrorChecker> {
         return listOf(
@@ -105,7 +104,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_3,
-                description = resourceProvider.getOrderExtensionRequestBottomSheetTitle()
+                description = resourceProvider.getOrderExtensionRequestBottomSheetTitleComposer()
             )
         )
     }
@@ -117,7 +116,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
         add(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.BODY_2,
-                description = resourceProvider.composeOrderExtensionDescription(text, newDeadline)
+                description = resourceProvider.getOrderExtensionDescriptionComposer(text, newDeadline)
             )
         )
     }
@@ -127,7 +126,7 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN950,
                 typographyType = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionTextType.HEADING_4,
-                description = resourceProvider.getOrderExtensionRequestBottomSheetOptionsTitle()
+                description = resourceProvider.getOrderExtensionRequestBottomSheetOptionsTitleComposer()
             )
         )
     }
@@ -152,16 +151,16 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             OrderExtensionRequestInfoUiModel.DescriptionUiModel(
                 alignment = OrderExtensionRequestInfoUiModel.DescriptionUiModel.DescriptionAlignment.TEXT_ALIGNMENT_CENTER,
                 fontColor = com.tokopedia.unifyprinciples.R.color.Unify_NN600,
-                description = resourceProvider.getOrderExtensionRequestBottomSheetFooter(),
+                description = resourceProvider.getOrderExtensionRequestBottomSheetFooterComposer(),
                 show = true
             )
         )
     }
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionDescriptionShimmer(
-        width: Int
+        @DimenRes widthResId: Int
     ) {
-        add(OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(width))
+        add(OrderExtensionRequestInfoUiModel.DescriptionShimmerUiModel(com.tokopedia.sellerorder.orderextension.presentation.model.DimenRes(widthResId)))
     }
 
     private fun MutableList<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>.addOrderExtensionOptionsShimmer() {

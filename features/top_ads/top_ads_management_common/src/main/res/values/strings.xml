@@ -138,6 +138,7 @@
     <string name="topads_common_maximum_daily_budget">Batas maksimum Rp%s</string>
     <string name="topads_common_minimum_daily_budget">Batas minimum Rp%s</string>
     <string name="topads_common_keyword_avg_cost">Biaya rata-rata kompetitor %s</string>
+    <string name="error_bid_multiple_50">Biaya harus kelipatan 50</string>
 
     <string name="topads_common_recommended_budget">Rekomendasi Biaya</string>
     <string name="topads_common_klik_">/klik</string>
@@ -216,7 +217,8 @@
 
     <string name="topads_edit_bid_pencerian">Tentukan sendiri biaya iklan pencarian sesuai \nstrategi beriklanmu.</string>
     <string name="topads_edit_bid_rekomendasi">Tentukan sendiri biaya iklan rekomendasi sesuai \nstrategi beriklanmu.</string>
-
+    <string name="top_ads_auto_bid_lebih_praktis">Lebih Praktis</string>
+    <string name="top_ads_auto_bid_learn_more">Pelajari Selengkapnya</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>
@@ -225,4 +227,18 @@
         <item>Harga Terendah</item>
     </string-array>
 
+    <string name="topads_common_iklan_pencarian_description">Biaya yang dikenakan jika iklanmu diklik di halaman Pencarian.</string>
+    <string name="topads_common_iklan_recommendasi_description">Biaya yang dikenakan jika iklanmu diklik di bagian Rekomendasi di halaman home, kategori, dan halaman-halaman strategis lainnya.</string>
+    <string name="topads_common_iklan_dasar_description">Terbagi menjadi 2, yaitu biaya iklan di Pencarian dan biaya iklan di Rekomendasi:</string>
+    <string name="topads_common_rp">Rp %s</string>
+    <string name="topads_common_keyword_recommended_budget">•Rekomendasi Rp%s</string>
+    <string name="topads_common_iklan_recommendasi_title">Biaya iklan di Rekomendasi</string>
+    <string name="topads_common_iklan_pencarian_title">Biaya iklan di Pencarian</string>
+    <string name="topads_common_auto_bid_switch_manual_bs_description">Atur dulu Biaya Iklan di Pencarian dan Biaya Iklan di Rekomendasi.</string>
+    <string name="topads_common_otomatis_description">TopAds akan secara otomatis mengatur biaya iklan dan kata kunci untuk grup iklan ini untuk memaksimalkan penjualanmu.</string>
+    <string name="topads_common_dialog_cta_text">Ya, Ubah</string>
+    <string name="topads_common_automatic_dialog_title">Mau ubah ke Atur Otomatis?</string>
+    <string name="topads_common_automatic_dialog_description">Biaya iklan dan kata kunci akan diatur oleh TopAds untuk memaksimalkan penjualanmu.</string>
+    <string name="topads_common_manual_dialog_title">Mau ubah ke Atur Manual?</string>
+    <string name="topads_common_manual_dialog_description">Dengan Atur Manual, kamu bisa atur sendiri biaya iklan dan kata kunci sesuai strategi beriklanmu.</string>
 </resources>

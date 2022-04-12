@@ -11,6 +11,9 @@ data class Balances(
     @SerializedName("balance")
     val balance: List<Balance> = listOf(),
     @Expose
+    @SerializedName("reserve_balance")
+    val reserveBalance: List<ReserveBalance> = listOf(),
+    @Expose
     @SerializedName("code")
     val code: String = "",
     @Expose

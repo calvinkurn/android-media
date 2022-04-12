@@ -2,7 +2,6 @@ package com.tokopedia.product.manage.feature.campaignstock.ui.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.common.databinding.LayoutProductManageTickerBinding
@@ -37,15 +36,6 @@ class CampaignStockTickerViewHolder(
             val tickerList = data.tickerList
             val adapter = TickerPagerAdapter(context, tickerList)
             addPagerView(adapter, tickerList)
-
-            /* This is a temporary fix for cropped ticker unify issue which happened only on recyclerview.
-            The issue happened because the view pager didn't redrawn its views when attached in recyclerview.
-            The actual fix will be done inside the Ticker component and expected to be ready in 1.1.71 or 1.1.72 unify components version.
-            */
-            post {
-                (this.getChildAt(0) as? CardView)?.getChildAt(0)?.invalidate()
-                (this.getChildAt(0) as? CardView)?.getChildAt(0)?.requestLayout()
-            }
         }
     }
 
