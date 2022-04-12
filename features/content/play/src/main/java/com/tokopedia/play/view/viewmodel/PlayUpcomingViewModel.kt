@@ -173,7 +173,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
-        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && partnerInfo.id.toString() != userSession.shopId) {
+        if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && partnerInfo.id.toString() != userSession.shopId && partnerInfo.id.toString() != userSession.userId) {
             viewModelScope.launchCatchError(block = {
                 val isFollowing = getFollowingStatus(partnerInfo)
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
