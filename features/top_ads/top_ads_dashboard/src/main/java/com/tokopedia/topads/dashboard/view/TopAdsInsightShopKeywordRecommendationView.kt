@@ -20,15 +20,14 @@ class TopAdsInsightShopKeywordRecommendationView(
     private val lstnr: (Int, Int) -> Unit,
 ) : ConstraintLayout(context) {
 
-    private val txtTitle: Typography? = null
-    private val txtDescription: Typography? = null
-    private val checkBox: CheckboxUnify? = null
+    private var txtTitle: Typography? = null
+    private var txtDescription: Typography? = null
+    private var checkBox: CheckboxUnify? = null
     private var recyclerViewKeyword: RecyclerView? = null
 
     private val mAdapter by lazy {
         TopAdsShopKeywordRecommendationAdapter.createInstance(
-            context,
-            recommendedKeywordData.recommendedKeywordDetails!!,
+            context, recommendedKeywordData.recommendedKeywordDetails!!,
             type, ::onKeywordSelected, ::keywordError
         )
     }
@@ -36,6 +35,9 @@ class TopAdsInsightShopKeywordRecommendationView(
     init {
         inflate(context, layout, this)
         recyclerViewKeyword = findViewById(R.id.recyclerViewKeyword)
+        txtTitle = findViewById(R.id.txtTitle)
+        txtDescription = findViewById(R.id.txtDescription)
+        checkBox = findViewById(R.id.checkBox)
         initView()
         initRecyclerView()
         initListeners()
@@ -130,7 +132,7 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     private fun initListeners() {
         checkBox?.setOnClickListener {
-            onCheckBoxSelected(checkBox.isChecked)
+            onCheckBoxSelected(checkBox?.isChecked == true)
         }
     }
 

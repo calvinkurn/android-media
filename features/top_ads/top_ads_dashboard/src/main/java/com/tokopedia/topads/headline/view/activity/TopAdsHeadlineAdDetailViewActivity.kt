@@ -142,9 +142,24 @@ class TopAdsHeadlineAdDetailViewActivity : TopAdsBaseDetailActivity(),
 
     }
 
+    private fun initView() {
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout)
+        viewPagerHeadline = findViewById(R.id.viewPagerHeadline)
+        appBarLayout = findViewById(R.id.app_bar_layout_2)
+        headerToolbar = findViewById(R.id.header_toolbar)
+        tabLayout = findViewById(R.id.tab_layout)
+        txtGroupName = findViewById(R.id.group_name)
+        btnSwitch = findViewById(R.id.btn_switch)
+        progressStatus1 = findViewById(R.id.progress_status1)
+        progressStatus2 = findViewById(R.id.progress_status2)
+        progressBar = findViewById(R.id.progress_bar)
+        pager = findViewById(R.id.pager)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        initView()
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         getBundleArguments()
         loadData()
