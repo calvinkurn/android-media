@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.unifycomponents.ImageUnify
 import kotlinx.android.synthetic.main.topads_insight_bottomsheet_page_1.view.*
 
 
@@ -16,13 +17,22 @@ import kotlinx.android.synthetic.main.topads_insight_bottomsheet_page_1.view.*
 
 class TopAdsInsightSheetScreen3 : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_insight_bottomsheet_page_3), container, false)
+    private var image: ImageUnify? = null
+    private var stepIndicator: ImageUnify? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_insight_bottomsheet_page_3),
+            container, false)
+        image = view.findViewById(R.id.img)
+        stepIndicator = view.findViewById(R.id.step_indicator)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_insight_page3))
-        view.step_indicator.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_indi_3))
+        image?.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dash_insight_page3))
+        stepIndicator?.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_indi_3))
     }
 
 }
