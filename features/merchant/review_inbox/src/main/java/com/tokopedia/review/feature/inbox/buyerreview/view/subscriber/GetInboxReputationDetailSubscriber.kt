@@ -14,16 +14,26 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.R
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewItemDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewResponseDomain
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ShopDataDomain
+import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.VideoAttachmentDomain
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReputationBadgeUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Detail
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryImage
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewGalleryVideo
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ReviewMedia
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
+import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import rx.Subscriber
 
 /**
@@ -84,7 +94,8 @@ open class GetInboxReputationDetailSubscriber constructor(
             reviewDomain.userData.fullName,
             if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1)) itemDomain.reviewData
                 .reviewCreateTime.dateTimeFmt1 else itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1,
-            convertToImageAttachmentViewModel(itemDomain.reviewData.reviewImageUrl),
+            convertToReviewMediaThumbnail(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments),
+            convertToPreloadedDetailedReviewMedia(itemDomain.reviewData.imageAttachments, itemDomain.reviewData.videoAttachments, itemDomain.reviewId),
             itemDomain.reviewData.reviewMessage,
             itemDomain.reviewData.reviewRating,
             itemDomain.isReviewHasReviewed,
@@ -120,15 +131,73 @@ open class GetInboxReputationDetailSubscriber constructor(
         )
     }
 
-    private fun convertToImageAttachmentViewModel(reviewImageUrl: List<ImageAttachmentDomain>): List<ImageAttachmentUiModel> {
-        return reviewImageUrl.map {
-            ImageAttachmentUiModel(
-                it.attachmentId,
-                it.description,
-                it.uriThumbnail,
-                it.uriLarge
+    private fun convertToReviewMediaThumbnail(
+        imageAttachments: List<ImageAttachmentDomain>,
+        videoAttachments: List<VideoAttachmentDomain>
+    ): ReviewMediaThumbnailUiModel {
+        val thumbnails = videoAttachments.map { videoAttachment ->
+            ReviewMediaVideoThumbnailUiModel(
+                ReviewMediaVideoThumbnailUiState.Showing(
+                    url = videoAttachment.videoUrl
+                )
+            )
+        }.plus(
+            imageAttachments.map { imageAttachments ->
+                ReviewMediaImageThumbnailUiModel(
+                    ReviewMediaImageThumbnailUiState.Showing(
+                        thumbnailUrl = imageAttachments.uriThumbnail,
+                        fullSizeUrl = imageAttachments.uriLarge
+                    )
+                )
+            }
+        )
+        return ReviewMediaThumbnailUiModel(thumbnails)
+    }
+
+    private fun convertToPreloadedDetailedReviewMedia(
+        imageAttachments: List<ImageAttachmentDomain>,
+        videoAttachments: List<VideoAttachmentDomain>,
+        reviewId: String
+    ): ProductrevGetReviewMedia {
+        val mappedReviewVideo = videoAttachments.mapIndexed { index, videoAttachmentDomain ->
+            ReviewMedia(
+                videoId = videoAttachmentDomain.attachmentId,
+                feedbackId = reviewId,
+                mediaNumber = index.plus(1)
             )
         }
+        val mappedReviewImage = imageAttachments.mapIndexed { index, imageAttachmentDomain ->
+            ReviewMedia(
+                imageId = imageAttachmentDomain.attachmentId,
+                feedbackId = reviewId,
+                mediaNumber = index.plus(1).plus(mappedReviewVideo.size)
+            )
+        }
+        val mappedReviewGalleryVideos = videoAttachments.map { videoAttachmentDomain ->
+            ReviewGalleryVideo(
+                attachmentId = videoAttachmentDomain.attachmentId,
+                url = videoAttachmentDomain.videoUrl,
+                feedbackId = reviewId
+            )
+        }
+        val mappedReviewGalleryImages = imageAttachments.map { imageAttachmentDomain ->
+            ReviewGalleryImage(
+                attachmentId = imageAttachmentDomain.attachmentId,
+                thumbnailURL = imageAttachmentDomain.uriThumbnail,
+                fullsizeURL = imageAttachmentDomain.uriLarge,
+                description = imageAttachmentDomain.description,
+                feedbackId = reviewId
+            )
+        }
+        return ProductrevGetReviewMedia(
+            reviewMedia = mappedReviewVideo.plus(mappedReviewImage),
+            detail = Detail(
+                reviewGalleryImages = mappedReviewGalleryImages,
+                reviewGalleryVideos = mappedReviewGalleryVideos,
+                mediaCountFmt = (mappedReviewVideo.size + mappedReviewImage.size).toString(),
+                mediaCount = (mappedReviewVideo.size + mappedReviewImage.size).toLong(),
+            )
+        )
     }
 
     protected fun convertToReputationViewModel(inboxReputationDomain: InboxReputationDomain): InboxReputationUiModel {
@@ -141,7 +210,7 @@ open class GetInboxReputationDetailSubscriber constructor(
     private fun convertToInboxReputationList(inboxReputationDomain: List<InboxReputationItemDomain>): List<InboxReputationItemUiModel> {
         return inboxReputationDomain.map {
             InboxReputationItemUiModel(
-                it.reputationId.toString(),
+                it.reputationId,
                 it.revieweeData.revieweeName,
                 it.orderData.createTimeFmt,
                 it.revieweeData.revieweePicture,

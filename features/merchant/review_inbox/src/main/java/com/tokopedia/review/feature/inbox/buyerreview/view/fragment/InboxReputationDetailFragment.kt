@@ -30,7 +30,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.imagepreview.ImagePreviewActivity.Companion.getCallingIntent
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.common.util.ClipboardHandler
@@ -46,16 +45,16 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.i
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
 import com.tokopedia.review.feature.inbox.buyerreview.view.presenter.InboxReputationDetailPresenter
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel
-import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailHeaderUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailPassModel
 import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailViewModel
 import com.tokopedia.review.inbox.R
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.util.ReviewMediaGalleryRouter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -70,7 +69,7 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
     private var progressDialog: ProgressDialog? = null
 
     private var adapter =
-        InboxReputationDetailAdapter(InboxReputationDetailTypeFactoryImpl(this, this))
+        InboxReputationDetailAdapter(InboxReputationDetailTypeFactoryImpl(this, this, RecyclerView.RecycledViewPool()))
 
     @Inject
     lateinit var presenter: InboxReputationDetailPresenter
@@ -332,23 +331,17 @@ class InboxReputationDetailFragment : BaseDaggerFragment(),
         swipeToRefresh?.isRefreshing = false
     }
 
-    override fun goToPreviewImage(position: Int, list: ArrayList<ImageUpload>) {
-        val listLocation: ArrayList<String> = ArrayList()
-        val listDesc: ArrayList<String> = ArrayList()
-        list.forEach {
-            listLocation.add(it.picSrcLarge)
-            listDesc.add(it.description)
-        }
-        startActivity(
-            context?.let {
-                getCallingIntent(
-                    it,
-                    listLocation,
-                    listDesc,
-                    position
-                )
-            }
-        )
+    override fun goToPreviewImage(position: Int, preloadedDetailedReviewMedia: ProductrevGetReviewMedia) {
+        ReviewMediaGalleryRouter.routeToReviewMediaGallery(
+            context = requireContext(),
+            productID = "",
+            shopID = "",
+            isProductReview = false,
+            isFromGallery = false,
+            mediaPosition = position.plus(1),
+            showSeeMore = false,
+            preloadedDetailedReviewMediaResult = preloadedDetailedReviewMedia
+        ).let { startActivity(it) }
     }
 
     override val tab: Int
