@@ -16,6 +16,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
@@ -148,6 +149,15 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
+            }
+        },
+        visitShopCallback = object : ProductCardOptionsResult{
+            override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
+                if (productCardOptionsModel.shopId.isNotEmpty())
+                    RouteManager.route(
+                        this@DiscoveryActivity,
+                        (ApplinkConst.SHOP.replace("{shop_id}", productCardOptionsModel.shopId))
+                    )
             }
         })
     }
