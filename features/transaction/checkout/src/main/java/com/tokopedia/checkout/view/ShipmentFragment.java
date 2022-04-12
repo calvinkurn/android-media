@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.EmbraceKey;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
@@ -107,7 +108,6 @@ import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
@@ -836,7 +836,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void stopEmbraceTrace() {
         Map<String, Object> emptyMap = new HashMap<>();
-        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY, null, emptyMap);
+        EmbraceMonitoring.INSTANCE.stopMoments(EmbraceKey.KEY_ACT_BUY, null, emptyMap);
     }
 
     @Override
@@ -1123,11 +1123,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                        Map<String, String> tradeInCustomDimension,
                                                        String transactionId,
+                                                       String userId,
+                                                       boolean promoFlag,
                                                        String eventCategory,
                                                        String eventAction,
                                                        String eventLabel) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
@@ -1976,6 +1978,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel()!= null) {
+                            // remove previous logistic promo code
+                            ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
                         ordersItem.getCodes().add(promoCode);
                         break;
                     }
@@ -2683,11 +2689,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void resetCourier(int position) {
-        shipmentAdapter.resetCourier(position);
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-        if (shipmentCartItemModel != null) {
-            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
-        }
+        resetCourier(shipmentCartItemModel);
     }
 
     @Override
@@ -3304,7 +3307,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
                         newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
                         newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
-                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type()
+                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type(),
+                        ""
                 );
             } else if (newTokoNowData.isModified()) {
                 ChooseAddressUtils.INSTANCE.updateTokoNowData(
@@ -3409,7 +3413,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.valueOf(saveAddressDataModel.getShopId()),
                     String.valueOf(saveAddressDataModel.getWarehouseId()),
                     TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
-                    saveAddressDataModel.getServiceType()
+                    saveAddressDataModel.getServiceType(),
+                    ""
             );
         }
     }

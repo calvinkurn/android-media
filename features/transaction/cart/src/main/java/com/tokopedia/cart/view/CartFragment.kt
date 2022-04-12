@@ -39,11 +39,14 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.EmbraceKey
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.*
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -124,10 +127,8 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.IS_TESTING_FLOW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.EmbraceConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
@@ -308,7 +309,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
                 cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
                 cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
@@ -414,6 +416,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.clearCompositeSubscription()
         dPresenter.detachView()
         delayShowPromoButtonJob?.cancel()
+        Toaster.onCTAClick = View.OnClickListener { }
         super.onDestroy()
     }
 
@@ -922,7 +925,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         backButtonClickListener = ::onBackPressed
                 )
                 setIcon(
-                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
+                        IconBuilder(IconBuilderFlag(pageSource = CART_PAGE))
                                 .addIcon(
                                         iconId = IconList.ID_NAV_ANIMATED_WISHLIST,
                                         disableDefaultGtmTracker = true,
@@ -1742,7 +1745,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             binding?.vDisabledGoToCourierPageButton?.gone()
             binding?.goToCourierPageButton?.isEnabled = true
             binding?.goToCourierPageButton?.setOnClickListener {
-                EmbraceMonitoring.startMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_ACT_BUY)
+                EmbraceMonitoring.startMoments(EmbraceKey.KEY_ACT_BUY)
                 checkGoToShipment("")
             }
         }
@@ -2161,7 +2164,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventViewCartListFinishRender()
         val cartItemDataList = cartAdapter.allCartItemData
         cartPageAnalytics.enhancedECommerceCartLoadedStep0(
-                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0)
+                dPresenter.generateCheckoutDataAnalytics(cartItemDataList, EnhancedECommerceActionField.STEP_0),
+                userSession.userId,
+                dPresenter.getPromoFlag()
         )
         cartData.unavailableSections.forEach { unavailableSection ->
             unavailableSection.unavailableGroups.forEach { unavailableGroup ->
@@ -2432,9 +2437,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         PromoRevampAnalytics.eventCartEmptyPromoApplied(listPromos)
     }
 
-    override fun stopCartPerformanceTrace() {
+    override fun stopCartPerformanceTrace(isSuccessLoadCart: Boolean) {
         if (!isTraceCartStopped) {
-            EmbraceMonitoring.stopMoments(EmbraceConstant.KEY_EMBRACE_MOMENT_LOAD_CART)
+            EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART)
+            if (!isSuccessLoadCart) {
+                EmbraceMonitoring.stopMoments(EmbraceKey.KEY_MP_CART_INCOMPLETE)
+            }
             cartPerformanceMonitoring?.stopTrace()
             isTraceCartStopped = true
         }
@@ -2533,11 +2541,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                              checkoutProductEligibleForCashOnDelivery: Boolean,
                                              condition: Int) {
         when (condition) {
-            CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
-            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery)
+            CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
+            CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM -> cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeCheckoutData, checkoutProductEligibleForCashOnDelivery, userSession.userId, dPresenter.getPromoFlag())
         }
         navigateToShipmentPage()
     }

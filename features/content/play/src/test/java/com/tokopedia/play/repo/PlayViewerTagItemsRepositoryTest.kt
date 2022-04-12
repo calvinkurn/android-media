@@ -4,12 +4,18 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.data.CheckUpcomingCampaign
+import com.tokopedia.play.data.PostUpcomingCampaign
+import com.tokopedia.play.data.UpcomingCampaignResponse
 import com.tokopedia.play.data.repository.PlayViewerTagItemRepositoryImpl
+import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
+import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.util.assertTrue
+import com.tokopedia.play.view.type.PlayUpcomingBellStatus
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -43,8 +49,12 @@ class PlayViewerTagItemsRepositoryTest {
     private val mockGetProductTagUseCase: GetProductTagItemSectionUseCase = mockk(relaxed = true)
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val mockAddToCartUseCase: AddToCartUseCase = mockk(relaxed = true)
+    private val mockCheckUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase = mockk(relaxed = true)
+    private val mockPostUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
+
+    private val campaignId: Long = 105L
 
     @Before
     fun setUp(){
@@ -52,6 +62,8 @@ class PlayViewerTagItemsRepositoryTest {
             mockGetProductTagUseCase,
             mockGetProductVariantUseCase,
             mockAddToCartUseCase,
+            mockCheckUpcomingCampaignReminderUseCase,
+            mockPostUpcomingCampaignReminderUseCase,
             mockMapper,
             mockUserSession,
             testDispatcher
@@ -143,4 +155,53 @@ class PlayViewerTagItemsRepositoryTest {
             }
         }
     }
+
+    @Test
+    fun  `when upco campaign is exist check if user has reminded, if user has reminded return true`(){
+        runBlockingTest {
+            val mockResponse = CheckUpcomingCampaign(
+                response = UpcomingCampaignResponse(isAvailable = true)
+            )
+            coEvery { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() } returns mockResponse
+
+           val result = tagItemRepo.checkUpcomingCampaign(campaignId)
+
+            coVerify { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() }
+
+            result.assertEqualTo(mockResponse.response.isAvailable)
+        }
+    }
+
+    @Test
+    fun  `when upco campaign is exist check if user has reminded, if user has not reminded return false`(){
+        runBlockingTest {
+            val mockResponse = CheckUpcomingCampaign(
+                response = UpcomingCampaignResponse(isAvailable = false)
+            )
+            coEvery { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() } returns mockResponse
+
+            val result = tagItemRepo.checkUpcomingCampaign(campaignId)
+
+            coVerify { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() }
+
+            result.assertEqualTo(mockResponse.response.isAvailable)
+        }
+    }
+
+    @Test
+    fun  `when upco campaign is exist when user click reminder return true if success`(){
+        runBlockingTest {
+            val mockResponse = PostUpcomingCampaign(
+                response = UpcomingCampaignResponse(success = true)
+            )
+            coEvery { mockPostUpcomingCampaignReminderUseCase.executeOnBackground() } returns mockResponse
+
+            val result = tagItemRepo.subscribeUpcomingCampaign(campaignId, PlayUpcomingBellStatus.On(campaignId))
+
+            coVerify { mockPostUpcomingCampaignReminderUseCase.executeOnBackground() }
+
+            result.first.assertEqualTo(mockResponse.response.success)
+        }
+    }
+
 }

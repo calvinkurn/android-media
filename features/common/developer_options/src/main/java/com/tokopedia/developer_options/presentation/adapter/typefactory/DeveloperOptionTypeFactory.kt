@@ -39,6 +39,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: AppVersionUiModel): Int
     fun type(uiModel: UrlEnvironmentUiModel): Int
     fun type(uiModel: FakeResponseActivityUiModel): Int
+    fun type(uiModel: DataExplorerActivityUiModel): Int
     fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int
     fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int
     fun type(uiModel: RequestNewFcmTokenUiModel): Int
@@ -48,4 +49,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: SellerAppReviewDebuggingUiModel): Int
     fun type(uiModel: ShowApplinkOnToastUiModel): Int
     fun type(uiModel: PlayWebSocketSseLoggingUiModel): Int
+    fun type(uiModel: TypographySwitchUiModel): Int
 }

@@ -49,21 +49,15 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.AtcVariantMapper
-import com.tokopedia.product.detail.common.ProductCartHelper
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
-import com.tokopedia.product.detail.common.ProductTrackingCommon
-import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
-import com.tokopedia.product.detail.common.showToasterError
-import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
+import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
@@ -232,6 +226,18 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeRestrictionData()
         observeToggleFavorite()
         observeStockCopy()
+        observeVariantImagesGallery()
+    }
+
+    private fun observeVariantImagesGallery(){
+        viewModel.variantImagesData.observe(viewLifecycleOwner) {data ->
+            context?.let{
+                val intent = ProductDetailGalleryActivity.createIntent(
+                    it, data
+                )
+                startActivity(intent)
+            }
+        }
     }
 
     private fun observeStockCopy() {
@@ -685,6 +691,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun hideVariantName(): Boolean = true
 
+    override fun shouldHideTextHabis(): Boolean {
+        return sharedViewModel.aggregatorParams.value?.pageSource ==
+                VariantPageSource.SHOP_COUPON_PAGESOURCE.source
+    }
+
     private fun onSaveButtonClicked() {
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
         val selectedChild = viewModel.getVariantData()?.getChildByProductId(productId)
@@ -706,9 +717,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     override fun onVariantImageClicked(url: String) {
         val pageSource = sharedViewModel.aggregatorParams.value?.pageSource ?: ""
-        ProductTrackingCommon.onVariantImageBottomSheetClicked(adapter.getHeaderDataModel()?.productId
-                ?: "", pageSource)
-        goToImagePreview(arrayListOf(url))
+        val productId = adapter.getHeaderDataModel()?.productId ?: ""
+        ProductTrackingCommon.onVariantImageBottomSheetClicked(productId, pageSource)
+        viewModel.onVariantImageClicked(url, productId, userSessionInterface.userId, getString(R.string.atc_variant_tag_main_image))
     }
 
     override fun onQuantityUpdate(quantity: Int, productId: String, oldValue: Int) {

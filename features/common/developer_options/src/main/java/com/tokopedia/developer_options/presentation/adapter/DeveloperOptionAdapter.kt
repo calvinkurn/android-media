@@ -57,6 +57,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
         const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
+        const val KEYWORD_DATA_EXPLORER_ACTIVITY = "Data Explrorer Activity"
         const val KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER = "Home and Navigation Revamp Switcher"
         const val KEYWORD_NEW_NAVIGATION = "New Navigation"
         const val KEYWORD_ALWAYS_OS_EXPERIMENT = "Always OS Experiment"
@@ -81,6 +82,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
+        const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
     }
 
     /**
@@ -100,6 +102,7 @@ class DeveloperOptionAdapter(
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        TypographySwitchUiModel(listOf(KEYWORD_TYPOGRAPHY_NEW_FONT)),
         ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
@@ -136,6 +139,7 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        DataExplorerActivityUiModel(listOf(KEYWORD_DATA_EXPLORER_ACTIVITY)),
         TranslatorUiModel(listOf(
             KEYWORD_API_KEY_SETTING,
             KEYWORD_VISIT_BELOW_FOR_API_KEY,

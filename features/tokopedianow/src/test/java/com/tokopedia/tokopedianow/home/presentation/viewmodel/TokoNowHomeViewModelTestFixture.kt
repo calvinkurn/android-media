@@ -37,6 +37,8 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ValidateReferralUserUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetReferralSenderHomeUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
@@ -90,6 +92,10 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
     @RelaxedMockK
+    lateinit var validateReferralUserUseCase: ValidateReferralUserUseCase
+    @RelaxedMockK
+    lateinit var getReferralSenderHomeUseCase: GetReferralSenderHomeUseCase
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -118,6 +124,8 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getRepurchaseWidgetUseCase,
                 getQuestWidgetListUseCase,
                 setUserPreferenceUseCase,
+                validateReferralUserUseCase,
+                getReferralSenderHomeUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
@@ -194,7 +202,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun verifyGetTickerUseCaseCalled() {
-        coVerify { getTickerUseCase.execute(any()) }
+        coVerify { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) }
     }
 
     protected fun verifyGetChooseAddress() {
@@ -257,7 +265,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetTicker_thenReturn(tickerResponse: TickerResponse) {
-        coEvery { getTickerUseCase.execute(any()) } returns tickerResponse
+        coEvery { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) } returns tickerResponse
     }
 
     protected fun onGetHomeLayoutData_thenReturn(
@@ -291,7 +299,7 @@ abstract class TokoNowHomeViewModelTestFixture {
     }
 
     protected fun onGetTicker_thenReturn(errorThrowable: Throwable) {
-        coEvery { getTickerUseCase.execute(any()) } throws errorThrowable
+        coEvery { getTickerUseCase.execute(pageSource = any(), localCacheModel = any()) } throws errorThrowable
     }
 
     protected fun onGetCategoryList_thenReturn(errorThrowable: Throwable) {

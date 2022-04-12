@@ -1,16 +1,16 @@
 package com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata;
 
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import androidx.annotation.NonNull;
-import android.view.View;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.notifications.common.CMConstant;
+import com.tokopedia.notifications.model.PayloadExtra;
+
 
 /**
  * @author lalit.singh
@@ -124,6 +124,9 @@ public class CMInApp {
     @SerializedName(CMConstant.PayloadKeys.SHOP_ID)
     @ColumnInfo(name = "shopId")
     private String shopId;
+
+    @ColumnInfo(name = "payloadExtra")
+    private PayloadExtra payloadExtra;
 
     public CMInApp(){}
 
@@ -318,5 +321,14 @@ public class CMInApp {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
+    }
+
+    @Nullable
+    public PayloadExtra getPayloadExtra() {
+        return payloadExtra;
+    }
+
+    public void setPayloadExtra(PayloadExtra payloadExtra) {
+        this.payloadExtra = payloadExtra;
     }
 }

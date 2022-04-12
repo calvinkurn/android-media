@@ -283,7 +283,9 @@ class ManageProductFragment : BaseDaggerFragment(),
                     val validationResults = result.data.response.voucherValidationData.validationPartial
                     val productList = viewModel.getProductUiModels()
                     // add variants and error message (if any)
+                    val isEditing = viewModel.getIsEditing()
                     val updatedProductList = viewModel.applyValidationResult(
+                            isEditing,
                             productList = productList,
                             validationResults = validationResults
                     )

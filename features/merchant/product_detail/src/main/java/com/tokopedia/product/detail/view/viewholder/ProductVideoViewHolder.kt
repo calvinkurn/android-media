@@ -16,14 +16,13 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOW_VALUE
 import com.tokopedia.product.detail.databinding.PdpVideoViewHolderBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.widget.ProductExoPlayer
-import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import com.tokopedia.product.detail.view.widget.VideoStateListener
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 
 /**
  * Created by Yehezkiel on 23/11/20
  */
-class ProductVideoViewHolder(val view: View, private val productVideoCoordinator: ProductVideoCoordinator?,
+class ProductVideoViewHolder(val view: View,
                              private val listener: DynamicProductDetailListener?)
 
     : AbstractViewHolder<MediaDataModel>(view), ProductVideoReceiver {
@@ -49,11 +48,11 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
     override fun bind(data: MediaDataModel) {
         mVideoId = data.id
         thumbnail = data.urlOriginal
-        productVideoCoordinator?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
+        listener?.getProductVideoCoordinator()?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
         setThumbnail()
         videoVolume?.setOnClickListener {
             listener?.onVideoVolumeCLicked(mPlayer?.isMute() != true)
-            productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
+            listener?.getProductVideoCoordinator()?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
         videoFullScreen?.setOnClickListener {
             listener?.onVideoFullScreenClicked()

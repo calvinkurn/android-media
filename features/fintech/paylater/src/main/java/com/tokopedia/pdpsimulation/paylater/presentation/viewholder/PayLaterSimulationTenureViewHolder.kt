@@ -35,7 +35,7 @@ class PayLaterSimulationTenureViewHolder(val view: View, val onTenureSelected: (
         if (simulationUiModel.isSelected) view.clSimulationCard.setBackgroundColor(
             ContextCompat.getColor(
                 view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN50
+                com.tokopedia.unifyprinciples.R.color.Unify_GN100
             )
         )
         else view.clSimulationCard.setBackgroundColor(
