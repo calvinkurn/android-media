@@ -11,11 +11,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -29,27 +29,32 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
+import com.tokopedia.play.broadcaster.ui.state.GameConfigUiState
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
+import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherErrorType
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
 import com.tokopedia.play.broadcaster.view.custom.ProductIconView
+import com.tokopedia.play.broadcaster.view.custom.game.quiz.QuizFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.fragment.summary.PlayBroadcastSummaryFragment
 import com.tokopedia.play.broadcaster.view.partial.*
+import com.tokopedia.play.broadcaster.view.partial.game.GameIconViewComponent
 import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -111,9 +116,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
             override fun onNewGameClicked(view: BroadcastInteractiveViewComponent) {
                 if (allowSetupInteractive()) {
-                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
-                    interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
-                    interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
+                    /** TODO: gonna delete this */
+//                    interactiveSetupView.setActiveTitle(parentViewModel.setupInteractiveTitle)
+//                    interactiveSetupView.setAvailableDurations(parentViewModel.interactiveDurations)
+//                    interactiveSetupView.setSelectedDuration(parentViewModel.selectedInteractiveDuration)
                     interactiveSetupView.show()
                     analytic.onClickInteractiveTool(parentViewModel.channelId)
                 } else {
@@ -175,6 +181,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+
+    /** Game */
+    private val gameIconView by viewComponent { GameIconViewComponent(it, object : GameIconViewComponent.Listener {
+            override fun onIconClick() {
+                openSelectInteractiveSheet()
+            }
+        })
+    }
+    private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -266,6 +281,24 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 analytic.clickEditPinChatMessage(
                     channelId = parentViewModel.channelId,
                     titleChannel = parentViewModel.channelTitle,
+                )
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            quizForm.listen().collect {
+                parentViewModel.submitAction(
+                    when(it) {
+                        QuizFormView.Event.Back -> PlayBroadcastAction.ClickBackOnQuiz
+                        QuizFormView.Event.Next -> PlayBroadcastAction.ClickNextOnQuiz
+                        is QuizFormView.Event.TitleChanged -> PlayBroadcastAction.InputQuizTitle(it.title)
+                        is QuizFormView.Event.OptionChanged -> PlayBroadcastAction.InputQuizOption(it.order, it.text)
+                        is QuizFormView.Event.SelectQuizOption -> PlayBroadcastAction.SelectQuizOption(it.order)
+                        is QuizFormView.Event.GiftChanged -> PlayBroadcastAction.InputQuizGift(it.gift)
+                        is QuizFormView.Event.SaveQuizData -> PlayBroadcastAction.SaveQuizData(it.quizFormData)
+                        is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)
+                        QuizFormView.Event.Submit -> PlayBroadcastAction.SubmitQuizForm
+                    }
                 )
             }
         }
@@ -362,7 +395,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 parentViewModel.submitAction(PlayBroadcastAction.CancelEditPinnedMessage)
                 true
             }
-            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
+            isQuizFormVisible() -> {
+                parentViewModel.submitAction(PlayBroadcastAction.ClickBackOnQuiz)
+                true
+            }
+            /** TODO: gonna delete this */
+//            interactiveSetupView.isShown() -> interactiveSetupView.interceptBackPressed()
             else -> showDialogWhenActionClose()
         }
     }
@@ -652,17 +690,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeInteractiveConfig() {
-        parentViewModel.observableInteractiveConfig.observe(viewLifecycleOwner) { config ->
-            interactiveSetupView.setConfig(config)
-        }
         parentViewModel.observableInteractiveState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is BroadcastInteractiveState.Forbidden -> {
-                    interactiveView.hide()
+                    gameIconView.hide()
                 }
                 is BroadcastInteractiveState.Allowed -> {
                     handleHasInteractiveState(state)
-                    interactiveView.show()
                 }
             }
         }
@@ -671,7 +705,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun observeCreateInteractiveSession() {
         parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
+                /** TODO: gonna delete this */
+//                is NetworkResult.Loading -> interactiveSetupView.setLoading(true)
                 is NetworkResult.Success -> {
                     analytic.onStartInteractive(
                         channelId = parentViewModel.channelId,
@@ -679,11 +714,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         interactiveTitle = parentViewModel.activeInteractiveTitle,
                         durationInMs = state.data.durationInMs
                     )
-                    interactiveSetupView.setLoading(false)
-                    interactiveSetupView.reset()
+                    /** TODO: gonna delete this */
+//                    interactiveSetupView.setLoading(false)
+//                    interactiveSetupView.reset()
                 }
                 is NetworkResult.Fail -> {
-                    interactiveSetupView.setLoading(false)
+                    /** TODO: gonna delete this */
+//                    interactiveSetupView.setLoading(false)
                     showErrorToaster(
                         err = state.error,
                         customErrMessage = getString(R.string.play_interactive_broadcast_create_fail),
@@ -699,6 +736,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiState.withCache().collectLatest { (prevState, state) ->
                 renderPinnedMessageView(prevState?.pinnedMessage, state.pinnedMessage)
                 renderProductTagView(prevState?.selectedProduct, state.selectedProduct)
+                renderQuizForm(prevState?.quizForm, state.quizForm, prevState?.gameConfig, state.gameConfig)
 
                 if (::exitDialog.isInitialized) {
                     val exitDialog = getExitDialog()
@@ -715,6 +753,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             parentViewModel.uiEvent.collect { event ->
                 when (event) {
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
+                    is PlayBroadcastEvent.ShowErrorCreateQuiz -> quizForm.setError(event.error)
                 }
             }
         }
@@ -776,6 +815,35 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         )
     }
 
+    private fun renderQuizForm(
+        prevState: QuizFormUiState?,
+        state: QuizFormUiState,
+        prevConfigState: GameConfigUiState?,
+        configState: GameConfigUiState,
+    ) {
+        if(prevConfigState != configState)
+            quizForm.applyQuizConfig(configState.quizConfig)
+
+        quizForm.setFormData(state.quizFormData, state.isNeedToUpdateUI)
+
+        if(prevState?.quizFormState != state.quizFormState) {
+            when(state.quizFormState) {
+                QuizFormStateUiModel.Nothing -> {
+                    hideKeyboard()
+                    showQuizForm(false)
+                }
+                QuizFormStateUiModel.Preparation -> {
+                    showQuizForm(true)
+                }
+                is QuizFormStateUiModel.SetDuration -> {
+                    /** TODO: handle set duration */
+                }
+            }
+
+            quizForm.setFormState(state.quizFormState)
+        }
+    }
+
     private fun isPinnedFormVisible(): Boolean {
         val formView = view?.findViewWithTag<View>(PINNED_MSG_FORM_TAG)
         return formView != null && formView.visibility == View.VISIBLE
@@ -825,6 +893,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         }
 
+        gameIconView.showWithCondition(state is BroadcastInteractiveState.Allowed.Init)
+
         when (state) {
             is BroadcastInteractiveState.Allowed.Init -> handleInitInteractiveState(state.state)
             is BroadcastInteractiveState.Allowed.Schedule -> {
@@ -842,14 +912,32 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (state) {
             is BroadcastInteractiveInitState.NoPrevious -> {
                 analytic.onImpressInteractiveTool(parentViewModel.channelId)
-                interactiveView.setInit(state.showOnBoarding && !hasPinnedFormView())
+                if(state.showOnBoarding && !hasPinnedFormView() && !isQuizFormVisible()) gameIconView.showCoachmark()
             }
             BroadcastInteractiveInitState.Loading -> interactiveView.setLoading()
             is BroadcastInteractiveInitState.HasPrevious -> {
+                /** TODO: show winner badge */
                 analytic.onImpressWinnerIcon(parentViewModel.channelId, parentViewModel.interactiveId, parentViewModel.activeInteractiveTitle)
                 interactiveView.setFinish(state.coachMark)
             }
         }
+    }
+
+    /** Game Region */
+    private fun showQuizForm(isShow: Boolean) {
+        if(isShow) gameIconView.cancelCoachMark()
+
+        quizForm.showWithCondition(isShow)
+        clInteraction.showWithCondition(!isShow)
+    }
+
+    private fun isQuizFormVisible(): Boolean {
+        return quizForm.visibility == View.VISIBLE
+    }
+
+    private fun openSelectInteractiveSheet() {
+        val fragment = PlayBroSelectGameBottomSheet.getFragment(childFragmentManager, requireContext().classLoader)
+        fragment.show(childFragmentManager)
     }
 
     private fun openInteractiveLeaderboardSheet() {

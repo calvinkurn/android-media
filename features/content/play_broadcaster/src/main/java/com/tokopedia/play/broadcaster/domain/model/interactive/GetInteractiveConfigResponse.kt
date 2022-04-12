@@ -13,10 +13,13 @@ data class GetInteractiveConfigResponse(
 
     data class InteractiveConfig(
         @SerializedName("interactiveConfig")
-        val config: Config = Config()
+        val tapTapConfig: TapTapConfig = TapTapConfig(),
+
+        @SerializedName("quizConfig")
+        val quizConfig: QuizConfig = QuizConfig(),
     )
 
-    data class Config(
+    data class TapTapConfig(
         @SerializedName("isActive")
         val isActive: Boolean = false,
 
@@ -37,5 +40,29 @@ data class GetInteractiveConfigResponse(
 
         @SerializedName("countdownPickerTime")
         val countdownPickerTime: List<Int> = emptyList()
+    )
+
+    data class QuizConfig(
+        /** TODO: gonna change default value after gql is ready on prod */
+        @SerializedName("isActive")
+        val isActive: Boolean = true,
+
+        @SerializedName("maxTitleLength")
+        val maxTitleLength: Int = 30,
+
+        @SerializedName("maxChoicesCount")
+        val maxChoicesCount: Int = 3,
+
+        @SerializedName("minChoicesCount")
+        val minChoicesCount: Int = 2,
+
+        @SerializedName("maxRewardLength")
+        val maxRewardLength: Int = 30,
+
+        @SerializedName("maxChoiceLength")
+        val maxChoiceLength: Int = 30,
+
+        @SerializedName("quizDurationsInSeconds")
+        val quizDurationsInSeconds: List<Int> = listOf(3, 5),
     )
 }

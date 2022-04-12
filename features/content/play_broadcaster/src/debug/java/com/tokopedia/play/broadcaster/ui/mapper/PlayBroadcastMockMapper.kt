@@ -12,11 +12,12 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -245,7 +246,8 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = InteractiveConfigUiModel(
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse) = GameConfigUiModel(
+        tapTapConfig = TapTapConfigUiModel(
             isActive = true,
             nameGuidelineHeader = "Mau kasih hadiah apa?",
             nameGuidelineDetail = "Contoh: Giveaway Sepatu, Tas Rp50 rb, Diskon 90%, Kupon Ongkir, HP Gratis, dll.",
@@ -253,6 +255,18 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             timeGuidelineDetail = "Tentukan kapan game dimulai, dan game akan berlangsung selama 10 detik.",
             durationInMs = 10000L,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+        ),
+        quizConfig = QuizConfigUiModel(
+            isActive = true,
+            maxTitleLength = 30,
+            maxChoicesCount = 3,
+            minChoicesCount = 2,
+            maxRewardLength = 30,
+            maxChoiceLength = 35,
+            availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+            eligibleStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
+            showPrizeCoachmark = true,
+        )
     )
 
     override fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
@@ -290,6 +304,13 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             message = "",
             isActive = false,
             editStatus = PinnedMessageEditStatus.Nothing,
+        )
+    }
+
+    override fun mapQuizOptionToChoice(option: QuizFormDataUiModel.Option): PostInteractiveCreateQuizUseCase.Choice {
+        return PostInteractiveCreateQuizUseCase.Choice(
+            text = option.text,
+            correct = option.isSelected
         )
     }
 

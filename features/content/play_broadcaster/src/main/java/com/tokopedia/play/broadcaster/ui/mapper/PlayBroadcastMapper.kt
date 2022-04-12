@@ -7,8 +7,10 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -73,7 +75,7 @@ interface PlayBroadcastMapper {
 
     fun mapBannedEvent(bannedEvent: Banned, event: EventUiModel?): EventUiModel
 
-    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel
+    fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel
 
     fun mapInteractiveSession(response: PostInteractiveCreateSessionResponse,
                               title: String,
@@ -91,4 +93,8 @@ interface PlayBroadcastMapper {
     fun mapPinnedMessageSocket(
         response: PinnedMessageSocketResponse
     ): PinnedMessageUiModel
+
+    fun mapQuizOptionToChoice(
+        option: QuizFormDataUiModel.Option
+    ): PostInteractiveCreateQuizUseCase.Choice
 }

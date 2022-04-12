@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
-import android.net.Network
 import android.os.Handler
 import androidx.lifecycle.*
 import com.google.gson.Gson
@@ -15,7 +14,6 @@ import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.InteractiveDataStoreImpl
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
-import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.socket.PlayBroadcastWebSocketMapper
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
@@ -24,22 +22,27 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
-import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.*
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
-import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleFormUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.ui.state.*
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.removeUnusedField
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupAutoAddField
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.setupEditable
+import com.tokopedia.play.broadcaster.util.game.quiz.QuizOptionListExt.updateQuizOptionFlow
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
@@ -69,7 +72,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import com.tokopedia.play_common.util.extension.combine
 
 /**
  * Created by mzennis on 24/05/20.
@@ -132,8 +135,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 .asLiveData(viewModelScope.coroutineContext + dispatcher.computation)
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableInteractiveConfig: LiveData<InteractiveConfigUiModel>
-        get() = _observableInteractiveConfig
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
@@ -185,7 +186,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLiveViewState = MutableLiveData<PlayLiveViewState>()
     private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo = MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<InteractiveSessionUiModel>>()
@@ -199,6 +199,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _productSectionList = MutableStateFlow(emptyList<ProductTagSectionUiModel>())
     private val _isExiting = MutableStateFlow(false)
     private val _schedule = MutableStateFlow(ScheduleUiModel.Empty)
+
+    private val _quizFormData = MutableStateFlow(QuizFormDataUiModel())
+    private val _quizFormState = MutableStateFlow<QuizFormStateUiModel>(QuizFormStateUiModel.Nothing)
+    private val _quizIsNeedToUpdateUI = MutableStateFlow(true)
 
     private val _channelUiState = _configInfo
         .filterNotNull()
@@ -216,19 +220,42 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         )
     }
 
+    private val _gameConfig = MutableStateFlow(GameConfigUiModel.empty())
+    private val _gameConfigUiState = _gameConfig.map {
+        GameConfigUiState(
+            tapTapConfig = it.tapTapConfig,
+            quizConfig = it.quizConfig,
+            gameTypeList = it.generateGameTypeList(),
+        )
+    }
+
+    private val _quizFormUiState = combine(
+        _quizFormData, _quizFormState, _quizIsNeedToUpdateUI,
+    ) { quizFormData, quizFormState, quizIsNeedToUpdateUI, ->
+        QuizFormUiState(
+            quizFormData = quizFormData,
+            quizFormState = quizFormState,
+            isNeedToUpdateUI = quizIsNeedToUpdateUI,
+        )
+    }
+
     val uiState = combine(
         _channelUiState.distinctUntilChanged(),
         _pinnedMessageUiState.distinctUntilChanged(),
         _productSectionList,
         _schedule,
-        _isExiting
-    ) { channelState, pinnedMessage, productMap, schedule, isExiting ->
+        _isExiting,
+        _gameConfigUiState,
+        _quizFormUiState,
+    ) { channelState, pinnedMessage, productMap, schedule, isExiting, gameConfig, quizForm, ->
         PlayBroadcastUiState(
             channel = channelState,
             pinnedMessage = pinnedMessage,
             selectedProduct = productMap,
             schedule = schedule,
             isExiting = isExiting,
+            gameConfig = gameConfig,
+            quizForm = quizForm,
         )
     }.stateIn(
         viewModelScope,
@@ -334,6 +361,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetProduct -> handleSetProduct(event.productTagSectionList)
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
+
+            /** Game */
+            is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
+
+            /** Quiz */
+            PlayBroadcastAction.ClickBackOnQuiz -> handleClickBackOnQuiz()
+            PlayBroadcastAction.ClickNextOnQuiz -> handleClickNextOnQuiz()
+            is PlayBroadcastAction.InputQuizTitle -> handleInputQuizTitle(event.title)
+            is PlayBroadcastAction.InputQuizOption -> handleInputQuizOption(event.order, event.text)
+            is PlayBroadcastAction.SelectQuizOption -> handleSelectQuizOption(event.order)
+            is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
+            is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
+            is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
+            PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
         }
     }
 
@@ -594,23 +635,35 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
-            val interactiveConfig = repo.getInteractiveConfig()
-            _observableInteractiveConfig.value = interactiveConfig
+            val gameConfig = repo.getInteractiveConfig()
+            _gameConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
 
-            setInteractiveDurations(interactiveConfig.availableStartTimeInMs)
+            /** TODO: should save config on flow instead */
+            setInteractiveDurations(gameConfig.tapTapConfig.availableStartTimeInMs)
 
-            if (interactiveConfig.isActive) {
-                handleActiveInteractive()
-            } else {
+            if(gameConfig.isNoGameActive()) {
                 _observableInteractiveState.value = BroadcastInteractiveState.Forbidden
+            }
+            else {
+                initQuizFormData()
+                handleActiveInteractive()
             }
         }) { }
     }
 
+    private fun mergeInteractiveConfigWithPreference(gameConfig: GameConfigUiModel): GameConfigUiModel {
+        val quizConfig = gameConfig.quizConfig
+        return gameConfig.copy(
+            quizConfig = quizConfig.copy(
+                showPrizeCoachmark = sharedPref.isFirstQuizPrice()
+            )
+        )
+    }
+
     private fun updateCurrentInteractiveStatus() {
         viewModelScope.launch {
-            val interactiveConfig = _observableInteractiveConfig.value
-            if (interactiveConfig?.isActive == true) handleActiveInteractive()
+            val interactiveConfig = _gameConfig.value
+            if (!interactiveConfig.isNoGameActive()) handleActiveInteractive()
         }
     }
 
@@ -679,7 +732,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private fun getNoPreviousInitInteractiveState(): BroadcastInteractiveState {
-        return BroadcastInteractiveState.Allowed.Init(state = BroadcastInteractiveInitState.NoPrevious(sharedPref.isFirstInteractive()))
+        return BroadcastInteractiveState.Allowed.Init(
+            state = BroadcastInteractiveInitState.NoPrevious(
+                showOnBoarding = sharedPref.isFirstInteractive(),
+            ),
+        )
     }
 
     private fun findSuitableInteractiveDurations(): List<Long> {
@@ -962,6 +1019,181 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             }
             _uiEvent.emit(PlayBroadcastEvent.ShowScheduleError(err))
         }
+    }
+
+    /** Handle Game Action */
+    private fun handleClickGameOption(gameType: GameType) {
+        when(gameType) {
+            GameType.Taptap -> { /** TODO: will handle it soon */ }
+            GameType.Quiz -> _quizFormState.setValue { next() }
+        }
+    }
+
+    private fun handleClickBackOnQuiz() {
+        needUpdateQuizForm(true) {
+            _quizFormState.setValue { prev() }
+            updateOptionsState()
+        }
+    }
+
+    private fun handleClickNextOnQuiz() {
+        needUpdateQuizForm(true) {
+            _quizFormState.setValue { next() }
+            updateOptionsState()
+
+            if(_quizFormState.value is QuizFormStateUiModel.SetDuration) {
+                updateQuizEligibleDuration()
+            }
+        }
+    }
+
+    private fun handleInputQuizTitle(title: String) {
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { copy(title = title) }
+        }
+    }
+
+    private fun handleInputQuizOption(order: Int, newText: String) {
+        val options = _quizFormData.value.options
+        val quizConfig = _gameConfig.value.quizConfig
+
+        val (newOptions, needUpdate) = options.updateQuizOptionFlow(order, newText, quizConfig, sharedPref.isFirstSelectQuizOption())
+
+        sharedPref.setNotFirstSelectQuizOption()
+
+        needUpdateQuizForm(needUpdate) {
+            _quizFormData.setValue { copy(options = newOptions) }
+        }
+    }
+
+    private fun handleSelectQuizOption(order: Int) {
+        val options = _quizFormData.value.options
+
+        val currSelectedOrder = options.firstOrNull { it.isSelected }?.order ?: -1
+
+        if(currSelectedOrder == order || currSelectedOrder == -1) return
+
+        sharedPref.setNotFirstSelectQuizOption()
+
+        needUpdateQuizForm(true) {
+            _quizFormData.setValue {
+                copy(options = options.map {
+                    it.copy(
+                        isSelected = it.order == order,
+                        isFocus = it.order == order,
+                    )
+                })
+            }
+        }
+    }
+
+    private fun handleInputQuizGift(text: String) {
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { copy(gift = text) }
+        }
+    }
+
+    private fun handleSaveQuizData(quizFormData: QuizFormDataUiModel) {
+        needUpdateQuizForm(false) {
+            _quizFormData.setValue { quizFormData }
+        }
+    }
+
+    private fun handleSelectQuizDuration(duration: Long) {
+        needUpdateQuizForm(false) {
+            updateQuizEligibleDuration()
+            _quizFormData.setValue { copy(duration = duration) }
+        }
+    }
+
+    private fun handleSubmitQuizForm() {
+        viewModelScope.launchCatchError(block = {
+            _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
+
+            val quizData = _quizFormData.value
+            repo.createInteractiveQuiz(
+                channelId = channelId,
+                question = quizData.title,
+                prize = quizData.gift,
+                runningTime = quizData.duration,
+                choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
+            )
+
+            handleActiveInteractive()
+
+            /** Reset Form */
+            sharedPref.setNotFirstSelectQuizOption()
+            sharedPref.setNotFirstQuizPrice()
+            sharedPref.setNotFirstInteractive()
+            initQuizFormData()
+            _quizFormState.setValue { QuizFormStateUiModel.Nothing }
+        }) {
+            _quizFormState.setValue { QuizFormStateUiModel.SetDuration(false) }
+            _uiEvent.emit(PlayBroadcastEvent.ShowErrorCreateQuiz(it))
+        }
+    }
+
+    /**
+     * Quiz
+     */
+    private fun initQuizFormData() {
+        needUpdateQuizForm(true) {
+            updateQuizEligibleDuration()
+
+            val quizConfig = _gameConfig.value.quizConfig
+
+            val initialOptions = List(quizConfig.minChoicesCount) {
+                QuizFormDataUiModel.Option(
+                    order = it,
+                    isMandatory = true,
+                )
+            }
+
+            _quizFormData.setValue {
+                QuizFormDataUiModel(
+                    duration = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
+                    options = initialOptions
+                )
+            }
+        }
+    }
+
+    private fun updateOptionsState() {
+        val options = _quizFormData.value.options.toMutableList()
+        val quizConfig = _gameConfig.value.quizConfig
+        val isStateEditable = isQuizStateEditable()
+
+        val newOptions = if(isStateEditable) {
+                            options.setupAutoAddField(quizConfig)
+                        }
+                        else {
+                            options.removeUnusedField()
+                        }.setupEditable(isStateEditable)
+
+        _quizFormData.setValue { copy(options = newOptions) }
+    }
+
+    private fun isQuizStateEditable(): Boolean {
+        return _quizFormState.value !is QuizFormStateUiModel.SetDuration
+    }
+
+    private fun updateQuizEligibleDuration() {
+        val remainingDuration = livePusherMediator.remainingDurationInMillis
+        val quizConfig = _gameConfig.value.quizConfig
+
+        _gameConfig.setValue {
+            copy(
+                quizConfig = quizConfig.copy(
+                    eligibleStartTimeInMs = quizConfig.availableStartTimeInMs.filter { it < remainingDuration }
+                )
+            )
+        }
+    }
+
+    private fun needUpdateQuizForm(isNeedUpdate: Boolean, block: () -> Unit) {
+        _quizIsNeedToUpdateUI.value = false
+        block()
+        _quizIsNeedToUpdateUI.value = isNeedUpdate
     }
 
     /**

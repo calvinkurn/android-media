@@ -12,4 +12,8 @@ sealed interface PlayBroadcastEvent {
 
     data class SetScheduleSuccess(val isEdit: Boolean) : PlayBroadcastEvent
     object DeleteScheduleSuccess : PlayBroadcastEvent
+
+    data class ShowErrorCreateQuiz(
+        val error: Throwable
+    ) : PlayBroadcastEvent
 }

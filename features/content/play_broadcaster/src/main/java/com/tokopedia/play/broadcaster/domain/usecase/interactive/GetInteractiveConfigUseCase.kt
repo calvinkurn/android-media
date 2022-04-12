@@ -34,6 +34,19 @@ class GetInteractiveConfigUseCase @Inject constructor(
         }
     """
 
+    /** TODO: gonna add this on query when gql is ready on prod */
+    /**
+     * quizConfig {
+            isActive
+            maxTitleLength
+            maxChoicesCount
+            minChoicesCount
+            maxRewardLength
+            maxChoiceLength
+            quizDurationsInSeconds
+        }
+     */
+
     init {
         setGraphqlQuery(query)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())

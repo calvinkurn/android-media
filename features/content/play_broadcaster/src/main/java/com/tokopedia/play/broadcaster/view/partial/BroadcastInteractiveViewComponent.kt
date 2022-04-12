@@ -112,7 +112,7 @@ class BroadcastInteractiveViewComponent(
             delay(ON_BOARDING_COACH_MARK_DELAY)
             showCoachMark(
                 view = rootView,
-                title = getString(R.string.play_interactive_broadcast_onboarding_title),
+                title = "",
                 subtitle = getString(R.string.play_interactive_broadcast_onboarding_subtitle)
             )
         }

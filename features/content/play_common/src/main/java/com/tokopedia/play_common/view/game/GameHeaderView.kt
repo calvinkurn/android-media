@@ -3,13 +3,17 @@ package com.tokopedia.play_common.view.game
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGameHeaderBinding
+import com.tokopedia.play_common.util.extension.showKeyboard
 
 /**
  * Created By : Jonathan Darwin on March 30, 2022
@@ -35,24 +39,48 @@ class GameHeaderView : ConstraintLayout {
         this,
     )
 
-    var isEditable: Boolean = true
+    private var onTextChanged: ((String) -> Unit)? = null
+
+    init {
+        binding.etPlayGameHeaderTitle.afterTextChanged {
+            onTextChanged?.invoke(it)
+        }
+    }
+
+    var isEditable: Boolean = false
         set(value) {
-            field = value
-            binding.etPlayGameHeaderTitle.isEnabled = value
-            binding.etPlayGameHeaderTitle.isFocusable = value
+            if(field != value) {
+                field = value
+
+                binding.etPlayGameHeaderTitle.apply {
+                    isFocusable = value
+                    isFocusableInTouchMode = value
+                    isEnabled = value
+
+                    setRawInputType(InputType.TYPE_CLASS_TEXT)
+                }
+
+                setFocus(value)
+            }
         }
 
     var title: String = ""
         set(value) {
             field = value
-            binding.etPlayGameHeaderTitle.setText(value)
+
+            if(binding.etPlayGameHeaderTitle.text.toString() != field) {
+                binding.etPlayGameHeaderTitle.setText(value)
+                binding.etPlayGameHeaderTitle.setSelection(value.length)
+            }
         }
 
     var maxLength: Int = 0
         set(value) {
-            field = value
+            if(field != value) {
+                field = value
 
-            binding.etPlayGameHeaderTitle.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+                binding.etPlayGameHeaderTitle.filters = arrayOf(InputFilter.LengthFilter(maxLength))
+            }
         }
 
     var type: Type = Type.UNKNOWN
@@ -62,6 +90,19 @@ class GameHeaderView : ConstraintLayout {
             setIcon()
             setBackground()
         }
+
+    fun setOnTextChangedListener(listener: (String) -> Unit) {
+        onTextChanged = listener
+    }
+
+    fun setFocus(isFocus: Boolean) {
+        binding.etPlayGameHeaderTitle.apply {
+            if(isFocus) requestFocus()
+            else clearFocus()
+
+            showKeyboard(isFocus)
+        }
+    }
 
     private fun setIcon() {
         val (icon, color) = when(type) {

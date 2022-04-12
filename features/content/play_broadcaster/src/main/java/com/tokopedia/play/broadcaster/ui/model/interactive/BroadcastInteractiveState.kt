@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.model.interactive
 
+import com.tokopedia.play.broadcaster.ui.model.game.GameType
+
 /**
  * Created by jegul on 07/07/21
  */

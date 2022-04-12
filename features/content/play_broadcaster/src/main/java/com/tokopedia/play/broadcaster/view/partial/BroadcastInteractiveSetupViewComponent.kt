@@ -16,7 +16,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.broadcaster.R
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.TapTapConfigUiModel
 import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.play.broadcaster.view.custom.PlayBroadcastEditText
@@ -49,7 +50,7 @@ class BroadcastInteractiveSetupViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(containerTimePicker)
 
-    private lateinit var mConfig: InteractiveConfigUiModel
+    private lateinit var mConfig: TapTapConfigUiModel
 
     private val title: String
         get() = editTextTitle.text.toString()
@@ -144,8 +145,8 @@ class BroadcastInteractiveSetupViewComponent(
         btnApply.isLoading = isLoading
     }
 
-    fun setConfig(config: InteractiveConfigUiModel) {
-        mConfig = config
+    fun setConfig(tapTapConfig: TapTapConfigUiModel) {
+        mConfig = tapTapConfig
         setupLabelGuideline(false)
     }
 
@@ -262,11 +263,11 @@ class BroadcastInteractiveSetupViewComponent(
         fun onApplyButtonClicked(view: BroadcastInteractiveSetupViewComponent, title: String, durationInMs: Long)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy() {
-        ViewCompat.setOnApplyWindowInsetsListener(containerSetup, null)
-        ViewCompat.setOnApplyWindowInsetsListener(btnApply, null)
-    }
+//    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+//    fun onDestroy() {
+//        ViewCompat.setOnApplyWindowInsetsListener(containerSetup, null)
+//        ViewCompat.setOnApplyWindowInsetsListener(btnApply, null)
+//    }
 
     companion object {
         private const val MIN_LENGTH_CHAR = 3

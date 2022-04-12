@@ -126,4 +126,10 @@
     <!-- Tag Recommendation -->
     <dimen name="play_bro_tag_placeholder_height">40dp</dimen>
     <dimen name="play_tag_placeholder_radius">16dp</dimen>
+
+    <!-- Game -->
+    <dimen name="play_bro_knob_height">4dp</dimen>
+    <dimen name="play_bro_quiz_option_radius">8dp</dimen>
+    <dimen name="play_bro_quiz_option_border_width">1dp</dimen>
+    <dimen name="play_bro_quiz_option_choice_size">28dp</dimen>
 </resources>

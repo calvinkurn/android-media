@@ -5,7 +5,6 @@ import android.net.Uri
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
@@ -14,10 +13,11 @@ import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveCon
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
 import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
 import com.tokopedia.play.broadcaster.type.*
 import com.tokopedia.play.broadcaster.ui.model.*
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
+import com.tokopedia.play.broadcaster.ui.model.interactive.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -308,20 +308,37 @@ class PlayBroadcastUiMapper(
             buttonTitle = bannedEvent.btnText
     )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
-        val interactiveDuration = response.interactiveConfig.config.interactiveDuration
+    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): GameConfigUiModel {
+        val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
-        return InteractiveConfigUiModel(
-            isActive = response.interactiveConfig.config.isActive,
-            nameGuidelineHeader = response.interactiveConfig.config.interactiveNamingGuidelineHeader,
-            nameGuidelineDetail = response.interactiveConfig.config.interactiveNamingGuidelineDetail,
-            timeGuidelineHeader = response.interactiveConfig.config.interactiveTimeGuidelineHeader,
-            timeGuidelineDetail = response.interactiveConfig.config.interactiveTimeGuidelineDetail
-                .replace(FORMAT_INTERACTIVE_DURATION, interactiveDuration.toString()),
-            durationInMs = TimeUnit.SECONDS.toMillis(interactiveDuration.toLong()),
-            availableStartTimeInMs = response.interactiveConfig.config.countdownPickerTime.map {
-                TimeUnit.SECONDS.toMillis(it.toLong())
-            },
+        val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSeconds.map {
+            TimeUnit.SECONDS.toMillis(it.toLong())
+        }
+
+        return GameConfigUiModel(
+            tapTapConfig = TapTapConfigUiModel(
+                isActive = response.interactiveConfig.tapTapConfig.isActive,
+                nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
+                nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,
+                timeGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineHeader,
+                timeGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineDetail
+                    .replace(FORMAT_INTERACTIVE_DURATION, interactiveDuration.toString()),
+                durationInMs = TimeUnit.SECONDS.toMillis(interactiveDuration.toLong()),
+                availableStartTimeInMs = response.interactiveConfig.tapTapConfig.countdownPickerTime.map {
+                    TimeUnit.SECONDS.toMillis(it.toLong())
+                },
+            ),
+            quizConfig = QuizConfigUiModel(
+                isActive = response.interactiveConfig.quizConfig.isActive,
+                maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
+                maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
+                minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
+                maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
+                maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
+                availableStartTimeInMs = quizDurationInMs,
+                eligibleStartTimeInMs = quizDurationInMs,
+                showPrizeCoachmark = true,
+            )
         )
     }
 
@@ -369,6 +386,13 @@ class PlayBroadcastUiMapper(
             message = response.title,
             isActive = true,
             editStatus = PinnedMessageEditStatus.Nothing,
+        )
+    }
+
+    override fun mapQuizOptionToChoice(option: QuizFormDataUiModel.Option): PostInteractiveCreateQuizUseCase.Choice {
+        return PostInteractiveCreateQuizUseCase.Choice(
+            text = option.text,
+            correct = option.isSelected
         )
     }
 

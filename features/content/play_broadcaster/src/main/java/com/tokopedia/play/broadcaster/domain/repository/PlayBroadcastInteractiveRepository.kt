@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.domain.repository
 
-import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
+import com.tokopedia.play.broadcaster.domain.usecase.interactive.quiz.PostInteractiveCreateQuizUseCase
+import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -10,7 +11,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
  */
 interface PlayBroadcastInteractiveRepository {
 
-    suspend fun getInteractiveConfig(): InteractiveConfigUiModel
+    suspend fun getInteractiveConfig(): GameConfigUiModel
 
     suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel
 
@@ -19,4 +20,12 @@ interface PlayBroadcastInteractiveRepository {
     suspend fun createInteractiveSession(channelId: String,
                                          title: String,
                                          durationInMs: Long): InteractiveSessionUiModel
+
+    suspend fun createInteractiveQuiz(
+        channelId: String,
+        question: String,
+        prize: String,
+        runningTime: Long,
+        choices: List<PostInteractiveCreateQuizUseCase.Choice>
+    )
 }
