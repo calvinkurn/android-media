@@ -4,22 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.preview.managers.ImageCompressionManager
 import com.tokopedia.media.preview.managers.SaveToGalleryManager
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isVideoFormat
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PreviewViewModel @Inject constructor(
     private val imageCompressor: ImageCompressionManager,
-    private val mediaSaver: SaveToGalleryManager,
-    private val dispatcher: CoroutineDispatchers
+    private val mediaSaver: SaveToGalleryManager
 ) : ViewModel() {
 
     private val _files = MutableSharedFlow<List<MediaUiModel>>()
@@ -76,14 +72,14 @@ class PreviewViewModel @Inject constructor(
             compressedImages = compressedImages
         )
     }.shareIn(
-        CoroutineScope(dispatcher.main),
+        viewModelScope,
         SharingStarted.Lazily
     )
 
     fun files(files: List<MediaUiModel>) {
         _isLoading.value = true
 
-        viewModelScope.launch(dispatcher.main) {
+        viewModelScope.launch {
             _files.emit(files)
         }
     }
