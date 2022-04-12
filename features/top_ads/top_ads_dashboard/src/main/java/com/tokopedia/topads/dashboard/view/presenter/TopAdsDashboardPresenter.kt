@@ -239,7 +239,14 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         })
     }
 
-
+    fun setProductActionMoveGroup(
+        groupId: String, productIds: List<String>, onSuccess: (() -> Unit),
+    ) {
+        val param = topAdsCreateUseCase.createRequestParamMoveGroup(
+            groupId, TopAdsDashboardConstant.SOURCE_DASH, productIds, ParamObject.ACTION_ADD
+        )
+        topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
+    }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>,selectedFilter: String?) {
         if(action == TopAdsDashboardConstant.ACTION_MOVE) {
