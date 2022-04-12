@@ -6,7 +6,7 @@ import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.utils.constant.DateConstant
 import com.tokopedia.shopdiscount.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE
 import com.tokopedia.shopdiscount.utils.extension.parseTo
-import com.tokopedia.utils.date.toDate
+import com.tokopedia.shopdiscount.utils.extension.toDate
 import javax.inject.Inject
 
 class ProductMapper @Inject constructor() {
@@ -19,6 +19,7 @@ class ProductMapper @Inject constructor() {
         return input.getSlashPriceProductList.slashPriceProductList.map { product ->
             val productType = product.find()
             Product(
+                product.productId,
                 product.name,
                 product.price.minFormatted,
                 product.price.maxFormatted,
@@ -29,7 +30,7 @@ class ProductMapper @Inject constructor() {
                 product.picture,
                 product.stock,
                 product.warehouses.size,
-                0,
+                product.isVariant,
                 product.startDate.formatStartDate(),
                 product.endDate.formatEndDate(),
                 productType,
@@ -44,7 +45,8 @@ class ProductMapper @Inject constructor() {
                 hasSameOriginalPrice(
                     product.price.min,
                     product.price.max
-                )
+                ),
+                sku = product.sku
             )
         }
 

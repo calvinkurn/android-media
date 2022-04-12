@@ -1,6 +1,4 @@
 <resources>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sd_bulk_manage">Atur Sekaligus</string>
     <string name="sd_discount_period">Periode diskon</string>
     <string name="sd_one_year_ahead">1 Tahun ke Depan</string>
@@ -25,9 +23,45 @@
     <string name="sd_shop_discount">Diskon Toko</string>
     <string name="sd_tab_name">%s (%s)</string>
     <string name="sd_placeholder">%s - %s</string>
-    <string name="sd_total_stock_various_multiple_location">Total stok: %s di beberapa lokasi</string>
-    <string name="sd_total_stock_multiple_location">Total stok: %s di %s lokasi</string>
-    <string name="sd_total_stock">Total stok: %s</string>
+    <string name="sd_total_stock_various_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
+    <string name="sd_total_stock_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+
+    <string name="sd_total_stock">Total stok: <![CDATA[<b>%1s</b>]]></string>
+    <string name="sd_total_stock_plain">Total stok: %s</string>
+    <string name="sd_search">Cari produk</string>
+    <string name="sd_total_product">%s Produk</string>
+    <string name="sd_multi_select">Pilih Sekaligus</string>
+    <string name="sd_create_discount">Buat Diskon</string>
+    <string name="sd_ticker_announcement_wording"><![CDATA[Cek info Diskon Toko selengkapnya <a href="http://tokopedia.com">di sini</a>]]></string>
+    <string name="sd_no_discount_title">Yuk, pasang Diskon Toko!</string>
+    <string name="sd_no_discount_description">Kamu belum punya produk dengan Diskon Toko. Tambah produk dulu, lalu pasang diskonnya, ya.</string>
+    <string name="sd_no_paused_discount_title">Produk Diskon Toko-mu dialokasikan ke campaign lain</string>
+    <string name="sd_no_paused_discount_description">Buat Diskon Toko baru untuk produk tokomu yang lain, yuk!</string>
+    <string name="sd_delete_confirmation_title">Yakin hapus produk dari Diskon Toko?</string>
+    <string name="sd_bulk_delete_confirmation_title">Yakin hapus %s produk dari Diskon Toko?</string>
+    <string name="sd_delete_confirmation_description">Produk-produk yang dihapus akan kembali ke harga normal.</string>
+    <string name="sd_positive_delete">Ya, Hapus</string>
+    <string name="sd_cancel">Batalkan</string>
+    <string name="sd_delete">Hapus</string>
+    <string name="sd_discount_deleted">Produk berhasil dihapus dari Diskon Toko.</string>
+    <string name="sd_bulk_discount_deleted">%s produk berhasil dihapus dari Diskon Toko.</string>
+    <string name="sd_manage">Atur</string>
+    <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
+    <string name="sd_with_variant">Ada Varian Diskon</string>
+    <string name="sd_has_variant">%s Varian Produk</string>
+    <string name="sd_more_menu">Menu Lainnya</string>
+    <string name="sd_ticker_search_product_announcement_wording"><![CDATA[Untuk pengaturan diskon lebih dari 5 produk sekaligus, <a href="http://tokopedia.com">Buka Lewat Desktop</a>]]></string>
+    <string name="sd_search_at">Cari produk di %s</string>
+    <string name="sd_search_result_not_found_title">Oops, produk nggak ditemukan</string>
+    <string name="sd_search_result_not_found_description">Coba gunakan kata kunci atau filter lain, ya</string>
+    <string name="sd_manage_with_counter">Atur (%s)</string>
+    <string name="sd_max_product_selection_reached">Kamu cuma bisa pilih 5 produk sekaligus.</string>
+    <string name="sd_ok">Oke</string>
+    <string name="sd_selected_product_counter">%s Produk Dipilih</string>
+    <string name="sd_select_product">Pilih Produk</string>
+    <string name="sd_search_product_or_sku">Cari produk atau SKU</string>
+    <string name="sd_sku">SKU: %s</string>
+    <string name="sd_select_product_max_count_reached">Atur 5 produk dulu, ya</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
@@ -53,6 +87,8 @@
     <!--Shop discount datepicker-->
     <string name="shop_discount_date_picker_button_apply_text">Pilih</string>
     <string name="shop_discount_date_picker_button_info_format">Periode %1s berakhir pada <![CDATA[<b>%2s.</b>]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Shop discount manage discount-->
     <string name="shop_discount_manage_discount_manage_toolbar_title">Atur Diskon</string>

@@ -1,15 +1,15 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.container
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductListMetaMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.DiscountStatusMeta
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.domain.usecase.GetSlashPriceProductListMetaUseCase
-import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -26,31 +26,44 @@ class ProductManageViewModel @Inject constructor(
     val productsMeta: LiveData<Result<List<DiscountStatusMeta>>>
         get() = _productsMeta
 
+    private var selectedTabPosition = 0
+    private var tabs = mutableListOf<PageTab>()
+
     fun getSlashPriceProductsMeta() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getSlashPriceProductListMetaUseCase.setRequestParams()
-                getSlashPriceProductListMetaUseCase.executeOnBackground()
+                val response = getSlashPriceProductListMetaUseCase.executeOnBackground()
+                productListMetaMapper.map(response.getSlashPriceProductListMeta.data.tab)
             }
-            val formattedProductMeta =
-                productListMetaMapper.map(result.getSlashPriceProductListMeta.data.tab)
-            _productsMeta.value = Success(formattedProductMeta)
+
+            _productsMeta.value = Success(result)
 
         }, onError = {
             _productsMeta.value = Fail(it)
         })
     }
 
-    fun findDiscountStatusCount(discountStatusMeta: List<DiscountStatusMeta>): List<PageTab> {
-        val tabs = listOf(
-            PageTab("Berlangsung", "ACTIVE", DiscountStatus.ONGOING),
-            PageTab("Akan Datang", "SCHEDULED", DiscountStatus.SCHEDULED),
-            PageTab("Dialihkan", "PAUSED", DiscountStatus.PAUSED)
-        )
-
+    fun findDiscountStatusCount(tabs : List<PageTab>, discountStatusMeta: List<DiscountStatusMeta>): List<PageTab> {
         return tabs.map { tab ->
             val match = discountStatusMeta.find { meta -> tab.status == meta.id }
-            tab.copy(name = match?.name + "(${match?.productCount})")
+            tab.copy(count = match?.productCount.orZero())
         }
+    }
+
+    fun storeTabsData(tabs: List<PageTab>) {
+        this.tabs.addAll(tabs)
+    }
+
+    fun setSelectedTabPosition(selectedTabPosition: Int) {
+        this.selectedTabPosition = selectedTabPosition
+    }
+
+    fun getSelectedTabPosition(): Int {
+        return selectedTabPosition
+    }
+
+    fun getSelectedTab(position : Int) : PageTab {
+        return tabs[position]
     }
 }

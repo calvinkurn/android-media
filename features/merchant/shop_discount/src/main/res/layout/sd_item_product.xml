@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:padding="@dimen/unify_space_16"
-    android:layout_marginBottom="@dimen/unify_space_8"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgProduct"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -18,10 +18,12 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgProductName"
         android:layout_width="0dp"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
         android:ellipsize="end"
         android:maxLines="2"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/imgProduct"
@@ -65,7 +67,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerUnify"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/unify_space_2"
+        android:layout_height="@dimen/sd_space_1"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,6 +78,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="@dimen/unify_space_16"
         app:layout_constraintLeft_toLeftOf="@id/labelDiscount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dividerUnify"
@@ -86,34 +91,64 @@
         android:id="@+id/tpgInformation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="4dp"
         app:layout_constraintLeft_toLeftOf="@id/tpgStockAndLocation"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tpgStockAndLocation"
         app:typographyType="small"
         tools:text="25 Sep 2022 08:00 - 31 Des 2022 08:00 WIB" />
+
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:src="@drawable/ic_sd_product_info"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgInformation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/tpgInformation"
+        app:layout_constraintTop_toTopOf="@+id/tpgInformation" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnUpdateDiscount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/change_discount"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginEnd="@dimen/unify_space_24"
+        android:text="@string/change_discount"
         app:layout_constraintEnd_toStartOf="@+id/imgMore"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintTop_toBottomOf="@+id/tpgInformation"
         app:unifyButtonSize="small"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/sd_more_menu"
         app:layout_constraintBottom_toBottomOf="@+id/btnUpdateDiscount"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintTop_toTopOf="@+id/btnUpdateDiscount"
         app:srcCompat="@drawable/ic_more" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="0dp"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:background="@color/Unify_NN50"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpdateDiscount" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader"
@@ -125,5 +160,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

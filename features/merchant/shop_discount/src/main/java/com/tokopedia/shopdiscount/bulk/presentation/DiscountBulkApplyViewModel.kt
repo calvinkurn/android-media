@@ -9,6 +9,7 @@ import com.tokopedia.shopdiscount.bulk.data.response.GetSlashPriceBenefitRespons
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.bulk.domain.usecase.GetSlashPriceBenefitUseCase
+import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -46,6 +47,8 @@ class DiscountBulkApplyViewModel @Inject constructor(
     private val _discountType = MutableLiveData<DiscountType>()
     val discountType: LiveData<DiscountType>
         get() = _discountType
+
+    private var benefitPackageName = EMPTY_STRING
 
     sealed class ValidationState {
         object InvalidDiscountAmount : ValidationState()
@@ -193,5 +196,13 @@ class DiscountBulkApplyViewModel @Inject constructor(
     fun setSelectedEndDate(endDate: Date) {
         selectedEndDate = endDate
         _endDate.value = endDate
+    }
+
+    fun setBenefitPackageName(benefitPackageName : String) {
+        this.benefitPackageName = benefitPackageName
+    }
+
+    fun getBenefitPackageName(): String {
+        return benefitPackageName
     }
 }

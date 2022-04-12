@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.presentation
+package com.tokopedia.shopdiscount.manage.presentation.list
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -9,14 +9,18 @@ import com.tokopedia.shopdiscount.databinding.SdItemProductBinding
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 
 class ProductListAdapter(
-    private val onProductOptionClicked: (product: Product) -> Unit
+    private val onProductClicked: (Product) -> Unit,
+    private val onUpdateDiscountButtonClicked: (Product) -> Unit,
+    private val onOverflowMenuClicked: (Product) -> Unit,
+    private val onVariantInfoClicked : (Product) -> Unit
 ) : RecyclerView.Adapter<ProductViewHolder>() {
 
     private var products: MutableList<Product> = mutableListOf()
     private var isLoading = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val binding = SdItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            SdItemProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ProductViewHolder(binding)
     }
 
@@ -27,7 +31,14 @@ class ProductListAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         products.getOrNull(position)?.let { product ->
             val isLoading = isLoading && (position == products.lastIndex)
-            holder.bind(product, onProductOptionClicked, isLoading)
+            holder.bind(
+                product,
+                onProductClicked,
+                onUpdateDiscountButtonClicked,
+                onOverflowMenuClicked,
+                onVariantInfoClicked,
+                isLoading
+            )
         }
     }
 
@@ -41,6 +52,14 @@ class ProductListAdapter(
     fun clearData() {
         this.products = mutableListOf()
         notifyDataSetChanged()
+    }
+
+    fun delete(product: Product) {
+        val products = this.products.toMutableList()
+        val index = products.indexOf(product)
+        products.remove(product)
+        notifyItemRemoved(index)
+        notifyItemRangeChanged(index, itemCount)
     }
 
     fun showLoading() {

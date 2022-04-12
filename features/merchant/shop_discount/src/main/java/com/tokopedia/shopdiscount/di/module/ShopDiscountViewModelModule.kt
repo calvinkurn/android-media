@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shopdiscount.bulk.presentation.DiscountBulkApplyViewModel
 import com.tokopedia.shopdiscount.di.scope.ShopDiscountComponentScope
-import com.tokopedia.shopdiscount.manage.presentation.ProductListViewModel
 import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSellerInfoBottomSheetViewModel
-import com.tokopedia.shopdiscount.manage.presentation.ProductManageViewModel
+import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageViewModel
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductListViewModel
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
+import com.tokopedia.shopdiscount.search.presentation.SearchProductViewModel
+import com.tokopedia.shopdiscount.select.presentation.SelectProductViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -47,6 +49,16 @@ abstract class ShopDiscountViewModelModule {
     @IntoMap
     @ViewModelKey(ShopDiscountSellerInfoBottomSheetViewModel::class)
     internal abstract fun provideShopDiscountSellerInfoBottomSheetViewModel(viewModel: ShopDiscountSellerInfoBottomSheetViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchProductViewModel::class)
+    internal abstract fun provideSearchProductViewModel(viewModel: SearchProductViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SelectProductViewModel::class)
+    internal abstract fun provideSelectProductViewModel(viewModel: SelectProductViewModel): ViewModel
 
     @Binds
     @IntoMap
