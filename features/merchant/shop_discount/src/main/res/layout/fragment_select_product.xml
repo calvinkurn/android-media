@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".manage.presentation.container.ProductManageFragment">
+    tools:context=".select.presentation.SelectProductActivity">
+
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/header"
@@ -13,8 +14,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:unify_header_is_show_shadow="false"
-        app:unify_header_title="@string/sd_shop_discount" />
+        app:unify_header_is_show_shadow="true"
+        app:unify_header_title="@string/sd_select_product" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker"
@@ -31,14 +32,6 @@
         app:tickerType="announcement"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifycomponents.TabsUnify
-        android:id="@+id/tabsUnify"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ticker" />
-
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBar"
         android:layout_width="0dp"
@@ -47,18 +40,18 @@
         android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabsUnify"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
         app:layout_scrollFlags="scroll|snap"
-        app:search_bar_clearable="false"
-        app:search_bar_placeholder="@string/sd_search"
+        app:search_bar_clearable="true"
+        app:search_bar_placeholder="@string/sd_search_product_or_sku"
         app:search_bar_show_icon="false" />
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="0dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchBar" />
@@ -68,19 +61,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/unify_space_16"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnCreateDiscount"
+            android:id="@+id/btnManage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:enabled="false"
             android:layout_marginBottom="@dimen/unify_space_16"
-            android:text="@string/sd_create_discount"
+            android:text="@string/sd_manage"
             app:unifyButtonSize="medium"
             app:unifyButtonVariant="filled" />
 
@@ -92,30 +87,18 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:globalerrors_type="SERVER_ERROR"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/groupContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tabsUnify,viewPager,cardView" />
-
-    <com.tokopedia.empty_state.EmptyStateUnify
-        android:id="@+id/emptyState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabsUnify"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStateType="section" />
+        app:constraint_referenced_ids="searchBar,recyclerView" />
 
     <include
         android:id="@+id/shimmer"
@@ -128,5 +111,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintVertical_bias="0.0" />
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchBar"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStateType="section" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -27,6 +27,7 @@
     <string name="sd_total_stock_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
 
     <string name="sd_total_stock">Total stok: <![CDATA[<b>%1s</b>]]></string>
+    <string name="sd_total_stock_plain">Total stok: %s</string>
     <string name="sd_search">Cari produk</string>
     <string name="sd_total_product">%s Produk</string>
     <string name="sd_multi_select">Pilih Sekaligus</string>
@@ -47,6 +48,7 @@
     <string name="sd_manage">Atur</string>
     <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
     <string name="sd_with_variant">Ada Varian Diskon</string>
+    <string name="sd_has_variant">%s Varian Produk</string>
     <string name="sd_more_menu">Menu Lainnya</string>
     <string name="sd_ticker_search_product_announcement_wording"><![CDATA[Untuk pengaturan diskon lebih dari 5 produk sekaligus, <a href="http://tokopedia.com">Buka Lewat Desktop</a>]]></string>
     <string name="sd_search_at">Cari produk di %s</string>
@@ -57,6 +59,9 @@
     <string name="sd_ok">Oke</string>
     <string name="sd_selected_product_counter">%s Produk Dipilih</string>
     <string name="sd_select_product">Pilih Produk</string>
+    <string name="sd_search_product_or_sku">Cari produk atau SKU</string>
+    <string name="sd_sku">SKU: %s</string>
+    <string name="sd_select_product_max_count_reached">Atur 5 produk dulu, ya</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
@@ -82,5 +87,7 @@
     <!--Shop discount datepicker-->
     <string name="shop_discount_date_picker_button_apply_text">Pilih</string>
     <string name="shop_discount_date_picker_button_info_format">Periode %1s berakhir pada <![CDATA[<b>%2s.</b>]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

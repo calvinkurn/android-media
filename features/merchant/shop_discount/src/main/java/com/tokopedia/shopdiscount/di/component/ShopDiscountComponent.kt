@@ -12,6 +12,8 @@ import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
+import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
+import com.tokopedia.shopdiscount.select.presentation.SelectProductFragment
 import dagger.Component
 
 @ShopDiscountComponentScope
@@ -31,4 +33,6 @@ interface ShopDiscountComponent {
     fun inject(activity : SearchProductActivity)
     fun inject(bottomSheet: ShopDiscountSellerInfoBottomSheet)
     fun inject(fragment: SearchProductFragment)
+    fun inject(fragment: SelectProductFragment)
+    fun inject(fragment: SelectProductActivity)
 }
