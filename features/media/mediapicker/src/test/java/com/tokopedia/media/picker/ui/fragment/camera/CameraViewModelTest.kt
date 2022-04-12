@@ -52,22 +52,28 @@ class CameraViewModelTest {
     @Test
     fun `check camera UI state`() {
         // Given
-        var eventState: MutableList<EventState> = MutableList(0){EventState.Idle}
+        var cameraEventState: EventPickerState.CameraCaptured? = null
+        var selectionChangedEventState: EventPickerState.SelectionChanged? = null
+        var selectionRemovedEventState: EventPickerState.SelectionRemoved? = null
 
         // When
         val job = CoroutineScope(CoroutineTestDispatchers.main).launch {
             viewModel.uiEvent.collect {
-                eventState.add(it)
+                when(it){
+                    is EventPickerState.CameraCaptured -> cameraEventState = it
+                    is EventPickerState.SelectionChanged -> selectionChangedEventState = it
+                    is EventPickerState.SelectionRemoved -> selectionRemovedEventState = it
+                }
             }
         }
 
         // Then
-        stateOnCameraCapturePublished(mediaUiModelSample)
-        stateOnChangePublished(collectionMediaUiModelSample)
-        stateOnRemovePublished(mediaUiModelSample)
-        assert(eventState[0] is EventPickerState.CameraCaptured)
-        assert(eventState[1] is EventPickerState.SelectionChanged)
-        assert(eventState[2] is EventPickerState.SelectionRemoved)
+        stateOnCameraCapturePublished(CameraViewModelTest.mediaUiModelSample)
+        stateOnChangePublished(CameraViewModelTest.collectionMediaUiModelSample)
+        stateOnRemovePublished(CameraViewModelTest.mediaUiModelSample)
+        assert(cameraEventState != null)
+        assert(selectionChangedEventState != null)
+        assert(selectionRemovedEventState != null)
         job.cancel()
     }
 
