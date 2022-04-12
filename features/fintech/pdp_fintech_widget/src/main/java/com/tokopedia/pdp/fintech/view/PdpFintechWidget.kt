@@ -42,8 +42,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var categoryId: String? = null
     private var productID: String? = ""
     private var productPrice: String? = ""
-    private val NOT_BRANDER_CHIPS = "not branded chips"
-    private val BRANDER_CHIPS = "branded chips"
+    private val NOT_BRANDER_CHIPS = "NON BRANDED"
+    private val BRANDER_CHIPS = "BRANDED"
     private var logInStatus = false
 
 
