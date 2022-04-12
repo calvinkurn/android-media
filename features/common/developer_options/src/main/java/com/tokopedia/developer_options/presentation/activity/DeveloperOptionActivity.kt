@@ -42,7 +42,7 @@ class DeveloperOptionActivity : BaseActivity() {
 
     companion object {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
-        private const val API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49"
+        private const val API_KEY_TRANSLATOR = ""
         private const val RV_DEFAULT_POSITION = 0
         private const val RV_CACHE_SIZE = 20
 

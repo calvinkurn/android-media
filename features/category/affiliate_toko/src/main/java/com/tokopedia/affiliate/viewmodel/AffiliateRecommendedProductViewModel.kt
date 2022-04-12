@@ -13,8 +13,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateRecommendedProductViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val affiliateRecommendedProductUseCase: AffiliateRecommendedProductUseCase,
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
@@ -28,22 +28,26 @@ class AffiliateRecommendedProductViewModel @Inject constructor(
         launchCatchError(block = {
             affiliateRecommendedProductUseCase.affiliateGetRecommendedProduct(identifier,page,pageLimit).recommendedAffiliateProduct?.data?.let {
                 pageInfo.value = it.pageInfo
-                val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-                it.cards?.firstOrNull()?.items?.let { items ->
-                    for (product in items){
-                        product?.let {
-                            product.isLinkGenerationAllowed = !isUserBlackListed
-                            tempList.add(AffiliateStaggeredPromotionCardModel(product))
-                        }
-                    }
-                    affiliateDataList.value = tempList
-                }
+                affiliateDataList.value = convertDataToVisitable(it)
             }
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
             errorMessage.value = it.localizedMessage
         })
+    }
+
+    fun convertDataToVisitable(it: AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data?): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
+        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        it?.cards?.firstOrNull()?.items?.let { items ->
+            for (product in items){
+                product?.let {
+                    product.isLinkGenerationAllowed = !isUserBlackListed
+                    tempList.add(AffiliateStaggeredPromotionCardModel(product))
+                }
+            }
+        }
+        return tempList
     }
 
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility

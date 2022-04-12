@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -31,7 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class DiscomBottomSheetRevamp: BottomSheetUnify(),
+class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false): BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,
     PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
 
@@ -50,13 +51,13 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
     private lateinit var chipsLayoutManagerZipCode: ChipsLayoutManager
     private var input: String = ""
     private var mIsInitialLoading: Boolean = false
-    private var isPinpoint: Boolean = false
     private var isKodePosShown: Boolean = false
     private var postalCode: String = ""
     private var districtAddressData: Address? = null
     private var staticDimen8dp: Int? = 0
     private var page: Int = 1
     private val mLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    private val searchHandler = Handler()
     private val mEndlessListener = object : EndlessRecyclerViewScrollListener(mLayoutManager) {
         override fun onLoadMore(page: Int, totalItemsCount: Int) {
             presenter.loadData(input, page + 1)
@@ -186,7 +187,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                     } else {
                         input = viewBinding?.searchPageInput?.searchBarTextField?.text.toString()
                         mIsInitialLoading = true
-                        handler.postDelayed({
+                        searchHandler.postDelayed({
                             presenter.loadData(input, page)
                         }, DELAY_MILIS)
                     }
@@ -208,6 +209,7 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
                 Toaster.build(it, getString(R.string.postal_code_field_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
             } else {
                 AddNewAddressRevampAnalytics.onClickPilihKodePos(userSession.userId, SUCCESS)
+                viewBinding?.etKodepos?.textFieldInput?.text?.let { input -> this.postalCode = input.toString() }
                 districtAddressData?.let { data -> discomRevampListener?.onChooseZipcode(data, postalCode, isPinpoint) }
                 dismiss()
             }
@@ -227,7 +229,6 @@ class DiscomBottomSheetRevamp: BottomSheetUnify(),
 
     override fun onZipCodeClicked(zipCode: String) {
         AddNewAddressRevampAnalytics.onClickChipsKodePosNegative(userSession.userId)
-        this.postalCode = zipCode
         viewBinding?.rvKodeposChips?.visibility = View.GONE
         viewBinding?.etKodepos?.textFieldInput?.run {
             setText(zipCode)

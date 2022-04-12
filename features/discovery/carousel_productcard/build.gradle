@@ -20,6 +20,9 @@ buildscript {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -34,6 +37,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
 
@@ -50,7 +54,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     androidTestImplementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.network)
     androidTestImplementation rootProject.ext.firebase.messaging
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
 }

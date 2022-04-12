@@ -8,8 +8,9 @@ import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.assertEqualTo
 import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -61,7 +62,7 @@ class PlayFollowOwnShopTest {
     }
 
     @Test
-    fun `given user is logged in and has not followed shop, when click follow, the shop should be not followable`() {
+    fun `given user is logged in and has not followed shop, when click follow, the shop should be followable but not followed`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
 
@@ -77,17 +78,18 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.NotFollowable
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
                 )
             }
         }
     }
 
     @Test
-    fun `given user is logged in and has followed shop, when click follow, the shop should be not followable`() {
+    fun `given user is logged in and has followed shop, when click follow, the shop should be followable and not followed`() {
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsFollowingPartner(any()) } returns true
+        coEvery { mockRepo.postFollowStatus(any(), any()) } returns false
 
         givenPlayViewModelRobot(
                 repo = mockRepo,
@@ -101,17 +103,25 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.NotFollowable
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
                 )
             }
         }
     }
 
     @Test
-    fun `given user is not logged in, when click follow, the shop should be not followable`() {
+    fun `given user is not logged in, when click follow, the shop should be not unknown`() {
+        val mockChannelData = channelDataBuilder.buildChannelData(
+            partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
+                id = partnerId,
+            ),
+        )
+
         val mockRepo: PlayViewerRepository = mockk(relaxed = true)
         coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
+
+        every { mockRepo.getChannelData(any()) } returns mockChannelData
 
         givenPlayViewModelRobot(
                 repo = mockRepo,
@@ -125,8 +135,8 @@ class PlayFollowOwnShopTest {
             submitAction(ClickFollowAction)
         } thenVerify {
             withState {
-                partner.followStatus.isEqualTo(
-                        PlayPartnerFollowStatus.NotFollowable
+                partner.status.assertEqualTo(
+                        PlayPartnerFollowStatus.Followable(PartnerFollowableStatus.NotFollowed)
                 )
             }
         }

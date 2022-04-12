@@ -64,6 +64,7 @@
     <string name="common_topup_fav_number_error_state_title">Maaf, Nomor Favorit gagal ditampilkan</string>
     <string name="common_topup_fav_number_error_state_desc">Coba refresh atau masukkan nomor manual dulu, ya.</string>
     <string name="common_topup_fav_number_error_state_button">Refresh</string>
+    <string name="common_topup_fav_number_searchbar_placeholder">Cari nama atau nomor pelanggan</string>
 
     <string name="common_topup_saved_number_title">Nomor Tersimpan</string>
     <string name="common_topup_saved_number_tab_contact">Kontak HP</string>
@@ -77,7 +78,9 @@
     <string name="common_topup_contact_name_default">Nomor Telepon</string>
     <string name="common_topup_autocomplete_header">DARI NOMOR FAVORIT</string>
     <string name="common_topup_autocomplete_empty_title">Hmm, nama kontaknya nggak ketemu</string>
-    <string name="common_topup_autocomplete_empty_desc">Coba ketik nomor HP-nya aja, deh.</string>
+    <string name="common_topup_autocomplete_empty_desc">Coba ketik %s-nya aja, deh.</string>
+    <string name="common_topup_autocomplete_unit_nomor_hp">nomor HP</string>
+    <string name="common_topup_autocomplete_unit_nomor_meter">nomor meter</string>
     <string name="common_topup_contact_empty_desc">Coba masukan kata kunci atau nomor yang lain ya</string>
     <string name="common_topup_contact_empty_title">Yah, gaada yang sesuai</string>
 </resources>

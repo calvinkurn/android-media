@@ -43,13 +43,16 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
 
     fun couponCodeVisible(code: String, isStacked: Boolean) {
         for (i in 0 until items.size) {
-            val data = getItem(i)
-            if ((!isStacked && code == data.code) || (isStacked && data.isStacked && data.stackId == code)) {
-                if (data.isNewCoupon) {
-                    data.isNewCoupon = false
-                    notifyItemChanged(i)
+            try {
+                val data = getItem(i)
+                if ((!isStacked && code == data.code) || (isStacked && data.isStacked && data.stackId == code)) {
+                    if (data.isNewCoupon) {
+                        data.isNewCoupon = false
+                        notifyItemChanged(i)
+                    }
+                    break
                 }
-                break
+            } catch (exception: Exception) {
             }
         }
     }
@@ -127,8 +130,8 @@ class CouponListStackedBaseAdapter(private val mPresenter: CouponLisitingStacked
         return ViewHolder(itemView)
     }
 
-    override fun loadData(pageNumber: Int) {
-        super.loadData(pageNumber)
+    override fun loadData(pageNumber: Int, vararg args: String?) {
+        super.loadData(pageNumber, *args)
         mPresenter.getList(pageNumber)
     }
 

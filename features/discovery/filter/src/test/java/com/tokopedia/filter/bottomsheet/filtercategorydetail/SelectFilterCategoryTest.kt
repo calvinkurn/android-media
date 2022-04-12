@@ -19,7 +19,7 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
     }
 
     private fun `When Category Level Three Selected`(clickedLevelThreeViewModel: FilterCategoryLevelThreeViewModel, isChecked: Boolean) {
-        filterCategoryDetailViewModel.onFilterCategoryClicked(clickedLevelThreeViewModel, isChecked)
+        filterCategoryDetailViewModel.onFilterCategoryClicked(clickedLevelThreeViewModel)
     }
 
     private fun `Then assert click to select level three view model`(
@@ -32,6 +32,7 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
         `Then assert other level three view model is not selected`(clickedLevelThreeViewModel)
         `Then assert content update position`(expectedContentUpdatedPosition)
         `Then assert button save visibility`(true)
+        `Then assert button reset visibility`(true)
     }
 
     private fun `Then assert selected filter value is updated`(expectedSelectedCategoryFilterValue: String) {
@@ -89,20 +90,6 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
     }
 
     @Test
-    fun `Level Three Filter Category Selected and then unselected`() {
-        `Given view model initialized and view created`(getCategoryFilter(), "")
-
-        val clickedLevelThreeViewModel = contentViewModelList!![1].levelThreeCategoryViewModelList.find { !it.isSelected }!!
-        `When Category Level Three Selected`(clickedLevelThreeViewModel, true)
-        `When Category Level Three Selected`(clickedLevelThreeViewModel, false)
-
-        `Then assert selected filter value is updated`("")
-        `Then assert clicked level three selected state`(clickedLevelThreeViewModel, false)
-        `Then assert content update position`(listOf(1, 1))
-        `Then assert button save visibility`(true)
-    }
-
-    @Test
     fun `Level Two Filter Category Selected`() {
         `Given view model initialized and view created`(getCategoryFilter(), "")
 
@@ -113,7 +100,7 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
     }
 
     private fun `When Category Level Two Clicked`(clickedFilterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel, isChecked: Boolean) {
-        filterCategoryDetailViewModel.onFilterCategoryClicked(clickedFilterCategoryLevelTwoViewModel, isChecked)
+        filterCategoryDetailViewModel.onFilterCategoryClicked(clickedFilterCategoryLevelTwoViewModel)
     }
 
     private fun `Then assert Level Two Filter Category Selected`(clickedLevelTwoViewModel: FilterCategoryLevelTwoViewModel, expectedContentUpdatedPosition: List<Int>) {
@@ -122,6 +109,7 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
         `Then assert other selectable level two is not selected`(clickedLevelTwoViewModel)
         `Then assert content update position`(expectedContentUpdatedPosition)
         `Then assert button save visibility`(true)
+        `Then assert button reset visibility`(true)
     }
 
     private fun `Then assert clicked level two selected state`(clickedLevelTwoViewModel: FilterCategoryLevelTwoViewModel, isChecked: Boolean) {
@@ -160,20 +148,6 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
     }
 
     @Test
-    fun `Level Two Filter Category Selected and then unselected`() {
-        `Given view model initialized and view created`(getCategoryFilter(), "")
-
-        val clickedLevelTwoViewModel = contentViewModelList!![0]
-        `When Category Level Two Clicked`(clickedLevelTwoViewModel, true)
-        `When Category Level Two Clicked`(clickedLevelTwoViewModel, false)
-
-        `Then assert selected filter value is updated`("")
-        `Then assert clicked level two selected state`(clickedLevelTwoViewModel, false)
-        `Then assert content update position`(listOf(0, 0))
-        `Then assert button save visibility`(true)
-    }
-
-    @Test
     fun `Click Level Two and then Level Three Filter Category`() {
         `Given view model initialized and view created`(getCategoryFilter(), "")
 
@@ -189,6 +163,7 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
         `Then assert no other selectable level two or level three filter category is selected`(clickedLevelTwoViewModel, clickedLevelThreeViewModel)
         `Then assert content update position`(listOf(0, 0, 1))
         `Then assert button save visibility`(true)
+        `Then assert button reset visibility`(true)
     }
 
     private fun `Then assert no other selectable level two or level three filter category is selected`(
@@ -217,5 +192,6 @@ internal class SelectFilterCategoryTest: FilterCategoryDetailViewModelTestFixtur
         `Then assert no other selectable level two or level three filter category is selected`(clickedLevelTwoViewModel, clickedLevelThreeViewModel)
         `Then assert content update position`(listOf(1, 1, 0))
         `Then assert button save visibility`(true)
+        `Then assert button reset visibility`(true)
     }
 }

@@ -1,0 +1,18 @@
+[
+  {
+    "data": {
+      "getAdminInfo": {
+        "admin_data": [
+          {
+            "location_list": [
+              {
+                "location_id": "740525",
+                "location_type": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

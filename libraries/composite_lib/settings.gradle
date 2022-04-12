@@ -16,8 +16,6 @@ buildCache {
     }
 }
 
-include ":authentication"
-include ":authentication_ext"
 include ":analytic_constant"
 include ":analytic_testapp"
 include ":annotation_processor_analytic"
@@ -27,9 +25,7 @@ include ":analytic_param"
 include ":cache_manager"
 include ":global_config"
 include ":url"
-include ":user_session"
 include ":use_case"
-include ":network"
 include ":graphql_beta_notif"
 include ":chucker-no-op"
 include ":analytic_gtmutil"

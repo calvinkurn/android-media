@@ -1,8 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
 object ProductDetailConstant {
-    const val ENABLE_VIDEO_PDP = "app_enable_video_pdp"
-
     const val PARAM_PRODUCT_ID = "product_id"
 
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
@@ -29,7 +27,7 @@ object ProductDetailConstant {
     const val PAYLOAD_TRADEIN_AND_BOE = 421321
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
-    const val PAYLOAD_UPDATE_IMAGE = 5
+    const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -57,6 +55,7 @@ object ProductDetailConstant {
     const val TRADE_IN = "tradein"
     const val INFO = "info"
     const val SHIPMENT = "shipment"
+    const val SHIPMENT_V2 = "shipment_v2"
     const val PRODUCT_LIST = "product_list"
     const val NOTIFY_ME = "teaser"
     const val TICKER_INFO = "ticker_info"
@@ -87,6 +86,7 @@ object ProductDetailConstant {
     const val MVC = "mvc"
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
     const val CATEGORY_CAROUSEL = "category_carousel"
+    const val HAMPERS_INFO = "palugada_hampers"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
@@ -94,6 +94,8 @@ object ProductDetailConstant {
     const val PRODUCT_BUNDLING = "product_bundling"
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
+    const val FINTECH_WIDGET_TYPE = "chips_carousel"
+    const val FINTECH_WIDGET_NAME = "paylater_cicilan"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -106,10 +108,11 @@ object ProductDetailConstant {
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
-    const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
+    const val ARG_LAYOUT_ID = "ARG_LAYOUT_ID"
     const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
+    const val ARG_CHANNEL = "ARG_CHANNEL"
 
     //Animation
     const val CART_MAX_COUNT = 99

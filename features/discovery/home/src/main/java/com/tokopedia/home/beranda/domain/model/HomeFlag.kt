@@ -49,9 +49,12 @@ data class HomeFlag(
 //TODO: add integer value -> BE not ready yet
 data class Flags(
     @SerializedName("name")
+    @Expose
     var name: String = "",
     @SerializedName("is_active")
+    @Expose
     var isActive: Boolean,
     @SerializedName("integer_value")
+    @Expose
     var integerValue: Int = 0
 )

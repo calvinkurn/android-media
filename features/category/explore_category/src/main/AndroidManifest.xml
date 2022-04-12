@@ -6,7 +6,7 @@
             android:name=".ui.activity.ECHomeActivity"
             android:label="@string/label_category_explore"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
             android:windowSoftInputMode="adjustResize"
             android:exported="false">
             <intent-filter>

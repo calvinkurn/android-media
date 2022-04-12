@@ -57,6 +57,7 @@
     <string name="menu_account_title_quality_setting">Kualitas Gambar</string>
     <string name="menu_account_title_clear_cache">Bersihkan Cache</string>
     <string name="menu_account_title_screen_recorder">Perekam Layar</string>
+    <string name="menu_account_title_play_widget_autoplay">Putar Otomatis Video</string>
     <string name="menu_account_title_about_us">Kenali Tokopedia</string>
     <string name="menu_account_title_terms">Syarat dan Ketentuan</string>
     <string name="menu_account_title_privacy_policy">Kebijakan Privasi</string>
@@ -82,6 +83,7 @@
     <string name="menu_account_desc_quality_setting">Atur kualitas gambar yang kamu lihat</string>
     <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
     <string name="menu_account_desc_screen_recorder">Lampiran video untuk laporan kendala</string>
+    <string name="menu_account_desc_play_widget_autoplay">Putar video Tokopedia Play secara otomatis</string>
 
     <string name="new_home_account_go_to_wishlist">Lihat Wishlist</string>
     <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>
@@ -159,7 +161,7 @@
     <string name="home_account_balance_and_point_activate">Aktifkan</string>
     <string name="home_account_balance_and_point_add_point">Tambah Points</string>
 
-    <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
+    <string name="account_home_add_phone_title">Tambah nomer HP</string>
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
 
     <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>
@@ -222,5 +224,5 @@
     <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
     <string name="message_success_change_profile">Sukses mengubah profil</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
-
+    <string name="label_failed_register_biometric_offering">Ada kendala waktu aktifkan fitur ini, coba lagi nanti ya.</string>
 </resources>

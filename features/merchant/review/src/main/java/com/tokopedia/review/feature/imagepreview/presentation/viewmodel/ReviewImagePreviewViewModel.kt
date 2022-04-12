@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.review.common.data.ToggleProductReviewLike
+import com.tokopedia.review.common.data.ProductrevLikeReview
 import com.tokopedia.review.common.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.gallery.data.ProductrevGetReviewImage
 import com.tokopedia.review.feature.gallery.domain.usecase.GetReviewImagesUseCase
@@ -24,8 +24,8 @@ class ReviewImagePreviewViewModel @Inject constructor(
     coroutineDispatchers: CoroutineDispatchers
 ) : BaseViewModel(coroutineDispatchers.io) {
 
-    private val _toggleLikeReview = MutableLiveData<Result<ToggleProductReviewLike>>()
-    val toggleLikeReview: LiveData<Result<ToggleProductReviewLike>>
+    private val _toggleLikeReview = MutableLiveData<Result<ProductrevLikeReview>>()
+    val toggleLikeReviewReview: LiveData<Result<ProductrevLikeReview>>
         get() = _toggleLikeReview
 
     private val _reviewImages = MediatorLiveData<Result<ProductrevGetReviewImage>>()
@@ -57,13 +57,13 @@ class ReviewImagePreviewViewModel @Inject constructor(
         return productId
     }
 
-    fun toggleLikeReview(reviewId: String, shopId: String, productId: String, likeStatus: Int) {
+    fun toggleLikeReview(reviewId: String, likeStatus: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(
-                reviewId, shopId, productId, ReadReviewUtils.invertLikeStatus(likeStatus)
+                reviewId, ReadReviewUtils.invertLikeStatus(likeStatus)
             )
             val data = toggleLikeReviewUseCase.executeOnBackground()
-            _toggleLikeReview.postValue(Success(data.toggleProductReviewLike))
+            _toggleLikeReview.postValue(Success(data.productrevLikeReview))
         }) {
             _toggleLikeReview.postValue(Fail(it))
         }

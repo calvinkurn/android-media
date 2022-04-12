@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.databinding.FragmentInactivePhoneSucccessPageBinding
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 abstract class BaseInactivePhoneSuccessFragment : BaseDaggerFragment() {
@@ -55,10 +54,7 @@ abstract class BaseInactivePhoneSuccessFragment : BaseDaggerFragment() {
     }
 
     open fun setImageHeader(url: String) {
-        viewBinding?.imgHeader?.apply {
-            ImageUtils.clearImage(this)
-            setImageUrl(url)
-        }
+        viewBinding?.imgHeader?.setImageUrl(url, isSkipCache = true)
     }
 
     open fun gotoHome() {

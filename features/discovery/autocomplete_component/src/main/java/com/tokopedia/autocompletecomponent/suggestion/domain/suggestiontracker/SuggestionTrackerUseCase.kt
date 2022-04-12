@@ -1,6 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.suggestion.domain.SuggestionRepository
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.usecase.RequestParams

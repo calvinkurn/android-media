@@ -1,16 +1,17 @@
 package com.tokopedia.autocompletecomponent.initialstate.domain
 
-import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.autocompletecomponent.util.DEFAULT_COUNT
 import com.tokopedia.autocompletecomponent.util.DEVICE_ID
 import com.tokopedia.autocompletecomponent.util.KEY_COUNT
 import com.tokopedia.autocompletecomponent.util.SEARCHBAR
+import com.tokopedia.autocompletecomponent.util.putChooseAddressParams
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEVICE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SOURCE
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.UNIQUE_ID
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_ID
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.USER_WAREHOUSE_ID
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -52,7 +53,7 @@ object InitialStateRequestUtils {
     fun getParams(
         searchParameter: Map<String, String>,
         userSession: UserSessionInterface,
-        warehouseId: String,
+        chooseAddressData: LocalCacheModel,
     ): RequestParams {
         val registrationId = userSession.deviceId
         val userId = userSession.userId
@@ -67,9 +68,7 @@ object InitialStateRequestUtils {
         params.putString(USER_ID, userId)
         params.putString(UNIQUE_ID, uniqueId)
         params.putString(DEVICE_ID, registrationId)
-
-        if (warehouseId.isNotEmpty())
-            params.putString(USER_WAREHOUSE_ID, warehouseId)
+        params.putChooseAddressParams(chooseAddressData)
 
         return params
     }

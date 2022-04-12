@@ -60,7 +60,7 @@ class EditReviewActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>,
 
     override fun onBackPressed() {
         createReviewFragment?.let {
-            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.isUserEligible())
+            CreateReviewTracking.reviewOnCloseTracker(it.getOrderId(), productId, it.createReviewViewModel.hasIncentive())
             it.showCancelDialog()
         }
     }

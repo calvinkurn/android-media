@@ -14,7 +14,7 @@ fun MacrobenchmarkRule.measureStartup(
 ) = measureRepeated(
     packageName = MacroIntent.TKPD_PACKAGE_NAME,
     metrics = listOf(StartupTimingMetric()),
-    compilationMode = CompilationMode.None,
+    compilationMode = CompilationMode.None(),
     iterations = iterations,
     startupMode = startupMode,
     setupBlock = {

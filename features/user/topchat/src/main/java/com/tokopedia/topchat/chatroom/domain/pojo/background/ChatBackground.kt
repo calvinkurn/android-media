@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class ChatBackground(
         @SerializedName("urlImage")
         @Expose
-        val urlImage: String = "",
+        var urlImage: String = "",
         @SerializedName("urlImageDarkMode")
         @Expose
         val urlImageDarkMode: String = ""

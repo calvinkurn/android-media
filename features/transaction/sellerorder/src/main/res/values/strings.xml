@@ -65,6 +65,7 @@
     <string name="additional_invalid_resi"><br><font color="#03ac0e">Unggah Sekarang</font></br></string>
     <string name="sale_from_top_ads">Penjualan dari TopAds</string>
     <string name="sale_from_broadcast_chat">Penjualan dari Broadcast Chat</string>
+    <string name="som_detail_product_note_format"><![CDATA[<i>%1$s</i>]]></string>
 
     <string name="chat">Chat</string>
 
@@ -175,7 +176,7 @@
     <string name="som_buyer_cancellation_confirm_accept_cancellation_button">Batalkan Pesanan</string>
     <string name="som_buyer_cancellation_confirm_accept_order_title">Konfirmasi terima pesanan?</string>
     <string name="som_buyer_cancellation_confirm_accept_order_description">Lanjut memproses pesanan tanpa konfirmasi dari pembeli dapat menyebabkan pengajuan komplain</string>
-    <string name="som_buyer_cancellation_confirm_accept_order_button">Lanjut Terima</string>
+    <string name="som_buyer_cancellation_confirm_accept_order_button">Terima Pesanan</string>
     <string name="som_buyer_cancellation_cancel_button">Kembali</string>
     <string name="som_header_detail_ticker_cancellation">Dibatalkan karena</string>
 
@@ -209,7 +210,7 @@
 
     <string name="label_payment_deadline">Batas Pembayaran:</string>
     <string name="label_buyer_and_place_name">Pembeli:</string>
-    <string name="warehouse_label">Tokocabang</string>
+    <string name="warehouse_label">Dilayani Tokopedia</string>
 
     <string name="som_request_cancel_bottomsheet_title">Tanggapi Pembatalan</string>
 
@@ -342,4 +343,25 @@
     <string name="bottomsheet_order_extension_request_comment_not_empty_regex">^\s*$</string>
     <string name="bottomsheet_order_extension_request_comment_not_less_than_fifteen_characters_regex">^.{0,14}$</string>
     <string name="bottomsheet_order_extension_request_comment_not_allowed_characters_regex">[^,.?!\n A-Za-z0-9]+</string>
+
+    <!--  MVC Usage  -->
+    <string name="som_detail_mvc_usage_label">Promo Penjual</string>
+
+    <!--  Product Add On  -->
+    <string name="som_detail_add_on_sample_label">Pelengkap</string>
+    <string name="som_detail_add_on_description_label">Pesan Kartu Ucapan</string>
+    <string name="som_detail_add_on_colon">:</string>
+    <string name="som_detail_add_on_label_to">Ke</string>
+    <string name="som_detail_add_on_label_from">Dari</string>
+    <string name="som_detail_add_on_description"><![CDATA[%1$s. <a href="#">%2$s</a>.]]></string>
+    <string name="som_detail_add_on_see_less_description">Tutup</string>
+    <string name="som_detail_add_on_see_more_description"><![CDATA[<a href="#">Lihat Selengkapnya</a>.]]></string>
+    <string name="som_detail_add_on_description_copyable_format"><![CDATA[Ke\t\t\t: %1$s<br/>Dari\t: %2$s<br/>%3$s]]></string>
+    <string name="som_detail_add_on_description_copied_message">Pesan berhasil disalin</string>
+
+  <!--wording cancellation dialog-->
+    <string name="som_request_cancellation_title_continue_send_order_dialog">Lanjut kirim pesanan ini?</string>
+    <string name="som_request_cancellation_desc_continue_send_order_dialog">Untuk menghindari komplain, pastikan pengiriman pesanan sudah dapat persetujuan dari pembeli.</string>
+    <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
+    <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
 </resources>

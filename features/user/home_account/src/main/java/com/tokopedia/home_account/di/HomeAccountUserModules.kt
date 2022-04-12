@@ -6,12 +6,11 @@ import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
+import com.tokopedia.loginfingerprint.tracker.BiometricTracker
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -88,4 +87,6 @@ class HomeAccountUserModules(val context: Context) {
     @HomeAccountUserScope
     fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    @Provides
+    fun provideBiometricTracker(): BiometricTracker = BiometricTracker()
 }

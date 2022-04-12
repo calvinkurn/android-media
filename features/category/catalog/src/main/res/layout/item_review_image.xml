@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/unify_space_64"
+    android:layout_height="@dimen/unify_space_64"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_review"
+        tools:src="@color/Unify_N100"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"/>
+
+</com.tokopedia.unifycomponents.CardUnify2>

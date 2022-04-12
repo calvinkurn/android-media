@@ -3,7 +3,11 @@ package com.tokopedia.product.detail.common.data.model.pdplayout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.product.*
+import com.tokopedia.product.detail.common.data.model.product.Cashback
+import com.tokopedia.product.detail.common.data.model.product.PreOrder
+import com.tokopedia.product.detail.common.data.model.product.Stock
+import com.tokopedia.product.detail.common.data.model.product.VariantBasic
+import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.common.data.model.variant.Variant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 
@@ -25,6 +29,11 @@ data class ComponentData(
         val separator: String = "",
         @SerializedName("description")
         val description: String = "",
+        //endregion
+
+        //region custom info palugada ... on pdpDataCustomInfo
+        @SerializedName("label")
+        val labels: List<CustomInfoLabelData> = listOf(),
         //endregion
 
         //region Content data
@@ -151,6 +160,31 @@ data class ComponentData(
                 it.uRLThumbnail
             }
         })
+    }
+
+    fun getGalleryItems(): List<ProductDetailGallery.Item> {
+        return media.mapIndexed { index, media ->
+            val url: String
+            val thumbnailUrl: String
+            val type: ProductDetailGallery.Item.Type
+            if (media.type == PRODUCT_IMAGE_TYPE) {
+                url = media.uRLOriginal
+                thumbnailUrl = media.uRLOriginal
+                type = ProductDetailGallery.Item.Type.Image
+            } else {
+                url = media.videoURLAndroid
+                thumbnailUrl = media.uRLThumbnail
+                type = ProductDetailGallery.Item.Type.Video
+            }
+
+            ProductDetailGallery.Item(
+                id = index.toString(),
+                url = url,
+                thumbnailUrl = thumbnailUrl,
+                tag = media.description.takeIf { media.variantOptionId != "0" },
+                type = type
+            )
+        }
     }
 }
 

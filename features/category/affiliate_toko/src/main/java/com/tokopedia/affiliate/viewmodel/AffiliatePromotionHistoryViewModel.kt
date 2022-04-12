@@ -38,7 +38,7 @@ class AffiliatePromotionHistoryViewModel@Inject constructor(
         })
     }
 
-    private fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
+     fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
         val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         data.items?.let { items ->
             for (product in items) {

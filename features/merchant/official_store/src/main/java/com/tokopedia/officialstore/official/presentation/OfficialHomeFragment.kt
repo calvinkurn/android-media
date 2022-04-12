@@ -61,6 +61,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -191,11 +192,18 @@ class OfficialHomeFragment :
                 OSMixTopComponentCallback(this),
                 OSFeaturedBrandCallback(this, tracking),
                 OSFeaturedShopDCCallback(this),
-                recyclerView?.recycledViewPool)
+                recyclerView?.recycledViewPool,
+                OSMerchantVoucherCallback(this),
+                OSSpecialReleaseComponentCallback(this, userSession.userId),
+                onTopAdsHeadlineClicked)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
         officialHomeMapper.resetState(adapter)
         return view
+    }
+
+    private val onTopAdsHeadlineClicked: (applink: String) -> Unit = {
+        RouteManager.route(context, it)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -207,7 +215,7 @@ class OfficialHomeFragment :
         observeProductRecommendation()
         observeFeaturedShopSuccessDC()
         observeFeaturedShopRemoveDC()
-        observeRecomwidget()
+        observeRecomWidget()
         initLocalChooseAddressData()
         resetData()
         loadData()
@@ -218,12 +226,16 @@ class OfficialHomeFragment :
 
     }
 
-    private fun observeRecomwidget() {
-        viewModel.recomWidget.observe(viewLifecycleOwner, {
+    private fun observeRecomWidget() {
+        viewModel.recomWidget.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingRecomWidget(it.data, adapter)
+                    if (!isEligibleForDisableBestSellerWidget()) {
+                        officialHomeMapper.mappingRecomWidget(it.data) { newDataList ->
+                            adapter?.submitList(newDataList)
+                        }
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -231,7 +243,7 @@ class OfficialHomeFragment :
                 }
 
             }
-        })
+        }
     }
 
     override fun onPause() {
@@ -705,6 +717,8 @@ class OfficialHomeFragment :
                         userId = userSession.userId
                 ) as HashMap<String, Any>
         )
+
+        viewModel.recordShopWidgetImpression(channelModel.id, channelGrid.id)
     }
 
     override fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String) {
@@ -796,7 +810,7 @@ class OfficialHomeFragment :
     }
 
     private fun observeBannerData() {
-        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner) {
             val resultValue = it.second
 
             val shouldShowErrorMessage = it.first
@@ -806,7 +820,12 @@ class OfficialHomeFragment :
                         this.currentBannerData = resultValue.data
                         removeLoading(resultValue.data.isCache)
                         swipeRefreshLayout?.isRefreshing = false
-                        officialHomeMapper.mappingBanners(resultValue.data, adapter, category?.title)
+                        officialHomeMapper.mappingBanners(
+                            resultValue.data,
+                            adapter,
+                            category?.title,
+                            isEligibleForDisableMappingBanner()
+                        )
                     }
                 }
                 is Fail -> {
@@ -817,15 +836,17 @@ class OfficialHomeFragment :
                 }
             }
             bannerPerformanceMonitoring.stopTrace()
-        })
+        }
     }
 
     private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingBenefit(it.data, adapter)
+                    if(!isEligibleForDisableMappingBenefit()) {
+                        officialHomeMapper.mappingBenefit(it.data, adapter)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -833,15 +854,17 @@ class OfficialHomeFragment :
                 }
 
             }
-        })
+        }
     }
 
     private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, {
+        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                    if(!isEligibleForDisableMappingOfficialFeaturedShop()) {
+                        officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
+                    }
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -850,7 +873,7 @@ class OfficialHomeFragment :
 
             }
             shopPerformanceMonitoring.stopTrace()
-        })
+        }
     }
 
     private fun observeDynamicChannel() {
@@ -877,11 +900,11 @@ class OfficialHomeFragment :
         viewModel.productRecommendation.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
+                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.recommendationWidget.title
                     endlessScrollListener.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
                     if (counterTitleShouldBeRendered == 1) {
-                        officialHomeMapper.mappingProductRecommendationTitle(it.data.title, adapter)
+                        officialHomeMapper.mappingProductRecommendationTitle(it.data.recommendationWidget.title, adapter)
                     }
                     officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
@@ -895,24 +918,31 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShopSuccessDC() {
-        viewModel.featuredShopResult.observe(viewLifecycleOwner, {
-            when(it) {
+        viewModel.featuredShopResult.observe(viewLifecycleOwner) {
+            when (it) {
                 is Success -> {
-                   //update UI
-                    officialHomeMapper.updateFeaturedShopDC(it.data) { newDataList ->
-                        adapter?.submitList(newDataList)
+                    //update UI
+                    if (!isEligibleForDisableShopWidget()) {
+                        officialHomeMapper.updateFeaturedShopDC(
+                            it.data
+                        ) { newDataList ->
+                            adapter?.submitList(newDataList)
+                        }
                     }
                 }
+                else -> {}
             }
-        })
+        }
     }
 
     private fun observeFeaturedShopRemoveDC() {
-        viewModel.featuredShopRemove.observe(viewLifecycleOwner, {
-            officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
-                adapter?.submitList(newDataList)
+        viewModel.featuredShopRemove.observe(viewLifecycleOwner) {
+            if (!isEligibleForDisableRemoveShopWidget()) {
+                officialHomeMapper.removeFeaturedShopDC(it) { newDataList ->
+                    adapter?.submitList(newDataList)
+                }
             }
-        })
+        }
     }
 
     private fun showErrorNetwork(t: Throwable) {
@@ -923,13 +953,25 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun removeRecomWidget() {
+        if (!isEligibleForDisableRemoveBestSellerWidget()) {
+            officialHomeMapper.removeRecomWidget {
+                adapter?.submitList(it)
+            }
+        }
+    }
+
     private fun setListener() {
         setLoadMoreListener()
         swipeRefreshLayout?.setOnRefreshListener {
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
-            officialHomeMapper.removeRecomWidget(adapter)
+            removeRecomWidget()
+            officialHomeMapper.removeTopAdsHeadlineWidget(adapter)
             loadData(true)
+            viewModel.resetShopWidgetImpressionCount()
+            viewModel.resetIsFeatureShopAllowed()
+            resetData()
         }
 
         if (parentFragment is RecyclerViewScrollListener) {
@@ -995,7 +1037,7 @@ class OfficialHomeFragment :
     private fun showSuccessAddWishlist() {
         activity?.let { activity ->
             val view = activity.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(R.string.msg_success_add_wishlist)
+            val message = getString(com.tokopedia.officialstore.R.string.msg_success_add_wishlist)
 
             Snackbar.make(view, message, Snackbar.LENGTH_LONG)
                     .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
@@ -1007,7 +1049,7 @@ class OfficialHomeFragment :
     private fun showSuccessRemoveWishlist() {
         activity?.let {
             val view = it.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(R.string.msg_success_remove_wishlist)
+            val message = getString(com.tokopedia.officialstore.R.string.msg_success_remove_wishlist)
 
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
         }
@@ -1082,6 +1124,69 @@ class OfficialHomeFragment :
         }
         return false
 
+    }
+
+    private fun isEligibleForDisableShopWidget(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_SHOP_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableBestSellerWidget(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_BEST_SELLER_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingBanner(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BANNERS)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableRemoveBestSellerWidget(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_BEST_SELLER_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableRemoveShopWidget(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_REMOVE_SHOP_WIDGET)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingBenefit(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_BENEFIT)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun isEligibleForDisableMappingOfficialFeaturedShop(): Boolean {
+        return try {
+            return remoteConfig?.getBoolean(RemoteConfigKey.DISABLE_OFFICIAL_STORE_MAPPING_OFFICIAL_FEATURED_SHOP)
+                ?: false
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun RecommendationItem.createProductCardOptionsModel(position: Int): ProductCardOptionsModel {

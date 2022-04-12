@@ -42,7 +42,6 @@ https://phab.tokopedia.com/XXXXX
 - **/check risk** - run risk analysis
 - **/check lint** - run linter checker
 - **/check macrobenchmark** - run macrobenchmark test
-- **/check instrument** - run TopAds Checker instrumentation test
 - **/check datatest** - run data tracking test (Cassava)
 - **/check performance** - run performance check
 - **/check katalon** - include this PR in katalon auto smoke test next batch (midnight same day)
@@ -79,4 +78,7 @@ https://phab.tokopedia.com/XXXXX
 
 - **approved for rollence** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-risk-analysis)*
+
+- **approved for ut-decrease** - send along with the approval to cast the magic
+*(more info: https://tokopedia.atlassian.net/wiki/spaces/PA/pages/1867484824/Unit+Test+Coverage+Decrease+Checker)*
 

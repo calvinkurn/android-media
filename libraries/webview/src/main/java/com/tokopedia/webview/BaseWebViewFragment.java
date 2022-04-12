@@ -3,6 +3,7 @@ package com.tokopedia.webview;
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.abstraction.common.utils.image.ImageHandler.encodeToBase64;
 import static com.tokopedia.webview.ConstantKt.DEFAULT_TITLE;
+import static com.tokopedia.webview.ConstantKt.GOOGLE_DOCS_PDF_URL;
 import static com.tokopedia.webview.ConstantKt.JS_STAGING_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.JS_TOKOPEDIA;
 import static com.tokopedia.webview.ConstantKt.KEY_ALLOW_OVERRIDE;
@@ -12,6 +13,8 @@ import static com.tokopedia.webview.ConstantKt.KEY_URL;
 import static com.tokopedia.webview.ConstantKt.PARAM_EXTERNAL_TRUE;
 import static com.tokopedia.webview.ConstantKt.SEAMLESS;
 import static com.tokopedia.webview.ConstantKt.STAGING;
+import static com.tokopedia.webview.ConstantKt.ZOOM_US_STRING;
+import static com.tokopedia.webview.ext.UrlEncoderExtKt.decode;
 import static com.tokopedia.webview.ext.UrlEncoderExtKt.encodeOnce;
 
 import android.annotation.TargetApi;
@@ -59,6 +62,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.RouteManagerKt;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.logger.ServerLogger;
@@ -98,7 +102,6 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String LOGIN_APPLINK = "tokopedia://login";
     private static final String REGISTER_APPLINK = "tokopedia://registration";
-
     private static final String CLEAR_CACHE_PREFIX = "/clear-cache";
     private static final String KEY_CLEAR_CACHE = "android_webview_clear_cache";
     private static final String LINK_AJA_APP_LINK = "https://linkaja.id/applink/payment";
@@ -108,6 +111,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     private static final int REQUEST_CODE_LOGIN = 1233;
     private static final int REQUEST_CODE_LOGOUT = 1234;
+    private static final int REQUEST_CODE_LIVENESS = 1235;
     private static final int LOGIN_GPLUS = 458;
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String KOL_URL = "tokopedia.com/content";
@@ -180,13 +184,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         allowOverride = args.getBoolean(KEY_ALLOW_OVERRIDE, true);
         pullToRefresh = args.getBoolean(KEY_PULL_TO_REFRESH, false);
         String host = Uri.parse(url).getHost();
-        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING);
+        isTokopediaUrl = host != null && host.contains(TOKOPEDIA_STRING) && !host.contains(ZOOM_US_STRING);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     private String getUrlFromArguments(Bundle args) {
         String defaultUrl = TokopediaUrl.Companion.getInstance().getWEB();
-        String url = UrlEncoderExtKt.decode(args.getString(KEY_URL, defaultUrl));
+        String url = decode(args.getString(KEY_URL, defaultUrl));
 
         if (!url.startsWith("http")) {
             return defaultUrl;
@@ -203,8 +207,25 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             getActivity().finish();
             return null;
         } else {
-            return onCreateWebView(inflater, container, savedInstanceState);
+            try {
+                return onCreateWebView(inflater, container, savedInstanceState);
+            } catch (Exception e) {
+                redirectToWebViewPlaystore();
+                return null;
+            }
         }
+    }
+
+    private void redirectToWebViewPlaystore() {
+        //fix crash Failed to load WebView provider: No WebView installed
+        Intent webViewPlaystoreIntent = new Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.webview")
+        );
+        Toast.makeText(getContext(), getString(com.tokopedia.webview.R.string.webview_need_install),
+                Toast.LENGTH_LONG).show();
+        startActivity(webViewPlaystoreIntent);
+        getActivity().finish();
     }
 
     private View onCreateWebView(LayoutInflater inflater, ViewGroup container,
@@ -298,6 +319,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_CODE_LIVENESS && resultCode == RESULT_OK) {
+            String kycRedirectionUrl = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+            webView.loadUrl(kycRedirectionUrl);
+            return;
+        }
+
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = intent.getStringExtra(HCI_KTP_IMAGE_PATH);
             String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
@@ -345,10 +372,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
 
         if (requestCode == REQUEST_CODE_LOGIN) {
-            if(resultCode == RESULT_OK){
+            if (resultCode == RESULT_OK) {
                 webView.loadAuthUrl(getUrl(), userSession);
-            }else {
-                if(getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
+            } else {
+                if (getActivity() != null && getActivity() instanceof BaseSimpleWebViewActivity)
                     ((BaseSimpleWebViewActivity) getActivity()).goPreviousActivity();
             }
         } else if (requestCode == LOGIN_GPLUS) {
@@ -460,7 +487,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             Activity activity = getActivity();
-            if (activity instanceof AppCompatActivity) {
+            if (activity instanceof BaseSimpleWebViewActivity) {
+                BaseSimpleWebViewActivity activityInstance = (BaseSimpleWebViewActivity) activity;
+                String activityTitle = activityInstance.getWebViewTitle();
+
                 ActionBar actionBar = ((AppCompatActivity) activity).getSupportActionBar();
                 if (actionBar != null) {
                     String decodedUrl = Uri.decode(url).toLowerCase();
@@ -468,7 +498,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                             && Uri.parse(title).getScheme() == null
                             && (isKolUrl(decodedUrl) || isPrintAwbUrl(decodedUrl))) {
                         actionBar.setTitle(title);
-                    } else if (!isHelpUrl(decodedUrl)) {
+                    } else if ((TextUtils.isEmpty(activityTitle) || activityTitle.equals(DEFAULT_TITLE))
+                            && !isHelpUrl(decodedUrl)) {
                         actionBar.setTitle(getString(R.string.tokopedia));
                     }
                 }
@@ -659,8 +690,13 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 }
             });
             globalError.setVisibility(View.VISIBLE);
-            if (swipeRefreshLayout!= null) {
+            if (swipeRefreshLayout != null) {
                 swipeRefreshLayout.setVisibility(View.GONE);
+            }
+        } else if (errorCode == WebViewClient.ERROR_UNSUPPORTED_SCHEME) {
+            routeToNativeBrowser(webUrl);
+            if (getActivity() != null) {
+                getActivity().finish();
             }
         }
     }
@@ -690,6 +726,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (uri.getHost() == null) {
             return false;
         }
+        if (isBriIntent(uri)) {
+            return handlingBriIntent(url);
+        }
 
         String queryParam = null;
         String headerText = null;
@@ -699,6 +738,19 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             headerText = uri.getQueryParameter(CUST_HEADER);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        if (url.endsWith(".pdf")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(decode(uri.toString().replace(GOOGLE_DOCS_PDF_URL, "")))
+                    , "application/pdf");
+            try {
+                getContext().startActivity(intent);
+                return true;
+            } catch (Exception e) {
+                //user does not have a pdf viewer installed
+                return loadGoogleDocsUrl(uri);
+            }
         }
 
         if (url.contains(HCI_CAMERA_KTP)) {
@@ -753,7 +805,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (url.contains(LOGIN_APPLINK) || url.contains(REGISTER_APPLINK)) {
             boolean isCanClearCache = remoteConfig.getBoolean(KEY_CLEAR_CACHE, false);
             if (isCanClearCache && url.contains(CLEAR_CACHE_PREFIX)) {
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.LOGOUT);
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalUserPlatform.LOGOUT);
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_CLEAR_DATA_ONLY, true);
                 startActivityForResult(intent, REQUEST_CODE_LOGOUT);
@@ -765,6 +817,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
         if (isExternalAppLink(url)) {
             return redirectToExternalAppAndFinish(activity, uri);
+        }
+        if (url.startsWith(ApplinkConst.KYC_FORM_ONLY_NO_PARAM)) {
+            gotoAlaCarteKyc(uri);
+            return true;
         }
 
         boolean isNotNetworkUrl = !URLUtil.isNetworkUrl(url);
@@ -790,11 +846,71 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         return hasMoveToNativePage;
     }
 
-    private boolean isFDLHostEnabled(Uri uri){
-        if(remoteConfig != null){
+    private boolean isBriIntent(Uri uri) {
+        return uri.getScheme().equals("intent") &&
+                uri.getHost().contains("kartukreditbri.co.id") &&
+                uri.toString().contains("browser_fallback_url=");
+    }
+
+    private boolean handlingBriIntent(String briUrl) {
+        String newUrl = briUrl.substring(briUrl.indexOf("browser_fallback_url=") + 21, briUrl.length() - 1);
+        newUrl = newUrl.substring(0, newUrl.indexOf(";"));
+        return launchWebviewForNewUrl(UrlEncoderExtKt.decode(newUrl));
+    }
+
+    private boolean launchWebviewForNewUrl(String newUrl) {
+        if (webView != null) {
+            if (Uri.parse(newUrl).getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(newUrl, userSession);
+            } else {
+                webView.loadUrl(newUrl);
+            }
+            return true;
+        } else {
+            // change first url directly
+            url = newUrl;
+            return false;
+        }
+    }
+
+    /**
+     * return true of webview success load.
+     */
+    private boolean loadGoogleDocsUrl(Uri uri) {
+        String googleDocsUrl;
+        if (uri.toString().startsWith(GOOGLE_DOCS_PDF_URL)) {
+            googleDocsUrl = decode(uri.toString());
+        } else {
+            googleDocsUrl = GOOGLE_DOCS_PDF_URL + decode(uri.toString());
+        }
+        if (webView != null) {
+            if (uri.getHost().contains(TOKOPEDIA_STRING)) {
+                webView.loadAuthUrl(googleDocsUrl, userSession);
+            } else {
+                webView.loadUrl(googleDocsUrl);
+            }
+            return true;
+        } else {
+            // change first url directly
+            url = googleDocsUrl;
+            return false;
+        }
+    }
+
+    private void gotoAlaCarteKyc(Uri uri) {
+        String projectId = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID);
+        String kycRedirectionUrl = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL);
+        String layout = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_SHOW_INTRO);
+        String kycType = uri.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC_FORM_ONLY, projectId, layout, kycRedirectionUrl, kycType);
+        startActivityForResult(intent, REQUEST_CODE_LIVENESS);
+    }
+
+    private boolean isFDLHostEnabled(Uri uri) {
+        if (remoteConfig != null) {
             return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
                     && FDL_HOST.equalsIgnoreCase(uri.getHost());
-        }else{
+        } else {
             return FDL_HOST.equalsIgnoreCase(uri.getHost());
         }
     }
@@ -819,7 +935,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
-    private void routeToNativeBrowser(String browserUrl){
+    private void routeToNativeBrowser(String browserUrl) {
         RouteManager.route(getContext(), ApplinkConst.BROWSER + "?url=" + browserUrl);
     }
 
@@ -915,10 +1031,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (activity instanceof BaseSimpleWebViewActivity) {
             ((BaseSimpleWebViewActivity) activity).setWebViewTitle("");
         }
-        if (swipeRefreshLayout!= null) {
+        if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setVisibility(View.VISIBLE);
         }
-        if (globalError!= null) {
+        if (globalError != null) {
             globalError.setVisibility(View.GONE);
         }
         webView.reload();

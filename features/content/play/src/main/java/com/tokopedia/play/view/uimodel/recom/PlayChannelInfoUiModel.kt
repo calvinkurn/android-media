@@ -11,4 +11,5 @@ data class PlayChannelInfoUiModel(
         val backgroundUrl: String = "",
         val title: String = "",
         val coverUrl: String = "",
+        val startTime: String = ""
 )

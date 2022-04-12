@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.util
 
 import android.os.Build
 import com.tokopedia.config.GlobalConfig
+import java.lang.Exception
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.net.SocketException
@@ -14,29 +15,29 @@ import java.security.NoSuchAlgorithmException
 object FlightRequestUtil {
 
     fun md5(str: String): String =
-            try {
-                val digest = MessageDigest.getInstance("MD5")
-                digest.update(str.toByteArray())
-                val messageDigest = digest.digest()
+        try {
+            val digest = MessageDigest.getInstance("MD5")
+            digest.update(str.toByteArray())
+            val messageDigest = digest.digest()
 
-                val hexString = StringBuilder()
-                for (byte in messageDigest) {
-                    hexString.append(String.format("%02x", byte.toInt() and 0xff))
-                }
-                hexString.toString()
-            } catch (e: NoSuchAlgorithmException) {
-                e.printStackTrace()
-                ""
+            val hexString = StringBuilder()
+            for (byte in messageDigest) {
+                hexString.append(String.format("%02x", byte.toInt() and 0xff))
             }
+            hexString.toString()
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+            ""
+        }
 
     fun getUserAgentForApiCall(): String =
-            "Android Tokopedia Application/" +
-                    "${GlobalConfig.getPackageApplicationName()} " +
-                    "v.${GlobalConfig.VERSION_NAME} " +
-                    "(${getDeviceName()}; " +
-                    "Android; " +
-                    "API_${Build.VERSION.SDK_INT}; " +
-                    "Version${Build.VERSION.RELEASE}) "
+        "Android Tokopedia Application/" +
+                "${GlobalConfig.getPackageApplicationName()} " +
+                "v.${GlobalConfig.VERSION_NAME} " +
+                "(${getDeviceName()}; " +
+                "Android; " +
+                "API_${Build.VERSION.SDK_INT}; " +
+                "Version${Build.VERSION.RELEASE}) "
 
     fun getLocalIpAddress(): String {
         try {
@@ -51,9 +52,8 @@ object FlightRequestUtil {
                     }
                 }
             }
-        } catch (e: SocketException) {
+        } catch (e: Exception) {
             e.printStackTrace()
-            return "127.0.0.1"
         }
         return "127.0.0.1"
     }

@@ -134,7 +134,26 @@ object DeviceInfo {
         return if (adsIdCache.isNotBlank()) {
             adsIdCache
         } else {
-            runBlocking { getlatestAdId(context, 3000L) }
+            // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
+            try {
+                runBlocking { getlatestAdId(context, 3000L) }
+            } catch (e: Exception) {
+                ""
+            }
+        }
+    }
+
+    @JvmStatic
+    fun getUserDeviceName(context: Context): String {
+        return try {
+            val bluetoothName = Settings.Secure.getString(context.contentResolver, "bluetooth_name")
+            if (bluetoothName.isNullOrEmpty()) {
+                Settings.Secure.getString(context.contentResolver, "device_name")
+            } else {
+                bluetoothName
+            }
+        } catch (e: Exception) {
+            ""
         }
     }
 

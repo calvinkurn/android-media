@@ -90,11 +90,7 @@ public abstract class BaseNotificationFactory {
     }
 
     protected int getDrawableLargeIcon() {
-        if (GlobalConfig.isSellerApp()) {
-            return com.tokopedia.resources.common.R.mipmap.ic_launcher_sellerapp;
-        } else {
-            return com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp;
-        }
+        return GlobalConfig.LAUNCHER_ICON_RES_ID;
     }
 
     protected Bitmap getBitmapLargeIcon() {

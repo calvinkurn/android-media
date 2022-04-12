@@ -10,6 +10,14 @@ query dynamicHomeChannel($type: String, $location: String) {
             widgetParam
             contextualInfo
             campaignCode
+            viewAllCard {
+                id
+                contentType
+                title
+                description
+                imageUrl
+                gradientColor
+            }
             header {
                 id
                 name
@@ -56,6 +64,11 @@ query dynamicHomeChannel($type: String, $location: String) {
                 }
                 shop{
                     shopID
+                    name
+                    applink
+                    city
+                    imageUrl
+                    url
                 }
                 campaignCode
                 labelGroup {
@@ -70,6 +83,10 @@ query dynamicHomeChannel($type: String, $location: String) {
                     type
                     value
                 }
+                badges{
+                    image_url
+                }
+                expiredTime
             }
             banner {
                 id

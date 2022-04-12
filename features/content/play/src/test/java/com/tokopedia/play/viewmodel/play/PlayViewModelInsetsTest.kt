@@ -103,6 +103,18 @@ class PlayViewModelInsetsTest {
     }
 
     @Test
+    fun `when show coupon bottom sheet, coupon bottom sheet insets should be shown`() {
+        givenPlayViewModelRobot(
+        ) andWhen {
+            showCouponBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isShown.assertTrue()
+        }
+    }
+
+    @Test
     fun `given keyboard is shown, when hide keyboard, then keyboard should be hidden`() {
         val channelData = channelDataBuilder.buildChannelData(
                 channelDetail = channelInfoBuilder.buildChannelDetail(
@@ -180,6 +192,23 @@ class PlayViewModelInsetsTest {
     }
 
     @Test
+    fun `given coupon bottom sheet is shown, when hide bottom sheet, then bottom sheet should be hidden`() {
+        givenPlayViewModelRobot {
+            showCouponBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isShown.assertTrue()
+        } andWhen {
+            hideCouponBottomSheet()
+        } thenVerify {
+            viewModel.observableBottomInsetsState
+                .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
+                .isHidden.assertTrue()
+        }
+    }
+
+    @Test
     fun `given keyboard is shown, when back button is pressed, then keyboard should be hidden and back will be consumed`() {
         val channelData = channelDataBuilder.buildChannelData(
                 channelDetail = channelInfoBuilder.buildChannelDetail(
@@ -208,18 +237,18 @@ class PlayViewModelInsetsTest {
     }
 
     @Test
-    fun `given product bottom sheet is shown, when back button is pressed, then product bottom sheet should be hidden and back will be consumed`() {
+    fun `given coupon bottom sheet is shown, when back button is pressed, then coupon bottom sheet should be hidden and back will be consumed`() {
         givenPlayViewModelRobot {
-            showProductBottomSheet()
+            showCouponBottomSheet()
         } thenVerify {
             viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
                     .isShown.assertTrue()
         } andWhen {
             goBack()
         } thenVerify { result ->
             viewModel.observableBottomInsetsState
-                    .getOrAwaitValue()[BottomInsetsType.ProductSheet]!!
+                    .getOrAwaitValue()[BottomInsetsType.CouponSheet]!!
                     .isHidden.assertTrue()
 
             result.assertTrue()

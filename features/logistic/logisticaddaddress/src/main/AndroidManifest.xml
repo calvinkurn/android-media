@@ -32,6 +32,7 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
+            android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
@@ -73,6 +74,7 @@
         <activity
             android:name=".features.pinpoint.GeolocationActivity"
             android:theme="@style/Theme.White"
+            android:hardwareAccelerated="true"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

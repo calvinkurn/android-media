@@ -53,6 +53,11 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
         store_type
         logistic_type
         store_name
+        addon_item {
+            name
+            quantity
+            price_str
+        }
         item_list{
             product_id
             product_name
@@ -73,6 +78,11 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
             is_bbi
             category_id
             bundle_group_id
+            addon_item {
+                name
+                quantity
+                price_str
+            }
         }
         bundle_group_data {
           group_id
@@ -142,6 +152,14 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
     fee_details{
         name
         amount
+    }
+    thanks_summaries {
+        key
+        description
+        message
+        is_cta
+        cta_text
+        cta_link
     }
   }
 }

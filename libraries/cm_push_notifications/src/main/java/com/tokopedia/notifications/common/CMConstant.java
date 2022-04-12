@@ -37,11 +37,14 @@ public interface CMConstant {
     String HTTP = "http";
     String WWW = "www";
 
+    interface CMPrefKeys{
+        String KEY_WIFI_MAC_ADDRESS = "key_wifi_mac_address";
+    }
+
 
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
-        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -113,6 +116,7 @@ public interface CMConstant {
         String USER_TRANSACTION_ID = "userTransId";
         String USER_ID = "userId";
         String SHOP_ID = "shopId";
+        String IS_BIG_IMAGE = "is_big_image";
         String BLAST_ID = "notifcenterBlastId";
 
         String ADD_TO_CART = "addToCart";
@@ -140,6 +144,17 @@ public interface CMConstant {
         String MAIN_APP_PRIORITY = "mainappPriority";
         String SELLER_APP_PRIORITY = "sellerappPriority";
         String ADVANCE_TARGET = "isAdvanceTarget";
+
+        interface PayloadExtraDataKey {
+            String CAMPAIGN_NAME = "cmpgnName";
+            String JOURNEY_ID = "jrnId";
+            String JOURNEY_NAME = "jrnName";
+            String SESSION_ID = "sesnId";
+        }
+
+
+        String NOTIFICATION_CHANNEL = "nfChnl";
+        String NOTIFICATION_SOUND = "nfSnd";
     }
 
     interface NotificationProductType {

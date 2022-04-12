@@ -28,8 +28,13 @@ class IssueRegistry : IssueRegistry() {
                 ResourcePackageDetector.JAVA_ISSUE,
                 DimenResourceValueDetector.ISSUE,
                 DeprecatedResourceDetector.ISSUE,
-                ResponseFieldAnnotationDetector.ISSUE,
+                SerializedNameAnnotationDetector.RESPONSE_ISSUE,
+                SerializedNameAnnotationDetector.ENTITY_ISSUE,
+                SerializedNameAnnotationDetector.PARAM_ISSUE,
+                AndroidExportedDetector.ISSUE,
                 UnifyBackgroundDetector.ISSUE,
+                DeprecatedMethodDetector.ISSUE,
+                GradientVectorDetector.ISSUE,
                 HANSEL_REQUIRED,
                 DimenUsageDetector.XML_ISSUE
         )

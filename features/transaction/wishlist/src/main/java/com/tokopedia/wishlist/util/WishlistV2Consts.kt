@@ -6,6 +6,8 @@ package com.tokopedia.wishlist.util
 object WishlistV2Consts {
     const val TYPE_LIST = "list"
     const val TYPE_GRID = "grid"
+    const val TYPE_LIST_INT = 0
+    const val TYPE_GRID_INT = 1
     const val TYPE_COUNT_MANAGE_ROW = "count_manage_row"
     const val TYPE_LOADER_LIST = "loader_list"
     const val TYPE_LOADER_GRID = "loader_grid"
@@ -15,6 +17,7 @@ object WishlistV2Consts {
     const val TYPE_RECOMMENDATION_TITLE = "recommendation_title"
     const val TYPE_RECOMMENDATION_LIST = "recommendation_list"
     const val TYPE_RECOMMENDATION_CAROUSEL = "recommendation_carousel"
+    const val TYPE_RECOMMENDATION_TITLE_WITH_MARGIN = "recommendation_title_with_margin"
     const val TYPE_TOPADS = "topads"
     const val WISHLIST_PAGE_NAME = "wishlist"
     const val PARAMS = "params"

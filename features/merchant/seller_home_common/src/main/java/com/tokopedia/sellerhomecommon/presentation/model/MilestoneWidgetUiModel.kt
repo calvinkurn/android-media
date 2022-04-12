@@ -13,6 +13,7 @@ data class MilestoneWidgetUiModel(
     override val appLink: String,
     override val dataKey: String,
     override val ctaText: String,
+    override val gridSize: Int,
     override val isShowEmpty: Boolean,
     override var data: MilestoneDataUiModel?,
     override var impressHolder: ImpressHolder = ImpressHolder(),
@@ -20,31 +21,13 @@ data class MilestoneWidgetUiModel(
     override var isLoading: Boolean,
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
+    override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
     var isAlreadyMinimized: Boolean = false
 ) : BaseWidgetUiModel<MilestoneDataUiModel> {
 
-    override fun copy(): BaseWidgetUiModel<MilestoneDataUiModel> {
-        return MilestoneWidgetUiModel(
-            id,
-            widgetType,
-            title,
-            subtitle,
-            tooltip,
-            tag,
-            appLink,
-            dataKey,
-            ctaText,
-            isShowEmpty,
-            data,
-            impressHolder,
-            isLoaded,
-            isLoading,
-            isFromCache,
-            isNeedToBeRemoved,
-            emptyState,
-            isAlreadyMinimized
-        )
+    override fun copyWidget(): BaseWidgetUiModel<MilestoneDataUiModel> {
+        return this.copy()
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<MilestoneDataUiModel>): Boolean {
