@@ -11,16 +11,20 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDa
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsShopKeywordRecommendationAdapter
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class TopAdsInsightShopKeywordRecommendationView(
-    context: Context,
-    val type: Int,
+    context: Context, val type: Int,
     private val recommendedKeywordData: RecommendedKeywordData,
-    private val lstnr: (Int, Int) -> Unit
+    private val lstnr: (Int, Int) -> Unit,
 ) : ConstraintLayout(context) {
 
+    private val txtTitle: Typography? = null
+    private val txtDescription: Typography? = null
+    private val checkBox: CheckboxUnify? = null
     private var recyclerViewKeyword: RecyclerView? = null
+
     private val mAdapter by lazy {
         TopAdsShopKeywordRecommendationAdapter.createInstance(
             context,
@@ -60,7 +64,7 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     private fun onCheckBoxSelected(checked: Boolean) {
         if (checked) {
-            checkBox.setIndeterminate(false)
+            checkBox?.setIndeterminate(false)
             mAdapter.selectedItemsCount = recommendedKeywordData.recommendedKeywordCount
             mAdapter.checkAllItems()
         } else {
@@ -72,14 +76,14 @@ class TopAdsInsightShopKeywordRecommendationView(
 
     private fun onKeywordSelected(selectedItems: Int) {
         when (selectedItems) {
-            0 -> checkBox.isChecked = false
+            0 -> checkBox?.isChecked = false
             mAdapter.itemCount -> {
-                checkBox.isChecked = true
-                checkBox.setIndeterminate(false)
+                checkBox?.isChecked = true
+                checkBox?.setIndeterminate(false)
             }
             else -> {
-                checkBox.isChecked = true
-                checkBox.setIndeterminate(true)
+                checkBox?.isChecked = true
+                checkBox?.setIndeterminate(true)
             }
         }
         lstnr.invoke(type, selectedItems)
@@ -91,37 +95,37 @@ class TopAdsInsightShopKeywordRecommendationView(
     private fun initView() {
         when (type) {
             TopAdsInsightConstants.BID_KEYWORD -> {
-                txtTitle.text = String.format(
+                txtTitle?.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeywordData.recommendedKeywordCount
                 )
-                txtDescription.text = String.format(
+                txtDescription?.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_subtitle),
                     recommendedKeywordData.totalImpressionCount
                 )
             }
             TopAdsInsightConstants.NEW_KEYWORD -> {
-                txtTitle.text = String.format(
+                txtTitle?.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeywordData.recommendedKeywordCount
                 )
-                txtDescription.text = String.format(
+                txtDescription?.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_subtitle),
                     recommendedKeywordData.totalImpressionCount
                 )
             }
             TopAdsInsightConstants.NEGATIVE_KEYWORD -> {
-                txtTitle.text = String.format(
+                txtTitle?.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeywordData.recommendedKeywordCount
                 )
-                txtDescription.text = String.format(
+                txtDescription?.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_subtitle),
                     recommendedKeywordData.totalImpressionCount
                 )
             }
         }
-        checkBox.isChecked = true
+        checkBox?.isChecked = true
     }
 
     private fun initListeners() {
@@ -135,7 +139,7 @@ class TopAdsInsightShopKeywordRecommendationView(
         fun createInstance(
             context: Context, type: Int,
             recommendedKeywordData: RecommendedKeywordData,
-            lstnr: (Int, Int) -> Unit
+            lstnr: (Int, Int) -> Unit,
         ) = TopAdsInsightShopKeywordRecommendationView(context, type, recommendedKeywordData, lstnr)
     }
 
