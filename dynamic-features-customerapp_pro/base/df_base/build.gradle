@@ -157,5 +157,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
 
     //Media
-    implementation projectOrAar(rootProject.ext.features.mediaPicker)
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
 }
