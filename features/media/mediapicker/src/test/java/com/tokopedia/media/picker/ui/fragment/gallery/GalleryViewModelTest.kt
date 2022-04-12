@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -66,12 +67,18 @@ class GalleryViewModelTest{
     @Test
     fun `check gallery UI state`() {
         // Given
-        var eventState: MutableList<EventState> = MutableList(0){ EventState.Idle}
+        var cameraEventState: EventPickerState.CameraCaptured? = null
+        var selectionChangedEventState: EventPickerState.SelectionChanged? = null
+        var selectionRemovedEventState: EventPickerState.SelectionRemoved? = null
 
         // When
         val job = CoroutineScope(CoroutineTestDispatchers.main).launch {
             viewModel.uiEvent.collect {
-                eventState.add(it)
+                when(it){
+                    is EventPickerState.CameraCaptured -> cameraEventState = it
+                    is EventPickerState.SelectionChanged -> selectionChangedEventState = it
+                    is EventPickerState.SelectionRemoved -> selectionRemovedEventState = it
+                }
             }
         }
 
@@ -79,9 +86,9 @@ class GalleryViewModelTest{
         stateOnCameraCapturePublished(CameraViewModelTest.mediaUiModelSample)
         stateOnChangePublished(CameraViewModelTest.collectionMediaUiModelSample)
         stateOnRemovePublished(CameraViewModelTest.mediaUiModelSample)
-        assert(eventState[0] is EventPickerState.CameraCaptured)
-        assert(eventState[1] is EventPickerState.SelectionChanged)
-        assert(eventState[2] is EventPickerState.SelectionRemoved)
+        assert(cameraEventState != null)
+        assert(selectionChangedEventState != null)
+        assert(selectionRemovedEventState != null)
         job.cancel()
     }
 
