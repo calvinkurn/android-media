@@ -2257,15 +2257,15 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
         getRecyclerView()?.let {
             val items = listOf(
-                ProductDetailNavigation.Item("Pengiriman") {
+                ProductDetailNavigation.Item("Pengiriman", {
                     getComponentPosition(pdpUiUpdater?.shipmentData)
-                },
-                ProductDetailNavigation.Item("Detail Info") {
+                }, R.id.pdp_shipment_layout),
+                ProductDetailNavigation.Item("Detail Info", {
                     getComponentPosition(pdpUiUpdater?.productDetailInfoData)
-                },
-                ProductDetailNavigation.Item("Ulasan") {
+                }, R.id.pdp_product_detail_info_layout),
+                ProductDetailNavigation.Item("Ulasan", {
                     getComponentPosition(pdpUiUpdater?.productReviewMap)
-                }
+                }, R.id.pdp_review_layout)
             )
             binding?.pdpNavigationTab?.setup(it, items)
         }

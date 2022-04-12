@@ -11,8 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -69,6 +68,10 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         super.onViewCreated(view, savedInstanceState)
         setupSwipeLayout(view)
         setupRecyclerView(view)
+
+        binding?.pdpBackToTop?.setOnClickListener {
+            scrollToPosition(0)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -165,21 +168,17 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
 
-//        rvPdp?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                if(newState == RecyclerView.SCROLL_STATE_IDLE)
-//                    binding?.pdpNavigationTab?.show()
-//                super.onScrollStateChanged(recyclerView, newState)
-//            }
-//
-//            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-//                if(dy < 0){
-//                    binding?.pdpNavigationTab?.hide()
-//                }
-//                super.onScrolled(recyclerView, dx, dy)
-//            }
-//
-//        })
+        rvPdp?.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager
+                if (layoutManager !is LinearLayoutManager) return
+
+                binding?.pdpBackToTop?.showWithCondition(
+                    layoutManager.findFirstVisibleItemPosition() != 0
+                )
+            }
+        })
         showLoading()
 
         rvPdp?.adapter = productAdapter

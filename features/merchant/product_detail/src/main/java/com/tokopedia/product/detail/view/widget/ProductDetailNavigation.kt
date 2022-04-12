@@ -6,18 +6,22 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.core.view.NestedScrollingChildHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 class ProductDetailNavigation(
     context: Context, attributeSet: AttributeSet
-) : FrameLayout(context, attributeSet) {
+) : FrameLayout(context, attributeSet), CoroutineScope {
 
     private val binding = WidgetProductDetailNavigationBinding.inflate(LayoutInflater.from(context))
     private val view = binding.root
@@ -29,27 +33,29 @@ class ProductDetailNavigation(
 
     private val smoothScroller = SmoothScroller(context)
     private val onTabSelectedListener = OnTabSelected()
-    private val onScrollListener = OnScrollListener()
+
+    private val onScrollStateChangeListener = OnScrollStateChangeListener()
     private val onContentScrollListener = OnContentChangeListener()
+
+    private var showJob: Job? = null
 
     private var isContentScrollListener = false
 
     init {
         addView(view)
-        NestedScrollingChildHelper(view).isNestedScrollingEnabled = true
     }
 
     fun setup(
         recyclerView: RecyclerView,
         items: List<Item>
     ) {
-
         if (items.isEmpty()) return
 
         this.recyclerView = recyclerView.apply {
-            addOnScrollListener(onScrollListener)
             addContentScrollListener(this)
+
             tabLayout.addOnTabSelectedListener(onTabSelectedListener)
+            addOnScrollListener(onScrollStateChangeListener)
         }
 
         tabLayout.removeAllTabs()
@@ -85,10 +91,10 @@ class ProductDetailNavigation(
         isContentScrollListener = false
     }
 
-    // TODO vindo - Make position lazy instead of invoke it everytime we need
     data class Item(
         val label: String,
-        val position: () -> Int
+        val position: () -> Int,
+        val viewId: Int
     )
 
     private inner class OnTabSelected : TabLayout.OnTabSelectedListener {
@@ -111,7 +117,6 @@ class ProductDetailNavigation(
             val layoutManager = recyclerView.layoutManager
             if (layoutManager !is LinearLayoutManager) return
 
-
             /**
              * ProductDetailNavigation will render front of recyclerview
              * layoutManager.findFirstVisibleItemPosition -> is doesn't aware of nav tab
@@ -132,51 +137,44 @@ class ProductDetailNavigation(
              * end
              */
 
-            val indexTab = items.indexOfFirst {
-                it.position.invoke() == firstVisibleItemPosition
+            val indexTab = items.indexOfFirst { item ->
+                val view1 = layoutManager.findViewByPosition(firstVisibleItemPosition)
+                view1 != null && (view1.id == item.viewId)
             }
             pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
                 tabLayout.removeOnTabSelectedListener(onTabSelectedListener)
                 select()
                 tabLayout.addOnTabSelectedListener(onTabSelectedListener)
             }
+
+            if (layoutManager.findFirstVisibleItemPosition() == 0 || dy < 0) {
+                view.hide()
+            } else {
+                view.show()
+            }
         }
     }
 
-    private inner class OnScrollListener : RecyclerView.OnScrollListener() {
+    private inner class OnScrollStateChangeListener : RecyclerView.OnScrollListener() {
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
             when (newState) {
                 RecyclerView.SCROLL_STATE_IDLE -> {
-                    addContentScrollListener(recyclerView)
-
                     (recyclerView.layoutManager as? LinearLayoutManager)?.let {
-                        if (it.findFirstVisibleItemPosition() != 0) view.show()
+                        if (it.findFirstVisibleItemPosition() != 0) {
+                            showJob?.cancel()
+                            showJob = launch(Dispatchers.IO) {
+                                delay(2000)
+                                withContext(Dispatchers.Main) {
+                                    view.show()
+                                }
+                            }
+                        }
                     }
                 }
-                RecyclerView.SCROLL_STATE_DRAGGING -> {
-
-                }
+                RecyclerView.SCROLL_STATE_DRAGGING -> addContentScrollListener(recyclerView)
             }
-        }
-
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return
-
-            if (layoutManager.findFirstVisibleItemPosition() == 0 || dy < 0) {
-                view.hide()
-            } else {
-                recyclerView.clipToPadding
-                view.show()
-            }
-
-            /**
-             * Scroll Up hilang, 2 detik idle muncul (bukan posisi paling atas)
-             */
         }
     }
 
@@ -193,4 +191,6 @@ class ProductDetailNavigation(
             return SNAP_TO_START
         }
     }
+
+    override val coroutineContext: CoroutineContext = Dispatchers.Main
 }
