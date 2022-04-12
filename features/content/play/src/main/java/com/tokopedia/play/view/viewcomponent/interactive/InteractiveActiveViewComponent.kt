@@ -54,7 +54,7 @@ class InteractiveActiveViewComponent(
         )
     }
 
-    interface Listener{
+    interface Listener {
         fun onInteractiveWidgetClicked(view: InteractiveActiveViewComponent)
     }
 }
