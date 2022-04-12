@@ -13,7 +13,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
  */
 class InteractiveActiveViewComponent(
     container: ViewGroup,
-    listener: Listener
+    private val listener: Listener
 ) : ViewComponent(container, R.id.widget_game_small) {
 
     private val widget = rootView as GameSmallWidgetView
@@ -56,7 +56,7 @@ class InteractiveActiveViewComponent(
         )
     }
 
-    interface Listener{
-        fun onInteractiveWidgetClicked(viewComponent: InteractiveActiveViewComponent)
+    interface Listener {
+        fun onInteractiveWidgetClicked(view: InteractiveActiveViewComponent)
     }
 }

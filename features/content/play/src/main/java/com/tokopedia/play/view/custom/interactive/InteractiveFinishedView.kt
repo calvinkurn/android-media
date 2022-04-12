@@ -19,7 +19,7 @@ class InteractiveFinishedView : RoundedFrameLayout {
     private val tvInteractiveFinishInfo: TextView
 
     init {
-        val view = View.inflate(context, R.layout.view_interactive_finish, this)
+        val view = View.inflate(context, R.layout.view_interactive_finished, this)
 
         tvInteractiveFinishInfo = view.findViewById(R.id.tv_interactive_finish_info)
     }
