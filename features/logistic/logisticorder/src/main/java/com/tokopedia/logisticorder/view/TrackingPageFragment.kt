@@ -203,7 +203,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun setLastDriverData(lastDriver: LastDriverModel) {
         binding?.tippingGojekLayout?.run {
             tippingLayout.visibility = View.GONE
-            driverLayout.visibility = View.VISIBLE
 
             if (lastDriver.photo.isNotEmpty()) {
                 imgDriver.setImageUrl(lastDriver.photo)
@@ -223,7 +222,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
             if (tippingData.status == OPEN) {
-                imgFindDriver.setImageUrl("https://images.tokopedia.net/img/android/tipping/Group 3125093.png")
+                imgFindDriver.setImageUrl(ICON_OPEN_TIPPING_GOJEK)
                 btnTipping.isInverse = true
             } else {
                 imgFindDriver.visibility = View.GONE
@@ -236,10 +235,10 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 }
             }
             if (tippingData.tippingLastDriver.name.isEmpty()) {
-                driverLayout.visibility = View.GONE
-                // todo
+                driverName.text = getString(R.string.driver_not_found_title)
+                driverPhone.text = getString(R.string.driver_not_found_subtitle)
+                btnInformation.visibility = View.GONE
             } else {
-                driverLayout.visibility = View.VISIBLE
                 if (tippingData.tippingLastDriver.photo.isNotEmpty()) {
                     imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
                 }
@@ -255,6 +254,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                     startActivity(callIntent)
                 }
             } else {
+                borderBtnCall.visibility = View.GONE
                 btnCall.visibility = View.GONE
             }
 
@@ -507,6 +507,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         private const val ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID"
         private const val ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL"
         private const val ARGUMENTS_CALLER = "ARGUMENTS_CALLER"
+        private const val ICON_OPEN_TIPPING_GOJEK = "https://images.tokopedia.net/img/android/tipping/Group 3125093.png"
 
         fun createFragment(orderId: String?, liveTrackingUrl: String?, caller: String?): TrackingPageFragment {
             return TrackingPageFragment().apply {

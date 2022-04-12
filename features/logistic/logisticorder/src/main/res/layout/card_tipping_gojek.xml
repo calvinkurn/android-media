@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Driver"
+        android:text="@string/driver_section_tracking_title"
         app:typographyWeight="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -86,6 +86,7 @@
             tools:ignore="ContentDescription" />
 
         <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/border_btn_call"
             app:srcCompat="@drawable/circle_border_logistic"
             android:layout_width="36dp"
             android:layout_height="36dp"

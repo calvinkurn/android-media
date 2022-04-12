@@ -67,4 +67,7 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="btn_driver_info_text">Mengerti</string>
     <string name="card_tipping_btn_default_text">Beri Tip</string>
     <string name="last_driver_button">Hubungi</string>
+    <string name="driver_not_found_title">Masih menunggu driver nih.</string>
+    <string name="driver_not_found_subtitle">Tunggu sebentar ya.</string>
+    <string name="driver_section_tracking_title">Driver</string>
 </resources>

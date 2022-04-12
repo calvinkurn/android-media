@@ -9,34 +9,6 @@
     android:background="@color/Unify_Background"
     tools:context=".view.TrackingPageFragment">
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_call"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_light_disabled="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_color_night_disabled="@color/Unify_Static_White"
-        app:icon_name="CALL" />
-
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/icon_chat"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginTop="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:icon_color_light_enable="@color/Unify_Static_White"
-        app:icon_color_light_disabled="@color/Unify_Static_White"
-        app:icon_color_night_enable="@color/Unify_Static_White"
-        app:icon_color_night_disabled="@color/Unify_Static_White"
-        app:icon_name="CHAT" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
