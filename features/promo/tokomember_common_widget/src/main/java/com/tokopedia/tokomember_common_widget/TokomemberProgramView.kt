@@ -3,11 +3,11 @@ package com.tokopedia.tokomember_common_widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.unifyprinciples.Typography
 import android.widget.FrameLayout
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tokomember_common_widget.model.TokomemberProgramCardModel
 import com.tokopedia.tokomember_common_widget.util.MemberType
-import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class TokomemberProgramView @JvmOverloads constructor(
     context: Context,
@@ -19,8 +19,8 @@ class TokomemberProgramView @JvmOverloads constructor(
         const val RESULT_CODE_OK = 1
     }
 
-    lateinit var ivTime: ImageUnify
-    lateinit var ivMemberStatistics: ImageUnify
+    lateinit var ivTime: IconUnify
+    lateinit var ivMemberStatistics: IconUnify
     lateinit var programStatus: Typography
     lateinit var periodProgram: Typography
     lateinit var programStartDate: Typography

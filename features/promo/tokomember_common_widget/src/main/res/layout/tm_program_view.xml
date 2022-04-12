@@ -2,10 +2,10 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="@dimen/gmc_dimen_328dp"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
     android:background="@color/Unify_Background"
-    android:paddingVertical="@dimen/spacing_lvl3"
     android:paddingBottom="@dimen/unify_space_12">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,11 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_Background"
-        android:paddingVertical="@dimen/spacing_lvl3"
         tools:viewBindingIgnore="true">
 
         <View
-            android:id="@+id/view_green"
+            android:id="@+id/view_status"
             android:layout_width="4dp"
             android:layout_height="20dp"
             android:layout_marginTop="8dp"
@@ -31,18 +30,23 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_12"
             android:textColor="@color/Unify_GN500"
-            app:layout_constraintBottom_toBottomOf="@id/view_green"
-            app:layout_constraintStart_toEndOf="@id/view_green"
-            app:layout_constraintTop_toTopOf="@id/view_green"
+            app:layout_constraintBottom_toBottomOf="@id/view_status"
+            app:layout_constraintStart_toEndOf="@id/view_status"
+            app:layout_constraintTop_toTopOf="@id/view_status"
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="Program Aktif" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ivTime"
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
+            android:padding="@dimen/dp_10"
+            android:background="@drawable/bg_coupon_icon"
+            android:backgroundTint="@color/Unify_GN100"
             android:layout_marginTop="@dimen/dp_28"
+            app:icon_name="PROJECT"
+            app:icon_color_light_enable="@color/Unify_G500"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus" />
 
@@ -63,10 +67,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/unify_space_12"
                 android:textColor="@color/Unify_NN600"
+                android:text="Periode Program"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/ivTime"
-                app:typographyType="small"
-                tools:text="Periode Program" />
+                app:typographyType="small"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programStartDate"
@@ -78,8 +82,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:text="1 Mar 2020" />
+                app:typographyWeight="bold"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programStartTime"
@@ -90,8 +93,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="00:30 WIB" />
+                app:typographyWeight="reguler"/>
         </LinearLayout>
 
         <LinearLayout
@@ -115,8 +117,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
-                app:typographyWeight="bold"
-                tools:text="1 Sep 2021" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programEndTime"
@@ -127,15 +128,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
-                app:typographyWeight="reguler"
-                tools:text="00:30 WIB" />
+                app:typographyWeight="reguler"/>
         </LinearLayout>
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/ivMemberStatistics"
             android:layout_width="@dimen/unify_space_40"
             android:layout_height="@dimen/unify_space_40"
+            android:padding="@dimen/dp_10"
+            android:background="@drawable/bg_coupon_icon"
+            android:backgroundTint="@color/Unify_GN100"
             android:layout_marginTop="@dimen/dp_28"
+            app:icon_name="CLOCK"
+            app:icon_color_light_enable="@color/Unify_G500"
+            app:layout_constraintCircleRadius="@dimen/dp_10"
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/ivTime" />
 
@@ -159,7 +165,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                tools:text="Tambahan member" />
+                android:text="Tambahan member" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberValue"
@@ -170,8 +176,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
-                app:typographyWeight="reguler"
-                tools:text="+128" />
+                app:typographyWeight="reguler" />
         </LinearLayout>
 
         <LinearLayout
@@ -194,7 +199,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
-                tools:text="Jumlah transaksi" />
+                android:text="Jumlah transaksi" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programMemberTransaksivalue"
@@ -205,8 +210,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5"
-                app:typographyWeight="reguler"
-                tools:text="2.345" />
+                app:typographyWeight="reguler"/>
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -218,6 +222,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/tm_kebab_vertical" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_edit"
+            android:layout_marginTop="@dimen/dp_12"
+            app:unifyButtonVariant="ghost"
+            android:text="Ubah Program"
+            app:unifyButtonSize="small"
+            app:layout_constraintTop_toBottomOf="@id/ivMemberStatistics"
+            app:layout_constraintStart_toStartOf="@id/ivMemberStatistics"
+            app:layout_constraintEnd_toEndOf="@id/optionMenu"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>

@@ -2,7 +2,13 @@ package com.tokopedia.tokomember_seller_dashboard.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.tokomember_seller_dashboard.model.ListCard
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetListRequest
+import com.tokopedia.tokomember_seller_dashboard.model.PageInfo
+import com.tokopedia.tokomember_seller_dashboard.model.Param
+import com.tokopedia.tokomember_seller_dashboard.model.Program
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramList
+import com.tokopedia.tokomember_seller_dashboard.model.Shop
 import javax.inject.Inject
 
 class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository: GraphqlRepository) :
@@ -24,13 +30,17 @@ class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository:
     }
 
     private fun getRequestParams(shopId: Int, cardId: Int, status: Int, page: Int, pageSize: Int): Map<String, Any> {
-        val shopMap = mapOf(ID to shopId)
-        val cardMap = mapOf(ID to cardId)
-        val statusMap = mapOf(STATUS to status)
-        val pageInfoMap = mapOf(PAGE to page, PAGE_SIZE to pageSize)
-        val paramMap = mapOf(SHOP to shopMap, CARD to cardMap, STATUS to statusMap)
-        val inputMap = mapOf(PARAM to paramMap, PAGE_INFO to pageInfoMap)
-        return mapOf(INPUT to inputMap)
+//        val shopMap = mapOf(ID to shopId)
+//        val cardMap = mapOf(ID to cardId)
+//        val statusMap = mapOf(STATUS to status)
+//        val pageInfoMap = mapOf(PAGE to page, PAGE_SIZE to pageSize)
+//        val paramMap = mapOf(SHOP to shopMap, CARD to cardMap, STATUS to statusMap)
+//        val inputMap = mapOf(PARAM to paramMap, PAGE_INFO to pageInfoMap)
+        val req = MembershipGetListRequest(
+            Param(Shop(shopId), Program(status), ListCard(cardId)),
+            PageInfo(pageSize, page)
+        )
+        return mapOf(INPUT to req)
     }
 
     companion object {
@@ -50,8 +60,8 @@ class TokomemberDashGetProgramListUsecase @Inject constructor(graphqlRepository:
 //TODO change Int! to Map data type
 
 const val TM_PROGRAM_LIST = """
-     query membershipGetProgramForm(${'$'}input: MembershipGetListRequest!) {
-    membershipGetProgramForm(input: ${'$'}input) {
+     query membershipGetProgramList(${'$'}input: MembershipGetListRequest!) {
+    membershipGetProgramList(input: ${'$'}input) {
     resultStatus {
       code
       message
