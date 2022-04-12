@@ -50,6 +50,11 @@ class GetDetailedReviewMediaUseCase @Inject constructor(
                     isAnonymous
                     isLiked
                     totalLike
+                    userStats {
+                      key
+                      formatted
+                      count
+                    }
                     badRatingReasonFmt
                   }
                   image {
