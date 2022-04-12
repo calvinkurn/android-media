@@ -22,4 +22,7 @@
     <!-- Interactive -->
     <string name="play_interactive_giveaway_finish">Game telah selesai!</string>
     <string name="play_interactive_quiz_finish">Quiz telah selesai!</string>
+
+    <!-- Giveaway -->
+    <string name="play_giveaway_tap_info">Tap terus!</string>
 </resources>

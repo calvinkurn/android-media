@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout"
+    >
+
+    <com.tokopedia.play_common.view.game.GameHeaderView
+        android:id="@+id/header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <com.tokopedia.play_common.view.RoundedLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:rll_bottomLeftRadius="@dimen/play_dp_12"
+        app:rll_bottomRightRadius="@dimen/play_dp_12"
+        >
+
+        <FrameLayout
+            android:layout_width="@dimen/play_giveaway_tap_bg_size"
+            android:layout_height="@dimen/play_giveaway_tap_bg_size"
+            android:layout_marginTop="@dimen/play_dp_12"
+            android:background="@drawable/bg_play_giveaway_tap"
+            >
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_tap"
+                android:layout_width="@dimen/layout_lvl5"
+                android:layout_height="@dimen/layout_lvl5"
+                android:layout_gravity="center"
+                app:icon_color_light_enable="@color/Unify_Static_White"
+                app:icon_color_night_enable="@color/Unify_NN0"
+                app:icon_name="TAP"
+                tools:icon_color_light_enable="@color/Unify_Static_Black"
+                />
+
+        </FrameLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_tap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/play_dp_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:text="@string/play_giveaway_tap_info"
+            android:textAlignment="center"
+            app:typographyType="heading_5"
+            />
+
+    </com.tokopedia.play_common.view.RoundedLinearLayout>
+
+</merge>
