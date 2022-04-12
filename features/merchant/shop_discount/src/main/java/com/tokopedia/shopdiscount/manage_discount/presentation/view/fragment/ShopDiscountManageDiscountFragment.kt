@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -130,6 +131,35 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 else -> {
                     ""
                 }
+            }
+            setNavigationOnClickListener {
+                showDialogOnBackPressed()
+            }
+        }
+    }
+
+    private fun showDialogOnBackPressed() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val title =
+                    getString(R.string.shop_discount_manage_discount_back_press_dialog_title)
+                val description =
+                    getString(R.string.shop_discount_manage_discount_back_press_dialog_description)
+                val primaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_back_press_button_cta)
+                val secondaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_cancel_button_cta)
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCtaText)
+                setSecondaryCTAText(secondaryCtaText)
+                setSecondaryCTAClickListener {
+                    hide()
+                }
+                setPrimaryCTAClickListener {
+                    finishActivity()
+                }
+                show()
             }
         }
     }
@@ -374,7 +404,36 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         model: ShopDiscountSetupProductUiModel.SetupProductData,
         position: Int
     ) {
-        deleteProductFromList(model.productId, position.toString())
+        showDialogDeleteProduct(model, position)
+    }
+
+    private fun showDialogDeleteProduct(
+        model: ShopDiscountSetupProductUiModel.SetupProductData,
+        position: Int
+    ) {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val title =
+                    getString(R.string.shop_discount_manage_discount_delete_product_dialog_title)
+                val description =
+                    getString(R.string.shop_discount_manage_discount_delete_product_dialog_description)
+                val primaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_delete_button_cta)
+                val secondaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_cancel_button_cta)
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCtaText)
+                setSecondaryCTAText(secondaryCtaText)
+                setSecondaryCTAClickListener {
+                    hide()
+                }
+                setPrimaryCTAClickListener {
+                    deleteProductFromList(model.productId, position.toString())
+                }
+                show()
+            }
+        }
     }
 
     private fun deleteProductFromList(productId: String, position: String) {
@@ -383,6 +442,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     override fun onGlobalErrorActionClickRetry() {
         getSetupProductListData()
+    }
+
+    fun onBackPressed() {
+        showDialogOnBackPressed()
     }
 
 }
