@@ -99,7 +99,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     ChooseAddressConstant.emptyAddress
                 }
             } ?: ChooseAddressConstant.emptyAddress
-            findViewById<IconUnify>(R.id.iv_info_exchange).setOnClickListener {
+            findViewById<Typography>(R.id.typo_info_exchange).setOnClickListener {
                 showTradeInInfoBottomsheet(childFragmentManager, context)
             }
             arguments?.getString(CACHE_ID, "")?.let {

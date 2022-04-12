@@ -20,15 +20,18 @@
         app:typographyType="heading_3"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iv_info_exchange"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        app:icon_name="INFORMATION"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/typo_info_exchange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tradein_learn_more"
+        android:textColor="@color/Unify_GN500"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="@id/exchange_method_text"
-        app:layout_constraintLeft_toRightOf="@id/exchange_method_text"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/exchange_method_text" />
 
 
