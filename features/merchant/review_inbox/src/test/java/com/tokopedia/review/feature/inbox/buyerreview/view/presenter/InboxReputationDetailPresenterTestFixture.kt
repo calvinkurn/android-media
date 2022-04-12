@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.presenter
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendSmileyReputationUseCase
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.After
@@ -18,9 +17,6 @@ abstract class InboxReputationDetailPresenterTestFixture {
     lateinit var sendSmileyReputationUseCase: SendSmileyReputationUseCase
     
     @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
-    
-    @RelaxedMockK
     lateinit var view: InboxReputationDetail.View
     
     protected lateinit var presenter: InboxReputationDetailPresenter
@@ -28,7 +24,10 @@ abstract class InboxReputationDetailPresenterTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        presenter = InboxReputationDetailPresenter(getInboxReputationDetailUseCase, sendSmileyReputationUseCase, userSession)
+        presenter = InboxReputationDetailPresenter(
+            getInboxReputationDetailUseCase,
+            sendSmileyReputationUseCase
+        )
         presenter.attachView(view)
     }
     

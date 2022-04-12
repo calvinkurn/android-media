@@ -6,7 +6,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.i
 /**
  * @author by nisie on 8/19/17.
  */
-class InboxReputationDetailItemUiModel (
+class InboxReputationDetailItemUiModel(
     val reputationId: String,
     var productId: String,
     var productName: String,
@@ -20,7 +20,6 @@ class InboxReputationDetailItemUiModel (
     var reviewStar: Int,
     val isReviewHasReviewed: Boolean,
     val isReviewIsEditable: Boolean,
-    val isReviewIsSkippable: Boolean,
     var isReviewSkipped: Boolean,
     val shopId: String,
     var tab: Int,

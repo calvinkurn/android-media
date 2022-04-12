@@ -1,17 +1,19 @@
 package com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 /**
  * @author by nisie on 8/23/17.
  */
 class ReviewDataDomain constructor(
-    val reviewId: String = "",
-    val reputationId: String = "",
-    val reviewTitle: String,
-    val reviewMessage: String,
-    val reviewRating: Int,
-    val reviewImageUrl: List<ImageAttachmentDomain> = listOf(),
-    val reviewCreateTime: ReviewCreateTimeDomain,
-    val reviewUpdateTime: ReviewUpdateTimeDomain,
-    val isReviewAnonymity: Boolean,
-    val reviewResponse: ReviewResponseDomain
+    @SerializedName("reviewIdStr") @Expose val reviewId: String = "",
+    @SerializedName("reputationIdStr") @Expose val reputationId: String = "",
+    @SerializedName("message") @Expose val reviewMessage: String,
+    @SerializedName("rating") @Expose val reviewRating: Int,
+    @SerializedName("attachments") @Expose val reviewImageUrl: List<ImageAttachmentDomain> = listOf(),
+    @SerializedName("createTime") @Expose val reviewCreateTime: ReviewCreateTimeDomain,
+    @SerializedName("updateTime") @Expose val reviewUpdateTime: ReviewUpdateTimeDomain,
+    @SerializedName("anonymity") @Expose val isReviewAnonymity: Boolean,
+    @SerializedName("response") @Expose val reviewResponse: ReviewResponseDomain
 )

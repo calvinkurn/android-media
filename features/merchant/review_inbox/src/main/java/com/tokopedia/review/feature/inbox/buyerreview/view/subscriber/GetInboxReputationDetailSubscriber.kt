@@ -76,11 +76,11 @@ open class GetInboxReputationDetailSubscriber constructor(
     ): Visitable<*> {
         return InboxReputationDetailItemUiModel(
             reviewDomain.reputationId,
-            itemDomain.productData.productId.toString(),
+            itemDomain.productData.productId,
             itemDomain.productData.productName,
             itemDomain.productData.productImageUrl,
             itemDomain.productData.productImageUrl,
-            itemDomain.reviewData.reviewId.toString(),
+            itemDomain.reviewData.reviewId,
             reviewDomain.userData.fullName,
             if (TextUtils.isEmpty(itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1)) itemDomain.reviewData
                 .reviewCreateTime.dateTimeFmt1 else itemDomain.reviewData.reviewUpdateTime.dateTimeFmt1,
@@ -89,7 +89,6 @@ open class GetInboxReputationDetailSubscriber constructor(
             itemDomain.reviewData.reviewRating,
             itemDomain.isReviewHasReviewed,
             itemDomain.isReviewIsEditable,
-            itemDomain.isReviewIsSkippable,
             itemDomain.isReviewIsSkipped,
             reviewDomain.shopData.shopId,
             viewListener.tab,
