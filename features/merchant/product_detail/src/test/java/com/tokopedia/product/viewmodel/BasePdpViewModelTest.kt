@@ -13,6 +13,7 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
+import com.tokopedia.product.detail.usecase.CreateAffiliateCookieUseCase
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -27,6 +28,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -121,6 +123,9 @@ abstract class BasePdpViewModelTest {
     @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
+    @RelaxedMockK
+    lateinit var createAffiliateCookieUseCase: CreateAffiliateCookieUseCase
+
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
     @get:Rule
@@ -132,6 +137,7 @@ abstract class BasePdpViewModelTest {
         mockkStatic(RemoteConfigInstance::class)
         mockkStatic(GlobalConfig::class)
         mockkObject(ProductDetailServerLogger)
+        mockkStatic(TrackApp::class)
 
         spykViewModel = spyk(viewModel)
     }
@@ -170,6 +176,7 @@ abstract class BasePdpViewModelTest {
                 { getTopadsIsAdsUseCase },
                 playWidgetTools,
                 remoteConfigInstance,
+                {createAffiliateCookieUseCase},
                 userSessionInterface
         )
     }

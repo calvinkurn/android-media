@@ -70,6 +70,7 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
+import com.tokopedia.topads.dashboard.tracker.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
@@ -146,13 +147,17 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var bidTypeData: ArrayList<TopAdsBidSettingsModel>? = arrayListOf()
     private var placementType: Int = 0
     private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        BidSwitchManualBudgetBottomSheet(maxSuggestKeyword,minSuggestKeyword,suggestedBid,isWhiteListedUser,::onSaveClickedInManualBottomSheet)
+        BidSwitchManualBudgetBottomSheet(maxSuggestKeyword, minSuggestKeyword, suggestedBid,
+            isWhiteListedUser, ::onSaveClickedInManualBottomSheet, trackerImpl)
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_group_detail_view_layout
     }
+
+    @set: Inject
+    var trackerImpl: TopAdsGroupDetailTrackerImpl ?= null
 
     override fun loadChildStatisticsData() {
         loadData()
@@ -338,6 +343,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             it.onInfoClicked = {
                 bidInfoBottomSheet.show(supportFragmentManager, "")
             }
+            it.tracker = trackerImpl
         }
     }
 

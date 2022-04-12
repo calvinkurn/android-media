@@ -98,8 +98,9 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                 tapAction_deals?.gone()
             }
 
-            if (orderDetails.actionButtons() != null && orderDetails.actionButtons().size > 0){
-                setEventDetails.setActionButtonEvent(item, orderDetails.actionButtons().get(0), orderDetails)
+            if (orderDetails.actionButtons != null && orderDetails.actionButtons.isNotEmpty()){
+                setEventDetails.setActionButtonEvent(item,
+                    orderDetails.actionButtons[0], orderDetails)
             }
         }
     }

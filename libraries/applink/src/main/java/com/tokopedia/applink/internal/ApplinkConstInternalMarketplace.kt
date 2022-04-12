@@ -276,4 +276,14 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_MVC_LOCKED_TO_PRODUCT = "$INTERNAL_MARKETPLACE/shop/widget/voucher/shop_id/{shop_id}/{voucher_id}/"
 
+    /**
+     * Go to chat list
+     */
+    const val TOPCHAT = "$INTERNAL_MARKETPLACE/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
 }

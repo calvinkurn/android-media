@@ -90,6 +90,14 @@ class PlayWidgetLargeView : FrameLayout, IPlayWidgetView {
             )
         }
 
+        override fun onLabelPromoChannelClicked(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoClicked(this@PlayWidgetLargeView, item, position = position, mIsAutoPlay)
+        }
+
+        override fun onLabelPromoChannelImpressed(item: PlayWidgetChannelUiModel, position: Int) {
+            mAnalyticListener?.onLabelPromoImpressed(this@PlayWidgetLargeView, item, position = position, mIsAutoPlay)
+        }
+
     }
 
     private val bannerCardListener = object : PlayWidgetLargeViewHolder.Banner.Listener {

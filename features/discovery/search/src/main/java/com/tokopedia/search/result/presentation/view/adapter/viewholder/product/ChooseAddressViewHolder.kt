@@ -11,14 +11,16 @@ import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductChooseAddressLayoutBinding
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ChooseAddressViewHolder(
         itemView: View,
         private val chooseAddressListener: ChooseAddressListener,
         private val searchNavigationListener: SearchNavigationClickListener,
+        private val fragmentProvider: FragmentProvider,
 ): AbstractViewHolder<ChooseAddressDataView>(itemView) {
 
     companion object {
@@ -51,7 +53,7 @@ internal class ChooseAddressViewHolder(
                 if (!isRollOutUser) binding?.searchProductChooseAddressContainer?.hide()
             }
 
-            override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
+            override fun getLocalizingAddressHostFragment() = fragmentProvider.getFragment()
 
             override fun getLocalizingAddressHostSourceData() = SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH
 

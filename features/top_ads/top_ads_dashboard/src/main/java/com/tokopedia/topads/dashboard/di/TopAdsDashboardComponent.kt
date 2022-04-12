@@ -14,6 +14,7 @@ import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottom
 import com.tokopedia.topads.headline.view.activity.TopAdsHeadlineAdDetailViewActivity
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
+import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineShopFragment
 import dagger.Component
 
 /**
@@ -38,6 +39,7 @@ interface TopAdsDashboardComponent {
     fun inject(negKeywordTabFragment: NegKeywordTabFragment)
     fun inject(topAdsHeadlineKeyFragment: TopAdsHeadlineKeyFragment)
     fun inject(topAdsHeadlineBaseFragment: TopAdsHeadlineBaseFragment)
+    fun inject(topAdsHeadlineShopFragment: TopAdsHeadlineShopFragment)
     fun inject(topAdsBaseTabFragment: TopAdsBaseTabFragment)
     fun inject(topAdsRecommendationFragment: TopAdsRecommendationFragment)
     fun inject(topadsKeywordInsightBase: TopadsInsightBaseKeywordFragment)
