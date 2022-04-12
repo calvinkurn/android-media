@@ -78,8 +78,8 @@ import com.tokopedia.search.result.product.videowidget.InspirationVideoCarouselL
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
-import com.tokopedia.search.utils.networkmonitor.NetworkMonitor
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
+import com.tokopedia.video_widget.util.networkmonitor.NetworkMonitor
 
 @Suppress("LongParameterList")
 class ProductListTypeFactoryImpl(

@@ -1,4 +1,4 @@
-package com.tokopedia.search.utils.networkmonitor
+package com.tokopedia.video_widget.util.networkmonitor
 
 import kotlinx.coroutines.flow.Flow
 

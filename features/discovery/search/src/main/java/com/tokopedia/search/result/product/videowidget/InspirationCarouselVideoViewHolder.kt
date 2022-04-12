@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselVideoBinding
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView.Option
-import com.tokopedia.search.utils.networkmonitor.NetworkMonitor
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.VideoPlayer
 import com.tokopedia.video_widget.VideoPlayerProvider
@@ -15,6 +14,7 @@ import com.tokopedia.video_widget.carousel.VideoCarouselItemListener
 import com.tokopedia.video_widget.carousel.VideoCarouselItemModel
 import com.tokopedia.video_widget.carousel.VideoCarouselModel
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
+import com.tokopedia.video_widget.util.networkmonitor.NetworkMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -1,4 +1,4 @@
-package com.tokopedia.search.utils.networkmonitor
+package com.tokopedia.video_widget.util.networkmonitor
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -14,19 +14,20 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.device.info.DeviceConnectionInfo
-import com.tokopedia.search.utils.contextprovider.ContextProvider
-import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
-internal class DefaultNetworkMonitor(
+class DefaultNetworkMonitor(
     context: Context?,
     lifecycleOwner: LifecycleOwner?
 ) : NetworkMonitor,
-    ContextProvider by WeakReferenceContextProvider(context),
     LifecycleObserver {
+    private val contextReference = WeakReference<Context?>(context)
+    private val context: Context?
+        get() = contextReference.get()
 
     private val connectedToWifiState : MutableStateFlow<Boolean> = MutableStateFlow(false)
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
