@@ -18,20 +18,21 @@ class ProductMediaViewHolder(private val view: View,
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
-
     private val binding = ItemDynamicProductMediaBinding.bind(view).also { measureScreenHeight(it) }
 
     override fun bind(element: ProductMediaDataModel) {
         with(binding) {
-            viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.setup(element.listOfMedia, listener, getComponentTrackData(element))
 
-            if (element.shouldRenderImageVariant) {
-                viewMediaPager.updateImage(element.listOfMedia, listener)
-                element.shouldRenderImageVariant = false
-            }
+            val optionIdAnchor = element.variantOptionIdScrollAnchor
+            val scrollPosition = if (optionIdAnchor.isNotEmpty()) {
+                element.indexOfSelectedVariantOptionId()
+            } else element.initialScrollPosition
 
-            element.shouldRefreshViewPagger = false
+            viewMediaPager.setup(element.listOfMedia,
+                    listener,
+                    scrollPosition,
+                    getComponentTrackData(element))
+
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
@@ -45,14 +46,16 @@ class ProductMediaViewHolder(private val view: View,
         }
 
         when (payloads[0] as Int) {
-            ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                binding.viewMediaPager.updateImage(element.listOfMedia, listener)
-                element.shouldRenderImageVariant = false
+            ProductDetailConstant.PAYLOAD_SCROLL_IMAGE_VARIANT -> {
+                binding.viewMediaPager.scrollToPosition(
+                    element.indexOfSelectedVariantOptionId(),
+                    true
+                )
             }
         }
     }
 
-    fun detachView(){
+    fun detachView() {
         listener.getProductVideoCoordinator()?.onPause()
     }
 

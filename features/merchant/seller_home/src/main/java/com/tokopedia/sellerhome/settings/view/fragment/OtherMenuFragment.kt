@@ -265,8 +265,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         startActivity(Intent(context, MenuSettingActivity::class.java))
     }
 
-    override fun getIsMVCProductEnabled(): Boolean = getIsProductCouponEnabled()
-
     override fun getRecyclerView(): RecyclerView? = getRecyclerView(view)
 
     override fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> =
@@ -880,14 +878,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         return urlString.split("/").toMutableList().also { list ->
             list[list.lastIndex] = replacementValue
         }.joinToString("/")
-    }
-
-    private fun getIsProductCouponEnabled(): Boolean {
-        return try {
-            remoteConfig.getBoolean(RemoteConfigKey.ENABLE_MVC_PRODUCT, true)
-        } catch (ex: Exception) {
-            false
-        }
     }
 
     private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {

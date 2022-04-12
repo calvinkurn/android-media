@@ -93,10 +93,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/profile-completion
     const val PROFILE_COMPLETION = "$INTERNAL_GLOBAL/profile-completion"
 
-    // SettingProfileActivity
-    // tokopedia-android-internal://global/setting-profile
-    const val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
-
     // LandingShopCreationActivity
     // tokopedia-android-internal://global/landing-shop-creation
     const val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
@@ -266,6 +262,8 @@ object ApplinkConstInternalGlobal {
 
     const val IMAGE_PICKER = "$INTERNAL_GLOBAL/image-picker"
     const val IMAGE_PICKER_V2 = "$INTERNAL_GLOBAL/image-picker/v2/"
+    const val USER_PROFILE_LANDING = "$INTERNAL_GLOBAL/people/"
+    const val USER_PROFILE_FOLLOWERS = "$INTERNAL_GLOBAL/people/followers/"
 
     const val IMAGE_EDITOR = "$INTERNAL_GLOBAL/image-editor"
 
