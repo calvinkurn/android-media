@@ -28,6 +28,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
+        consumerProguardFiles 'proguard-rules.pro'
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
@@ -46,6 +47,18 @@ android {
         }
         androidTest {
             java.srcDirs += "$projectDir/src/testCommon/java"
+        }
+    }
+
+    buildTypes {
+        debug {
+            ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            testCoverageEnabled (project.hasProperty('coverage'))
+        }
+        release {
+            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
+            minifyEnabled false
+            consumerProguardFiles 'proguard-rules.pro'
         }
     }
 
