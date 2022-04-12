@@ -102,7 +102,7 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
     }
 
     private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(getDefaultProductPreview())
+        val productPreviews = listOf("1111")
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }

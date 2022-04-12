@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.SendableUiModel
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
@@ -27,39 +26,14 @@ import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCH
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
 import com.tokopedia.utils.time.RfcDateTimeParser
 import org.hamcrest.Matchers.not
-import org.junit.Before
 import org.junit.Test
 
 @UiTest
 class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
-    lateinit var productPreview: ProductPreview
-
-    private val DEFAULT_PRODUCT_ID = "1111"
-
-    @Before
-    override fun before() {
-        super.before()
-        productPreview = ProductPreview(
-            DEFAULT_PRODUCT_ID,
-            ProductPreviewAttribute.productThumbnail,
-            ProductPreviewAttribute.productName,
-            "Rp 23.000.000",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "tokopedia://product/1111",
-            false,
-            "",
-            "Rp 50.000.000",
-            500000.0,
-            "50%",
-            false
-        )
+    companion object {
+        private const val DEFAULT_PRODUCT_ID = "1111"
     }
-
 
     @Test
     fun srw_preview_displayed_if_buyer_attach_from_start_intent() {
@@ -1281,7 +1255,12 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         websocket.simulateResponse(
             wsSellerProductResponse
                 .changeTimeStampTo(today())
-                .matchProductWith(productPreview)
+                .matchProductWith(
+                    DEFAULT_PRODUCT_ID,
+                    ProductPreviewAttribute.productThumbnail,
+                    ProductPreviewAttribute.productName,
+                    ProductPreviewAttribute.productPrice
+                )
         )
         websocket.simulateResponse(wsSellerResponseText.changeTimeStampTo(today()))
 
@@ -1496,7 +1475,7 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     private fun putProductAttachmentIntent(intent: Intent) {
-        val productPreviews = listOf(productPreview)
+        val productPreviews = listOf(DEFAULT_PRODUCT_ID)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
     }

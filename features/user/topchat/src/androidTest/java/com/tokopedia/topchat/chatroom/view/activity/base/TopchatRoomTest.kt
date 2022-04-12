@@ -24,7 +24,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_ANNOUNCEMENT
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
@@ -210,6 +209,7 @@ abstract class TopchatRoomTest {
         const val productName = "Testing Attach Product 1"
         const val productThumbnail = "https://ecs7-p.tokopedia.net/img/cache/350/attachment/" +
                 "2020/8/24/40768394/40768394_732546f9-371d-45c6-a412-451ea50aa22c.jpg.webp"
+        const val productPrice = "Rp 23.000.000"
     }
 
     companion object {
@@ -934,27 +934,6 @@ abstract class TopchatRoomTest {
             Instrumentation.ActivityResult(Activity.RESULT_OK, null)
         )
     }
-
-    protected fun getDefaultProductPreview(): ProductPreview {
-        return ProductPreview(
-            "1111",
-            ProductPreviewAttribute.productThumbnail,
-            ProductPreviewAttribute.productName,
-            "Rp 23.000.000",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "tokopedia://product/1111",
-            false,
-            "",
-            "Rp 50.000.000",
-            500000.0,
-            "50%",
-            false
-        )
-    }
 }
 
 /*
@@ -1022,18 +1001,21 @@ fun WebSocketResponse.changeProductIdTo(
 }
 
 fun WebSocketResponse.matchProductWith(
-    productPreview: ProductPreview
+    productId: String,
+    productImageUrl: String,
+    productName: String,
+    productPrice: String
 ): WebSocketResponse {
     val attrs = jsonObject?.getAsJsonObject("attachment")
         ?.getAsJsonObject("attributes")
     val attrProductProfile = attrs?.getAsJsonObject("product_profile")
     attrs?.apply {
-        addProperty("product_id", productPreview.id)
+        addProperty("product_id", productId)
     }
     attrProductProfile?.apply {
-        addProperty("image_url", productPreview.imageUrl)
-        addProperty("name", productPreview.name)
-        addProperty("price", productPreview.price)
+        addProperty("image_url", productImageUrl)
+        addProperty("name", productName)
+        addProperty("price", productPrice)
     }
     return this
 }
