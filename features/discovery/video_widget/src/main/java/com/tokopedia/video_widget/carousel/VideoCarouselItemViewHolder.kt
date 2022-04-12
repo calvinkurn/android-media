@@ -18,9 +18,21 @@ class VideoCarouselItemViewHolder(
 
     private var binding: VideoCarouselItemBinding? by viewBinding()
 
-    fun bind(videoItem: VideoCarouselItemModel) {
+    fun bind(videoItem: VideoCarouselItemModel, isWifiConnected: Boolean) {
         val binding = binding ?: return
         binding.root.setVideoCarouselItemModel(videoItem)
+        renderPlayButtonVisibility(binding.root, isWifiConnected)
+    }
+
+    private fun renderPlayButtonVisibility(
+        view: VideoCarouselCardView,
+        isWifiConnected: Boolean
+    ) {
+        if(isWifiConnected) {
+            view.hidePlayButton()
+        } else {
+            view.showPlayButton()
+        }
     }
 
     fun recycle() {

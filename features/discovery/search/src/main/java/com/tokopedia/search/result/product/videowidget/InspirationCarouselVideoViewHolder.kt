@@ -17,6 +17,7 @@ import com.tokopedia.video_widget.carousel.VideoCarouselModel
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.cancellable
@@ -27,7 +28,7 @@ internal class InspirationCarouselVideoViewHolder(
     itemView: View,
     private val inspirationVideoCarouselListener: InspirationVideoCarouselListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
-    networkMonitor: NetworkMonitor,
+    private val networkMonitor: NetworkMonitor,
 ) : AbstractViewHolder<InspirationCarouselVideoDataView>(itemView),
     VideoPlayerProvider,
     VideoCarouselItemListener,
@@ -41,21 +42,30 @@ internal class InspirationCarouselVideoViewHolder(
     private var option: Option? = null
 
     private val masterJob = SupervisorJob()
+    private var wifiMonitorJob : Job? = null
     override val coroutineContext = masterJob + Dispatchers.Main
 
-    init {
-        launch {
+    private fun monitorWifiConnectionChange() {
+        wifiMonitorJob?.cancel()
+        wifiMonitorJob = launch {
             networkMonitor.wifiConnectionState.cancellable()
                 .collect {
-                    binding?.videoCarousel?.onWifiConnectionChange(it)
+                    onWifiConnectionChange(it)
                 }
         }
+
+    }
+
+    private fun  onWifiConnectionChange(isWifiConnected: Boolean) {
+        val binding = binding ?: return
+        binding.videoCarousel.onWifiConnectionChange(isWifiConnected)
     }
 
     override fun bind(element: InspirationCarouselVideoDataView) {
         val data = element.data.options.getOrNull(0) ?: return
         option = data
         val videoCarousel = binding?.videoCarousel ?: return
+        monitorWifiConnectionChange()
         videoCarouselWidgetCoordinator.controlWidget(videoCarousel, this)
         videoCarouselWidgetCoordinator.connect(videoCarousel, data.toCarouselDataModel())
     }

@@ -10,6 +10,7 @@ class VideoCarouselItemAdapter(
     diffCallback: DiffUtil.ItemCallback<VideoCarouselItemModel> = VideoCarouselItemDiffUtil()
 ) : ListAdapter<VideoCarouselItemModel, VideoCarouselItemViewHolder>(diffCallback) {
     private var listener: VideoCarouselItemListener? = null
+    private var isWifiConnected = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoCarouselItemViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -25,11 +26,12 @@ class VideoCarouselItemAdapter(
     }
 
     override fun onBindViewHolder(holder: VideoCarouselItemViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), isWifiConnected)
         listener?.onVideoCarouselItemImpressed(position)
     }
 
     fun onWifiConnectionChange(isWifiConnected: Boolean) {
+        this.isWifiConnected = isWifiConnected
         if(itemCount > 0) {
             notifyItemRangeChanged(0, itemCount)
         }

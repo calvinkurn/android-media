@@ -66,7 +66,6 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
         videoThumbnailImageView.loadImage(videoItem.imageURL)
         titleTextView.text = videoItem.title
         renderSubTitle(videoItem.subTitle)
-        renderPlayButton()
     }
 
     private fun renderSubTitle(subTitle: String) {
@@ -88,11 +87,11 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
         }
     }
 
-    private fun showPlayButton() {
+    fun showPlayButton() {
         playButton.show()
     }
 
-    private fun hidePlayButton() {
+    fun hidePlayButton() {
         playButton.hide()
     }
 
