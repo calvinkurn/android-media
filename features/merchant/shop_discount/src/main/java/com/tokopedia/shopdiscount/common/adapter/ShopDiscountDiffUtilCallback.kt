@@ -1,9 +1,9 @@
-package com.tokopedia.shopdiscount.product_detail.presentation.adapter
+package com.tokopedia.shopdiscount.common.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
-class ShopDiscountProductDetailDiffUtilCallback(
+class ShopDiscountDiffUtilCallback(
         private val oldItems: List<Visitable<*>>,
         private val newItems: List<Visitable<*>>
 ) : DiffUtil.Callback() {

@@ -31,7 +31,7 @@
         tools:text="Product NameProduct" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/text_discounted_price"
+        android:id="@+id/text_displayed_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_bias="0"
@@ -48,8 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         app:labelType="highlight_light_red"
-        app:layout_constraintLeft_toLeftOf="@id/text_discounted_price"
-        app:layout_constraintTop_toBottomOf="@id/text_discounted_price"
+        app:layout_constraintLeft_toLeftOf="@id/text_displayed_price"
+        app:layout_constraintTop_toBottomOf="@id/text_displayed_price"
         tools:text="25-30%" />
 
     <com.tokopedia.unifyprinciples.Typography
