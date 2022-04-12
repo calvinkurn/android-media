@@ -149,7 +149,7 @@ class ProductListPresenter @Inject constructor(
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
-    chooseAddressView: ChooseAddressView,
+    private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter {
 
@@ -219,7 +219,6 @@ class ProductListPresenter @Inject constructor(
         private set
     private val adsInjector = AdsInjector()
     private val postProcessingFilter = PostProcessingFilter()
-    private val chooseAddressDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)

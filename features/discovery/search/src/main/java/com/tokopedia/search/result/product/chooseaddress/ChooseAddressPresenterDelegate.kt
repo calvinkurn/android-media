@@ -2,8 +2,9 @@ package com.tokopedia.search.result.product.chooseaddress
 
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.search.utils.toSearchParams
+import javax.inject.Inject
 
-class ChooseAddressPresenterDelegate(
+class ChooseAddressPresenterDelegate @Inject constructor(
     private val chooseAddressView: ChooseAddressView
 ) {
 
