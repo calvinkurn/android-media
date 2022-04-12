@@ -48,7 +48,6 @@ class ProductListViewModel @Inject constructor(
 
             val (totalProduct, formattedProduct) = result
             val productData = ProductData(totalProduct, formattedProduct)
-            //val productData = ProductData((0..1).random(), emptyList())
             _products.value = Success(productData)
 
         }, onError = {
