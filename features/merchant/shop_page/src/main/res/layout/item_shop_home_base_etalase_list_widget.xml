@@ -8,22 +8,22 @@
     android:orientation="vertical"
     android:clipToPadding="false"
     android:clipChildren="false"
-    android:layout_marginBottom="4dp">
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShowcaseSectionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
-        android:layout_marginTop="16dp"
         tools:text="Berbagai etalase terbaik untukmu"
         android:layout_marginStart="4dp"
+        android:layout_marginBottom="12dp"
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvShowcaseListWidget"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp" />
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

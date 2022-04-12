@@ -12,41 +12,43 @@
     android:paddingRight="@dimen/layout_lvl1"
     android:paddingBottom="@dimen/layout_lvl2">
 
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tvCentralizedPromoOnGoingShimmer"
         android:layout_width="@dimen/centralized_promo_text_shimmer_width_200dp"
         android:layout_height="@dimen/centralized_promo_text_shimmer_height_18dp"
-        app:corners="10"
+        app:loader_type="line"
+        app:loader_corner_radius="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/itemOnGoingOne"
         android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_type="rect"
+        app:loader_corner_radius="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/itemOnGoingTwo"
         android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_type="rect"
+        app:loader_corner_radius="10dp"
         app:layout_constraintLeft_toRightOf="@id/itemOnGoingOne"
         app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
 
-    <com.elyeproj.loaderviewlibrary.LoaderImageView
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:corners="10"
+        app:loader_type="rect"
+        app:loader_corner_radius="10dp"
         app:layout_constraintLeft_toRightOf="@id/itemOnGoingTwo"
         app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
 
