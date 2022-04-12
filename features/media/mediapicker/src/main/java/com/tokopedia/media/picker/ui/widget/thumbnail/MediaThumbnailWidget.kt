@@ -11,9 +11,9 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
-import com.tokopedia.picker.common.utils.extractVideoDuration
+import com.tokopedia.picker.common.utils.videoDuration
 import com.tokopedia.media.picker.utils.pickerLoadImage
-import com.tokopedia.picker.common.utils.videoFormat
+import com.tokopedia.picker.common.utils.toReadableFormat
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
@@ -56,8 +56,8 @@ class MediaThumbnailWidget @JvmOverloads constructor(
     }
 
     private fun videoDuration(filePath: String) {
-        val duration = extractVideoDuration(context, filePath)
-        binding.txtDuration.text = duration.videoFormat()
+        val duration = videoDuration(context, filePath)
+        binding.txtDuration.text = duration.toReadableFormat()
     }
 
     fun setThumbnailSelected(isSelected: Boolean){

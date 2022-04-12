@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.databinding.WidgetMediaThumbnailDebugBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.extractVideoDuration
-import com.tokopedia.picker.common.utils.videoFormat
+import com.tokopedia.picker.common.utils.videoDuration
+import com.tokopedia.picker.common.utils.toReadableFormat
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
 import com.tokopedia.unifyprinciples.Typography.Companion.SMALL
 
@@ -59,8 +59,8 @@ class DebugMediaThumbnailWidget @JvmOverloads constructor(
     }
 
     private fun videoDuration(filePath: String) {
-        val duration = extractVideoDuration(context, filePath)
-        binding.txtDuration.text = duration.videoFormat()
+        val duration = videoDuration(context, filePath)
+        binding.txtDuration.text = duration.toReadableFormat()
     }
 
 }

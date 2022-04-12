@@ -4,9 +4,11 @@ package com.tokopedia.picker.common.utils
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
 import android.net.Uri
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import java.io.File
 import java.net.URLConnection
 
@@ -73,33 +75,30 @@ fun isVideoFormat(path: String): Boolean {
     return mimeType != null && mimeType.startsWith(prefix)
 }
 
-fun extractVideoDuration(context: Context?, uri: Uri): Long? {
+fun videoDuration(context: Context?, uri: Uri): Long {
     return try {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(context, uri)
+        with(MediaMetadataRetriever()) {
+            setDataSource(context, uri)
+            val durationData = extractMetadata(METADATA_KEY_DURATION)
+            release()
 
-        val durationData = retriever.extractMetadata(
-            MediaMetadataRetriever.METADATA_KEY_DURATION
-        )
-
-        retriever.release()
-
-        durationData?.toLongOrNull()
-    } catch (e: Exception) {
+            durationData.toLongOrZero()
+        }
+    } catch (e: Throwable) {
         0L
     }
 }
 
-fun extractVideoDuration(context: Context?, filePath: String): Long? {
+fun videoDuration(context: Context?, filePath: String): Long {
     val file = File(filePath)
 
-    return extractVideoDuration(
+    return videoDuration(
         context,
         Uri.fromFile(file)
     )
 }
 
-fun Long?.videoFormat(): String {
+fun Long?.toReadableFormat(): String {
     val duration = this?: 0L
 
     if (duration == 0L) return DEFAULT_DURATION_LABEL

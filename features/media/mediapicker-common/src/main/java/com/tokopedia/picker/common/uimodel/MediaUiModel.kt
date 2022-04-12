@@ -3,7 +3,7 @@ package com.tokopedia.picker.common.uimodel
 import android.content.Context
 import android.net.Uri
 import android.os.Parcelable
-import com.tokopedia.picker.common.utils.extractVideoDuration
+import com.tokopedia.picker.common.utils.videoDuration
 import com.tokopedia.picker.common.utils.isMaxImageRes
 import com.tokopedia.picker.common.utils.isMinImageRes
 import com.tokopedia.picker.common.utils.isVideoFormat
@@ -27,7 +27,7 @@ open class MediaUiModel(
     fun isVideo() = isVideoFormat(path)
 
     fun videoDuration(context: Context): Long {
-        return extractVideoDuration(context, path) ?: 0
+        return videoDuration(context, path)
     }
 
     fun isMaxImageRes(value: Int): Boolean {

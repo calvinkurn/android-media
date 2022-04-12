@@ -26,7 +26,7 @@ import com.tokopedia.media.picker.utils.anim.CameraButton.animStopRecording
 import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.basecomponent.UiComponent
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.picker.common.utils.videoFormat
+import com.tokopedia.picker.common.utils.toReadableFormat
 import com.tokopedia.picker.common.utils.visibleWithCondition
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
@@ -207,8 +207,8 @@ class CameraControllerComponent(
         ) {
             override fun onTick(milis: Long) {
                 Handler(Looper.getMainLooper()).post {
-                    val time = maxDuration - milis
-                    txtCountDown.text = time.videoFormat()
+                    val duration = maxDuration - milis
+                    txtCountDown.text = duration.toReadableFormat()
                 }
             }
 
@@ -258,7 +258,7 @@ class CameraControllerComponent(
     }
 
     private fun setMaxDuration() {
-        txtMaxDuration.text = param.maxVideoDuration().videoFormat()
+        txtMaxDuration.text = param.maxVideoDuration().toReadableFormat()
     }
 
     private fun setPositionToCenterOfCameraMode() {
