@@ -5,18 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true">
-        <com.tokopedia.unifycomponents.CardUnify2
-            android:id="@+id/card_tab"
-            android:layout_width="@dimen/tab_home_feed_width"
-            android:layout_height="match_parent"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="true">
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/card_tab"
+        android:layout_width="@dimen/tab_home_feed_width"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/tabBackgroundImage"
@@ -31,30 +30,29 @@
                 android:layout_height="@dimen/tab_home_feed_max_height"
                 app:corners="16"/>
 
-        </com.tokopedia.unifycomponents.CardUnify2>
-    </RelativeLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tabTitle"
+                android:layout_width="@dimen/tab_home_feed_width"
+                android:layout_height="match_parent"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="14dp"
+                android:textColor="@android:color/white"
+                android:gravity="top"
+                android:ellipsize="end"
+                android:maxLines="2"
+                app:typographyType="heading_6"
+                tools:text="AAA"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tabTitle"
-        android:layout_width="@dimen/tab_home_feed_width"
-        android:layout_height="match_parent"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="16dp"
-        android:textColor="@android:color/white"
-        android:gravity="top"
-        android:ellipsize="end"
-        android:maxLines="2"
-        app:typographyType="heading_6"
-        tools:text="AAA"/>
+            <com.tokopedia.collapsing.tab.layout.ExpandingLineView
+                android:id="@+id/tabIndicator"
+                android:layout_width="25dp"
+                android:layout_height="2dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                app:lineColor="@android:color/white"
+                />
 
-    <com.tokopedia.collapsing.tab.layout.ExpandingLineView
-        android:id="@+id/tabIndicator"
-        android:layout_width="25dp"
-        android:layout_height="2dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="12dp"
-        app:lineColor="@android:color/white"
-        />
-
+        </RelativeLayout>
+    </com.tokopedia.unifycomponents.CardUnify2>
 </RelativeLayout>

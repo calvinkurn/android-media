@@ -44,10 +44,12 @@ open class SizeSmallBusinessViewHolder(
     }
 
     open fun addClickListener(element: BusinessUnitItemDataModel) {
-        itemView.setOnClickListener {
+        val onClickListener = View.OnClickListener {
             listener.onClicked(adapterPosition)
             RouteManager.route(itemView.context, element.content.applink)
         }
+        card.setOnClickListener(onClickListener)
+        icon.setOnClickListener(onClickListener)
     }
 
     open fun addImpressionListener(element: BusinessUnitItemDataModel) {
