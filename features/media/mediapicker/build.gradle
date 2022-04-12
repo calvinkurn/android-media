@@ -56,7 +56,6 @@ android {
                 excludes = ['jdk.internal.*']
             }
         }
-        unitTests.returnDefaultValues = true
     }
 
     buildFeatures {
