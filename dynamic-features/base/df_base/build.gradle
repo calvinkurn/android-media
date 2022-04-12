@@ -161,5 +161,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.snapshot)
 
     //Media
-    implementation projectOrAar(rootProject.ext.features.mediaPicker)
+    implementation projectOrAar(rootProject.ext.features.mediapicker)
 }

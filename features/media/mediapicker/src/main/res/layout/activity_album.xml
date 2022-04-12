@@ -12,9 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar_media_picker" />
+        <include layout="@layout/ui_component_toolbar_media_picker" />
 
     </androidx.appcompat.widget.Toolbar>
 

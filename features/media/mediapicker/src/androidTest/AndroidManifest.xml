@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.picker"
+    package="com.tokopedia.media"
     android:versionCode="1"
     android:versionName="1.0.0">
 
@@ -17,7 +17,7 @@
         tools:replace="android:debuggable,android:label">
 
         <activity
-            android:name=".common.ui.activity.TestPickerActivity"
+            android:name=".picker.common.ui.activity.TestPickerActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 </manifest>
