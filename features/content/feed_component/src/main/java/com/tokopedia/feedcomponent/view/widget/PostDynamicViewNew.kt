@@ -166,6 +166,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private var feedAddViewJob: Job? = null
 
     private var isLihatProductVisible = false
+    private var shouldResumeVideoPLayerOnBack = true
 
     init {
         (context as LifecycleOwner).lifecycle.addObserver(this)
@@ -1219,6 +1220,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             playButtonVideo?.setOnClickListener {
+                playButtonVideo.gone()
                 playVideo(feedXCard, position)
                 }
                 video_lihat_product?.setOnClickListener {
@@ -2092,6 +2094,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
+        if (shouldResumeVideoPLayerOnBack)
         videoPlayer?.resume()
     }
 
@@ -2271,11 +2274,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                                 if (feedXCard.media[current].type == TYPE_IMAGE) {
                                     videoPlayer?.pause()
+                                    shouldResumeVideoPLayerOnBack = false
                                     bindImage(feedXCard.tags, feedXCard.media[current], feedXCard)
                                 } else {
                                     detach(true)
                                     feedXCard.media[current].canPlay = true
                                     playVideo(feedXCard, current)
+                                    shouldResumeVideoPLayerOnBack = true
                                 }
                             }
                         }

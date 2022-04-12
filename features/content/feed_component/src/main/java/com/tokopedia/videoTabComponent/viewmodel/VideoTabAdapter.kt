@@ -78,8 +78,7 @@ class VideoTabAdapter(
             }
 
         }
-        setItems(newList)
-        notifyDataSetChanged()
+        setItemsAndAnimateChanges(newList)
 
     }
 
@@ -148,6 +147,13 @@ class VideoTabAdapter(
                 }
         )
     }
+     fun updateSlotTabViewHolderState(){
+        slotPosition?.let {
+            if (itemList[slotPosition!!] is PlaySlotTabMenuUiModel)
+                notifyItemChanged(slotPosition!!)
+        }
+    }
+
     private fun isUpcomingChannel(playFeedUiModel: PlayWidgetMediumUiModel): Boolean {
         val channelList = playFeedUiModel.model.items
         if (channelList.isNotEmpty()){

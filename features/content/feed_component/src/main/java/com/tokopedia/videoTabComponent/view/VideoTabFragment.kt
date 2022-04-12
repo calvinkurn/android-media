@@ -332,6 +332,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         playWidgetAnalyticsListenerImp.filterCategory = item.label
         callAPiOnTabCLick(item)
         analyticListener.clickOnFilterChipsInVideoTab(item.label)
+        if (rvWidget?.isStickyRecyclerViewIsEnabled() == true)
+            adapter.updateSlotTabViewHolderState()
         adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
     }
 
