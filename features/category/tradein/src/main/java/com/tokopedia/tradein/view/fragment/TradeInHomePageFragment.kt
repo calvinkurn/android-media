@@ -39,10 +39,7 @@ import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.model.TradeInDetailModel
 import com.tokopedia.tradein.view.activity.TradeInPromoActivity
-import com.tokopedia.tradein.view.bottomsheet.TradeInDiagnosticReviewBS
-import com.tokopedia.tradein.view.bottomsheet.TradeInExchangeMethodBS
-import com.tokopedia.tradein.view.bottomsheet.TradeInImeiBS
-import com.tokopedia.tradein.view.bottomsheet.TradeInOutsideCoverageBottomSheet
+import com.tokopedia.tradein.view.bottomsheet.*
 import com.tokopedia.tradein.viewmodel.TradeInHomePageFragmentVM
 import com.tokopedia.tradein.viewmodel.TradeInHomePageVM
 import com.tokopedia.unifycomponents.ImageUnify
@@ -102,7 +99,9 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     ChooseAddressConstant.emptyAddress
                 }
             } ?: ChooseAddressConstant.emptyAddress
-
+            findViewById<IconUnify>(R.id.iv_info_exchange).setOnClickListener {
+                showTradeInInfoBottomsheet(childFragmentManager, context)
+            }
             arguments?.getString(CACHE_ID, "")?.let {
                 setUpPdpData(it)
             }
@@ -470,18 +469,26 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
             findViewById<Typography>(R.id.discounted_price).text = logistic.finalPriceFmt
             findViewById<Typography>(R.id.estimated_total).text = logistic.finalPriceFmt
             findViewById<Typography>(R.id.exchange_text).text = logistic.title
-            if (logistic.isDiagnosed)
+            if (logistic.isDiagnosed) {
                 findViewById<Typography>(R.id.exchange_price_text).text =
                     logistic.diagnosticPriceFmt
-            else
+                findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_phone_price)
+                findViewById<Typography>(R.id.estimated_price).text = getString(
+                    com.tokopedia.tradein.R.string.tradein_minus,
+                    logistic.diagnosticPriceFmt
+                )
+            }
+            else {
                 findViewById<Typography>(R.id.exchange_price_text).text = logistic.estimatedPriceFmt
-
+                findViewById<Typography>(R.id.estimated_price_text).text = getString(com.tokopedia.tradein.R.string.tradein_estimate_price)
+                findViewById<Typography>(R.id.estimated_price).text = getString(
+                    com.tokopedia.tradein.R.string.tradein_minus_asterick,
+                    CurrencyFormatUtil.convertPriceValueToIdrFormat(logistic.finalPrice.minus(tradeInHomePageVM.data?.productPrice ?: 0.0), true)
+                )
+            }
             findViewById<Typography>(R.id.phone_detail_estimated_price).text =
                 logistic.diagnosticPriceFmt.ifEmpty { "-" }
-            findViewById<Typography>(R.id.estimated_price).text = getString(
-                com.tokopedia.tradein.R.string.tradein_minus_asterick,
-                logistic.diagnosticPriceFmt
-            )
+
             findViewById<Label>(R.id.label_discount).text = logistic.discountPercentageFmt
             findViewById<TimerUnifySingle>(R.id.tradein_count_down).let { countDownView ->
                 if (showTimer && logistic.expiryTime.isNotEmpty()) {

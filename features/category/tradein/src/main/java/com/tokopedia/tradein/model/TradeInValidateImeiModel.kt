@@ -11,6 +11,6 @@ data class TradeInValidateImeiModel(
         @SerializedName("IsValid")
         var isValid: Boolean,
         @SerializedName("Message")
-        var message: String
+        var message: String = ""
     )
 }

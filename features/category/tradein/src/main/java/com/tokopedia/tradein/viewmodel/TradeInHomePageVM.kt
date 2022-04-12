@@ -158,13 +158,12 @@ class TradeInHomePageVM @Inject constructor(
         progBarVisibility.value = true
         launchCatchError(block = {
             val diagnosticsData = getDiagnosticData(intent)
-            tradeInUniqueCode = diagnosticsData.tradeInUniqueCode ?: ""
             val data = insertLogisticPreferenceUseCase.insertLogistic(
                 is3PL = is3PLSelected.value ?: false,
                 finalPrice = finalPriceDouble,
                 tradeInPrice = tradeInPriceDouble,
                 imei = imei,
-                uniqueCode = tradeInUniqueCode,
+                diagnosticsData = diagnosticsData,
                 campaignTagId = campaginTagId
             )
             data.insertTradeInLogisticPreference.apply {

@@ -46,7 +46,7 @@ class InsertLogisticPreferenceUseCaseTest {
         runBlocking {
             coEvery { tradeInRepository.getGQLData(any(), InsertTradeInLogisticModel::class.java, any())} returns insertTradeInLogisticModel
 
-            insertLogisticPreferenceUseCase.insertLogistic(false, 0.0,0.0,"", "", "")
+            insertLogisticPreferenceUseCase.insertLogistic(false, 0.0,0.0,"", "", mockk(relaxed = true))
 
             coVerify { tradeInRepository.getGQLData(any(), InsertTradeInLogisticModel::class.java, any()) }
         }

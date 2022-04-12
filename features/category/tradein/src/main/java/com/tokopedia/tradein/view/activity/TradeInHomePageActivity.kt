@@ -43,6 +43,10 @@ const val APP_SETTINGS = 9988
 const val LOGIN_REQUEST = 514
 const val MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123
 
+const val LAKU6_TEST_END ="laku6-test-end"
+const val LAKU6_BACK_ACTION ="laku6-back-action"
+const val LAKU6_GTM ="laku6-gtm"
+
 class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     TradeInEducationalPageFragment.OnDoTradeInClick {
 
@@ -293,9 +297,9 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
     override fun onStart() {
         super.onStart()
         val localBroadcastManager = LocalBroadcastManager.getInstance(this)
-        localBroadcastManager.registerReceiver(mMessageReceiver, IntentFilter("laku6-test-end"))
-        localBroadcastManager.registerReceiver(mBackReceiver, IntentFilter("laku6-back-action"))
-        localBroadcastManager.registerReceiver(laku6GTMReceiver, IntentFilter("laku6-gtm"))
+        localBroadcastManager.registerReceiver(mMessageReceiver, IntentFilter(LAKU6_TEST_END))
+        localBroadcastManager.registerReceiver(mBackReceiver, IntentFilter(LAKU6_BACK_ACTION))
+        localBroadcastManager.registerReceiver(laku6GTMReceiver, IntentFilter(LAKU6_GTM))
     }
 
     override fun onStop() {

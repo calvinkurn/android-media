@@ -11,7 +11,7 @@ data class InsertTradeInLogisticModel(
         @SerializedName("ErrCode")
         var errCode: Int,
         @SerializedName("ErrMessage")
-        var errMessage: String,
+        var errMessage: String = "",
         @SerializedName("IsSuccess")
         var isSuccess: Boolean
     )

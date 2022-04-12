@@ -9,18 +9,18 @@ data class PromoTradeInModel(
 ) {
     data class TradeInPromoDetail(
         @SerializedName("BenefitFmt")
-        var benefitFmt: String,
+        var benefitFmt: String = "",
         @SerializedName("Code")
-        var code: String,
+        var code: String = "",
         @SerializedName("ConditionFmt")
-        var conditionFmt: String,
+        var conditionFmt: String = "",
         @SerializedName("ImageURL")
-        var imageURL: String,
+        var imageURL: String = "",
         @SerializedName("PeriodFmt")
-        var periodFmt: String,
+        var periodFmt: String = "",
         @SerializedName("TermsConditions")
-        var termsConditions: String,
+        var termsConditions: String = "",
         @SerializedName("Title")
-        var title: String
+        var title: String = ""
     )
 }

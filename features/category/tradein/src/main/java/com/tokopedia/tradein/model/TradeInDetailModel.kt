@@ -13,67 +13,67 @@ data class TradeInDetailModel(
         @SerializedName("ActivePromo")
         var activePromo: ActivePromo,
         @SerializedName("BannerURL")
-        var bannerURL: String,
+        var bannerURL: String = "",
         @SerializedName("DeviceAttribute")
         var deviceAttribute: DeviceAttribute,
         @SerializedName("ErrCode")
         var errCode: Int,
         @SerializedName("ErrMessage")
-        var errMessage: String,
+        var errMessage: String = "",
         @SerializedName("ErrTitle")
-        var errTitle: String,
+        var errTitle: String = "",
         @SerializedName("IsFraud")
         var isFraud: Boolean,
         @SerializedName("LogisticMessage")
-        var logisticMessage: String,
+        var logisticMessage: String = "",
         @SerializedName("LogisticOptions")
         var logisticOptions: ArrayList<LogisticOption>,
         @SerializedName("OriginalPriceFmt")
-        var originalPriceFmt: String
+        var originalPriceFmt: String = ""
     ) {
         data class ActivePromo(
             @SerializedName("Code")
-            var code: String,
+            var code: String = "",
             @SerializedName("Subtitle")
-            var subtitle: String,
+            var subtitle: String = "",
             @SerializedName("Title")
-            var title: String
+            var title: String = ""
         )
 
         data class DeviceAttribute(
             @SerializedName("Brand")
-            var brand: String,
+            var brand: String = "",
             @SerializedName("Grade")
-            var grade: String,
+            var grade: String = "",
             @SerializedName("Imei")
             var imei: List<String>,
             @SerializedName("Model")
-            var model: String,
+            var model: String = "",
             @SerializedName("ModelId")
             var modelId: Int,
             @SerializedName("Ram")
-            var ram: String,
+            var ram: String = "",
             @SerializedName("Storage")
-            var storage: String
+            var storage: String = ""
         )
 
         data class LogisticOption(
             @SerializedName("DiagnosticPriceFmt")
-            var diagnosticPriceFmt: String,
+            var diagnosticPriceFmt: String = "",
             @SerializedName("DiagnosticPrice")
             var diagnosticPrice: Double,
             @SerializedName("DiagnosticReview")
             var diagnosticReview: ArrayList<DiagnosticReview>,
             @SerializedName("DiscountPercentageFmt")
-            var discountPercentageFmt: String,
+            var discountPercentageFmt: String = "",
             @SerializedName("EstimatedPriceFmt")
-            var estimatedPriceFmt: String,
+            var estimatedPriceFmt: String = "",
             @SerializedName("ExpiryTime")
-            var expiryTime: String,
+            var expiryTime: String = "",
             @SerializedName("CampaignTagId")
-            var campaignTagId: String,
+            var campaignTagId: String = "",
             @SerializedName("FinalPriceFmt")
-            var finalPriceFmt: String,
+            var finalPriceFmt: String = "",
             @SerializedName("FinalPrice")
             var finalPrice: Double,
             @SerializedName("Is3PL")
@@ -85,9 +85,9 @@ data class TradeInDetailModel(
             @SerializedName("IsPreferred")
             var isPreferred: Boolean,
             @SerializedName("Subtitle")
-            var subtitle: String,
+            var subtitle: String = "",
             @SerializedName("Title")
-            var title: String
+            var title: String = ""
         ) : Parcelable {
             constructor(parcel: Parcel) : this(
                 parcel.readString() ?: "",
@@ -110,9 +110,9 @@ data class TradeInDetailModel(
 
             data class DiagnosticReview(
                 @SerializedName("Field")
-                var `field`: String,
+                var `field`: String = "",
                 @SerializedName("Value")
-                var value: String
+                var value: String = ""
             ) : Parcelable {
                 constructor(parcel: Parcel) : this(
                     parcel.readString() ?: "",

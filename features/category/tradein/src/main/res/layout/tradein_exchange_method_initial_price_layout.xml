@@ -8,16 +8,29 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/exchange_method_text"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginRight="16dp"
         android:text="@string/tradein_metode_penukaran"
         android:textColor="@color/Unify_NN950"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3"
         app:typographyWeight="bold" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/iv_info_exchange"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:icon_name="INFORMATION"
+        app:layout_constraintBottom_toBottomOf="@id/exchange_method_text"
+        app:layout_constraintLeft_toRightOf="@id/exchange_method_text"
+        app:layout_constraintTop_toTopOf="@id/exchange_method_text" />
+
 
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
         android:id="@+id/tradein_choose_address_widget"

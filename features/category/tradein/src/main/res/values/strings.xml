@@ -124,6 +124,7 @@
     <string name="tradein_price_detail">Lihat Rincian Harga</string>
     <string name="tradein_gadget_price">Harga Gadget Impian</string>
     <string name="tradein_estimate_price">Estimasi HP Kamu</string>
+    <string name="tradein_phone_price">HP Kamu</string>
     <string name="tradein_estimated_total">Estimasi Total Harga</string>
     <string name="tradein_periode_promo">Periode Promo</string>
     <string name="tradein_salin">Salin</string>
@@ -161,6 +162,7 @@
     <string name="tradein_tunggu_sebentar_ya">Tunggu sebentar, ya!</string>
     <string name="tradein_loading_text">Kami sedang mengenali tipe HP kamu untuk menentukan estimasi harga yang sesuai.</string>
     <string name="tradein_minus_asterick">- %1$s*</string>
+    <string name="tradein_minus">- %1$s</string>
     <string name="tradein_code_copies">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
     <string name="tradein_no_options_available">Pengiriman tidak tersedia</string>
     <string name="tradein_no_delivery_area">Saat ini belum ada pengiriman ke wilayahmu. Coba cari produk serupa lainnya, ya.</string>
@@ -183,4 +185,25 @@
     <string name="tradein_outside_coverage_description">Coba cari barang serupa di toko lain yang melayani Tukar Tambah di wilayahmu, ya.</string>
     <string name="tradein_similar_items">Cari di Toko Lain</string>
     <string name="tradein_cant_continue">Oops, belum bisa lanjut  tukar tambah</string>
+    <string name="trade_in_default_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir akan mengantarkan pesanan ke alamatmu <b>1 hari setelah</b> pesanan diambil dari toko.<br/><br/>
+        3. Ketika sampai, kurir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        4. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        5. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
+    <string name="trade_in_drop_off_address_info_description">
+        <![CDATA[
+        1. Tunggu pesananmu diproses oleh toko.<br/><br/>
+        2. Kurir IndoPaket akan <b>mengantarkan pesananmu ke Indomaret</b> yang kamu pilih<br/><br/>
+        3. Kamu akan menerima pesan notifikasi dan email saat pesanan tiba di Indomaret. Kamu punya waktu 2 hari untuk proses tukar tambah.<br/><br/>
+        4. Di Indomaret, kasir akan memeriksa IMEI HP lamamu untuk verifikasi.<br/><br/>
+        5. Jika IMEI sesuai dengan data Tokopedia, Tukar Tambah dinyatakan berhasil.<br/><br/>
+        6. Yay, saat itu juga kamu bisa langsung gunakan gadget barumu!<br/><br/>
+        <b>Catatan:</b> Tidak semua toko mengaktifkan dua opsi pengiriman. Gunakan opsi yang tersedia jika salah satu opsi tidak bisa dipilih.
+        ]]>
+    </string>
 </resources>

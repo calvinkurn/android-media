@@ -73,98 +73,128 @@ class TradeInExchangeMethodBS : BottomSheetUnify() {
                 }
                 for (logistic in it) {
                     if (!logistic.is3PL) {
-                        logistic.isAvailable.let { available ->
-                            arguments?.getBoolean(IS_3PL_SELECTED, false)?.let { is3PLSelected->
-                                findViewById<IconUnify>(R.id.tradein_p1_tick)?.let { icon ->
-                                    when {
-                                        !available -> icon.hide()
-                                        is3PLSelected -> icon.hide()
-                                        else -> icon.show()
-                                    }
-                                }
-                            }
-                            if(available) {
-                                findViewById<View>(R.id.tradein_p1_view).setOnClickListener { click->
-                                    if(it.firstOrNull()?.is3PL == false) {
-                                        tradeInAnalytics?.clickExchangeMethods(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
-                                    } else {
-                                        tradeInAnalytics?.clickExchangeMethods(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
-                                    }
-                                    onLogisticSelected?.onLogisticSelected(false)
-                                    dismiss()
-                                }
-                            }
-                            findViewById<Typography>(R.id.tradein_p1_price).let { typography ->
-                                typography.text =
-                                    if (logistic.isDiagnosed)
-                                        logistic.diagnosticPriceFmt
-                                    else
-                                        logistic.estimatedPriceFmt
-                                typography.setTextColor(
-                                    MethodChecker.getColor(
-                                        context,
-                                        when {
-                                            !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                                            logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                                            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                                        }
-                                    )
-                                )
-                            }
-                            findViewById<Typography>(R.id.tradein_p1_info).text = logistic.subtitle
-                            setTextColour(findViewById(R.id.tradein_p1_info), available)
-                            findViewById<Typography>(R.id.tradein_p1).text = logistic.title
-                            setTextColour(findViewById(R.id.tradein_p1), available)
-                        }
+                        isNot3PL(logistic, this, it)
                     } else {
-                        logistic.isAvailable.let { available ->
-                            arguments?.getBoolean(IS_3PL_SELECTED, false)?.let { is3PLSelected->
-                                findViewById<IconUnify>(R.id.tradein_p3_tick)?.let { icon ->
-                                    when {
-                                        !available -> icon.hide()
-                                        is3PLSelected -> icon.show()
-                                        else -> icon.hide()
-                                    }
-                                }
-                            }
-                            if(available) {
-                                findViewById<View>(R.id.tradein_p3_view).setOnClickListener { click->
-                                    if(it.firstOrNull()?.is3PL == false) {
-                                        tradeInAnalytics?.clickExchangeMethods(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
-                                    } else {
-                                        tradeInAnalytics?.clickExchangeMethods(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
-                                    }
-                                    onLogisticSelected?.onLogisticSelected(true)
-                                    dismiss()
-                                }
-                            }
-                            findViewById<Typography>(R.id.tradein_p3_price).let { typography ->
-                                typography.text =
-                                    if (logistic.isDiagnosed)
-                                        logistic.diagnosticPriceFmt
-                                    else
-                                        logistic.estimatedPriceFmt
-                                typography.setTextColor(
-                                    MethodChecker.getColor(
-                                        context,
-                                        when {
-                                            !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
-                                            logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
-                                            else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                                        }
-                                    )
-                                )
-                            }
-                            findViewById<Typography>(R.id.tradein_p3_info).text = logistic.subtitle
-                            setTextColour(findViewById(R.id.tradein_p3_info), available)
-                            findViewById<Typography>(R.id.tradein_p3).text = logistic.title
-                            setTextColour(findViewById(R.id.tradein_p3), available)
-                        }
+                        is3PL(logistic, this, it)
                     }
                 }
             }
         }
         setChild(contentView)
+    }
+
+    private fun is3PL(
+        logistic: LogisticOption,
+        view: View,
+        it: java.util.ArrayList<LogisticOption>
+    ) {
+        view.apply {
+            logistic.isAvailable.let { available ->
+                arguments?.getBoolean(IS_3PL_SELECTED, false)?.let { is3PLSelected->
+                    findViewById<IconUnify>(R.id.tradein_p3_tick)?.let { icon ->
+                        when {
+                            !available -> icon.hide()
+                            is3PLSelected -> icon.show()
+                            else -> icon.hide()
+                        }
+                    }
+                }
+                if(available) {
+                    findViewById<View>(R.id.tradein_p3_view).setOnClickListener { click->
+                        if(it.firstOrNull()?.is3PL == false) {
+                            tradeInAnalytics?.clickExchangeMethods(it[0].isAvailable, it[0].estimatedPriceFmt, it[1].isAvailable, it[1].estimatedPriceFmt)
+                        } else {
+                            tradeInAnalytics?.clickExchangeMethods(it[1].isAvailable, it[1].estimatedPriceFmt, it[0].isAvailable, it[0].estimatedPriceFmt)
+                        }
+                        onLogisticSelected?.onLogisticSelected(true)
+                        dismiss()
+                    }
+                }
+                findViewById<Typography>(R.id.tradein_p3_price).let { typography ->
+                    typography.text =
+                        if (logistic.isDiagnosed)
+                            logistic.diagnosticPriceFmt
+                        else
+                            logistic.estimatedPriceFmt
+                    typography.setTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            when {
+                                !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                                logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            }
+                        )
+                    )
+                }
+                findViewById<Typography>(R.id.tradein_p3_info).text = logistic.subtitle
+                setTextColour(findViewById(R.id.tradein_p3_info), available)
+                findViewById<Typography>(R.id.tradein_p3).text = logistic.title
+                setTextColour(findViewById(R.id.tradein_p3), available)
+            }
+        }
+    }
+
+    private fun isNot3PL(
+        logistic: LogisticOption,
+        view: View,
+        logisticsOptions: java.util.ArrayList<LogisticOption>
+    ) {
+        view.apply {
+            logistic.isAvailable.let { available ->
+                arguments?.getBoolean(IS_3PL_SELECTED, false)?.let { is3PLSelected ->
+                    findViewById<IconUnify>(R.id.tradein_p1_tick)?.let { icon ->
+                        when {
+                            !available -> icon.hide()
+                            is3PLSelected -> icon.hide()
+                            else -> icon.show()
+                        }
+                    }
+                }
+                if (available) {
+                    findViewById<View>(R.id.tradein_p1_view).setOnClickListener { click ->
+                        if (logisticsOptions.firstOrNull()?.is3PL == false) {
+                            tradeInAnalytics?.clickExchangeMethods(
+                                logisticsOptions[0].isAvailable,
+                                logisticsOptions[0].estimatedPriceFmt,
+                                logisticsOptions[1].isAvailable,
+                                logisticsOptions[1].estimatedPriceFmt
+                            )
+                        } else {
+                            tradeInAnalytics?.clickExchangeMethods(
+                                logisticsOptions[1].isAvailable,
+                                logisticsOptions[1].estimatedPriceFmt,
+                                logisticsOptions[0].isAvailable,
+                                logisticsOptions[0].estimatedPriceFmt
+                            )
+                        }
+                        onLogisticSelected?.onLogisticSelected(false)
+                        dismiss()
+                    }
+                }
+                findViewById<Typography>(R.id.tradein_p1_price).let { typography ->
+                    typography.text =
+                        if (logistic.isDiagnosed)
+                            logistic.diagnosticPriceFmt
+                        else
+                            logistic.estimatedPriceFmt
+                    typography.setTextColor(
+                        MethodChecker.getColor(
+                            context,
+                            when {
+                                !available -> com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                                logistic.isDiagnosed -> com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                                else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                            }
+                        )
+                    )
+                }
+                findViewById<Typography>(R.id.tradein_p1_info).text = logistic.subtitle
+                setTextColour(findViewById(R.id.tradein_p1_info), available)
+                findViewById<Typography>(R.id.tradein_p1).text = logistic.title
+                setTextColour(findViewById(R.id.tradein_p1), available)
+            }
+        }
     }
 
     private fun setTextColour(typography: Typography?, available: Boolean) {
