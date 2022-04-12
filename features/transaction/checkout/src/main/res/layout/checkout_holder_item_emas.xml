@@ -24,13 +24,13 @@
         android:paddingBottom="6dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_emas_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="@string/emas_checkout_title"
@@ -39,8 +39,8 @@
             app:typographyWeight="bold"
             tools:text="Bulatkan Tagihan dengan Nabung Emas" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -49,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:text="@string/emas_checkout_desc"
                 android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_3"
@@ -63,8 +64,9 @@
                 android:layout_marginStart="@dimen/spacing_lvl2"
                 android:paddingStart="@dimen/spacing_lvl2"
                 android:paddingEnd="@dimen/spacing_lvl2"
-                app:icon_name="INFORMATION" />
-        </LinearLayout>
+                app:icon_name="INFORMATION"
+                app:layout_flexShrink="0" />
+        </com.google.android.flexbox.FlexboxLayout>
 
     </LinearLayout>
 </LinearLayout>
