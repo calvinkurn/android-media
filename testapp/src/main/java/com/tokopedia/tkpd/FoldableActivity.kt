@@ -19,7 +19,7 @@ class FoldableActivity : AppCompatActivity(), FoldableSupportManager.FoldableInf
     }
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
-        if (foldableInfo.isFoldableDevice() && foldableInfo.isBookMode()) {
+        if (foldableInfo.isFoldableDevice()) {
             val set = ConstraintSet().apply { clone(constraintLayout) }
             val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
                 set,
