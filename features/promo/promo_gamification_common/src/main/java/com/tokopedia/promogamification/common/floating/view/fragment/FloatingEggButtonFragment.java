@@ -288,13 +288,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         vgRoot.setVisibility(View.VISIBLE);
-        setMinimizedIcon();
         initDragBound();
         initEggCoordinate();
-    }
-
-    private void setMinimizedIcon(){
-        minimizeButtonLeft.setImageResource(com.tokopedia.promogamification.common.R.drawable.gami_core_minimize_button);
     }
 
     private void initDragBound() {

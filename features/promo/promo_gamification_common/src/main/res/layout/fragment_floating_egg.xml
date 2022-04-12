@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:layout_marginTop="10dp"
-            android:layout_gravity="center_vertical|start"/>
+            android:layout_gravity="center_vertical|start"
+            android:background="@drawable/gami_core_minimize_button"/>
     </FrameLayout>
 </FrameLayout>
