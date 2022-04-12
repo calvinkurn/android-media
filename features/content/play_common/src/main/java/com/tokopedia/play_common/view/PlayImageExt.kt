@@ -101,11 +101,3 @@ suspend fun Context.getBitmapFromUrl(
             } else it
         }.submit()
 }
-
-fun TextView.setTextGradient(colors: IntArray) {
-    val width = paint.measureText(text.toString())
-    setTextColor(colors.first())
-    paint.shader = LinearGradient(
-        0f, 0f, width, textSize, colors, null, Shader.TileMode.REPEAT
-    )
-}
