@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
+import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.data.utils.Utils.outputFormat
 import com.tokopedia.topads.dashboard.data.utils.Utils.stringToDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.topads_dash_custom_date_picker_sheet.*
+import com.tokopedia.unifycomponents.TextFieldUnify
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,13 +25,17 @@ private const val ONE_UNIT = -1
 
 class CustomDatePicker : BottomSheetUnify() {
 
-    lateinit var minDate: Date
+    private var dateStart: TextFieldUnify? = null
+    private var dateEnd: TextFieldUnify? = null
+    private var calendarUnify: UnifyCalendar? = null
+
+    private lateinit var minDate: Date
     private lateinit var maxDate: Date
     private lateinit var selectedDate: Date
-    var dateFlag = 0
+    private var dateFlag = 0
     private lateinit var minDateOriginal: Date
     private lateinit var selectedDateOriginal: Date
-    lateinit var selectedStartDate: Date
+    private lateinit var selectedStartDate: Date
     private lateinit var listenerCalendar: ActionListener
     private var isCreditSheet = false
 
@@ -38,6 +43,9 @@ class CustomDatePicker : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
         getBundleData()
         val childView = View.inflate(context, R.layout.topads_dash_custom_date_picker_sheet, null)
+        dateStart = childView.findViewById(R.id.dateStart)
+        dateEnd = childView.findViewById(R.id.dateEnd)
+        calendarUnify = childView.findViewById(R.id.calendarUnify)
         setChild(childView)
     }
 
@@ -74,7 +82,7 @@ class CustomDatePicker : BottomSheetUnify() {
         }
         dateEnd?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
-                if (dateStart.textFieldInput.text.isNullOrEmpty()) {
+                if (dateStart?.textFieldInput?.text.isNullOrEmpty()) {
                     return@setOnFocusChangeListener
                 }
                 selectedDate = minDate
@@ -93,10 +101,10 @@ class CustomDatePicker : BottomSheetUnify() {
         if (minDate > selectedDate || maxDate < selectedDate) {
             selectedDate = minDate
         }
-        val calendar = calendarUnify.calendarPickerView
+        val calendar = calendarUnify?.calendarPickerView
         calendar?.init(minDate, maxDate, holidayArrayList)
-                ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
-                ?.withSelectedDate(selectedDate)
+            ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+            ?.withSelectedDate(selectedDate)
 
         calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
