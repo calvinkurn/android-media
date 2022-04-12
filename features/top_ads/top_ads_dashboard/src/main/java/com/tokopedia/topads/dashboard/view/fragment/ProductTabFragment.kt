@@ -42,7 +42,7 @@ import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductEmpt
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
 import com.tokopedia.topads.dashboard.view.interfaces.FetchDate
-import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.MovetoGroupSheetList
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.LoaderUnify

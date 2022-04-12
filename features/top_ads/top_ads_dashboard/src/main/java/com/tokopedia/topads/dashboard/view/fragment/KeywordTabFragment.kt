@@ -33,7 +33,7 @@ import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapter
 import com.tokopedia.topads.dashboard.view.adapter.keyword.KeywordAdapterTypeFactoryImpl
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordEmptyModel
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
-import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsGroupFilterSheet
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.topads_dash_fragment_keyword_list.*

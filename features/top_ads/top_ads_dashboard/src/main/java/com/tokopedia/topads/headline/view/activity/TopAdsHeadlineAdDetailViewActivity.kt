@@ -20,7 +20,6 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
-import com.tokopedia.topads.common.data.response.GroupInfoResponse
 import com.tokopedia.topads.common.data.response.HeadlineInfoResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -41,7 +40,7 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsBaseDetailActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashStatisticFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
-import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
+import com.tokopedia.topads.dashboard.viewmodel.GroupDetailViewModel
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
 import com.tokopedia.unifycomponents.setCounter
 import com.tokopedia.user.session.UserSessionInterface

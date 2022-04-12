@@ -1,4 +1,4 @@
-package com.tokopedia.topads.dashboard.view.model
+package com.tokopedia.topads.dashboard.viewmodel
 
 import android.content.res.Resources
 import android.os.Bundle
@@ -39,7 +39,6 @@ import timber.log.Timber
 import java.lang.reflect.Type
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.collections.HashMap
 
 /**
