@@ -305,13 +305,12 @@ class SuggestionFragment :
 
     override fun trackClickChip(
         eventLabel: String,
-        dimension90: String,
-        baseSuggestionDataView: BaseSuggestionDataView,
+        childItem: BaseSuggestionDataView.ChildItem,
     ) {
         suggestionTracking?.eventClickChipSuggestion(
             eventLabel,
-            dimension90,
-            baseSuggestionDataView,
+            childItem.dimension90,
+            childItem,
         )
     }
 

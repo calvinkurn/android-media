@@ -570,7 +570,7 @@ class SuggestionPresenter @Inject constructor(
             "- po: ${item.position} " +
             "- page: ${item.applink}"
 
-        view?.trackClickChip(label, item.dimension90, baseSuggestionDataView)
+        view?.trackClickChip(label, item)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
