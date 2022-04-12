@@ -89,7 +89,7 @@
     <string name="antar_ke_agen">Antar ke Kantor Agen</string>
 
     <!--    Gocar Integration-->
-    <string name="description_gocar_instan"><![CDATA[Sekarang, kamu bisa pakai kurir mobil atau motor dari GoSend ketika mengaktifkan kurir instan. Perhatikan poin berikut, ya:\n\n1. Kurir instan GoSend saat ini bisa melayani pengiriman hingga 150kg.\n2. Secara tampilan, GoSend Car & GoSend Bike tidak ditampilkan karena sudah otomatis masuk dalam pilihan kurir ketika kamu mengaktifkan kurir instan GoSend.]]></string>
+    <string name="description_gocar_instan"><![CDATA[Dengan kurir instan, kamu bisa pakai GoSend Car* dan GoSend Bike (pengiriman maks. 3 jam & berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.\n\n*GoSend Car hanya tersedia di Surabaya.]]></string>
     <string name="button_info_gocar">Mengerti</string>
     <string name="gocar_info_bottomsheet_title"><![CDATA[GoSend Car & GoSend Bike]]></string>
     <string name="gocar_instan_title_coachmark">Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!</string>
