@@ -3,7 +3,6 @@ package com.tokopedia.abstraction.base.view.webview;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -13,7 +12,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -32,20 +30,8 @@ public class CommonWebViewClient extends WebChromeClient {
     public ValueCallback<Uri[]> callbackAfterL;
     ProgressBar progressBar;
     FilePickerInterface filePickerInterface;
-    Context context;
 
     public CommonWebViewClient(FilePickerInterface filePickerInterface, ProgressBar progressBar) {
-        if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
-            this.filePickerInterface = filePickerInterface;
-            this.progressBar = progressBar;
-        } else {
-            throw new RuntimeException("Should be instance of Activity or Fragmant");
-        }
-
-    }
-    // constructor to be used only for TopPayActivity -> refer to onConsoleMessage
-    public CommonWebViewClient(Context context, FilePickerInterface filePickerInterface, ProgressBar progressBar) {
-        this.context = context;
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
             this.filePickerInterface = filePickerInterface;
             this.progressBar = progressBar;
@@ -58,10 +44,6 @@ public class CommonWebViewClient extends WebChromeClient {
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
-        // context is only sent via TopPayActivity using second constructor
-        if (context != null)
-        Toast.makeText(context, " type:->" + msgType.name() + "\n" + "onConsoleMessage" + consoleMessage.message(), Toast.LENGTH_SHORT).show();
-
         if (msgType == ConsoleMessage.MessageLevel.ERROR) {
             Map<String, String> map = new HashMap<>();
             map.put("type", "error");
