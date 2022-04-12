@@ -1,9 +1,13 @@
 package com.tokopedia.seller.search.common.util
 
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.style.TextAppearanceSpan
+import android.util.TypedValue
+import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.HTTPS_APP_LINK_PREFIX
@@ -42,6 +46,17 @@ internal fun SpannableString.safeSetSpan(what: Any, start: Int, end: Int, flags:
         setSpan(what, start, end, flags)
     } catch (throwable: Throwable) {
         throwable.printStackTrace()
+    }
+}
+
+internal fun View.setRippleEffect() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        foreground = with(TypedValue()) {
+            context.theme.resolveAttribute(
+                R.attr.selectableItemBackground, this, true
+            )
+            ContextCompat.getDrawable(context, resourceId)
+        }
     }
 }
 
