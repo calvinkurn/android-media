@@ -1357,15 +1357,20 @@ class ProductListPresenter @Inject constructor(
 
     private fun isInvalidInspirationCarousel(data: InspirationCarouselDataView): Boolean {
         if (data.position <= 0) return true
-        val firstOption = data.options.getOrNull(0)
         return isInvalidInspirationCarouselLayout(data)
-                && firstOption != null
-                && !firstOption.hasProducts()
+    }
+
+    private fun InspirationCarouselDataView.isFirstOptionHasNoProducts() : Boolean {
+        val firstOption = options.getOrNull(0)
+        return firstOption != null && !firstOption.hasProducts()
+    }
+
+    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
+        return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
     }
 
     private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isCarouselChipsLayout()
-                || (!isABTestVideoWidget && data.isVideoLayout())
+        return data.isInvalidCarouselChipsLayout() || data.isInvalidCarouselVideoLayout()
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -1380,12 +1385,16 @@ class ProductListPresenter @Inject constructor(
     private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
         when {
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
-            isABTestVideoWidget && data.isVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
+            data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             else -> listOf(data)
         }
-
-    private fun InspirationCarouselDataView.isCarouselChipsLayout() =
-        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+    private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
+        return isABTestVideoWidget && isVideoLayout()
+    }
+    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
+        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+                && isFirstOptionHasNoProducts()
+    }
     private fun InspirationCarouselDataView.isDynamicProductLayout() =
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
     private fun InspirationCarouselDataView.isVideoLayout() =
