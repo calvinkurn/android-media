@@ -133,12 +133,12 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private fun loadConfirmRequestPickup() {
         val order = SomConfirmReqPickupParam.Order(orderId = currOrderId)
         val reqPickupParam = SomConfirmReqPickupParam().apply { orderList.add(order) }
-        somConfirmRequestPickupViewModel.loadConfirmRequestPickup(GraphqlHelper.loadRawString(resources, R.raw.gql_som_confirm_request_pickup), reqPickupParam)
+        somConfirmRequestPickupViewModel.loadConfirmRequestPickup(reqPickupParam)
     }
 
     private fun processReqPickup() {
         val processReqPickupParam = SomProcessReqPickupParam(orderId = currOrderId, schedulePickupTime = currSchedulePickupKey)
-        somConfirmRequestPickupViewModel.processRequestPickup(GraphqlHelper.loadRawString(resources, R.raw.gql_som_process_req_pickup), processReqPickupParam)
+        somConfirmRequestPickupViewModel.processRequestPickup(processReqPickupParam)
     }
 
     private fun observingConfirmReqPickup() {

@@ -85,3 +85,15 @@ const val THIRTY_THREE = 33
 const val SIX = 6
 
 const val TWENTY_NINE = 29
+
+const val INSTAGRAM_DEFAULT = "https://www.instagram.com/"
+
+const val TIKTOK_DEFAULT = "https://www.tiktok.com/"
+
+const val FACEBOOK_DEFAULT = "https://www.faceboook.com/"
+
+const val TWITTER_DEFAULT = "https://www.twitter.com/"
+
+const val YOUTUBE_DEFAULT = "https://www.youtube.com/"
+
+const val WWW = "www."

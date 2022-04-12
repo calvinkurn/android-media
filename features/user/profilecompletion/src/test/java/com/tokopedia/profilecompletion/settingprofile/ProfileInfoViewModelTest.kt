@@ -6,8 +6,8 @@ import androidx.lifecycle.Observer
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.profilecompletion.profileinfo.usecase.SaveProfilePictureUseCase
 import com.tokopedia.profilecompletion.settingprofile.data.*
-import com.tokopedia.profilecompletion.settingprofile.domain.SaveProfilePictureUseCase
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail

@@ -20,42 +20,47 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
     private var txtDone: View? = null
     private var userSession: UserSessionInterface? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val parentView = inflater.inflate(R.layout.fragment_profile_completion_finish, container, false)
-        initView(parentView)
-        setViewListener()
-        return parentView
+    override fun onCreateView(
+	inflater: LayoutInflater,
+	container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	val parentView =
+	    inflater.inflate(R.layout.fragment_profile_completion_finish, container, false)
+	initView(parentView)
+	setViewListener()
+	return parentView
     }
 
     private fun initView(view: View) {
-        txtDone = view.findViewById(R.id.txt_done)
+	txtDone = view.findViewById(R.id.txt_done)
     }
 
     private fun setViewListener() {
-        txtDone?.setOnClickListener {
-            if (context != null) {
-                userSession = UserSession(context)
-                val intent = RouteManager.getIntent(
-                        context,
-                        userSession?.userId?.let { userId ->
-                                ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
-                            }
-                )
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                activity?.startActivity(intent)
-                activity?.finish()
-            }
-        }
+	txtDone?.setOnClickListener {
+	    if (context != null) {
+		userSession = UserSession(context)
+		val intent = RouteManager.getIntent(
+		    context,
+		    userSession?.userId?.let { userId ->
+			ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
+		    }
+		)
+		intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+		activity?.startActivity(intent)
+		activity?.finish()
+	    }
+	}
     }
 
     override fun getScreenName(): String = ""
     override fun initInjector() {}
 
     companion object {
-        const val TAG = "finished"
+	const val TAG = "finished"
 
-        fun createInstance(): ProfileCompletionFinishedFragment {
-            return ProfileCompletionFinishedFragment()
-        }
+	fun createInstance(): ProfileCompletionFinishedFragment {
+	    return ProfileCompletionFinishedFragment()
+	}
     }
 }
