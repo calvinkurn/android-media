@@ -69,6 +69,8 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.InspirationCarouselAnalyticsData
 import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.getSortFilterParamStringFromSearchParameter
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
 import com.tokopedia.search.analytics.RecommendationTracking
 import com.tokopedia.search.analytics.SearchEventTracking
@@ -105,12 +107,12 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselTrackingUnificationDataMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.performancemonitoring.stopPerformanceMonitoring
 import com.tokopedia.search.result.product.querykeyprovider.QueryKeyProvider
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.searchparameterprovider.SearchParameterProvider
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
@@ -158,7 +160,7 @@ class ProductListFragment: BaseDaggerFragment(),
     LastFilterListener,
     ProductListParameterListener,
     QueryKeyProvider,
-    InspirationCarouselTrackingUnificationDataMapper {
+    SearchParameterProvider {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -496,7 +498,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override val isLandingPage: Boolean
         get() = searchParameter?.getBoolean(SearchApiConst.LANDING_PAGE) ?: false
 
-    private fun getSearchParameter(): SearchParameter? {
+    override fun getSearchParameter(): SearchParameter? {
         return searchParameter
     }
 
@@ -1311,12 +1313,6 @@ class ProductListFragment: BaseDaggerFragment(),
             return !isSortHasDefaultValue(mapParameter)
         }
 
-    private fun getSortFilterParamStringFromSearchParameter() =
-        searchParameter?.let {
-            @Suppress("UNCHECKED_CAST")
-            getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
-        } ?: ""
-
     override fun refreshSearchParameter(queryParams: Map<String, String>) {
         searchParameter?.resetParams(queryParams)
         searchNavigationListener?.updateSearchParameter(searchParameter)
@@ -1437,7 +1433,7 @@ class ProductListFragment: BaseDaggerFragment(),
         product: InspirationCarouselDataView.Option.Product
     ) {
         val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val products = ArrayList<Any>()
@@ -1452,21 +1448,12 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    override fun createCarouselTrackingUnificationData(
-        product: InspirationCarouselDataView.Option.Product
-    ): InspirationCarouselTrackingUnification.Data =
-        InspirationCarouselTrackingUnification.Data(
-            queryKey,
-            product,
-            getSortFilterParamStringFromSearchParameter(),
-        )
-
     override fun onInspirationCarouselListProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
         redirectionStartActivity(product.applink, product.url)
 
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val products = ArrayList<Any>()
@@ -1484,7 +1471,7 @@ class ProductListFragment: BaseDaggerFragment(),
         product: InspirationCarouselDataView.Option.Product
     ) {
         val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val products = ArrayList<Any>()
@@ -1504,7 +1491,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ) {
         redirectionStartActivity(product.applink, product.url)
 
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val products = ArrayList<Any>()
@@ -1523,7 +1510,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ) {
         redirectionStartActivity(product.applink, product.url)
 
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val productDataLayerList = createInspirationCarouselChipsProductDataLayer(product)
@@ -1541,7 +1528,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun createInspirationCarouselChipsProductDataLayer(
         product: InspirationCarouselDataView.Option.Product
     ): ArrayList<Any> {
-        val filterSortParams = getSortFilterParamStringFromSearchParameter()
+        val filterSortParams = getSortFilterParamStringFromSearchParameter(searchParameter)
         val productDataLayer =
             product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams)
 
@@ -1551,7 +1538,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onImpressedInspirationCarouselChipsProduct(
         product: InspirationCarouselDataView.Option.Product,
     ) {
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
         val trackingQueue = trackingQueue ?: return
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
@@ -1623,7 +1610,7 @@ class ProductListFragment: BaseDaggerFragment(),
         inspirationCarouselProduct: InspirationCarouselDataView.Option.Product
     ) {
         val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
+        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
@@ -1644,7 +1631,7 @@ class ProductListFragment: BaseDaggerFragment(),
         type: String,
         inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
     ) {
-        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
+        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val broadMatchItem = ArrayList<Any>()
