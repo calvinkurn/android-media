@@ -1644,7 +1644,10 @@ class AddEditProductPreviewFragment :
         when (stockStatus) {
             VariantStockStatus.ALL_EMPTY -> {
                 descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty)
-                primaryClickAction = { showVariantDetailActivity() }
+                primaryClickAction = {
+                    if (GlobalConfig.isSellerApp()) showVariantDetailActivity()
+                    else goToSellerAppEditProduct(viewModel.getProductId())
+                }
                 buttonPrimaryText = getString(R.string.action_activate_variant_status_stock_empty)
             }
             VariantStockStatus.ALL_AVAILABLE -> {

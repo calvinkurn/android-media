@@ -867,7 +867,13 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             productStockField?.isVisible = false
             productSkuField?.isVisible = false
             tvProductStockHeader?.text = getString(R.string.add_product_order_header)
-            productPriceVariantTicker?.setHtmlDescription(getString(R.string.text_has_variant_price_ticker))
+            productPriceVariantTicker?.setHtmlDescription(
+                if (GlobalConfig.isSellerApp()) {
+                    getString(R.string.text_has_variant_price_ticker)
+                } else {
+                    getString(R.string.text_has_variant_price_ticker_mainapp)
+                }
+            )
         }
 
         // product category
