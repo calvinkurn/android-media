@@ -6,8 +6,4 @@ internal object DimensionUtils {
     fun getDensityMatrix(context: Context): Float {
         return context.resources.displayMetrics.density
     }
-
-    fun getDpFromInt(context: Context, size: Int) : Float {
-        return getDensityMatrix(context) * size
-    }
 }

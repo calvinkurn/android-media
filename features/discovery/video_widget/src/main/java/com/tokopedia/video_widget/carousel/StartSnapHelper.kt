@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.OrientationHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.video_widget.util.DimensionUtils
+import com.tokopedia.unifycomponents.toPx
 
 
 /**
@@ -45,7 +45,7 @@ class StartSnapHelper : LinearSnapHelper() {
 
         if (layoutManager.canScrollHorizontally()) {
             out[0] = distanceToStart(targetView, getHorizontalHelper(layoutManager)) -
-                    DimensionUtils.getDpFromInt(targetView.context, 16).toInt()
+                    16.toPx()
         } else {
             out[0] = 0
         }

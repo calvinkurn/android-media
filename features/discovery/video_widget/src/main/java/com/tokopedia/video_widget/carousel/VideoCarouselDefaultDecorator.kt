@@ -3,7 +3,7 @@ package com.tokopedia.video_widget.carousel
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.video_widget.util.DimensionUtils
+import com.tokopedia.unifycomponents.toPx
 
 class VideoCarouselDefaultDecorator : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
@@ -16,8 +16,8 @@ class VideoCarouselDefaultDecorator : RecyclerView.ItemDecoration() {
         val itemPosition = parent.getChildAdapterPosition(view)
         if (itemPosition == RecyclerView.NO_POSITION) return
         val itemCount = state.itemCount
-        val dp16 = DimensionUtils.getDpFromInt(view.context, 16).toInt()
-        val dp8 = DimensionUtils.getDpFromInt(view.context, 8).toInt()
+        val dp16 = 16.toPx()
+        val dp8 = 8.toPx()
 
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.left = dp16
