@@ -70,6 +70,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
