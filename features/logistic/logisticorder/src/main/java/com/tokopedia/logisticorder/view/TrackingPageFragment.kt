@@ -222,7 +222,19 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     private fun setTippingData(data: TrackingDataModel) {
         val tippingData = data.tipping
         binding?.tippingGojekLayout?.apply {
-            imgFindDriver.setImageUrl("https://images.tokopedia.net/img/android/tipping/Group 3125093.png")
+            if (tippingData.status == OPEN) {
+                imgFindDriver.setImageUrl("https://images.tokopedia.net/img/android/tipping/Group 3125093.png")
+                btnTipping.isInverse = true
+            } else {
+                imgFindDriver.visibility = View.GONE
+                bgActiveUp.visibility = View.GONE
+                context?.let { ctx ->
+                    tippingLayout.setCardBackgroundColor(MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+                    val textColor = MethodChecker.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+                    tippingText.setTextColor(textColor)
+                    tippingDescription.setTextColor(textColor)
+                }
+            }
             if (tippingData.tippingLastDriver.name.isEmpty()) {
                 driverLayout.visibility = View.GONE
                 // todo
@@ -259,7 +271,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             btnInformation.setOnClickListener {
                 DriverInfoBottomSheet().show(parentFragmentManager)
             }
-            btnTipping.isInverse = true
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
                     SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
