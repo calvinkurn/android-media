@@ -211,4 +211,34 @@ class PlayFollowBuyerTest {
             }
         }
     }
+
+    @Test
+    fun `when user visit their own channel hide follow button, set as NotFollowble (hide from user)` (){
+        val mockChannelData = channelDataBuilder.buildChannelData(
+            partnerInfo = partnerInfoModelBuilder.buildPlayPartnerInfo(
+                id = 2000,
+            ),
+        )
+
+        val mockRepo: PlayViewerRepository = mockk(relaxed = true)
+        coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
+
+        every { mockRepo.getChannelData(any()) } returns mockChannelData
+
+        givenPlayViewModelRobot(
+            repo = mockRepo,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+        ) {
+            setLoggedIn(true)
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        } thenVerify {
+            withState {
+                partner.status.assertEqualTo(
+                    PlayPartnerFollowStatus.NotFollowable
+                )
+            }
+        }
+    }
 }
