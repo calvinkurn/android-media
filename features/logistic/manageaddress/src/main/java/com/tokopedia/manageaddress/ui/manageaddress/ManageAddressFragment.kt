@@ -31,6 +31,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.data.analytics.ManageAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
@@ -267,7 +268,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                         ChooseAddressUtils.updateLocalizingAddressDataFromOther(context, data.addressId.toString(), data.cityId.toString(),
                                 data.districtId.toString(), data.latitude, data.longitude, ChooseAddressUtils.setLabel(data),
                                 data.postalCode, data.tokonowModel.shopId.toString(), data.tokonowModel.warehouseId.toString(),
-                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType)
+                                TokonowWarehouseMapper.mapWarehousesModelToLocal(data.tokonowModel.warehouses), data.tokonowModel.serviceType, data.tokonowModel.lastUpdate)
 
                         if (isFromDeleteAddress == true) {
                             context?.let {
@@ -484,6 +485,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         if (data == null) {
             viewModel.checkUserEligibilityForAnaRevamp()
         } else {
+            ManageAddressAnalytics.sendClickButtonUbahAlamatEvent()
             val token = viewModel.token
             val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V1)
             val mapper = AddressModelMapper()

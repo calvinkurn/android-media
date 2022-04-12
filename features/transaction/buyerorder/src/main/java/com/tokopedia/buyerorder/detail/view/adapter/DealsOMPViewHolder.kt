@@ -77,7 +77,8 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                                 voucerCodeLayout?.addView(bookingCodeView)
                             }
                         }
-                    } else if (actionButton.control.equals(KEY_REDIRECT)){
+                    } else if (actionButton.control.equals(KEY_REDIRECT) || actionButton.control.equals(
+                            KEY_REDIRECT_EXTERNAL)){
                         val redeemVoucherView = RedeemVoucherView(context, i, actionButton, item,
                                 actionButton.body, presenter, positionHolder, setTapActionDeals,
                                 setEventDetails, true)
@@ -97,8 +98,9 @@ class DealsOMPViewHolder(private val setEventDetails: ItemsAdapter.SetEventDetai
                 tapAction_deals?.gone()
             }
 
-            if (orderDetails.actionButtons() != null && orderDetails.actionButtons().size > 0){
-                setEventDetails.setActionButtonEvent(item, orderDetails.actionButtons().get(0), orderDetails)
+            if (orderDetails.actionButtons != null && orderDetails.actionButtons.isNotEmpty()){
+                setEventDetails.setActionButtonEvent(item,
+                    orderDetails.actionButtons[0], orderDetails)
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.tokopedia.cart.domain.usecase
 
-fun getQueryCartRevampV3(): String {
-    return """
-        query cart_revamp_v3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+const val CART_REVAMP_V3_QUERY =
+        """
+        query cartRevampV3(${'$'}lang: String, ${'$'}selected_cart_id: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
           cart_revamp_v3(lang:${'$'}lang, selected_cart_id: ${'$'}selected_cart_id, additional_params:${'$'}additional_params) {
             error_message
@@ -102,6 +102,7 @@ fun getQueryCartRevampV3(): String {
                 ErrorProductAvailableStockDetail
                 ErrorProductMaxQuantity
                 ErrorProductMinQuantity
+                ErrorBOAffordability
               }
               fulfillment_message
               toko_cabang {
@@ -115,6 +116,11 @@ fun getQueryCartRevampV3(): String {
                   message
                 }
                 available_group {
+                  add_on {
+                    ticker_text
+                    icon_url
+                    add_on_ids
+                 }
                   user_address_id
                   shipment_information {
                     shop_location
@@ -131,10 +137,18 @@ fun getQueryCartRevampV3(): String {
                       is_preorder
                       duration
                     }
+                    enable_bo_affordability
                   }
                   pinned {
                     is_pinned
                     coachmark_message  
+                  }
+                  bo_metadata {
+                    bo_type
+                    bo_eligibilities {
+                      key
+                      value
+                    }
                   }
                   shop {
                     shop_ticker
@@ -152,6 +166,7 @@ fun getQueryCartRevampV3(): String {
                     latitude
                     longitude
                     district_name
+                    district_id
                     origin
                     address_street
                     city_name
@@ -167,6 +182,21 @@ fun getQueryCartRevampV3(): String {
                       badge
                       badge_svg
                       title
+                    }
+                    shop_shipments {
+                      ship_id
+                      ship_name
+                      ship_code
+                      ship_logo
+                      ship_prods {
+                        ship_prod_id
+                        ship_prod_name
+                        ship_group_id
+                        ship_group_name
+                        minimum_weight
+                        additional_fee
+                      }
+                      is_dropship_enabled
                     }
                   }
                   promo_codes
@@ -195,6 +225,10 @@ fun getQueryCartRevampV3(): String {
                       checkbox_state
                       cart_id
                       product_information
+                      product_information_with_icon {
+                        text
+                       icon_url
+                     }
                       product_tracker_data {
                         attribution
                         tracker_list_name
@@ -604,20 +638,20 @@ fun getQueryCartRevampV3(): String {
                   checkbox_state
                 }
               }
-              total_product_price,
-              total_product_count,
-              total_product_error,
+              total_product_price
+              total_product_count
+              total_product_error
               global_coupon_attr {
-                description, 
+                description 
                 quantity_label
-              },
-              global_checkbox_state,
+              }
+              global_checkbox_state
               tickers {
                 id
                 message
                 page
-              },
-              hashed_email,
+              }
+              hashed_email
               promo {
                 last_apply {
                   data {
@@ -729,8 +763,10 @@ fun getQueryCartRevampV3(): String {
                         type
                         amount_str
                         amount
+                        currency_details_str
                       }
                       sp_ids
+                      poml_auto_applied
                     }
                   }
                   code
@@ -743,5 +779,4 @@ fun getQueryCartRevampV3(): String {
             }
           }
         }
-    """.trimIndent()
-}
+        """

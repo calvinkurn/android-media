@@ -141,4 +141,11 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun slideQuestCard(source: Int, direction: String) {}
     open fun trackAnchorTabClick(components: ComponentsItem){}
     open fun viewAnchorTabs(componentsItems: ComponentsItem) {}
+    open fun trackShopCardImpression(componentsItems: ComponentsItem) {}
+    open fun trackEventClickShopCard(componentsItems: ComponentsItem) {}
+    open fun trackPlayWidgetLabelClick(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, shopId: String, destinationURL: String, isAutoPlay: Boolean){}
+    open fun trackPlayWidgetLabelImpress(componentsItem : ComponentsItem, userID: String?, widgetPosition: Int, channelPositionInList: Int, channelId: String, shopId: String, isAutoPlay: Boolean){}
+    open fun trackMixLeftBannerImpression(componentsItems: ComponentsItem) {}
+    open fun sendMixLeftBannerImpression(componentsItems: ComponentsItem){}
+    open fun trackMixLeftBannerClick(componentsItems: ComponentsItem) {}
 }

@@ -60,6 +60,10 @@ class CartItemAdapter(private val actionListener: ActionListener) : RecyclerView
         actionListener.onNeedToRefreshWeight(cartItemHolderData)
     }
 
+    override fun onNeedToRefreshBoAffordability(cartItemHolderData: CartItemHolderData) {
+        actionListener.onNeedToRefreshWeight(cartItemHolderData)
+    }
+
     override fun onNeedToRefreshAllShop() {
         actionListener.onNeedToRefreshMultipleShop()
         actionListener.onNeedToRecalculate()

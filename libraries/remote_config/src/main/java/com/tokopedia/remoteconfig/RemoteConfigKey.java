@@ -242,6 +242,9 @@ public class RemoteConfigKey {
     public static final String HOME_ENABLE_SHARED_PREF_CACHE = "android_customer_home_enable_shared_pref_cache";
     public static final String HOME_ENABLE_AUTO_REFRESH_WISHLIST = "android_customer_home_auto_refresh_wishlist";
     public static final String HOME_ENABLE_AUTO_REFRESH_UOH = "android_customer_home_auto_refresh_uoh";
+    public static final String HOME_ENABLE_SCROLL_EMBRACE_BREADCRUMB = "android_customer_home_enable_scroll_breadcrumb";
+
+    public static final String RECOM_PAGE_DISABLE_VIEWPORT_DS_TOPADS = "android_customer_recom_disable_viewport_ds_topads";
 
     public static final String NAVIGATION_ENABLE_NOTIF = "android_customer_navigation_enable_notif";
 
@@ -279,4 +282,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_EMBRACE_CONFIG = "android_customerapp_embrace_config";
 
     public static final String ENABLE_MVC_PRODUCT = "android_enable_mvc_product";
+
+    public static final String ENABLE_THEMATIC_WIDGET_SHOP = "android_enable_thematic_widget_shop";
+
+    public static final String ENABLE_NEW_PROFILE_INFO = "android_use_new_profile_revamp";
 }

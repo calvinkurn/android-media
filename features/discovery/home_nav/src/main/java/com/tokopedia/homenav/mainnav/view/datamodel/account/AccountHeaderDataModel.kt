@@ -21,6 +21,7 @@ data class AccountHeaderDataModel(
     var profileMembershipDataModel: ProfileMembershipDataModel = ProfileMembershipDataModel(),
     var profileSaldoDataModel: ProfileSaldoDataModel = ProfileSaldoDataModel(),
     var profileSellerDataModel: ProfileSellerDataModel = ProfileSellerDataModel(),
+    var profileAffiliateDataModel: ProfileAffiliateDataModel = ProfileAffiliateDataModel(),
     var profileWalletAppDataModel: ProfileWalletAppDataModel = ProfileWalletAppDataModel()
 ) : MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
@@ -101,6 +102,18 @@ data class AccountHeaderDataModel(
             this.profileSellerDataModel.shopOrderCount = 0
         }
 
+    }
+
+    fun setAffiliate(
+        isRegistered: Boolean,
+        affiliateName: String,
+        affiliateAppLink: String,
+        isLoading: Boolean
+    ) {
+        this.profileAffiliateDataModel.isRegister = isRegistered
+        this.profileAffiliateDataModel.affiliateName = affiliateName
+        this.profileAffiliateDataModel.affiliateAppLink = affiliateAppLink
+        this.profileAffiliateDataModel.isGetAffiliateLoading = isLoading
     }
 
     fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {

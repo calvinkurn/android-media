@@ -9,6 +9,7 @@ data class ProductUiModel(
         var isEditing: Boolean = false,
         var isViewing: Boolean = false,
         var isEnabled: Boolean = true,
+        var isSelectable: Boolean = true,
         var isSelectAll: Boolean = false,
         var isSelected: Boolean = false,
         var isVariantSelected: Boolean = false,
@@ -27,5 +28,9 @@ data class ProductUiModel(
 ) : Parcelable {
     fun getSelectedVariants(): List<VariantUiModel> {
         return variants.filter { it.isSelected }
+    }
+
+    fun isAllVariantSelected(): Boolean {
+     return getSelectedVariants().size == variants.size
     }
 }

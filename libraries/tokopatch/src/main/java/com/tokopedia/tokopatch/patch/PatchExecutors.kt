@@ -2,8 +2,8 @@ package com.tokopedia.tokopatch.patch
 
 import android.content.Context
 import android.text.TextUtils
-import com.meituan.robust.ChangeQuickRedirect
-import com.meituan.robust.PatchesInfo
+import com.tokopedia.stability.ChangeDelegate
+import com.tokopedia.stability.PatchesInfo
 import com.tokopedia.tokopatch.model.Patch
 import dalvik.system.DexClassLoader
 import kotlinx.coroutines.Dispatchers
@@ -17,18 +17,17 @@ import java.util.*
  * Author errysuprayogi on 11,June,2020
  */
 class PatchExecutors(
-        context: Context,
-        patches: List<Patch>,
-        callBack: PatchCallBack
+    context: Context,
+    patches: List<Patch>,
+    callBack: PatchCallBack
 ) {
     private val context: Context = context.applicationContext
     private val callBack: PatchCallBack
     private val patchList: List<Patch>
 
     fun start() {
-        GlobalScope.launch(Dispatchers.IO){
+        GlobalScope.launch(Dispatchers.IO) {
             try {
-                callBack.onStart()
                 applyPatchList(patchList)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -42,7 +41,11 @@ class PatchExecutors(
         private const val ROBUST_PATCH_CACHE_DIR = "patch_"
         private const val TAG = "robust"
 
-        fun getInstance(context: Context, patches: List<Patch>, callBack: PatchCallBack): PatchExecutors {
+        fun getInstance(
+            context: Context,
+            patches: List<Patch>,
+            callBack: PatchCallBack
+        ): PatchExecutors {
             val instance: PatchExecutors by lazy {
                 PatchExecutors(context, patches, callBack)
             }
@@ -65,23 +68,32 @@ class PatchExecutors(
             }
             try {
                 p.isAppliedSuccess = patch(context, p)
+                if (p.isAppliedSuccess) {
+                    callBack.onPatchApplied(context, p.isAppliedSuccess, p)
+                } else {
+                    callBack.logNotify(context, p.debug, "apply ${p.name} failed", "")
+                }
             } catch (t: Throwable) {
-                callBack.exceptionNotify(context, t, "class:PatchExecutor method:applyPatchList line:57")
+                callBack.exceptionNotify(
+                    context,
+                    t,
+                    "class:PatchExecutor method:applyPatchList line:57"
+                )
             }
             p.delete()
         }
     }
 
     private suspend fun patch(
-            context: Context,
-            patch: Patch
+        context: Context,
+        patch: Patch
     ): Boolean {
         val classLoader: ClassLoader
         try {
             val dexOutputDir: File = getPatchCacheDirPath(context, patch.md5)
             classLoader = DexClassLoader(
-                    patch.tempPath, dexOutputDir.absolutePath,
-                    null, PatchExecutors::class.java.classLoader
+                patch.tempPath, dexOutputDir.absolutePath,
+                null, PatchExecutors::class.java.classLoader
             )
             var patchClass: Class<*>
             var sourceClass: Class<*>
@@ -95,21 +107,23 @@ class PatchExecutors(
             }
             if (patchesInfo == null) {
                 callBack.logNotify(
-                        context,
-                        "patchesInfo is null, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                        "class:PatchExecutor method:patch line:114"
+                    context,
+                    patch.debug,
+                    "patchesInfo is null, patch info:id = ${patch.name},md5 = ${patch.md5}",
+                    "class:PatchExecutor method:patch line:99"
                 )
                 return false
             }
 
             //classes need to patch
             val patchedClasses =
-                    patchesInfo.patchedClassesInfo
+                patchesInfo.patchedClassesInfo
             if (null == patchedClasses || patchedClasses.isEmpty()) {
                 callBack.logNotify(
-                        context,
-                        "patchedClasses is null or empty, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                        "class:PatchExecutor method:patch line:122"
+                    context,
+                    patch.debug,
+                    "patchedClasses is null or empty, patch info:id = ${patch.name},md5 = ${patch.md5}",
+                    "class:PatchExecutor method:patch line:122"
                 )
                 return false
             }
@@ -119,9 +133,10 @@ class PatchExecutors(
                 val patchClassName = patchedClassInfo.patchClassName
                 if (TextUtils.isEmpty(patchedClassName) || TextUtils.isEmpty(patchClassName)) {
                     callBack.logNotify(
-                            context,
-                            "patchedClasses or patchClassName is empty, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                            "class:PatchExecutor method:patch line:131"
+                        context,
+                        patch.debug,
+                        "patchedClasses or patchClassName is empty, patch info:id = ${patch.name},md5 = ${patch.md5}",
+                        "class:PatchExecutor method:patch line:125"
                     )
                     continue
                 }
@@ -130,19 +145,21 @@ class PatchExecutors(
                         sourceClass = classLoader.loadClass(patchedClassName.trim { it <= ' ' })
                     } catch (e: ClassNotFoundException) {
                         error = true
-                        callBack.exceptionNotify(context, e,"class:PatchExecutor method:patch line:258")
+                        callBack.exceptionNotify(
+                            context, e, "class:PatchExecutor method:patch line:136"
+                        )
                         continue
                     }
                     val fields = sourceClass.declaredFields
                     var changeQuickRedirectField: Field? = null
                     for (field in fields) {
                         if (TextUtils.equals(
-                                        field.type.canonicalName,
-                                        ChangeQuickRedirect::class.java.canonicalName
-                                ) && TextUtils.equals(
-                                        field.declaringClass.canonicalName,
-                                        sourceClass.canonicalName
-                                )
+                                field.type.canonicalName,
+                                ChangeDelegate::class.java.canonicalName
+                            ) && TextUtils.equals(
+                                field.declaringClass.canonicalName,
+                                sourceClass.canonicalName
+                            )
                         ) {
                             changeQuickRedirectField = field
                             break
@@ -150,13 +167,10 @@ class PatchExecutors(
                     }
                     if (changeQuickRedirectField == null) {
                         callBack.logNotify(
-                                context,
-                                "changeQuickRedirectField  is null, patch info:id = ${patch.name},md5 = ${patch.md5}",
-                                "class:PatchExecutor method:patch line:156"
-                        )
-                        callBack.logMessage(
-                                context,
-                                "current path:$patchedClassName something wrong !! can  not find:ChangeQuickRedirect in $patchClassName"
+                            context,
+                            patch.debug,
+                            "current path:$patchedClassName something wrong !! can not find:ChangeQuickRedirect in $patchClassName",
+                            "class:PatchExecutor method:patch line:157"
                         )
                         continue
                     }
@@ -166,13 +180,21 @@ class PatchExecutors(
                         changeQuickRedirectField.isAccessible = true
                         changeQuickRedirectField[null] = patchObject
                     } catch (t: Throwable) {
-                        callBack.logNotify(context, "patch failed! ", patchClassName)
+                        callBack.logNotify(context, patch.debug, "patch failed! ", patchClassName)
                         error = true
-                        callBack.exceptionNotify(context,t ,"class:PatchExecutor method:patch line:163")
+                        callBack.exceptionNotify(
+                            context,
+                            t,
+                            "class:PatchExecutor method:patch line:163"
+                        )
                     }
                 } catch (t: Throwable) {
                     error = true
-                    callBack.exceptionNotify(context,t,"class:PatchExecutor method:patch line:169")
+                    callBack.exceptionNotify(
+                        context,
+                        t,
+                        "class:PatchExecutor method:patch line:169"
+                    )
                 }
             }
             cleanUp(dexOutputDir)
@@ -185,18 +207,18 @@ class PatchExecutors(
 
     private suspend fun cleanUp(fileOrDirectory: File) {
         if (fileOrDirectory.isDirectory) for (child in Objects.requireNonNull(
-                fileOrDirectory.listFiles()
+            fileOrDirectory.listFiles()
         )) cleanUp(child)
         fileOrDirectory.delete()
     }
 
     private fun getPatchCacheDirPath(
-            c: Context,
-            key: String
+        c: Context,
+        key: String
     ): File {
         val patchTempDir = c.getDir(
-                ROBUST_PATCH_CACHE_DIR + key,
-                Context.MODE_PRIVATE
+            ROBUST_PATCH_CACHE_DIR + key,
+            Context.MODE_PRIVATE
         )
         if (!patchTempDir.exists()) {
             patchTempDir.mkdir()

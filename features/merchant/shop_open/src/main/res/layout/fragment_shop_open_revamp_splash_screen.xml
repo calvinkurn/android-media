@@ -10,7 +10,7 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/toolbar_splash_screen"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_height="64dp"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -21,9 +21,9 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_greeting"
         android:textColor="@color/Unify_N700_96"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:letterSpacing="0.01"
-        android:textSize="@dimen/sp_28"
+        android:textSize="28sp"
         android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
         android:layout_width="wrap_content"
@@ -32,8 +32,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_marginTop="16dp"
-        android:lineSpacingExtra="@dimen/sp_6"
-        android:textSize="@dimen/sp_16"
+        android:lineSpacingExtra="6sp"
+        android:textSize="16sp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:textColor="@color/Unify_N700_96"
@@ -49,7 +49,7 @@
         android:layout_height="0dp"
         android:contentDescription="@string/content_desc_announce_shop_open"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_64"
+        android:layout_marginTop="64dp"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_icon_toped_announce_shop_open" />
 

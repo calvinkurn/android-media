@@ -1,0 +1,80 @@
+[
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
+          {
+            "id": 1,
+            "title": "102111106111",
+            "subtitle": "",
+            "mediaURL": "",
+            "trackingData": {
+              "clientNumber": "102111106111",
+              "lastOrderDate": "20200213135311",
+              "totalTransaction": "2",
+              "productID": "",
+              "operatorID": "",
+              "categoryID": "",
+              "operatorName": ""
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
+          {
+            "id": 1,
+            "title": "Nomor Siapa 4",
+            "subtitle": "102111106111",
+            "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
+            "trackingData": {
+              "clientNumber": "102111106111",
+              "lastOrderDate": "20200213135311",
+              "totalTransaction": "2",
+              "productID": "291",
+              "operatorID": "18",
+              "categoryID": "3",
+              "operatorName": "Tagihan Listrik"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "data": {
+      "digiPersoGetPersonalizedItems": {
+        "trackingData": {
+          "userType": "new user"
+        },
+        "items": [
+          {
+            "id": 1,
+            "title": "Nomor Siapa 4",
+            "subtitle": "102111106111",
+            "mediaURL": "https://ecs7.tokopedia.net/img/attachment/2021/2/3/22166894/22166894_1f0cccd4-9eae-4681-80f1-8c2a80ff0931.jpg",
+            "trackingData": {
+              "clientNumber": "102111106111",
+              "lastOrderDate": "20200213135311",
+              "totalTransaction": "2",
+              "productID": "291",
+              "operatorID": "18",
+              "categoryID": "3",
+              "operatorName": "Tagihan Listrik"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

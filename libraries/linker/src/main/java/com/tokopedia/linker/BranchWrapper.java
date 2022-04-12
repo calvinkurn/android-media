@@ -58,6 +58,7 @@ public class BranchWrapper implements WrapperInterface {
     private String KEY_APP_FIRST_OPEN = "app_first_open";
     private LocalCacheHandler localCacheHandler;
     private boolean lastFirstOpenUpdatedValue;
+    private static final String IDENTIFIER_OPPO_INSTALL_REFERRER = "oppopaipreinstall_int";
 
     @Override
     public void init(Context context) {
@@ -258,6 +259,19 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     @Override
+    public void setDelayedSessionInitFlag() {
+        Branch.expectDelayedSessionInitialization(true);
+    }
+
+    @Override
+    public void setDataFromInstallReferrerParams(String installReferrerParams) {
+        if (!TextUtils.isEmpty(installReferrerParams) && installReferrerParams.contains(IDENTIFIER_OPPO_INSTALL_REFERRER)) {
+            Branch.getInstance().setPreinstallCampaign("oppopreinstallol-dp_int-tp-10001511-0000-alon-alon");
+            Branch.getInstance().setPreinstallPartner("a_custom_884988300975328897");
+        }
+    }
+
+    @Override
     public void sendEvent(LinkerGenericRequest linkerGenericRequest, Context context) {
         switch (linkerGenericRequest.getEventId()) {
             case LinkerConstants.EVENT_USER_IDENTITY:
@@ -446,6 +460,10 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.PLAY, data.getId());
         } else if (LinkerData.MERCHANT_VOUCHER.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.NOW_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.NOW, data.getId());
+        } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.WEBVIEW, data.getId());
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.REFERRAL_WELCOME, data.getId());
             if (userData != null) {
@@ -488,6 +506,8 @@ public class BranchWrapper implements WrapperInterface {
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
             }
             deeplinkPath = data.getDeepLink();
+        }else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
         } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())){
             deeplinkPath = data.getDeepLink();
         }
@@ -682,7 +702,7 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private boolean isFirstOpen(Context context) {
+    public boolean isFirstOpen(Context context) {
         if (!lastFirstOpenUpdatedValue) {
             lastFirstOpenUpdatedValue = getLocalCacheHandler(context).getBoolean(KEY_APP_FIRST_OPEN);
         }

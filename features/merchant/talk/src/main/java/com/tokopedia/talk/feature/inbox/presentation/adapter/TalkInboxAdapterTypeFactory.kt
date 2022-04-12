@@ -13,21 +13,14 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInbo
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 
 class TalkInboxAdapterTypeFactory(
-        private val talkInboxViewHolderListener: TalkInboxViewHolderListener,
-        private val isNewView: Boolean
+        private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : TalkInboxTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(baseTalkInboxUiModel: BaseTalkInboxUiModel): Int {
-        if(isNewView) {
-            return TalkInboxViewHolder.LAYOUT
-        }
         return TalkInboxOldViewHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingMoreModel): Int {
-        if(isNewView) {
-            return TalkInboxUnifiedLoadingViewHolder.LAYOUT
-        }
         return TalkInboxLoadingViewHolder.LAYOUT
     }
 

@@ -105,8 +105,14 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myco
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcard.ShopCardViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shopcarditem.ShopCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.section.SectionViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.shimmer.ShimmerCalendarViewHolder
@@ -184,6 +190,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ProductListEmptyState, ::EmptyStateViewHolder, ::EmptyStateViewModel)
             initializeComponent(ComponentsList.SaleEndState, ::SaleEndStateViewHolder, ::SaleEndStateViewModel)
 
+            initializeComponent(ComponentsList.MixLeftEmptyItem, ::MixLeftEmptyViewHolder, ::MixLeftEmptyViewModel)
+
             //Quick Filter
             initializeComponent(ComponentsList.QuickFilter, ::QuickFilterViewHolder, ::QuickFilterViewModel)
 
@@ -212,6 +220,11 @@ class DiscoveryHomeFactory {
 
             //Topads Headline View
             initializeComponent(ComponentsList.TopadsHeadlineView, ::TopAdsHeadlineViewHolder, ::TopAdsHeadlineViewModel)
+
+            //Rilisan Spesial View
+            initializeComponent(ComponentsList.ShopCardView, ::ShopCardViewHolder, ::ShopCardViewModel)
+            //Rilisan Spesial ItemView
+            initializeComponent(ComponentsList.ShopCardItemView, ::ShopCardItemViewHolder, ::ShopCardItemViewModel)
 
             initializeComponent(ComponentsList.Section,::SectionViewHolder,::SectionViewModel)
 //            initializeComponent(ComponentsList.AnchorTabs,::AnchorTabsViewHolder,::AnchorTabsViewModel)
