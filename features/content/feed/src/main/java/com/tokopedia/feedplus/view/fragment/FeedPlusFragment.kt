@@ -808,6 +808,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.onDestroy()
         }
         TopAdsHeadlineActivityCounter.page = 1
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onInfoClicked() {

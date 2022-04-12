@@ -270,6 +270,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     override fun onDestroyView() {
         super.onDestroyView()
         trackIfUserScrollToBottom()
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     private fun trackIfUserScrollToBottom() {

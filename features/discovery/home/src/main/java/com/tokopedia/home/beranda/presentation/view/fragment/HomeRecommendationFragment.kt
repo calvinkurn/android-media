@@ -505,4 +505,9 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun getLocationParamString() : String {
         return ChooseAddressUtils.getLocalizingAddressData(requireContext())?.convertToLocationParams() ?: ""
     }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }

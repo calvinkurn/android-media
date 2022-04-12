@@ -1608,4 +1608,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (parentFragment as? NewShopPageFragment)?.showScrollToTopButton()
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }

@@ -220,6 +220,11 @@ open class AddToCartDoneBottomSheet :
         super.onDestroy()
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
+
     override fun onDetach() {
         if (dismissListener != null) {
             dismissListener!!.onDismiss()

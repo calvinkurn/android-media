@@ -552,6 +552,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         super.onDestroy()
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
+
     private fun onResultVariantBottomSheet(data: ProductVariantResult) {
         if (data.shouldRefreshPreviousPage) {
             productId = data.selectedProductId

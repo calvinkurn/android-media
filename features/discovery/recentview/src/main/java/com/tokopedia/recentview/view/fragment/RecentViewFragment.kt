@@ -244,6 +244,11 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         }
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
+
     override fun dismissLoadingProgress() {}
 
     companion object {

@@ -143,6 +143,11 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         super.onDestroy()
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
+
     private fun onSuccessGetDetail(data: PostDetailViewModel) {
         val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
         dynamicPost?.let {

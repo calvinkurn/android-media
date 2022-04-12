@@ -53,6 +53,7 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
@@ -561,5 +562,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         productCardOptionsModel.productPosition = position
         productCardOptionsModel.screenName = recommendationItem.header
         return productCardOptionsModel
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

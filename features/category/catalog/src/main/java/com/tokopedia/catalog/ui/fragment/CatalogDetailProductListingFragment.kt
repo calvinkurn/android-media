@@ -652,6 +652,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchSortFilter?.parentListener = {}
         searchSortFilter = null
         sortFilterBottomSheet = null
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onDetach() {

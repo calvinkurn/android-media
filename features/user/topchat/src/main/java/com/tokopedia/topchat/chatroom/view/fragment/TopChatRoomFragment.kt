@@ -2779,6 +2779,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         lifecycleScope.launch(Dispatchers.IO) {
             sellerReviewHelper.saveMessageId(messageId)
         }
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     protected open fun uploadImage(image: ImageUploadServiceModel) {

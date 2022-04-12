@@ -720,4 +720,9 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
         return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }
