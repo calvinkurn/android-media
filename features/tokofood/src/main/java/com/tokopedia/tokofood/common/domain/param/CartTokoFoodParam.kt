@@ -7,9 +7,9 @@ import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class CartTokoFoodParam(
     // TODO: Create correct object for parsed chosenAddress
-    @SerializedName("chosen_address")
+    @SerializedName("additional_attributes")
     @Expose
-    val chosenAddress: String = "",
+    val additionalAttributes: String = "",
     @SerializedName("carts")
     @Expose
     val carts: List<CartItemTokoFoodParam> = listOf()
