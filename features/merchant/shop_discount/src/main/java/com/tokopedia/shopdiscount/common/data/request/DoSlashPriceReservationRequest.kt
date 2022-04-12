@@ -1,14 +1,13 @@
-package com.tokopedia.shopdiscount.manage_discount.data.request
+package com.tokopedia.shopdiscount.common.data.request
 
 import androidx.annotation.StringDef
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shopdiscount.common.data.request.RequestHeader
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationAction.Companion.DELETE
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationAction.Companion.RESERVE
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationAction.Companion.STOPDELETE
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationState.Companion.CREATE
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationState.Companion.EDIT
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationAction.Companion.DELETE
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationAction.Companion.RESERVE
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationAction.Companion.STOPDELETE
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationState.Companion.CREATE
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest.DoSlashPriceReservationState.Companion.EDIT
 
 data class DoSlashPriceReservationRequest(
     @SerializedName("request_header")

@@ -1,8 +1,7 @@
-package com.tokopedia.shopdiscount.manage_discount.data.response
+package com.tokopedia.shopdiscount.common.data.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 
 data class DoSlashPriceProductReservationResponse(
     @SerializedName("DoSlashPriceProductReservation")

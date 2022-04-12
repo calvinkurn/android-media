@@ -4,10 +4,10 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.manage_discount.data.request.GetSlashPriceSetupProductListRequest
 import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductSubmissionResponse
-import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductReservationResponse
+import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
 import com.tokopedia.shopdiscount.manage_discount.data.response.GetSlashPriceSetupProductListResponse
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSlashPriceProductSubmissionUiModel
@@ -404,7 +404,8 @@ object ShopDiscountManageDiscountMapper {
             action =  DoSlashPriceReservationRequest.DoSlashPriceReservationAction.DELETE,
             requestId = requestId,
             state = state,
-            listProductData = listOf(DoSlashPriceReservationRequest.SlashPriceReservationProduct(
+            listProductData = listOf(
+                DoSlashPriceReservationRequest.SlashPriceReservationProduct(
                 productId = productId,
                 position = position,
             ))

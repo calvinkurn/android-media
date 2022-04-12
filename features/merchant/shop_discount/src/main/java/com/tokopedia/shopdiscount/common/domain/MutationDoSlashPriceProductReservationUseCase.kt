@@ -1,12 +1,13 @@
-package com.tokopedia.shopdiscount.manage_discount.domain
+package com.tokopedia.shopdiscount.common.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceReservationRequest
-import com.tokopedia.shopdiscount.manage_discount.data.response.DoSlashPriceProductReservationResponse
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
+import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
+import com.tokopedia.shopdiscount.manage_discount.domain.DoSlashPriceProductReservationQuery
 import javax.inject.Inject
 
 class MutationDoSlashPriceProductReservationUseCase @Inject constructor(
