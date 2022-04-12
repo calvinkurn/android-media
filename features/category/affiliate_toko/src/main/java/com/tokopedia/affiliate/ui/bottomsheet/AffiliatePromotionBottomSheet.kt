@@ -174,20 +174,20 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
         listVisitable = arrayListOf<Visitable<AffiliateAdapterTypeFactory>>(
             AffiliateShareModel("Instagram", IconUnify.INSTAGRAM,"instagram",3,sheetType,
                     "Contoh: instagram.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-                AFFILIATE_INSTAGRAM_REGEX),
+                AFFILIATE_INSTAGRAM_REGEX, INSTAGRAM_DEFAULT),
             AffiliateShareModel("Tiktok", IconUnify.TIKTOK,"tiktok",9,sheetType,
                     "Contoh: tiktok.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-                AFFILIATE_TIKTOK_REGEX),
+                AFFILIATE_TIKTOK_REGEX, TIKTOK_DEFAULT),
             AffiliateShareModel("YouTube", IconUnify.YOUTUBE,"youtube",13,sheetType,
                     "Contoh: youtube.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-            AFFILIATE_YT_REGEX),
+            AFFILIATE_YT_REGEX, YOUTUBE_DEFAULT),
             AffiliateShareModel("Facebook", IconUnify.FACEBOOK,"facebook",1,sheetType,
-                    "Contoh: facebook.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
+                    "Contoh: facebook.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled, defaultText = FACEBOOK_DEFAULT),
             AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,
                     "Contoh: twitter.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,
-                AFFILIATE_TWITTER_REGEX),
+                AFFILIATE_TWITTER_REGEX, TWITTER_DEFAULT),
             AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,
-                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled))
+                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled,defaultText = WWW))
 
         if(sheetType == SheetType.ADD_SOCIAL){
             contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {

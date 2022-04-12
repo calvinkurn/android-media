@@ -16,7 +16,7 @@ import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
 import com.tokopedia.notifications.image.ImageDownloadManager
-import com.tokopedia.notifications.model.AmplificationBaseNotificationModel
+import com.tokopedia.notifications.model.SerializedNotificationData
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
@@ -74,7 +74,7 @@ class PushController(val context: Context) : CoroutineScope {
         try {
             launchCatchError(block = {
                 val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-                val amplificationBaseNotificationModel = gson.fromJson(payloadJson, AmplificationBaseNotificationModel::class.java)
+                val amplificationBaseNotificationModel = gson.fromJson(payloadJson, SerializedNotificationData::class.java)
                 val model = PayloadConverter.convertToBaseModel(amplificationBaseNotificationModel)
                 if (isAmpNotificationValid(model.notificationId)) {
                     model.isAmplification = true

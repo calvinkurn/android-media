@@ -161,7 +161,7 @@
     <string name="home_account_balance_and_point_activate">Aktifkan</string>
     <string name="home_account_balance_and_point_add_point">Tambah Points</string>
 
-    <string name="account_home_add_phone_title">Tambah Nomor Ponsel</string>
+    <string name="account_home_add_phone_title">Tambah nomer HP</string>
     <string name="account_home_add_phone_message">Tambah dan verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
 
     <string name="title_app_advanced_clear_cache">Bersihkan Cache</string>

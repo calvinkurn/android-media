@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
 import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
@@ -176,26 +177,33 @@ object AtcCommonMapper {
         ) ?: return null)
     }
 
-    fun mapToVisitable(selectedChild: VariantChild?,
-                       isTokoNow: Boolean,
-                       initialSelectedVariant: MutableMap<String, String>,
-                       processedVariant: List<VariantCategory>?,
-                       selectedProductFulfillment: Boolean,
-                       selectedQuantity: Int,
-                       shouldShowDeleteButton: Boolean,
-                       uspImageUrl: String,
-                       cashBackPercentage: Int): List<AtcVariantVisitable>? {
+    fun mapToVisitable(
+        selectedChild: VariantChild?,
+        isTokoNow: Boolean,
+        initialSelectedVariant: MutableMap<String, String>,
+        processedVariant: List<VariantCategory>?,
+        selectedProductFulfillment: Boolean,
+        selectedQuantity: Int,
+        shouldShowDeleteButton: Boolean,
+        aggregatorUiData: ProductVariantAggregatorUiData?,
+    ): List<AtcVariantVisitable>? {
         if (processedVariant == null) return null
 
         var idCounter = 0L
         val result: MutableList<AtcVariantVisitable> = mutableListOf()
+
+        val uspImageUrl = aggregatorUiData?.uspImageUrl ?: ""
+        val cashBackPercentage = aggregatorUiData?.cashBackPercentage ?: 0
+
+        val level1VariantOptionId = selectedChild?.optionIds?.firstOrNull() ?: ""
+        val productImage = aggregatorUiData?.getFirstLevelVariantImage(level1VariantOptionId)
 
         val headerData = generateHeaderDataModel(selectedChild)
         result.add(
                 VariantHeaderDataModel(
                         position = idCounter,
                         productId = selectedChild?.productId ?: "",
-                        productImage = headerData.first,
+                        productImage = productImage ?: headerData.first,
                         listOfVariantTitle = selectedChild?.optionName ?: listOf(),
                         isTokoCabang = selectedProductFulfillment,
                         uspImageUrl = uspImageUrl,
@@ -251,7 +259,10 @@ object AtcCommonMapper {
                         selectedProductFulfillment: Boolean,
                         isTokoNow: Boolean,
                         selectedQuantity: Int,
-                        shouldShowDeleteButton: Boolean): List<AtcVariantVisitable> {
+                        shouldShowDeleteButton: Boolean,
+                        aggregatorUiData: ProductVariantAggregatorUiData?): List<AtcVariantVisitable> {
+
+
 
         return oldList.map {
             when (it) {
@@ -274,8 +285,11 @@ object AtcCommonMapper {
                         //update image only when exist
                         it.copy(productImage = variantImage)
                     } else {
+                        val level1VariantOptionId = selectedVariantChild?.optionIds?.firstOrNull() ?: ""
+                        val productImage = aggregatorUiData?.getFirstLevelVariantImage(level1VariantOptionId)
+
                         val headerData = generateHeaderDataModel(selectedVariantChild)
-                        it.copy(productImage = headerData.first,
+                        it.copy(productImage = productImage ?: headerData.first,
                                 productId = selectedVariantChild?.productId ?: "",
                                 headerData = headerData.second,
                                 isTokoCabang = selectedProductFulfillment,
