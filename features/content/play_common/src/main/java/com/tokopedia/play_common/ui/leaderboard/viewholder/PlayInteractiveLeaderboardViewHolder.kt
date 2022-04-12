@@ -39,6 +39,8 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     fun bind(leaderboard: PlayLeaderboardUiModel) {
         tvTitle.text = leaderboard.title
 
+        //if choices is not empty show recycler view
+
         if (leaderboard.winners.isEmpty()) hideParticipant() else showParticipant(leaderboard)
     }
 

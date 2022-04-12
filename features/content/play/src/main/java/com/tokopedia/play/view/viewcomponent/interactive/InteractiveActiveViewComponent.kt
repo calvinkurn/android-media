@@ -44,13 +44,15 @@ class InteractiveActiveViewComponent(
         )
     }
 
-    fun setQuiz() {
-        //TODO("Stitch with real code")
+    fun setQuiz(question: String,
+                timerInfo: String,
+                durationInMs: Long,
+                onDurationEnd: (GameSmallWidgetView) -> Unit) {
         widget.setupQuiz(
-            question = "Kapan ulang tahun Rockbros Indonesia?",
-            timerInfo = "Berakhir",
-            durationInMs = 7000,
-            onDurationEnd = {},
+            question = question,
+            timerInfo = timerInfo,
+            durationInMs = durationInMs,
+            onDurationEnd = onDurationEnd,
         )
     }
 

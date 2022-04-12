@@ -1,5 +1,6 @@
 package com.tokopedia.play.data.repository
 
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.domain.interactive.AnswerQuizUseCase
@@ -9,6 +10,7 @@ import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
+import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
@@ -44,7 +46,72 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getInteractiveLeaderboard(channelId: String): PlayLeaderboardInfoUiModel = withContext(dispatchers.io) {
-        val response = getInteractiveLeaderboardUseCase.execute(channelId)
+//        val response = getInteractiveLeaderboardUseCase.execute(channelId)
+        val data = """
+          {
+              "slots": [
+                {
+                  "__typename": "PlayInteractiveViewerLeaderboardGiveaway",
+                  "title": "Bagi-bagi sembako",
+                  "winners":[
+                    {
+                      "username": "Jokowi",
+                      "imageURL": "http://google.com"
+                    },
+                    {
+                      "username": "Emak",
+                      "imageURL": "http://google.com"
+                    },
+                    {
+                      "username": "Bapak",
+                      "imageURL": "http://google.com"
+                    }
+                  ],
+                  "otherParticipantCountText": "Dari 101 peserta",
+                  "otherParticipantCount": 101,
+                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini."
+                },
+                {
+                  "__typename": "PlayInteractiveViewerLeaderboardQuiz",
+                  "question": "Siapa aku?",
+                  "reward": "500 perak",
+                  "userChoice": 1,
+                  "choices": [
+                    {
+                      "id": 1,
+                      "text": "Aku"
+                    }, 
+                    {
+                      "id": 2,
+                      "text": "Kamu"
+                    }, 
+                    {
+                      "id": 3,
+                      "text": "Dirinya"
+                    }
+                  ],
+                  "winners":[
+                    {
+                      "username": "Jokowi",
+                      "imageURL": "http://google.com"
+                    },
+                    {
+                      "username": "Emak",
+                      "imageURL": "http://google.com"
+                    },
+                    {
+                      "username": "Bapak",
+                      "imageURL": "http://google.com"
+                    }
+                  ],
+                  "otherParticipantCountText": "Dari 101 peserta",
+                  "otherParticipantCount": 101,
+                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini."
+                }
+              ]
+            }
+        """.trimIndent()
+        val response = Gson().fromJson(data, GetLeaderboardSlotResponse::class.java)
         return@withContext mapper.mapInteractiveLeaderboard(response)
     }
 

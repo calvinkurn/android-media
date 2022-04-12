@@ -1,4 +1,4 @@
-package com.tokopedia.play.data.interactive
+package com.tokopedia.play_common.domain.usecase.interactive
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse

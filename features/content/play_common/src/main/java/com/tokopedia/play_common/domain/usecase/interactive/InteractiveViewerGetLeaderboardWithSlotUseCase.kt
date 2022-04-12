@@ -1,10 +1,9 @@
-package com.tokopedia.play.domain.interactive
+package com.tokopedia.play_common.domain.usecase.interactive
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.data.interactive.GetLeaderboardSlotResponse
 import javax.inject.Inject
 
 /**

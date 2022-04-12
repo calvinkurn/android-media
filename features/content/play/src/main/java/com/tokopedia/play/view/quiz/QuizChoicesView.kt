@@ -12,15 +12,17 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
  * @author by astidhiyaa on 04/04/22
  */
-class QuizChoicesView : ConstraintLayout{
+class QuizChoicesView : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -33,7 +35,7 @@ class QuizChoicesView : ConstraintLayout{
     private val defaultFontColor: Int
     private val filledFontColor: Int
 
-    private val tvQuestion: TextView
+    private val tvQuestion: Typography
     private val loaderQuiz: LoaderUnify
 
     private val ivOption: ConstraintLayout
@@ -70,7 +72,7 @@ class QuizChoicesView : ConstraintLayout{
              */
             is PlayQuizOptionState.Default -> {
                 loaderQuiz.hide()
-                getIconOption(alphabet = item.type.alphabet)
+                getIconOption(alphabet = (item.type as PlayQuizOptionState.Default).alphabet)
                 tvQuestion.setTextColor(defaultFontColor)
                 this.background = bgDrawable
             }
@@ -80,8 +82,13 @@ class QuizChoicesView : ConstraintLayout{
             is PlayQuizOptionState.Answered -> {
                 loaderQuiz.hide()
                 tvQuestion.setTextColor(filledFontColor)
-                getIconOption(isCorrect = item.type.isCorrect, isAnswered = true)
-                this.setBackgroundColor(MethodChecker.getColor(context, if(item.type.isCorrect) unifyR.color.Unify_GN400 else unifyR.color.Unify_RN500))
+                getIconOption(isCorrect = (item.type as PlayQuizOptionState.Answered).isCorrect, isAnswered = true)
+                this.setBackgroundColor(
+                    MethodChecker.getColor(
+                        context,
+                        if ((item.type as PlayQuizOptionState.Answered).isCorrect) unifyR.color.Unify_GN400 else unifyR.color.Unify_RN500
+                    )
+                )
             }
             /**
              * Other choices beside user's answer, if correct = icon is green and false is red
@@ -89,14 +96,18 @@ class QuizChoicesView : ConstraintLayout{
             is PlayQuizOptionState.Result -> {
                 tvQuestion.setTextColor(defaultFontColor)
                 loaderQuiz.hide()
-                getIconOption(isCorrect = item.type.isCorrect)
+                getIconOption(isCorrect = (item.type as PlayQuizOptionState.Result).isCorrect)
                 this.background = bgDrawable
             }
         }
         tvQuestion.text = item.question
     }
 
-    private fun getIconOption(alphabet: Char? = null, isCorrect: Boolean? = null, isAnswered: Boolean = false) {
+    private fun getIconOption(
+        alphabet: Char? = null,
+        isCorrect: Boolean? = null,
+        isAnswered: Boolean = false
+    ) {
         alphabet?.let {
             ivAlphabet.show()
             ivIcon.hide()
@@ -110,14 +121,15 @@ class QuizChoicesView : ConstraintLayout{
 
             val unifyDrawable = getIconUnifyDrawable(
                 context,
-                if(it) IconUnify.CHECK_CIRCLE else IconUnify.CLEAR,
+                if (it) IconUnify.CHECK_CIRCLE else IconUnify.CLEAR,
                 when {
-                    isAnswered -> MethodChecker.getColor(context,unifyR.color.Unify_N0)
-                    it -> MethodChecker.getColor(context,unifyR.color.Unify_GN400)
-                    else -> MethodChecker.getColor(context,unifyR.color.Unify_RN500)
+                    isAnswered -> MethodChecker.getColor(context, unifyR.color.Unify_N0)
+                    it -> MethodChecker.getColor(context, unifyR.color.Unify_GN400)
+                    else -> MethodChecker.getColor(context, unifyR.color.Unify_RN500)
                 }
             )
             ivIcon.setImageDrawable(unifyDrawable)
         }
     }
+
 }

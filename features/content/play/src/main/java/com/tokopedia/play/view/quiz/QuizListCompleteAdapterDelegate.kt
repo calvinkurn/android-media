@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
  * @author by astidhiyaa on 08/04/22

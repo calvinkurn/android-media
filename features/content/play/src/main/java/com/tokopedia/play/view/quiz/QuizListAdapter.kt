@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.quiz
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
  * @author by astidhiyaa on 08/04/22

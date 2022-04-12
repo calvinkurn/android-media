@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.R
 import com.tokopedia.play.view.quiz.QuizChoiceViewHolder
-import com.tokopedia.play.view.quiz.QuizChoicesUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play.view.quiz.QuizListAdapter
 import com.tokopedia.play.view.quiz.QuizOptionItemDecoration
 import com.tokopedia.play_common.view.game.GameHeaderView

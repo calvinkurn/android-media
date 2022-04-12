@@ -3,6 +3,7 @@ package com.tokopedia.play.view.quiz
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.R
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
 /**
  * @author by astidhiyaa on 08/04/22
