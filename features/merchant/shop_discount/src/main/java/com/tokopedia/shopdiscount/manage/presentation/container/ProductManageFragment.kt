@@ -246,17 +246,23 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private val onRecyclerViewScrollDown: () -> Unit = {
-        hideTickerWithAnimation()
-        binding?.cardView?.visible()
+        binding?.run {
+            hideWithAnimation(ticker)
+            hideWithAnimation(cardView)
+            hideWithAnimation(searchBar)
+        }
     }
 
     private val onRecyclerViewScrollUp: () -> Unit = {
-        val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
-        val shouldShowTicker = !isPreviouslyDismissed
-        if (shouldShowTicker){
-            showTickerWithAnimation()
+        binding?.run {
+            val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
+            val shouldShowTicker = !isPreviouslyDismissed
+            if (shouldShowTicker){
+                showWithAnimation(ticker)
+            }
+            showWithAnimation(cardView)
+            showWithAnimation(searchBar)
         }
-        binding?.cardView?.gone()
     }
 
     private fun displayTabs(tabs: List<PageTab>) {
@@ -306,34 +312,32 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
 
     }
-    private fun showTickerWithAnimation() {
-        binding?.run {
-            ticker.animate()
-                .translationY(BACK_TO_ORIGINAL_POSITION)
-                .alpha(ALPHA_VISIBLE)
-                .setDuration(ANIMATION_DURATION_IN_MILLIS)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        ticker.visible()
-                    }
-                })
-        }
+
+    private fun showWithAnimation(view: View) {
+        view.animate()
+            .translationY(BACK_TO_ORIGINAL_POSITION)
+            .alpha(ALPHA_VISIBLE)
+            .setDuration(ANIMATION_DURATION_IN_MILLIS)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    view.visible()
+                }
+            })
+
     }
 
-    private fun hideTickerWithAnimation() {
-        binding?.run {
-            ticker.animate()
-                .translationY(ticker.height.toFloat())
-                .alpha(ALPHA_INVISIBLE)
-                .setDuration(ANIMATION_DURATION_IN_MILLIS)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        super.onAnimationEnd(animation)
-                        ticker.gone()
-                    }
-                })
-        }
+    private fun hideWithAnimation(view: View) {
+        view.animate()
+            .translationY(view.height.toFloat())
+            .alpha(ALPHA_INVISIBLE)
+            .setDuration(ANIMATION_DURATION_IN_MILLIS)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    view.gone()
+                }
+            })
     }
 
     private fun getCurrentTabPosition(): Int {
