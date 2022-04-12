@@ -87,10 +87,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'mediapicker'
-    groupId = 'com.tokopedia.media'
+    artifactId = 'mediapicke-commonr'
+    groupId = 'com.tokopedia.picker.common'
     versionName = "0.0.2"
-    artifactName ="mediapicker"
+    artifactName ="mediapicker-common"
 }
 
 apply from: '../../../publish_local.gradle'
