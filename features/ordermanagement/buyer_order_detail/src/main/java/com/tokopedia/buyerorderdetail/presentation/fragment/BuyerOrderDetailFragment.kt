@@ -340,7 +340,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             }
         }
         emptyStateBuyerOrderDetail?.apply {
-
             emptyStateImageID.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
 
             setPrimaryCTAText(
