@@ -37,14 +37,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="00:12"
-            android:textColor="@color/Unify_NN600" />
+            android:textColor="@color/Unify_Static_White" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/separator_recording_duration"
+            android:text="@string/picker_separator_recording_duration"
             android:layout_marginStart="4dp"
-            android:textColor="@color/Unify_NN600" />
+            android:textColor="@color/Unify_Static_White" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_max_duration"
@@ -110,7 +110,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.picker.ui.widget.thumbnail.MediaThumbnailWidget
+    <com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
         android:id="@+id/img_thumbnail"
         android:layout_width="48dp"
         android:layout_height="48dp"

@@ -31,14 +31,14 @@
         tools:listitem="@layout/widget_media_thumbnail"
         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
 
-    <com.tokopedia.picker.ui.widget.drawerselector.DrawerSelectionWidget
+    <com.tokopedia.media.picker.ui.widget.drawerselector.DrawerSelectionWidget
         android:id="@+id/drawer_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:visibility="gone"
         app:backgroundColorPlaceHolder="@color/Unify_N0"
-        app:canReorder="true"
+        app:draggable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:placeholder="@drawable/picker_ic_placeholder_media_preview"

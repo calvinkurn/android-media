@@ -13,7 +13,7 @@
         android:layout_height="72dp"
         android:layout_gravity="center">
 
-        <com.tokopedia.picker.ui.widget.thumbnail.MediaThumbnailWidget
+        <com.tokopedia.media.picker.ui.widget.thumbnail.MediaThumbnailWidget
             android:id="@+id/img_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
@@ -24,6 +24,7 @@
             android:src="@drawable/picker_rect_grey_media" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_drag"
             android:layout_width="@dimen/unify_space_16"
             android:layout_height="@dimen/unify_space_16"
             android:layout_gravity="bottom|start"
