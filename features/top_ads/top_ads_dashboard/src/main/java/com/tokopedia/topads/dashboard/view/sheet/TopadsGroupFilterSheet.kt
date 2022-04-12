@@ -5,17 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import android.widget.LinearLayout
+import android.widget.RadioGroup
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.*
-import kotlinx.android.synthetic.main.topads_dash_filter_bottomsheet.view.*
 
 /**
  * Created by Pika on 3/6/20.
@@ -29,111 +29,141 @@ private const val SELECTED_placement_type_2 = 2;
 private const val SELECTED_placement_type_3 = 3;
 
 class TopadsGroupFilterSheet : BottomSheetUnify() {
+
+    private var adPlacementTitle: Typography? = null
+    private var adPlacement: LinearLayout? = null
+    private var semua: ChipsUnify? = null
+    private var search: ChipsUnify? = null
+    private var rekomendation: ChipsUnify? = null
+    private var statusTitle: Typography? = null
+    private var status: LinearLayout? = null
+    private var active: ChipsUnify? = null
+    private var tidakTampil: ChipsUnify? = null
+    private var tidakAktif: ChipsUnify? = null
+    private var sortFilter: RadioGroup? = null
+    private var submit: UnifyButton? = null
+
     var onSubmitClick: (() -> Unit)? = null
     private var filterCount = 0
     private var selectedStatus = SELECTED_STATUS_0
     private var selectedAdPlacement = SELECTED_placement_type_0
-    private var contentView: View? = null
-    private var showPlacementFilter : Boolean = false
+    private var showPlacementFilter: Boolean = false
 
     private lateinit var userSession: UserSessionInterface
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        contentView = View.inflate(context, R.layout.topads_dash_filter_bottomsheet, null)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val contentView = View.inflate(context, R.layout.topads_dash_filter_bottomsheet, null)
         setChild(contentView)
+        initView(contentView)
         setTitle(getString(R.string.topads_dash_filter_sheet_title))
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    private fun initView(view: View) {
+        adPlacementTitle = view.findViewById(R.id.adPlacement_title)
+        adPlacement = view.findViewById(R.id.adPlacement)
+        semua = view.findViewById(R.id.semua)
+        search = view.findViewById(R.id.search)
+        rekomendation = view.findViewById(R.id.rekomendation)
+        statusTitle = view.findViewById(R.id.status_title)
+        status = view.findViewById(R.id.status)
+        active = view.findViewById(R.id.active)
+        tidakTampil = view.findViewById(R.id.tidak_tampil)
+        tidakAktif = view.findViewById(R.id.tidak_aktif)
+        sortFilter = view.findViewById(R.id.sortFilter)
+        submit = view.findViewById(R.id.submit)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         userSession = UserSession(context)
-        view.status?.visibility = View.VISIBLE
-        view.status_title?.visibility = View.VISIBLE
+        status?.visibility = View.VISIBLE
+        statusTitle?.visibility = View.VISIBLE
 
 
-        if(showPlacementFilter) {
-            view.adPlacement_title?.show()
-            view.adPlacement?.show()
+        if (showPlacementFilter) {
+            adPlacementTitle?.show()
+            adPlacement?.show()
         } else {
-            view.adPlacement_title?.hide()
-            view.adPlacement?.hide()
+            adPlacementTitle?.hide()
+            adPlacement?.hide()
         }
 
         selectedAdPlacement = SELECTED_placement_type_0
         // for ad placement filter
-        view.semua?.setOnClickListener { v ->
-            if (v.semua.chipType == ChipsUnify.TYPE_NORMAL) {
-                v.semua.chipType = ChipsUnify.TYPE_SELECTED
+        semua?.setOnClickListener { v ->
+            if (semua?.chipType == ChipsUnify.TYPE_NORMAL) {
+                semua?.chipType = ChipsUnify.TYPE_SELECTED
                 selectedAdPlacement = SELECTED_placement_type_0
             } else {
-                v.semua.chipType = ChipsUnify.TYPE_NORMAL
+                semua?.chipType = ChipsUnify.TYPE_NORMAL
                 selectedAdPlacement = SELECTED_placement_type_0
             }
-            view.search?.chipType = ChipsUnify.TYPE_NORMAL
-            view.rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
+            search?.chipType = ChipsUnify.TYPE_NORMAL
+            rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
         }
-        view.search?.setOnClickListener { v ->
-            if (v.search.chipType == ChipsUnify.TYPE_NORMAL) {
-                v.search.chipType = ChipsUnify.TYPE_SELECTED
+        search?.setOnClickListener { v ->
+            if (search?.chipType == ChipsUnify.TYPE_NORMAL) {
+                search?.chipType = ChipsUnify.TYPE_SELECTED
                 selectedAdPlacement = SELECTED_placement_type_2
             } else {
-                v.search.chipType = ChipsUnify.TYPE_NORMAL
+                search?.chipType = ChipsUnify.TYPE_NORMAL
                 selectedAdPlacement = SELECTED_placement_type_0
             }
-            view.semua?.chipType = ChipsUnify.TYPE_NORMAL
-            view.rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
+            semua?.chipType = ChipsUnify.TYPE_NORMAL
+            rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
         }
-        view.rekomendation?.setOnClickListener { v ->
-            if (v.rekomendation.chipType == ChipsUnify.TYPE_NORMAL) {
-                v.rekomendation.chipType = ChipsUnify.TYPE_SELECTED
+        rekomendation?.setOnClickListener { v ->
+            if (rekomendation?.chipType == ChipsUnify.TYPE_NORMAL) {
+                rekomendation?.chipType = ChipsUnify.TYPE_SELECTED
                 selectedAdPlacement = SELECTED_placement_type_3
             } else {
-                v.rekomendation.chipType = ChipsUnify.TYPE_NORMAL
+                rekomendation?.chipType = ChipsUnify.TYPE_NORMAL
                 selectedAdPlacement = SELECTED_placement_type_0
             }
-            view.semua?.chipType = ChipsUnify.TYPE_NORMAL
-            view.search?.chipType = ChipsUnify.TYPE_NORMAL
+            semua?.chipType = ChipsUnify.TYPE_NORMAL
+            search?.chipType = ChipsUnify.TYPE_NORMAL
         }
 
-        view.active?.setOnClickListener { v ->
-            if (v.active.chipType == ChipsUnify.TYPE_NORMAL) {
-                v.active.chipType = ChipsUnify.TYPE_SELECTED
+        active?.setOnClickListener { v ->
+            if (active?.chipType == ChipsUnify.TYPE_NORMAL) {
+                active?.chipType = ChipsUnify.TYPE_SELECTED
                 selectedStatus = SELECTED_STATUS_1
             } else {
-                v.active.chipType = ChipsUnify.TYPE_NORMAL
+                active?.chipType = ChipsUnify.TYPE_NORMAL
                 selectedStatus = SELECTED_STATUS_0
             }
-            view.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
-            view.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
+            tidakAktif?.chipType = ChipsUnify.TYPE_NORMAL
+            tidakTampil?.chipType = ChipsUnify.TYPE_NORMAL
         }
-        view.tidak_tampil?.setOnClickListener { v ->
-            if (v.tidak_tampil.chipType == ChipsUnify.TYPE_NORMAL) {
-                v.tidak_tampil.chipType = ChipsUnify.TYPE_SELECTED
+        tidakTampil?.setOnClickListener { v ->
+            if (tidakTampil?.chipType == ChipsUnify.TYPE_NORMAL) {
+                tidakTampil?.chipType = ChipsUnify.TYPE_SELECTED
                 selectedStatus = SELECTED_STATUS_2
             } else {
-                v.tidak_tampil.chipType = ChipsUnify.TYPE_NORMAL
+                tidakTampil?.chipType = ChipsUnify.TYPE_NORMAL
                 selectedStatus = SELECTED_STATUS_0
             }
-            view.active?.chipType = ChipsUnify.TYPE_NORMAL
-            view.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
+            active?.chipType = ChipsUnify.TYPE_NORMAL
+            tidakAktif?.chipType = ChipsUnify.TYPE_NORMAL
         }
-        view.tidak_aktif?.setOnClickListener { v ->
-            if (v.tidak_aktif.chipType == ChipsUnify.TYPE_NORMAL) {
-                v.tidak_aktif.chipType = ChipsUnify.TYPE_SELECTED
+        tidakAktif?.setOnClickListener { v ->
+            if (tidakAktif?.chipType == ChipsUnify.TYPE_NORMAL) {
+                tidakAktif?.chipType = ChipsUnify.TYPE_SELECTED
                 selectedStatus = SELECTED_STATUS_3
             } else {
-                v.tidak_aktif.chipType = ChipsUnify.TYPE_NORMAL
+                tidakAktif?.chipType = ChipsUnify.TYPE_NORMAL
                 selectedStatus = SELECTED_STATUS_0
             }
-            view.active?.chipType = ChipsUnify.TYPE_NORMAL
-            view.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
+            active?.chipType = ChipsUnify.TYPE_NORMAL
+            tidakTampil?.chipType = ChipsUnify.TYPE_NORMAL
         }
-        view.submit.setOnClickListener { _ ->
+        submit?.setOnClickListener { _ ->
             filterCount = 0
             if (selectedStatus != 0)
                 filterCount++
-            if (view.sortFilter?.checkedRadioButtonId != -1)
+            if (sortFilter?.checkedRadioButtonId != -1)
                 filterCount++
             onSubmitClick?.invoke()
             dismiss()
@@ -151,12 +181,12 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
     }
 
     fun removeStatusFilter() {
-        view?.status?.visibility = View.GONE
-        view?.status_title?.visibility = View.GONE
+        status?.visibility = View.GONE
+        statusTitle?.visibility = View.GONE
     }
 
     fun getSelectedSortId(): String {
-        return when (view?.sortFilter?.checkedRadioButtonId) {
+        return when (sortFilter?.checkedRadioButtonId) {
             R.id.filter1 -> list[0]
             R.id.filter2 -> list[1]
             R.id.filter3 -> list[2]
@@ -166,7 +196,7 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         }
     }
 
-    fun getSelectedAdPlacementType() : Int {
+    fun getSelectedAdPlacementType(): Int {
         return selectedAdPlacement
     }
 
