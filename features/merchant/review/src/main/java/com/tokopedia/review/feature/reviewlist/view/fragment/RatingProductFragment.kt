@@ -198,6 +198,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
         initChipsFilter(view)
         initEmptyState()
         scrollRecyclerViewSendTracking()
+        observeLiveData()
+
     }
 
     override fun onDestroy() {
@@ -218,7 +220,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
 
     override fun onResume() {
         super.onResume()
-        observeLiveData()
+        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
         if (!isClickTrackingAlreadySent) {
             tracking.eventClickTabRatingProduct(userSession.shopId.orEmpty())
         }
@@ -318,7 +320,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             emptyStateReviewProduct.root.hide()
         }
         showLoading()
-        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
 
     }
 
@@ -387,6 +388,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                         )
                         searchBarPlaceholder = query
                         loadInitialData()
+                        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
                     }
                     return@setOnEditorActionListener true
                 }
@@ -404,6 +407,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             searchBarPlaceholder = getString(R.string.product_search)
         }
         loadInitialData()
+        viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
     }
 
     private fun observeLiveData() {
@@ -461,6 +466,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                     throwable.message.orEmpty()
                 )
                 loadInitialData()
+                viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
             }
         } else {
             onErrorLoadMoreToaster(
@@ -691,6 +698,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
+                    viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
                 })
         }
     }
@@ -819,6 +828,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             filterAllText =
                 ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
+            viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
             if (bottomSheetFilter?.isVisible == true) {
                 bottomSheetFilter?.dismiss()
             }
@@ -844,6 +855,8 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
+            viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
+
             if (bottomSheetSort?.isVisible == true) {
                 bottomSheetSort?.dismiss()
             }
