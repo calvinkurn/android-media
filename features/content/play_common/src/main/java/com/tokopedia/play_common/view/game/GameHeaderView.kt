@@ -13,6 +13,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGameHeaderBinding
+import com.tokopedia.play_common.util.extension.showKeyboard
 
 /**
  * Created By : Jonathan Darwin on March 30, 2022
@@ -98,15 +99,9 @@ class GameHeaderView : ConstraintLayout {
         binding.etPlayGameHeaderTitle.apply {
             if(isFocus) requestFocus()
             else clearFocus()
+
+            showKeyboard(isFocus)
         }
-
-        showKeyboard(isFocus)
-    }
-
-    private fun showKeyboard(isShow: Boolean) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (isShow) imm.showSoftInput(binding.etPlayGameHeaderTitle, InputMethodManager.SHOW_IMPLICIT)
-        else imm.hideSoftInputFromWindow(binding.etPlayGameHeaderTitle.windowToken, 0)
     }
 
     private fun setIcon() {

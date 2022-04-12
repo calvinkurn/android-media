@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewQuizGiftBinding
+import com.tokopedia.play_common.util.extension.showKeyboard
 import kotlinx.android.synthetic.main.view_quiz_gift.view.*
 import kotlin.math.max
 
@@ -161,14 +162,8 @@ class QuizGiftView : ConstraintLayout {
         bindingGiftInput.etBroQuizGift.apply {
             if(isFocus) requestFocus()
             else clearFocus()
+
+            showKeyboard(isFocus)
         }
-
-        showKeyboard(isFocus)
-    }
-
-    private fun showKeyboard(isShow: Boolean) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (isShow) imm.showSoftInput(bindingGiftInput.etBroQuizGift, InputMethodManager.SHOW_IMPLICIT)
-        else imm.hideSoftInputFromWindow(bindingGiftInput.etBroQuizGift.windowToken, 0)
     }
 }
