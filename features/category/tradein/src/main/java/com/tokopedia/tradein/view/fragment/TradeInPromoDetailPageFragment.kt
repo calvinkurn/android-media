@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -62,9 +62,9 @@ class TradeInPromoDetailPageFragment : BaseViewModelFragment<TradeInPromoDetailP
         })
         viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if (it)
-                view?.findViewById<RelativeLayout>(R.id.progress_bar_layout)?.show()
+                view?.findViewById<LinearLayout>(R.id.progress_bar_layout)?.show()
             else
-                view?.findViewById<RelativeLayout>(R.id.progress_bar_layout)?.hide()
+                view?.findViewById<LinearLayout>(R.id.progress_bar_layout)?.hide()
         })
         viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
             view?.findViewById<GlobalError>(R.id.promo_global_error)?.run {

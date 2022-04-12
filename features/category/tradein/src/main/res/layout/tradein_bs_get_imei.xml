@@ -58,17 +58,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/loader_parent"
         android:layout_width="match_parent"
         android:background="@color/Unify_Background"
         android:visibility="gone"
+        android:gravity="center"
         android:layout_height="match_parent">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
+            android:layout_height="40dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

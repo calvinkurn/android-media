@@ -224,20 +224,20 @@ Diskon Hingga Rp2jt di Tokopedia" />
                 app:typographyWeight="reguler"
                 tools:text="1. Diskon 10% hingga Rp2000.000.\n2. Promo berlaku untuk 10 pembeli pertama.\n3. Promo memiliki minimum transaksi Rp200.000.\n4. Promo tidak berlaku untuk pembayaran via OVO Points.\n5. Promo hanya berlaku di Aplikasi Tokopedia.\n6. Satu pengguna Tokopedia hanya bisa menggunakan promo in sebanyak 1 (satu) kali.\n7. Masa berlaku kupon 7 (tujuh) hari setelah penukaran." />
 
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/progress_bar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:background="@color/Unify_Background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:gravity="center"
                 tools:visibility="gone">
 
                 <com.tokopedia.unifycomponents.LoaderUnify
                     android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_centerInParent="true" />
-            </RelativeLayout>
+                    android:layout_height="50dp" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
