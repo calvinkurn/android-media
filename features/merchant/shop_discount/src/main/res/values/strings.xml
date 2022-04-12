@@ -90,4 +90,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--Shop discount manage discount-->
+    <string name="shop_discount_manage_discount_manage_toolbar_title">Atur Diskon</string>
+    <string name="shop_discount_manage_discount_edit_toolbar_title">Ubah Diskon</string>
+    <string name="shop_discount_manage_discount_save_button">Simpan</string>
+    <string name="shop_discount_manage_discount_displayed_price_format">%1s - %2s</string>
+    <string name="shop_discount_manage_discount_percent_format_non_range">%1s\%%</string>
+    <string name="shop_discount_manage_discount_percent_format_range">%1s-%2s\%%</string>
+    <string name="shop_discount_manage_discount_original_price_format">%1s-%2s</string>
+    <string name="shop_discount_manage_discount_total_variant_format">%1s Varian Produk</string>
+    <string name="shop_discount_manage_discount_total_discounted_variant_format">%1s Varian Diskon</string>
+    <string name="shop_discount_manage_discount_total_stock_default_format">Total stok: <![CDATA[<b>%1s</b>]]></string>
+    <string name="shop_discount_manage_discount_total_stock_non_variant_multi_loc_format">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+    <string name="shop_discount_manage_discount_total_stock_variant_multi_loc_format">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
+    <string name="shop_discount_manage_discount_bulk_manage_label_format">Atur Sekaligus %1s Produk</string>
+    <string name="shop_discount_manage_discount_delete_product_message">Produk Berhasil Dihapus</string>
+    <string name="shop_discount_manage_discount_submit_product_message">Diskon produk berhasil diaktifkan</string>
 </resources>

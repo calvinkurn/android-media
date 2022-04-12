@@ -3,6 +3,7 @@ package com.tokopedia.shopdiscount.product_detail.presentation.adapter
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.shopdiscount.common.adapter.ShopDiscountDiffUtilCallback
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailListGlobalErrorUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailShimmeringUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
@@ -43,7 +44,7 @@ class ShopDiscountProductDetailAdapter(
     }
 
     private fun submitList(newList: List<Visitable<*>>) {
-        val diffCallback = ShopDiscountProductDetailDiffUtilCallback(visitables, newList)
+        val diffCallback = ShopDiscountDiffUtilCallback(visitables, newList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(newList)
