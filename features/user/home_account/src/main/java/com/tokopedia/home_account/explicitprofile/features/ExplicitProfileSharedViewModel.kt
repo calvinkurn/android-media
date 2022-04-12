@@ -13,7 +13,7 @@ class ExplicitProfileSharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _userAnswers = MutableSharedFlow<TemplateDataModel>()
+    private val _userAnswers = MutableSharedFlow<TemplateDataModel>(extraBufferCapacity = 50, replay = 1)
     val userAnswers = _userAnswers.asSharedFlow()
 
     private val defaultUserAnswers: MutableList<TemplateDataModel> = mutableListOf()
@@ -52,7 +52,7 @@ class ExplicitProfileSharedViewModel @Inject constructor(
                 it.id == templateDataModel.id
             }?.sections = templateDataModel.sections
 
-            _userAnswers.emit(templateDataModel)
+            _userAnswers.tryEmit(templateDataModel)
         }
     }
 

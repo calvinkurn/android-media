@@ -38,11 +38,7 @@ class CategoryFragment: BaseDaggerFragment(), SectionViewHolder.SectionListener 
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-
-    /**
-     * [key] used for unique instance viewModel
-     */
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(key, CategoryViewModel::class.java) }
     private val viewModelShared by lazy { viewModelFragmentProvider.get(ExplicitProfileSharedViewModel::class.java) }
 

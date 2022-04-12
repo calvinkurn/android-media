@@ -37,7 +37,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(ExplicitProfileViewModel::class.java) }
     private val viewModelShared by lazy { viewModelFragmentProvider.get(ExplicitProfileSharedViewModel::class.java) }
 
@@ -105,7 +105,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
             }
         }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModelShared.userAnswers.collectLatest {
                 onSelectionAnswersChange(it)
             }
