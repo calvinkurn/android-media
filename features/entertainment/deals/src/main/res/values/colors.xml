@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="deals_search_divider_color">#e5e7e9</color>
-    <color name="deal_search_more_brand">#03ac0e</color>
-    <color name="deal_product_text_color">#e131353b</color>
-    <color name="deal_location_text_color">#f531353b</color>
-    <color name="deal_location_chips_color">#f3f4f5</color>
-    <color name="deal_grey_300">#e0e0e0</color>
-    <color name="deal_location_grey_text">#7031353b</color>
-    <color name="deal_location_type">#9e9fa3</color>
     <color name="deal_dms_bg_scrim_voucher_start_color">#CC0D0D0D</color>
     <color name="deal_dms_bg_scrim_voucher_center_color">#800D0D0D</color>
     <color name="deal_dms_bg_scrim_voucher_end_color">#000D0D0D</color>
-    <color name="deal_brand_detail_transparent">#0000ffff</color>
+    <color name="dms_deal_brand_detail_transparent">#0000ffff</color>
 </resources>
