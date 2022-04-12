@@ -109,7 +109,9 @@ class ReviewHistoryFragment :
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ReviewHistoryUiModel, ReviewHistoryAdapterTypeFactory> {
-        return ReviewHistoryAdapter(adapterTypeFactory)
+        return ReviewHistoryAdapter(adapterTypeFactory).apply {
+            setOnAdapterInteractionListener(this@ReviewHistoryFragment)
+        }
     }
 
     override fun getScreenName(): String {
