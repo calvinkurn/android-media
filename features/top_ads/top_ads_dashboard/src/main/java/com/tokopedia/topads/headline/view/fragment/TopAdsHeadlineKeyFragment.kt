@@ -365,7 +365,6 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
         adapter.items.add(KeywordEmptyModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
             adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
-            btn_submit?.isEnabled = false
         } else {
             adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
         }
