@@ -459,21 +459,22 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun switchService(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-            val currentServiceType = localCacheModel.service_type
-
-            val serviceType = if (
-                currentServiceType == ServiceType.NOW_15M ||
-                currentServiceType == ServiceType.NOW_OOC
-            ) {
-                ServiceType.NOW_2H
-            } else {
-                ServiceType.NOW_15M
-            }
-
-            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
+            val currentServiceType = targetServiceType(localCacheModel.service_type)
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, currentServiceType)
             _setUserPreference.postValue(Success(userPreference))
         }) {
             _setUserPreference.postValue(Fail(it))
+        }
+    }
+
+    fun targetServiceType(serviceType: String): String {
+        return if (
+            serviceType == ServiceType.NOW_15M ||
+            serviceType == ServiceType.NOW_OOC
+        ) {
+            ServiceType.NOW_2H
+        } else {
+            ServiceType.NOW_15M
         }
     }
 

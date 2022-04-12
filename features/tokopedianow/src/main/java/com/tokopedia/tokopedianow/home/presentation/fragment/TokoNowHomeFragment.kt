@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.linker.model.LinkerData.WEBVIEW_TYPE
@@ -1642,7 +1641,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun createHomeSwitcherListener(): HomeSwitcherListener {
-        return HomeSwitcherListener(requireContext(), viewModelTokoNow)
+        return HomeSwitcherListener(requireContext(), viewModelTokoNow, userSession, analytics)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

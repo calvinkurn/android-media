@@ -28,9 +28,11 @@ class HomeSwitcherViewHolder(
             ivIcon.setImageDrawable(ContextCompat.getDrawable(itemView.context, uiModel.icon))
             root.setOnClickListener { listener?.onClickSwitcher() }
         }
+        listener?.onImpressSwitcher()
     }
 
     interface HomeSwitcherListener {
         fun onClickSwitcher()
+        fun onImpressSwitcher()
     }
 }
