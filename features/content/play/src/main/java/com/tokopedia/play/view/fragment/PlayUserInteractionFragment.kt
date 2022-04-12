@@ -122,7 +122,8 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveWinnerBadgeViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        KebabMenuViewComponent.Listener
+        KebabMenuViewComponent.Listener,
+        InteractiveActiveViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -150,7 +151,8 @@ class PlayUserInteractionFragment @Inject constructor(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
+    private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     /**
      * Interactive
@@ -1671,6 +1673,13 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+    }
+
+    /***
+     * Interactive View
+     */
+    override fun onInteractiveWidgetClicked(view: InteractiveActiveViewComponent) {
+        //TODO("Not yet implemented")
     }
 
     companion object {
