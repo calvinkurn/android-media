@@ -9,8 +9,6 @@
     <string name="deals_homepage_new_deals_tag">Terbaru</string>
     <string name="deals_homepage_new_halal_tag">Halal</string>
     <string name="deals_homepage_new_hot_deals_tag">Hot Deals</string>
-    <string name="deals_homepage_new_only_grab_driver_tag">Khusus Grab Driver</string>
-    <string name="deals_homepage_new_only_for_grab_tag">Khusus Pengguna Grab</string>
     <string name="deals_homepage_food_section_title">Pilih jenis kuliner kesukaanmu</string>
     <string name="deals_homepage_food_section_subtitle">Mau makan apa aja, ada!</string>
     <string name="deals_homepage_place_popular_section_title">Voucher di tempat populer</string>
@@ -36,7 +34,6 @@
     <string name="deals_detect_current_location">Gunakan lokasi saya saat ini</string>
     <string name="deals_search_input_hint_location">Lokasi populer, wilayah, atau kota</string>
     <string name="deals_location_bottomsheet_title">Ganti lokasi</string>
-    <string name="deals_use_current_location">Tokopedia Would Like To Use Your Current Location</string>
     <string name="deals_location_popular_cities_error">Terjadi Kesalahan, tidak dapat menemukan daftar kota populer. Silakan coba lagi nanti.</string>
     <string name="deals_location_popular_location_error">Terjadi Kesalahan, tidak dapat menemukan daftar lokasi populer. Silakan coba lagi nanti.</string>
     <string name="deals_location_landmark_error">Terjadi Kesalahan, tidak dapat menemukan daftar landmark. Silakan coba lagi nanti.</string>
@@ -44,7 +41,6 @@
     <string name="deals_location_landmark_more_error">Terjadi Kesalahan, tidak dapat menemukan daftar lanjutan landmark. Silakan coba lagi nanti.</string>
     <string name="deals_search_location_error">Terjadi Kesalahan, tidak dapat menemukan pencarian. Silakan coba lagi nanti.</string>
     <string name="deals_search_location_more_error">Terjadi Kesalahan, tidak dapat memuat hasil lanjutan pencarian. Silakan coba lagi nanti.</string>
-    <string name="deals_current_location_error">Tidak dapat mendapatkan lokasi saat ini.</string>
     <string name="deals_menu_coach_mark_title">Cek e-voucher kamu</string>
     <string name="deals_menu_coach_mark_description">Sudah beli voucher? Lihat cara pakai dan redeem voucher kamu di sini!</string>
     <string name="deals_popular_place_coach_mark_title">Pilihan voucher di tempat populer</string>
