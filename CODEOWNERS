@@ -186,6 +186,8 @@
 /features/media/media-common/			                @tokopedia/android-minionkevin-dev
 /features/media/medialoader/                            @tokopedia/android-minionkevin-dev
 /features/media/live-broadcaster/                       @tokopedia/android-minionkevin-dev
+/features/media/mediapicker/                            @tokopedia/android-minionkevin-dev
+/features/media/mediapicker-common/                     @tokopedia/android-minionkevin-dev
 
 /features/user/chatbot/                         		@tokopedia/android-minionyoda-dev
 /features/user/chatbot_no_op/                   		@tokopedia/android-minionkevin-dev
