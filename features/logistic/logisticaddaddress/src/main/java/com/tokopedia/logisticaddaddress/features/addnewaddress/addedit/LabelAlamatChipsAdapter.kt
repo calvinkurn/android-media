@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.chips_unify_item.view.*
 class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
     : RecyclerView.Adapter<LabelAlamatChipsAdapter.ViewHolder>() {
 
-    private val labelAlamatList = mutableListOf<String>()
+    private val labelAlamatList = mutableListOf<Pair<String, Boolean>>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.chips_unify_item, parent, false))
@@ -28,20 +28,20 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val ctx = holder.itemView.context
+        val label = labelAlamatList[position]
         holder.itemView.chips_item.run {
-            chipText = labelAlamatList[position]
-            chipType = ChipsUnify.TYPE_NORMAL
+            chipText = label.first
+            chipType = if (!label.second) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
             chipSize = ChipsUnify.SIZE_MEDIUM
             setOnClickListener {
-                chipType = ChipsUnify.TYPE_SELECTED
                 labelAlamatList.getOrNull(position)?.let {
-                    actionListener.onLabelAlamatChipClicked(it)
+                    actionListener.onLabelAlamatChipClicked(it.first)
                 }
             }
         }
     }
 
-    fun submitList(addressLabels: List<String>) {
+    fun submitList(addressLabels: List<Pair<String, Boolean>>) {
         labelAlamatList.clear()
         labelAlamatList.addAll(addressLabels)
         notifyDataSetChanged()

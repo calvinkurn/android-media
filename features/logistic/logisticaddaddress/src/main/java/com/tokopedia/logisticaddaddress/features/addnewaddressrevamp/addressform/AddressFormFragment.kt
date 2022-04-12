@@ -73,7 +73,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentDistrictName: String?  = ""
-    private var labelAlamatList: Array<String> = emptyArray()
+    private var labelAlamatList: Array<Pair<String, Boolean>> = emptyArray()
     private var staticDimen8dp: Int? = 0
     private var isPositiveFlow: Boolean = true
     /*To differentiate user pinpoint on ANA Negative*/
@@ -974,9 +974,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                     override fun afterTextChanged(s: Editable) {
                         val filterList = labelAlamatList.filter {
-                            it.contains("$s", true)
+                            it.first.contains("$s", true)
                         }
-                        labelAlamatChipsAdapter.submitList(filterList)
+                        if (!isEdit) {
+                            labelAlamatChipsAdapter.submitList(filterList)
+                        }
+                        else {
+                            if (s.toString().isNotEmpty() && filterList.isEmpty()) {
+                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.GONE
+                            } else {
+                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
+                                labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
+                            }
+                        }
+
                     }
                 })
                 setOnTouchListener { view, event ->
@@ -1010,9 +1021,19 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                     override fun afterTextChanged(s: Editable) {
                         val filterList = labelAlamatList.filter {
-                            it.contains("$s", true)
+                            it.first.contains("$s", true)
                         }
-                        labelAlamatChipsAdapter.submitList(filterList)
+                        if (!isEdit) {
+                            labelAlamatChipsAdapter.submitList(filterList)
+                        }
+                        else {
+                            if (s.toString().isNotEmpty() && filterList.isEmpty()) {
+                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.GONE
+                            } else {
+                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
+                                labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
+                            }
+                        }
                     }
                 })
                 setOnTouchListener { view, event ->
@@ -1033,7 +1054,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun showLabelAlamatList() {
         val res: Resources = resources
-        labelAlamatList = res.getStringArray(R.array.labelAlamatList)
+        labelAlamatList = res.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
 
         if (isPositiveFlow) binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
         else binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
@@ -1135,6 +1156,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
+        val currentLabel = labelAlamatList
+        labelAlamatList = currentLabel.map { item -> item.copy(second = item.first == labelAlamat) }.toTypedArray()
         binding?.run {
             if (isPositiveFlow) {
                 if (!isEdit) {

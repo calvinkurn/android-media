@@ -84,7 +84,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private val MINIMUM_CHARACTER = 9
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
-    private var labelAlamatList: Array<String> = emptyArray()
+    private var labelAlamatList: Array<Pair<String, Boolean>> = emptyArray()
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
     private var isFullFlow: Boolean = true
@@ -404,7 +404,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
                 override fun afterTextChanged(s: Editable) {
                     val filterList = labelAlamatList.filter {
-                        it.contains("$s", true)
+                        it.first.contains("$s", true)
                     }
                     labelAlamatChipsAdapter.submitList(filterList)
                 }
@@ -816,7 +816,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showLabelAlamatList() {
         val res: Resources = resources
-        labelAlamatList = res.getStringArray(R.array.labelAlamatList)
+        labelAlamatList = res.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
 
         rv_label_alamat_chips.visibility = View.VISIBLE
         ViewCompat.setLayoutDirection(rv_label_alamat_chips, ViewCompat.LAYOUT_DIRECTION_LTR)
