@@ -192,7 +192,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 saveDataModel = addressDataFromPinpoint
                 currentKotaKecamatan = kotaKecamatanFromEditPinpoint
                 binding?.formAddressNegative?.etKotaKecamatan?.textFieldInput?.setText(currentKotaKecamatan)
-                binding?.cardAddress?.addressDistrict?.text = currentKotaKecamatan
+                binding?.cardAddressPinpoint?.addressDistrict?.text = currentKotaKecamatan
                 saveDataModel?.let {
                     if (it.latitude.isNotEmpty() || it.longitude.isNotEmpty()) {
                         currentLat = it.latitude.toDouble()
@@ -402,8 +402,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formattedAddress = "${data?.districtName}, ${data?.cityName}, ${data?.provinceName}"
                 showPositiveLayout()
 
-                cardAddress.addressDistrict.text = formattedAddress
-                cardAddress.tvPinpointTitle.visibility = View.VISIBLE
+                cardAddressPinpoint.addressDistrict.text = formattedAddress
 
                 formAddress.etLabel.textFieldInput.setText("Rumah")
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
@@ -501,13 +500,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             showPositiveLayout()
             binding?.run {
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
-                cardAddress.btnChange.visibility = View.VISIBLE
-                cardAddress.btnChange.setOnClickListener {
+                cardAddressPinpoint.btnChange.visibility = View.VISIBLE
+                cardAddressPinpoint.btnChange.setOnClickListener {
                     goToPinpointPage()
                     EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
                 }
+                cardAddressPinpoint.tvPinpointTitle.visibility = View.VISIBLE
 
-                cardAddress.addressDistrict.text = formattedAddress
+                cardAddressPinpoint.addressDistrict.text = formattedAddress
                 formAddress.etAlamatNew.textFieldInput.setText(addressDetail)
                 formAddress.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddress.etLabel.textFieldInput.setText(data.addrName)
@@ -527,7 +527,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun showPositiveLayout() {
         binding?.run {
-            cardAddress.root.visible()
+            cardAddressPinpoint.root.visible()
             formAddress.root.visible()
             formAddressNegative.root.gone()
             cardAddressNegative.root.gone()
@@ -536,7 +536,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun showNegativeLayout() {
         binding?.run {
-            cardAddress.root.gone()
+            cardAddressPinpoint.root.gone()
             formAddress.root.gone()
             formAddressNegative.root.visible()
             cardAddressNegative.root.visible()

@@ -25,7 +25,7 @@
             android:visibility="gone">
 
             <include
-                android:id="@+id/card_address"
+                android:id="@+id/card_address_discom"
                 layout="@layout/card_address_new_loc" />
 
             <com.tokopedia.unifycomponents.TextFieldUnify
