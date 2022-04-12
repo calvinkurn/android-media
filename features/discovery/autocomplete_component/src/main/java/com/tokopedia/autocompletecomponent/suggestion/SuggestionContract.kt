@@ -72,6 +72,7 @@ interface SuggestionContract {
 
         fun trackClickChip(
             eventLabel: String,
+            dimension90: String,
             childItem: BaseSuggestionDataView.ChildItem,
         )
 
