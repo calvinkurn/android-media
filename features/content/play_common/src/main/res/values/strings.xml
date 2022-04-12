@@ -25,4 +25,5 @@
 
     <!-- Giveaway -->
     <string name="play_giveaway_tap_info">Tap terus!</string>
+    <string name="play_giveaway_end">Berakhir</string>
 </resources>

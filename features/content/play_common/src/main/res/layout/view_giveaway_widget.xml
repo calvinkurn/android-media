@@ -34,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_engagement_timer_info"
-            app:timer_unify_single_text="@string/play_common_widget_interactive_end"
+            app:timer_unify_single_text="@string/play_giveaway_end"
             app:timer_unify_single_type="second"
             app:timer_unify_single_variant="main"
             tools:timer_unify_single_remainingMinutes="10"
