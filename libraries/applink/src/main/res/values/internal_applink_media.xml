@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- production -->
+    <string name="host_media_picker" translatable="false">/media-picker</string>
+    <string name="host_media_picker_album" translatable="false">/media-picker-album</string>
+    <string name="host_media_picker_preview" translatable="false">/media-picker-preview</string>
+
+    <!-- debug -->
+    <string name="host_debug_media_picker" translatable="false">/debug-media-picker</string>
+</resources>

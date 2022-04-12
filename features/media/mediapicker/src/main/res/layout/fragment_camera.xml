@@ -2,13 +2,44 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <View
+        android:id="@+id/toolbar_background"
+        android:background="@drawable/bg_gradient_nav_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:elevation="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"/>
+
+    <include layout="@layout/ui_component_camera_preview"/>
+
+    <View
+        android:id="@+id/container_blink"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.4"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <RelativeLayout
+        android:background="@drawable/bg_gradient_camera_control"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Camera"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingTop="@dimen/picker_page_margin_top"
+        android:paddingBottom="@dimen/picker_page_margin_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <include layout="@layout/ui_component_camera_controller" />
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

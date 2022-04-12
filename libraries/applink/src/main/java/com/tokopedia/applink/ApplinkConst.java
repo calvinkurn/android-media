@@ -685,17 +685,14 @@ public interface ApplinkConst {
     }
 
     interface MediaPicker {
-        String PARAM_PAGE = "page";
-        String VALUE_PAGE_CAMERA = "camera";
-        String VALUE_PAGE_GALLERY = "gallery";
+        String MEDIA_PICKER = "tokopedia://media-picker";
+        String MEDIA_PICKER_PREVIEW = "tokopedia://media-picker-preview";
 
-        String PARAM_MODE = "mode";
-        String VALUE_MODE_IMAGE = "image";
-        String VALUE_MODE_VIDEO = "video";
+        // this param will determine which page should be landed first
+        String PARAM_LANDING_PAGE = "start";
 
-        String PARAM_SELECTION = "type";
-        String VALUE_TYPE_SINGLE = "single";
-        String VALUE_TYPE_MULTIPLE = "multiple";
+        String VALUE_CAMERA_PAGE = "0"; // camera page
+        String VALUE_GALLERY_PAGE = "1"; // gallery page
     }
 
     interface GeneralInfo {

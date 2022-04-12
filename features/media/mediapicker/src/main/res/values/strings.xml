@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    page title-->
+    <string name="picker_title_permission">Izin Akses</string>
+    <string name="picker_title_camera">Camera</string>
+    <string name="picker_title_gallery">Gallery</string>
+    <string name="picker_toolbar_album_title">Pilih Album</string>
+    <string name="picker_toolbar_preview_title">Preview</string>
+
+    <string name="picker_title_gallery_permission">Izin akses galeri kamu, ya.</string>
+    <string name="picker_title_camera_photo_permission">Izin akses kamera kamu, ya.</string>
+    <string name="picker_title_camera_video_permission">Izin akses kamera &#38; mikrofon kamu, ya.</string>
+    <string name="picker_title_common_permission">Izin akses kamera, mikrofon &#38; galeri kamu, ya.</string>
+
+<!--    dialog title-->
+    <string name="picker_title_deletion">Yakin ingin hapus media?</string>
+
+<!--    action button -->
+    <string name="picker_title_all_media">Semua Media</string>
+    <string name="picker_button_upload">Upload</string>
+    <string name="picker_button_cancel">Batal</string>
+    <string name="picker_button_retake_common">Pilih Ulang</string>
+    <string name="picker_button_retake_video">Rekam Video Ulang</string>
+    <string name="picker_button_retake_image">Ambil Gambar Ulang</string>
+    <string name="picker_button_activation">Aktifkan</string>
+
+    <string name="picker_button_delete_confirm">Ya, Hapus</string>
+
+<!--    menus-->
+    <string name="picker_camera_picture_mode">PHOTO</string>
+    <string name="picker_camera_video_mode">VIDEO</string>
+
+    <string name="picker_permission_camera">Aktifkan akses kamera</string>
+    <string name="picker_permission_microphone">Aktifkan akses mikrofon</string>
+    <string name="picker_permission_gallery">Aktifkan akses gallery</string>
+
+<!--    message-->
+    <string name="picker_page_source_not_found">[Dev] PageSource tidak ditemukan, silahkan tambahkan di PickerParam builder.</string>
+
+    <string name="picker_deletion_message">Kalau dihapus, media yang kamu ambil akan hilang karena belum disimpan di hp-mu.</string>
+    <string name="picker_storage_threshold_message">Memori HP-mu kurang dari %1$d MB. Biar bisa rekam &#38; simpan video, hapus beberapa media di galerimu.</string>
+    <string name="picker_storage_fail_video_record">Video belum tersimpan, memori HP-mu tidak cukup. Hapus dulu beberapa media di galeri &#38; rekam ulang.</string>
+
+    <string name="picker_message_camera_photo_permission">Biar kamu bisa ambil foto atau rekam video, kamu perlu aktifkan akses kamera HP-mu.</string>
+    <string name="picker_message_camera_video_permission">Biar saat rekam video ada suaranya, kamu perlu aktifkan akses kamera dan mikrofon di HP-mu.</string>
+    <string name="picker_message_gallery_permission">Biar kamu lebih mudah untuk pilih foto atau video, kamu perlu aktifkan akses galeri HP-mu.</string>
+    <string name="picker_message_common_permission">Biar bisa ambil foto, rekam video, dan pilih media, kamu perlu aktifkan akses kamera, mikrofon &#38; galeri di HP-mu.</string>
+
+    <string name="picker_selection_limit_message">Kamu hanya bisa pilih maksimal %1$d media.</string>
+    <string name="picker_selection_limit_video">Kamu hanya bisa pilih maksimal %1$d video.</string>
+
+    <string name="picker_capture_limit_photo">Kamu hanya bisa mengambil maksimal %1$d foto.</string>
+    <string name="picker_capture_limit_video">Kamu hanya bisa merekam maksimal %1$d video.</string>
+
+    <string name="picker_video_duration_max_limit">Durasi video yang dipilih maksimal %1$s pas.</string>
+    <string name="picker_video_duration_min_limit">Durasi video minimal harus %1$d detik.</string>
+    <string name="picker_video_max_size">Ukuran video maksimal %1$d MB.</string>
+
+    <string name="picker_image_res_max_limit">Ukuran foto maksimal %1$d x %1$d px.</string>
+    <string name="picker_image_res_min_limit">Ukuran foto minimal %1$d x %1$d px.</string>
+    <string name="picker_image_max_size">Ukuran foto maksimal %1$d MB.</string>
+
+<!--    special char-->
+    <string name="picker_album_subtitle">%1$d Media</string>
+    <string name="picker_separator_recording_duration">/</string>
+
+    <string name="picker_video_duration_max_limit_sec">detik</string>
+    <string name="picker_video_duration_max_limit_min">menit</string>
+</resources>

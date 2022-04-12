@@ -118,6 +118,4 @@
     <string name="path_sellerapp_notification" translatable="false">sellerinfo</string>
     <string name="path_sellerapp_search" translatable="false">seller-search</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
-
-    <string name="host_media_picker" translatable="false">/media-picker</string>
 </resources>
