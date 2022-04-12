@@ -3,22 +3,21 @@ package com.tokopedia.play_common.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.LinearGradient
+import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.Size
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.DrawableImageViewTarget
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -101,4 +100,12 @@ suspend fun Context.getBitmapFromUrl(
                 )
             } else it
         }.submit()
+}
+
+fun TextView.setTextGradient(colors: IntArray) {
+    val width = paint.measureText(text.toString())
+    setTextColor(colors.first())
+    paint.shader = LinearGradient(
+        0f, 0f, width, textSize, colors, null, Shader.TileMode.REPEAT
+    )
 }
