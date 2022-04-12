@@ -19,7 +19,7 @@ import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.payloadProcessor.InAppPayloadPreprocessorUseCase
-import com.tokopedia.notifications.payloadProcessor.PushPayloadPreProcessorUseCase
+import com.tokopedia.notifications.payloadProcessor.NotificationPayloadPreProcessorUseCase
 import com.tokopedia.notifications.push.PushController
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
@@ -249,7 +249,7 @@ class CMPushNotificationManager : CoroutineScope {
     }
 
     private fun handleNotificationFCMPayload(map: Map<String, String>) {
-        PushPayloadPreProcessorUseCase().getBaseNotificationModel(map,
+        NotificationPayloadPreProcessorUseCase().getBaseNotificationModel(map,
             onSuccess = { baseNotificationModel, advanceTargetingData ->
                 PushController(applicationContext).handleProcessedPushPayload(aidlApiBundle,
                     baseNotificationModel, advanceTargetingData)
@@ -259,7 +259,7 @@ class CMPushNotificationManager : CoroutineScope {
     }
 
     fun handleNotificationJsonPayload(payloadString: String, isAmplification: Boolean) {
-        PushPayloadPreProcessorUseCase().getBaseNotificationModel(
+        NotificationPayloadPreProcessorUseCase().getBaseNotificationModel(
             payloadString, isAmplification,
             onSuccess = { baseNotificationModel, advanceTargetingData ->
                 PushController(applicationContext).handleProcessedPushPayload(aidlApiBundle,

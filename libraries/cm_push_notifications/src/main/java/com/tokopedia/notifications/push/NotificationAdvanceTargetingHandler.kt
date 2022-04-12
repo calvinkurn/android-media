@@ -7,7 +7,7 @@ import com.tokopedia.notification.common.utils.NotificationValidationManager
 import com.tokopedia.notifications.model.AdvanceTargetingData
 import com.tokopedia.notifications.model.BaseNotificationModel
 
-class PushAdvanceTargetingHandler {
+class NotificationAdvanceTargetingHandler {
 
     fun checkForValidityAndAdvanceTargeting(
         applicationContext: Context,

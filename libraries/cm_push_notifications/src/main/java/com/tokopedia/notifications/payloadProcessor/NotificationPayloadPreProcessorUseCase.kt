@@ -9,7 +9,7 @@ import com.tokopedia.notifications.model.AdvanceTargetingData
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.SerializedNotificationData
 
-class PushPayloadPreProcessorUseCase : PayloadPreProcessor() {
+class NotificationPayloadPreProcessorUseCase : PayloadPreProcessor() {
 
     private val gsonExcludeWithoutExpose: Gson by lazy {
         GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()

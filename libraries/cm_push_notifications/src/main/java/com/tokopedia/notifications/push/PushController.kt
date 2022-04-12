@@ -42,8 +42,8 @@ class PushController(val context: Context) : CoroutineScope {
     fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
                                    baseNotificationModel: BaseNotificationModel,
                                    advanceTargetingData: AdvanceTargetingData){
-        postEventForLivePush(baseNotificationModel)
-        PushAdvanceTargetingHandler().checkForValidityAndAdvanceTargeting(
+        postEventForLiveNotification(baseNotificationModel)
+        NotificationAdvanceTargetingHandler().checkForValidityAndAdvanceTargeting(
             context.applicationContext,
             aidlApiBundle,
             baseNotificationModel,
@@ -194,7 +194,7 @@ class PushController(val context: Context) : CoroutineScope {
         context.startActivities(arrayOf(intentHome, intent))
     }
 
-    private fun postEventForLivePush(baseNotificationModel: BaseNotificationModel){
+    private fun postEventForLiveNotification(baseNotificationModel: BaseNotificationModel){
         if (baseNotificationModel.notificationMode == NotificationMode.OFFLINE) return
         if (baseNotificationModel.type == CMConstant.NotificationType.SILENT_PUSH) {
             IrisAnalyticsEvents.sendPushEvent(
