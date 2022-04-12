@@ -36,6 +36,8 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         MutableStateFlow(ReviewVideoThumbnailUiState.Hidden())
     private val _videoErrorUiState: MutableStateFlow<ReviewVideoErrorUiState> =
         MutableStateFlow(ReviewVideoErrorUiState.Hidden)
+    private val _connectedToWifi: MutableStateFlow<Boolean> =
+        MutableStateFlow(false)
 
     val videoPlaybackUiState: StateFlow<ReviewVideoPlaybackUiState>
         get() = _videoPlaybackUiState
@@ -44,12 +46,13 @@ class ReviewVideoPlayerViewModel @Inject constructor(
     val videoPlayerUiState: StateFlow<ReviewVideoPlayerUiState>
         get() = combine(
             _videoPlaybackUiState,
-            _videoPlayerUiState
-        ) { playbackUiState, playerUiState ->
+            _videoPlayerUiState,
+            _connectedToWifi
+        ) { playbackUiState, playerUiState, wifiConnectivityStatus ->
             if (playerUiState is ReviewVideoPlayerUiState.RestoringState) {
                 val isOnPlayingState = playbackUiState is ReviewVideoPlaybackUiState.Playing
                 val isOnBufferingState = playbackUiState is ReviewVideoPlaybackUiState.Buffering
-                val shouldPlayWhenActive = playbackUiState is ReviewVideoPlaybackUiState.Inactive && playbackUiState.shouldPlayWhenActive
+                val shouldPlayWhenActive = wifiConnectivityStatus || (playbackUiState is ReviewVideoPlaybackUiState.Inactive && playbackUiState.shouldPlayWhenActive)
                 playerUiState.copy(
                     playWhenReady = isOnPlayingState || isOnBufferingState || shouldPlayWhenActive,
                     presentationTimeMs = playbackUiState.currentPosition
@@ -234,5 +237,9 @@ class ReviewVideoPlayerViewModel @Inject constructor(
     fun restoreUiState(savedInstanceState: Bundle) {
         restoreVideoPlayerUiState(savedInstanceState)
         restoreSavedPlaybackUiState(savedInstanceState)
+    }
+
+    fun updateWifiConnectivityStatus(connected: Boolean) {
+        _connectedToWifi.value = connected
     }
 }

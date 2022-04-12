@@ -40,19 +40,10 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
-        private const val ARG_IS_FROM_GALLERY = "argIsFromGallery"
         private const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
         private const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
 
         const val TAG = "ReviewDetailFragment"
-
-        fun createInstance(isFromGallery: Boolean): ReviewDetailFragment {
-            return ReviewDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putBoolean(ARG_IS_FROM_GALLERY, isFromGallery)
-                }
-            }
-        }
     }
 
     @Inject

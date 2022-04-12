@@ -75,6 +75,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _isProductReview = MutableStateFlow(false)
     private val _isFromGallery = MutableStateFlow(false)
     private val _showDetailedReviewActionMenuBottomSheet = MutableStateFlow(false)
+    private val _connectedToWifi = MutableStateFlow(false)
+    val connectedToWifi: StateFlow<Boolean>
+        get() = _connectedToWifi
     private val _toasterQueue = MutableSharedFlow<ToasterUiModel>()
     val toasterQueue: Flow<ToasterUiModel>
         get() = _toasterQueue
@@ -406,5 +409,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun getTotalMediaCount(): Long {
         return _detailedReviewMediaResult.value?.detail?.mediaCount.orZero()
+    }
+
+    fun updateWifiConnectivityStatus(connected: Boolean) {
+        _connectedToWifi.value = connected
     }
 }

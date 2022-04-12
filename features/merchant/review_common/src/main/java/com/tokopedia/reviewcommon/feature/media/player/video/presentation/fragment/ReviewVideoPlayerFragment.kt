@@ -16,7 +16,11 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.reviewcommon.R
 import com.tokopedia.reviewcommon.databinding.FragmentReviewMediaGalleryVideoPlayerBinding
 import com.tokopedia.reviewcommon.feature.media.gallery.base.di.ReviewMediaGalleryComponentInstance
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.DetailedReviewMediaGalleryComponentInstance
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.video.di.component.DaggerReviewVideoPlayerComponent
+import com.tokopedia.reviewcommon.feature.media.player.video.di.qualifier.ReviewVideoPlayerViewModelFactory
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlayerUiState
@@ -48,7 +52,12 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @ReviewVideoPlayerViewModelFactory
+    lateinit var reviewVideoPlayerViewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    @DetailedReviewMediaGalleryViewModelFactory
+    lateinit var detailedReviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
@@ -61,11 +70,18 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     private var videoPlaybackUiStateCollector: Job? = null
     private var videoErrorUiStateCollector: Job? = null
     private var videoThumbnailUiStateCollector: Job? = null
+    private var wifiConnectivityStatusCollector: Job? = null
 
-    private val viewModel by lazy(LazyThreadSafetyMode.NONE) {
-        ViewModelProvider(requireActivity(), viewModelFactory).get(
+    private val reviewVideoPlayerViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(requireActivity(), reviewVideoPlayerViewModelFactory).get(
             getVideoUri(),
             ReviewVideoPlayerViewModel::class.java
+        )
+    }
+
+    private val sharedReviewMediaGalleryViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        ViewModelProvider(requireActivity(), detailedReviewMediaGalleryViewModelFactory).get(
+            SharedReviewMediaGalleryViewModel::class.java
         )
     }
 
@@ -89,18 +105,20 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     override fun onResume() {
         super.onResume()
         collectVideoPlayerUiState()
+        collectWifiConnectivityStatus()
     }
 
     override fun onPause() {
         super.onPause()
+        wifiConnectivityStatusCollector?.cancel()
         videoPlayerUiStateCollector?.cancel()
         if (activity?.isChangingConfigurations != true) {
             updateCurrentFrameBitmap()
-            viewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPosition())
-            viewModel.resetVideoPlayerState()
+            reviewVideoPlayerViewModel.setPlaybackStateToInactive(videoPlayer.getCurrentPosition())
+            reviewVideoPlayerViewModel.resetVideoPlayerState()
             videoPlayer.pause()
         } else {
-            viewModel.setVideoPlayerStateToChangingConfiguration()
+            reviewVideoPlayerViewModel.setVideoPlayerStateToChangingConfiguration()
         }
     }
 
@@ -113,7 +131,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        viewModel.saveUiState(outState)
+        reviewVideoPlayerViewModel.saveUiState(outState)
     }
 
     override fun getScreenName(): String {
@@ -124,32 +142,33 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         DaggerReviewVideoPlayerComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .reviewMediaGalleryComponent(ReviewMediaGalleryComponentInstance.getInstance(requireContext()))
+            .detailedReviewMediaGalleryComponent(DetailedReviewMediaGalleryComponentInstance.getInstance(requireContext()))
             .build()
             .inject(this)
     }
 
     override fun onReviewVideoPlayerIsPlaying() {
-        viewModel.setPlaybackStateToPlaying(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToPlaying(videoPlayer.getCurrentPosition())
     }
 
     override fun onReviewVideoPlayerIsBuffering() {
-        viewModel.setPlaybackStateToBuffering(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToBuffering(videoPlayer.getCurrentPosition())
     }
 
     override fun onReviewVideoPlayerIsPaused() {
-        viewModel.setPlaybackStateToPaused(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToPaused(videoPlayer.getCurrentPosition())
     }
 
     override fun onReviewVideoPlayerIsPreloading() {
-        viewModel.setPlaybackStateToPreloading(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToPreloading(videoPlayer.getCurrentPosition())
     }
 
     override fun onReviewVideoPlayerIsEnded() {
-        viewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToEnded(videoPlayer.getCurrentPosition())
     }
 
     override fun onReviewVideoPlayerError() {
-        viewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition())
+        reviewVideoPlayerViewModel.setPlaybackStateToError(videoPlayer.getCurrentPosition())
     }
 
     private fun getVideoUri(): String {
@@ -158,19 +177,19 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     private fun collectVideoPlayerUiState() {
         videoPlayerUiStateCollector = videoPlayerUiStateCollector?.takeIf { !it.isCompleted } ?: launch {
-            viewModel.videoPlayerUiState.collectLatest {
+            reviewVideoPlayerViewModel.videoPlayerUiState.collectLatest {
                 when (it) {
                     is ReviewVideoPlayerUiState.Initial -> {
                         videoPlayer.initializeVideoPlayer(it.videoUri, true)
-                        viewModel.setVideoPlayerStateToRestoring()
+                        reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
                     }
                     is ReviewVideoPlayerUiState.ChangingConfiguration -> {
                         videoPlayer.initializeVideoPlayer(it.videoUri, false)
-                        viewModel.setVideoPlayerStateToReadyToPlay()
+                        reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
                     }
                     is ReviewVideoPlayerUiState.RestoringState -> {
                         videoPlayer.restorePlaybackState(it.presentationTimeMs, it.playWhenReady)
-                        viewModel.setVideoPlayerStateToReadyToPlay()
+                        reviewVideoPlayerViewModel.setVideoPlayerStateToReadyToPlay()
                     }
                     else -> {
                         collectVideoPlaybackUiState()
@@ -182,21 +201,31 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         }
     }
 
+    private fun collectWifiConnectivityStatus() {
+        wifiConnectivityStatusCollector = wifiConnectivityStatusCollector?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            sharedReviewMediaGalleryViewModel.connectedToWifi.collectLatest {
+                reviewVideoPlayerViewModel.updateWifiConnectivityStatus(it)
+            }
+        }
+    }
+
     private fun collectVideoPlaybackUiState() {
         videoPlaybackUiStateCollector = videoPlaybackUiStateCollector?.takeIf { !it.isCompleted } ?: launch {
-            viewModel.videoPlaybackUiState.collectLatest {
+            reviewVideoPlayerViewModel.videoPlaybackUiState.collectLatest {
                 when (it) {
                     is ReviewVideoPlaybackUiState.Inactive -> {
-                        viewModel.showVideoThumbnail()
-                        viewModel.hideVideoError()
+                        reviewVideoPlayerViewModel.showVideoThumbnail()
+                        reviewVideoPlayerViewModel.hideVideoError()
                     }
                     is ReviewVideoPlaybackUiState.Error -> {
-                        viewModel.showVideoThumbnail()
-                        viewModel.showVideoError()
+                        reviewVideoPlayerViewModel.showVideoThumbnail()
+                        reviewVideoPlayerViewModel.showVideoError()
                     }
                     else -> {
-                        viewModel.hideVideoThumbnail()
-                        viewModel.hideVideoError()
+                        reviewVideoPlayerViewModel.hideVideoThumbnail()
+                        reviewVideoPlayerViewModel.hideVideoError()
                     }
                 }
             }
@@ -207,7 +236,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
         videoErrorUiStateCollector = videoErrorUiStateCollector?.takeIf {
             !it.isCompleted
         } ?: launch {
-            viewModel.videoErrorUiState.collectLatest {
+            reviewVideoPlayerViewModel.videoErrorUiState.collectLatest {
                 binding?.overlayReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
                 binding?.icReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
                 binding?.tvReviewVideoPlayerError?.showWithCondition(it is ReviewVideoErrorUiState.Showing)
@@ -229,7 +258,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     private fun collectVideoThumbnailUiState() {
         videoThumbnailUiStateCollector = videoThumbnailUiStateCollector?.takeIf { !it.isCompleted } ?: launch {
-            viewModel.videoThumbnailUiState.collectLatest {
+            reviewVideoPlayerViewModel.videoThumbnailUiState.collectLatest {
                 when (it) {
                     is ReviewVideoThumbnailUiState.Showed -> {
                         binding?.ivReviewVideoPlayerFramePreview?.run {
@@ -247,9 +276,9 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     private fun initUiState(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            viewModel.setVideoUri(getVideoUri())
+            reviewVideoPlayerViewModel.setVideoUri(getVideoUri())
         } else {
-            viewModel.restoreUiState(savedInstanceState)
+            reviewVideoPlayerViewModel.restoreUiState(savedInstanceState)
         }
     }
 
@@ -265,7 +294,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     private fun updateCurrentFrameBitmap() {
         getCurrentFrameBitmap()?.run {
-            viewModel.updateVideoThumbnail(this)
+            reviewVideoPlayerViewModel.updateVideoThumbnail(this)
         }
     }
 

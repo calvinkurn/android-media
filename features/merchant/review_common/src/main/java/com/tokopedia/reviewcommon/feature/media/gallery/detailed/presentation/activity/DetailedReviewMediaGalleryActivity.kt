@@ -1,6 +1,11 @@
 package com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity
 
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -104,6 +109,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
 
     private val gestureListener = DetailedReviewMediaGalleryGestureListener()
     private val bottomSheetHandler = BottomSheetHandler()
+    private val connectivityStatusListener = ConnectivityStatusListener()
 
     override val coroutineContext: CoroutineContext
         get() = dispatchers.main + SupervisorJob()
@@ -122,11 +128,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     override fun onResume() {
         super.onResume()
         collectUiState()
+        connectivityStatusListener.attachListener()
     }
 
     override fun onPause() {
         super.onPause()
         cancelUiStateCollector()
+        connectivityStatusListener.detachListener()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -407,6 +415,33 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
                 if (!isAdded) {
                     show(supportFragmentManager, ActionMenuBottomSheet.TAG)
                 }
+            }
+        }
+    }
+
+    private inner class ConnectivityStatusListener {
+        private val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+        private val callback = Callback()
+
+        fun attachListener() {
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.registerNetworkCallback(networkRequest, callback)
+        }
+
+        fun detachListener() {
+            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager.unregisterNetworkCallback(callback)
+        }
+
+        private inner class Callback: ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = true)
+            }
+
+            override fun onLost(network: Network) {
+                sharedReviewMediaGalleryViewModel.updateWifiConnectivityStatus(connected = false)
             }
         }
     }
