@@ -17,8 +17,12 @@ class DimenUsageDetector : Detector(), XmlScanner {
         @JvmField
         val XML_ISSUE = Issue.create(
             id = "DimageUsage",
-            briefDescription = "Avoid using dimen if possible, especially dimen from external module.",
-            explanation = "Use actual value or local dimen instead.",
+            briefDescription = "Avoid using dimen if possible, especially dimen from external module. " +
+                    "Must be replaced with actual value for more readable and better performance.",
+            explanation = "The dimen resource is located in different module. " +
+                    "To be more readable and better performance, please use actual value instead. Example : " +
+                    "\n❌ : android:padding=\"@dimen/layout_lvl1\" " +
+                    "\n✅ : android:padding=\"0dp\"",
             category = Category.CORRECTNESS,
             priority = 5,
             severity = Severity.WARNING,
@@ -33,7 +37,7 @@ class DimenUsageDetector : Detector(), XmlScanner {
         }
     }
 
-    private val dimensMap = mutableMapOf<String, String>()
+    private val dimenList = mutableListOf<Pair<String, String>>()
 
     override fun beforeCheckEachProject(context: Context) {
         context.project.resourceFolders.forEach { resFolder ->
@@ -45,14 +49,14 @@ class DimenUsageDetector : Detector(), XmlScanner {
                 val files = dir.listFiles()
                 files?.forEach { file ->
                     file.readLines().forEach {
-                        val match = ".* <dimen .*".toRegex().matchEntire(it)
+                        val match = ".*<dimen.*".toRegex().matchEntire(it)
                         if (match != null) {
-                            val key = "\".*\"".toRegex().matchEntire(it)?.value.orEmpty()
-                                .replace("\"", "")
+                            val key = "\".*\"".toRegex().find(it)?.groupValues?.firstOrNull()
+                                ?.replace("\"", "").orEmpty()
                             val value = it.substringAfter("\">").substringBefore("</")
 
                             if (key.isNotBlank() && value.isNotBlank()) {
-                                dimensMap[key] = value
+                                dimenList.add(key to value)
                             }
                         }
                     }
@@ -104,22 +108,14 @@ class DimenUsageDetector : Detector(), XmlScanner {
         }
     }
 
+    /**
+     * will show warning for external dimen usage
+     * */
     private fun reportIssue(context: XmlContext, attr: Attr) {
-        val replacement = dimensMap[attr.name].orEmpty()
-        if (replacement.isNotBlank()) {
-            val lintFix = LintFix.create()
-                .replace()
-                .text(attr.value)
-                .with(replacement)
-                .build()
+        val dimenName = attr.value.replace("@dimen/", "")
+        val isDimenExistOnLocalModule = dimenList.any { it.first == dimenName }
 
-            context.report(
-                XML_ISSUE,
-                context.getLocation(attr),
-                XML_ISSUE.getExplanation(TextFormat.TEXT),
-                lintFix
-            )
-        } else {
+        if (!isDimenExistOnLocalModule) {
             context.report(
                 XML_ISSUE,
                 context.getLocation(attr),
