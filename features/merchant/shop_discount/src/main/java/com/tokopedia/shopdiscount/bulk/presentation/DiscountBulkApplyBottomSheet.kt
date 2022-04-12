@@ -27,13 +27,13 @@ import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
 import com.tokopedia.shopdiscount.utils.constant.LocaleConstant
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.showError
+import com.tokopedia.shopdiscount.utils.extension.toDate
 import com.tokopedia.shopdiscount.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -44,13 +44,18 @@ import javax.inject.Inject
 class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     companion object {
+        private const val BUNDLE_KEY_TITLE = "title"
         private const val BUNDLE_KEY_MODE = "mode"
         private const val NUMBER_PATTERN = "#,###,###"
         private const val DISCOUNT_PERCENTAGE_MAX_DIGIT = 2
 
         @JvmStatic
-        fun newInstance(mode: Mode = Mode.SHOW_ALL_FIELDS): DiscountBulkApplyBottomSheet {
+        fun newInstance(
+            bottomSheetTitle: String,
+            mode: Mode = Mode.SHOW_ALL_FIELDS
+        ): DiscountBulkApplyBottomSheet {
             val args = Bundle()
+            args.putString(BUNDLE_KEY_TITLE, bottomSheetTitle)
             args.putSerializable(BUNDLE_KEY_MODE, mode)
 
             val bottomSheet = DiscountBulkApplyBottomSheet().apply {
@@ -61,6 +66,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     }
 
+    private val title by lazy { arguments?.getString(BUNDLE_KEY_TITLE).orEmpty() }
     private val mode by lazy { arguments?.getSerializable(BUNDLE_KEY_MODE) as? Mode }
 
     private var binding by autoClearedNullable<BottomsheetDiscountBulkApplyBinding>()
@@ -68,7 +74,8 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
 
     enum class Mode {
         SHOW_ALL_FIELDS,
-        HIDE_PERIOD_FIELDS
+        HIDE_PERIOD_FIELDS,
+        UPDATE_PRODUCT
     }
 
     @Inject
@@ -105,13 +112,12 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         isKeyboardOverlap = false
         clearContentPadding = true
         setChild(binding?.root)
-        setTitle(getString(R.string.sd_bulk_manage))
+        setTitle(title)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setMode(mode ?: return)
         setupView()
         observeBenefit()
         observeInputValidation()
@@ -127,8 +133,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 is Success -> {
                     showScreenContent()
                     handleShopBenefits(it.data)
-
-
                 }
                 is Fail -> {
                     hideScreenContent()
@@ -149,11 +153,7 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             val benefit = benefits[0]
             viewModel.setBenefitPackageName(benefit.packageName)
 
-            if (isUsingVps) {
-                val endDate = benefit.expiredAt.toDate(DateConstant.DATE_TIME)
-                viewModel.setSelectedEndDate(endDate)
-                binding?.groupChipPeriod?.gone()
-            }
+            handleBottomSheetAppearance(benefit, isUsingVps)
         }
     }
 
@@ -227,10 +227,6 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
             chipOneYearPeriod.chipType = ChipsUnify.TYPE_SELECTED
             tfuDiscountAmount.textInputLayout.errorIconDrawable = null
 
-            if (mode == Mode.HIDE_PERIOD_FIELDS) {
-                groupDiscountPeriod.gone()
-            }
-
             setupDatePicker()
             setupQuantityEditor()
 
@@ -244,6 +240,28 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
                 onApplyClickListener(currentSelection)
                 dismiss()
             }
+        }
+    }
+
+    private fun handleBottomSheetAppearance(
+        benefit: GetSlashPriceBenefitResponse.GetSlashPriceBenefit.SlashPriceBenefit,
+        isUsingVps: Boolean
+    ) {
+        if (mode == Mode.HIDE_PERIOD_FIELDS) {
+            hideAllChips()
+            binding?.tpgInformation?.gone()
+            binding?.tfuStartDate?.gone()
+            binding?.tfuEndDate?.gone()
+        }
+
+        if (mode == Mode.UPDATE_PRODUCT) {
+            binding?.tfuStartDate?.isEnabled = false
+        }
+
+        if (isUsingVps) {
+            val endDate = benefit.expiredAt.toDate(DateConstant.DATE_TIME)
+            viewModel.setSelectedEndDate(endDate)
+            hideAllChips()
         }
     }
 
@@ -456,5 +474,12 @@ class DiscountBulkApplyBottomSheet : BottomSheetUnify() {
         binding?.loader?.gone()
         binding?.content?.visible()
         binding?.btnApply?.visible()
+    }
+
+    private fun hideAllChips() {
+        binding?.chipOneYearPeriod?.gone()
+        binding?.chipSixMonthPeriod?.gone()
+        binding?.chipOneMonthPeriod?.gone()
+        binding?.chipCustomSelection?.gone()
     }
 }

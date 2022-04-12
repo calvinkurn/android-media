@@ -160,10 +160,6 @@ class DiscountBulkApplyViewModel @Inject constructor(
         this.selectedMaxQuantity = quantity
     }
 
-    fun setMode(mode: DiscountBulkApplyBottomSheet.Mode) {
-        this.mode = mode
-    }
-
     fun getCurrentSelection(): DiscountSettings {
         return DiscountSettings(
             selectedStartDate,
