@@ -337,6 +337,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     @SuppressLint("SetTextI18n")
     private fun prepareLayout(data: DistrictItem?) {
+        labelAlamatList = resources.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
         setupLabelChips()
         binding?.run {
             if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
@@ -430,7 +431,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     @SuppressLint("SetTextI18n")
     private fun prepareEditLayout(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) {
-
+        labelAlamatList = resources.getStringArray(R.array.labelAlamatList).map { Pair(it, it.equals(data.addrName, ignoreCase = true)) }.toTypedArray()
         setupLabelChips()
 //        if (data.latitude.isNotEmpty() && data.longitude.isNotEmpty() ) {
             isPositiveFlow = data.latitude.isNotEmpty() && data.longitude.isNotEmpty()
@@ -487,6 +488,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
                 }
                 formAddressNegative.etLabel.textFieldInput.setText(data.addrName)
+                formAddressNegative.rvLabelAlamatChips.visibility = View.GONE
                 formAddressNegative.etAlamat.textFieldInput.setText(addressDetail)
                 formAddressNegative.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddressNegative.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddressNegative.etLabel.textFieldWrapper, null))
@@ -511,6 +513,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 formAddress.etAlamatNew.textFieldInput.setText(addressDetail)
                 formAddress.etCourierNote.textFieldInput.setText(data.addressDetailNotes)
                 formAddress.etLabel.textFieldInput.setText(data.addrName)
+                formAddress.rvLabelAlamatChips.visibility = View.GONE
                 formAddress.etLabel.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etLabel.textFieldWrapper, null))
                 formAddress.etAlamatNew.textFieldInput.addTextChangedListener(setWrapperWatcher(formAddress.etAlamatNew.textFieldWrapper, null))
             }
@@ -973,6 +976,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
 
                     override fun afterTextChanged(s: Editable) {
+                        val currentLabel = labelAlamatList
+                        labelAlamatList = currentLabel.map { item -> item.copy(second = item.first.equals(s.toString(), ignoreCase = true)) }.toTypedArray()
                         val filterList = labelAlamatList.filter {
                             it.first.contains("$s", true)
                         }
@@ -981,9 +986,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                         }
                         else {
                             if (s.toString().isNotEmpty() && filterList.isEmpty()) {
-                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.GONE
+                                binding?.formAddress?.rvLabelAlamatChips?.visibility = View.GONE
                             } else {
-                                binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
+                                binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
                                 labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
                             }
                         }
@@ -1020,6 +1025,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     }
 
                     override fun afterTextChanged(s: Editable) {
+                        val currentLabel = labelAlamatList
+                        labelAlamatList = currentLabel.map { item -> item.copy(second = item.first.equals(s.toString(), ignoreCase = true)) }.toTypedArray()
                         val filterList = labelAlamatList.filter {
                             it.first.contains("$s", true)
                         }
@@ -1053,8 +1060,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showLabelAlamatList() {
-        val res: Resources = resources
-        labelAlamatList = res.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
+//        val res: Resources = resources
+//        labelAlamatList = res.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
 
         if (isPositiveFlow) binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
         else binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
@@ -1156,8 +1163,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     override fun onLabelAlamatChipClicked(labelAlamat: String) {
-        val currentLabel = labelAlamatList
-        labelAlamatList = currentLabel.map { item -> item.copy(second = item.first == labelAlamat) }.toTypedArray()
         binding?.run {
             if (isPositiveFlow) {
                 if (!isEdit) {
