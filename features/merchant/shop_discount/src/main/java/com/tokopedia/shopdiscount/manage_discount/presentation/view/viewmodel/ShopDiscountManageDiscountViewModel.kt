@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountSettings
 import com.tokopedia.shopdiscount.bulk.domain.entity.DiscountType
 import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
@@ -64,11 +66,297 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             val mappedUiModel =
                 ShopDiscountManageDiscountMapper.mapToShopDiscountSetupProductUiModel(
                     response.getSlashPriceSetupProductList
-                )
+                ).apply {
+                    listSetupProductData.forEach { setupProductData ->
+                        updateProductStatusAndMappedData(setupProductData)
+                    }
+                }
             _setupProductListLiveData.postValue(Success(mappedUiModel))
         }) {
             _setupProductListLiveData.postValue(Fail(it))
         }
+    }
+
+    private fun updateProductStatusAndMappedData(setupProductData: ShopDiscountSetupProductUiModel.SetupProductData) {
+        setupProductData.productStatus = setToProductStatus(setupProductData)
+        setupProductData.mappedResultData = mapToMappedResultData(setupProductData)
+    }
+
+    private fun setToProductStatus(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus {
+        val isVariant = isVariant(setupProductUiModel)
+        var isProductDiscounted = getIsProductDiscounted(setupProductUiModel, isVariant)
+        val isMultiLoc = isMultiLoc(setupProductUiModel, isVariant)
+        val errorType = setProductError(
+            setupProductUiModel,
+            isVariant,
+            isProductDiscounted
+        )
+        if (errorType != ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR) {
+            isProductDiscounted = false
+        }
+        return ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
+            isProductDiscounted = isProductDiscounted,
+            isVariant = isVariant,
+            isMultiLoc = isMultiLoc,
+            errorType = errorType
+        )
+    }
+
+    private fun mapToMappedResultData(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData {
+        return ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
+            minOriginalPrice = getMinOriginalPrice(setupProductUiModel),
+            maxOriginalPrice = getMaxOriginalPrice(setupProductUiModel),
+            minDisplayedPrice = getMinDisplayedPrice(setupProductUiModel),
+            maxDisplayedPrice = getMaxDisplayedPrice(setupProductUiModel),
+            minDiscountPercentage = getMinDiscountPercentage(setupProductUiModel),
+            maxDiscountPercentage = getMaxDiscountPercentage(setupProductUiModel),
+            totalVariant = getTotalVariant(setupProductUiModel),
+            totalDiscountedVariant = getTotalDiscountedVariant(setupProductUiModel),
+            totalLocation = getTotalLocation(setupProductUiModel)
+        )
+    }
+
+    private fun setProductError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean,
+        isProductDiscounted: Boolean
+    ): Int {
+        return when {
+            isAllAbusiveError(setupProductUiModel, isVariant) -> {
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR
+            }
+            isPartialAbusiveError(
+                setupProductUiModel,
+                isVariant
+            ) -> {
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
+            }
+            isValueError(setupProductUiModel, isVariant) && isProductDiscounted -> {
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.VALUE_ERROR
+            }
+            else -> {
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR
+            }
+        }
+    }
+
+    private fun isValueError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductUiModel.listProductVariant.any {
+                checkProductValueError(it)
+            }
+        } else {
+            checkProductValueError(setupProductUiModel)
+        }
+    }
+
+    private fun checkProductValueError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return setupProductUiModel.listProductWarehouse.any {
+            it.discountedPercentage < 1 || it.discountedPercentage > 99
+        }
+    }
+
+    private fun isPartialAbusiveError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductUiModel.listProductVariant.any {
+                checkProductWarehousePartialAbusiveRuleError(it)
+            }
+        } else {
+            checkProductWarehousePartialAbusiveRuleError(setupProductUiModel)
+        }
+    }
+
+    private fun checkProductWarehousePartialAbusiveRuleError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return setupProductUiModel.listProductWarehouse.any {
+            it.abusiveRule
+        }
+    }
+
+    private fun isAllAbusiveError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductUiModel.listProductVariant.all {
+                checkProductWarehouseAllAbusiveRuleError(it)
+            }
+        } else {
+            checkProductWarehouseAllAbusiveRuleError(setupProductUiModel)
+        }
+    }
+
+    private fun checkProductWarehouseAllAbusiveRuleError(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Boolean {
+        return setupProductUiModel.listProductWarehouse.all {
+            it.abusiveRule
+        }
+    }
+
+    private fun getTotalLocation(
+        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return setupProductUiModel.listProductWarehouse.size
+    }
+
+    private fun getTotalDiscountedVariant(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return setupProductDataUiModel.listProductVariant.count {
+            it.listProductWarehouse.any { productWarehouse ->
+                !productWarehouse.discountedPercentage.isZero()
+            }
+        }
+    }
+
+    private fun getTotalVariant(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return setupProductDataUiModel.listProductVariant.size
+    }
+
+    private fun getIsProductDiscounted(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductDataUiModel.listProductVariant.any {
+                it.listProductWarehouse.any { productWarehouse ->
+                    !productWarehouse.discountedPrice.isZero()
+                }
+            }
+        } else {
+            setupProductDataUiModel.listProductWarehouse.any {
+                !it.discountedPercentage.isZero()
+            }
+        }
+    }
+
+    private fun isMultiLoc(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData,
+        isVariant: Boolean
+    ): Boolean {
+        return if (isVariant) {
+            setupProductDataUiModel.listProductVariant.any {
+                it.listProductWarehouse.size > 1
+            }
+        } else {
+            setupProductDataUiModel.listProductWarehouse.size > 1
+        }
+    }
+
+    private fun getMaxOriginalPrice(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            setupProductDataUiModel.listProductVariant.map {
+                it.listProductWarehouse.map { productWarehouse ->
+                    productWarehouse.originalPrice
+                }.maxOrNull().orZero()
+            }.maxOrNull().orZero()
+        } else {
+            setupProductDataUiModel.listProductWarehouse.map {
+                it.originalPrice
+            }.maxOrNull().orZero()
+        }
+    }
+
+    private fun getMinOriginalPrice(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            setupProductDataUiModel.listProductVariant.map {
+                it.listProductWarehouse.map { productWarehouse ->
+                    productWarehouse.originalPrice
+                }.minOrNull().orZero()
+            }.minOrNull().orZero()
+        } else {
+            setupProductDataUiModel.listProductWarehouse.map {
+                it.originalPrice
+            }.minOrNull().orZero()
+        }
+    }
+
+    private fun getMaxDisplayedPrice(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            setupProductDataUiModel.listProductVariant.map {
+                it.listProductWarehouse.map { productWarehouse ->
+                    productWarehouse.discountedPrice
+                }.maxOrNull().orZero()
+            }.maxOrNull().orZero()
+        } else {
+            setupProductDataUiModel.listProductWarehouse.map {
+                it.discountedPrice
+            }.maxOrNull().orZero()
+        }
+    }
+
+    private fun getMinDisplayedPrice(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            setupProductDataUiModel.listProductVariant.map {
+                it.listProductWarehouse.map { productWarehouse ->
+                    productWarehouse.discountedPrice
+                }.minOrNull().orZero()
+            }.minOrNull().orZero()
+        } else {
+            setupProductDataUiModel.listProductWarehouse.map {
+                it.discountedPrice
+            }.minOrNull().orZero()
+        }
+    }
+
+    private fun getMaxDiscountPercentage(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            setupProductDataUiModel.listProductVariant.map {
+                it.listProductWarehouse.map { productWarehouse ->
+                    productWarehouse.discountedPercentage
+                }.maxOrNull().orZero()
+            }.maxOrNull().orZero()
+        } else {
+            setupProductDataUiModel.listProductWarehouse.map {
+                it.discountedPercentage
+            }.maxOrNull().orZero()
+        }
+    }
+
+    private fun getMinDiscountPercentage(
+        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ): Int {
+        return if (setupProductDataUiModel.productStatus.isVariant) {
+            setupProductDataUiModel.listProductVariant.map {
+                it.listProductWarehouse.map { productWarehouse ->
+                    productWarehouse.discountedPercentage
+                }.minOrNull().orZero()
+            }.minOrNull().orZero()
+        } else {
+            setupProductDataUiModel.listProductWarehouse.map {
+                it.discountedPercentage
+            }.minOrNull().orZero()
+        }
+    }
+
+    private fun isVariant(setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData): Boolean {
+        return setupProductUiModel.listProductVariant.isNotEmpty()
     }
 
     private suspend fun getSetupProductListResponse(
@@ -96,12 +384,16 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    bulkApplyNonVariantProduct(productData, bulkApplyDiscountResult, minOriginalPrice)
+                    bulkApplyNonVariantProduct(
+                        productData,
+                        bulkApplyDiscountResult,
+                        minOriginalPrice
+                    )
                 }
-                ShopDiscountManageDiscountMapper.updateProductStatusAndMappedData(productData)
+                updateProductStatusAndMappedData(productData)
             }
             _bulkApplyProductListResult.postValue(listProductData)
-        }){}
+        }) {}
     }
 
     private fun bulkApplyNonVariantProduct(
@@ -192,7 +484,10 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
             )
             val response = getDoSlashPriceStopResponse(request)
             val uiModel =
-                ShopDiscountManageDiscountMapper.mapToShopDiscountSlashPriceStopUiModel(response, productId)
+                ShopDiscountManageDiscountMapper.mapToShopDiscountSlashPriceStopUiModel(
+                    response,
+                    productId
+                )
             _resultDeleteSlashPriceProductLiveData.postValue(Success(uiModel))
         }) {
             _resultDeleteSlashPriceProductLiveData.postValue(Fail(it))
