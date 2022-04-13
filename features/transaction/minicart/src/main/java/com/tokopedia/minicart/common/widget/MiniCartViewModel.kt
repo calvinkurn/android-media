@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.data.request.updatecart.BundleInfo
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
@@ -382,12 +383,31 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         val source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         val miniCartProductUiModels = mutableListOf<UpdateCartRequest>()
         val visitables = getVisitables()
-        // TODO: BUNDLING NOW MINI CART
+
         visitables.forEach {
             if (it is MiniCartProductUiModel && !it.isProductDisabled) {
-                miniCartProductUiModels.add(
-                        UpdateCartRequest(cartId = it.cartId, quantity = it.productQty, notes = it.productNotes)
-                )
+                if(it.isBundlingItem) {
+                    miniCartProductUiModels.add(
+                        UpdateCartRequest(
+                            cartId = it.cartId,
+                            quantity = it.productQty,
+                            notes = it.productNotes,
+                            bundleInfo = BundleInfo(
+                                bundleId = it.bundleId,
+                                bundleGroupId = it.bundleGroupId,
+                                bundleQty = it.bundleQty
+                            )
+                        )
+                    )
+                } else {
+                    miniCartProductUiModels.add(
+                        UpdateCartRequest(
+                            cartId = it.cartId,
+                            quantity = it.productQty,
+                            notes = it.productNotes
+                        )
+                    )
+                }
             }
         }
         updateCartUseCase.setParams(miniCartProductUiModels, source)
