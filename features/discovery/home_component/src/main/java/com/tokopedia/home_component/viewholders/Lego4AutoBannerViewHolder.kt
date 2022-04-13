@@ -30,7 +30,6 @@ class Lego4AutoBannerViewHolder (itemView: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_component_lego_banner_auto
-        const val GRID_COUNT = 2
     }
     private var binding: GlobalComponentLegoBannerAutoBinding? by viewBinding()
     private lateinit var recyclerView: RecyclerView

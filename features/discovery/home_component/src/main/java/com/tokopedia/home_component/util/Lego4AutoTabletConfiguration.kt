@@ -1,9 +1,11 @@
 package com.tokopedia.home_component.util
 
 import android.content.Context
+import android.util.DisplayMetrics
 import androidx.annotation.LayoutRes
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.home_component.R
+
 
 /**
  * Created by dhaba
@@ -19,9 +21,18 @@ object Lego4AutoTabletConfiguration {
 
     fun getLayout(context: Context?): Int {
         context?.let {
-//            return if (DeviceScreenInfo.isTablet(context)) {
-//
-//            } else
+            return if (DeviceScreenInfo.isTablet(context)) {
+                val displayMetrics = DisplayMetrics()
+//                context.resources. .getWindowManager().getDefaultDisplay().getMetrics(displayMetrics)
+                val width = context.resources.displayMetrics.widthPixels
+                if (width >= 768) {
+                    LAYOUT_TABLET_ABOVE_768
+                }
+                else
+                {
+                    LAYOUT_TABLET_BELOW_768
+                }
+            } else
 
                 LAYOUT_MOBILE
         }
