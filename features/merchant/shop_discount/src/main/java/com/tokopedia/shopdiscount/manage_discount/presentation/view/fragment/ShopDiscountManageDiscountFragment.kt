@@ -29,6 +29,7 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDisco
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountManageDiscountGlobalErrorViewHolder
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountSetupProductItemViewHolder
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
@@ -408,11 +409,44 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     private fun openBottomSheetBulkApply() {
-        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance()
+        val bulkApplyBottomSheetTitle = getBulkApplyBottomSheetTitle(mode)
+        val bulkApplyBottomSheetMode = getBulkApplyBottomSheetMode(mode)
+        val bottomSheet = DiscountBulkApplyBottomSheet.newInstance(
+            bulkApplyBottomSheetTitle,
+            bulkApplyBottomSheetMode
+        )
         bottomSheet.setOnApplyClickListener { bulkApplyDiscountResult ->
             onApplyBulkManage(bulkApplyDiscountResult)
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun getBulkApplyBottomSheetMode(mode: String): DiscountBulkApplyBottomSheet.Mode {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.CREATE -> {
+                DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                DiscountBulkApplyBottomSheet.Mode.UPDATE_PRODUCT
+            }
+            else -> {
+                DiscountBulkApplyBottomSheet.Mode.SHOW_ALL_FIELDS
+            }
+        }
+    }
+
+    private fun getBulkApplyBottomSheetTitle(mode: String): String {
+        return when (mode) {
+            ShopDiscountManageDiscountMode.CREATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_apply_create_title)
+            }
+            ShopDiscountManageDiscountMode.UPDATE -> {
+                getString(R.string.shop_discount_manage_discount_bulk_apply_update_title)
+            }
+            else -> {
+                ""
+            }
+        }
     }
 
     private fun onApplyBulkManage(bulkApplyDiscountResult: DiscountSettings) {

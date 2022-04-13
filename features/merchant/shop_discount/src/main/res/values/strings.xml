@@ -65,9 +65,15 @@
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
+    <string name="product_detail_displayed_price_format">%1s - %2s</string>
     <string name="product_detail_original_price_format">%1s-%2s</string>
+    <string name="shop_discount_product_detail_percent_format_non_range">%1s\%%</string>
+    <string name="shop_discount_product_detail_percent_format_range">%1s-%2s\%%</string>
     <string name="product_detail_stock_and_total_warehouse_format">Stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
-    <string name="product_detail_start_date_end_date_format">%1s - %2s</string>
+    <string name="product_detail_stock_format">Stok: <![CDATA[<b>%1s</b>]]></string>
+    <string name="product_detail_start_date_end_date_format">%1s - %2s WIB</string>
+    <string name="product_detail_multiple_product_title">Ada diskon di %1s varian</string>
+    <string name="product_detail_single_product_title">Diskon Produk</string>
 
     <!--  Seller Info Bottomsheet  -->
     <string name="seller_info_bottom_sheet_title">Info dan kuota Diskon Toko</string>
@@ -77,18 +83,17 @@
     <string name="seller_info_bottom_sheet_package_option_non_vps_description">Kuota tidak dibatasi • Tidak ada kedaluwarsa</string>
     <string name="seller_info_bottom_sheet_package_option_vps_description_format">Sisa kuota %1d/%2d • Kedaluwarsa %3s</string>
     <string name="seller_info_bottom_sheet_quota_left_title">Sisa kuota</string>
-    <string name="seller_info_bottom_sheet_quota_left_content_vps_format"><![CDATA[<b>$1d</b>]]> / %2d produk</string>
+    <string name="seller_info_bottom_sheet_quota_left_content_vps_format"><![CDATA[<b>%1d</b>]]> / %2d produk</string>
     <string name="seller_info_bottom_sheet_quota_left_content_non_vps"><![CDATA[<b>Tidak dibatasi]]></string>
     <string name="seller_info_bottom_sheet_quota_left_vps_description">Kuota dihitung dari jumlah Produk Utama dengan Diskon Toko</string>
     <string name="seller_info_bottom_sheet_expiry_title">Kedaluwarsa</string>
     <string name="seller_info_bottom_sheet_expiry_content_non_vps"><![CDATA[<b>Tidak ada</b>]]></string>
+    <string name="seller_info_bottom_sheet_expiry_content_vps"><![CDATA[<b>%1s</b>]]></string>
     <string name="seller_info_bottom_sheet_expiry_description_non_vps">Keuntungan berlaku selama keanggotaan tokomu aktif</string>
 
     <!--Shop discount datepicker-->
     <string name="shop_discount_date_picker_button_apply_text">Pilih</string>
     <string name="shop_discount_date_picker_button_info_format">Periode %1s berakhir pada <![CDATA[<b>%2s.</b>]]></string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--Shop discount manage discount-->
     <string name="shop_discount_manage_discount_manage_toolbar_title">Atur Diskon</string>
@@ -117,6 +122,7 @@
     <string name="shop_discount_manage_discount_abusive_partial">Ada varian dengan perubahan harga tidak wajar</string>
     <string name="shop_discount_manage_discount_value_error">Cek lagi pengaturan diskon ini, ya.</string>
     <string name="shop_discount_manage_discount_ticker_abusive_products"><![CDATA[<b>%1s produk</b> gagal dimasukkan ke Diskon Toko karena ada perubahan harga di luar kewajaran. <a href="%2$s">Baca Ketentuan</a>]]></string>
-
+    <string name="shop_discount_manage_discount_bulk_apply_create_title">Atur Diskon</string>
+    <string name="shop_discount_manage_discount_bulk_apply_update_title">Ubah Diskon</string>
 
 </resources>
