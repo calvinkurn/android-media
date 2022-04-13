@@ -4,13 +4,13 @@ package com.tokopedia.affiliate.model.response
 import com.google.gson.annotations.SerializedName
 
 data class AffiliateDateFilterResponse(
-    @SerializedName("data")
+    @SerializedName("getAffiliateDateFilter")
     var `data`: Data?
 ) {
     data class Data(
-        @SerializedName("getAffiliateDateFilter")
+        @SerializedName("GetAffiliateDateFilter")
         var getAffiliateDateFilter: List<GetAffiliateDateFilter?>?,
-        @SerializedName("ticker")
+        @SerializedName("Ticker")
         var ticker: List<Ticker?>?
     ) {
         data class GetAffiliateDateFilter(
