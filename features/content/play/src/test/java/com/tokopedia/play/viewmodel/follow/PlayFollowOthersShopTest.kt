@@ -10,7 +10,8 @@ import com.tokopedia.play.robot.play.*
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
-import com.tokopedia.play.view.uimodel.action.ClickFollowAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction.FollowPartner
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.OpenPageEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
@@ -77,7 +78,7 @@ class PlayFollowOthersShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.FollowPartner)
         } thenVerify {
             withState {
                 partner.status.isEqualTo(
@@ -102,7 +103,7 @@ class PlayFollowOthersShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.FollowPartner)
         } thenVerify {
             withState {
                 partner.status.isEqualTo(
@@ -126,7 +127,7 @@ class PlayFollowOthersShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhenExpectEvent {
-            submitAction(ClickFollowAction)
+            submitAction(PlayViewerNewAction.FollowPartner)
         } thenVerify { event ->
             withState {
                 partner.status.isEqualTo(

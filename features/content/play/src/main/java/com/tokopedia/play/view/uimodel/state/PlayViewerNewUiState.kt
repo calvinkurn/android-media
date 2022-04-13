@@ -7,6 +7,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
+import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -18,7 +19,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
  */
 data class PlayViewerNewUiState(
     val channel: PlayChannelDetailUiModel,
-    val interactive: InteractiveUiModel,
+    val interactive: InteractiveStateUiModel,
     val partner: PlayPartnerInfo,
     val winnerBadge: PlayWinnerBadgeUiState,
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,

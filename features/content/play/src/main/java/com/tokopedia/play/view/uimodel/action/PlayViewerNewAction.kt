@@ -14,6 +14,11 @@ sealed class PlayViewerNewAction {
     object GiveawayOngoingEnded : PlayViewerNewAction()
 
     object QuizEnded : PlayViewerNewAction()
+
+    object StartPlayingInteractive : PlayViewerNewAction()
+    object StopPlayingInteractive : PlayViewerNewAction()
+
+    object FollowPartner : PlayViewerNewAction()
 }
 
 /**
@@ -36,7 +41,6 @@ object RefreshLeaderboard: PlayViewerNewAction()
 /**
  * Partner
  */
-object ClickFollowAction : PlayViewerNewAction()
 object ClickPartnerNameAction : PlayViewerNewAction()
 
 /**

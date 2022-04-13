@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.gms.cast.framework.CastStateListener
@@ -45,6 +46,7 @@ import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.mapper.PlaySocketToModelMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
@@ -54,7 +56,6 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -77,6 +78,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.max
@@ -159,7 +161,7 @@ class PlayViewModel @AssistedInject constructor(
     private val _partnerInfo = MutableStateFlow(PlayPartnerInfo())
     private val _bottomInsets = MutableStateFlow(emptyMap<BottomInsetsType, BottomInsetsState>())
     private val _status = MutableStateFlow(PlayStatusUiModel.Empty)
-    private val _interactive = MutableStateFlow<InteractiveUiModel>(InteractiveUiModel.Unknown)
+    private val _interactive = MutableStateFlow<InteractiveStateUiModel>(InteractiveStateUiModel.Empty)
     private val _leaderboardInfo = MutableStateFlow<PlayLeaderboardWrapperUiModel>(PlayLeaderboardWrapperUiModel.Unknown)
     private val _leaderboardUserBadgeState = MutableStateFlow(PlayLeaderboardBadgeUiState())
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
@@ -792,15 +794,19 @@ class PlayViewModel @AssistedInject constructor(
     fun submitAction(action: PlayViewerNewAction) {
         when (action) {
             SetChannelActiveAction -> handleSetChannelActive()
+
             PlayViewerNewAction.GiveawayUpcomingEnded -> handleGiveawayUpcomingEnded()
             PlayViewerNewAction.GiveawayOngoingEnded -> handleGiveawayOngoingEnded()
             PlayViewerNewAction.QuizEnded -> handleQuizEnded()
+            PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(isPlaying = true)
+            PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(isPlaying = false)
+
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
-            ClickFollowAction -> handleClickFollow(isFromLogin = false)
+            PlayViewerNewAction.FollowPartner -> handleClickFollow(isFromLogin = false)
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
@@ -1128,7 +1134,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun stopInteractive() {
-        _interactive.value = InteractiveUiModel.Unknown
+        _interactive.value = InteractiveStateUiModel.Empty
     }
 
     private suspend fun getSocketCredential(): SocketCredential = try {
@@ -1335,7 +1341,9 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun handleGiveawayFromNetwork(giveaway: InteractiveUiModel.Giveaway) {
-        _interactive.value = giveaway
+        _interactive.update {
+            it.copy(interactive = giveaway)
+        }
 
         if (giveaway.status == InteractiveUiModel.Giveaway.Status.Finished) {
             val channelId = mChannelData?.id ?: return
@@ -1345,7 +1353,9 @@ class PlayViewModel @AssistedInject constructor(
                 _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
                 setLeaderboardBadgeState(interactiveLeaderboard)
 
-                _interactive.value = InteractiveUiModel.Unknown
+                _interactive.update {
+                    it.copy(interactive = InteractiveUiModel.Unknown)
+                }
             } catch (e: Throwable) {}
         }
     }
@@ -1618,43 +1628,58 @@ class PlayViewModel @AssistedInject constructor(
      */
     private fun handleGiveawayUpcomingEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _interactive.getAndUpdate {
-                val currentGiveaway = it as? InteractiveUiModel.Giveaway ?: error("Interactive is not giveaway")
+            _interactive.update {
+                val currentGiveaway = it.interactive as? InteractiveUiModel.Giveaway ?: error("Interactive is not giveaway")
                 val upcomingStatus = currentGiveaway.status as? InteractiveUiModel.Giveaway.Status.Upcoming
                     ?: error("Giveaway status is not upcoming")
 
-                it.copy(
+                val interactive = it.interactive.copy(
                     status = InteractiveUiModel.Giveaway.Status.Ongoing(
-                        durationInMs = upcomingStatus.durationInMs
+                        endTime = upcomingStatus.endTime
                     )
                 )
+                it.copy(interactive = interactive)
             }
 
         }) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
     private fun handleGiveawayOngoingEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _interactive.getAndUpdate {
-                if (it !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
-                it.copy(status = InteractiveUiModel.Giveaway.Status.Finished)
+            _interactive.update {
+                if (it.interactive !is InteractiveUiModel.Giveaway) error("Interactive is not giveaway")
+                val interactive = it.interactive.copy(
+                    status = InteractiveUiModel.Giveaway.Status.Finished
+                )
+                it.copy(
+                    interactive = interactive,
+                    isPlaying = false,
+                )
             }
-
         }) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
             _interactive.getAndUpdate {
-                if (it !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
-                it.copy(status = InteractiveUiModel.Quiz.Status.Finished)
+                if (it.interactive !is InteractiveUiModel.Quiz) error("Interactive is not quiz")
+                val interactive = it.interactive.copy(
+                    status = InteractiveUiModel.Quiz.Status.Finished
+                )
+                it.copy(interactive = interactive)
             }
         }) {
-            _interactive.value = InteractiveUiModel.Unknown
+            _interactive.value = InteractiveStateUiModel.Empty
+        }
+    }
+
+    private fun handlePlayingInteractive(isPlaying: Boolean) {
+        _interactive.update {
+            it.copy(isPlaying = isPlaying)
         }
     }
 

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -47,6 +48,7 @@ import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.dialog.interactive.giveaway.InteractiveDialogFragment
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapValue
@@ -62,6 +64,7 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.recom.*
+import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.state.*
@@ -96,12 +99,12 @@ import com.tokopedia.play_common.R as commonR
  * Created by jegul on 29/11/19
  */
 class PlayUserInteractionFragment @Inject constructor(
-        private val viewModelFactory: ViewModelProvider.Factory,
-        private val dispatchers: CoroutineDispatchers,
-        private val pipAnalytic: PlayPiPAnalytic,
-        private val analytic: PlayAnalytic,
-        private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-        private val castAnalyticHelper: CastAnalyticHelper
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val dispatchers: CoroutineDispatchers,
+    private val pipAnalytic: PlayPiPAnalytic,
+    private val analytic: PlayAnalytic,
+    private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
+    private val castAnalyticHelper: CastAnalyticHelper
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -121,7 +124,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductFeaturedViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        KebabMenuViewComponent.Listener
+        KebabMenuViewComponent.Listener,
+        InteractiveActiveViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -153,7 +157,7 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
@@ -316,6 +320,24 @@ class PlayUserInteractionFragment @Inject constructor(
         super.onDestroyView()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+        when (childFragment) {
+            is InteractiveDialogFragment -> {
+                childFragment.setDataSource(
+                    object : InteractiveDialogFragment.DataSource {
+                        override fun getViewModelProvider(): ViewModelProvider {
+                            return ViewModelProvider(
+                                requireParentFragment(),
+                                (requireParentFragment() as PlayFragment).viewModelProviderFactory,
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+
     //region ComponentListener
     /**
      * Toolbar View Component Listener
@@ -360,7 +382,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
-        playViewModel.submitAction(ClickFollowAction)
+        playViewModel.submitAction(PlayViewerNewAction.FollowPartner)
     }
 
     /**
@@ -475,6 +497,15 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onProductSeeMoreClick(view: ProductSeeMoreViewComponent) {
         openProductSheet()
         analytic.clickFeaturedProductSeeMore()
+    }
+
+    /**
+     * Interactive Active Listener
+     */
+    override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
+        playViewModel.submitAction(
+            PlayViewerNewAction.StartPlayingInteractive
+        )
     }
     //endregion
 
@@ -772,7 +803,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(prevState?.interactive, state.interactive, state.partner)
+                renderInteractiveView(prevState?.interactive, state.interactive)
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -784,6 +815,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderFeaturedProductView(prevState?.tagItems, state.tagItems, state.bottomInsets, state.status)
                 renderQuickReplyView(prevState?.quickReply, state.quickReply, prevState?.bottomInsets, state.bottomInsets, state.channel)
                 renderKebabMenuView(state.kebabMenu)
+
+                renderInteractiveDialog(prevState?.interactive, state.interactive)
 
                 handleStatus(state.status)
 
@@ -1348,25 +1381,31 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractiveView(
-        prevState: InteractiveUiModel?,
-        state: InteractiveUiModel,
-        partner: PlayPartnerInfo,
+        prevState: InteractiveStateUiModel?,
+        state: InteractiveStateUiModel,
     ) {
-        if (prevState != state) {
-            when (state) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state)
-                is InteractiveUiModel.Quiz -> renderQuizView(state)
+        if (state.isPlaying) {
+            interactiveActiveView?.hide()
+            interactiveFinishView?.hide()
+            return
+        }
+
+        /**
+         * Render:
+         * - if interactive has changed <b>or</b>
+         * - if isPlaying state has changed to not playing
+         */
+        if (prevState?.interactive != state.interactive ||
+            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying)) {
+            when (state.interactive) {
+                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
+                is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
                 InteractiveUiModel.Unknown -> {
                     interactiveActiveView?.hide()
                     interactiveFinishView?.hide()
                 }
             }
         }
-
-//        interactiveView?.showFollowMode(
-//            partner.status is PlayPartnerFollowStatus.Followable &&
-//                    !partner.status.isFollowing
-//        )
     }
 
     private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
@@ -1374,7 +1413,7 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
                 interactiveActiveView?.setUpcomingGiveaway(
                     desc = state.title,
-                    durationInMs = status.timeToStartInMs,
+                    targetTime = status.startTime,
                     onDurationEnd = {
                         playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
                     }
@@ -1385,7 +1424,7 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveUiModel.Giveaway.Status.Ongoing -> {
                 interactiveActiveView?.setOngoingGiveaway(
                     desc = state.title,
-                    durationInMs = status.durationInMs,
+                    targetTime = status.endTime,
                     onDurationEnd = {
                         playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                     }
@@ -1411,7 +1450,7 @@ class PlayUserInteractionFragment @Inject constructor(
             is InteractiveUiModel.Quiz.Status.Ongoing -> {
                 interactiveActiveView?.setQuiz(
                     question = state.title,
-                    durationInMs = status.durationInMs,
+                    targetTime = status.endTime,
                     onDurationEnd = {
                         playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
                     }
@@ -1429,6 +1468,26 @@ class PlayUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.hide()
                 interactiveFinishView?.hide()
             }
+        }
+    }
+
+    private fun renderInteractiveDialog(
+        prevState: InteractiveStateUiModel?,
+        state: InteractiveStateUiModel,
+    ) {
+        if (prevState == null ||
+            prevState.isPlaying == state.isPlaying) return
+
+        if (state.isPlaying) {
+            InteractiveDialogFragment.getOrCreate(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).show(childFragmentManager)
+        } else if (InteractiveDialogFragment.get(childFragmentManager)?.isAdded == true){
+            InteractiveDialogFragment.getOrCreate(
+                childFragmentManager,
+                requireActivity().classLoader
+            ).dismiss()
         }
     }
 
