@@ -20,51 +20,33 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:text="@string/warning_add_email"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3" />
+            app:typographyType="body_2" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/et_email"
             app:layout_constraintTop_toBottomOf="@id/add_email_warning"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_width="match_parent"
-            app:text_field_label="@string/title_email"
+            app:unify_text_field_label="@string/title_email"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl4"
+            android:layout_marginTop="@dimen/unify_space_24"
             android:textSize="@dimen/fontSize_lvl4"
             />
 
-        <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toBottomOf="@id/et_email"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/tv_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/we_will_send_email_verification_code"
-            android:textSize="@dimen/fontSize_lvl2" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            app:layout_constraintTop_toBottomOf="@id/et_email"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:id="@+id/tv_error"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="@string/we_will_send_email_verification_code"
-            android:textSize="@dimen/fontSize_lvl2"
-            android:visibility="gone"
-            android:textColor="@color/Unify_R500"/>
-
         <com.tokopedia.unifycomponents.UnifyButton
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_email"
             android:id="@+id/buttonSubmit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing_lvl8"
+            android:layout_marginTop="@dimen/unify_space_48"
             android:layout_gravity="center_horizontal"
             android:enabled="false"
             android:gravity="center"
-            android:text="@string/button_save"
+            android:text="@string/continue_form"
             android:layout_alignParentBottom="true"
             />
 
