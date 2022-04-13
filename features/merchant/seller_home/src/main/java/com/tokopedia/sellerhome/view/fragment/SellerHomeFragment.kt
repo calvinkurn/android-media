@@ -873,14 +873,24 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         binding?.sahGlobalError?.setActionClickListener {
             reloadPage()
         }
+
+        setupEmptyState()
+        setRecyclerViewLayoutAnimation()
+        setupRamadhanBackgroundGradient()
+    }
+
+    private fun setupEmptyState() {
         emptyState?.run {
             setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
-            setImageDrawable(
-                resources.getDrawable(
-                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
-                    null
-                )
-            )
+            try {
+                requireContext().getResDrawable(
+                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
+                )?.let {
+                    setImageDrawable(it)
+                }
+            } catch (e: Exception) {
+                setImageUrl("")
+            }
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )
@@ -888,9 +898,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 reloadPage()
             }
         }
-
-        setRecyclerViewLayoutAnimation()
-        setupRamadhanBackgroundGradient()
     }
 
     /**
