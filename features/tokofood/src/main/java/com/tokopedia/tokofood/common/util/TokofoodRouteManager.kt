@@ -11,12 +11,12 @@ import com.tokopedia.tokofood.home.presentation.fragment.TokoFoodHomeFragment
 
 object TokofoodRouteManager {
 
-    fun mapUriToFragment(uri: Uri): BaseMultiFragment? {
+    fun mapUriToFragment(uri: Uri): Fragment? {
         // tokopedia://tokofood
         if (uri.host == "tokofood") {
-            var f: BaseMultiFragment? = null
+            var f: Fragment? = null
             if (uri.path == "/home") { // tokopedia://tokofood/home
-                f = TokoFoodHomeFragment()
+                f = TokoFoodHomeFragment.createInstance()
             }
             if (f != null) {
                 f.arguments = Bundle().apply {

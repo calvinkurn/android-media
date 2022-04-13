@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.home.presentation.uimodel
 
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeTypeFactory
 
-data class TokoFoodFakeTabUiModel (
+data class TokoFoodHomeFakeTabUiModel (
     val id: String,
     val fakeTab: TokoFoodFakeTab
 ): TokoFoodHomeLayoutUiModel(id) {

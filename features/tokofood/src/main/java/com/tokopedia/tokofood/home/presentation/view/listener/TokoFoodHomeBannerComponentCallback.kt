@@ -4,7 +4,7 @@ import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class TokoFoodBannerComponentCallback: BannerComponentListener {
+class TokoFoodHomeBannerComponentCallback: BannerComponentListener {
 
     override fun onPromoScrolled(
         channelModel: ChannelModel,

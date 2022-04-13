@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIcon
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIconsUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class TokoFoodIconsViewHolder(
+class TokoFoodHomeIconsViewHolder(
     itemView: View
-): AbstractViewHolder<TokoFoodIconsUiModel>(itemView) {
+): AbstractViewHolder<TokoFoodHomeIconsUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -28,11 +28,11 @@ class TokoFoodIconsViewHolder(
     private val adapter = TokoFoodIconAdapter()
     private var iconRecyclerView: RecyclerView? = null
 
-    override fun bind(element: TokoFoodIconsUiModel) {
+    override fun bind(element: TokoFoodHomeIconsUiModel) {
         setupTokoFoodIcon(element)
     }
 
-    private fun setupTokoFoodIcon(element: TokoFoodIconsUiModel){
+    private fun setupTokoFoodIcon(element: TokoFoodHomeIconsUiModel){
         val icons = element.listIcons
         iconRecyclerView = itemView.findViewById(R.id.tokofood_icon_recycler_view)
         if (icons.isNotEmpty()){
@@ -61,7 +61,7 @@ class TokoFoodIconsViewHolder(
             return iconList.size
         }
 
-        fun submitList(list: TokoFoodIconsUiModel) {
+        fun submitList(list: TokoFoodHomeIconsUiModel) {
             iconList.clear()
             iconList.addAll(list.listIcons)
         }

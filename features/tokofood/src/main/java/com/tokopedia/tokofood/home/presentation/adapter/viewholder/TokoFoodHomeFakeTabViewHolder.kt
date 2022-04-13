@@ -6,11 +6,11 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodFakeTabUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
 
-class TokoFoodFakeTabViewHolder(
+class TokoFoodHomeFakeTabViewHolder(
     itemView: View
-): AbstractViewHolder<TokoFoodFakeTabUiModel>(itemView) {
+): AbstractViewHolder<TokoFoodHomeFakeTabUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -20,11 +20,11 @@ class TokoFoodFakeTabViewHolder(
     var imgNyam: ImageView? = null
     var imgTokoFood: ImageView? = null
 
-    override fun bind(element: TokoFoodFakeTabUiModel) {
+    override fun bind(element: TokoFoodHomeFakeTabUiModel) {
         setupTokoFoodFakeTab(element)
     }
 
-    private fun setupTokoFoodFakeTab(element: TokoFoodFakeTabUiModel) {
+    private fun setupTokoFoodFakeTab(element: TokoFoodHomeFakeTabUiModel) {
         imgNyam = itemView.findViewById(R.id.img_nyam_tab)
         imgTokoFood = itemView.findViewById(R.id.img_tokofood_tab)
 

@@ -1,19 +1,19 @@
 package com.tokopedia.tokofood.home.presentation.adapter
 
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodFakeTabUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIconsUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodLoadingStateUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodNoPinPoinUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodOutOfCoverageUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodUSPUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeNoPinPoinUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeOutOfCoverageUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 
 interface TokoFoodHomeTypeFactory {
-    fun type(uiModel: TokoFoodLoadingStateUiModel): Int
-    fun type(uiModel: TokoFoodFakeTabUiModel): Int
-    fun type(uiModel: TokoFoodUSPUiModel): Int
-    fun type(uiModel: TokoFoodMerchantListUiModel): Int
-    fun type(uiModel: TokoFoodOutOfCoverageUiModel): Int
-    fun type(uiModel: TokoFoodNoPinPoinUiModel): Int
-    fun type(uiModel: TokoFoodIconsUiModel): Int
+    fun type(uiModel: TokoFoodHomeLoadingStateUiModel): Int
+    fun type(uiModel: TokoFoodHomeFakeTabUiModel): Int
+    fun type(uiModel: TokoFoodHomeUSPUiModel): Int
+    fun type(uiModel: TokoFoodHomeMerchantListUiModel): Int
+    fun type(uiModel: TokoFoodHomeOutOfCoverageUiModel): Int
+    fun type(uiModel: TokoFoodHomeNoPinPoinUiModel): Int
+    fun type(uiModel: TokoFoodHomeIconsUiModel): Int
 }

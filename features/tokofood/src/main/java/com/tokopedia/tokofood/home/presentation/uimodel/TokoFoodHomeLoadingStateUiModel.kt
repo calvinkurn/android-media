@@ -2,7 +2,7 @@ package com.tokopedia.tokofood.home.presentation.uimodel
 
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeTypeFactory
 
-data class TokoFoodNoPinPoinUiModel(
+data class TokoFoodHomeLoadingStateUiModel (
     val id: String
 ): TokoFoodHomeLayoutUiModel(id) {
     override fun type(typeFactory: TokoFoodHomeTypeFactory): Int {

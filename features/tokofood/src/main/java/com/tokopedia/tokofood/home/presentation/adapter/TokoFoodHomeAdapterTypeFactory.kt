@@ -35,40 +35,40 @@ import com.tokopedia.home_component.visitable.ProductHighlightDataModel
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodFakeTabViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodIconsViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodLoadingViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodNoPinPoinViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodOutOfCoverageViewHolder
-import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodUSPViewHolder
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodFakeTabUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIconsUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodLoadingStateUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodMerchantListUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodNoPinPoinUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodOutOfCoverageUiModel
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodUSPUiModel
-import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodBannerComponentCallback
-import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodCategoryWidgetV2ComponentCallback
-import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodLegoComponentCallback
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeFakeTabViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeLoadingViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeMerchantListViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeNoPinPoinViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeOutOfCoverageViewHolder
+import com.tokopedia.tokofood.home.presentation.adapter.viewholder.TokoFoodHomeUSPViewHolder
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeFakeTabUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeMerchantListUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeNoPinPoinUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeOutOfCoverageUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
+import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 
 class TokoFoodHomeAdapterTypeFactory (
-    private val dynamicLegoBannerCallback: TokoFoodLegoComponentCallback? = null,
-    private val bannerComponentCallback: TokoFoodBannerComponentCallback? = null,
-    private val categoryWidgetCallback: TokoFoodCategoryWidgetV2ComponentCallback? = null
+    private val dynamicLegoBannerCallback: TokoFoodHomeLegoComponentCallback? = null,
+    private val bannerComponentCallback: TokoFoodHomeBannerComponentCallback? = null,
+    private val categoryWidgetCallback: TokoFoodHomeCategoryWidgetV2ComponentCallback? = null
 ):  BaseAdapterTypeFactory(),
     TokoFoodHomeTypeFactory,
     HomeComponentTypeFactory {
 
     // region TokoFood Home Component
-    override fun type(uiModel: TokoFoodFakeTabUiModel): Int = TokoFoodFakeTabViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodUSPUiModel): Int = TokoFoodUSPViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodNoPinPoinUiModel): Int = TokoFoodNoPinPoinViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodOutOfCoverageUiModel): Int = TokoFoodOutOfCoverageViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodLoadingStateUiModel): Int = TokoFoodLoadingViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodMerchantListUiModel): Int = TokoFoodMerchantListViewHolder.LAYOUT
-    override fun type(uiModel: TokoFoodIconsUiModel): Int = TokoFoodIconsViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeFakeTabUiModel): Int = TokoFoodHomeFakeTabViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeUSPUiModel): Int = TokoFoodHomeUSPViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeNoPinPoinUiModel): Int = TokoFoodHomeNoPinPoinViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeOutOfCoverageUiModel): Int = TokoFoodHomeOutOfCoverageViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeLoadingStateUiModel): Int = TokoFoodHomeLoadingViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeMerchantListUiModel): Int = TokoFoodHomeMerchantListViewHolder.LAYOUT
+    override fun type(uiModel: TokoFoodHomeIconsUiModel): Int = TokoFoodHomeIconsViewHolder.LAYOUT
     // endregion
 
 
@@ -94,13 +94,13 @@ class TokoFoodHomeAdapterTypeFactory (
         return when(type){
 
             // region TokoFood Home Component
-            TokoFoodFakeTabViewHolder.LAYOUT -> TokoFoodFakeTabViewHolder(view)
-            TokoFoodUSPViewHolder.LAYOUT -> TokoFoodUSPViewHolder(view)
-            TokoFoodNoPinPoinViewHolder.LAYOUT -> TokoFoodNoPinPoinViewHolder(view)
-            TokoFoodOutOfCoverageViewHolder.LAYOUT -> TokoFoodOutOfCoverageViewHolder(view)
-            TokoFoodLoadingViewHolder.LAYOUT -> TokoFoodLoadingViewHolder(view)
-            TokoFoodMerchantListViewHolder.LAYOUT -> TokoFoodMerchantListViewHolder(view)
-            TokoFoodIconsViewHolder.LAYOUT -> TokoFoodIconsViewHolder(view)
+            TokoFoodHomeFakeTabViewHolder.LAYOUT -> TokoFoodHomeFakeTabViewHolder(view)
+            TokoFoodHomeUSPViewHolder.LAYOUT -> TokoFoodHomeUSPViewHolder(view)
+            TokoFoodHomeNoPinPoinViewHolder.LAYOUT -> TokoFoodHomeNoPinPoinViewHolder(view)
+            TokoFoodHomeOutOfCoverageViewHolder.LAYOUT -> TokoFoodHomeOutOfCoverageViewHolder(view)
+            TokoFoodHomeLoadingViewHolder.LAYOUT -> TokoFoodHomeLoadingViewHolder(view)
+            TokoFoodHomeMerchantListViewHolder.LAYOUT -> TokoFoodHomeMerchantListViewHolder(view)
+            TokoFoodHomeIconsViewHolder.LAYOUT -> TokoFoodHomeIconsViewHolder(view)
             // endregion
 
             // region Global Home Component

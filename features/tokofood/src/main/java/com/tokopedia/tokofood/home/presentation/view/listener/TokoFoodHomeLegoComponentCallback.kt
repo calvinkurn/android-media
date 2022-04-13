@@ -4,7 +4,7 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 
-class TokoFoodLegoComponentCallback: DynamicLegoBannerListener {
+class TokoFoodHomeLegoComponentCallback: DynamicLegoBannerListener {
 
     override fun getDynamicLegoBannerData(channelModel: ChannelModel) {
         TODO("Not yet implemented")

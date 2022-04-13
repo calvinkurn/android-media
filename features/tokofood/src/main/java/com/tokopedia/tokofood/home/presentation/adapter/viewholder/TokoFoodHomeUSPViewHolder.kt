@@ -4,18 +4,18 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodUSPUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
 
-class TokoFoodUSPViewHolder(
+class TokoFoodHomeUSPViewHolder(
     itemView: View
-): AbstractViewHolder<TokoFoodUSPUiModel>(itemView) {
+): AbstractViewHolder<TokoFoodHomeUSPUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_usp
     }
 
-    override fun bind(element: TokoFoodUSPUiModel) {
+    override fun bind(element: TokoFoodHomeUSPUiModel) {
 
     }
 }
