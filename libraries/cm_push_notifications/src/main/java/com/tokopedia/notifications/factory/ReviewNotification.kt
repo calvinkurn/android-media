@@ -4,6 +4,7 @@ import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
@@ -12,6 +13,7 @@ import com.tokopedia.notifications.common.CMConstant.ReviewStarNumber.*
 import com.tokopedia.notifications.common.CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr
 import com.tokopedia.notifications.model.BaseNotificationModel
+import java.lang.Exception
 
 
 class ReviewNotification internal constructor(
@@ -121,18 +123,26 @@ class ReviewNotification internal constructor(
     }
 
     companion object {
-        private const val reviewRegex = "source=test_01"
-
         fun updateReviewAppLink(
             intent: Intent,
             baseNotificationModel: BaseNotificationModel?
         ): BaseNotificationModel? {
             val starNumber = intent.getStringExtra(STAR_NUMBER)
-            val appLink = starNumber?.let {
-                baseNotificationModel?.appLink + "&rating=$starNumber"
+            starNumber?.let {
+                baseNotificationModel?.appLink = getUpdatedAppLink(
+                    baseNotificationModel?.appLink?: "", it)
             }
-            baseNotificationModel?.appLink = appLink ?: ""
             return baseNotificationModel
+        }
+
+        private fun getUpdatedAppLink(appLink: String, starNumber: String): String {
+            return try {
+                val uri = Uri.parse(appLink)
+                uri.buildUpon().appendQueryParameter("rating", starNumber).build().toString()
+            } catch (e: Exception) {
+                appLink
+            }
+
         }
     }
 
