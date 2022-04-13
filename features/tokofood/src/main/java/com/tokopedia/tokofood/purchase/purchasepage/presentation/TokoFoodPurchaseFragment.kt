@@ -303,10 +303,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         val productIds = (it.data as? CartTokoFoodData)?.carts?.map { product ->
                             product.productId
                         }
-                        // TODO: Create delete multiple products method
+                        // TODO: Create delete multiple products method to be safe
                         productIds?.getOrNull(0)?.let { productId ->
                             viewModel.deleteProduct(productId)
                         }
+                    }
+                    UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS -> {
+                        viewModel.bulkDeleteUnavailableProducts()
                     }
                 }
             }
@@ -358,7 +361,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 setPrimaryCTAText("Hapus")
                 setSecondaryCTAText("Kembali")
                 setPrimaryCTAClickListener {
-                    viewModel.bulkDeleteUnavailableProducts()
+                    activityViewModel?.deleteUnavailableProducts()
                     dismiss()
                 }
                 setSecondaryCTAClickListener {

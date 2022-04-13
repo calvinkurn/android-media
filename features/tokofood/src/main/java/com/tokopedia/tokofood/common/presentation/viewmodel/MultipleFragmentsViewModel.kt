@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
@@ -129,6 +130,28 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         })
     }
 
+    fun deleteUnavailableProducts() {
+        launchCatchError(block = {
+            cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
+            val removeCartParam = getUnavailableProductsParam()
+            removeCartTokoFoodUseCase(removeCartParam).collect {
+                if (it.success == 1) {
+                    loadCartList()
+                    cartDataValidationState.emit(
+                        UiEvent(state = UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS)
+                    )
+                }
+            }
+        }, onError = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    throwable = it
+                )
+            )
+        })
+    }
+
     // TODO: Move to mapper
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
         val products = cartData.availableSection.products
@@ -172,6 +195,19 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
                 shopId = shopId
             )
         )
+        return CartTokoFoodParam(carts = cartList)
+    }
+
+    private fun getUnavailableProductsParam(): CartTokoFoodParam {
+        val cartList = cartDataState.value.unavailableSection.products
+            .asSequence()
+            .map {
+                CartItemTokoFoodParam(
+                    cartId = it.cartId.toLongOrZero(),
+                    productId = it.productId,
+                    shopId = shopId
+                )
+            }.toList()
         return CartTokoFoodParam(carts = cartList)
     }
 

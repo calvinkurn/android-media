@@ -204,10 +204,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     fun bulkDeleteUnavailableProducts() {
-        // Todo : hit API to remove product, once it's success, perform below code to remove local data
         val dataList = getVisitablesValue()
         val unavailableSectionItems = mutableListOf<Visitable<*>>()
-
+        // TODO: Check if ticer error section is only related to unavailable products
+        getVisitablesValue().getTickerErrorShopLevelUiModel()?.let {
+            unavailableSectionItems.add(it.second)
+        }
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
         var indexOfUnavailableHeaderDivider = unavailableProducts.first - 3
         var indexOfFirstUnavailableProduct = unavailableProducts.first
@@ -269,6 +271,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val index = mAccordionData.first - 1
         dataList.addAll(index, tmpCollapsedUnavailableItems.toMutableList())
         tmpCollapsedUnavailableItems.clear()
+    }
+
+    private fun deleteErrorsUnblocking() {
+
     }
 
     fun scrollToUnavailableItem() {
