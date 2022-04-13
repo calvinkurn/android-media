@@ -136,8 +136,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareMap(savedInstanceState)
-        setViewListener()
         initData()
+        setViewListener()
         initObserver()
     }
 
@@ -506,23 +506,25 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
 
-            bottomsheetLocation.btnSecondary.setOnClickListener {
-                if (!isEdit) {
+            if (isEdit) {
+                bottomsheetLocation.btnSecondary.visibility = View.GONE
+            } else {
+                bottomsheetLocation.btnSecondary.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
-                }
-                if (isPositiveFlow) {
-                    isPositiveFlow = false
-                    viewModel.setAddress(SaveAddressDataModel())
-                    goToAddressForm()
-                } else {
-                    activity?.run {
-                        setResult(Activity.RESULT_OK, Intent().apply {
-                            putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
-                        })
-                        finish()
+                    if (isPositiveFlow) {
+                        isPositiveFlow = false
+                        viewModel.setAddress(SaveAddressDataModel())
+                        goToAddressForm()
+                    } else {
+                        activity?.run {
+                            setResult(Activity.RESULT_OK, Intent().apply {
+                                putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
+                            })
+                            finish()
+                        }
                     }
-                }
 
+                }
             }
 
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }

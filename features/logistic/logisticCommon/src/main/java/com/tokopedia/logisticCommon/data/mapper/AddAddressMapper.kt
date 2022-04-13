@@ -10,8 +10,8 @@ object AddAddressMapper {
         return warehouses.map { WarehouseDataModel(warehouseId = it.warehouseId, serviceType = it.serviceType) }
     }
 
-    fun mapAddressDetailToSaveAddressDataModel(data: KeroGetAddressResponse.Data) : SaveAddressDataModel {
-        return data.keroGetAddress.data.first().let {
+    fun mapAddressDetailToSaveAddressDataModel(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) : SaveAddressDataModel {
+        return data.let {
             SaveAddressDataModel(
                 id = it.addrId,
                 addressName = it.addrName,

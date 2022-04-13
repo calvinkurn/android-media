@@ -21,6 +21,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
@@ -521,29 +522,19 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
 
     private fun showDialogAskGps() {
-        val bottomSheetLocUndefined = BottomSheetUnify()
-        val bottomsheetLocationUndefinedBinding = BottomsheetLocationUndefinedBinding.inflate(LayoutInflater.from(context), null, false)
-//        setupBottomSheetLocUndefined(viewBinding, isDontAskAgain)
-        bottomsheetLocationUndefinedBinding.apply {
-            imgLocUndefined.setImageUrl(AddAddressConstant.LOCATION_NOT_FOUND)
-            tvLocUndefined.text = getString(R.string.txt_location_not_detected)
-            tvInfoLocUndefined.text = getString(R.string.txt_info_location_not_detected)
-            btnActivateLocation.setOnClickListener {
+        val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.apply {
+            setTitle(getString(R.string.txt_location_not_detected))
+            setDescription(getString(R.string.discom_on_deny_location_subtitle))
+            setPrimaryCTAText(getString(R.string.btn_ok))
+            setPrimaryCTAClickListener {
                 startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
             }
-        }
-        bottomSheetLocUndefined.apply {
-            setCloseClickListener {
-                dismiss()
+            setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
+            setSecondaryCTAClickListener {
+                dialog.hide()
             }
-            setChild(bottomsheetLocationUndefinedBinding.root)
-            setOnDismissListener {
-                dismiss()
-            }
-        }
-
-        childFragmentManager.let {
-            bottomSheetLocUndefined.show(it, "")
+            show()
         }
     }
 

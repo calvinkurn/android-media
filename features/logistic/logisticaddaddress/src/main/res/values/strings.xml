@@ -173,7 +173,9 @@
     <!--Address Form-->
     <string name="title_address_form">Detail Alamat</string>
     <string name="tv_pinpoint_not_defined">Kamu belum pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
+    <string name="tv_pinpoint_not_defined_edit">Tambah Pinpoint (Opsional).</string>
     <string name="tv_pinpoint_defined">Kamu Sudah pinpoint. &lt;b&gt;Atur Pinpoint (Opsional)&lt;/b&gt;</string>
+    <string name="tv_pinpoint_defined_edit">Kamu Sudah pinpoint.</string>
 
     <string name="tv_discom_item_revamp_province_city_district">&lt;b&gt;%1$s, %2$s, %3$s&lt;/b&gt;</string>
     <string name="tv_discom_item_revamp_province_city">&lt;b&gt;%1$s, %2$s,&lt;/b&gt; %3$s</string>
@@ -182,6 +184,8 @@
     <string name="tv_discom_item_revamp_city">%1$s, &lt;b&gt;%2$s,&lt;/b&gt; %3$s</string>
     <string name="tv_discom_item_revamp_district">%1$s, %2$s, &lt;b&gt;%3$s&lt;/b&gt;</string>
     <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2$s, %3$s</string>
+    <string name="tv_discom_dialog_secondary">Lain Kali</string>
+    <string name="discom_on_deny_location_subtitle">Untuk menggunakan fitur ini silahkan aktifkan layanan lokasi perangkat Anda</string>
 
     <string name="tv_error_field">Wajib diisi</string>
     <string name="tv_title_nama_penerima_bottomsheet">Informasi nama penerima</string>
@@ -205,10 +209,12 @@
     <string name="field_nomor_hp">nomor hp</string>
 
     <string name="postal_code_field_error">Kode pos terlalu pendek, min. 5 karakter</string>
-    <string name="edit_address_revamp_change_pinpoint_positive_button_text">Ubah</string>
+    <string name="change_pinpoint_positive_text">Ubah</string>
+    <string name="change_pinpoint_negative_text">Atur</string>
     <string name="error_district_pinpoint_mismatch"><![CDATA[Oops, kota & kecamatan harus sama dengan pinpoint.]]></string>
     <string name="change_pinpoint_outside_district"><![CDATA[Pinpoint, kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.]]></string>
     <string name="change_pinpoint_edit_address">Pinpoint-mu berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.</string>
     <string name="pinpoint_title">Pinpoint</string>
     <string name="success_add_phone_number">Nomor HP berhasil ditambahkan!</string>
+    <string name="district_changed_success"><![CDATA[Kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.]]></string>
 </resources>

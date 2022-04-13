@@ -72,7 +72,7 @@
                 app:typographyType="heading_6"
                 android:visibility="gone"
                 tools:visibility="visible"
-                android:text="@string/edit_address_revamp_change_pinpoint_positive_button_text" />
+                android:text="@string/change_pinpoint_positive_text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

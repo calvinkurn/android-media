@@ -49,6 +49,21 @@
             app:icon_name="CHEVRON_RIGHT"
             tools:ignore="ContentDescription" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/btn_change_negative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintTop_toTopOf="@id/address_district"
+            app:layout_constraintBottom_toBottomOf="@id/address_district"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="heading_6"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:text="@string/change_pinpoint_negative_text" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.unifycomponents.CardUnify>

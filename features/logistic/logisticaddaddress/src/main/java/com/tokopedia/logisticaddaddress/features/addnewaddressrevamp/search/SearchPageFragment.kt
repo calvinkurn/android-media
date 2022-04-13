@@ -137,12 +137,10 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 if (newAddress == null) {
                     newAddress = data?.getParcelableExtra(EXTRA_SAVE_DATA_UI_MODEL)
                 }
-                // todo ini kalo success create new address
                 if (isFromAddressForm != null && newAddress != null) {
                     finishActivity(newAddress, isFromAddressForm)
                 }
             } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
-                // todo ini kalo search page -> isi manual -> back
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
             }
@@ -203,6 +201,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         autoCompleteAdapter = AutoCompleteListAdapter(this)
         binding.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvAddressList.adapter = autoCompleteAdapter
+        if (isEdit) {
+            binding.tvMessageSearch.visibility = View.GONE
+        }
 
     }
 
@@ -211,20 +212,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         binding.searchPageInput.searchBarTextField.setText("")
         binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
         binding.tvMessageSearch.setOnClickListener {
-            if (!isEdit) {
-                AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
-                Intent(context, AddressFormActivity::class.java).apply {
-                    putExtra(EXTRA_IS_POSITIVE_FLOW, false)
-                    putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
-                    putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
-                    startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
-                }
-            } else {
-                activity?.run {
-                    setResult(Activity.RESULT_OK, Intent().apply {
-                    })
-                    finish()
-                }
+            AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
+            Intent(context, AddressFormActivity::class.java).apply {
+                putExtra(EXTRA_IS_POSITIVE_FLOW, false)
+                putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
+                putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
+                startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
         }
     }
