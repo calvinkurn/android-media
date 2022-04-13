@@ -117,6 +117,7 @@
     <string name="shop_discount_manage_discount_abusive_partial">Ada varian dengan perubahan harga tidak wajar</string>
     <string name="shop_discount_manage_discount_value_error">Cek lagi pengaturan diskon ini, ya.</string>
     <string name="shop_discount_manage_discount_ticker_abusive_products"><![CDATA[<b>%1s produk</b> gagal dimasukkan ke Diskon Toko karena ada perubahan harga di luar kewajaran. <a href="%2$s">Baca Ketentuan</a>]]></string>
-
+    <string name="shop_discount_manage_discount_bulk_apply_create_title">Atur Diskon</string>
+    <string name="shop_discount_manage_discount_bulk_apply_update_title">Ubah Diskon</string>
 
 </resources>
