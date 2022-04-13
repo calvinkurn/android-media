@@ -4,9 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
+import com.tokopedia.tokofood.common.domain.usecase.UpdateCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.minicartwidget.domain.model.CartProduct
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.util.Result
@@ -19,12 +21,17 @@ import kotlin.coroutines.CoroutineContext
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: SavedStateHandle,
-                                                     private val loadCartTokoFoodUseCase: LoadCartTokoFoodUseCase
+                                                     private val loadCartTokoFoodUseCase: LoadCartTokoFoodUseCase,
+                                                     private val updateCartTokoFoodUseCase: UpdateCartTokoFoodUseCase
 ) : ViewModel(), CoroutineScope {
     val inputFlow = MutableSharedFlow<String>(1)
 
     private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
-    private val cartDataFlow = cartDataState.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    private val cartDataFlow = cartDataState.asStateFlow()
+
+    private val _cartDataValidationState = MutableSharedFlow<Boolean>()
+    val cartDataValidationState: SharedFlow<Boolean>
+        get() = _cartDataValidationState
 
     companion object {
         const val INPUT_KEY = "string_input"
@@ -50,7 +57,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 //    val cartListFlow = MutableSharedFlow<Map<String, CartProduct>>(1)
 
     private val miniCartUiModelState = MutableStateFlow(MiniCartUiModel())
-    val miniCartFlow = miniCartUiModelState.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+    val miniCartFlow = miniCartUiModelState.asStateFlow()
 
     fun loadCartList() {
         launchCatchError(block = {
@@ -60,6 +67,19 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             }
             cartDataFlow.collect {
                 miniCartUiModelState.value = mapCartDataToMiniCart(it)
+            }
+        }, onError = {
+            Timber.e(it)
+        })
+    }
+
+    fun updateAndValidateCart() {
+        launchCatchError(block = {
+            val updateCartParam = CartTokoFoodParam()
+            updateCartTokoFoodUseCase(updateCartParam).collect {
+                if (it.success == 1) {
+                    _cartDataValidationState.emit(true)
+                }
             }
         }, onError = {
             Timber.e(it)

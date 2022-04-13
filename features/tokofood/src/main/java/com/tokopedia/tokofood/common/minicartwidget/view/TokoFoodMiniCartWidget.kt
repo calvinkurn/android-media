@@ -38,6 +38,9 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
             setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartUiModel.totalPrice, false).removeDecimalSuffix())
             setCtaText("Pesan ${miniCartUiModel.totalProductQuantity}")
             setLabelTitle(miniCartUiModel.shopName)
+            amountCtaView.setOnClickListener {
+                viewModel?.updateAndValidateCart()
+            }
         }
     }
 

@@ -47,10 +47,18 @@ class UpdateCartTokoFoodUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: CartTokoFoodParam): Flow<CartTokoFoodResponse> = flow {
-        val param = generateParams(params)
-        val response =
-            repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-        emit(response)
+//        val param = generateParams(params)
+//        val response =
+//            repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
+//        emit(response)
+        kotlinx.coroutines.delay(1000)
+        emit(getDummyResponse())
+    }
+
+    private fun getDummyResponse(): CartTokoFoodResponse {
+        return CartTokoFoodResponse(
+            success = 1
+        )
     }
 
 }

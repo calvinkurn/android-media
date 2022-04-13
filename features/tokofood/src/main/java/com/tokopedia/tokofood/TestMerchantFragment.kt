@@ -11,9 +11,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentTokofoodMerchantTestBinding
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -52,13 +54,37 @@ class TestMerchantFragment: BaseMultiFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        collectValue()
         setupView()
     }
 
+    override fun onResume() {
+        super.onResume()
+        initializeMiniCartWidget()
+    }
+
     private fun setupView() {
+
+    }
+
+    private fun collectValue() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityViewModel?.cartDataValidationState?.collect { isSuccess ->
+                if (isSuccess) {
+                    goToPurchasePage()
+                }
+            }
+        }
+    }
+
+    private fun initializeMiniCartWidget() {
         activityViewModel?.let {
             binding?.testMiniCart?.initialize(it, viewLifecycleOwner.lifecycleScope)
         }
+    }
+
+    private fun goToPurchasePage() {
+        navigateToNewFragment(TokoFoodPurchaseFragment.createInstance())
     }
 
 }
