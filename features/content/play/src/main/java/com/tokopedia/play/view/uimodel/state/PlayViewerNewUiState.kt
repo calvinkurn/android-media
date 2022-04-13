@@ -9,6 +9,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
@@ -17,7 +18,7 @@ import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
  */
 data class PlayViewerNewUiState(
     val channel: PlayChannelDetailUiModel,
-    val interactiveView: PlayInteractiveViewUiState,
+    val interactive: InteractiveUiModel,
     val partner: PlayPartnerInfo,
     val winnerBadge: PlayWinnerBadgeUiState,
     val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
@@ -32,33 +33,6 @@ data class PlayViewerNewUiState(
     val selectedVariant: NetworkResult<VariantUiModel>,
     val isLoadingBuy: Boolean,
 )
-
-data class PlayInteractiveViewUiState(
-    val interactive: PlayInteractiveUiState,
-    val visibility: ViewVisibility,
-)
-
-sealed class PlayInteractiveUiState {
-
-    object NoInteractive : PlayInteractiveUiState()
-
-    object Loading : PlayInteractiveUiState()
-
-    object Error : PlayInteractiveUiState()
-
-    data class PreStart(
-        val timeToStartInMs: Long,
-        val title: String,
-    ) : PlayInteractiveUiState()
-
-    data class Ongoing(
-        val timeRemainingInMs: Long,
-    ) : PlayInteractiveUiState()
-
-    data class Finished(
-        @StringRes val info: Int,
-    ) : PlayInteractiveUiState()
-}
 
 data class PlayWinnerBadgeUiState(
     val leaderboards: PlayLeaderboardWrapperUiModel,
@@ -96,10 +70,3 @@ data class PlayTitleUiState(
 data class PlayKebabMenuUiState(
     val shouldShow: Boolean
 )
-
-enum class ViewVisibility {
-
-    Visible,
-    Invisible,
-    Gone
-}

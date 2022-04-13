@@ -36,7 +36,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toTopOf="@id/view_interactive_winner_badge"
+        app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/view_stats_info"
@@ -156,41 +156,6 @@
         tools:visibility="visible"
         />
 
-    <FrameLayout
-        android:id="@+id/view_interactive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_real_time_notification"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
-
-    <View
-        android:id="@+id/v_winner_badge_bottom"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/play_anchor_size"
-        app:layout_constraintTop_toTopOf="@id/view_interactive"
-        app:layout_constraintBottom_toBottomOf="@id/view_interactive"
-        app:layout_constraintStart_toStartOf="@id/view_interactive"
-        app:layout_constraintVertical_bias="0.3"
-        />
-
-    <include
-        android:id="@+id/view_interactive_winner_badge"
-        layout="@layout/view_interactive_winner_badge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_interactive"
-        app:layout_constraintStart_toStartOf="@id/view_size"
-        tools:visibility="visible"
-        />
-
     <com.google.android.exoplayer2.ui.PlayerControlView
         android:id="@+id/pcv_video"
         android:layout_width="@dimen/layout_lvl0"
@@ -303,8 +268,8 @@
         app:layout_constraintTop_toBottomOf="@id/view_partner_info"
         />
 
-    <com.tokopedia.play_common.view.game.GameSmallWidgetView
-        android:id="@+id/widget_game_small"
+    <FrameLayout
+        android:id="@+id/view_interactive_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
