@@ -789,7 +789,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             if (!applink.isNullOrEmpty()) {
 
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
-                RouteManager.route(activity, finalApplink)
+                val intent = RouteManager.getIntent(activity, finalApplink)
+                intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT, viewModel.selectedFeedAccountType.value)
+                startActivity(intent)
+//                RouteManager.route(activity, finalApplink)
             } else {
                 activity?.setResult(
                     Activity.RESULT_OK,
@@ -872,5 +875,9 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     override fun onStop() {
         super.onStop()
         stopMedia()
+    }
+
+    companion object {
+        private const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
     }
 }

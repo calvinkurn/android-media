@@ -10,7 +10,6 @@ interface CreateContentPostCommonListener {
         isDeletedFromBubble: Boolean,
         mediaType: String,
     )
-    fun updateHeader(header: HeaderViewModel)
     fun openProductTaggingPageOnPreviewMediaClick(position: Int)
     fun clickProductTagBubbleAnalytics(mediaType: String, productId: String)
     fun updateTaggingInfoInViewModel(

@@ -24,6 +24,7 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
+import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
 import com.tokopedia.createpost.view.bottomSheet.ContentCreationProductTagBottomSheet
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
@@ -100,7 +101,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun initVar() {
         createPostModel = arguments?.getParcelable(CreatePostViewModel.TAG) ?: CreatePostViewModel()
-
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         val menuTitle =  activity?.getString(R.string.feed_content_text_lanjut)
@@ -475,10 +475,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 return index
         }
         return -1
-
-    }
-
-    override fun updateHeader(header: HeaderViewModel) {
 
     }
 

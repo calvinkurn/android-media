@@ -43,6 +43,9 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     private val folderDataList = arrayListOf<FolderData>()
     private val uriSet = HashSet<Uri>()
 
+    val selectedFeedAccountType: FeedAccountUiModel.Type
+        get() = _selectedFeedAccount.value.type
+
     private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
     val selectedFeedAccount: Flow<FeedAccountUiModel>
         get() = _selectedFeedAccount

@@ -53,6 +53,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    lateinit var selectedFeedAccount: FeedAccountUiModel
+
     private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
         val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
         fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
@@ -65,8 +67,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         initInjector()
+        super.onCreate(savedInstanceState)
         UploadMultipleImageUsecaseNew.mContext = applicationContext as Application?
     }
     override fun onNewIntent(intent: Intent?) {
@@ -90,14 +92,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         isDeletedFromBubble: Boolean,
         mediaType: String,
     ) {
-    }
-
-    override fun updateHeader(header: HeaderViewModel) {
-        toolbar_common.apply {
-            icon = header.avatar
-            title = getString(R.string.feed_content_post_sebagai)
-            subtitle = header.title
-        }
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -144,6 +138,8 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         const val PARAM_SHOW_PROGRESS_BAR = "show_posting_progress_bar"
         const val PARAM_IS_EDIT_STATE = "is_edit_state"
         const val PARAM_MEDIA_PREVIEW = "media_preview"
+        const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
+
         var isEditState: Boolean = false
         var isOpenedFromPreview: Boolean = false
         fun createIntent(
@@ -206,24 +202,14 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        toolbar_common.setOnBackClickListener {
-            onBackPressed()
-        }
-        toolbar_common.setOnAccountClickListener {
-            feedAccountBottomSheet.show(supportFragmentManager)
-        }
-        setSupportActionBar(toolbar_common)
-
-        toolbar_common.visibility = View.VISIBLE
-
-
+        setupToolbar()
     }
+
     override fun clickContinueOnTaggingPage(){
         createPostAnalytics.eventNextOnProductTaggingPage((fragment as BaseCreatePostFragmentNew).getLatestCreatePostData().completeImageList.size)
         intent.putExtra(PARAM_TYPE, TYPE_CONTENT_PREVIEW_PAGE)
         inflateFragment()
     }
-
 
     override fun onBackPressed() {
         KeyboardHandler.hideSoftKeyboard(this)
@@ -293,5 +279,45 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 if (!isEditState) createPostViewModel.completeImageList.first().path else "")
             startActivity(intent)
         }
+    }
+
+    private fun setupToolbar() {
+        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, 0)
+        val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
+        selectedFeedAccount = when(selectedFeedAccountType) {
+            FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
+                name = userSession.shopName,
+                iconUrl = userSession.shopAvatar,
+                type = selectedFeedAccountType
+            )
+            FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
+                name = userSession.name,
+                iconUrl = userSession.profilePicture,
+                type = selectedFeedAccountType
+            )
+            else -> FeedAccountUiModel(
+                name = "",
+                iconUrl = "",
+                type = selectedFeedAccountType
+            )
+        }
+
+
+        toolbar_common.apply {
+            icon = selectedFeedAccount.iconUrl
+            title = getString(R.string.feed_content_post_sebagai)
+            subtitle = selectedFeedAccount.name
+
+            setOnBackClickListener {
+                onBackPressed()
+            }
+
+            setOnAccountClickListener {
+                feedAccountBottomSheet.show(supportFragmentManager)
+            }
+
+            visibility = View.VISIBLE
+        }
+        setSupportActionBar(toolbar_common)
     }
 }

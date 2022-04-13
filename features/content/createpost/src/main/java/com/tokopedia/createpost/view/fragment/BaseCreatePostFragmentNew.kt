@@ -117,8 +117,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         feedContentForm: FeedContentForm,
         isFromTemplateToken: Boolean,
     ) {
-        updateHeader(feedContentForm.authors)
-
         createPostModel.shopName = feedContentForm.authors.first().name
         createPostModel.shopBadge = feedContentForm.authors.first().badge
         createPostModel.token = feedContentForm.token
@@ -143,15 +141,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
         super.onSaveInstanceState(outState)
         outState.putParcelable(VIEW_MODEL, createPostModel)
     }
-    private fun updateHeader(authors: List<Author>) {
-            activityListener?.updateHeader(HeaderViewModel(
-                authors.first().name,
-                authors.first().thumbnail,
-                authors.first().badge
-            ))
-
-    }
-
 
     override fun onErrorGetContentForm(message: String) {}
 
