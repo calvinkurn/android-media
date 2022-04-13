@@ -277,9 +277,6 @@ class GroupDetailViewModel @Inject constructor(
     }
 
     fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
-        if(action == TopAdsDashboardConstant.ACTION_MOVE) {
-            return
-        }
         val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
