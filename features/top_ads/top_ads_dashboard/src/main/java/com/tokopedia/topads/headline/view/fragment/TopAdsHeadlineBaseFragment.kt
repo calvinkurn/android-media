@@ -214,7 +214,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         presenter.getWhiteListedUser(::onSuccessWhiteListing) {
             presenter.getShopAdsInfo {
                 val info = it.topadsGetShopInfoV2.data.ads.getOrNull(1)
-                if (info?.type == "headline") {
+                if (info?.type == TopAdsDashboardConstant.HEADLINE) {
                     if (!info.isUsed) {
                         showEmptyView()
                     } else {
