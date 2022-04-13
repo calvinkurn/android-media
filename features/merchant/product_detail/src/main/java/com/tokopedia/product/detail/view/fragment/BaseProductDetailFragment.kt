@@ -72,6 +72,8 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         binding?.pdpBackToTop?.setOnClickListener {
             scrollToPosition(0)
         }
+
+        getRecyclerView()?.let { binding?.pdpNavigationTab?.setRecyclerView(it) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -122,7 +124,11 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
-
+    fun getComponentPositionByName(componentName: String): Int {
+        return productAdapter?.currentList?.indexOfFirst {
+            it.name() == componentName
+        } ?: RecyclerView.NO_POSITION
+    }
 
     fun <T : DynamicPdpDataModel> getComponentPositionBeforeUpdate(data: T?): Int {
         return if (data != null) {
@@ -171,12 +177,14 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rvPdp?.addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
                 val layoutManager = recyclerView.layoutManager
                 if (layoutManager !is LinearLayoutManager) return
 
-                binding?.pdpBackToTop?.showWithCondition(
-                    layoutManager.findFirstVisibleItemPosition() != 0
-                )
+                binding?.pdpBackToTop?.run {
+                    val scale = if(layoutManager.findFirstVisibleItemPosition() == 0) 0f else 1f
+                    animate().scaleX(scale).scaleY(scale).setDuration(265)
+                }
             }
         })
         showLoading()

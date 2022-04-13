@@ -2212,6 +2212,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateUi() {
         val newData = pdpUiUpdater?.mapOfData?.values?.toList()
         submitList(newData ?: listOf())
+        setupNavigationTab()
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -2362,20 +2363,16 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 boeImageUrl = boeData.imageURL,
                 isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
 
-        setupNavigationTab(it.navBar)
-
         updateUi()
     }
 
-    private fun setupNavigationTab(navBar: NavBar) {
-        val recyclerView = getRecyclerView() ?: return
+    private fun setupNavigationTab() {
+        val navBar = viewModel.p2Data.value?.navBar ?: return
         val items = navBar.items.map { item ->
-            ProductDetailNavigation.Item(item.title, {
-                val componentData = pdpUiUpdater?.mapOfData?.get(item.componentName)
-                getComponentPosition(componentData)
-            }, item.getComponentViewId())
+            val position = getComponentPositionByName(item.componentName)
+            ProductDetailNavigation.Item(item.title, position)
         }
-        binding?.pdpNavigationTab?.setup(recyclerView, items)
+        binding?.pdpNavigationTab?.setTabItems(items)
     }
 
     override fun onButtonFollowNplClick() {
