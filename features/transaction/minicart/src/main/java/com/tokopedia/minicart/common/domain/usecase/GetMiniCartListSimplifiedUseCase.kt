@@ -47,12 +47,10 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
             throw RuntimeException("Parameter is null!")
         }
 
-        // TODO: BUNDLING NOW MINI CART
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
-//            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
             return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
@@ -61,9 +59,9 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
 
     companion object {
         val QUERY = """
-        query mini_cart(${'$'}dummy: Int, ${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+        query mini_cart_v3(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          mini_cart(dummy: ${'$'}dummy, lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
+          mini_cart_v3(lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
             error_message
             status
             data {
@@ -95,7 +93,26 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                   }
                   cart_details {
                     cart_id
-                    product {
+                    bundle_detail { 
+                      bundle_id
+                      bundle_name
+                      bundle_type
+                      bundle_status
+                      bundle_description
+                      bundle_price
+                      bundle_price_fmt
+                      bundle_original_price
+                      bundle_original_price_fmt
+                      bundle_min_order
+                      bundle_max_order
+                      bundle_quota
+                      edit_app_link
+                      bundle_qty
+                      bundle_group_id
+                      slash_price_label
+                      bundle_grayscale_icon_url
+                    }
+                    products {
                       parent_id
                       product_id
                       product_quantity
@@ -140,7 +157,26 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                   }
                   cart_details {
                     cart_id
-                    product {
+                    bundle_detail { 
+                      bundle_id
+                      bundle_name
+                      bundle_type
+                      bundle_status
+                      bundle_description
+                      bundle_price
+                      bundle_price_fmt
+                      bundle_original_price
+                      bundle_original_price_fmt
+                      bundle_min_order
+                      bundle_max_order
+                      bundle_quota
+                      edit_app_link
+                      bundle_qty
+                      bundle_group_id
+                      slash_price_label
+                      bundle_grayscale_icon_url
+                    }
+                    products {
                       parent_id
                       product_id
                       product_quantity
