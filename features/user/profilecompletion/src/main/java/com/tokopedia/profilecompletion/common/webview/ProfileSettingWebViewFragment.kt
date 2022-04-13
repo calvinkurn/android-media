@@ -1,6 +1,7 @@
 package com.tokopedia.profilecompletion.common.webview
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
@@ -19,7 +20,7 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
     lateinit var tracker: ProfileInfoTracker
 
     override fun onFragmentBackPressed(): Boolean {
-	if (url == URL_CHANGE_EMAIL) {
+	if (Uri.parse(url).path?.contains(SUFFIX_CHANGE_EMAIL) == true) {
 	    tracker.trackClickOnBtnBackChangeEmail()
 	}
 	return super.onFragmentBackPressed()
@@ -53,7 +54,7 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
 
     companion object {
 	private const val APPLINK = "tokopedia-android-internal://success-change-email"
-	private const val URL_CHANGE_EMAIL = "https://m.tokopedia.com/user/profile/email"
+	private const val SUFFIX_CHANGE_EMAIL = "/user/profile/email"
 
 	fun instance(bundle: Bundle): Fragment {
 	    val fragment = ProfileSettingWebViewFragment()
