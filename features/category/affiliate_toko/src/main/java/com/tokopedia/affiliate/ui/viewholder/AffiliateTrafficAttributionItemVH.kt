@@ -17,6 +17,8 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
     AbstractViewHolder<AffiliateTrafficAttributionModel>(itemView) {
 
     companion object {
+        const val ZERO = 0
+        const val ZERO_POINT_ZERO = 0.0
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_traffic_attribution_item
@@ -43,10 +45,10 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
         val metricIntValue = element?.metrics?.metricDifferenceValue?.toDouble()
         if (metricIntValue != null) {
             when{
-                metricIntValue == 0.0 ->{
+                metricIntValue == ZERO_POINT_ZERO ->{
                     hideTrend()
                 }
-                metricIntValue > 0 ->{
+                metricIntValue > ZERO ->{
                     showTrend()
                     itemView.findViewById<Typography>(R.id.amount).setTextColor(
                         ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500))
@@ -57,7 +59,7 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
                         rotation = 90f
                     }
                 }
-                metricIntValue < 0 ->{
+                metricIntValue < ZERO ->{
                     showTrend()
                     itemView.findViewById<Typography>(R.id.amount).setTextColor(
                         MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500))
