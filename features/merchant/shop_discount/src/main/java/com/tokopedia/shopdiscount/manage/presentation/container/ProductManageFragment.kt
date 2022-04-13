@@ -294,10 +294,9 @@ class ProductManageFragment : BaseDaggerFragment() {
         viewModel.getSlashPriceProductsMeta()
     }
 
-    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
-        val meta = tabs.find { it.discountStatusId == discountStatusId }
-        val decreasedProductCount = totalProduct - ONE_PRODUCT
-        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
+    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, newTotalProduct : Int ->
+        val currentTab = tabs.find { it.discountStatusId == discountStatusId }
+        val updatedTabName = "${currentTab?.name} ($newTotalProduct)"
 
         val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
         val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()

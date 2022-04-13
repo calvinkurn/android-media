@@ -234,7 +234,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             viewModel.setDisableProductSelection(false)
             disableMultiSelect()
 
-            onDiscountRemoved(discountStatusId, viewModel.getTotalProduct())
+            onDiscountRemoved(discountStatusId, updatedTotalProduct)
 
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
@@ -302,6 +302,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 viewModel.removeAllProductFromSelection()
                 viewModel.setInMultiSelectMode(true)
                 enableMultiSelect()
+                binding?.tpgTotalProduct?.text =
+                    String.format(getString(R.string.sd_selected_product_counter), ZERO)
             }
             tpgCancelMultiSelect.setOnClickListener {
                 viewModel.removeAllProductFromSelection()
