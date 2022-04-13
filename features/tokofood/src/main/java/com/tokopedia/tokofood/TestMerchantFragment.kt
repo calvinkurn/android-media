@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.databinding.FragmentTokofoodMerchantTestBinding
@@ -69,9 +70,11 @@ class TestMerchantFragment: BaseMultiFragment() {
 
     private fun collectValue() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            activityViewModel?.cartDataValidationState?.collect { isSuccess ->
-                if (isSuccess) {
-                    goToPurchasePage()
+            activityViewModel?.cartDataValidationFlow?.collect { uiEvent ->
+                when(uiEvent.state) {
+                    UiEvent.EVENT_SUCCESS_VALIDATE_CHECKOUT -> {
+                        goToPurchasePage()
+                    }
                 }
             }
         }

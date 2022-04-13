@@ -12,6 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -29,6 +30,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
@@ -36,6 +38,8 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.TestMerchantFragment
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -53,6 +57,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -77,6 +82,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private var toolbar: TokoFoodPurchaseToolbar? = null
+    private var loaderDialog: LoaderDialog? = null
 
     companion object {
         const val HAS_ELEVATION = 6
@@ -119,6 +125,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         observeList()
         observeFragmentUiModel()
         observeUiEvent()
+        collectSharedUiState()
         loadData()
     }
 
@@ -258,29 +265,52 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun observeUiEvent() {
-        viewModel.uiEvent.observe(viewLifecycleOwner, {
+        viewModel.purchaseUiEvent.observe(viewLifecycleOwner, {
             when (it.state) {
-                UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderRecyclerView()
+
                     // Todo : update cart data on shared viewmodel
                 }
-                UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
+                PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE -> {
                     hideLoading()
                     renderGlobalError(it.throwable ?: ResponseErrorException())
                 }
-                UiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
-                UiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
-                UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
-                UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
-                UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
-                UiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData(true)
-                UiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
+                PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT -> navigateToMerchantPage()
+                PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
+                PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
+                PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
+                PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
+                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData(true)
+                PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     // TODO: Show error
                     viewModel.loadData(true)
                 }
             }
         })
+    }
+
+    private fun collectSharedUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            activityViewModel?.cartDataValidationFlow?.collect {
+                hideLoadingDialog()
+                when(it.state) {
+                    UiEvent.EVENT_LOADING_DIALOG -> {
+                        showLoadingDialog()
+                    }
+                    UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
+                        val productIds = (it.data as? CartTokoFoodData)?.carts?.map { product ->
+                            product.productId
+                        }
+                        // TODO: Create delete multiple products method
+                        productIds?.getOrNull(0)?.let { productId ->
+                            viewModel.deleteProduct(productId)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun renderRecyclerView() {
@@ -397,6 +427,20 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
+    private fun showLoadingDialog() {
+        context?.let {
+            loaderDialog = LoaderDialog(it).apply {
+                dialog.setCancelable(false)
+                dialog.setCanceledOnTouchOutside(false)
+            }
+            loaderDialog?.show()
+        }
+    }
+
+    private fun hideLoadingDialog() {
+        if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -413,9 +457,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onTextAddItemClicked() {
         // Todo : navigate to merchant page
         navigateToNewFragment(TestMerchantFragment.createInstance())
-//        view?.let {
-//            Toaster.build(it, "onTextAddItemClicked", Toaster.LENGTH_SHORT).show()
-//        }
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {
@@ -427,7 +468,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {
-        viewModel.deleteProduct(element.id)
+        activityViewModel?.deleteProduct(element.id)
     }
 
     override fun onTextChangeNotesClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {

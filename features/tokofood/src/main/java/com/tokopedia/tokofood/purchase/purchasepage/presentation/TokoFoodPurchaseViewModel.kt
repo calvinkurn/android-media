@@ -28,8 +28,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
-    private val _uiEvent = SingleLiveEvent<UiEvent>()
-    val uiEvent: LiveData<UiEvent>
+    private val _uiEvent = SingleLiveEvent<PurchaseUiEvent>()
+    val purchaseUiEvent: LiveData<PurchaseUiEvent>
         get() = _uiEvent
 
     private val _fragmentUiModel = MutableLiveData<TokoFoodPurchaseFragmentUiModel>()
@@ -65,12 +65,12 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
         if (fragmentUiModel.value != null && !shouldRefresh) {
             if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
-                _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
                 _fragmentUiModel.value = fragmentUiModel.value
                 _visitables.value = visitables.value
                 calculateTotal()
             } else {
-                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
                 _fragmentUiModel.value = fragmentUiModel.value
             }
         } else {
@@ -78,13 +78,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 delay(500) // Simulate hit API
                 val isSuccess = true
                 if (isSuccess) {
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
                     _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
                     constructRecycleViewItem()
                     calculateTotal()
                 } else {
                     // Todo : Set throwable from network
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
                     _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
                 }
             }
@@ -129,10 +129,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val dataList = getVisitablesValue()
         dataList.removeAll(visitables)
         if (!hasRemainingProduct()) {
-            _uiEvent.value = UiEvent(state = UiEvent.EVENT_REMOVE_ALL_PRODUCT)
+            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT)
         } else {
             _visitables.value = dataList
-            _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_REMOVE_PRODUCT, data = productCount)
+            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT, data = productCount)
         }
 
         calculateTotal()
@@ -197,8 +197,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun validateBulkDelete() {
         val unavailableProducts = getVisitablesValue().getAllUnavailableProducts()
         val collapsedUnavailableProducts = tmpCollapsedUnavailableItems.getAllUnavailableProducts()
-        _uiEvent.value = UiEvent(
-                state = UiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
+        _uiEvent.value = PurchaseUiEvent(
+                state = PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG,
                 data = unavailableProducts.second.size + collapsedUnavailableProducts.second.size
         )
     }
@@ -282,8 +282,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
 
         if (targetIndex > -1) {
-            _uiEvent.value = UiEvent(
-                    state = UiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
+            _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS,
                     data = targetIndex
             )
         }
@@ -382,8 +382,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     fun validateSetPinpoint() {
         val addressData = getVisitablesValue().getAddressUiModel()
         addressData?.let {
-            _uiEvent.value = UiEvent(
-                    state = UiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT,
+            _uiEvent.value = PurchaseUiEvent(
+                    state = PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT,
                     data = LocationPass().apply {
                         cityName = it.second.cityName
                         districtName = it.second.districtName
@@ -401,13 +401,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 }
                 tmpAddressData = tmpAddressData.first to isSuccess
                 if (isSuccess) {
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
                 } else {
-                    _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                 }
             }, onError = {
                 tmpAddressData = tmpAddressData.first to false
-                _uiEvent.value = UiEvent(state = UiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
             }
         )
     }

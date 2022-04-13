@@ -5,6 +5,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.response.CartTokoFood
+import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -45,9 +47,25 @@ class RemoveCartTokoFoodUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: CartTokoFoodParam): Flow<CartTokoFoodResponse> = flow {
-        val param = generateParams(params)
-        val response =
-            repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
-        emit(response)
+//        val param = generateParams(params)
+//        val response =
+//            repository.request<Map<String, Any>, CartTokoFoodResponse>(graphqlQuery(), param)
+//        emit(response)
+        kotlinx.coroutines.delay(1000)
+        emit(getDummyResponse(params.carts.getOrNull(0)?.productId.orEmpty()))
     }
+
+    private fun getDummyResponse(productId: String): CartTokoFoodResponse {
+        return CartTokoFoodResponse(
+            success = 1,
+            data = CartTokoFoodData(
+                carts = listOf(
+                    CartTokoFood(
+                        productId = productId
+                    )
+                )
+            )
+        )
+    }
+
 }

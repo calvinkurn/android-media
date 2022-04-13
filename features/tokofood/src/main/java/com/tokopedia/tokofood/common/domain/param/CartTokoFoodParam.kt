@@ -32,7 +32,7 @@ data class CartItemTokoFoodParam(
     val shopId: String = "",
     @SerializedName("quantity")
     @Expose
-    val quantity: Int,
+    val quantity: Int = 0,
     @SerializedName("metadata")
     @Expose
     val metadata: String = ""

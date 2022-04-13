@@ -1,6 +1,6 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
-data class UiEvent(
+data class PurchaseUiEvent(
         var state: Int = 0,
         var data: Any? = null,
         var throwable: Throwable? = null
