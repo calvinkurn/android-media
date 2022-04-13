@@ -889,7 +889,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setImageDrawable(it)
                 }
             } catch (e: Exception) {
-                setImageUrl("")
+                setImageUrl(SellerHomeConst.Images.IMG_ERROR_500)
             }
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
