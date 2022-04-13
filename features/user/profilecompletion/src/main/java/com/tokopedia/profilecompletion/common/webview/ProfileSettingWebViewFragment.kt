@@ -53,7 +53,7 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
 
     companion object {
 	private const val APPLINK = "tokopedia-android-internal://success-change-email"
-		private const val URL_CHANGE_EMAIL = "https://m.tokopedia.com/user/profile/email"
+	private const val URL_CHANGE_EMAIL = "https://m.tokopedia.com/user/profile/email"
 
 	fun instance(bundle: Bundle): Fragment {
 	    val fragment = ProfileSettingWebViewFragment()
