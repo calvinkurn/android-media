@@ -75,7 +75,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             }
         } else {
             launch {
-                delay(3000) // Simulate hit API
+                delay(500) // Simulate hit API
                 val isSuccess = true
                 if (isSuccess) {
                     _uiEvent.value = UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)

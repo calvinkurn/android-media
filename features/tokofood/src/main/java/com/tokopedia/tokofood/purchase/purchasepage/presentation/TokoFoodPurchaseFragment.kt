@@ -35,6 +35,7 @@ import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.TestMerchantFragment
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
@@ -411,9 +412,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onTextAddItemClicked() {
         // Todo : navigate to merchant page
-        view?.let {
-            Toaster.build(it, "onTextAddItemClicked", Toaster.LENGTH_SHORT).show()
-        }
+        navigateToNewFragment(TestMerchantFragment.createInstance())
+//        view?.let {
+//            Toaster.build(it, "onTextAddItemClicked", Toaster.LENGTH_SHORT).show()
+//        }
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {

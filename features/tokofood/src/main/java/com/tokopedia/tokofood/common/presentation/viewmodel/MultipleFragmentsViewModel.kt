@@ -3,17 +3,28 @@ package com.tokopedia.tokofood.common.presentation.viewmodel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.usecase.LoadCartTokoFoodUseCase
 import com.tokopedia.tokofood.common.minicartwidget.domain.model.CartProduct
 import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.util.Result
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class MultipleFragmentsViewModel(val savedStateHandle: SavedStateHandle) : ViewModel(), CoroutineScope {
+class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: SavedStateHandle,
+                                                     private val loadCartTokoFoodUseCase: LoadCartTokoFoodUseCase
+) : ViewModel(), CoroutineScope {
     val inputFlow = MutableSharedFlow<String>(1)
+
+    private val cartDataState = MutableStateFlow(CheckoutTokoFoodData())
+    private val cartDataFlow = cartDataState.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     companion object {
         const val INPUT_KEY = "string_input"
@@ -39,38 +50,31 @@ class MultipleFragmentsViewModel(val savedStateHandle: SavedStateHandle) : ViewM
 //    val cartListFlow = MutableSharedFlow<Map<String, CartProduct>>(1)
 
     private val miniCartUiModelState = MutableStateFlow(MiniCartUiModel())
-    val miniCartFlow = miniCartUiModelState.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 1)
+    val miniCartFlow = miniCartUiModelState.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     fun loadCartList() {
-        // Todo : Load cart list
-        launch {
-            delay(1000) // Simulate hit API
-            val isSuccess = true
-            if (isSuccess) {
-                // Todo : map response into CartProduct model
-                val tmpCartMapData = hashMapOf<String, CartProduct>()
-                tmpCartMapData["0"] = CartProduct()
-                tmpCartMapData["1"] = CartProduct()
-                tmpCartMapData["2"] = CartProduct()
-
-                val shopName = ""
-                val calculationResult = calculateTotal(tmpCartMapData)
-                val totalProductQuantity = calculationResult.first
-                val totalPrice = calculationResult.second
-
-
-                val miniCartUiModel = MiniCartUiModel(
-                        cartData = tmpCartMapData,
-                        shopName = shopName,
-                        totalPrice = totalPrice,
-                        totalProductQuantity = totalProductQuantity
-                )
-
-                miniCartUiModelState.value = miniCartUiModel
-            } else {
-
+        launchCatchError(block = {
+            val loadCartParam = CheckoutTokoFoodParam()
+            loadCartTokoFoodUseCase(loadCartParam).collect {
+                cartDataState.value = it.data
             }
-        }
+            cartDataFlow.collect {
+                miniCartUiModelState.value = mapCartDataToMiniCart(it)
+            }
+        }, onError = {
+            Timber.e(it)
+        })
+    }
+
+    // TODO: Move to mapper
+    private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
+        val products = cartData.availableSection.products
+        val totalPrice = products.sumOf { it.price }
+        return MiniCartUiModel(
+            shopName = cartData.shop.name,
+            totalPrice = totalPrice,
+            totalProductQuantity = products.size
+        )
     }
 
     private fun calculateTotal(cartMapData: Map<String, CartProduct>): Pair<Int, Long> {

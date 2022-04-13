@@ -43,7 +43,7 @@ class TokoFoodMiniCartWidget @JvmOverloads constructor(
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        viewBinding = LayoutWidgetPurchaseMiniCartBinding.inflate(LayoutInflater.from(context))
+        viewBinding = LayoutWidgetPurchaseMiniCartBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     override fun onDetachedFromWindow() {
