@@ -53,8 +53,8 @@ class PlayLoadingDialogFragment @Inject constructor() : DialogFragment() {
         isCancelable = false
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        if (!isVisible) show(fragmentManager, TAG)
+    fun showNow(fragmentManager: FragmentManager) {
+        if (!isAdded) showNow(fragmentManager, TAG)
     }
 
     private fun setupView(view: View) {

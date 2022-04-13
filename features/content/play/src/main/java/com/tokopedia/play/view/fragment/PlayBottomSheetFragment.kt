@@ -446,7 +446,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun showLoadingView() {
         getLoadingDialogFragment()
-            .show(childFragmentManager)
+            .showNow(childFragmentManager)
     }
 
     private fun hideLoadingView() {
