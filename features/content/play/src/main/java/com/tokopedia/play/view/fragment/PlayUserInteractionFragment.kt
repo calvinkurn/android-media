@@ -1390,6 +1390,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                     }
                 )
+                interactiveActiveView?.show()
                 interactiveFinishView?.hide()
             }
             InteractiveUiModel.Giveaway.Status.Finished -> {
