@@ -80,11 +80,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     override fun updateHeader(header: HeaderViewModel) {
-        toolbar_common?.toolbarIcon?.loadImageCircle(header.avatar)
-        toolbar_common?.toolbarIcon?.showWithCondition(header.avatar.isNotBlank())
-        toolbar_common?.toolbarTitle?.text = getString(R.string.feed_content_post_sebagai)
-        toolbar_common?.toolbarSubtitle?.text = MethodChecker.fromHtml(header.title)
-        toolbar_common?.toolbarExpandIcon?.gone()
+        toolbar_common.apply {
+            if(header.avatar.isNotEmpty()) setImageCircle(header.avatar)
+            else hideImage()
+            title = getString(R.string.feed_content_post_sebagai)
+            subtitle = header.title
+        }
     }
 
     override fun openProductTaggingPageOnPreviewMediaClick(position: Int) {
@@ -193,8 +194,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        toolbar_common?.toolbarNavIcon?.setOnClickListener {
+        toolbar_common.setOnBackClickListener {
             onBackPressed()
+        }
+        toolbar_common.setOnAccountClickListener {
+            /** TODO: handle this */
         }
         setSupportActionBar(toolbar_common)
 
