@@ -121,7 +121,7 @@ class ReviewNotification internal constructor(
     }
 
     companion object {
-        private const val reviewRegex = "={{1-5}}"
+        private const val reviewRegex = "source=test_01"
 
         fun updateReviewAppLink(
             intent: Intent,
@@ -129,7 +129,7 @@ class ReviewNotification internal constructor(
         ): BaseNotificationModel? {
             val starNumber = intent.getStringExtra(STAR_NUMBER)
             val appLink = starNumber?.let {
-                baseNotificationModel?.appLink?.replace(reviewRegex, "=$starNumber") ?: ""
+                baseNotificationModel?.appLink + "&rating=$starNumber"
             }
             baseNotificationModel?.appLink = appLink ?: ""
             return baseNotificationModel
