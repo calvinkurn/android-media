@@ -120,7 +120,6 @@
         android:id="@+id/ic_review_detail_toggle_expand_button"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:hapticFeedbackEnabled="true"
         android:paddingVertical="8dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"

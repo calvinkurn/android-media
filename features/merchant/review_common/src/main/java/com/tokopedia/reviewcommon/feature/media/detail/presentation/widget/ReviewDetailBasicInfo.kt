@@ -31,7 +31,6 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
 
     init {
         binding.layoutReviewDetailBasicInfo.icReviewDetailToggleExpandButton.setOnClickListener {
-            it?.generateHapticFeedback()
             listener?.onToggleExpandClicked()
         }
         binding.layoutReviewDetailBasicInfo.overlayLikeDislikeClickArea.setOnClickListener {
