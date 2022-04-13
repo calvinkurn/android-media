@@ -117,6 +117,19 @@
         tools:text="Cek lagi pengaturan diskon ini, ya"
         tools:visibility="visible" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_warning"
+        android:layout_width="13dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/text_error_validation"
+        app:layout_constraintLeft_toRightOf="@id/text_error_validation"
+        app:layout_constraintTop_toTopOf="@id/text_error_validation"
+        app:srcCompat="@drawable/ic_shop_discount_warning"
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_total_stock"
         android:layout_width="wrap_content"
@@ -133,7 +146,6 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/button_manage_discount"
         android:layout_width="0dp"
-        app:unifyButtonVariant="ghost"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
@@ -141,19 +153,20 @@
         app:layout_constraintRight_toLeftOf="@id/image_delete_product"
         app:layout_constraintTop_toBottomOf="@id/text_total_stock"
         app:unifyButtonSize="small"
+        app:unifyButtonVariant="ghost"
         tools:text="Ubah Diskon" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/image_delete_product"
         android:layout_width="18dp"
         android:layout_height="20dp"
-        app:unify_image_corner_radius="0"
         app:layout_constraintBottom_toBottomOf="@id/button_manage_discount"
         app:layout_constraintHorizontal_bias="1"
         app:layout_constraintLeft_toRightOf="@id/button_manage_discount"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/button_manage_discount"
         app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/ic_manage_discount_delete" />
+        app:srcCompat="@drawable/ic_manage_discount_delete"
+        app:unify_image_corner_radius="0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

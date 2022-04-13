@@ -54,9 +54,10 @@ class ShopDiscountManageDiscountAdapter(
     private fun getNewVisitableItems() = visitables.toMutableList()
 
     fun getAllProductData(): List<ShopDiscountSetupProductUiModel.SetupProductData> {
-        return visitables.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java).map {
-            it.copy()
-        }
+        return visitables.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
+            .map {
+                it.copy()
+            }
     }
 
     fun clearData() {
@@ -67,12 +68,21 @@ class ShopDiscountManageDiscountAdapter(
 
     fun removeProduct(productId: String) {
         val newList = getNewVisitableItems()
-        newList.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java).firstOrNull{
-            it.productId == productId
-        }?.let {
+        newList.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
+            .firstOrNull {
+                it.productId == productId
+            }?.let {
             newList.remove(it)
             submitList(newList)
         }
+    }
+
+    fun getTotalAbusiveProduct(): Int {
+        return visitables.filterIsInstance(ShopDiscountSetupProductUiModel.SetupProductData::class.java)
+            .count {
+                it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR ||
+                        it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
+            }
     }
 
 }

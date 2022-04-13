@@ -15,6 +15,17 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:unify_header_title="@string/sd_shop_discount" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_abusive_products"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:tickerShapeType="full"
+        app:tickerType="error"
+        tools:descriptionText="Description"
+        tools:visibility="gone" />
+
     <include
         android:id="@+id/label_bulk_apply"
         layout="@layout/layout_shop_discount_label_bulk_manage"

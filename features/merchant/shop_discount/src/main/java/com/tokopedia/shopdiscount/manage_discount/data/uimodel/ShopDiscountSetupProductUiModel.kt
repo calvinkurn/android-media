@@ -1,7 +1,13 @@
 package com.tokopedia.shopdiscount.manage_discount.data.uimodel
 
+import androidx.annotation.IntDef
+import androidx.annotation.StringDef
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.ALL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.NO_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
+import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactory
 import java.util.*
 
@@ -38,15 +44,26 @@ data class ShopDiscountSetupProductUiModel(
             val isProductDiscounted: Boolean = false,
             val isVariant: Boolean = false,
             val isMultiLoc: Boolean = false,
-            val isProductError: Boolean = false,
-        )
+            val errorType: Int = 0,
+        ){
+            @Retention(AnnotationRetention.SOURCE)
+            @IntDef(NO_ERROR, VALUE_ERROR, PARTIAL_ABUSIVE_ERROR, ALL_ABUSIVE_ERROR)
+            annotation class ErrorType {
+                companion object {
+                    const val NO_ERROR = 0
+                    const val VALUE_ERROR = 1
+                    const val PARTIAL_ABUSIVE_ERROR = 2
+                    const val ALL_ABUSIVE_ERROR = 3
+                }
+            }
+        }
 
         data class ProductWarehouse(
             val warehouseId: String = "",
             val warehouseName: String = "",
             val warehouseLocation: String = "",
             val warehouseStock: String = "",
-            val maxOrder: String = "",
+            var maxOrder: String = "",
             val abusiveRule: Boolean = false,
             val avgSoldPrice: Int = 0,
             val cheapestPrice: Int = 0,
