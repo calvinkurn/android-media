@@ -29,6 +29,8 @@ import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -92,13 +94,25 @@ class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    fun providesTkpTkpdAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @FeedPlusScope
+    @Provides
+    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
+    }
+
+    @FeedPlusScope
+    @Provides
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
         return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @FeedPlusScope
     @Provides
-    fun providesTkpdRemoveWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 

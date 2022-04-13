@@ -53,8 +53,10 @@ import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 /**
@@ -473,11 +475,16 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
      */
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if(recommendationViewModel.isLoggedIn()){
+            var isUsingV2 = false
+            context?.let {
+                isUsingV2 = WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
+            }
+
             SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
             if(isAddWishlist){
-                recommendationViewModel.addWishlist(item, callback)
+                recommendationViewModel.addWishlist(item, callback, isUsingV2)
             } else {
-                recommendationViewModel.removeWishlist(item, callback)
+                recommendationViewModel.removeWishlist(item, callback, isUsingV2)
             }
         }else{
             SimilarProductRecommendationTracking.eventClickWishlistNonLogin()
@@ -555,5 +562,10 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         productCardOptionsModel.productPosition = position
         productCardOptionsModel.screenName = recommendationItem.header
         return productCardOptionsModel
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

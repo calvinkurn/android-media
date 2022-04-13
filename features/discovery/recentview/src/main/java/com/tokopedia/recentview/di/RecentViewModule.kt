@@ -17,6 +17,8 @@ import com.tokopedia.recentview.data.mapper.RecentViewMapper
 import com.tokopedia.recentview.domain.usecase.RecentViewUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -65,6 +67,18 @@ class RecentViewModule {
                 .create(RecentViewApi::class.java)
     }
 
+    @RecentViewScope
+    @Provides
+    fun providesTkpTkpdAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @RecentViewScope
+    @Provides
+    fun providesTkpdRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
+    }
+
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
@@ -78,13 +92,13 @@ class RecentViewModule {
 
     @RecentViewScope
     @Provides
-    fun providesTkpTkpdAddWishListUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
         return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @RecentViewScope
     @Provides
-    fun providesTkpdRemoveWishListUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 

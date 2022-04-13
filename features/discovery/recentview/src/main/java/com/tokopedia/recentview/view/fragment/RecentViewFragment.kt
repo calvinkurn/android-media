@@ -33,6 +33,7 @@ import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductDataModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
 import javax.inject.Inject
@@ -144,10 +145,17 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
 
     fun onWishlistClicked(adapterPosition: Int, productId: Int, isWishlist: Boolean) {
         showLoadingProgress()
+
+        var isUsingV2 = false
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) isUsingV2 = true
+        }
         if (!isWishlist) {
-            viewModel.addToWishlist(adapterPosition, productId.toString())
+            if (isUsingV2) viewModel.addToWishlistV2(productId.toString())
+            else viewModel.addToWishlist(productId.toString())
         } else {
-            viewModel.removeFromWishlist(adapterPosition, productId.toString())
+            if (isUsingV2) viewModel.removeFromWishlistV2(productId.toString())
+            else viewModel.removeFromWishlist(productId.toString())
         }
     }
 
@@ -234,6 +242,11 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
         view?.let {
             Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText).show()
         }
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 
     override fun dismissLoadingProgress() {}

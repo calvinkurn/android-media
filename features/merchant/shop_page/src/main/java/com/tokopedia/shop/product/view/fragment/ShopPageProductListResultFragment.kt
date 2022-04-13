@@ -1475,4 +1475,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         activity?.finish()
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }

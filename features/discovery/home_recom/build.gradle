@@ -47,6 +47,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
     implementation projectOrAar(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistcommon)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)

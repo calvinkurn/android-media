@@ -26,6 +26,7 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpV
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import java.util.*
 import javax.inject.Inject
 
@@ -112,10 +113,14 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     private fun initListener() {
         binding?.btnAddToWishlist?.setOnClickListener {
             if (userSession.isLoggedIn) {
+                var isWishlistUsingV2 = false
+                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(this)) isWishlistUsingV2 = true
                 if (isWishlisted) {
-                    removeWishlist()
+                    if (isWishlistUsingV2) removeWishlistV2()
+                    else removeWishlist()
                 } else {
-                    addWishlist()
+                    if (isWishlistUsingV2) addWishlistV2()
+                    else addWishlist()
                 }
             } else {
                 gotoLogin()
@@ -171,6 +176,25 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     override fun addWishlist() {
         showLoading()
         viewModel.addWishList(
+            productId,
+            onSuccessAddWishlist = {
+                hideLoading()
+                onSuccessAddWishlist()
+                updateView()
+                imagePreviewTracking.onSuccessAdd()
+            },
+            onErrorAddWishList = {
+                hideLoading()
+                it?.let {
+                    onErrorAddWishlist(Throwable(it))
+                }
+            }
+        )
+    }
+
+    override fun addWishlistV2() {
+        showLoading()
+        viewModel.addWishListV2(
                 productId,
                 onSuccessAddWishlist = {
                     hideLoading()
@@ -190,6 +214,23 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     override fun removeWishlist() {
         showLoading()
         viewModel.removeWishList(
+            productId,
+            onSuccessRemoveWishlist = {
+                hideLoading()
+                onSuccessRemoveWishlist()
+                updateView()
+                imagePreviewTracking.onSuccessRemove()
+            },
+            onErrorRemoveWishList = {
+                hideLoading()
+                onErrorRemoveWishlist(Throwable(it))
+            }
+        )
+    }
+
+    override fun removeWishlistV2() {
+        showLoading()
+        viewModel.removeWishListV2(
                 productId,
                 onSuccessRemoveWishlist = {
                     hideLoading()

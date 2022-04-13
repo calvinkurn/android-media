@@ -92,12 +92,9 @@ class RecommendationLifeCycleAware constructor(
         val view: View = fragment?.activity?.findViewById(android.R.id.content) ?: return
         val message = getString(Rwishlist.string.on_success_add_to_wishlist_msg)
         val ctaText = getString(Rwishlist.string.cta_success_add_to_wishlist)
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                ctaText,
-                View.OnClickListener { v: View? ->
-                    RouteManager.route(context, ApplinkConst.WISHLIST)
-                }
-        ).show()
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText) {
+            RouteManager.route(context, ApplinkConst.WISHLIST)
+        }.show()
     }
 
     private fun getString(@StringRes stringRes: Int): String {
@@ -109,7 +106,7 @@ class RecommendationLifeCycleAware constructor(
         val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
         val ctaText = getString(Rwishlist.string.cta_success_remove_from_wishlist)
         if (view == null) return
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, View.OnClickListener {}).show()
+        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, ctaText, {}).show()
     }
 
     private fun handleWishlistActionFailed() {
@@ -162,10 +159,12 @@ class RecommendationLifeCycleAware constructor(
             item: RecommendationItem, isAddWishlist: Boolean,
             callback: (Boolean, Throwable?) -> Unit
     ) {
-        if (isAddWishlist) {
-            context?.let { viewModel?.addWishlist(item, callback, it) }
-        } else {
-            viewModel?.removeWishList(item, callback)
+        context?.let {
+            if (isAddWishlist) {
+                viewModel?.addWishlist(item, callback, it)
+            } else {
+                viewModel?.removeWishList(item, callback, it)
+            }
         }
     }
 

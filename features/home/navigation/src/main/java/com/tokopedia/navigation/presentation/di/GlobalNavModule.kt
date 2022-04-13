@@ -21,6 +21,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -58,13 +60,19 @@ class GlobalNavModule {
     }
 
     @Provides
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+
+    @Provides
+    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+
+    @Provides
     fun provideGraphqlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
-    fun provideAddWishlistUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
+    fun provideAddToWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase = AddToWishlistV2UseCase(graphqlRepository)
 
     @Provides
-    fun provideRemoveWishlistUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
+    fun provideDeleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase = DeleteWishlistV2UseCase(graphqlRepository)
 
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

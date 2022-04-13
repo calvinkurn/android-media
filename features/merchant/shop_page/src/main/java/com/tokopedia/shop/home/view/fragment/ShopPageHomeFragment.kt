@@ -569,6 +569,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             playWidgetCoordinator.onDestroy()
         }
         viewJob.cancelChildren()
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onDestroy() {

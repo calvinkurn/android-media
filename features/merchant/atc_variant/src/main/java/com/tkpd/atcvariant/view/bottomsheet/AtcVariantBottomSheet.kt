@@ -70,10 +70,12 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -159,6 +161,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     override fun onDestroyView() {
         compositeSubscription.clear()
         super.onDestroyView()
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     private fun initLayout() {
@@ -746,6 +749,10 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 ProductTrackingCommon.onRemindMeClicked(productId, pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
+                context?.let {
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) viewModel.addWishlistV2(productId, userSessionInterface.userId)
+                    else viewModel.addWishlist(productId, userSessionInterface.userId)
+                }
                 viewModel.addWishlist(productId, userSessionInterface.userId)
                 return@let
             }

@@ -1,5 +1,6 @@
 package com.tokopedia.catalog.ui.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -61,8 +62,12 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
 import java.util.*
@@ -72,6 +77,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         CatalogProductCardListener,
+        WishListActionListener,
         SortFilterBottomSheet.Callback{
 
     @Inject
@@ -81,9 +87,14 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     lateinit var viewModel: CatalogDetailProductListingViewModel
 
     @Inject
-    lateinit var removeWishlistActionUseCase: DeleteWishlistV2UseCase
+    lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
     @Inject
-    lateinit var addWishlistActionUseCase: AddToWishlistV2UseCase
+    lateinit var addWishlistActionUseCase: AddWishListUseCase
+
+    @Inject
+    lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
+    @Inject
+    lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
@@ -515,31 +526,45 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
 
     private fun removeWishList(productId: String, userId: String) {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
-                "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId,catalogId)
-        removeWishlistActionUseCase.setParams(productId, userId)
-        removeWishlistActionUseCase.execute(
-                onSuccess = { onSuccessRemoveWishlist(productId) },
-                onError = { onErrorRemoveWishlist(ErrorHandler.getErrorMessage(context, it), productId) })
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+            "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_REMOVE_WISHLIST}",userSession.userId,catalogId)
+
+        context?.let { context ->
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+                deleteWishlistV2UseCase.setParams(productId, userId)
+                deleteWishlistV2UseCase.execute(
+                    onSuccess = { onSuccessRemoveWishlistV2(productId) },
+                    onError = { onErrorRemoveWishlistV2(ErrorHandler.getErrorMessage(context, it), productId) })
+            } else {
+                removeWishlistActionUseCase.createObservable(productId,
+                    userId, this)
+            }
+        }
+
+        removeWishlistActionUseCase.createObservable(productId,
+            userId, this)
     }
 
     private fun addWishList(productId: String, userId: String) {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
-                "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
-        addWishlistActionUseCase.setParams(productId, userId)
-        addWishlistActionUseCase.execute(
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_THREE_DOTS,
+            "${viewModel.catalogName} - $catalogId - ${CatalogDetailAnalytics.ActionKeys.ACTION_ADD_WISHLIST}",userSession.userId,catalogId)
+
+        context?.let { context ->
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+                addToWishlistV2UseCase.setParams(productId, userId)
+                addToWishlistV2UseCase.execute(
                 onSuccess = { result ->
                     when (result) {
                         is Success -> {
                             if (result.data.toasterColor == TOASTER_RED) {
                                 onErrorAddWishList(result.data.message, productId)
                             } else {
-                                onSuccessAddWishlist(productId)
+                                onSuccessAddWishlistV2(productId)
                             }
                         }
                         is Fail -> {
@@ -547,9 +572,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                             onErrorAddWishList(errorMessage, productId)
                         }
                     } },
-                onError = {
-                    onErrorAddWishList(ErrorHandler.getErrorMessage(context, it), productId)
-                })
+                    onError = {
+                        onErrorAddWishListV2(ErrorHandler.getErrorMessage(context, it), productId)
+                    })
+            } else {
+                addWishlistActionUseCase.createObservable(productId, userId, this)
+            }
+        }
     }
 
     private fun launchLoginActivity(productId: String) {
@@ -568,7 +597,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         product_recyclerview.requestLayout()
     }
 
-    private fun onErrorAddWishList(errorMessage: String?, productId: String) {
+    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    private fun onErrorAddWishListV2(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         view?.let { v ->
             errorMessage?.let { errorMsg ->
@@ -576,7 +610,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    private fun onSuccessAddWishlist(productId: String) {
+    override fun onSuccessAddWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId, true)
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+    }
+
+    private fun onSuccessAddWishlistV2(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId, true)
         enableWishListButton(productId)
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
@@ -591,7 +631,12 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         startActivity(intent)
     }
 
-    private fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    private fun onErrorRemoveWishlistV2(errorMessage: String?, productId: String) {
         enableWishListButton(productId)
         view?.let { v ->
             errorMessage?.let { errorMsg ->
@@ -599,7 +644,13 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         }
     }
 
-    private fun onSuccessRemoveWishlist(productId: String) {
+    override fun onSuccessRemoveWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId, false)
+        enableWishListButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+    }
+
+    private fun onSuccessRemoveWishlistV2(productId: String) {
         productNavListAdapter?.updateWishlistStatus(productId, false)
         enableWishListButton(productId)
         val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
@@ -614,6 +665,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         searchSortFilter?.parentListener = {}
         searchSortFilter = null
         sortFilterBottomSheet = null
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onDetach() {

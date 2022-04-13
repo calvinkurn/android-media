@@ -1,7 +1,6 @@
 package com.tokopedia.home_recom.viewmodel
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -29,7 +28,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.domain.interactor.GetTopadsIsAdsUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
@@ -38,6 +36,9 @@ import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.coroutines.awaitAll
@@ -61,8 +62,10 @@ import javax.inject.Inject
 open class RecommendationPageViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val addWishListUseCase: AddToWishlistV2UseCase,
-        private val removeWishListUseCase: DeleteWishlistV2UseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val getPrimaryProductUseCase: GetPrimaryProductUseCase,
         private val addToCartUseCase: AddToCartUseCase,
@@ -255,7 +258,7 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param model the recommendation item product is clicked
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
-    fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit)){
+    fun addWishlist(productId: String, wishlistUrl: String, isTopAds: Boolean, callback: ((Boolean, Throwable?) -> Unit), isUsingV2: Boolean){
         if(isTopAds && wishlistUrl.isNotEmpty()){
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, wishlistUrl)
@@ -276,14 +279,39 @@ open class RecommendationPageViewModel @Inject constructor(
                 }
             })
         } else {
-            addWishListUseCase.setParams(productId, userSessionInterface.userId)
-            addWishListUseCase.execute(
-                    onSuccess = {
-                        callback.invoke(true, null)},
-                    onError = {
-                        callback.invoke(false, it)
-                    })
+            if (isUsingV2) doAddToWishlistV2(productId, callback)
+            else doAddToWishlist(productId, callback)
         }
+    }
+
+    private fun doAddToWishlist(productId: String, callback: (Boolean, Throwable?) -> Unit) {
+        addWishListUseCase.createObservable(productId, userSessionInterface.userId, object: WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                callback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                callback.invoke(true, null)
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                // do nothing
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                // do nothing
+            }
+        })
+    }
+
+    private fun doAddToWishlistV2(productId: String, callback: (Boolean, Throwable?) -> Unit) {
+        addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = {
+                callback.invoke(true, null)},
+            onError = {
+                callback.invoke(false, it)
+            })
     }
 
     /**
@@ -291,8 +319,29 @@ open class RecommendationPageViewModel @Inject constructor(
      * @param productId id of product want to remove wishlist
      */
     fun removeWishlist(productId: String, wishlistCallback: (Boolean, Throwable?) -> Unit){
-        removeWishListUseCase.setParams(productId, userSessionInterface.userId)
-        removeWishListUseCase.execute(
+        removeWishListUseCase.createObservable(productId, userSessionInterface.userId, object:
+            WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                // do nothing
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                // do nothing
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                wishlistCallback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                wishlistCallback.invoke(true, null)
+            }
+        })
+    }
+
+    fun removeWishlistV2(productId: String, wishlistCallback: (Boolean, Throwable?) -> Unit){
+        deleteWishlistV2UseCase.setParams(productId, userSessionInterface.userId)
+        deleteWishlistV2UseCase.execute(
                 onSuccess = { wishlistCallback.invoke(true, null) },
                 onError = { wishlistCallback.invoke(false, it) })
     }

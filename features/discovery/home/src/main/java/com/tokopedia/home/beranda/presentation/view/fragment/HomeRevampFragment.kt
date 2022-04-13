@@ -1156,6 +1156,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         if (::playWidgetCoordinator.isInitialized) {
             playWidgetCoordinator.onDestroy()
         }
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     override fun onDestroy() {

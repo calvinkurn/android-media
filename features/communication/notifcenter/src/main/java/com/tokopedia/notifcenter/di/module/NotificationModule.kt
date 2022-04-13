@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
@@ -16,6 +15,8 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.topads.sdk.utils.TopAdsIrisSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -33,13 +34,28 @@ class NotificationModule {
 
     @Provides
     @NotificationScope
-    fun provideAddWishlistUseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
+    fun provideAddWishlistUseCase(@NotificationContext context: Context
+    ): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @Provides
+    @NotificationScope
+    fun provideRemoveWishlistUseCase(
+        @NotificationContext context: Context
+    ): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
+    }
+
+    @Provides
+    @NotificationScope
+    fun addWishlistV2UseCase(graphqlRepository: GraphqlRepository): AddToWishlistV2UseCase {
         return AddToWishlistV2UseCase(graphqlRepository)
     }
 
     @Provides
     @NotificationScope
-    fun provideRemoveWishlistUseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
+    fun deleteWishlistV2UseCase(graphqlRepository: GraphqlRepository): DeleteWishlistV2UseCase {
         return DeleteWishlistV2UseCase(graphqlRepository)
     }
 

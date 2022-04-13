@@ -57,6 +57,7 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -290,10 +291,14 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
         if (presenter.isLoggedIn()) {
+            boolean isUsingWishlistV2 = false;
+            if (getContext() != null) {
+                if (WishlistV2RemoteConfigRollenceUtil.INSTANCE.isUsingAddRemoveWishlistV2(getContext())) isUsingWishlistV2 = true;
+            }
             if (isAddWishlist) {
-                presenter.addWishlist(item, callback);
+                presenter.addWishlist(item, callback, isUsingWishlistV2);
             } else {
-                presenter.removeWishlist(item, callback);
+                presenter.removeWishlist(item, callback, isUsingWishlistV2);
             }
         } else {
             RouteManager.route(getContext(), ApplinkConst.LOGIN);

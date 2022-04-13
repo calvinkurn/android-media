@@ -147,7 +147,9 @@ import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 
 /**
  * @author : Steven 29/11/18
@@ -1913,7 +1915,44 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun requestNetworkAddToWishList(productId: String, success: () -> Unit) {
-        viewModel.addToWishList(productId, session.userId, object : WishlistV2ActionListener {
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) addToWishlistV2(productId, success)
+            else addToWishlist(productId, success)
+        }
+    }
+
+    private fun addToWishlist(productId: String, success: () -> Unit) {
+        viewModel.addToWishList(productId, session.userId, object : WishListActionListener {
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+            override fun onSuccessRemoveWishlist(productId: String?) {}
+            override fun onSuccessAddWishlist(productId: String?) {
+                success()
+                showSuccessToastWishList(R.string.title_topchat_success_atw)
+            }
+
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                if (errorMessage == null) return
+                view?.let {
+                    Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
+    private fun showSuccessToastWishList(@StringRes successMessageRes: Int) {
+        view?.let {
+            val successMessage = it.context.getString(successMessageRes)
+            Toaster.build(
+                it,
+                successMessage,
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun addToWishlistV2(productId: String, success: () -> Unit) {
+        viewModel.addToWishListV2(productId, session.userId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {
                 view?.let { v ->
                     Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
@@ -1942,7 +1981,45 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
         analytics.eventClickRemoveFromWishList(productId)
-        viewModel.removeFromWishList(productId, session.userId, object : WishlistV2ActionListener {
+        context?.let {
+            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) removeFromWishlistV2(productId)
+            else removeFromWishlist(productId, success)
+        }
+    }
+
+    private fun removeFromWishlist(productId: String, success: () -> Unit) {
+        viewModel.removeFromWishList(productId, session.userId, object : WishListActionListener {
+            override fun onSuccessAddWishlist(productId: String?) {}
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                success()
+                view?.let {
+                    val successMessage = it.context.getString(R.string.title_topchat_success_rfw)
+                    Toaster.make(
+                        it,
+                        successMessage,
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_NORMAL
+                    )
+                }
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                if (errorMessage == null) return
+                view?.let {
+                    Toaster.make(
+                        it,
+                        errorMessage,
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        })
+    }
+
+    private fun removeFromWishlistV2(productId: String) {
+        viewModel.removeFromWishListV2(productId, session.userId, object : WishlistV2ActionListener {
             override fun onErrorAddWishList(throwable: Throwable, productId: String) {}
             override fun onSuccessAddWishlist(productId: String) {}
 
@@ -2702,6 +2779,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         lifecycleScope.launch(Dispatchers.IO) {
             sellerReviewHelper.saveMessageId(messageId)
         }
+        Toaster.onCTAClick = View.OnClickListener { }
     }
 
     protected open fun uploadImage(image: ImageUploadServiceModel) {

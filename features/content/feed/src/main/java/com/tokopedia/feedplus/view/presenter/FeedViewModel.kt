@@ -49,6 +49,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.withContext
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 /**
@@ -76,7 +79,8 @@ class FeedViewModel @Inject constructor(
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
-    private val addWishListUseCase: AddToWishlistV2UseCase,
+    private val addWishListUseCase: AddWishListUseCase,
+    private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase
 
@@ -87,6 +91,7 @@ class FeedViewModel @Inject constructor(
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
+        private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
     }
 
     private val userId: String
@@ -418,14 +423,35 @@ class FeedViewModel @Inject constructor(
         onSuccess: (String, String, String, Boolean) -> Unit,
         context: Context
     ) {
-        addWishListUseCase.setParams(productId, userSession.userId)
-        addWishListUseCase.execute(
+        if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(context)) {
+            addToWishlistV2UseCase.setParams(productId, userSession.userId)
+            addToWishlistV2UseCase.execute(
                 onSuccess = {
                     onSuccess.invoke(activityId, shopId, type, isFollowed)},
                 onError = {
                     val errorMessage = ErrorHandler.getErrorMessage(context, it)
                     onFail.invoke(errorMessage)
                 })
+        } else {
+            addWishListUseCase.createObservable(
+                productId, userSession.userId,
+                object : WishListActionListener {
+                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                        onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
+                    }
+
+                    override fun onSuccessAddWishlist(productId: String?) {
+                        if (productId != null) {
+                            onSuccess.invoke(activityId, shopId, type, isFollowed)
+                        }
+                    }
+
+                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+
+                    override fun onSuccessRemoveWishlist(productId: String?) {}
+
+                })
+        }
     }
 
     private fun OnboardingData.convertToViewModel(): OnboardingViewModel =

@@ -23,6 +23,9 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import kotlinx.coroutines.async
@@ -37,8 +40,10 @@ import javax.inject.Inject
 @SuppressLint("SyntheticAccessor")
 open class SimilarProductRecommendationViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
-        private val addWishListUseCase: AddToWishlistV2UseCase,
-        private val removeWishListUseCase: DeleteWishlistV2UseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val removeWishListUseCase: RemoveWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
+        private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val singleRecommendationUseCase: GetSingleRecommendationUseCase,
         private val getRecommendationFilterChips: GetRecommendationFilterChips,
@@ -319,7 +324,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
      * @param model the recommendation item product is clicked
      * @param callback the callback for handling [added or removed, throwable] to UI
      */
-    fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)){
+    fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit), isUsingV2: Boolean){
         if(model.isTopAds){
             val params = RequestParams.create()
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
@@ -338,13 +343,33 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
                 }
             })
         } else {
-            addWishListUseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-            addWishListUseCase.execute(
+            if (isUsingV2) {
+                addToWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+                addToWishlistV2UseCase.execute(
                     onSuccess = {
                         callback.invoke(true, null)},
                     onError = {
                         callback.invoke(false, it)
                     })
+            } else {
+                addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+                    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                        callback.invoke(false, Throwable(errorMessage))
+                    }
+
+                    override fun onSuccessAddWishlist(productId: String?) {
+                        callback.invoke(true, null)
+                    }
+
+                    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                        // do nothing
+                    }
+
+                    override fun onSuccessRemoveWishlist(productId: String?) {
+                        // do nothing
+                    }
+                })
+            }
         }
     }
 
@@ -353,11 +378,31 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
      * @param model the recommendation item product is clicked
      * @param wishlistCallback the callback for handling [added or removed, throwable] to UI
      */
-    fun removeWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))){
-        removeWishListUseCase.setParams(model.productId.toString(), userSessionInterface.userId)
-        removeWishListUseCase.execute(
+    fun removeWishlist(model: RecommendationItem, wishlistCallback: ((Boolean, Throwable?) -> Unit), isUsingV2: Boolean){
+        if (isUsingV2) {
+            deleteWishlistV2UseCase.setParams(model.productId.toString(), userSessionInterface.userId)
+            deleteWishlistV2UseCase.execute(
                 onSuccess = { wishlistCallback.invoke(true, null) },
                 onError = { wishlistCallback.invoke(false, it) })
+        } else {
+            removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    // do nothing
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    // do nothing
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    wishlistCallback.invoke(false, Throwable(errorMessage))
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    wishlistCallback.invoke(true, null)
+                }
+            })
+        }
     }
 
     companion object{

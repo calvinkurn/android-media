@@ -42,6 +42,8 @@ import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -55,7 +57,8 @@ class AtcVariantViewModel @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase,
         private val addToCartOcsUseCase: AddToCartOcsUseCase,
         private val addToCartOccUseCase: AddToCartOccMultiUseCase,
-        private val addWishListUseCase: AddToWishlistV2UseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
         private val updateCartUseCase: UpdateCartUseCase,
         private val deleteCartUseCase: DeleteCartUseCase,
         private val toggleFavoriteUseCase: ToggleFavoriteUseCase
@@ -346,15 +349,38 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun addWishlist(productId: String, userId: String) {
-        addWishListUseCase.setParams(productId, userId)
-        addWishListUseCase.execute(
-                onSuccess = {
+        addWishListUseCase.createObservable(productId,
+            userId, object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    _addWishlistResult.postValue(Throwable(errorMessage ?: "").asFail())
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
                     updateActivityResult(shouldRefreshPreviousPage = true)
-                    updateButtonAndWishlistLocally(productId)
-                    _addWishlistResult.postValue(true.asSuccess())},
-                onError = {
-                    _addWishlistResult.postValue(it.asFail())
-                })
+                    updateButtonAndWishlistLocally(productId ?: "")
+                    _addWishlistResult.postValue(true.asSuccess())
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    // no op
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    // no op
+                }
+            })
+    }
+
+    fun addWishlistV2(productId: String, userId: String) {
+        addToWishlistV2UseCase.setParams(productId, userId)
+        addToWishlistV2UseCase.execute(
+            onSuccess = {
+                updateActivityResult(shouldRefreshPreviousPage = true)
+                updateButtonAndWishlistLocally(productId)
+                _addWishlistResult.postValue(true.asSuccess())},
+            onError = {
+                _addWishlistResult.postValue(it.asFail())
+            })
     }
 
     private fun updateButtonAndWishlistLocally(productId: String) {

@@ -25,6 +25,8 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase;
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase;
 import com.tokopedia.wishlistcommon.domain.GetProductIsWishlistedUseCase;
@@ -147,13 +149,25 @@ public class KolModule {
 
     @KolScope
     @Provides
-    public AddToWishlistV2UseCase provideAddWishListUseCase(GraphqlRepository graphqlRepository){
+    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
+
+    @KolScope
+    @Provides
+    public RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
+    }
+
+    @KolScope
+    @Provides
+    public AddToWishlistV2UseCase provideAddToWishlistV2UseCase(GraphqlRepository graphqlRepository){
         return new AddToWishlistV2UseCase(graphqlRepository);
     }
 
     @KolScope
     @Provides
-    public DeleteWishlistV2UseCase provideRemoveWishListUseCase(GraphqlRepository graphqlRepository){
+    public DeleteWishlistV2UseCase provideDeleteWishlistV2UseCase(GraphqlRepository graphqlRepository){
         return new DeleteWishlistV2UseCase(graphqlRepository);
     }
 

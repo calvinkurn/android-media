@@ -60,6 +60,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import javax.inject.Inject
 
 /**
@@ -327,11 +329,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     private fun showMessageSuccessAddWishlist() {
-        showToastSuccessWithAction(
-                getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        ){
-            View.OnClickListener { goToWishlist() }
+        showToastSuccessWithAction(getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg), getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)) {
+            goToWishlist()
         }
     }
 
@@ -453,15 +452,31 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if(recommendationWidgetViewModel.isLoggedIn()){
+            var isUsingV2 = false
+            context?.let {
+                isUsingV2 = WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
+            }
+
             if (isAddWishlist) {
-                recommendationWidgetViewModel.addWishlist(item.productId.toString(), item.wishlistUrl, item.isTopAds, callback)
+                context?.let {
+                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
+                        recommendationWidgetViewModel.addWishlist(item.productId.toString(), item.wishlistUrl, item.isTopAds, callback, isUsingV2)
+                    } else {
+                        recommendationWidgetViewModel.addWishlist(item.productId.toString(), item.wishlistUrl, item.isTopAds, callback, isUsingV2)
+                    }
+                }
                 if(productId.isNotBlank() || productId.isNotEmpty()){
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
                 }else {
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
                 }
             } else {
-                recommendationWidgetViewModel.removeWishlist(item.productId.toString(), callback)
+                if (isUsingV2) {
+                    recommendationWidgetViewModel.removeWishlistV2(item.productId.toString(), callback)
+                } else {
+                    recommendationWidgetViewModel.removeWishlist(item.productId.toString(), callback)
+                }
+
                 if(productId.isNotBlank() || productId.isNotEmpty()){
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
                 }else {
@@ -590,7 +605,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         }
                     }
                 } else {
-                    recommendationWidgetViewModel.addWishlist(productDetailData.id.toString(), productDetailData.wishlistUrl, productDetailData.isTopads){ state, throwable ->
+                    var isUsingV2 = false
+                    context?.let {
+                        isUsingV2 = WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)
+                    }
+
+                    recommendationWidgetViewModel.addWishlist(productDetailData.id.toString(), productDetailData.wishlistUrl, productDetailData.isTopads, callback = { state: Boolean, throwable: Throwable? ->
                         callback(state, throwable)
                         if(state){
                             val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
@@ -599,7 +619,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                         } else {
                             showToastError(MessageErrorException())
                         }
-                    }
+                    }, isUsingV2)
                 }
             } else {
                 RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref, productDetailData.shop.id.toString())
@@ -818,4 +838,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         return productCardOptionsModel
     }
 
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
+    }
 }

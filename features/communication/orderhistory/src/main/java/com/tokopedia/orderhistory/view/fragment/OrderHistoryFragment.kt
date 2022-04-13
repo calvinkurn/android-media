@@ -37,11 +37,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
-        OrderHistoryViewHolder.Listener, WishlistV2ActionListener {
+        OrderHistoryViewHolder.Listener, WishListActionListener, WishlistV2ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -157,7 +158,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun onClickAddToWishList(product: Product) {
-        context?.let { viewModel.addToWishList(product.productId, session.userId, this, it) }
+        context?.let { viewModel.addToWishList(product.productId, session.userId, this, this, it) }
     }
 
     override fun onClickCardProduct(product: Product, position: Int) {
@@ -211,6 +212,12 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         }
     }
 
+    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+        view?.let {
+            errorMessage?.let { it1 -> Toaster.build(it, it1, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+        }
+    }
+
     override fun onSuccessAddWishlist(productId: String) {
         view?.let {
             val successMessage = it.context.getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
@@ -225,6 +232,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         }
     }
 
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
     override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) { }
     override fun onSuccessRemoveWishlist(productId: String) {}
 
@@ -232,5 +240,10 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         when (requestCode) {
             REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
         }
+    }
+
+    override fun onDestroyView() {
+        Toaster.onCTAClick = View.OnClickListener { }
+        super.onDestroyView()
     }
 }

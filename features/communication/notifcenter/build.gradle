@@ -24,6 +24,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation projectOrAar(rootProject.ext.features.discoveryCommon)
+    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistcommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
