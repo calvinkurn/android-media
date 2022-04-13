@@ -276,6 +276,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.onPause()
         hideAllFab()
         shouldHitFeedTracker = true
+        unRegisterNewFeedReceiver()
     }
 
     override fun onResume() {
@@ -284,6 +285,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.visibility = View.GONE
         else
             fab_feed.visibility = View.VISIBLE
+        registerNewFeedReceiver()
 
         if (shouldHitFeedTracker && isFeedSelectedFromBottomNavigation) {
             toolBarAnalytics.createAnalyticsForOpenScreen(
