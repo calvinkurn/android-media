@@ -32,6 +32,11 @@ object ApplinkConstInternalMarketplace {
     const val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
     // OrderSummaryPageActivity
     const val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
+    const val ONE_CLICK_CHECKOUT_WITH_SPECIFIC_PAYMENT = "$INTERNAL_MARKETPLACE/one-click-checkout?" +
+            "gateway_code={gateway_code}&" +
+            "tenure_type={tenure_type}&" +
+            "source={source}"
+    const val ADD_ON_GIFTING = "$INTERNAL_MARKETPLACE/add-on-gifting"
 
     // AddEditProductCategoryActivity
     const val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
@@ -271,4 +276,14 @@ object ApplinkConstInternalMarketplace {
 
     const val SHOP_MVC_LOCKED_TO_PRODUCT = "$INTERNAL_MARKETPLACE/shop/widget/voucher/shop_id/{shop_id}/{voucher_id}/"
 
+    /**
+     * Go to chat list
+     */
+    const val TOPCHAT = "$INTERNAL_MARKETPLACE/topchat"
+
+    /**
+     * Go to chatroom with the provided {message_id}
+     * If you want to use {shopId} to chatroom use external applink
+     */
+    const val TOPCHAT_ROOM = "$INTERNAL_MARKETPLACE/topchat/{message_id}"
 }

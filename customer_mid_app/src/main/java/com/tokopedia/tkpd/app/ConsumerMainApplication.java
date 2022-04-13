@@ -31,6 +31,7 @@ import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
@@ -152,6 +153,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         if (getUserSession().isLoggedIn()) {
             Embrace.getInstance().setUserIdentifier(getUserSession().getUserId());
         }
+        EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
     }
 
     private void checkAppPackageNameAsync() {
@@ -213,6 +215,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
         registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
+        registerActivityLifecycleCallbacks(new GqlActivityCallback());
     }
 
 
@@ -502,7 +505,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         RemoteConfigInstance.initAbTestPlatform(this);
     }
 
-    private void createAndCallFetchAbTest(){
+    private void createAndCallFetchAbTest() {
         //don't convert to lambda does not work in kit kat
         WeaveInterface weave = new WeaveInterface() {
             @NotNull

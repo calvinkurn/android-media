@@ -20,6 +20,7 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -150,6 +151,10 @@ class FeedPlusModule {
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+    @FeedPlusScope
+    @Provides
+    fun provideIrisSession(@ApplicationContext context: Context) : IrisSession =
+            IrisSession(context)
 
     @FeedPlusScope
     @Provides

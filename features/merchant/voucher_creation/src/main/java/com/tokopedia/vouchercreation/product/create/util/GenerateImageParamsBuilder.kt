@@ -12,17 +12,16 @@ class GenerateImageParamsBuilder @Inject constructor() {
         private const val EMPTY_STRING = ""
         private const val THOUSAND = 1_000f
         private const val MILLION = 1_000_000f
-        private const val FIRST_IMAGE_URL = 0
-        private const val SECOND_IMAGE_URL = 1
-        private const val THIRD_IMAGE_URL = 2
-        private const val NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE = 3
+        private const val FIRST_IMAGE_URL_INDEX = 0
+        private const val SECOND_IMAGE_URL_INDEX = 1
+        private const val THIRD_IMAGE_URL_INDEX = 2
     }
 
     fun build(
         imageRatio: ImageRatio,
         couponInformation: CouponInformation,
         couponSettings: CouponSettings,
-        products: List<CouponProduct>,
+        parentProductImageUrls: List<String>,
         shopLogo: String,
         shopName: String
     ): GenerateImageProperty {
@@ -74,17 +73,12 @@ class GenerateImageParamsBuilder @Inject constructor() {
             else -> amount.toFloat()
         }
 
-        val nominalAmount = if (isInteger(formattedDiscountAmount)) {
-            formattedDiscountAmount.toInt()
-        } else {
-            formattedDiscountAmount
-        }
+        val nominalAmount = formattedDiscountAmount.toInt()
 
         val startTime = couponInformation.period.startDate.parseTo(DateTimeUtils.DATE_FORMAT)
         val endTime = couponInformation.period.endDate.parseTo(DateTimeUtils.DATE_FORMAT)
 
         val audienceTarget = "all-users"
-        val mostSoldProductsImageUrls = getMostSoldProductImageUrls(products)
 
         return GenerateImageProperty(
             formattedImageRatio,
@@ -99,38 +93,11 @@ class GenerateImageParamsBuilder @Inject constructor() {
             couponInformation.code,
             startTime,
             endTime,
-            products.size.toString(),
-            mostSoldProductsImageUrls.first,
-            mostSoldProductsImageUrls.second,
-            mostSoldProductsImageUrls.third,
+            parentProductImageUrls.size.toString(),
+            parentProductImageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL_INDEX),
+            parentProductImageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL_INDEX),
+            parentProductImageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL_INDEX),
             audienceTarget
         )
-    }
-
-
-    private fun getMostSoldProductImageUrls(couponProducts: List<CouponProduct>): Triple<String, String, String> {
-        val imageUrls = findMostSoldProductImageUrls(couponProducts)
-        val firstImageUrl = imageUrls.getIndexAtOrEmpty(FIRST_IMAGE_URL)
-        val secondImageUrl = imageUrls.getIndexAtOrEmpty(SECOND_IMAGE_URL)
-        val thirdImageUrl = imageUrls.getIndexAtOrEmpty(THIRD_IMAGE_URL)
-        return Triple(firstImageUrl, secondImageUrl, thirdImageUrl)
-    }
-
-    private fun findMostSoldProductImageUrls(couponProducts: List<CouponProduct>): ArrayList<String> {
-        val mostSoldProductsImageUrls = couponProducts.sortedByDescending { it.soldCount }
-            .take(NUMBER_OF_MOST_SOLD_PRODUCT_TO_TAKE)
-            .map { it.imageUrl }
-
-        val imageUrls = arrayListOf<String>()
-
-        mostSoldProductsImageUrls.forEach { imageUrl ->
-            imageUrls.add(imageUrl)
-        }
-
-        return imageUrls
-    }
-
-    private fun isInteger(number: Float): Boolean {
-        return number % 1 == 0.0f
     }
 }

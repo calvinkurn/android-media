@@ -27,6 +27,9 @@ object ShopPageTrackingConstant {
     const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
     const val CLICK_DIGITAL = "clickDigital"
     const val CLICK_PG = "clickPG"
+    const val VIEW_ITEM = "view_item"
+    const val VIEW_ITEM_LIST = "view_item_list"
+    const val SELECT_CONTENT = "select_content"
 
     //category
     const val SHOP_PAGE_SELLER = "shop page - seller"
@@ -64,6 +67,11 @@ object ShopPageTrackingConstant {
     const val SHOP_SHOWCASE_LIST = "etalase toko list"
     const val SHOP_SHOWCASE = "etalase toko"
     const val FLASH_SALE = "flash sale"
+    const val THEMATIC_WIDGET_IMPRESSION = "thematic widget impression"
+    const val THEMATIC_WIDGET_PRODUCT_CARD_IMPRESSION = "thematic widget - product card impression"
+    const val THEMATIC_WIDGET_PRODUCT_CARD_CLICK = "thematic widget - product card click"
+    const val THEMATIC_WIDGET_SEE_ALL_CLICK = "click see all button on widget"
+    const val THEMATIC_WIDGET_PRODUCT_CARD_SEE_ALL_CLICK = "click see all button on last card"
     const val SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop"
     const val SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result"
     const val SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia"
@@ -143,6 +151,9 @@ object ShopPageTrackingConstant {
     const val CLICK_BACK_BUTTON = "click back button"
     const val MULTIPLE_BUNDLE_WIDGET = "multiple bundling widget"
     const val SINGLE_BUNDLE_WIDGET = "single bundling widget"
+    const val PRODUCT_BUNDLING = "product bundling"
+    const val MULTIPLE_TYPE = "multiple"
+    const val SINGLE_TYPE = "single"
     const val BUNDLE_ADD_TO_CART = "add to cart"
 
     //label
@@ -273,9 +284,13 @@ object ShopPageTrackingConstant {
     const val PRODUCTS = "products"
     const val NAME = "name"
     const val CREATIVE = "creative"
+    const val CREATIVE_NAME = "creative_name"
     const val CREATIVE_URL = "creative_url"
+    const val CREATIVE_SLOT = "creative_slot"
     const val PROMO_ID = "promo_id"
     const val PROMO_CODE = "promo_code"
+    const val ITEM_ID = "item_id"
+    const val ITEM_NAME = "item_name"
     const val ID = "id"
     const val PRICE = "price"
     const val BRAND = "brand"
@@ -295,6 +310,11 @@ object ShopPageTrackingConstant {
     const val PRODUCT_VIEW = "productView"
     const val ALL_ETALASE = "Semua Etalase"
     const val PROMOTIONS = "promotions"
+    const val ITEMS = "items"
+    const val INDEX = "index"
+    const val ITEM_BRAND = "item_brand"
+    const val ITEM_CATEGORY = "item_category"
+    const val ITEM_VARIANT = "item_variant"
     const val DIMENSION83 = "dimension83"
     const val FREE_ONGKIR = "bebas ongkir"
     const val NONE_OR_OTHER = "none / other"
@@ -311,10 +331,12 @@ object ShopPageTrackingConstant {
     const val DIMENSION_38 = "dimension38"
     const val DIMENSION_40 = "dimension40"
     const val DIMENSION_83 = "dimension83"
+    const val DIMENSION_87 = "dimension87"
     const val DIMENSION_117 = "dimension117"
     const val DIMENSION_118 = "dimension118"
     const val DIMENSION_61 = "dimension61"
     const val IS_LOGGED_IN_STATUS = "isLoggedInStatus"
+    const val ITEM_LIST = "item_list"
 
     //SCREEN/PAGES
     const val SCREEN_SHOP_PAGE = "Shop Page"
@@ -353,7 +375,7 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_SHOWCASE = "Etalase"
     const val VALUE_SHOP_DECOR_PLAY = "Play"
     const val VALUE_STRING_ZERO = "0"
-
+    const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
 
     //dimension83
     const val BOE = "BoE"

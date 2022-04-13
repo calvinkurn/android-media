@@ -85,8 +85,8 @@ class CouponInStackBaseAdapter(callback: AdapterCallback, val data: TokoPointPro
         return ViewHolder(itemView)
     }
 
-    override fun loadData(pageNumber: Int) {
-        super.loadData(pageNumber)
+    override fun loadData(pageNumber: Int, vararg args: String?) {
+        super.loadData(pageNumber, *args)
         loadCompleted(data.coupon.coupons, data)
         isLastPage = true //true mean no paging
     }

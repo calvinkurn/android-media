@@ -19,6 +19,8 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel
+import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -55,8 +57,10 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
     private val mLayoutProductInfo: FlexboxLayout = itemView.findViewById(R.id.layout_product_info)
     private val mIconTooltip: IconUnify = itemView.findViewById(R.id.icon_tooltip)
     private val mPricePerProduct: Typography = itemView.findViewById(R.id.text_item_per_product)
+    private val llGiftingAddOnProductLevel: LinearLayout = itemView.findViewById(R.id.ll_gifting_addon_product_level)
+    private val buttonGiftingAddOnProductLevel: ButtonGiftingAddOnView = itemView.findViewById(R.id.button_gifting_addon_product_level)
 
-    fun bindViewHolder(cartItem: CartItemModel, listener: ShipmentItemListener?) {
+    fun bindViewHolder(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel, listener: ShipmentItemListener?) {
         shipmentItemListener = listener
         if (cartItem.isError) {
             showShipmentWarning(cartItem)
@@ -80,6 +84,7 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         renderProductTicker(cartItem)
         renderProductProperties(cartItem)
         renderBundlingInfo(cartItem)
+        renderAddOnProductLevel(cartItem, addOnWordingModel)
     }
 
     private fun renderProductProperties(cartItemModel: CartItemModel) {
@@ -240,9 +245,31 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         }
     }
 
+    private fun renderAddOnProductLevel(cartItemModel: CartItemModel, addOnWordingModel: AddOnWordingModel) {
+        val addOns = cartItemModel.addOnProductLevelModel
+        if (addOns.status == 0) {
+            llGiftingAddOnProductLevel.visibility = View.GONE
+        } else {
+            if (addOns.status == 1) {
+                buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.ACTIVE
+            } else if (addOns.status == 2) {
+                buttonGiftingAddOnProductLevel.state = ButtonGiftingAddOnView.State.INACTIVE
+            }
+            llGiftingAddOnProductLevel.visibility = View.VISIBLE
+            buttonGiftingAddOnProductLevel.title = addOns.addOnsButtonModel.title
+            buttonGiftingAddOnProductLevel.desc = addOns.addOnsButtonModel.description
+            buttonGiftingAddOnProductLevel.urlLeftIcon = addOns.addOnsButtonModel.leftIconUrl
+            buttonGiftingAddOnProductLevel.urlRightIcon = addOns.addOnsButtonModel.rightIconUrl
+            buttonGiftingAddOnProductLevel.setOnClickListener { shipmentItemListener?.openAddOnProductLevelBottomSheet(cartItemModel, addOnWordingModel) }
+            shipmentItemListener?.addOnProductLevelImpression(cartItemModel.productId.toString())
+        }
+    }
+
     interface ShipmentItemListener {
         fun notifyOnPurchaseProtectionChecked(checked: Boolean, position: Int)
         fun navigateToWebView(cartItem: CartItemModel)
+        fun openAddOnProductLevelBottomSheet(cartItem: CartItemModel, addOnWordingModel: AddOnWordingModel)
+        fun addOnProductLevelImpression(productId: String)
     }
 
     companion object {

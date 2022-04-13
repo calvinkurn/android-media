@@ -2,9 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape>
-            <stroke
-                android:width="@dimen/play_product_action_container_shadow_height"
-                android:color="@color/play_dms_product_sheet_divider"/>
+            <stroke android:width="@dimen/play_product_action_container_shadow_height" android:color="@color/play_dms_product_sheet_divider"/>
         </shape>
     </item>
     <item android:top="@dimen/play_product_action_container_shadow_height">
@@ -12,5 +10,4 @@
             <solid android:color="@color/Unify_N0"/>
         </shape>
     </item>
-
 </layer-list>
