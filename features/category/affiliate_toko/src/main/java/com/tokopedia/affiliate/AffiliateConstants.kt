@@ -100,6 +100,16 @@ const val YOUTUBE_DEFAULT = "https://www.youtube.com/"
 
 const val WWW = "www."
 
+const val AVAILABLE = 1
+
+const val ALMOST_OOS = 2
+
+const val EMPTY_STOCK = 3
+
+const val PRODUCT_INACTIVE = 4
+
+const val SHOP_INACTIVE = 5
+
 const val TRAFFIC_TYPE = "TRAFFIC"
 
 const val TYPE_DIVIDER = "divider"

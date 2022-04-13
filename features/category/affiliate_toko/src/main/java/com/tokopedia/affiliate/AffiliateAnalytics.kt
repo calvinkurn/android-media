@@ -184,7 +184,8 @@ object AffiliateAnalytics {
             const val IMPRESSION_PROMOSIKAN_SRP_B_S = "impression - promosikan srp - bottom sheet"
             const val IMPRESSION_HOME_PORTAL = "impression - home portal"
             const val IMPRESSION_HOME_PORTAL_B_S = "impression - home portal - bottom sheet"
-            const val CLICK_SEARCH = "click - search box"
+            const val CLICK_SEARCH = "click - search"
+            const val CLICK_SEARCH_BOX = "click - search box"
             const val HOME_NAV_BAR_CLICK = "click - home nav"
             const val PROMOSIKAN_NAV_BAR_CLICK = "click - promosikan nav"
             const val BANUTAN_NAV_BAR_CLICK = "click - bantuan nav"
@@ -220,6 +221,9 @@ object AffiliateAnalytics {
             const val IMPRESSION_PRODUCT_PERNAH_DILIHAT = "impression - product - pernah dilihat"
             const val PROMISIKAN_PERNAH_DIBELI = "click - promosikan - pernah dibeli"
             const val PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
+            const val IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE = "impression - product - search result page"
+            const val CLICK_PROMOSIKAN_SEARCH_RESULT_PAGE = "click - promosikan - search result page"
+            const val CLICK_SALIN_LINK_RESULT_PAGE = "click - salin link - search result page"
             const val CLICK_TOTAL_KOMISI_CARD = "click - total komisi card"
             const val CLICK_KLIK_CARD= "click - klik card"
         }
@@ -246,6 +250,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_DAFTAR_LINK_PRODUK = "/affiliate home page - daftar link produk"
             const val AFFILIATE_PROMOSIKAN_PERNAH_DIBEL = "/affiliate promosikan page - pernah dibeli"
             const val AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT = "/affiliate promosikan page - pernah dilihat"
+            const val AFFILIATE_SEARCH_PROMOSIKAN_CLICK = "/affiliate promosikan page - search result page"
         }
     }
 
@@ -261,6 +266,16 @@ object AffiliateAnalytics {
             const val INACTIVE = "inactive"
             const val SUCCESS = "success"
             const val FAIL = "fail"
+            const val NOT_URL = "not URL"
+            const val PRDOUCT_URL_NOT_FOUND = "product URL not found"
+            const val NON_WHITELISTED_CATEGORIES = "non whitelisted categories"
+            const val NON_PM_OS_SHOP = "non PM or OS shop"
+            const val AVAILABLE = "available"
+            const val EMPTY_STOCK = "empty stock"
+            const val ALMOST_OOS =  "almost OOS"
+            const val SHOP_INACTIVE = "shop inactive"
+            const val PRODUCT_INACTIVE = "product inactive"
+
         }
     }
 
