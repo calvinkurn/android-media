@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.iconunify.IconUnify
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,14 +17,17 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : androidx.appcompat.widget.Toolbar(context, attrs) {
 
-    lateinit var toolbarIcon: AppCompatImageView
-    lateinit var toolbarTitle: Typography
-    lateinit var toolbarSubtitle: Typography
-    lateinit var toolbarNavIcon: AppCompatImageView
-    lateinit var toolbarExpandIcon: IconUnify
-    lateinit var toolbarParent: ConstraintLayout
+    private lateinit var toolbarIcon: AppCompatImageView
+    private lateinit var toolbarTitle: Typography
+    private lateinit var toolbarSubtitle: Typography
+    private lateinit var toolbarNavIcon: AppCompatImageView
+    private lateinit var toolbarExpandIcon: IconUnify
+    private lateinit var toolbarParent: ConstraintLayout
 
-    fun getLayout() = R.layout.imagepicker_insta_com_toolbar
+    private fun getLayout() = R.layout.imagepicker_insta_com_toolbar
+
+    private var mOnClickListener: (() -> Unit)? = null
+    private var mOnBackListener: (() -> Unit)? = null
 
     init {
         LayoutInflater.from(context).inflate(getLayout(), this, true)
@@ -41,5 +46,53 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         toolbarParent  = findViewById(R.id.toolbar_parent)
         toolbarExpandIcon  = findViewById(R.id.content_creator_expand_icon)
 
+        toolbarNavIcon.setOnClickListener {
+            mOnBackListener?.invoke()
+        }
+
+        toolbarTitle.setOnClickListener {
+            mOnClickListener?.invoke()
+        }
+
+        toolbarExpandIcon.setOnClickListener {
+            mOnClickListener?.invoke()
+        }
+    }
+
+    var title: String = ""
+        set(value) {
+            field = value
+            toolbarTitle.text = value
+        }
+
+    var subtitle: String = ""
+        set(value) {
+            field = value
+            toolbarSubtitle.text = value
+        }
+
+    fun setImageResource(imageRes: Int) {
+        toolbarIcon.setImageResource(imageRes)
+        toolbarIcon.visibility = View.VISIBLE
+    }
+
+    fun setImageCircle(imageUrl: String) {
+        toolbarIcon.visibility = View.VISIBLE
+    }
+
+    fun hideImage(){
+        toolbarIcon.visibility = View.GONE
+    }
+
+    fun getToolbarParentView(): ConstraintLayout {
+        return toolbarParent
+    }
+
+    fun setOnBackClickListener(listener: (() -> Unit)?) {
+        mOnBackListener = listener
+    }
+
+    fun setOnAccountClickListener(listener: (() -> Unit)?) {
+        mOnClickListener = listener
     }
 }

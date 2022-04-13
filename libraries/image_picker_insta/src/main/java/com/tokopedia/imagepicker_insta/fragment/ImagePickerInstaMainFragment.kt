@@ -46,6 +46,7 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.imagepicker_insta_camera_activity.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -255,20 +256,20 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun setupToolbar(v: View) {
         val toolbarCommon: ImagePickerCommonToolbar = v.findViewById(R.id.toolbar_common)
-        toolbarCommon.toolbarNavIcon.setOnClickListener {
+        toolbarCommon.setOnBackClickListener {
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
         }
-        toolbarCommon.toolbarExpandIcon.setOnClickListener {
+        toolbarCommon.setOnAccountClickListener {
             openBottomSheet()
         }
 
-        toolbarCommon.toolbarParent.addOneTimeGlobalLayoutListener {
+        toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
             coachMark = CoachMark2(activity as Context)
 
             coachMarkItem.add(
                 CoachMark2Item(
-                    toolbarCommon.toolbarParent,
+                    toolbarCommon.getToolbarParentView(),
                     getString(R.string.imagepicker_coachmark_header),
                     getString(R.string.imagepicker_coachmark_text),
                     CoachMark2.POSITION_BOTTOM
@@ -281,9 +282,18 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
-            setToolbarIcon(this, toolbarCommon.toolbarIcon)
-            toolbarCommon.toolbarTitle.text = this.toolbarTitle
-            toolbarCommon.toolbarSubtitle.text = this.toolbarSubTitle
+            toolbarCommon.apply {
+                title = toolbarTitle
+                subtitle = toolbarSubTitle
+
+                if (toolbarIconRes != null && toolbarIconRes != 0) {
+                    setImageResource(toolbarIconRes)
+                } else if (toolbarIconUrl.isNotEmpty()) {
+                    setImageCircle(toolbarIconUrl)
+                } else {
+                    hideImage()
+                }
+            }
         }
     }
     private fun openBottomSheet(){
@@ -305,16 +315,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         Prefs.saveShouldShowCoachMarkValue(activity as Context)
         if (::coachMark.isInitialized) {
             coachMark.showCoachMark(coachMarkItem)
-        }
-    }
-
-    private fun setToolbarIcon(activity: ImagePickerInstaActivity, imageView: AppCompatImageView) {
-        if (activity.toolbarIconRes != null && activity.toolbarIconRes != 0) {
-            imageView.setImageResource(activity.toolbarIconRes)
-        } else if (!activity.toolbarIconUrl.isNullOrEmpty()) {
-            imageView.loadImageCircle(activity.toolbarIconUrl)
-        } else {
-            imageView.visibility = View.GONE
         }
     }
 
