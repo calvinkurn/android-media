@@ -5,6 +5,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -369,68 +370,53 @@ object DynamicProductDetailMapper {
     }
 
     fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
-        val mappedMediaThumbnails = data.list?.let { mediaList ->
+        val totalVideoToShow = data.detail?.videos?.size.orZero()
+        val totalImageToShow = data.detail?.images?.size.orZero()
+        val totalMediaToShow = totalVideoToShow + totalImageToShow
+        val totalNotShowedMedia = data.detail?.mediaCount.toIntOrZero().minus(totalMediaToShow).coerceAtLeast(Int.ZERO)
+        val mappedVideoThumbnails = data.detail?.videos?.mapIndexed { index, video ->
             val hasNext = data.isHasNext
-            var validMediaCount = Int.ZERO
-            mediaList.mapIndexedNotNull { index, media ->
-                val lastItem = index == mediaList.size - 1
-                val otherTotalMediaCount = data.detail?.mediaCount.toIntOrZero().minus(validMediaCount).coerceAtLeast(Int.ZERO)
-                if (media.imageID.isMoreThanZero()) {
-                    val imageData = data.detail?.images?.find { it.imageAttachmentID == media.imageID }
-                    val uriThumbnail = imageData?.uriThumbnail
-                    val uriLarge = imageData?.uriLarge
-                    if (imageData == null || uriThumbnail.isNullOrBlank() || uriLarge.isNullOrBlank()) {
-                        null
-                    } else {
-                        if (lastItem && hasNext && otherTotalMediaCount.isMoreThanZero()) {
-                            validMediaCount++
-                            ReviewMediaImageThumbnailUiModel(
-                                uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
-                                    reviewID = media.reviewID.toString(),
-                                    thumbnailUrl = uriThumbnail,
-                                    fullSizeUrl = uriLarge,
-                                    totalImageCount = otherTotalMediaCount
-                                )
-                            )
-                        } else {
-                            validMediaCount++
-                            ReviewMediaImageThumbnailUiModel(
-                                uiState = ReviewMediaImageThumbnailUiState.Showing(
-                                    reviewID = media.reviewID.toString(),
-                                    thumbnailUrl = uriThumbnail,
-                                    fullSizeUrl = uriLarge
-                                )
-                            )
-                        }
-                    }
-                } else if (media.videoID.isMoreThanZero()) {
-                    val videoData = data.detail?.videos?.find { it.attachmentID == media.videoID }
-                    val url = videoData?.url
-                    if (videoData == null || url.isNullOrBlank()) {
-                        null
-                    } else {
-                        if (lastItem && hasNext && otherTotalMediaCount.isMoreThanZero()) {
-                            validMediaCount++
-                            ReviewMediaVideoThumbnailUiModel(
-                                uiState = ReviewMediaVideoThumbnailUiState.ShowingSeeMore(
-                                    reviewID = media.reviewID.toString(),
-                                    url = url,
-                                    totalImageCount = otherTotalMediaCount
-                                )
-                            )
-                        } else {
-                            validMediaCount++
-                            ReviewMediaVideoThumbnailUiModel(
-                                uiState = ReviewMediaVideoThumbnailUiState.Showing(
-                                    reviewID = media.reviewID.toString(),
-                                    url = url
-                                )
-                            )
-                        }
-                    }
-                } else null
+            val lastItem = index == totalMediaToShow - 1
+            if (lastItem && hasNext && totalNotShowedMedia.isMoreThanZero()) {
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.ShowingSeeMore(
+                        reviewID = video.feedbackID.orEmpty(),
+                        url = video.url.orEmpty(),
+                        totalImageCount = totalNotShowedMedia
+                    )
+                )
+            } else {
+                ReviewMediaVideoThumbnailUiModel(
+                    uiState = ReviewMediaVideoThumbnailUiState.Showing(
+                        reviewID = video.feedbackID.orEmpty(),
+                        url = video.url.orEmpty()
+                    )
+                )
             }
         }.orEmpty()
+        val mappedImageThumbnails = data.detail?.images?.mapIndexed { index, image ->
+            val hasNext = data.isHasNext
+            val lastItem = index.plus(mappedVideoThumbnails.size) == totalMediaToShow - 1
+            if (lastItem && hasNext && totalNotShowedMedia.isMoreThanZero()) {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
+                        reviewID = image.reviewID,
+                        thumbnailUrl = image.uriThumbnail.orEmpty(),
+                        fullSizeUrl = image.uriLarge.orEmpty(),
+                        totalImageCount = totalNotShowedMedia
+                    )
+                )
+            } else {
+                ReviewMediaImageThumbnailUiModel(
+                    uiState = ReviewMediaImageThumbnailUiState.Showing(
+                        reviewID = image.reviewID,
+                        thumbnailUrl = image.uriThumbnail.orEmpty(),
+                        fullSizeUrl = image.uriLarge.orEmpty()
+                    )
+                )
+            }
+        }.orEmpty()
+        val mappedMediaThumbnails = mappedVideoThumbnails.plus(mappedImageThumbnails)
         return ReviewMediaThumbnailUiModel(mappedMediaThumbnails)
     }
 
