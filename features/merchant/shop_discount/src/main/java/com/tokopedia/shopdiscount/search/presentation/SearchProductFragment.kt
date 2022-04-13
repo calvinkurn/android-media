@@ -20,6 +20,8 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductAdapter
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
@@ -29,7 +31,9 @@ import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
@@ -69,6 +73,10 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession : UserSessionInterface
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SearchProductViewModel::class.java) }
     private val productAdapter by lazy {
@@ -103,6 +111,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         setupView()
         observeProducts()
         observeDeleteDiscount()
+        observeReserveProducts()
     }
 
     private fun setupView() {
@@ -134,6 +143,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun setupMultiSelection() {
         binding?.run {
             tpgMultiSelect.setOnClickListener {
+                viewModel.setRequestId(generateRequestId())
                 viewModel.removeAllProductFromSelection()
                 viewModel.setInMultiSelectMode(true)
                 enableMultiSelect()
@@ -146,7 +156,8 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                     String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
             }
             btnManage.setOnClickListener {
-
+                val selectedProductIds = viewModel.getSelectedProductIds()
+                reserveProduct(viewModel.getRequestId(), selectedProductIds)
             }
             btnDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
         }
@@ -186,6 +197,29 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         }
     }
 
+    private fun observeReserveProducts() {
+        viewModel.reserveProduct.observe(viewLifecycleOwner) {
+            binding?.btnManage?.isLoading = false
+            when (it) {
+                is Success -> {
+                    val isReservationSuccess = it.data
+                    if (isReservationSuccess) {
+                        ShopDiscountManageDiscountActivity.start(
+                            requireActivity(),
+                            viewModel.getRequestId(),
+                            discountStatusId,
+                            ShopDiscountManageDiscountMode.UPDATE
+                        )
+                    } else {
+                        binding?.root showError getString(R.string.sd_error_reserve_product)
+                    }
+                }
+                is Fail -> {
+                    binding?.root showError it.throwable
+                }
+            }
+        }
+    }
 
     private fun handleProducts(data: ProductData) {
         if (data.totalProduct == Int.ZERO) {
@@ -252,6 +286,9 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
+        val requestId = generateRequestId()
+        viewModel.setRequestId(requestId)
+        reserveProduct(requestId, listOf(product.id))
     }
 
     private val onVariantInfoClicked : (Product) -> Unit = { product ->
@@ -266,6 +303,12 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         guard(product.disableClick) {
             displayMoreMenuBottomSheet(product)
         }
+    }
+
+    private fun reserveProduct(requestId : String, productIds : List<String>) {
+        binding?.btnManage?.isLoading = true
+        binding?.btnManage?.loadingText = getString(R.string.sd_please_wait)
+        viewModel.reserveProduct(requestId, productIds)
     }
 
     private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
@@ -466,5 +509,9 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
         productAdapter.updateAll(disabledMultiSelect)
         binding?.cardView?.gone()
+    }
+
+    private fun generateRequestId(): String {
+        return userSession.shopId + Date().time
     }
 }

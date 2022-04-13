@@ -113,8 +113,6 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val requestId = userSession.shopId + Date().time
-        viewModel.setRequestId(requestId)
         setupView()
         observeProducts()
         observeDeleteDiscount()
@@ -154,7 +152,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             }
             btnBulkManage.setOnClickListener {
                 val selectedProductIds = viewModel.getSelectedProductIds()
-                reserveProduct(selectedProductIds)
+                reserveProduct(viewModel.getRequestId(), selectedProductIds)
             }
             btnBulkDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
         }
@@ -215,10 +213,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         }
     }
 
-    private fun reserveProduct(productIds : List<String>) {
+    private fun reserveProduct(requestId: String, productIds : List<String>) {
         binding?.btnBulkManage?.isLoading = true
         binding?.btnBulkManage?.loadingText = getString(R.string.sd_please_wait)
-        viewModel.reserveProduct(viewModel.getRequestId(), productIds)
+        viewModel.reserveProduct(requestId, productIds)
     }
 
     private fun handleProducts(data: ProductData) {
@@ -331,6 +329,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private fun setupMultiSelection() {
         binding?.run {
             tpgMultiSelect.setOnClickListener {
+                viewModel.setRequestId(generateRequestId())
                 viewModel.removeAllProductFromSelection()
                 viewModel.setInMultiSelectMode(true)
                 enableMultiSelect()
@@ -429,7 +428,9 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
-        reserveProduct(listOf(product.id))
+        val requestId = generateRequestId()
+        viewModel.setRequestId(requestId)
+        reserveProduct(requestId, listOf(product.id))
     }
 
     private val onProductClicked: (Product) -> Unit = { product ->
@@ -516,5 +517,9 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     override fun onGetListError(message: String) {
         displayError(message)
+    }
+
+    private fun generateRequestId(): String {
+        return userSession.shopId + Date().time
     }
 }

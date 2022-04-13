@@ -200,6 +200,7 @@ class ProductListViewModel @Inject constructor(
     fun removeAllProductFromSelection() {
         this.selectedProductIds.clear()
     }
+
     fun getRequestId() : String {
         return requestId
     }
