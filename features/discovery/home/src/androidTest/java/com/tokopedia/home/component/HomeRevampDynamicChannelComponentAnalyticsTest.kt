@@ -94,21 +94,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
-    fun testRecommendationFeedProductLogin() {
-        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        HomeDCCassavaTest {
-            initTest()
-            login()
-            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedSection(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
-        }
-    }
-
-    @Test
     fun testComponentProductHighlight() {
         HomeDCCassavaTest {
             initTest()
@@ -225,17 +210,32 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 //    }
 
     @Test
-    fun testCueWidgetCategory() {
+    fun testRecommendationFeedProductLogin() {
+        onView(withId(R.id.home_fragment_recycler_view)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         HomeDCCassavaTest {
             initTest()
-            doActivityTestByModelClass(dataModelClass = CueCategoryDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                actionOnCueWidgetCategory(viewHolder, i)
+            login()
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnRecommendationFeedSection(viewHolder)
             }
         } validateAnalytics {
             addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY)
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
         }
     }
+
+//    @Test
+//    fun testCueWidgetCategory() {
+//        HomeDCCassavaTest {
+//            initTest()
+//            doActivityTestByModelClass(dataModelClass = CueCategoryDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+//                actionOnCueWidgetCategory(viewHolder, i)
+//            }
+//        } validateAnalytics {
+//            addDebugEnd()
+//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY)
+//        }
+//    }
 
     @Test
     fun testOpenScreenHomepage() {
@@ -391,6 +391,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testComponentMerchantVoucherWidget() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnMerchantVoucherWidget(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MERCHANT_VOUCHER)
+        }
+    }
+
+    @Test
+    fun testComponentMerchantVoucherWidget2() {
         HomeDCCassavaTest {
             initTest()
             doActivityTestByModelClass(dataModelClass = MerchantVoucherDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
