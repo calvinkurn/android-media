@@ -77,13 +77,15 @@ private const val CLICK_COBA_AUO_ADS = "click - coba auto ads"
 private const val CLICK_DATE_PICKER = "click - date filter dashboard iklan produk"
 private const val CLICK_TANPA_GRUP = "click - tab iklan tanpa group"
 private const val CLICK_MULAI_BERIKLAN = "click - mulai beriklan iklan produk dashboard"
-private const val DEFAULT_FRAGMENT_LOAD_COUNT = 3
+private const val DEFAULT_FRAGMENT_LOAD_COUNT = 2
 class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView {
     private var adCurrentState = 0
     private var datePickerSheet: DatePickerSheet? = null
     private var currentDateText: String = ""
     private var isWhiteListedUser: Boolean = false
     private var isAutoBidToggleEnabled: Boolean = false
+    private var isDeletedTabEnabled: Boolean = false
+    private val fragmentLoadCountThree = 3
 
     override fun getLayoutId(): Int {
         return R.layout.topads_dash_fragment_product_iklan
@@ -161,7 +163,7 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         topAdsDashboardPresenter.attachView(this)
-        topAdsDashboardPresenter.getWhiteListedUser(::onSuccessWhiteListing)
+        topAdsDashboardPresenter.getWhiteListedUser(::onSuccessWhiteListing){}
         auto_ad_status_image.setImageDrawable(context?.getResDrawable(R.drawable.ill_iklan_otomatis))
         onBoarding.setOnClickListener {
             RouteManager.route(activity, ApplinkConstInternalTopAds.TOPADS_AUTOADS_ONBOARDING)
@@ -225,12 +227,14 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
             when(it.featureId) {
                 TopAdsFeature.WHITE_LISTED_USER_ID -> isWhiteListedUser = true
                 TopAdsFeature.AUTO_BID_TOGGLE_ID -> isAutoBidToggleEnabled = true
+                TopAdsFeature.DELETED_TAB_PRODUCT_HEADLINE -> isDeletedTabEnabled = true
             }
         }
     }
     private fun renderManualViewPager() {
         view_pager_frag?.adapter = getViewPagerAdapter()
-        view_pager_frag.offscreenPageLimit = DEFAULT_FRAGMENT_LOAD_COUNT
+        view_pager_frag.offscreenPageLimit =
+            if (isDeletedTabEnabled) fragmentLoadCountThree else DEFAULT_FRAGMENT_LOAD_COUNT
         view_pager_frag.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
 
@@ -257,14 +261,21 @@ class TopAdsProductIklanFragment : TopAdsBaseTabFragment(), TopAdsDashboardView 
         tab_layout.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         tab_layout?.addNewTab(GRUP)
         tab_layout?.addNewTab(TANPA_GRUP)
-        tab_layout?.addNewTab(DIHAPUS)
         list.add(FragmentTabItem(GRUP, TopAdsDashGroupFragment.createInstance(prepareBundle())))
         list.add(FragmentTabItem(TANPA_GRUP, TopAdsDashWithoutGroupFragment.createInstance(prepareBundle())))
-        list.add(FragmentTabItem(DIHAPUS, TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())))
+
+        addDeletedTab(list)
         val adapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
         adapter.setList(list)
         groupPagerAdapter = adapter
         return adapter
+    }
+
+    private fun addDeletedTab(list: ArrayList<FragmentTabItem>) {
+        if (isDeletedTabEnabled){
+            tab_layout?.addNewTab(DIHAPUS)
+            list.add(FragmentTabItem(DIHAPUS, TopAdsDashDeletedGroupFragment.createInstance(prepareBundle())))
+        }
     }
 
     private fun setAutoAdsAdapter() {

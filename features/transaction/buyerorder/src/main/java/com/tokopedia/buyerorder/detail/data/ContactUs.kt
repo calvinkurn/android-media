@@ -7,13 +7,12 @@ import com.google.gson.annotations.Expose
  * Created by baghira on 11/05/18.
  */
 
-class ContactUs {
-
+data class ContactUs(
     @SerializedName("helpText")
     @Expose
-    val helpText: String = ""
+    val helpText: String = "",
 
     @SerializedName("helpUrl")
     @Expose
     val helpUrl: String = ""
-}
+)
