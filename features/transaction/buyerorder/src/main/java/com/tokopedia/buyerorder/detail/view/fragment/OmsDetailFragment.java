@@ -1,8 +1,12 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -69,12 +73,14 @@ import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
+import com.tokopedia.buyerorder.detail.view.customview.HorizontalCoupleTextView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.recharge.data.response.AdditionalTickerInfo;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.Toaster;
@@ -133,7 +139,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private TextView conditionalInfoText;
     private LinearLayout statusDetail;
     private TextView invoiceView;
-    private TextView lihat;
     private TextView detailLabel;
     private LinearLayout detailsLayout;
     private TextView infoLabel;
@@ -162,6 +167,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private Ticker tickerDetail;
     private NestedScrollView parentScroll;
     private Boolean _isDownloadable;
+    private IconUnify icCopyInvoice;
 
     private LocalCacheHandler localCacheHandler;
 
@@ -196,7 +202,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
-        lihat = view.findViewById(R.id.lihat);
         detailLabel = view.findViewById(R.id.detail_label);
         detailsLayout = view.findViewById(R.id.details_section);
         infoLabel = view.findViewById(R.id.info_label);
@@ -225,6 +230,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         parentScroll = view.findViewById(R.id.parentScroll);
         tickerStatus = view.findViewById(R.id.ticker_status);
         tickerDetail = view.findViewById(R.id.ticker_detail_order);
+        icCopyInvoice = view.findViewById(R.id.ic_copy);
 
         localCacheHandler = new LocalCacheHandler(getContext(),PREFERENCES_NAME);
 
@@ -370,22 +376,22 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setTitle(Title title) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(title.getLabel());
-        doubleTextView.setBottomText(title.getValue());
-        statusDetail.addView(doubleTextView);
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(title.getLabel());
+        coupleTextView.setValue(title.getValue());
+        coupleTextView.isShowSeparator(true);
+
+        statusDetail.addView(coupleTextView);
     }
 
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.getInvoiceRefNum());
-        if (!BuyerUtils.isValidUrl(invoice.getInvoiceUrl())) {
-            lihat.setVisibility(View.GONE);
-        }
-        lihat.setOnClickListener(new View.OnClickListener() {
+
+        icCopyInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoice.getInvoiceUrl());
+                copyInvoice(view, invoiceView.getText().toString());
             }
         });
     }
@@ -407,33 +413,35 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPricing(Pricing pricing, Boolean isCategoryEvent) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(pricing.getLabel());
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(pricing.getLabel());
+
         String value = pricing.getValue();
         if (pricing.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
             value = getResources().getString(R.string.free_rupiah);
         }
-        doubleTextView.setBottomText(value);
-        doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
-        infoValue.addView(doubleTextView);
+
+        coupleTextView.setValue(value);
+        infoValue.addView(coupleTextView);
     }
 
     @Override
     public void setPaymentData(PaymentData paymentData, Boolean isCategoryEvent) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(paymentData.getLabel());
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(paymentData.getLabel());
         String value = paymentData.getValue();
         if (paymentData.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
             value = getResources().getString(R.string.free_rupiah);
         }
-        doubleTextView.setBottomText(value);
+        coupleTextView.setValue(value);
         if (!paymentData.getTextColor().equals("")) {
-            doubleTextView.setBottomTextColor(Color.parseColor(paymentData.getTextColor()));
+            try {
+                coupleTextView.setValueColor(Color.parseColor(paymentData.getTextColor()));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        doubleTextView.setBottomTextSize(16);
-        doubleTextView.setBottomGravity(Gravity.RIGHT);
-        totalPrice.addView(doubleTextView);
+        totalPrice.addView(coupleTextView);
     }
 
     @Override
@@ -558,16 +566,17 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void setPayMethodInfo(PayMethod payMethod, Boolean isCategoryEvent) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(payMethod.getLabel());
+        HorizontalCoupleTextView coupleTextView = new HorizontalCoupleTextView(requireContext(), null, 0);
+        coupleTextView.setLabel(payMethod.getLabel());
+
         ///change value from Rp0 to Gratis
         String value = payMethod.getValue();
         if (payMethod.getValue().equalsIgnoreCase(getResources().getString(R.string.zero_rupiah)) && isCategoryEvent){
             value = getResources().getString(R.string.free_rupiah);
         }
-        doubleTextView.setBottomText(value);
-        doubleTextView.setBottomGravity(Gravity.END);
-        paymentMethodInfo.addView(doubleTextView);
+
+        coupleTextView.setValue(value);
+        paymentMethodInfo.addView(coupleTextView);
     }
 
     @Override
@@ -761,11 +770,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
                             if (getView() != null) {
-                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                                Toaster.build(getView(), String.format("%s %s", getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityAddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
                             }
                         } else {
                             if (getView() != null) {
-                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                                Toaster.build(getView(), String.format("%s %s", getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityAddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
                             }
                         }
                         if (getContext() != null) {
@@ -999,5 +1008,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setActionButtonText(String txt) {
         actionButtonText.setText(txt);
+    }
+
+    private void copyInvoice(View view, String invoice){
+        ClipData myClip;
+        ClipboardManager myClipboard = (ClipboardManager) getContext().getSystemService(CLIPBOARD_SERVICE);
+        myClip = ClipData.newPlainText(KEY_TEXT, invoice);
+        myClipboard.setPrimaryClip(myClip);
+        Toaster.build(view, getString(R.string.deals_order_detail_copied_message), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v1 -> { }).show();
     }
 }

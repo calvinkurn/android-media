@@ -12,4 +12,9 @@
     <dimen name="buyer_order_cancel_bundling_header_image_margin_start_14dp">14dp</dimen>
     <dimen name="buyer_order_cancel_bundling_header_image_size">20dp</dimen>
 
+    <dimen name="deals_voucher_right_line_width">6dp</dimen>
+    <dimen name="deals_voucher_divider_size">3dp</dimen>
+    <dimen name="deals_voucher_corner_ticket_view">4dp</dimen>
+    <dimen name="deals_voucher_elevation_ticket_view">4dp</dimen>
+    <dimen name="deals_voucher_border_width_ticket_view">1dp</dimen>
 </resources>

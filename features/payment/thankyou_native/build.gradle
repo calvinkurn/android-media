@@ -76,6 +76,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.features.promotionsTarget)
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
+    implementation projectOrAar(rootProject.ext.features.tokomember)
 
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 

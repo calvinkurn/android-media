@@ -34,12 +34,8 @@ import com.tokopedia.catalog.di.DaggerCatalogComponent
 import com.tokopedia.catalog.listener.CatalogDetailListener
 import com.tokopedia.catalog.model.datamodel.BaseCatalogDataModel
 import com.tokopedia.catalog.model.datamodel.CatalogComparisionDataModel
-import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
 import com.tokopedia.catalog.model.datamodel.CatalogFullSpecificationDataModel
-import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.raw.*
 import com.tokopedia.catalog.model.util.CatalogConstant
 import com.tokopedia.catalog.model.util.CatalogUiUpdater
 import com.tokopedia.catalog.model.util.CatalogUtil
@@ -346,11 +342,11 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
-    private fun viewMoreClicked(openPage : String) {
+    private fun viewMoreClicked(openPage : String, jumpToFullSpecIndex : Int = 0) {
         val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalogName , catalogId,
                 catalogUiUpdater.productInfoMap?.description ?: "",
                 fullSpecificationDataModel.fullSpecificationsList
-                ,openPage
+                ,openPage,jumpToFullSpecIndex
         )
         catalogSpecsAndDetailView.show(childFragmentManager, "")
     }
@@ -505,13 +501,22 @@ class CatalogDetailPageFragment : Fragment(),
                 "$catalogName - $catalogId",userSession.userId,catalogId)
     }
 
-    override fun onViewMoreSpecificationsClick() {
+    override fun onViewMoreSpecificationsClick(topModel : TopSpecificationsComponentData?) {
         CatalogDetailAnalytics.sendEvent(
-                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
-                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
-                "$catalogName - $catalogId",userSession.userId,catalogId)
-        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION)
+            CatalogDetailAnalytics.EventKeys.EVENT_NAME_CLICK_PG,
+            CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+            CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
+            "$catalogName - $catalogId",userSession.userId,catalogId)
+        var positionInFullSpecs = 0
+        topModel?.let { safeTopModel ->
+            fullSpecificationDataModel.fullSpecificationsList.forEachIndexed {
+                    index, fullSpecificationsComponentData ->
+                if(safeTopModel.key == fullSpecificationsComponentData.name){
+                    positionInFullSpecs = index
+                }
+            }
+        }
+        viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION, jumpToFullSpecIndex = positionInFullSpecs)
     }
 
     override fun playVideo(catalogVideo: VideoComponentData, position: Int) {
