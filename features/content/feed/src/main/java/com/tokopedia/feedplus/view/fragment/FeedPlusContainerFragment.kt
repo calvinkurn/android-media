@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
@@ -88,9 +90,14 @@ private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe {
 
     private var showOldToolbar: Boolean = false
+    private var shouldHitFeedTracker: Boolean = false
+    private var isTrackerOnBroadcastRecieveAlreadyHit: Boolean = false
+    private var isFeedSelectedFromBottomNavigation: Boolean = false
     private var feedToolbar: Toolbar? = null
     private var authorList: List<Author>? = null
+    private lateinit var newFeedReceiver: BroadcastReceiver
     private var postProgressUpdateView: PostProgressUpdateView? = null
+    private var viewPager: ViewPager? = null
     private var mInProgress = false
 
     companion object {
@@ -107,6 +114,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val MAX_MULTI_SELECT_ALLOWED = "max_multi_select"
         const val APPLINK_AFTER_CAMERA_CAPTURE = "link_cam"
         const val APPLINK_FOR_GALLERY_PROCEED = "link_gall"
+        private const val BROADCAST_FEED = "BROADCAST_FEED"
+        const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
 
         @JvmStatic
@@ -266,6 +275,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     override fun onPause() {
         super.onPause()
         hideAllFab()
+        shouldHitFeedTracker = true
+        unRegisterNewFeedReceiver()
     }
 
     override fun onResume() {
@@ -274,6 +285,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.visibility = View.GONE
         else
             fab_feed.visibility = View.VISIBLE
+        registerNewFeedReceiver()
+
+        if (shouldHitFeedTracker && isFeedSelectedFromBottomNavigation) {
+            toolBarAnalytics.createAnalyticsForOpenScreen(
+                viewPager?.currentItem ?: 0,
+                userSession.isLoggedIn.toString(),
+                userSession.userId
+            )
+            toolBarAnalytics.userVisitsFeed(userSession.isLoggedIn.toString(), userSession.userId)
+        }
+
 
         if (activity?.intent?.getBooleanExtra(PARAM_SHOW_PROGRESS_BAR, false) == true) {
             if (!mInProgress) {
@@ -380,17 +402,70 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun initView() {
         postProgressUpdateView = view?.findViewById(R.id.postUpdateView)
+        viewPager = view?.findViewById(R.id.view_pager)
         postProgressUpdateView?.setCreatePostData(CreatePostViewModel())
         postProgressUpdateView?.setPostUpdateListener(this)
         hideAllFab()
         setAdapter()
         setViewPager()
+        //initial value when feed opened for very first time
+        isFeedSelectedFromBottomNavigation = true
+
+        newFeedReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent?) {
+                if (intent != null && intent.action != null) {
+                    if (intent.action == BROADCAST_FEED) {
+                        if (intent.hasExtra(FEED_IS_VISIBLE)) {
+                            isFeedSelectedFromBottomNavigation = intent.extras?.getBoolean(
+                                FEED_IS_VISIBLE
+                            ) ?: isFeedSelectedFromBottomNavigation
+                        }
+                        if (!isTrackerOnBroadcastRecieveAlreadyHit && isFeedSelectedFromBottomNavigation) {
+                            isTrackerOnBroadcastRecieveAlreadyHit = true
+                            toolBarAnalytics.createAnalyticsForOpenScreen(
+                                viewPager?.currentItem ?: 0,
+                                userSession.isLoggedIn.toString(),
+                                userSession.userId
+                            )
+                        }
+
+                    } else if (intent.action == BROADCAST_VISIBLITY) {
+
+                        //When some other tab in selected instead of feed from bottom navigation
+                        isFeedSelectedFromBottomNavigation = false
+                        isTrackerOnBroadcastRecieveAlreadyHit = false
+                    }
+                }
+            }
+        }
+        registerNewFeedReceiver()
         onNotificationChanged(
             badgeNumberNotification,
             badgeNumberInbox,
             badgeNumberCart
         ) // notify badge after toolbar created
     }
+    private fun registerNewFeedReceiver() {
+        if (activity != null && requireActivity().applicationContext != null) {
+            val intentFilter = IntentFilter()
+
+            intentFilter.addAction(BROADCAST_FEED)
+            intentFilter.addAction(BROADCAST_VISIBLITY)
+
+            LocalBroadcastManager
+                .getInstance(requireActivity().applicationContext)
+                .registerReceiver(newFeedReceiver, intentFilter)
+        }
+    }
+
+    private fun unRegisterNewFeedReceiver() {
+        if (activity != null && requireActivity().applicationContext != null) {
+            LocalBroadcastManager
+                .getInstance(requireActivity().applicationContext)
+                .unregisterReceiver(newFeedReceiver)
+        }
+    }
+
 
     private fun initFab() {
         fab_feed.type = FloatingButtonUnify.BASIC
@@ -464,6 +539,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        activity?.run {
+            unRegisterNewFeedReceiver()
+        }
+    }
+
     private fun enableContentCreationNewFlow(): Boolean {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
         return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
@@ -483,18 +565,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 toolBarAnalytics.clickOnVideoTabOnFeedPage(position)
                 toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
 
-                if (position == 1) {
-                    toolBarAnalytics.createAnalyticsForOpenScreen(position, userSession.isLoggedIn.toString(), userSession.userId)
-                    context?.let {
-                        val intent = Intent(BROADCAST_VISIBLITY)
-                        LocalBroadcastManager.getInstance(it.applicationContext)
-                                .sendBroadcast(intent)
-                    }
+                updateFeedUpdateVisibility(position)
+
+                if (position == 1 || position == 2) {
                     postProgressUpdateView?.hide()
+                    if (position == 2) {
+                        videoTabAutoPlayJumboWidget()
+                    }
                 } else if (position == 0 && mInProgress) {
                     postProgressUpdateView?.show()
-                } else if (position == 2) {
-                    videoTabAutoPlayJumboWidget()
                 }
             }
 
@@ -543,8 +622,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         tab_layout.visibility = View.VISIBLE
         view_pager.visibility = View.VISIBLE
 
-        if (view_pager.currentItem == 0)
-            toolBarAnalytics.createAnalyticsForOpenScreen(0,userSession.isLoggedIn.toString(),userSession.userId)
+
 
         if (hasCategoryIdParam()) {
             goToExplore()
@@ -753,6 +831,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Timber.e(e)
         }
 
+    }
+    fun updateFeedUpdateVisibility(position: Int) {
+        try {
+            val fragment = pagerAdapter.getRegisteredFragment(position)
+            if (fragment is FeedPlusFragment) {
+                fragment.updateFeedVisibilityVariable(position == 0)
+            }
+        } catch (e: IllegalStateException) {
+            Timber.e(e)
+        }
     }
 
     override fun onRetryCLicked() {
