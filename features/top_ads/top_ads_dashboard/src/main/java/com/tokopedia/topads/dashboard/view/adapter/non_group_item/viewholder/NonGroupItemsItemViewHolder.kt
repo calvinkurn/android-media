@@ -19,7 +19,6 @@ import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.topads_dash_item_non_group_card.view.*
 
 
 /**
@@ -123,7 +122,7 @@ class NonGroupItemsItemViewHolder(
         itemCard?.setOnClickListener {
             if (selectedMode) {
                 checkBox?.isChecked = checkBox?.isChecked == false
-                item.isChecked = view.check_box.isChecked
+                item.isChecked = checkBox?.isChecked == true
                 if (item.isChecked)
                     cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
                         R.color.topads_select_color))
@@ -181,7 +180,7 @@ class NonGroupItemsItemViewHolder(
                 String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status),
                     data.adPriceDaily)
         } else {
-            view.progress_layout.visibility = View.GONE
+            progressLayout?.visibility = View.GONE
         }
     }
 }
