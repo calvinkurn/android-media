@@ -227,12 +227,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         initPltPerformanceMonitoring()
         startHomeLayoutNetworkMonitoring()
         startHomeLayoutCustomMetric()
-        val deviceHeight = if (isNewLazyLoad) {
-            deviceDisplayHeight
-        } else {
-            null
-        }
-        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        getWidgetLayout()
+
         (activity as? SellerHomeActivity)?.attachSellerHomeFragmentChangeCallback(this)
     }
 
@@ -341,13 +337,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         return WidgetAdapterFactoryImpl(this)
     }
 
-    override fun onItemClicked(t: BaseWidgetUiModel<*>?) {
+    override fun onItemClicked(t: BaseWidgetUiModel<*>?) {}
 
-    }
-
-    override fun loadData(page: Int) {
-
-    }
+    override fun loadData(page: Int) {}
 
     override fun setCurrentFragmentType(fragmentType: Int) {
         if (fragmentType != FragmentType.HOME) {
@@ -458,21 +450,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun showRecommendationWidgetCoachMark(view: View) {
         recommendationWidgetView = view
         showCoachMarkShopScore()
-    }
-
-    private fun showCoachMarkShopScore() {
-        val coachMarkItems by getCoachMarkItems()
-        val isEligibleShowRecommendationCoachMark =
-            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
-        if (isEligibleShowRecommendationCoachMark) {
-            if (coachMarkItems.isNotEmpty()) {
-                coachMark?.onFinishListener = {
-                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
-                }
-                coachMark?.isDismissed = false
-                coachMark?.showCoachMark(coachMarkItems)
-            }
-        }
     }
 
     override fun onScrollToTop() {
@@ -753,6 +730,36 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
+    }
+
+    fun setNotifCenterCounter(count: Int) {
+        this.notifCenterCount = count
+        showNotificationBadge()
+    }
+
+    private fun getWidgetLayout() {
+        val deviceHeight = if (isNewLazyLoad) {
+            deviceDisplayHeight
+        } else {
+            null
+        }
+        sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        isFirstLoad = false
+    }
+
+    private fun showCoachMarkShopScore() {
+        val coachMarkItems by getCoachMarkItems()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            if (coachMarkItems.isNotEmpty()) {
+                coachMark?.onFinishListener = {
+                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                }
+                coachMark?.isDismissed = false
+                coachMark?.showCoachMark(coachMarkItems)
+            }
+        }
     }
 
     private fun applyCalendarFilter(element: CalendarWidgetUiModel, dateFilter: DateFilterItem) {
@@ -1929,11 +1936,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 stopHomeLayoutRenderMonitoring(fromCache)
             }
         }
-    }
-
-    fun setNotifCenterCounter(count: Int) {
-        this.notifCenterCount = count
-        showNotificationBadge()
     }
 
     @Suppress("UNCHECKED_CAST")
