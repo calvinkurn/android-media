@@ -63,6 +63,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     lateinit var viewModel: PickerViewModel
 
+    private lateinit var toolbarCommon: ImagePickerCommonToolbar
     lateinit var rv: RecyclerView
     lateinit var selectedMediaView: MediaView
     lateinit var recentSection: LinearLayout
@@ -276,7 +277,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun setupToolbar(v: View) {
-        val toolbarCommon: ImagePickerCommonToolbar = v.findViewById(R.id.toolbar_common)
+        toolbarCommon = v.findViewById(R.id.toolbar_common)
         toolbarCommon.setOnBackClickListener {
             TrackerProvider.tracker?.onBackButtonFromPicker()
             activity?.finish()
@@ -512,8 +513,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private fun setObservers() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.selectedFeedAccount.collectLatest {
-                toolbar_common.subtitle = it.name
-                toolbar_common.icon = it.iconUrl
+                toolbarCommon.subtitle = it.name
+                toolbarCommon.icon = it.iconUrl
             }
         }
 

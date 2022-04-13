@@ -60,9 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/imagepicker_insta_com_dp_3_n"
-            android:ellipsize="end"
             android:textColor="@color/Unify_NN950"
-            android:lines="1"
+            android:maxLines="1"
             tools:text="Jonathan Darwin"
             app:typographyType="heading_4"
             app:typographyWeight="bold" />
