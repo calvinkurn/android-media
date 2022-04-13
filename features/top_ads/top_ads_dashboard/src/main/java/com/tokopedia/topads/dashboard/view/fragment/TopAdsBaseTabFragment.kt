@@ -28,7 +28,7 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.fragment.stats.*
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
-import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
+import com.tokopedia.unifycomponents.ImageUnify
 import java.util.*
 
 /**
@@ -37,24 +37,25 @@ import java.util.*
 
 abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionListener {
 
+    private lateinit var rvTab: RecyclerView
+    private lateinit var currentDate: TextView
+    private lateinit var selectDate: ConstraintLayout
+
     internal var startDate: Date? = null
     internal var endDate: Date? = null
-    lateinit var currentDate: TextView
     private var datePickerSheet: DatePickerSheet? = null
-    lateinit var selectDate: ConstraintLayout
-    lateinit var rvTab: RecyclerView
     lateinit var statsGraphPager: ViewPager
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
         val fragmentList = listOf(
-                TopAdsStatsImprFragment.createInstance(),
-                TopAdsStatsKlikFragment.createInstance(),
-                TopAdsStatsSpentFragment.createInstance(),
-                TopAdsStatsIncomeFragment.createInstance(),
-                TopAdsStatsCtrFragment.createInstance(),
-                TopAdsStatsConversionFragment.createInstance(),
-                TopAdsStatsAvgFragment.createInstance(),
-                TopAdsStatsSoldFragment.createInstance())
+            TopAdsStatsImprFragment.createInstance(),
+            TopAdsStatsKlikFragment.createInstance(),
+            TopAdsStatsSpentFragment.createInstance(),
+            TopAdsStatsIncomeFragment.createInstance(),
+            TopAdsStatsCtrFragment.createInstance(),
+            TopAdsStatsConversionFragment.createInstance(),
+            TopAdsStatsAvgFragment.createInstance(),
+            TopAdsStatsSoldFragment.createInstance())
         context?.run { TopAdsStatisticPagerAdapter(this, childFragmentManager, fragmentList) }
     }
 
@@ -64,7 +65,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     protected val currentStatisticsFragment: TopAdsDashStatisticFragment?
         get() = pagerAdapter?.instantiateItem(statsGraphPager, topAdsTabAdapter?.selectedTabPosition
-                ?: 0) as? TopAdsDashStatisticFragment
+            ?: 0) as? TopAdsDashStatisticFragment
 
 
     abstract fun getLayoutId(): Int
@@ -83,7 +84,11 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     abstract fun setGroupCount(size: Int)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
         val view = inflater.inflate(getLayoutId(), container, false)
         currentDate = view.findViewById(R.id.current_date)
         selectDate = view.findViewById(R.id.hari_ini)
@@ -99,8 +104,8 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         endDate = Utils.getEndDate()
         setDateRangeText(TopAdsDashboardConstant.SEVEN_DAYS_RANGE_INDEX)
         initStatisticComponent()
-        selectDate.date_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
-        selectDate.next_image?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
+        selectDate.findViewById<ImageUnify>(R.id.date_image)?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+        selectDate.findViewById<ImageUnify>(R.id.next_image)?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
         selectDate.setOnClickListener {
             getCustomDateText(currentDate.text.toString())
             showBottomSheet()
@@ -109,12 +114,14 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
 
     private fun setDateRangeText(position: Int) {
         when (position) {
-            CONST_1 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
+            CONST_1 -> currentDate.text =
+                context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
             CONST_0 -> currentDate.text = context?.getString(R.string.topads_dash_hari_ini)
-            CONST_2 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+            CONST_2 -> currentDate.text =
+                context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = Utils.outputFormat.format(startDate
-                        ?: Date()) + " - " + Utils.outputFormat.format(endDate ?: Date())
+                    ?: Date()) + " - " + Utils.outputFormat.format(endDate ?: Date())
                 currentDate.text = text
             }
         }
@@ -144,7 +151,8 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         startDate = dateSelected
         with(sharedPref.edit()) {
-            putString(TopAdsDashboardConstant.START_DATE_BERANDA, Utils.outputFormat.format(startDate))
+            putString(TopAdsDashboardConstant.START_DATE_BERANDA,
+                Utils.outputFormat.format(startDate))
             commit()
         }
         endDate = dateEnd
@@ -162,8 +170,7 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         val index = getCurrentSelected()
         val customStartDate = sharedPref?.getString(TopAdsDashboardConstant.START_DATE_BERANDA, "")
         val customEndDate = sharedPref?.getString(TopAdsDashboardConstant.END_DATE_BERANDA, "")
-        val dateRange: String
-        dateRange = if (customStartDate?.isNotEmpty() == true) {
+        val dateRange = if (customStartDate?.isNotEmpty() == true) {
             "$customStartDate - $customEndDate"
         } else
             context?.getString(R.string.topads_dash_custom_date_desc) ?: ""
@@ -209,7 +216,13 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
         statsGraphPager.adapter = pagerAdapter
         initTabLayouTitles()
         statsGraphPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int,
+            ) {
+            }
+
             override fun onPageSelected(position: Int) {
                 smoothScroller.targetPosition = position
                 tabLayoutManager.startSmoothScroll(smoothScroller)
@@ -222,7 +235,8 @@ abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.Ac
     }
 
     private fun initTabLayouTitles() {
-        topAdsTabAdapter?.setSummary(null, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
+        topAdsTabAdapter?.setSummary(null,
+            resources.getStringArray(R.array.top_ads_tab_statistics_labels))
     }
 
     private fun startCustomDatePicker() {
