@@ -77,6 +77,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetReferralSenderHomeUseCa
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SUCCESS_CODE
+import com.tokopedia.tokopedianow.home.presentation.model.HomeShareMetaDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
@@ -140,7 +141,7 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _openScreenTracker
     val setUserPreference: LiveData<Result<SetUserPreferenceData>>
         get() = _setUserPreference
-    val sharingReferralUrlParam: LiveData<Result<String>>
+    val sharingReferralUrlParam: LiveData<Result<HomeShareMetaDataModel>>
         get() = _sharingReferralUrlParam
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
@@ -154,7 +155,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _openScreenTracker = MutableLiveData<String>()
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
-    private val _sharingReferralUrlParam = MutableLiveData<Result<String>>()
+    private val _sharingReferralUrlParam = MutableLiveData<Result<HomeShareMetaDataModel>>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -197,7 +198,15 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             val response = getReferralSenderHomeUseCase.execute(slug)
             if(response.gamiReferralSenderHome.resultStatus.code == SUCCESS_CODE) {
-                _sharingReferralUrlParam.postValue(Success("$slug/${response.gamiReferralSenderHome.sharingMetaData.sharingUrl}"))
+                val metaData = response.gamiReferralSenderHome.sharingMetaData
+                val homeShareMetaDataModel = HomeShareMetaDataModel(
+                    ogImage = metaData.ogImage,
+                    ogTitle = metaData.ogTitle,
+                    ogDescription = metaData.ogDescription,
+                    textDescription = metaData.textDescription,
+                    sharingUrlParam = "$slug/${response.gamiReferralSenderHome.sharingMetaData.sharingUrl}"
+                )
+                _sharingReferralUrlParam.postValue(Success(homeShareMetaDataModel))
             } else {
                 _sharingReferralUrlParam.postValue(Fail(MessageErrorException(response.gamiReferralSenderHome.resultStatus.reason)))
             }
