@@ -457,15 +457,15 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
     fun createGroup(
         productIds: List<String>, currentGroupName: String, priceBid: Double,
-        suggestedBidValue: Double, response: (error: String?) -> Unit,
+        suggestedBidValue: Double, error: (String?) -> Unit,
     ) {
         val param =
             topAdsCreateUseCase.createRequestParamActionCreate(productIds, currentGroupName, priceBid, suggestedBidValue)
 
         topAdsCreateUseCase.executeQuery(param, javaClass.name, {
-            response(null)
+            error(null)
         }, {
-            response(it)
+            error(it)
         })
     }
 

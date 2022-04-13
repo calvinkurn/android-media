@@ -344,7 +344,7 @@ class TopAdsDashboardPresenterTest {
         ))
 
         every {
-            topAdsCreateUseCase.executeQuery(fakeRequest, captureLambda())
+            topAdsCreateUseCase.executeQuery(fakeRequest,any(), captureLambda())
         } answers {
             secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
         }
@@ -366,7 +366,7 @@ class TopAdsDashboardPresenterTest {
         ))
 
         every {
-            topAdsCreateUseCase.executeQuery(fakeRequest, captureLambda())
+            topAdsCreateUseCase.executeQuery(fakeRequest,any(), captureLambda())
         } answers {
             secondArg<(FinalAdResponse?) -> Unit>().invoke(expectedObj)
         }
@@ -385,7 +385,7 @@ class TopAdsDashboardPresenterTest {
         val fakeRequest = mockk<RequestParams>()
 
         every {
-            topAdsCreateUseCase.executeQuery(fakeRequest, captureLambda())
+            topAdsCreateUseCase.executeQuery(fakeRequest,any(), captureLambda())
         } answers {
             secondArg<(FinalAdResponse?) -> Unit>().invoke(null)
         }
