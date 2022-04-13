@@ -1123,11 +1123,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                        Map<String, String> tradeInCustomDimension,
                                                        String transactionId,
+                                                       String userId,
+                                                       boolean promoFlag,
                                                        String eventCategory,
                                                        String eventAction,
                                                        String eventLabel) {
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+                stringObjectMap, tradeInCustomDimension, transactionId, userId, promoFlag, eventCategory, eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
@@ -1976,6 +1978,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (promoCode != null && promoCode.length() > 0) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
                     if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString()) && !ordersItem.getCodes().contains(promoCode)) {
+                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel()!= null) {
+                            // remove previous logistic promo code
+                            ordersItem.getCodes().remove(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
+                        }
                         ordersItem.getCodes().add(promoCode);
                         break;
                     }
@@ -2683,11 +2689,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void resetCourier(int position) {
-        shipmentAdapter.resetCourier(position);
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
-        if (shipmentCartItemModel != null) {
-            addShippingCompletionTicker(shipmentCartItemModel.isEligibleNewShippingExperience());
-        }
+        resetCourier(shipmentCartItemModel);
     }
 
     @Override
@@ -3304,7 +3307,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         newTokoNowData.isModified() ? newTokoNowData.getShopId() : localCache.getShop_id(),
                         newTokoNowData.isModified() ? newTokoNowData.getWarehouseId() : localCache.getWarehouse_id(),
                         newTokoNowData.isModified() ? TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(newTokoNowData.getWarehouses()) : localCache.getWarehouses(),
-                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type()
+                        newTokoNowData.isModified() ? newTokoNowData.getServiceType() : localCache.getService_type(),
+                        ""
                 );
             } else if (newTokoNowData.isModified()) {
                 ChooseAddressUtils.INSTANCE.updateTokoNowData(
@@ -3323,6 +3327,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             AddOnsDataModel addOnsDataModel = cartItemModel.getAddOnProductLevelModel();
             AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
 
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
@@ -3350,6 +3357,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null && shipmentCartItemModel.getAddOnsOrderLevelModel() != null) {
             AddOnsDataModel addOnsDataModel = shipmentCartItemModel.getAddOnsOrderLevelModel();
             AddOnBottomSheetModel addOnBottomSheetModel = addOnsDataModel.getAddOnsBottomSheetModel();
+
+            // No need to open add on bottom sheet if action = 0
+            if (addOnsDataModel.getAddOnsButtonModel().getAction() == 0) return;
 
             AvailableBottomSheetData availableBottomSheetData = new AvailableBottomSheetData();
             UnavailableBottomSheetData unavailableBottomSheetData = new UnavailableBottomSheetData();
@@ -3403,7 +3413,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String.valueOf(saveAddressDataModel.getShopId()),
                     String.valueOf(saveAddressDataModel.getWarehouseId()),
                     TokonowWarehouseMapper.INSTANCE.mapWarehousesAddAddressModelToLocal(saveAddressDataModel.getWarehouses()),
-                    saveAddressDataModel.getServiceType()
+                    saveAddressDataModel.getServiceType(),
+                    ""
             );
         }
     }
@@ -3434,10 +3445,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             popUpDialog.setDescription(popUpData.getDescription());
             popUpDialog.setPrimaryCTAText(popUpData.getButton().getText());
             popUpDialog.setPrimaryCTAClickListener(() -> {
-                shipmentPresenter.processInitialLoadCheckoutPage(
-                        true, isOneClickShipment(), isTradeIn(), true,
-                        true, null, getDeviceId(), getCheckoutLeasingId()
-                );
                 popUpDialog.dismiss();
                 return Unit.INSTANCE;
             });

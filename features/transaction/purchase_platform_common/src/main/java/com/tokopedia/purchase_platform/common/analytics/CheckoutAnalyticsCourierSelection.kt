@@ -130,6 +130,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
     fun sendEnhancedECommerceCheckout(cartMap: Map<String, Any>,
                                       tradeInCustomDimension: Map<String, String>?,
                                       transactionId: String?,
+                                      userId: String,
+                                      promoFlag: Boolean,
                                       eventCategory: String,
                                       eventAction: String,
                                       eventLabel: String) {
@@ -147,6 +149,8 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         if (transactionId?.isNotEmpty() == true) {
             dataLayer[ConstantTransactionAnalytics.Key.PAYMENT_ID] = transactionId
         }
+        dataLayer[ExtraKey.USER_ID] = userId
+        dataLayer[ExtraKey.PROMO_FLAG] = promoFlag.toString()
         sendEnhancedEcommerce(dataLayer)
     }
 

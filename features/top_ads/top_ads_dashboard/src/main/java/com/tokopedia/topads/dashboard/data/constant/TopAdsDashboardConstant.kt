@@ -69,7 +69,8 @@ object TopAdsDashboardConstant {
     const val NEG_KATA_KUNCI = "Kata Negatif"
     const val GRUP = "Grup"
     const val TANPA_GRUP = "Tanpa Grup"
-    const val DIHAPUS = "dihapus"
+    const val DIHAPUS = "Dihapus"
+    const val IKLAN_TOKO = "Iklan Toko"
     const val TOASTER_DURATION :Long = 2000
     const val EXPIRE = "expiryDate"
     const val IS_CHANGED = "isChanged"
