@@ -24,6 +24,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerM
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerViewModel
 import com.tokopedia.affiliate.viewmodel.AffiliateDatePickerBottomSheetViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -114,8 +115,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         })
         affiliateDatePickerBottomSheetViewModel.getTickerInfo().observe(this,{info ->
             if(info?.isNotEmpty() == true && identifier == IDENTIFIER_HOME){
-                tickerCv?.show()
-                contentView?.findViewById<Ticker>(R.id.affiliate_filter_announcement_ticker)?.setTextDescription(info)
+                setTicker(info)
             }
         })
         affiliateDatePickerBottomSheetViewModel.getError().observe(this,{isError ->
@@ -123,6 +123,15 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
                 if(error)dismiss()
             }
         })
+    }
+
+    private fun setTicker(info: String) {
+        contentView?.findViewById<Ticker>(R.id.affiliate_filter_announcement_ticker)?.setTextDescription(info)
+            when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+                in 0..9 -> tickerCv?.show()
+                else -> tickerCv?.hide()
+            }
+
     }
 
     private fun setBundleData() {
