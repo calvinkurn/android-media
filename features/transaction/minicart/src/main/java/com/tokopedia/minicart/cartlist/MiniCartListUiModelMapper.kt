@@ -267,7 +267,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             val lastProductItem = productIndex == productsCount - 1
             val actionList = removeBundleDeleteAction(bundleDetail, action, lastProductItem)
 
-            cartId = cartDetail.cartId
+            cartId = product.cartId
             productId = product.productId
             parentId = product.parentId
             cartString = cartStringId

@@ -62,7 +62,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                 cartDetail.products.forEach { product ->
                     val item = MiniCartItem.MiniCartItemProduct().apply {
                         isError = false
-                        cartId = cartDetail.cartId
+                        cartId = product.cartId
                         productId = product.productId
                         productParentId = product.parentId
                         quantity = if (product.productSwitchInvenage == 0) {
@@ -148,7 +148,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                     cartDetail.products.forEach { product ->
                         val item = MiniCartItem.MiniCartItemProduct().apply {
                             isError = true
-                            cartId = cartDetail.cartId
+                            cartId = product.cartId
                             productId = product.productId
                             productParentId = product.parentId
                             quantity = product.productQuantity

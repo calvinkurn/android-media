@@ -93,8 +93,29 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                     }
                   }
                   cart_details {
-                    cart_id
+                    bundle_detail {
+                      bundle_id
+                      bundle_name
+                      bundle_type
+                      bundle_status
+                      bundle_description
+                      bundle_price
+                      bundle_price_fmt
+                      bundle_original_price
+                      bundle_original_price_fmt
+                      bundle_min_order
+                      bundle_max_order
+                      bundle_quota
+                      edit_app_link
+                      bundle_qty
+                      bundle_group_id
+                      slash_price_label
+                      bundle_icon_url
+                      bundle_grayscale_icon_url
+                      qty_adjustment_message
+                    }
                     products {
+                      cart_id
                       parent_id
                       product_id
                       product_quantity
@@ -138,8 +159,29 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                     }
                   }
                   cart_details {
-                    cart_id
+                    bundle_detail {
+                      bundle_id
+                      bundle_name
+                      bundle_type
+                      bundle_status
+                      bundle_description
+                      bundle_price
+                      bundle_price_fmt
+                      bundle_original_price
+                      bundle_original_price_fmt
+                      bundle_min_order
+                      bundle_max_order
+                      bundle_quota
+                      edit_app_link
+                      bundle_qty
+                      bundle_group_id
+                      slash_price_label
+                      bundle_icon_url
+                      bundle_grayscale_icon_url
+                      qty_adjustment_message
+                    }
                     products {
+                      cart_id
                       parent_id
                       product_id
                       product_quantity
