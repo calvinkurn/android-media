@@ -367,13 +367,6 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
-
-            add(DFP({
-                it.startsWithPattern(SHOP_PAGE_BASE) ||
-                        it.startsWithPattern(SHOP) ||
-                        it.startsWithPattern(SHOP_REVIEW) ||
-            }, DF_MERCHANT_REVIEW, R.string.title_product_review))
-
             add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_widget))
             add(DFP({
                 val regexPatternToReplace = "(?=\\{)[^\\}]+\\}".toRegex()
