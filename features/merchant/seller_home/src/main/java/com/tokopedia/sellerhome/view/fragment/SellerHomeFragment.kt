@@ -744,7 +744,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             null
         }
         sellerHomeViewModel.getWidgetLayout(deviceHeight)
-        isFirstLoad = false
     }
 
     private fun showCoachMarkShopScore() {
@@ -1195,6 +1194,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnErrorGetLayout(result.throwable)
                 }
             }
+
+            isFirstLoad = false
         })
 
         setProgressBarVisibility(true)
