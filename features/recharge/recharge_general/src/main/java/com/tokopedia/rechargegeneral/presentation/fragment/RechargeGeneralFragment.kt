@@ -97,7 +97,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     lateinit var adapter: RechargeGeneralAdapter
 
-    private lateinit var favoriteNumbers: List<TopupBillsSearchNumberDataView>
+    private var favoriteNumbers: List<TopupBillsSearchNumberDataView> = emptyList()
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataKeys = mutableListOf<String>()
 
@@ -120,7 +120,6 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     private var isPromo: Boolean = false
     private var operatorCluster: String = ""
     private var hasInputData = false
-    private var hasFavoriteNumbers = false
 
     var pendingPromoData: PromoData? = null
     override var promoTicker: TickerPromoStackingCheckoutView? = null
@@ -205,9 +204,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             when (it) {
                 is Success -> {
                     setupInputAndProduct(it.data)
-                    if (hasFavoriteNumbers) {
-                        updateFavoriteNumberInputField()
-                    }
+                    updateFavoriteNumberInputField()
                     if (needProductDataUpdate) updateProductData()
                     hideLoading()
                 }
@@ -1080,10 +1077,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         if (favoriteNumbers.isNotEmpty()) {
             if (adapter.data.isNotEmpty()) {
                 val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
-                clientNumberInput?.apply { isFavoriteNumber = true }
-                adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
-            } else { // Store favorite number state
-                hasFavoriteNumbers = true
+                clientNumberInput?.apply {
+                    isFavoriteNumber = true
+                    adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
+                }
             }
         }
     }

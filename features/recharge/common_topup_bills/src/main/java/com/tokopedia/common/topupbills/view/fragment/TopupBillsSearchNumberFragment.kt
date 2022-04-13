@@ -146,7 +146,8 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     private fun filterData(query: String) {
         val searchClientNumbers = ArrayList<TopupBillsSearchNumberDataView>()
         if (!TextUtils.isEmpty(query) and !isContain(query, clientNumbers)) {
-            searchClientNumbers.add(TopupBillsSearchNumberDataView(query, isFavorite = false))
+            searchClientNumbers.add(TopupBillsSearchNumberDataView(
+                clientNumber = query, isFavorite = false))
         }
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.contains(query)) {
