@@ -3,13 +3,16 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play_common.R
+import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveWinnerAdapter
 import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderboardWinnerItemDecoration
+import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -22,6 +25,13 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private val rvWinner = itemView.findViewById<RecyclerView>(R.id.rv_winner)
     private val tvOtherParticipant = itemView.findViewById<Typography>(R.id.tv_leaderboard_other_participant)
     private val tvEmpty = itemView.findViewById<Typography>(R.id.tv_leaderboard_empty)
+    private val ivLeaderBoard = itemView.findViewById<IconUnify>(R.id.iv_leaderboard)
+
+    /**
+     * Quiz
+     */
+    private val ivReward = itemView.findViewById<IconUnify>(R.id.iv_reward)
+    private val tvReward = itemView.findViewById<Typography>(R.id.tv_reward)
 
     private val winnerAdapter = PlayInteractiveWinnerAdapter(object : PlayInteractiveWinnerViewHolder.Listener{
         override fun onChatButtonClicked(item: PlayWinnerUiModel, position: Int) {
@@ -39,7 +49,28 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     fun bind(leaderboard: PlayLeaderboardUiModel) {
         tvTitle.text = leaderboard.title
 
+        setupLeaderboardType(leaderboard)
+
         if (leaderboard.winners.isEmpty()) hideParticipant(leaderboard) else showParticipant(leaderboard)
+    }
+
+    private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel){
+        when(leaderboard.leaderBoardType){
+            LeadeboardType.Quiz -> {
+                ivReward.show()
+                tvReward.show()
+
+                ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
+                ivReward.setImage(newIconId = IconUnify.GIFT)
+                tvReward.text = leaderboard.reward
+                tvReward.setGradientBackground(listOf("",""))
+            }
+            LeadeboardType.Giveaway -> ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
+            else -> {
+                ivReward.hide()
+                tvReward.hide()
+            }
+        }
     }
 
     private fun showParticipant(leaderboard: PlayLeaderboardUiModel) {

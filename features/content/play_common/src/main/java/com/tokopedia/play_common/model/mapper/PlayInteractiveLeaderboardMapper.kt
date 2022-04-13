@@ -35,7 +35,8 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             otherParticipant = it.otherParticipantCount.toLong(),
             choices = mapChoices(it.choices, it.userChoice),
             leaderBoardType = getLeaderboardType(it),
-            emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText
+            emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
+            reward = it.reward
         )
     }
 

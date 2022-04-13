@@ -30,6 +30,7 @@ data class PlayLeaderboardUiModel(
     val otherParticipantText: String,
     val otherParticipant: Long,
     val emptyLeaderBoardCopyText: String = "",
+    val reward: String = "",
     val leaderBoardType: LeadeboardType = LeadeboardType.Unknown
 )
 
