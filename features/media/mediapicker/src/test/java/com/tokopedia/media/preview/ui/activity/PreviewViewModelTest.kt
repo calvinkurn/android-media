@@ -98,7 +98,7 @@ class PreviewViewModelTest {
                 .shareIn(this, SharingStarted.WhileSubscribed(), 1)
                 .collect {
                     pickerResult = it
-                    this.coroutineContext.cancel()
+                    this.cancel()
                 }
         }
 
@@ -127,7 +127,7 @@ class PreviewViewModelTest {
                 .shareIn(this, SharingStarted.WhileSubscribed(), 1)
                 .collect {
                     pickerResult = it
-                    this.coroutineContext.cancel()
+                    this.cancel()
                 }
         }
 
