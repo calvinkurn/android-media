@@ -311,6 +311,24 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     UiEvent.EVENT_SUCCESS_DELETE_UNAVAILABLE_PRODUCTS -> {
                         viewModel.bulkDeleteUnavailableProducts()
                     }
+                    UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
+                        (it.data as? Pair<*, *>)?.let { pair ->
+                            (pair.first as? String)?.let { productId ->
+                                (pair.second as? String)?.let { notes ->
+                                    viewModel.updateNotes(productId, notes)
+                                    view?.let {
+                                        Toaster.build(
+                                            view = it,
+                                            text = "Sip! Catatan berhasil disimpan.",
+                                            duration = Toaster.LENGTH_SHORT,
+                                            type = Toaster.TYPE_NORMAL,
+                                            actionText = "Oke"
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -478,16 +496,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         val addOnBottomSheet = TokoFoodPurchaseNoteBottomSheet(element.notes,
                 object : TokoFoodPurchaseNoteBottomSheet.Listener {
                     override fun onSaveNotesClicked(notes: String) {
-                        viewModel.updateNotes(element, notes)
-                        view?.let {
-                            Toaster.build(
-                                    view = it,
-                                    text = "Sip! Catatan berhasil disimpan.",
-                                    duration = Toaster.LENGTH_SHORT,
-                                    type = Toaster.TYPE_NORMAL,
-                                    actionText = "Oke"
-                            ).show()
-                        }
+                        activityViewModel?.updateNotes(element.id, notes)
                     }
                 }
         )

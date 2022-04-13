@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.tokofood.common.domain.metadata.CartMetadataTokoFood
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
@@ -152,6 +153,31 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         })
     }
 
+    fun updateNotes(productId: String, notes: String) {
+        launchCatchError(block = {
+            cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_LOADING_DIALOG))
+            val updateNotesParam = getProductParamById(productId, notes)
+            updateCartTokoFoodUseCase(updateNotesParam).collect {
+                if (it.success == 1) {
+                    loadCartList()
+                    cartDataValidationState.emit(
+                        UiEvent(
+                            state = UiEvent.EVENT_SUCCESS_UPDATE_NOTES,
+                            data = productId to notes
+                        )
+                    )
+                }
+            }
+        }, onError = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    throwable = it
+                )
+            )
+        })
+    }
+
     // TODO: Move to mapper
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
         val products = cartData.availableSection.products
@@ -175,6 +201,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
     }
 
     private fun getProductParamById(productId: String): CartTokoFoodParam {
+        // TODO: Need to check variant info
 //        val cartList = cartDataState.value.availableSection.products
 //            .asSequence()
 //            .filter { it.productId == productId }
@@ -187,6 +214,31 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
 //            }
 //            .toList()
 //        // TODO: Add additional attributes
+//        return CartTokoFoodParam(carts = cartList)
+        // TODO: Remove dummy
+        val cartList = listOf(
+            CartItemTokoFoodParam(
+                productId = productId,
+                shopId = shopId
+            )
+        )
+        return CartTokoFoodParam(carts = cartList)
+    }
+
+    private fun getProductParamById(productId: String, notes: String): CartTokoFoodParam {
+        // TODO: Need to check variant info
+//        val cartList = cartDataState.value.availableSection.products
+//            .asSequence()
+//            .filter { it.productId == productId }
+//            .map {
+//                CartItemTokoFoodParam(
+//                    cartId = it.cartId.toLongOrZero(),
+//                    productId = it.productId,
+//                    shopId = shopId,
+//                    metadata = CartMetadataTokoFood(notes = notes).generateString()
+//                )
+//            }
+//            .toList()
 //        return CartTokoFoodParam(carts = cartList)
         // TODO: Remove dummy
         val cartList = listOf(

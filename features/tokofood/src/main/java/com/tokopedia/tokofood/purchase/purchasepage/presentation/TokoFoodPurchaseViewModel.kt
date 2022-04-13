@@ -295,8 +295,8 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun updateNotes(product: TokoFoodPurchaseProductTokoFoodPurchaseUiModel, notes: String) {
-        val productData = getVisitablesValue().getProductByProductId(product.id)
+    fun updateNotes(productId: String, notes: String) {
+        val productData = getVisitablesValue().getProductByProductId(productId)
         productData?.let {
             val dataList = getVisitablesValue()
             val newProductData = it.second.copy()

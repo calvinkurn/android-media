@@ -14,7 +14,8 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.LayoutBottomSheetPurchaseNotesBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String, val listener: Listener) : BottomSheetUnify() {
+class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String? = null,
+                                      val listener: Listener? = null) : BottomSheetUnify() {
 
     private var viewBinding: LayoutBottomSheetPurchaseNotesBinding? = null
 
@@ -65,7 +66,7 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String, val liste
                 }
 
                 override fun onTextChanged(notes: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (currentNote.isBlank()) {
+                    if (currentNote?.isBlank() == true) {
                         buttonSaveNotes.isEnabled = notes?.length ?: 0 > 0
                     } else {
                         buttonSaveNotes.isEnabled = true
@@ -89,7 +90,7 @@ class TokoFoodPurchaseNoteBottomSheet(private val currentNote: String, val liste
             }
 
             buttonSaveNotes.setOnClickListener {
-                listener.onSaveNotesClicked(textFieldNote.editText.text.toString())
+                listener?.onSaveNotesClicked(textFieldNote.editText.text.toString())
                 dismiss()
             }
         }
