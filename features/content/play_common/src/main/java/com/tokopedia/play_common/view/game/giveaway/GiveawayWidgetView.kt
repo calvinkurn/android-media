@@ -40,6 +40,12 @@ class GiveawayWidgetView : LinearLayout {
         setupView()
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        binding.timerRemaining.pause()
+        mListener = null
+    }
+
     fun setListener(listener: Listener?) {
         mListener = listener
     }

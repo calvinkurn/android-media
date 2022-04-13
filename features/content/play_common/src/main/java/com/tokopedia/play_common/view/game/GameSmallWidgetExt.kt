@@ -47,7 +47,6 @@ fun GameSmallWidgetView.setupOngoingGiveaway(
 
 fun GameSmallWidgetView.setupQuiz(
     question: String,
-    timerInfo: String,
     durationInMs: Long,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
 ) {
@@ -60,7 +59,7 @@ fun GameSmallWidgetView.setupQuiz(
     setContentBackground(
         MethodChecker.getDrawable(context, R.drawable.bg_play_quiz_widget)
     )
-    setTimerInfo(timerInfo)
+    setTimerInfo(context.getString(R.string.play_common_widget_interactive_end))
     setTimer(durationInMs) { onDurationEnd(this) }
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
     description = question

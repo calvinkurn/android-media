@@ -41,6 +41,12 @@ class GameSmallWidgetView : FrameLayout {
             binding.tvEngagementDesc.text = value
         }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        binding.timerEngagementTools.pause()
+        listener = null
+    }
+
     fun setTimer(duration: Long, onFinished: () -> Unit){
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, duration.toInt())
