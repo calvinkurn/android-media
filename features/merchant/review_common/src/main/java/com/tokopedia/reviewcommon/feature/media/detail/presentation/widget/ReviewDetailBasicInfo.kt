@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.reviewcommon.databinding.PartialWidgetReviewDetailBasicInfoBinding
 import com.tokopedia.reviewcommon.databinding.WidgetReviewDetailBasicInfoBinding
+import com.tokopedia.reviewcommon.extension.generateHapticFeedback
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel.ReviewDetailBasicInfoUiModel
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uistate.ReviewDetailBasicInfoUiState
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -30,15 +31,14 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
 
     init {
         binding.layoutReviewDetailBasicInfo.icReviewDetailToggleExpandButton.setOnClickListener {
+            it?.generateHapticFeedback()
             listener?.onToggleExpandClicked()
         }
-        binding.layoutReviewDetailBasicInfo.icReviewDetailLikeButton.setOnClickListener {
+        binding.layoutReviewDetailBasicInfo.overlayLikeDislikeClickArea.setOnClickListener {
+            it?.generateHapticFeedback()
             listener?.onToggleLikeClicked()
         }
-        binding.layoutReviewDetailBasicInfo.icReviewDetailLikedButton.setOnClickListener {
-            listener?.onToggleLikeClicked()
-        }
-        binding.layoutReviewDetailBasicInfo.root.setOnClickListener {
+        binding.layoutReviewDetailBasicInfo.overlayCredibilityClickArea.setOnClickListener {
             uiState?.let {
                 if (it is ReviewDetailBasicInfoUiState.Showing && !it.data.anonymous) {
                     listener?.onGoToCredibilityClicked(it.data.userId, it.data.reviewerStatsSummary)
