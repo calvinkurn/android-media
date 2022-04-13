@@ -60,4 +60,17 @@
         app:typographyType="body_3"
         tools:text="Rp10.000"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_change_bundle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/mini_cart_cta_change"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 </androidx.constraintlayout.widget.ConstraintLayout>
