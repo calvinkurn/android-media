@@ -1,5 +1,6 @@
 package com.tokopedia.shopdiscount.product_detail
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.product_detail.data.request.GetSlashPriceProductDetailRequest
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
@@ -52,18 +53,54 @@ object ShopDiscountProductDetailMapper {
                 productId = it.productId,
                 productName = it.name,
                 productImageUrl = it.picture,
-                minPrice = it.price.minFormatted,
-                maxPrice = it.price.maxFormatted,
-                minPriceDiscounted = "",
-                maxPriceDiscounted = "",
-                minDiscount = "",
-                maxDiscount = "",
+                minOriginalPrice = getMinOriginalPrice(it),
+                maxOriginalPrice = getMaxOriginalPrice(it),
+                minPriceDiscounted = getMinPriceDiscounted(it),
+                maxPriceDiscounted = getMaxPriceDiscounted(it),
+                minDiscount = getMinDiscount(it),
+                maxDiscount = getMaxDiscount(it),
                 stock = it.stock,
                 totalLocation = it.warehouses.size,
                 startDate = it.startDate,
                 endDate = it.endDate
             )
         }
+    }
+
+    private fun getMinOriginalPrice(it: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
+        return it.warehouses.map {
+            it.originalPrice
+        }.minOrNull().orZero()
+    }
+
+    private fun getMaxOriginalPrice(it: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
+        return it.warehouses.map {
+            it.originalPrice
+        }.maxOrNull().orZero()
+    }
+
+    private fun getMinPriceDiscounted(it: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
+        return it.warehouses.map {
+            it.discountedPrice
+        }.minOrNull().orZero()
+    }
+
+    private fun getMaxPriceDiscounted(it: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
+        return it.warehouses.map {
+            it.discountedPrice
+        }.maxOrNull().orZero()
+    }
+
+    private fun getMinDiscount(it: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
+        return it.warehouses.map {
+            it.discountedPercentage
+        }.minOrNull().orZero()
+    }
+
+    private fun getMaxDiscount(it: GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList): Int {
+        return it.warehouses.map {
+            it.discountedPercentage
+        }.maxOrNull().orZero()
     }
 
 }

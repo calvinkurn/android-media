@@ -65,9 +65,13 @@
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
+    <string name="product_detail_displayed_price_format">%1s - %2s</string>
     <string name="product_detail_original_price_format">%1s-%2s</string>
+    <string name="shop_discount_product_detail_percent_format_non_range">%1s\%%</string>
+    <string name="shop_discount_product_detail_percent_format_range">%1s-%2s\%%</string>
     <string name="product_detail_stock_and_total_warehouse_format">Stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
-    <string name="product_detail_start_date_end_date_format">%1s - %2s</string>
+    <string name="product_detail_stock_format">Stok: <![CDATA[<b>%1s</b>]]></string>
+    <string name="product_detail_start_date_end_date_format">%1s - %2s WIB</string>
     <string name="product_detail_multiple_product_title">Ada diskon di %1s varian</string>
     <string name="product_detail_single_product_title">Diskon Produk</string>
 
