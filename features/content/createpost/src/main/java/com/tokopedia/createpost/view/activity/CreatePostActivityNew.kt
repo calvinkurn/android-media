@@ -33,6 +33,8 @@ import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -50,6 +52,17 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
+        val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
+        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                /** TODO: gonna handle this */
+//                viewModel.setSelectedFeedAccount(feedAccount)
+            }
+        })
+        fragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -197,7 +210,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             onBackPressed()
         }
         toolbar_common.setOnAccountClickListener {
-            /** TODO: handle this */
+            feedAccountBottomSheet.show(supportFragmentManager)
         }
         setSupportActionBar(toolbar_common)
 
