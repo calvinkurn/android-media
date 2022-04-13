@@ -5,10 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.review.R
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.review.R
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
+import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by @ilhamsuaib on 29/03/22.
@@ -30,7 +37,13 @@ class ShopReviewFragment : ReadReviewFragment() {
                 }
             }
         }
+
     }
+
+    private var ratingOnlyContainer: NestedScrollView? = null
+    private var emptyStateTitle: Typography? = null
+    private var emptyStateSubtitle: Typography? = null
+    private var globalError: GlobalError? = null
 
     override fun onAttach(context: Context) {
         SplitCompat.install(context)
@@ -42,12 +55,16 @@ class ShopReviewFragment : ReadReviewFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shop_read_review, container, false)
+        return inflater.inflate(R.layout.fragment_shop_read_review, container, false).apply {
+            ratingOnlyContainer = findViewById(R.id.rating_only_container)
+            emptyStateTitle = findViewById(R.id.read_review_empty_list_title)
+            emptyStateSubtitle = findViewById(R.id.read_review_empty_list_subtitle)
+            globalError = findViewById(R.id.read_review_network_error)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         showShopPageReviewHeader()
         hideHeaderOnScrolled()
     }
@@ -70,6 +87,41 @@ class ShopReviewFragment : ReadReviewFragment() {
                 }
             })
         }
+    }
+
+    override fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
+        super.onSuccessGetRatingAndTopic(ratingAndTopics)
+        val isRatingAndTopicsAvailable = !(ratingAndTopics.rating.totalRatingTextAndImage == 0L && ratingAndTopics.rating.totalRatingWithImage == 0L)
+        val isRatingAndReviewAvailable = ratingAndTopics.rating.totalRating != 0L
+
+        // show rating bar only
+        ratingOnlyContainer?.showWithCondition(!isRatingAndTopicsAvailable)
+
+        if (!isRatingAndReviewAvailable) {
+            // show empty state with specific shop wording
+            showFilteredEmpty()
+        }
+    }
+
+    override fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
+        super.onSuccessGetShopRatingAndTopic(shopRatingAndTopics)
+        val isShopRatingAndTopicsAvailable = !(shopRatingAndTopics.rating.totalRatingTextAndImage == 0L && shopRatingAndTopics.rating.totalRatingWithImage == 0L)
+        val isRatingAndReviewAvailable = shopRatingAndTopics.rating.totalRating != 0L
+
+        // show rating bar only
+        ratingOnlyContainer?.showWithCondition(!isShopRatingAndTopicsAvailable)
+
+        if (!isRatingAndReviewAvailable) {
+            // show empty state with specific shop wording
+            showFilteredEmpty()
+        }
+    }
+
+    override fun showFilteredEmpty() {
+        super.showFilteredEmpty()
+        emptyStateTitle?.text = getString(R.string.review_reading_empty_review_shop_page_title)
+        emptyStateSubtitle?.text = getString(R.string.review_reading_empty_review_shop_page_subtitle)
+        globalError?.gone()
     }
 
     override fun hasInitialSwipeRefresh(): Boolean = false

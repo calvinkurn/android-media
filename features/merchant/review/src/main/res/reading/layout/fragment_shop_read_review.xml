@@ -85,15 +85,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
-        android:id="@+id/read_review_rating_only"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/rating_only_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
+            android:id="@+id/read_review_rating_only"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </androidx.core.widget.NestedScrollView>
 
     <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/read_review_go_to_top_fab"

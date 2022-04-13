@@ -821,7 +821,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         })
     }
 
-    private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
+    open fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         if (ratingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
@@ -852,7 +852,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         }
     }
 
-    private fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
+    open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
         if (shopRatingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
@@ -995,7 +995,7 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
         loadingView?.hide()
     }
 
-    private fun showFilteredEmpty() {
+    open fun showFilteredEmpty() {
         hideFab()
         emptyFilteredStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
         emptyFilteredState?.show()
