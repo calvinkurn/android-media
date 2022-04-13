@@ -52,7 +52,6 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
         if (response.miniCart.status == "OK") {
-//            return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
             return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(response.miniCart)
         } else {
             throw ResponseErrorException(response.miniCart.errorMessage.joinToString(", "))
@@ -61,9 +60,9 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
 
     companion object {
         val QUERY = """
-        query mini_cart(${'$'}dummy: Int, ${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
+        query mini_cart_v3(${'$'}lang: String, ${'$'}additional_params: CartRevampAdditionalParams) {
           status
-          mini_cart(dummy: ${'$'}dummy, lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
+          mini_cart_v3(lang: ${'$'}lang, additional_params: ${'$'}additional_params) {
             error_message
             status
             data {
@@ -95,7 +94,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                   }
                   cart_details {
                     cart_id
-                    product {
+                    products {
                       parent_id
                       product_id
                       product_quantity
@@ -140,7 +139,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                   }
                   cart_details {
                     cart_id
-                    product {
+                    products {
                       parent_id
                       product_id
                       product_quantity
