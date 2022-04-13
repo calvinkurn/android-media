@@ -26,6 +26,7 @@ private const val TOP_ADS_BANNER_QUERY =
       ad_ref_key
       ad_view_url
       ad_click_url
+      applinks
       banner {
         Name
         Position
