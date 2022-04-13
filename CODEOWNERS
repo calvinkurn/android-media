@@ -7,9 +7,10 @@
 /features/content/kol/                  				@tokopedia/android-minionlance-dev
 /features/content/kol_common/           				@tokopedia/android-minionlance-dev
 /features/content/profile/              				@tokopedia/android-minionlance-dev
+/features/content/people/                               @tokopedia/android-minionlance-dev
 /features/content/feed_component/       				@tokopedia/android-minionlance-dev
 /features/category/       				                @tokopedia/android-miniondarth-dev
-/features/discovery/topadssdk/                      	@tokopedia/android-gatekeeperanalytic-dev
+/features/discovery/topadssdk/                      	@tokopedia/android-miniondarth-dev
 /features/discovery/home/                           	@tokopedia/android-miniondave-dev
 /features/discovery/home_component/                    	@tokopedia/android-miniondave-dev
 /features/discovery/home_nav/                           @tokopedia/android-miniondave-dev
@@ -86,18 +87,18 @@
 /features/merchant/shop_widget/                         @tokopedia/android-minionken-dev
 /features/merchant/campaign_list/                       @tokopedia/android-minionken-dev
 
-/features/top_ads/top_ads_dashboard/                    @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_free_claim/                   @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_management/                   @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_management_common/            @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_autoads/                      @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_create/                       @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_widget/                       @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_headline/                     @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_edit/                         @tokopedia/android-minionsolo-dev
-/features/top_ads/top_ads_on_boarding/                  @tokopedia/android-minionsolo-dev
+/features/top_ads/top_ads_dashboard/                    @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_free_claim/                   @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_management/                   @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_management_common/            @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_autoads/                      @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_create/                       @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_widget/                       @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_headline/                     @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_edit/                         @tokopedia/android-miniondarth-dev
+/features/top_ads/top_ads_on_boarding/                  @tokopedia/android-miniondarth-dev
 
 /features/merchant/talk/                            	@tokopedia/android-minionstuart-dev
 /features/merchant/variant_common/                      @tokopedia/android-minionstuart-dev

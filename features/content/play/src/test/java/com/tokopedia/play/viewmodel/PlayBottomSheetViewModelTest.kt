@@ -1,9 +1,6 @@
 package com.tokopedia.play.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.play.domain.PostAddToCartUseCase
-import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.model.PlayProductTagsModelBuilder
@@ -16,13 +13,10 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
-import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.util.event.Event
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.GetProductVariantResponse
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
-import com.tokopedia.variant_common.util.VariantCommonMapper
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
@@ -41,8 +35,6 @@ class PlayBottomSheetViewModelTest {
 
     private val mockGetProductVariantUseCase: GetProductVariantUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
-    private val mockRepo: PlayViewerRepository = mockk(relaxed = true)
 
     private val modelBuilder = ModelBuilder()
     private val productModelBuilder = PlayProductTagsModelBuilder()
@@ -57,9 +49,7 @@ class PlayBottomSheetViewModelTest {
     @Before
     fun setUp() {
         playBottomSheetViewModel = PlayBottomSheetViewModel(
-                userSession,
-                dispatchers,
-                mockRepo
+                userSession
         )
 
         coEvery { mockGetProductVariantUseCase.executeOnBackground() } returns mockProductVariantResponse
@@ -118,85 +108,5 @@ class PlayBottomSheetViewModelTest {
 
         Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
             .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when logged in, should be allowed to do user report action`() {
-        val eventUserReport = InteractionEvent.OpenUserReport
-        coEvery { userSession.isLoggedIn } returns true
-
-        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventUserReport))
-
-        playBottomSheetViewModel.doInteractionEvent(eventUserReport)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when not logged in, should not be allowed to do user report action`() {
-        val eventUserReport = InteractionEvent.OpenUserReport
-
-        coEvery { userSession.isLoggedIn } returns false
-
-        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventUserReport))
-
-        playBottomSheetViewModel.doInteractionEvent(eventUserReport)
-
-        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when submit user report return success`(){
-        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any()) } returns true
-
-        val expectedResult = PlayResult.Success(
-            Event(true)
-        )
-
-        playBottomSheetViewModel.submitUserReport(
-            1L, "http://", 3L, 2, 5000L, "OKOKOKOKOK"
-        )
-
-        val actualValue = playBottomSheetViewModel.observableUserReportSubmission.getOrAwaitValue()
-
-        Assertions
-            .assertThat(actualValue)
-            .isInstanceOf(PlayResult.Success::class.java)
-
-        Assertions
-            .assertThat((actualValue as PlayResult.Success).data.peekContent())
-            .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when submit user report return failed`(){
-        coEvery { mockRepo.submitReport(any(), any(), any(), any(), any(), any()) } returns false
-
-        playBottomSheetViewModel.submitUserReport(
-            1L, "http://", 3L, 2, 5000L, "OKOKOKOKOK"
-        )
-
-        val actualValue = playBottomSheetViewModel.observableUserReportSubmission.getOrAwaitValue()
-
-        Assertions
-            .assertThat(actualValue)
-            .isInstanceOf(PlayResult.Failure::class.java)
-    }
-
-    @Test
-    fun `when get reasoning list is success`(){
-        val expectedResult = modelBuilder.buildUserReportList().reasoningList
-
-        coEvery { mockRepo.getReasoningList() } returns expectedResult
-
-        playBottomSheetViewModel.getUserReportList()
-
-        val actualValue = playBottomSheetViewModel.observableUserReportReasoning.getOrAwaitValue()
-
-        Assertions
-            .assertThat((actualValue as PlayResult.Success).data.reasoningList)
-            .isEqualTo(expectedResult)
     }
 }

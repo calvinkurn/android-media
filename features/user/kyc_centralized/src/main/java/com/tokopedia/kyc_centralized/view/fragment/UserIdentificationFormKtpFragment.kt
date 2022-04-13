@@ -1,5 +1,6 @@
 package com.tokopedia.kyc_centralized.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -15,11 +16,15 @@ import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycUrl
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.request
 
 /**
  * @author by alvinatin on 02/11/18.
  */
 class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<UserIdentificationStepperModel>(), UserIdentificationFormActivity.Listener {
+
+    private var permissionCheckerHelper = PermissionCheckerHelper()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,11 +74,30 @@ class UserIdentificationFormKtpFragment : BaseUserIdentificationStepperFragment<
     private fun setButtonView() {
         button?.setText(R.string.ktp_button)
         button?.setOnClickListener { v: View? ->
-            analytics?.eventClickNextKtpPage()
-            val intent = createIntent(context,
-                    UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP)
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
-            startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
+            checkPermission {
+                analytics?.eventClickNextKtpPage()
+                val intent = createIntent(
+                        context,
+                        UserIdentificationCameraFragment.PARAM_VIEW_MODE_KTP,
+                        useCropping = true,
+                        useCompression = true
+                )
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
+                startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_KTP)
+            }
+        }
+    }
+
+    private fun checkPermission(isGranted: () -> Unit) {
+        activity?.let {
+            permissionCheckerHelper.request(it, arrayOf(
+                    PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                    PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
+            ), granted = {
+                isGranted.invoke()
+            }, denied = {
+                it.finish()
+            })
         }
     }
 

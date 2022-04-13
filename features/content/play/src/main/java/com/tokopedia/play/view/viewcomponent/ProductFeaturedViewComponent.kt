@@ -86,6 +86,10 @@ class ProductFeaturedViewComponent(
         rvProductFeatured.setFadingEndBounds(width)
     }
 
+    fun setTransparent(isTransparent: Boolean) {
+        rootView.alpha = if (isTransparent) 0f else 1f
+    }
+
     private fun invalidateItemDecorations() {
         try {
             rvProductFeatured.post {
