@@ -93,13 +93,13 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
             shopId: String = "",
             isProductReview: Boolean
         ): ReadReviewFragment {
-            return ReadReviewFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
-                    putString(ReviewConstants.ARGS_SHOP_ID, shopId)
-                    putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
-                }
-            }
+            val fragment = ReadReviewFragment()
+            val fragmentArguments = Bundle()
+            fragmentArguments.putString(ReviewConstants.ARGS_PRODUCT_ID, productId)
+            fragmentArguments.putString(ReviewConstants.ARGS_SHOP_ID, shopId)
+            fragmentArguments.putBoolean(ReviewConstants.ARGS_IS_PRODUCT_REVIEW, isProductReview)
+            fragment.arguments = fragmentArguments
+            return fragment
         }
     }
 
