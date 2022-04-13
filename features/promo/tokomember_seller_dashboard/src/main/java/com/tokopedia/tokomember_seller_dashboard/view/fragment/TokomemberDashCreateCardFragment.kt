@@ -1,27 +1,22 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.tokomember_common_widget.TokomemberShopView
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.model.CardTemplateImageListItem
-import com.tokopedia.tokomember_seller_dashboard.model.ColorTemplateListItem
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetCardForm
-import com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashCreateProgramActivity
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashCardColorAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashCardColorBgAdapter
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.decoration.TokomemberDashColorItemDecoration
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapterListener
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardBgFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardColorFactory
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashCreateCardViewModel
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +24,8 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import javax.inject.Inject
 
-class TokomemberDashCreateCardFragment : BaseDaggerFragment() {
+class TokomemberDashCreateCardFragment : BaseDaggerFragment() , TokomemberCardColorAdapterListener ,
+    TokomemberCardBgAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -39,17 +35,14 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TokomemberDashCreateCardViewModel::class.java)
     }
-    private val tokomemberDashCardColorAdapter: TokomemberDashCardColorAdapter by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        TokomemberDashCardColorAdapter(arrayListOf())
+    val adapterBg: TokomemberCardBgAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TokomemberCardBgAdapter(arrayListOf(), TokomemberCardBgFactory(this))
     }
 
-    private val tokomemberDashCardColorBgAdapter: TokomemberDashCardColorBgAdapter by lazy(
-        LazyThreadSafetyMode.NONE
-    ) {
-        TokomemberDashCardColorBgAdapter(arrayListOf())
+    val adapterColor: TokomemberCardColorAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        TokomemberCardColorAdapter(arrayListOf(), TokomemberCardColorFactory(this))
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -77,7 +70,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment() {
         tokomemberDashCreateCardViewModel.tokomemberCardResultLiveData.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    renderUi(it.data.membershipGetCardForm)
+                    //renderUi(it.data.membershipGetCardForm)
                 }
                 is Fail -> {
 
@@ -117,7 +110,7 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment() {
             }
         }
     }
-
+/*
     @SuppressLint("NotifyDataSetChanged")
     private fun renderUi(membershipGetCardForm: MembershipGetCardForm?) {
         val layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -140,6 +133,14 @@ class TokomemberDashCreateCardFragment : BaseDaggerFragment() {
         btnContinueCard?.setOnClickListener {
             startActivity(Intent(this.context , TokomemberDashCreateProgramActivity::class.java))
         }
+    }*/
+
+    override fun onItemDisplayedCardBg(tokoIntroItem: Visitable<*>, position: Int) {
+
+    }
+
+    override fun onItemDisplayedCardColor(tokoIntroItem: Visitable<*>, position: Int) {
+
     }
 
     companion object {

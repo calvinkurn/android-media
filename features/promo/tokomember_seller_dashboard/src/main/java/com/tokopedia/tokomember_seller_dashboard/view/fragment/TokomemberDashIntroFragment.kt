@@ -77,7 +77,8 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
         hideStatusBar()
         observeViewModel()
 //        tokomemberIntroViewmodel.getSellerInfo()
-        arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let { tokomemberIntroViewmodel.getIntroInfo(it) }
+       /* arguments?.getInt(BUNDLE_SHOP_ID, 0)?.let*/
+        tokomemberIntroViewmodel.getIntroInfo(6553698)
 
     }
 

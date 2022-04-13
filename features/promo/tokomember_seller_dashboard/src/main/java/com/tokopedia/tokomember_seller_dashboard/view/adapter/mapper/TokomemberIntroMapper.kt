@@ -4,10 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipData
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetSellerOnboarding
 import com.tokopedia.tokomember_seller_dashboard.model.SellerHomeTextBenefitItem
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroHeaderItem
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroItem
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroTextItem
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroVideoItem
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.*
 
 object TokomemberIntroMapper {
 
@@ -20,6 +17,7 @@ object TokomemberIntroMapper {
         if (!sellerBenefit.isNullOrEmpty()) {
             for (item in sellerOnboarding.sellerHomeContent.sellerHomeText.sellerHomeTextBenefit) {
                 arrayListOfIntroData.add(getIntroTextData(item))
+                arrayListOfIntroData.add(getIntroImageData(item))
             }
         }
         return TokomemberIntroItem(tokoVisitable = arrayListOfIntroData)
@@ -37,6 +35,12 @@ object TokomemberIntroMapper {
     private fun getIntroTextData(sellerHomeTextBenefit: SellerHomeTextBenefitItem?): TokomemberIntroTextItem {
         return TokomemberIntroTextItem(
             text = sellerHomeTextBenefit?.benefit,
+            imgUrl = sellerHomeTextBenefit?.iconURL
+        )
+    }
+
+    private fun getIntroImageData(sellerHomeTextBenefit: SellerHomeTextBenefitItem?): TokomemberIntroBenefitImageItem {
+        return TokomemberIntroBenefitImageItem(
             imgUrl = sellerHomeTextBenefit?.iconURL
         )
     }

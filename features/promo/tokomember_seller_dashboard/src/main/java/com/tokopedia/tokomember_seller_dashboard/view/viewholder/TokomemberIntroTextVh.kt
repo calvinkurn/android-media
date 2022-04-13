@@ -9,7 +9,6 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberIntroAda
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroTextItem
 import kotlinx.android.synthetic.main.tm_dash_intro_text_item.view.*
 
-
 class TokomemberIntroTextVh(val listener: TokomemberIntroAdapterListener, view: View)
     : AbstractViewHolder<TokomemberIntroTextItem>(view) {
 
@@ -28,6 +27,7 @@ class TokomemberIntroTextVh(val listener: TokomemberIntroAdapterListener, view: 
             val animType = getAnimationLeftOrRight()
             val animation: Animation =
                 AnimationUtils.loadAnimation(itemView.context, animType)
+            animation.duration = 600L
             this@TokomemberIntroTextVh.itemView.startAnimation(animation)
             lastPosition = adapterPosition
         }
