@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
 import com.tokopedia.header.HeaderUnify
 import java.util.*
 
@@ -20,7 +20,7 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
     protected lateinit var categoryId: String
     protected lateinit var clientNumberType: String
     protected lateinit var number: String
-    protected lateinit var numberList: List<TopupBillsFavNumberItem>
+    protected lateinit var numberList: List<TopupBillsSearchNumberDataView>
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_digital_search_number
@@ -69,7 +69,7 @@ open class TopupBillsSearchNumberActivity : BaseSimpleActivity() {
         const val EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE = "EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE"
 
         fun getCallingIntent(context: Context, clientNumberType: String,
-                             number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
+                             number: String, numberList: List<TopupBillsSearchNumberDataView>): Intent {
             val intent = Intent(context, TopupBillsSearchNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             intent.putExtra(EXTRA_CLIENT_NUMBER, number)

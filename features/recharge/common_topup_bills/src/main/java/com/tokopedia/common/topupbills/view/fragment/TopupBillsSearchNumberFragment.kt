@@ -21,10 +21,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.common.topupbills.view.adapter.NumberListAdapter
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.unifycomponents.SearchBarUnify
 import java.util.*
@@ -32,7 +32,7 @@ import java.util.*
 open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdapter.OnClientNumberClickListener {
 
     private lateinit var numberListAdapter: NumberListAdapter
-    private lateinit var clientNumbers: List<TopupBillsFavNumberItem>
+    private lateinit var clientNumbers: List<TopupBillsSearchNumberDataView>
     private lateinit var clientNumberType: String
 
     protected lateinit var searchInputNumber: SearchBarUnify
@@ -144,9 +144,9 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
     }
 
     private fun filterData(query: String) {
-        val searchClientNumbers = ArrayList<TopupBillsFavNumberItem>()
+        val searchClientNumbers = ArrayList<TopupBillsSearchNumberDataView>()
         if (!TextUtils.isEmpty(query) and !isContain(query, clientNumbers)) {
-            searchClientNumbers.add(TopupBillsFavNumberItem(query, isFavorite = false))
+            searchClientNumbers.add(TopupBillsSearchNumberDataView(query, isFavorite = false))
         }
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.contains(query)) {
@@ -157,7 +157,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
         numberListAdapter.notifyDataSetChanged()
     }
 
-    private fun isContain(number: String, clientNumbers: List<TopupBillsFavNumberItem>): Boolean {
+    private fun isContain(number: String, clientNumbers: List<TopupBillsSearchNumberDataView>): Boolean {
         var found = false
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.equals(number, ignoreCase = true)) {
@@ -168,8 +168,8 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
         return found
     }
 
-    private fun findNumber(number: String, clientNumbers: List<TopupBillsFavNumberItem>): TopupBillsFavNumberItem? {
-        var foundClientNumber: TopupBillsFavNumberItem? = null
+    private fun findNumber(number: String, clientNumbers: List<TopupBillsSearchNumberDataView>): TopupBillsSearchNumberDataView? {
+        var foundClientNumber: TopupBillsSearchNumberDataView? = null
         for (orderClientNumber in clientNumbers) {
             if (orderClientNumber.clientNumber.equals(number, ignoreCase = true)) {
                 foundClientNumber = orderClientNumber
@@ -192,7 +192,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
         KeyboardHandler.hideSoftKeyboard(activity)
     }
 
-    override fun onClientNumberClicked(orderClientNumber: TopupBillsFavNumberItem) {
+    override fun onClientNumberClicked(orderClientNumber: TopupBillsSearchNumberDataView) {
         if (!::inputNumberActionType.isInitialized || inputNumberActionType != InputNumberActionType.CONTACT) {
             val checkNumber = findNumber(orderClientNumber.clientNumber, numberListAdapter.clientNumbers)
             inputNumberActionType = if (checkNumber != null && checkNumber.isFavorite) {
@@ -229,7 +229,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(), NumberListAdap
         const val ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE = "ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE"
 
         fun newInstance(clientNumberType: String, number: String,
-                        numberList: List<TopupBillsFavNumberItem>): Fragment {
+                        numberList: List<TopupBillsSearchNumberDataView>): Fragment {
             val fragment = TopupBillsSearchNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)

@@ -17,14 +17,15 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
@@ -142,6 +143,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 }
             }
         })
+
+//        topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
+//            it.run {
+//                when (it) {
+//                    is Success -> processFavoriteNumbers(it.data)
+//                    is Fail -> onFavoriteNumbersError(it.throwable)
+//                }
+//            }
+//        })
 
         topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
             it.run {
@@ -400,9 +410,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
-        topupBillsViewModel.getFavoriteNumbers(
-                CommonTopupBillsGqlMutation.favoriteNumber,
-                topupBillsViewModel.createFavoriteNumbersParams(categoryId))
+        topupBillsViewModel.getPersoFavoriteNumbers(listOf(categoryId))
     }
 
     fun getSeamlessFavoriteNumbers(
@@ -459,7 +467,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun onLoadingAtc(showLoading: Boolean)
 
-    abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
+    abstract fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataView>)
 
     abstract fun processSeamlessFavoriteNumbers(
         data: TopupBillsSeamlessFavNumber,
