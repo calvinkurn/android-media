@@ -80,6 +80,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
+    private var isFirstLoad = true
 
     private val productAdapter by lazy {
         ProductAdapter(
@@ -194,9 +195,11 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             binding?.tpgTotalProduct?.gone()
             binding?.tpgMultiSelect?.gone()
         } else {
-            binding?.tpgMultiSelect?.visible()
+            if (isFirstLoad) binding?.tpgMultiSelect?.visible()
             renderList(data.products, data.products.size == getPerPage())
         }
+
+        isFirstLoad = false
     }
 
     private fun handleDeleteDiscountResult(isDeletionSuccess: Boolean) {
