@@ -69,7 +69,7 @@ class ContentCreateCaptionFragment : BaseCreatePostFragmentNew() {
         val connectionLiveData = context?.let { ConnectionLiveData(it) }
         connectionLiveData?.observe(context as AppCompatActivity) {
             if (!it) {
-                sheet?.show((context as FragmentActivity).supportFragmentManager, "")
+                sheet?.show(childFragmentManager, "")
             } else {
                 if(sheet?.isVisible==true)
                     sheet?.dismiss()
