@@ -118,6 +118,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.model.HomeShareMetaDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.view.listener.MixLeftCarouselCallback
@@ -1079,7 +1080,7 @@ class TokoNowHomeFragment: Fragment(),
             when(it) {
                 is Success -> {
                     onSuccessSharingReferralUrlParam(it.data)
-                    updateSharingReferral(false, it.data)
+                    updateSharingReferral(false, it.data.sharingUrlParam)
                 }
                 is Fail -> {
                     showToaster(
@@ -1166,8 +1167,8 @@ class TokoNowHomeFragment: Fragment(),
         onRefreshLayout()
     }
 
-    private fun onSuccessSharingReferralUrlParam(sharingReferralUrlParam: String) {
-        val url = REFERRAL_PAGE_URL + sharingReferralUrlParam
+    private fun onSuccessSharingReferralUrlParam(shareMetaData: HomeShareMetaDataModel) {
+        val url = REFERRAL_PAGE_URL + shareMetaData.sharingUrlParam
 
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
@@ -1179,7 +1180,7 @@ class TokoNowHomeFragment: Fragment(),
         )
 
         shareHomeTokonow?.apply {
-            sharingText = "${if (userSession.name.isNullOrBlank()) resources.getString(R.string.tokopedianow_home_referral_share_your_friend) else userSession.name} ${resources.getString(R.string.tokopedianow_home_referral_share_main_text)}"
+            sharingText = shareMetaData.textDescription
             specificPageName = resources.getString(R.string.tokopedianow_home_referral_share_title)
             specificPageDescription = resources.getString(R.string.tokopedianow_home_referral_share_desc)
         }
