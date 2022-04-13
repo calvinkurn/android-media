@@ -47,7 +47,6 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
             throw RuntimeException("Parameter is null!")
         }
 
-        // TODO: BUNDLING NOW MINI CART
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
 
@@ -93,7 +92,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                     }
                   }
                   cart_details {
-                    bundle_detail {
+                    bundle_detail { 
                       bundle_id
                       bundle_name
                       bundle_type
@@ -110,9 +109,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       bundle_qty
                       bundle_group_id
                       slash_price_label
-                      bundle_icon_url
                       bundle_grayscale_icon_url
-                      qty_adjustment_message
                     }
                     products {
                       cart_id
@@ -159,7 +156,8 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                     }
                   }
                   cart_details {
-                    bundle_detail {
+                    cart_id
+                    bundle_detail { 
                       bundle_id
                       bundle_name
                       bundle_type
@@ -176,9 +174,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       bundle_qty
                       bundle_group_id
                       slash_price_label
-                      bundle_icon_url
                       bundle_grayscale_icon_url
-                      qty_adjustment_message
                     }
                     products {
                       cart_id

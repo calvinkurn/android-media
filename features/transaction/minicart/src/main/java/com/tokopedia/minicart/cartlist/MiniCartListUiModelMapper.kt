@@ -321,6 +321,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     .replace("%", "")
                     .toIntOrZero()
             bundleId = bundleDetail.bundleId
+            bundleGroupId = bundleDetail.bundleGroupId
             bundleName = bundleDetail.bundleName
             bundlePrice = bundleDetail.bundlePrice
             bundlePriceFmt = bundleDetail.bundlePriceFmt

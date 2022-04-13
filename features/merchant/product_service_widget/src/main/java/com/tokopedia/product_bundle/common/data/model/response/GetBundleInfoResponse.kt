@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 data class GetBundleInfoResponse(
         @SerializedName("GetBundleInfo")
-        @Expose val getBundleInfo: GetBundleInfo = GetBundleInfo()
+        @Expose val getBundleInfo: GetBundleInfo? = GetBundleInfo()
 )
 
 data class GetBundleInfo(

@@ -31,7 +31,6 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
         if (params == null) {
             throw RuntimeException("Parameter is null!")
         }
-        // TODO: BUNDLING NOW MINI CART
 
         val request = GraphqlRequest(QUERY, MiniCartGqlResponse::class.java, params)
         val response = graphqlRepository.response(listOf(request)).getSuccessData<MiniCartGqlResponse>()
@@ -128,7 +127,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       cart_details {
                         selected_unavailable_action_link
                         errors
-                        bundle_detail {
+                        bundle_detail { 
                           bundle_id
                           bundle_name
                           bundle_type
@@ -145,9 +144,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           bundle_qty
                           bundle_group_id
                           slash_price_label
-                          bundle_icon_url
                           bundle_grayscale_icon_url
-                          qty_adjustment_message
                         }
                         products {
                           cart_id
@@ -237,7 +234,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                       cart_details {
                         selected_unavailable_action_link
                         errors
-                        bundle_detail {
+                        bundle_detail { 
                           bundle_id
                           bundle_name
                           bundle_type
@@ -254,9 +251,7 @@ class GetMiniCartListUseCase @Inject constructor(@ApplicationContext private val
                           bundle_qty
                           bundle_group_id
                           slash_price_label
-                          bundle_icon_url
                           bundle_grayscale_icon_url
-                          qty_adjustment_message
                         }
                         products {
                           cart_id
