@@ -19,18 +19,18 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
     lateinit var tracker: ProfileInfoTracker
 
     override fun onFragmentBackPressed(): Boolean {
-		if (url == URL_CHANGE_EMAIL) {
-			tracker.trackClickOnBtnBackChangeEmail()
-		}
-		return super.onFragmentBackPressed()
+	if (url == URL_CHANGE_EMAIL) {
+	    tracker.trackClickOnBtnBackChangeEmail()
 	}
+	return super.onFragmentBackPressed()
+    }
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		this.activity?.let {
-			getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
-		}
+    override fun onCreate(savedInstanceState: Bundle?) {
+	super.onCreate(savedInstanceState)
+	this.activity?.let {
+	    getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
 	}
+    }
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
 	if (isUrlAppLinkSuccessChangeEmail(url)) {
