@@ -79,15 +79,18 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
                   "choices": [
                     {
                       "id": 1,
-                      "text": "Aku"
+                      "text": "Aku",
+                      "isCorrect" : false
                     }, 
                     {
                       "id": 2,
-                      "text": "Kamu"
+                      "text": "Kamu",
+                      "isCorrect" : true
                     }, 
                     {
                       "id": 3,
-                      "text": "Dirinya"
+                      "text": "Dirinya",
+                      "isCorrect" : false
                     }
                   ],
                   "winners":[
