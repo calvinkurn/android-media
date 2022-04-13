@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -138,8 +140,9 @@ class ProductDetailNavigation(
              */
 
             val indexTab = items.indexOfFirst { item ->
-                val view1 = layoutManager.findViewByPosition(firstVisibleItemPosition)
-                view1 != null && (view1.id == item.viewId)
+                firstVisibleItemPosition == item.position.invoke()
+//                val view1 = layoutManager.findViewByPosition(firstVisibleItemPosition)
+//                view1 != null && (view1.id == item.viewId)
             }
             pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
                 tabLayout.removeOnTabSelectedListener(onTabSelectedListener)

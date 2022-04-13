@@ -140,6 +140,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasic
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
+import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
@@ -2254,21 +2255,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         setupProductVideoCoordinator()
 
         submitInitialList(pdpUiUpdater?.mapOfData?.values?.toList() ?: listOf())
-
-        getRecyclerView()?.let {
-            val items = listOf(
-                ProductDetailNavigation.Item("Pengiriman", {
-                    getComponentPosition(pdpUiUpdater?.shipmentData)
-                }, R.id.pdp_shipment_layout),
-                ProductDetailNavigation.Item("Detail Info", {
-                    getComponentPosition(pdpUiUpdater?.productDetailInfoData)
-                }, R.id.pdp_product_detail_info_layout),
-                ProductDetailNavigation.Item("Ulasan", {
-                    getComponentPosition(pdpUiUpdater?.productReviewMap)
-                }, R.id.pdp_review_layout)
-            )
-            binding?.pdpNavigationTab?.setup(it, items)
-        }
     }
 
     private fun setupProductVideoCoordinator() {
@@ -2376,7 +2362,20 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 boeImageUrl = boeData.imageURL,
                 isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
 
+        setupNavigationTab(it.navBar)
+
         updateUi()
+    }
+
+    private fun setupNavigationTab(navBar: NavBar) {
+        val recyclerView = getRecyclerView() ?: return
+        val items = navBar.items.map { item ->
+            ProductDetailNavigation.Item(item.title, {
+                val componentData = pdpUiUpdater?.mapOfData?.get(item.componentName)
+                getComponentPosition(componentData)
+            }, item.getComponentViewId())
+        }
+        binding?.pdpNavigationTab?.setup(recyclerView, items)
     }
 
     override fun onButtonFollowNplClick() {
