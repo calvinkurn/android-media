@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.play_common.databinding.ViewGiveawayWidgetBinding
 import com.tokopedia.play_common.view.game.setupGiveaway
+import java.util.*
 
 /**
  * Created by kenny.hadisaputra on 12/04/22
@@ -52,6 +53,17 @@ class GiveawayWidgetView : LinearLayout {
 
     fun setTitle(title: String) {
         binding.headerView.setupGiveaway(title)
+    }
+
+    fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
+        binding.timerRemaining.apply {
+            pause()
+
+            targetDate = targetTime
+            onFinish = onFinished
+
+            resume()
+        }
     }
 
     private fun setupView() {
