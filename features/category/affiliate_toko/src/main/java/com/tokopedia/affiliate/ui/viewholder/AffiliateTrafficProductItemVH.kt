@@ -24,10 +24,10 @@ class AffiliateTrafficProductItemVH(itemView: View)
             )
         }
         itemView.findViewById<Typography>(R.id.product_name)?.apply {
-            text = element?.product?.cardTitle
+            text = element?.product?.cardTitle ?: ""
         }
         itemView.findViewById<Typography>(R.id.product_desc)?.apply {
-            text = element?.product?.cardDescription
+            text = element?.product?.cardDescription ?: ""
         }
     }
 }

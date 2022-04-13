@@ -22,7 +22,7 @@ class AffiliateWithdrawalTitleItemVH(itemView: View)
                 itemView.context.getString(R.string.affiliate_withdrwal_title_terms).replace("{count}",
                     it
                 )
-            }
+            } ?: ""
         }
     }
 }
