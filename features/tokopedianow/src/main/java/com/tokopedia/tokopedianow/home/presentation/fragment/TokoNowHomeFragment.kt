@@ -1181,8 +1181,9 @@ class TokoNowHomeFragment: Fragment(),
 
         shareHomeTokonow?.apply {
             sharingText = shareMetaData.textDescription
-            specificPageName = resources.getString(R.string.tokopedianow_home_referral_share_title)
-            specificPageDescription = resources.getString(R.string.tokopedianow_home_referral_share_desc)
+            specificPageName = shareMetaData.ogTitle
+            specificPageDescription = shareMetaData.ogDescription
+            ogImageUrl = shareMetaData.ogImage
         }
 
         showUniversalShareBottomSheet(shareHomeTokonow)
