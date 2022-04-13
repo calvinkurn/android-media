@@ -23,8 +23,10 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
+import com.tokopedia.review.common.ReviewInboxConstants.REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION
 import com.tokopedia.review.common.analytics.ReviewInboxTrackingConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
@@ -363,8 +365,11 @@ class ReviewPendingFragment :
     }
 
     private fun setupErrorPage() {
-        binding?.reviewPendingConnectionError?.reviewConnectionErrorRetryButton?.setOnClickListener {
-            getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
+        binding?.reviewPendingConnectionError?.run {
+            reviewConnectionErrorRetryButton.setOnClickListener {
+                getPendingReviewData(ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE, true)
+            }
+            reviewImageError.loadImage(REVIEW_INBOX_UNIFY_GLOBAL_ERROR_CONNECTION)
         }
     }
 
