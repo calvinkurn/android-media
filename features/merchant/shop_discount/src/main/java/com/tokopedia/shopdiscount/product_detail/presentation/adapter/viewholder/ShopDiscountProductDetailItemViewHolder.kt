@@ -170,7 +170,11 @@ open class ShopDiscountProductDetailItemViewHolder(
             ""
         } else if (min == max) {
             formatNonRange(min)
-        } else {
+        } else if(min.isZero()){
+            formatNonRange(max)
+        } else if(max.isZero()){
+            formatNonRange(min)
+        }else {
             formatWithRange(min, max)
         }
     }
