@@ -508,10 +508,12 @@ class CatalogDetailPageFragment : Fragment(),
             CatalogDetailAnalytics.ActionKeys.CLICK_MORE_SPECIFICATIONS,
             "$catalogName - $catalogId",userSession.userId,catalogId)
         var positionInFullSpecs = 0
-        fullSpecificationDataModel.fullSpecificationsList.forEachIndexed {
-                index, fullSpecificationsComponentData ->
-            if(topModel?.key == fullSpecificationsComponentData.name){
-                positionInFullSpecs = index
+        topModel?.let { safeTopModel ->
+            fullSpecificationDataModel.fullSpecificationsList.forEachIndexed {
+                    index, fullSpecificationsComponentData ->
+                if(safeTopModel.key == fullSpecificationsComponentData.name){
+                    positionInFullSpecs = index
+                }
             }
         }
         viewMoreClicked(CatalogSpecsAndDetailBottomSheet.SPECIFICATION, jumpToFullSpecIndex = positionInFullSpecs)
