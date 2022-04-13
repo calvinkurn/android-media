@@ -11,12 +11,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
-        tools:text="80 Produk"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:textColor="@color/Unify_NN600"
-        android:layout_marginTop="@dimen/unify_space_8"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        tools:text="80 Produk" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgMultiSelect"
@@ -25,21 +25,37 @@
         android:text="@string/sd_multi_select"
         android:textColor="@color/Unify_G500"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:visibility="gone"
         android:layout_marginTop="@dimen/unify_space_16"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5" />
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgCancelMultiSelect"
+        android:layout_width="0dp"
+        android:textColor="@color/Unify_G500"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/sd_cancel" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/unify_space_8"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/cardViewCreateDiscount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tpgTotalProduct">
+        app:layout_constraintTop_toBottomOf="@+id/tpgTotalProduct">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -66,11 +82,80 @@
         android:id="@+id/imgScrollUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_scroll_up"
-        android:visibility="gone"
-        android:layout_marginBottom="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
+        android:src="@drawable/ic_scroll_up"
+        app:layout_constraintBottom_toBottomOf="@+id/swipeRefresh"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewCreateDiscount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/unify_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnCreateDiscount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            android:text="@string/sd_create_discount"
+            app:unifyButtonSize="medium"
+            app:unifyButtonVariant="filled" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewMultiSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/unify_space_16"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBulkDelete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="@string/sd_delete"
+                app:unifyButtonSize="medium"
+                android:layout_weight="1"
+                android:layout_marginTop="@dimen/unify_space_8"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnBulkManage"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_8"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginBottom="@dimen/unify_space_16"
+                android:text="@string/change_discount"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="filled" />
+
+        </LinearLayout>
+
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

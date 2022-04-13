@@ -1,7 +1,5 @@
 package com.tokopedia.shopdiscount.manage.presentation.container
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +24,7 @@ import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSell
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
-import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
+import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
@@ -45,10 +43,6 @@ import javax.inject.Inject
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val ANIMATION_DURATION_IN_MILLIS : Long = 500
-        private const val ALPHA_VISIBLE = 1F
-        private const val ALPHA_INVISIBLE = 0F
-        private const val BACK_TO_ORIGINAL_POSITION : Float = 0F
         private const val ONE_PRODUCT = 1
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
@@ -76,6 +70,9 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var preferenceDataStore: SharedPreferenceDataStore
+
+    @Inject
+    lateinit var viewAnimator: ViewAnimator
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductManageViewModel::class.java) }
@@ -106,18 +103,8 @@ class ProductManageFragment : BaseDaggerFragment() {
         setupSearchBar()
         setupHeader()
         setupTabs()
-        setupButton()
     }
 
-    private fun setupButton() {
-        binding?.run {
-            btnCreateDiscount.setOnClickListener {
-                val currentTabPosition = viewModel.getSelectedTabPosition()
-                val tab = viewModel.getSelectedTab(currentTabPosition)
-                SelectProductActivity.start(requireActivity(), tab.discountStatusId)
-            }
-        }
-    }
 
     private fun setupTabs() {
         binding?.run {
@@ -236,39 +223,6 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.emptyState?.setDescription(description)
     }
 
-    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
-        val meta = tabs.find { it.discountStatusId == discountStatusId }
-        val decreasedProductCount = totalProduct - ONE_PRODUCT
-        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
-
-        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
-        val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
-
-        val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
-        previouslySelectedTab?.setCustomText(updatedTabName)
-        previouslySelectedTab?.select()
-    }
-
-    private val onRecyclerViewScrollDown: () -> Unit = {
-        binding?.run {
-            hideWithAnimation(ticker)
-            hideWithAnimation(cardView)
-            hideWithAnimation(searchBar)
-        }
-    }
-
-    private val onRecyclerViewScrollUp: () -> Unit = {
-        binding?.run {
-            val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
-            val shouldShowTicker = !isPreviouslyDismissed
-            if (shouldShowTicker){
-                showWithAnimation(ticker)
-            }
-            showWithAnimation(cardView)
-            showWithAnimation(searchBar)
-        }
-    }
-
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
         val pagerAdapter = TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
@@ -317,33 +271,6 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     }
 
-    private fun showWithAnimation(view: View) {
-        view.animate()
-            .translationY(BACK_TO_ORIGINAL_POSITION)
-            .alpha(ALPHA_VISIBLE)
-            .setDuration(ANIMATION_DURATION_IN_MILLIS)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    view.visible()
-                }
-            })
-
-    }
-
-    private fun hideWithAnimation(view: View) {
-        view.animate()
-            .translationY(view.height.toFloat())
-            .alpha(ALPHA_INVISIBLE)
-            .setDuration(ANIMATION_DURATION_IN_MILLIS)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    super.onAnimationEnd(animation)
-                    view.gone()
-                }
-            })
-    }
-
     private fun getCurrentTabPosition(): Int {
         val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
         return tabLayout?.selectedTabPosition.orZero()
@@ -365,5 +292,36 @@ class ProductManageFragment : BaseDaggerFragment() {
         binding?.searchBar?.gone()
         binding?.globalError?.gone()
         viewModel.getSlashPriceProductsMeta()
+    }
+
+    private val onDiscountRemoved: (Int, Int) -> Unit = { discountStatusId: Int, totalProduct : Int ->
+        val meta = tabs.find { it.discountStatusId == discountStatusId }
+        val decreasedProductCount = totalProduct - ONE_PRODUCT
+        val updatedTabName = "${meta?.name} ($decreasedProductCount)"
+
+        val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
+        val previouslySelectedPosition = tabLayout?.selectedTabPosition.orZero()
+
+        val previouslySelectedTab = tabLayout?.getTabAt(previouslySelectedPosition)
+        previouslySelectedTab?.setCustomText(updatedTabName)
+        previouslySelectedTab?.select()
+    }
+
+    private val onRecyclerViewScrollDown: () -> Unit = {
+        binding?.run {
+            viewAnimator.hideWithAnimation(ticker)
+            viewAnimator.hideWithAnimation(searchBar)
+        }
+    }
+
+    private val onRecyclerViewScrollUp: () -> Unit = {
+        binding?.run {
+            val isPreviouslyDismissed = preferenceDataStore.isTickerDismissed()
+            val shouldShowTicker = !isPreviouslyDismissed
+            if (shouldShowTicker){
+                viewAnimator.showWithAnimation(ticker)
+            }
+            viewAnimator.showWithAnimation(searchBar)
+        }
     }
 }

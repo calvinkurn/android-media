@@ -16,9 +16,9 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
     private var mode: String = ""
 
     companion object {
-        private const val REQUEST_ID_PARAM = "REQUEST_ID_PARAM"
-        private const val STATUS_PARAM = "STATUS_PARAM"
-        private const val MODE_PARAM = "MODE_PARAM"
+        const val REQUEST_ID_PARAM = "REQUEST_ID_PARAM"
+        const val STATUS_PARAM = "STATUS_PARAM"
+        const val MODE_PARAM = "MODE_PARAM"
 
         @JvmStatic
         fun start(context: Context, requestId : String, discountStatus : Int, mode : String) {

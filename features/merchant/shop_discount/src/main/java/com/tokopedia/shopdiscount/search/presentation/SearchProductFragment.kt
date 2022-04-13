@@ -19,6 +19,7 @@ import com.tokopedia.shopdiscount.databinding.FragmentSearchProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductAdapter
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
@@ -31,7 +32,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Product>() {
+class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "discount-status-name"
@@ -71,7 +72,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SearchProductViewModel::class.java) }
     private val productAdapter by lazy {
-        SearchProductAdapter(
+        ProductAdapter(
             onProductClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
@@ -325,7 +326,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         }
     }
 
-    override fun createAdapter(): SearchProductAdapter {
+    override fun createAdapter(): ProductAdapter {
         return productAdapter
     }
 
