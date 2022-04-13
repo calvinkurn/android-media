@@ -9,5 +9,6 @@ data class AdditionalInfoUiModel(
         var errorDetailUiModel: ErrorDetailUiModel = ErrorDetailUiModel(),
         var emptyCartInfoUiModel: EmptyCartInfoUiModel = EmptyCartInfoUiModel(),
         var usageSummariesUiModel: List<UsageSummariesUiModel> = emptyList(),
-        var promoSpIds: List<PromoSpIdUiModel> = emptyList()
+        var promoSpIds: List<PromoSpIdUiModel> = emptyList(),
+        var pomlAutoApplied: Boolean = false,
 ) : Parcelable

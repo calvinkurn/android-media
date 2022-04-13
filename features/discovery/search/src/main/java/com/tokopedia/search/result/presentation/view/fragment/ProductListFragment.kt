@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -53,9 +54,6 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
@@ -92,7 +90,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -117,6 +115,7 @@ import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDele
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
@@ -138,7 +137,6 @@ import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import org.json.JSONArray
-import timber.log.Timber
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -160,7 +158,8 @@ class ProductListFragment: BaseDaggerFragment(),
     LastFilterListener,
     ProductListParameterListener,
     QueryKeyProvider,
-    SearchParameterProvider {
+    SearchParameterProvider,
+    FragmentProvider {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -168,7 +167,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC"
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
-        private const val SEARCH_RESULT_PRODUCT_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_ONBOARDING_TAG"
         private const val REQUEST_CODE_LOGIN = 561
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
@@ -231,6 +229,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
     private lateinit var networkMonitor : DefaultNetworkMonitor
+
+    override fun getFragment(): Fragment = this
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -392,6 +392,7 @@ class ProductListFragment: BaseDaggerFragment(),
         )
 
         val productListTypeFactory = ProductListTypeFactoryImpl(
+            fragmentProvider = this,
             productListener = this,
             tickerListener = this,
             suggestionListener = this,
@@ -1942,36 +1943,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     //endregion
 
-    //region Choose Address / Localizing Address / LCA
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
     }
-
-    override fun getFragment() = this
-
-    override val isChooseAddressWidgetEnabled: Boolean = true
-
-    override val chooseAddressData: LocalCacheModel
-        get() = context?.let {
-            try {
-                ChooseAddressUtils.getLocalizingAddressData(it)
-            } catch (e: Throwable) {
-                Timber.w(e)
-                emptyAddress
-            }
-        } ?: emptyAddress
-
-    override fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean {
-        return context?.let {
-            try {
-                ChooseAddressUtils.isLocalizingAddressHasUpdated(it, currentChooseAddressData)
-            } catch (e: Throwable) {
-                Timber.w(e)
-                false
-            }
-        } ?: false
-    }
-    //endregion
 
     //region Banner
     override fun onBannerClicked(bannerDataView: BannerDataView) {

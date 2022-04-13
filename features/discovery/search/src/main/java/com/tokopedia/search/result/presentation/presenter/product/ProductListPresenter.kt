@@ -37,7 +37,6 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.authentication.AuthHelper
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -79,6 +78,8 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -101,7 +102,6 @@ import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getValueString
-import com.tokopedia.search.utils.toSearchParams
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.TopAdsConstants.SEEN_ADS
 import com.tokopedia.topads.sdk.domain.TopAdsParams
@@ -150,6 +150,7 @@ class ProductListPresenter @Inject constructor(
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
+    private val chooseAddressDelegate: ChooseAddressPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter {
 
@@ -212,8 +213,6 @@ class ProductListPresenter @Inject constructor(
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var isEnableChooseAddress = false
-    private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
     private var categoryIdL2 = ""
     private var suggestionKeyword = ""
@@ -226,8 +225,7 @@ class ProductListPresenter @Inject constructor(
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
 
-        isEnableChooseAddress = view.isChooseAddressWidgetEnabled
-        if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
+        chooseAddressDelegate.updateChooseAddress()
     }
 
     //region AB Test booleans
@@ -312,7 +310,7 @@ class ProductListPresenter @Inject constructor(
             if (isViewAdded && !hasLoadData)
                 onViewFirstTimeLaunch()
 
-            reCheckChooseAddressData()
+            chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
         }
     }
 
@@ -346,10 +344,9 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun putRequestParamsChooseAddress(requestParams: RequestParams) {
-        if (!isEnableChooseAddress) return
+        val chooseAddressParams = chooseAddressDelegate.getChooseAddressParams() ?: return
 
-        val chooseAddressData = chooseAddressData ?: return
-        requestParams.putAllString(chooseAddressData.toSearchParams())
+        requestParams.putAllString(chooseAddressParams)
     }
 
     private fun putRequestParamsOtherParameters(requestParams: RequestParams, searchParameter: Map<String, Any>) {
@@ -1074,7 +1071,7 @@ class ProductListPresenter @Inject constructor(
 
         if (!productDataView.isQuerySafe) view.showAdultRestriction()
 
-        if (!isEnableChooseAddress)
+        if (!chooseAddressDelegate.isEnableChooseAddress)
             list.add(SearchProductCountDataView(list.size, searchProduct.header.totalDataText))
 
         addPageTitle(list)
@@ -1089,7 +1086,7 @@ class ProductListPresenter @Inject constructor(
 
         addLastFilterDataView(list, productDataView)
 
-        if (isEnableChooseAddress)
+        if (chooseAddressDelegate.isEnableChooseAddress)
             list.add(ChooseAddressDataView())
 
         productDataView.tickerModel?.let {
@@ -2307,7 +2304,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     override fun onViewResumed() {
-        reCheckChooseAddressData()
+        chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
     }
 
     private fun switchToBigGridView(position: Int) {
@@ -2326,25 +2323,17 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region Choose Address / LCA
     override fun onLocalizingAddressSelected() {
+        chooseAddressDelegate.updateChooseAddress(::refreshData)
+    }
+
+    private fun refreshData() {
         if (isViewNotAttached) return
 
-        chooseAddressData = view.chooseAddressData
         dynamicFilterModel = null
 
         view.reloadData()
     }
-
-    private fun reCheckChooseAddressData() {
-        if (isViewNotAttached) return
-        val chooseAddressData = chooseAddressData ?: return
-        val isAddressDataUpdated = view.getIsLocalizingAddressHasUpdated(chooseAddressData)
-
-        if (isAddressDataUpdated)
-            onLocalizingAddressSelected()
-    }
-    //endregion
 
     //region Inspiration Carousel Chips
     override fun onInspirationCarouselChipsClick(

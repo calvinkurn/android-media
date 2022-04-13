@@ -17,6 +17,7 @@ includeIfEnabled("features:category:find_native")
 
 includeIfEnabled("features:content:affiliate_common")
 includeIfEnabled("features:content:createpost")
+includeIfEnabled("features:content:people")
 includeIfEnabled("features:content:createpost_common")
 includeIfEnabled("features:content:feed")
 includeIfEnabled("features:content:feed_component")

@@ -33,15 +33,16 @@
             android:id="@+id/recharge_pdp_paket_data_sv_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingTop="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/nested_scroll_view_margin"
             android:clipToPadding="false"
-            app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_background_image"
-            app:layout_constraintBottom_toTopOf="@id/recharge_pdp_paket_data_buy_widget">
+            app:layout_constraintTop_toTopOf="@+id/recharge_pdp_paket_data_client_number_widget"
+            app:layout_constraintBottom_toTopOf="@+id/recharge_pdp_paket_data_buy_widget">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="@dimen/layout_lvl7">
+                    android:paddingBottom="@dimen/layout_lvl7"
+                    >
 
                         <com.tokopedia.recharge_component.widget.RechargeRecommendationCardWidget
                             android:id="@+id/recharge_pdp_paket_data_recommendation_widget"
@@ -55,6 +56,7 @@
                             android:id="@+id/recharge_pdp_paket_data_promo_widget"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:visibility="gone"
                             app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_recommendation_widget"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"/>
@@ -114,6 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/recharge_pdp_paket_data_ticker"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"/>
 
@@ -123,6 +126,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             />
 </androidx.constraintlayout.widget.ConstraintLayout>
