@@ -6,6 +6,7 @@ import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.profilecompletion.di.ActivityComponentFactory
+import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.webview.BaseWebViewFragment
@@ -25,7 +26,7 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		this.activity?.let {
-			ActivityComponentFactory.instance.createProfileCompletionComponent(it, it.application as BaseMainApplication).inject(this)
+			getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
 		}
 	}
 
