@@ -144,15 +144,6 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
-//        topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
-//            it.run {
-//                when (it) {
-//                    is Success -> processFavoriteNumbers(it.data)
-//                    is Fail -> onFavoriteNumbersError(it.throwable)
-//                }
-//            }
-//        })
-
         topupBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
             it.run {
                 when (it) {

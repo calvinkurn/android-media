@@ -37,6 +37,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -460,8 +461,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
         }
     }
 
-    override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
-        setFavNumbers(data)
+    override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataView>) {
+        // do nothing, already moved to seamless/retention favorite numbers, will be updated later
     }
 
     override fun processSeamlessFavoriteNumbers(
