@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -74,8 +75,13 @@ class CarouselMerchantVoucherViewHolder (
         binding?.containerShop?.setOnClickListener {
             element.merchantVoucherComponentListener.onShopClicked(element, adapterPosition)
         }
-        binding?.containerProduct?.setOnClickListener {
-            element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
+        binding?.cardContainerMvc?.apply {
+            setCardUnifyBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
+            cardType = CardUnify2.TYPE_CLEAR
+            animateOnPress = CardUnify2.ANIMATE_BOUNCE
+            setOnClickListener {
+                element.merchantVoucherComponentListener.onProductClicked(element, adapterPosition)
+            }
         }
         itemView.addOnImpressionListener(element.impressHolder) {
             element.merchantVoucherComponentListener.onMerchantImpressed(element, adapterPosition)

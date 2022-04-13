@@ -112,7 +112,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.20'
     unifyPrinciplesVersion = '1.4.0'
-    unifyComponentsVersion = '1.1.85-beta-10' // to be updated into stable version
+    unifyComponentsVersion = '1.2.2-beta-1' // to be updated into stable version
     unifyCoachMarkVersion = '1.2.16'
     unifyCalendarVersion = '1.2.0'
     unifyBannerVersion = '1.0.4'
