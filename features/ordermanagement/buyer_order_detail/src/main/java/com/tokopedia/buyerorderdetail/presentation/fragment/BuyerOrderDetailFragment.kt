@@ -23,6 +23,7 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.analytic.tracker.RecommendationWidgetTracker
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailCommonIntentParamKey
+import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailImageUrl
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
@@ -340,7 +341,11 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             }
         }
         emptyStateBuyerOrderDetail?.apply {
-            emptyStateImageID.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+            try {
+                emptyStateImageID.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
+            } catch (e: Exception) {
+                setImageUrl(BuyerOrderDetailImageUrl.GLOBAL_ERROR_500)
+            }
 
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
