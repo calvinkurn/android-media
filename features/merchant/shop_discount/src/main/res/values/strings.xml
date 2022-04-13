@@ -106,4 +106,17 @@
     <string name="shop_discount_manage_discount_bulk_manage_label_format">Atur Sekaligus %1s Produk</string>
     <string name="shop_discount_manage_discount_delete_product_message">Produk Berhasil Dihapus</string>
     <string name="shop_discount_manage_discount_submit_product_message">Diskon produk berhasil diaktifkan</string>
+    <string name="shop_discount_manage_discount_delete_product_dialog_title">Yakin hapus produk dari Diskon Toko?</string>
+    <string name="shop_discount_manage_discount_delete_product_dialog_description">Produk akan dihapus dari halaman ini.</string>
+    <string name="shop_discount_manage_discount_back_press_dialog_title">Kembali ke halaman Diskon Toko?</string>
+    <string name="shop_discount_manage_discount_back_press_dialog_description">Pengaturan diskon yang sudah kamu atur tidak akan tersimpan, ya.</string>
+    <string name="shop_discount_manage_discount_cancel_button_cta">Batalkan</string>
+    <string name="shop_discount_manage_discount_delete_button_cta">Ya, Hapus</string>
+    <string name="shop_discount_manage_discount_back_press_button_cta">Ya, Kembali</string>
+    <string name="shop_discount_manage_discount_abusive_all">Perubahan harga tidak wajar</string>
+    <string name="shop_discount_manage_discount_abusive_partial">Ada varian dengan perubahan harga tidak wajar</string>
+    <string name="shop_discount_manage_discount_value_error">Cek lagi pengaturan diskon ini, ya.</string>
+    <string name="shop_discount_manage_discount_ticker_abusive_products"><![CDATA[<b>%1s produk</b> gagal dimasukkan ke Diskon Toko karena ada perubahan harga di luar kewajaran. <a href="%2$s">Baca Ketentuan</a>]]></string>
+
+
 </resources>

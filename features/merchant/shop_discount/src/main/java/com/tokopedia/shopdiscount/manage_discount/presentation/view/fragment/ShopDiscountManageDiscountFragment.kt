@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -27,10 +31,13 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholde
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountSetupProductItemViewHolder
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +52,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         const val REQUEST_ID_ARG = "request_id_arg"
         const val STATUS_ARG = "status_arg"
         const val MODE_ARG = "mode_arg"
-
+        private const val URL_EDU_ABUSIVE_PRODUCT =
+            "https://seller.tokopedia.com/edu/ketentuan-baru-diskon-toko/"
 
         fun createInstance(requestId: String, status: Int, mode: String) =
             ShopDiscountManageDiscountFragment().apply {
@@ -67,6 +75,8 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private var cardLabelBulkManage: CardUnify2? = null
     private var bulkManageTitle: Typography? = null
     private var headerUnify: HeaderUnify? = null
+    private var tickerAbusiveProducts: Ticker? = null
+
 
     override fun initInjector() {
         DaggerShopDiscountComponent.builder()
@@ -129,6 +139,35 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                     ""
                 }
             }
+            setNavigationOnClickListener {
+                showDialogOnBackPressed()
+            }
+        }
+    }
+
+    private fun showDialogOnBackPressed() {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val title =
+                    getString(R.string.shop_discount_manage_discount_back_press_dialog_title)
+                val description =
+                    getString(R.string.shop_discount_manage_discount_back_press_dialog_description)
+                val primaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_back_press_button_cta)
+                val secondaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_cancel_button_cta)
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCtaText)
+                setSecondaryCTAText(secondaryCtaText)
+                setSecondaryCTAClickListener {
+                    hide()
+                }
+                setPrimaryCTAClickListener {
+                    finishActivity()
+                }
+                show()
+            }
         }
     }
 
@@ -160,6 +199,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         cardLabelBulkManage = viewBinding?.labelBulkApply?.cardLabelBulkManage
         bulkManageTitle = viewBinding?.labelBulkApply?.textLabelTitle
         headerUnify = viewBinding?.headerUnify
+        tickerAbusiveProducts = viewBinding?.tickerAbusiveProducts
     }
 
     private fun setupRecyclerView() {
@@ -167,8 +207,19 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = this@ShopDiscountManageDiscountFragment.adapter
             itemAnimator = null
-//            setDecoration()
+            setDecoration()
         }
+    }
+
+    private fun RecyclerView.setDecoration() {
+        val dividerDrawable = MethodChecker.getDrawable(
+            context,
+            R.drawable.shop_discount_manage_discount_bg_line_separator_thin
+        )
+        val dividerItemDecoration = ShopDiscountProductDetailDividerItemDecoration(dividerDrawable)
+        if (itemDecorationCount > 0)
+            removeItemDecorationAt(0)
+        addItemDecoration(dividerItemDecoration)
     }
 
     private fun getSetupProductListData() {
@@ -290,6 +341,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                         showButtonSubmit()
                         checkButtonSubmit()
                         checkProductSize()
+                        configTickerAbusiveProducts()
                     }
                 }
                 is Fail -> {
@@ -297,6 +349,40 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun configTickerAbusiveProducts() {
+        val totalAbusiveProduct = adapter.getTotalAbusiveProduct()
+        if (!totalAbusiveProduct.isZero()) {
+            tickerAbusiveProducts?.apply {
+                show()
+                setHtmlDescription(
+                    String.format(
+                        getString(R.string.shop_discount_manage_discount_ticker_abusive_products),
+                        totalAbusiveProduct,
+                        URL_EDU_ABUSIVE_PRODUCT
+                    )
+                )
+                setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        redirectToWebView(linkUrl)
+                    }
+
+                    override fun onDismiss() {
+                    }
+
+                })
+            }
+        }
+    }
+
+    private fun redirectToWebView(linkUrl: CharSequence) {
+        RouteManager.route(
+            context, String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW, linkUrl.toString()
+            )
+        )
     }
 
     private fun showErrorState(throwable: Throwable) {
@@ -361,7 +447,36 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
         model: ShopDiscountSetupProductUiModel.SetupProductData,
         position: Int
     ) {
-        deleteProductFromList(model.productId, position.toString())
+        showDialogDeleteProduct(model, position)
+    }
+
+    private fun showDialogDeleteProduct(
+        model: ShopDiscountSetupProductUiModel.SetupProductData,
+        position: Int
+    ) {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                val title =
+                    getString(R.string.shop_discount_manage_discount_delete_product_dialog_title)
+                val description =
+                    getString(R.string.shop_discount_manage_discount_delete_product_dialog_description)
+                val primaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_delete_button_cta)
+                val secondaryCtaText =
+                    getString(R.string.shop_discount_manage_discount_cancel_button_cta)
+                setTitle(title)
+                setDescription(description)
+                setPrimaryCTAText(primaryCtaText)
+                setSecondaryCTAText(secondaryCtaText)
+                setSecondaryCTAClickListener {
+                    hide()
+                }
+                setPrimaryCTAClickListener {
+                    deleteProductFromList(model.productId, position.toString())
+                }
+                show()
+            }
+        }
     }
 
     private fun deleteProductFromList(productId: String, position: String) {
@@ -370,6 +485,10 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     override fun onGlobalErrorActionClickRetry() {
         getSetupProductListData()
+    }
+
+    fun onBackPressed() {
+        showDialogOnBackPressed()
     }
 
 }

@@ -44,19 +44,48 @@ class ShopDiscountSetupProductItemViewHolder(
         viewBinding?.apply {
             imgProduct.loadImage(uiModel.productImageUrl)
             textProductName.text = uiModel.productName
-            setLabelDiscount(labelDiscount, uiModel.mappedResultData, uiModel.productStatus)
             setLabelTotalProductVariant(
                 this,
                 uiModel.mappedResultData.totalVariant,
-                uiModel.mappedResultData.totalDiscountedVariant
+                uiModel.mappedResultData.totalDiscountedVariant,
+                uiModel.productStatus.isProductDiscounted
             )
             setDisplayedPrice(textDisplayedPrice, uiModel.mappedResultData, uiModel.productStatus)
+            setLabelDiscount(labelDiscount, uiModel.mappedResultData, uiModel.productStatus)
             setOriginalPrice(textOriginalPrice, uiModel.mappedResultData, uiModel.productStatus)
             setTotalStockData(textTotalStock, uiModel)
+            setErrorState(textErrorValidation, imageWarning, uiModel)
             showDivider(this)
             setManageDiscountButton(buttonManageDiscount, uiModel)
             setDeleteProductButton(imageDeleteProduct, uiModel)
         }
+    }
+
+    private fun setErrorState(
+        textErrorValidation: Typography,
+        imageWarning: ImageUnify,
+        uiModel: ShopDiscountSetupProductUiModel.SetupProductData
+    ) {
+        val errorType = uiModel.productStatus.errorType
+        textErrorValidation.shouldShowWithAction(errorType != ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR) {
+            textErrorValidation.text = when (errorType) {
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR -> {
+                    getString(R.string.shop_discount_manage_discount_abusive_all)
+                }
+                ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR -> {
+                    getString(R.string.shop_discount_manage_discount_abusive_partial)
+                }
+                else -> {
+                    getString(R.string.shop_discount_manage_discount_value_error)
+                }
+            }
+        }
+        imageWarning.shouldShowWithAction(shouldShowImageWarning(errorType)) {}
+    }
+
+    private fun shouldShowImageWarning(errorType: Int): Boolean {
+        return errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR ||
+                errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR
     }
 
     private fun setDeleteProductButton(
@@ -82,7 +111,10 @@ class ShopDiscountSetupProductItemViewHolder(
     ) {
         val totalStock = uiModel.stock
         val totalLocation = uiModel.mappedResultData.totalLocation
-        textTotalStock.shouldShowWithAction(!totalStock.toIntOrZero().isZero()) {
+        textTotalStock.shouldShowWithAction(
+            !totalStock.toIntOrZero()
+                .isZero() && uiModel.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR
+        ) {
             val totalStockFormattedString =
                 when {
                     shouldUseNonVariantMultiLocTotalStockFormat(uiModel.productStatus) -> {
@@ -127,9 +159,24 @@ class ShopDiscountSetupProductItemViewHolder(
     ) {
         buttonManageDiscount.apply {
             if (uiModel.productStatus.isProductDiscounted) {
+                isEnabled = true
                 buttonType = UnifyButton.Type.ALTERNATE
                 text = getString(R.string.shop_discount_manage_discount_edit_toolbar_title)
             } else {
+                isEnabled = when (uiModel.productStatus.errorType) {
+                    ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.ALL_ABUSIVE_ERROR -> {
+                        false
+                    }
+                    ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.PARTIAL_ABUSIVE_ERROR -> {
+                        false
+                    }
+                    ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.VALUE_ERROR -> {
+                        true
+                    }
+                    else -> {
+                        true
+                    }
+                }
                 buttonType = UnifyButton.Type.MAIN
                 text = getString(R.string.shop_discount_manage_discount_manage_toolbar_title)
             }
@@ -142,7 +189,8 @@ class ShopDiscountSetupProductItemViewHolder(
     private fun setLabelTotalProductVariant(
         binding: ShopDiscountSetupProductItemLayoutBinding,
         totalVariant: Int,
-        totalDiscountedVariant: Int
+        totalDiscountedVariant: Int,
+        isProductDiscounted: Boolean
     ) {
         binding.labelTotalVariant.shouldShowWithAction(!totalVariant.isZero()) {
             binding.labelTotalVariant.apply {
@@ -152,7 +200,7 @@ class ShopDiscountSetupProductItemViewHolder(
                 )
             }
         }
-        binding.labelTotalDiscountedVariant.shouldShowWithAction(!totalDiscountedVariant.isZero()) {
+        binding.labelTotalDiscountedVariant.shouldShowWithAction(!totalDiscountedVariant.isZero() && isProductDiscounted) {
             binding.labelTotalDiscountedVariant.apply {
                 text = String.format(
                     getString(R.string.shop_discount_manage_discount_total_discounted_variant_format),

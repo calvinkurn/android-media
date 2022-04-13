@@ -84,22 +84,24 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
         listProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         bulkApplyDiscountResult: DiscountSettings
     ) {
-        listProductData.forEach { productData ->
-            val minOriginalPrice = productData.mappedResultData.minOriginalPrice
-            if (productData.productStatus.isVariant) {
-                productData.listProductVariant.forEach { variantProductData ->
-                    bulkApplyNonVariantProduct(
-                        variantProductData,
-                        bulkApplyDiscountResult,
-                        minOriginalPrice
-                    )
+        launchCatchError(dispatcherProvider.io, {
+            listProductData.forEach { productData ->
+                val minOriginalPrice = productData.mappedResultData.minOriginalPrice
+                if (productData.productStatus.isVariant) {
+                    productData.listProductVariant.forEach { variantProductData ->
+                        bulkApplyNonVariantProduct(
+                            variantProductData,
+                            bulkApplyDiscountResult,
+                            minOriginalPrice
+                        )
+                    }
+                } else {
+                    bulkApplyNonVariantProduct(productData, bulkApplyDiscountResult, minOriginalPrice)
                 }
-            } else {
-                bulkApplyNonVariantProduct(productData, bulkApplyDiscountResult, minOriginalPrice)
+                ShopDiscountManageDiscountMapper.updateProductStatusAndMappedData(productData)
             }
-            ShopDiscountManageDiscountMapper.updateProductStatusAndMappedData(productData)
-        }
-        _bulkApplyProductListResult.postValue(listProductData)
+            _bulkApplyProductListResult.postValue(listProductData)
+        }){}
     }
 
     private fun bulkApplyNonVariantProduct(
@@ -126,12 +128,13 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
                     it.discountedPercentage = discountedPercent
                 }
             }
+            it.maxOrder = bulkApplyDiscountResult.maxPurchaseQuantity.toString()
         }
     }
 
     fun checkShouldEnableButtonSubmit(allProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>) {
         val isEnableButtonSubmit = allProductData.all {
-            it.productStatus.isProductDiscounted && !it.productStatus.isProductError
+            it.productStatus.isProductDiscounted && it.productStatus.errorType == ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.NO_ERROR
         }
         _enableButtonSubmitLiveData.postValue(isEnableButtonSubmit)
     }
