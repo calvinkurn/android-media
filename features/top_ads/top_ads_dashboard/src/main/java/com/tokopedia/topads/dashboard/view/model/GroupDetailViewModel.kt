@@ -276,7 +276,9 @@ class GroupDetailViewModel @Inject constructor(
         topAdsCreateUseCase.executeQuery(param, javaClass.name, onSuccess)
     }
 
-    fun setProductAction(onSuccess: (() -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
+    fun setProductAction(
+        onSuccess: () -> Unit, action: String, adIds: List<String>, selectedFilter: String?
+    ) {
         val params = topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
         topAdsProductActionUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
             override fun onCompleted() {}
