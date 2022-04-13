@@ -199,7 +199,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
         initEmptyState()
         scrollRecyclerViewSendTracking()
         observeLiveData()
-
     }
 
     override fun onDestroy() {
@@ -321,7 +320,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
         }
         showLoading()
         viewModelListReviewList?.getProductRatingData(sortBy.orEmpty(), filterAllText.orEmpty())
-
     }
 
     override fun loadData(page: Int) {
@@ -336,7 +334,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
         swipeToRefresh?.isRefreshing = false
         clearAllData()
         loadInitialData()
-
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
@@ -388,7 +385,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                         )
                         searchBarPlaceholder = query
                         loadInitialData()
-
                     }
                     return@setOnEditorActionListener true
                 }
@@ -406,7 +402,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             searchBarPlaceholder = getString(R.string.product_search)
         }
         loadInitialData()
-
     }
 
     private fun observeLiveData() {
@@ -464,7 +459,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                     throwable.message.orEmpty()
                 )
                 loadInitialData()
-
             }
         } else {
             onErrorLoadMoreToaster(
@@ -695,7 +689,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
                 type = Toaster.TYPE_ERROR,
                 clickListener = {
                     loadInitialData()
-
                 })
         }
     }
@@ -824,7 +817,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             filterAllText =
                 ReviewUtil.setFilterJoinValueFormat(filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
-
             if (bottomSheetFilter?.isVisible == true) {
                 bottomSheetFilter?.dismiss()
             }
@@ -850,7 +842,6 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
             sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             sortBy = ReviewConstants.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
-
             if (bottomSheetSort?.isVisible == true) {
                 bottomSheetSort?.dismiss()
             }
