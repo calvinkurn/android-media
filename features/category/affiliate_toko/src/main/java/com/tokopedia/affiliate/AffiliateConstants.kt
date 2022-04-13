@@ -97,3 +97,13 @@ const val TWITTER_DEFAULT = "https://www.twitter.com/"
 const val YOUTUBE_DEFAULT = "https://www.youtube.com/"
 
 const val WWW = "www."
+
+const val AVAILABLE = 1
+
+const val ALMOST_OOS = 2
+
+const val EMPTY_STOCK = 3
+
+const val PRODUCT_INACTIVE = 4
+
+const val SHOP_INACTIVE = 5

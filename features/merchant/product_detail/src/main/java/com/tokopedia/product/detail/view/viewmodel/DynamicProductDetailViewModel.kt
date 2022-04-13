@@ -216,8 +216,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
-    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, List<Media>>>()
-    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, List<Media>>>
+    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, String>>()
+    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, String>>
         get() = _updatedImageVariant
 
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
@@ -468,35 +468,19 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun onVariantClicked(data: ProductVariant?, mapOfSelectedVariant: MutableMap<String, String>?,
-                         isPartialySelected: Boolean, variantLevel: Int, imageVariant: String) {
+                         isPartialySelected: Boolean, variantLevel: Int, variantId: String) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
                 val processedVariant = VariantCommonMapper.processVariant(data, mapOfSelectedVariant, variantLevel, isPartialySelected)
 
                 if (isPartialySelected) {
-                    //It means user only select one of two variant available
-                    if (imageVariant.isNotBlank()) {
-                        _updatedImageVariant.postValue(processedVariant to addPartialImage(imageVariant))
-                    } else {
-                        _updatedImageVariant.postValue(processedVariant to listOf())
-                    }
+                    _updatedImageVariant.postValue(processedVariant to variantId)
                     return@withContext
                 } else {
                     _onVariantClickedData.postValue(processedVariant)
                 }
             }
         }) {}
-    }
-
-    private fun addPartialImage(imageUrl: String): List<Media> {
-        listOfParentMedia?.let {
-            if (imageUrl.isEmpty() && imageUrl == it.firstOrNull()?.uRLOriginal) return@let
-
-            val listOfUpdateImage = it.toMutableList()
-            listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
-            return listOfUpdateImage
-        }
-        return listOf()
     }
 
     fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, layoutId: String = "",

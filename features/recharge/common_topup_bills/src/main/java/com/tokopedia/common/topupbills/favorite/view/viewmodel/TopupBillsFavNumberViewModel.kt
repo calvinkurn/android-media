@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
 import com.tokopedia.common.topupbills.favorite.data.UpdateFavoriteDetail
-import com.tokopedia.common.topupbills.favorite.domain.usecase.GetRechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favorite.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favorite.domain.usecase.ModifyRechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favorite.view.listener.FavoriteNumberDeletionListener
 import com.tokopedia.common.topupbills.favorite.view.util.FavoriteNumberActionType
@@ -18,7 +18,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TopupBillsFavNumberViewModel @Inject constructor(
-    private val getRechargeFavoriteNumberUseCase: GetRechargeFavoriteNumberUseCase,
+    private val rechargeFavoriteNumberUseCase: RechargeFavoriteNumberUseCase,
     private val modifyRechargeFavoriteNumberUseCase: ModifyRechargeFavoriteNumberUseCase,
     val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io) {
@@ -46,7 +46,7 @@ class TopupBillsFavNumberViewModel @Inject constructor(
         prevActionType: FavoriteNumberActionType? = null
     ) {
         launchCatchError(block = {
-            val favoriteNumber = getRechargeFavoriteNumberUseCase.apply {
+            val favoriteNumber = rechargeFavoriteNumberUseCase.apply {
                 setRequestParams(categoryIds, operatorIds, CHANNEL_FAVORITE_NUMBER_LIST)
             }.executeOnBackground()
             _persoFavNumberData.postValue(Success(favoriteNumber.persoFavoriteNumber to shouldRefreshInputNumber))

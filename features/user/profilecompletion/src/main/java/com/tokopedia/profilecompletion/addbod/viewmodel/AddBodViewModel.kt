@@ -22,8 +22,8 @@ import javax.inject.Inject
  */
 
 class AddBodViewModel @Inject constructor(
-        private val bodGraphqlUseCase: GraphqlUseCase<UserProfileCompletionUpdateBodData>,
-        private val dispatcher: CoroutineDispatchers
+    private val bodGraphqlUseCase: GraphqlUseCase<UserProfileCompletionUpdateBodData>,
+    private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
 
@@ -31,38 +31,40 @@ class AddBodViewModel @Inject constructor(
 
     fun editBodUserProfile(context: Context, selectedDate: String) {
 
-        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_bod)?.let { query ->
-            bodGraphqlUseCase.run {
-                setGraphqlQuery(query)
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_bod)?.let { query ->
+	    bodGraphqlUseCase.run {
+		setGraphqlQuery(query)
 
-                setTypeClass(UserProfileCompletionUpdateBodData::class.java)
+		setTypeClass(UserProfileCompletionUpdateBodData::class.java)
 
-                val params = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to selectedDate)
-                setRequestParams(params)
+		val params = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to selectedDate)
+		setRequestParams(params)
 
-                execute(onSuccessEditBOD(),
-                        onErrorEditBOD()
-                )
-            }
-        }
+		execute(
+		    onSuccessEditBOD(),
+		    onErrorEditBOD()
+		)
+	    }
+	}
 
     }
 
     private fun onErrorEditBOD(): (Throwable) -> Unit {
-        return {
-            editBodUserProfileResponse.value = Fail(it)
-        }
+	return {
+	    editBodUserProfileResponse.value = Fail(it)
+	}
     }
 
     private fun onSuccessEditBOD(): (UserProfileCompletionUpdateBodData) -> Unit {
-        return {
-            if (it.addBodData.isSuccess) {
-                editBodUserProfileResponse.value = Success(it.addBodData)
-            } else if (it.addBodData.birthDateMessage.isNotBlank()) {
-                editBodUserProfileResponse.value = Fail(MessageErrorException(it.addBodData.birthDateMessage))
-            } else {
-                editBodUserProfileResponse.value = Fail(RuntimeException())
-            }
-        }
+	return {
+	    if (it.addBodData.isSuccess) {
+		editBodUserProfileResponse.value = Success(it.addBodData)
+	    } else if (it.addBodData.birthDateMessage.isNotBlank()) {
+		editBodUserProfileResponse.value =
+		    Fail(MessageErrorException(it.addBodData.birthDateMessage))
+	    } else {
+		editBodUserProfileResponse.value = Fail(RuntimeException())
+	    }
+	}
     }
 }

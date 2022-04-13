@@ -19,12 +19,12 @@ class AddNameModule {
     @AddNameScope
     @Provides
     fun provideResource(@ApplicationContext context: Context): Resources {
-        return context.resources
+	return context.resources
     }
 
     @AddNameScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+	return UserSession(context)
     }
 }

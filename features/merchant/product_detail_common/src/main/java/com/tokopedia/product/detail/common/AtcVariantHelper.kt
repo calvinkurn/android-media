@@ -81,7 +81,8 @@ object AtcVariantHelper {
                         simpleBasicInfo = SimpleBasicInfo(
                                 shopID = productInfoP1.basic.shopID,
                                 shopName = productInfoP1.basic.shopName,
-                                category = productInfoP1.basic.category
+                                category = productInfoP1.basic.category,
+                                defaultMediaURL = productInfoP1.basic.defaultMediaUrl
                         ),
                         shopType = productInfoP1.shopTypeString,
                         boData = boData ?: BebasOngkir(),
