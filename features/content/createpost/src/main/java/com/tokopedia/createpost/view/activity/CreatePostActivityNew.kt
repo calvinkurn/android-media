@@ -81,8 +81,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     override fun updateHeader(header: HeaderViewModel) {
         toolbar_common.apply {
-            if(header.avatar.isNotEmpty()) setImageCircle(header.avatar)
-            else hideImage()
+            icon = header.avatar
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = header.title
         }

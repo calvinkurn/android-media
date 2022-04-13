@@ -9,6 +9,14 @@ data class FeedAccountUiModel(
     val type: Type,
 ) {
     enum class Type {
-        BUYER, SELLER,
+        BUYER, SELLER, UNKNOWN
+    }
+
+    companion object {
+        val Empty = FeedAccountUiModel(
+            name = "",
+            iconUrl = "",
+            type = Type.UNKNOWN,
+        )
     }
 }

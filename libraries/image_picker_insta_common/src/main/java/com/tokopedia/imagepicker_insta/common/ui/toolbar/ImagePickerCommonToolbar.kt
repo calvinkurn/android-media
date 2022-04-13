@@ -60,6 +60,14 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
         }
     }
 
+    var icon: String = ""
+        set(value) {
+            field = value
+
+            toolbarIcon.loadImageCircle(value)
+            toolbarIcon.visibility = if(value.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
     var title: String = ""
         set(value) {
             field = value
@@ -71,20 +79,6 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
             field = value
             toolbarSubtitle.text = value
         }
-
-    fun setImageResource(imageRes: Int) {
-        toolbarIcon.setImageResource(imageRes)
-        toolbarIcon.visibility = View.VISIBLE
-    }
-
-    fun setImageCircle(imageUrl: String) {
-        toolbarIcon.loadImageCircle(imageUrl)
-        toolbarIcon.visibility = View.VISIBLE
-    }
-
-    fun hideImage(){
-        toolbarIcon.visibility = View.GONE
-    }
 
     fun getToolbarParentView(): ConstraintLayout {
         return toolbarParent

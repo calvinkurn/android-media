@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.imagepicker_insta.LiveDataResult
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.models.*
 import com.tokopedia.imagepicker_insta.usecase.CropUseCase
 import com.tokopedia.imagepicker_insta.usecase.PhotosUseCase
@@ -42,6 +43,9 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
     private val folderDataList = arrayListOf<FolderData>()
     private val uriSet = HashSet<Uri>()
 
+    private val _selectedFeedAccount = MutableStateFlow(FeedAccountUiModel.Empty)
+    val selectedFeedAccount: Flow<FeedAccountUiModel>
+        get() = _selectedFeedAccount
 
     fun getFolderData() {
         launchCatchError(block = {
@@ -177,6 +181,15 @@ class PickerViewModel(val app: Application) : BaseAndroidViewModel(app) {
         }, onError = {
             selectedMediaUriLiveData.postValue(LiveDataResult.error(it))
         })
+    }
+
+    fun setSelectedFeedAccount(feedAccount: FeedAccountUiModel) {
+        launchCatchError(block = {
+            val current = _selectedFeedAccount.value
+            if(current.type != feedAccount.type) {
+                _selectedFeedAccount.value = feedAccount
+            }
+        }, onError = { })
     }
 
     override fun onCleared() {

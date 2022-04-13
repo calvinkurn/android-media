@@ -100,6 +100,6 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     }
 
     interface Listener {
-        fun onAccountClick(account: FeedAccountUiModel)
+        fun onAccountClick(feedAccount: FeedAccountUiModel)
     }
 }

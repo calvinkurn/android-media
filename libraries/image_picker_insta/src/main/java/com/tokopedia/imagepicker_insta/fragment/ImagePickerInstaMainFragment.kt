@@ -51,7 +51,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.imagepicker_insta_camera_activity.*
+import kotlinx.android.synthetic.main.imagepicker_insta_fragment_main.*
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -93,8 +95,8 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         val fragment = FeedAccountTypeBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
         fragment.setData(generateFeedAccount())
         fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
-            override fun onAccountClick(account: FeedAccountUiModel) {
-                /** TODO: gonna handle this */
+            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                viewModel.setSelectedFeedAccount(feedAccount)
             }
         })
         fragment
@@ -298,21 +300,16 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             showFabCoachMark()
         }
 
-
         (activity as ImagePickerInstaActivity).run {
             setSupportActionBar(toolbarCommon)
-            toolbarCommon.apply {
-                title = toolbarTitle
-                subtitle = toolbarSubTitle
-
-                if (toolbarIconRes != null && toolbarIconRes != 0) {
-                    setImageResource(toolbarIconRes)
-                } else if (toolbarIconUrl.isNotEmpty()) {
-                    setImageCircle(toolbarIconUrl)
-                } else {
-                    hideImage()
-                }
-            }
+            toolbarCommon.title = toolbarTitle
+            viewModel.setSelectedFeedAccount(
+                FeedAccountUiModel(
+                    name = userSession.name,
+                    iconUrl = toolbarIconUrl,
+                    type = FeedAccountUiModel.Type.BUYER,
+                )
+            )
         }
     }
 
@@ -343,19 +340,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun openFeedAccountBottomSheet(){
         feedAccountBottomSheet.show(childFragmentManager)
-
-//        var creatorListData= mutableListOf<CreatorListData>()
-//        (activity as ImagePickerInstaActivity).run{
-//            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
-//            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
-//        }
-//
-//        val contentProductTagBS = CreatorTypesBottomSheet()
-//        contentProductTagBS.show(Bundle.EMPTY,
-//            childFragmentManager,
-//            creatorListData,
-//           )
-
     }
 
     private fun showFabCoachMark() {
@@ -526,6 +510,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun setObservers() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.selectedFeedAccount.collectLatest {
+                toolbar_common.subtitle = it.name
+                toolbar_common.icon = it.iconUrl
+            }
+        }
+
         viewLifecycleOwner.lifecycle.addObserver(selectedMediaView)
 
         viewLifecycleOwner.lifecycleScope.launch {
