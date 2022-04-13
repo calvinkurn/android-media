@@ -22,8 +22,6 @@ object Lego4AutoTabletConfiguration {
     fun getLayout(context: Context?): Int {
         context?.let {
             return if (DeviceScreenInfo.isTablet(context)) {
-                val displayMetrics = DisplayMetrics()
-//                context.resources. .getWindowManager().getDefaultDisplay().getMetrics(displayMetrics)
                 val width = context.resources.displayMetrics.widthPixels
                 if (width >= 768) {
                     LAYOUT_TABLET_ABOVE_768
