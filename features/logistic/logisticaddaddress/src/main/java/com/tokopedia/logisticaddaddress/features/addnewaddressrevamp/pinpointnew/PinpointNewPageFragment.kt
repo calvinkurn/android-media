@@ -137,8 +137,18 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
         prepareMap(savedInstanceState)
         initData()
+        initView()
         setViewListener()
         initObserver()
+    }
+
+    private fun initView() {
+        if (isEdit) {
+            binding?.bottomsheetLocation?.let {
+                it.btnPrimary.text = getString(R.string.choose_this_location)
+                it.btnSecondary.visibility = View.GONE
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -506,25 +516,21 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             }
 
-            if (isEdit) {
-                bottomsheetLocation.btnSecondary.visibility = View.GONE
-            } else {
-                bottomsheetLocation.btnSecondary.setOnClickListener {
-                    AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
-                    if (isPositiveFlow) {
-                        isPositiveFlow = false
-                        viewModel.setAddress(SaveAddressDataModel())
-                        goToAddressForm()
-                    } else {
-                        activity?.run {
-                            setResult(Activity.RESULT_OK, Intent().apply {
-                                putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
-                            })
-                            finish()
-                        }
+            bottomsheetLocation.btnSecondary.setOnClickListener {
+                AddNewAddressRevampAnalytics.onClickIsiAlamatManual(userSession.userId)
+                if (isPositiveFlow) {
+                    isPositiveFlow = false
+                    viewModel.setAddress(SaveAddressDataModel())
+                    goToAddressForm()
+                } else {
+                    activity?.run {
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(EXTRA_NEGATIVE_FULL_FLOW, true)
+                        })
+                        finish()
                     }
-
                 }
+
             }
 
             chipsCurrentLoc.chipImageResource = context?.let { getIconUnifyDrawable(it, IconUnify.TARGET) }

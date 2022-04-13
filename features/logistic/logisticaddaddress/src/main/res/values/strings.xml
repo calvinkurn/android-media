@@ -217,4 +217,5 @@
     <string name="pinpoint_title">Pinpoint</string>
     <string name="success_add_phone_number">Nomor HP berhasil ditambahkan!</string>
     <string name="district_changed_success"><![CDATA[Kota & kecamatan berhasil diperbarui. Yuk, pastikan alamatmu sudah sesuai.]]></string>
+    <string name="kodepos_helper">Silahkan tulis atau pilih kode posmu.</string>
 </resources>
