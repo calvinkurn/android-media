@@ -58,6 +58,9 @@
     <dimen name="interactive_finish_width">82dp</dimen>
     <dimen name="interactive_finish_min_height">64dp</dimen>
 
+    <!-- Giveaway -->
+    <dimen name="play_giveaway_tap_bg_size">72dp</dimen>
+
     <!-- Chat -->
     <dimen name="play_bro_chat_spacing">6dp</dimen>
 </resources>
