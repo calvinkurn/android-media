@@ -597,7 +597,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mappingCueCategory2x2Component(
+    private fun mappingCueCategoryComponent(
         channel: DynamicHomeChannel.Channels,
         isCache: Boolean,
         verticalPosition: Int
@@ -680,7 +680,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
         val cueWidget2x2MinSize = 4
         if (gridSize >= cueWidget2x2MinSize) {
             visitableList.add(
-                mappingCueCategory2x2Component(
+                mappingCueCategoryComponent(
                     channel, isCache, verticalPosition
                 )
             )
