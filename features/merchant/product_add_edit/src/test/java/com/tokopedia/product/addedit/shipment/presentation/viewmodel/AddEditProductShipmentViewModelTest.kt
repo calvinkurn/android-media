@@ -14,12 +14,16 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -38,7 +42,7 @@ class AddEditProductShipmentViewModelTest {
     lateinit var customProductLogisticRepository: CustomProductLogisticRepository
 
     @RelaxedMockK
-    lateinit var imsResourceProvider: IMSResourceProvider
+    lateinit var resourceProvider: IMSResourceProvider
 
     private val customProductLogisticMapper: CustomProductLogisticMapper = mockk()
 
@@ -50,7 +54,7 @@ class AddEditProductShipmentViewModelTest {
             saveProductDraftUseCase,
             customProductLogisticRepository,
             customProductLogisticMapper,
-            imsResourceProvider,
+            resourceProvider,
             CoroutineTestDispatchersProvider)
     }
 
@@ -59,36 +63,6 @@ class AddEditProductShipmentViewModelTest {
         MockKAnnotations.init(this)
         viewModel.cplList.observeForever(cplListObserver)
     }
-
-    /*@Test
-    fun `isWeightValid should valid when unit is gram and weight is in allowed range`() {
-        val isValid = viewModel.isWeightValid(AddEditProductShipmentConstants.MIN_WEIGHT.toString(), AddEditProductShipmentConstants.UNIT_GRAM)
-        Assert.assertTrue(isValid)
-    }
-
-    @Test
-    fun `isWeightValid should valid when unit is kg and weight is in allowed range`() {
-        val isValid = viewModel.isWeightValid(AddEditProductShipmentConstants.MIN_WEIGHT.toString(), AddEditProductShipmentConstants.UNIT_KILOGRAM)
-        Assert.assertTrue(isValid)
-    }
-
-    @Test
-    fun `isWeightValid should invalid when unit is gram and weight isn't in allowed range`() {
-        var isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MIN_WEIGHT - 1}", AddEditProductShipmentConstants.MAX_WEIGHT_GRAM)
-        Assert.assertFalse(isValid)
-
-        isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MAX_WEIGHT_GRAM + 1}", AddEditProductShipmentConstants.MAX_WEIGHT_GRAM)
-        Assert.assertFalse(isValid)
-    }
-
-    @Test
-    fun `isWeightValid should valid when unit is kg and weight isn't in allowed range`() {
-        var isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MIN_WEIGHT - 1}", AddEditProductShipmentConstants.UNIT_KILOGRAM)
-        Assert.assertFalse(isValid)
-
-        isValid = viewModel.isWeightValid("${AddEditProductShipmentConstants.MAX_WEIGHT_KILOGRAM + 1}", AddEditProductShipmentConstants.UNIT_KILOGRAM)
-        Assert.assertFalse(isValid)
-    }*/
 
     @Test
     fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
@@ -118,29 +92,21 @@ class AddEditProductShipmentViewModelTest {
         viewModel.saveProductDraft(productInputModel)
 
         coVerify { saveProductDraftUseCase.executeOnBackground() }
-
         coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
     }
 
 
     @Test
     fun `when all boolean variables should return true and object should return the same object`() {
-        val shipmentInputModel = ShipmentInputModel(
-                weight = 10,
-                weightUnit = 12,
-                isMustInsurance = true
-        )
         viewModel.isAddMode = true
         viewModel.isEditMode = true
         viewModel.isDraftMode = true
         viewModel.isFirstMoved = true
-        //viewModel.shipmentInputModel = shipmentInputModel
 
         Assert.assertTrue(viewModel.isAddMode)
         Assert.assertTrue(viewModel.isEditMode)
         Assert.assertTrue(viewModel.isDraftMode)
         Assert.assertTrue(viewModel.isFirstMoved)
-        //Assert.assertTrue(viewModel.shipmentInputModel == shipmentInputModel)
     }
 
     @Test
@@ -168,5 +134,44 @@ class AddEditProductShipmentViewModelTest {
             cplListObserver.onChanged(Fail(testError))
             customProductLogisticMapper wasNot Called
         }
+    }
+
+    @Test
+    fun `setProductInputModel should invoke shipmentInputModel and productInputModel changes`() {
+        viewModel.setProductInputModel(ProductInputModel(productId = 123L,
+            shipmentInputModel = ShipmentInputModel(weight = 100)))
+        assertEquals(100, viewModel.shipmentInputModel.getOrAwaitValue().weight)
+        assertEquals(123L, viewModel.productInputModel?.productId)
+    }
+
+    @Test
+    fun `setProductInputModel should invoke shipmentInputModel hasVariant false`() {
+        viewModel.setProductInputModel(ProductInputModel())
+        assertEquals(false, viewModel.hasVariant.getOrAwaitValue())
+    }
+
+    @Test
+    fun `setProductInputModel should invoke shipmentInputModel hasVariant true`() {
+        viewModel.setProductInputModel(ProductInputModel(variantInputModel = VariantInputModel(
+            products = listOf(ProductVariantInputModel())
+        )))
+        assertEquals(true, viewModel.hasVariant.getOrAwaitValue())
+    }
+
+    @Test
+    fun `validateWeightInput should return expected value`() {
+        coEvery { resourceProvider.getEmptyProductWeightErrorMessage() } returns "empty"
+        coEvery { resourceProvider.getMinLimitProductWeightErrorMessage(any()) } returns "min range"
+        coEvery { resourceProvider.getMaxLimitProductWeightErrorMessage(any()) } returns "out range"
+
+        val resultEmpty = viewModel.validateWeightInput("")
+        val resultZero = viewModel.validateWeightInput("0")
+        val resultOutRange = viewModel.validateWeightInput("100.000.000")
+        val resultInRange = viewModel.validateWeightInput("1.000")
+
+        assertEquals("empty", resultEmpty)
+        assertEquals("min range", resultZero)
+        assertEquals("out range", resultOutRange)
+        assertEquals("", resultInRange)
     }
 }
