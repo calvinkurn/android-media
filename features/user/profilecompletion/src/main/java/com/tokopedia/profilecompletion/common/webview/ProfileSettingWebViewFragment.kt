@@ -4,6 +4,8 @@ import android.app.Activity
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.profilecompletion.di.ActivityComponentFactory
 import com.tokopedia.profilecompletion.profileinfo.tracker.ProfileInfoTracker
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.webview.BaseWebViewFragment
@@ -19,6 +21,13 @@ class ProfileSettingWebViewFragment : BaseWebViewFragment() {
 	tracker.trackClickOnBtnBackChangeEmail()
 	return super.onFragmentBackPressed()
     }
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		this.activity?.let {
+			ActivityComponentFactory.instance.createProfileCompletionComponent(it, it.application as BaseMainApplication).inject(this)
+		}
+	}
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
 	if (isUrlAppLinkSuccessChangeEmail(url)) {
