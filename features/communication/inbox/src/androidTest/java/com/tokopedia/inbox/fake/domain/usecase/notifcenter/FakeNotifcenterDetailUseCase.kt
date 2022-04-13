@@ -10,15 +10,12 @@ import com.tokopedia.inbox.test.R
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import javax.inject.Named
 
 class FakeNotifcenterDetailUseCase(
-    @Named(QUERY_NOTIFCENTER_DETAIL_V3)
-    query: String,
     private val gqlUseCase: FakeGraphqlUseCase<NotifcenterDetailResponse>,
     mapper: NotifcenterDetailMapper,
     dispatchers: CoroutineDispatchers
-) : NotifcenterDetailUseCase(query, gqlUseCase, mapper, dispatchers) {
+) : NotifcenterDetailUseCase(gqlUseCase, mapper, dispatchers) {
 
     var response = NotifcenterDetailResponse()
         set(value) {
@@ -35,8 +32,8 @@ class FakeNotifcenterDetailUseCase(
     val fifteenNotifications: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3).apply {
-                    val earlierSection = getAsJsonArray(list)
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).apply {
+                    val earlierSection = getAsJsonArray(LIST)
                     val notification = earlierSection.get(0)
                     for (i in 0 until 100) {
                         earlierSection.add(notification)
@@ -48,9 +45,9 @@ class FakeNotifcenterDetailUseCase(
     val emptyNotifications: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3).apply {
-                    getAsJsonArray(list).removeAll { true }
-                    getAsJsonArray(new_list).removeAll { true }
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).apply {
+                    getAsJsonArray(LIST).removeAll { true }
+                    getAsJsonArray(NEW_LIST).removeAll { true }
                 }
             }
         }
@@ -58,25 +55,25 @@ class FakeNotifcenterDetailUseCase(
     val newListOnly: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3)
-                    .getAsJsonArray(list).removeAll { true }
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3)
+                    .getAsJsonArray(LIST).removeAll { true }
             }
         }
 
     val earlierOnly: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3)
-                    .getAsJsonArray(new_list).removeAll { true }
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3)
+                    .getAsJsonArray(NEW_LIST).removeAll { true }
             }
         }
 
     val newListOnlyHasNextTrue: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3).apply {
-                    getAsJsonArray(list).removeAll { true }
-                    getAsJsonObject(new_paging).addProperty(has_next, true)
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).apply {
+                    getAsJsonArray(LIST).removeAll { true }
+                    getAsJsonObject(NEW_PAGING).addProperty(HAS_NEXT, true)
                 }
             }
         }
@@ -84,9 +81,9 @@ class FakeNotifcenterDetailUseCase(
     val earlierOnlyHasNextTrue: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3).apply {
-                    getAsJsonArray(new_list).removeAll { true }
-                    getAsJsonObject(paging).addProperty(has_next, true)
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).apply {
+                    getAsJsonArray(NEW_LIST).removeAll { true }
+                    getAsJsonObject(PAGING).addProperty(HAS_NEXT, true)
                 }
             }
         }
@@ -94,9 +91,9 @@ class FakeNotifcenterDetailUseCase(
     val newListOnlyHasNextFalse: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3).apply {
-                    getAsJsonArray(list).removeAll { true }
-                    getAsJsonObject(new_paging).addProperty(has_next, false)
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).apply {
+                    getAsJsonArray(LIST).removeAll { true }
+                    getAsJsonObject(NEW_PAGING).addProperty(HAS_NEXT, false)
                 }
             }
         }
@@ -104,9 +101,9 @@ class FakeNotifcenterDetailUseCase(
     val earlierOnlyHasNextFalse: NotifcenterDetailResponse
         get() {
             return alterDefaultResponse {
-                it.getAsJsonObject(notifcenter_detail_v3).apply {
-                    getAsJsonArray(new_list).removeAll { true }
-                    getAsJsonObject(paging).addProperty(has_next, false)
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).apply {
+                    getAsJsonArray(NEW_LIST).removeAll { true }
+                    getAsJsonObject(PAGING).addProperty(HAS_NEXT, false)
                 }
             }
         }
@@ -126,21 +123,38 @@ class FakeNotifcenterDetailUseCase(
     val noTrackHistoryWidgetMsg: NotifcenterDetailResponse
         get() {
             return alterResponseOf(R.raw.notifcenter_detail_v3_no_track_history_widget) {
-                it.getAsJsonObject(notifcenter_detail_v3)
-                    .getAsJsonArray(new_list).get(0).asJsonObject
-                    .getAsJsonObject(widget)
-                    .addProperty(message, "")
+                it.getAsJsonObject(NOTIFCENTER_DETAIL_V3)
+                    .getAsJsonArray(NEW_LIST).get(0).asJsonObject
+                    .getAsJsonObject(WIDGET)
+                    .addProperty(MESSAGE, "")
             }
         }
 
-    private val notifcenter_detail_v3 = "notifcenter_detail_v3"
-    private val new_list = "new_list"
-    private val paging = "paging"
-    private val new_paging = "new_paging"
-    private val has_next = "has_next"
-    private val list = "list"
-    private val widget = "widget"
-    private val message = "message"
+    val bannerWithinTwentyFourHours: NotifcenterDetailResponse
+        get() {
+            return alterResponseOf(R.raw.notifcenter_detail_v3_banner_only) {
+                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+                for (i in 0 until newList.size()) {
+                    newList.get(i).asJsonObject
+                        .addProperty(EXPIRE_TIME_UNIX, getNewExpiredTime(THREE_HOURS))
+                }
+            }
+        }
+
+    val bannerOnly: NotifcenterDetailResponse
+        get() {
+            return alterResponseOf(R.raw.notifcenter_detail_v3_banner_only) {
+                val newList = it.getAsJsonObject(NOTIFCENTER_DETAIL_V3).getAsJsonArray(NEW_LIST)
+                for (i in 0 until newList.size()) {
+                    newList.get(i).asJsonObject
+                        .addProperty(EXPIRE_TIME_UNIX, getNewExpiredTime(THREE_DAYS))
+                }
+            }
+        }
+
+    private fun getNewExpiredTime(extendedTime: Long): Long {
+        return (System.currentTimeMillis() / UNIX_DIVIDER) + extendedTime
+    }
 
     init {
         response = response
@@ -178,4 +192,19 @@ class FakeNotifcenterDetailUseCase(
         gqlUseCase.delayMs = delay
     }
 
+    companion object {
+        private const val NOTIFCENTER_DETAIL_V3 = "notifcenter_detail_v3"
+        private const val NEW_LIST = "new_list"
+        private const val PAGING = "paging"
+        private const val NEW_PAGING = "new_paging"
+        private const val HAS_NEXT = "has_next"
+        private const val LIST = "list"
+        private const val WIDGET = "widget"
+        private const val MESSAGE = "message"
+        private const val EXPIRE_TIME_UNIX = "expire_time_unix"
+
+        private const val THREE_HOURS = 10000L
+        private const val THREE_DAYS = 240000L
+        private const val UNIX_DIVIDER = 1000L
+    }
 }

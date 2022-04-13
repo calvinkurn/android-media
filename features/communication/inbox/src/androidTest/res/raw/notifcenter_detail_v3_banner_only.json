@@ -1,0 +1,172 @@
+{
+  "notifcenter_detail_v3": {
+    "paging": {
+      "has_next": true,
+      "has_prev": false
+    },
+    "new_paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_list": [
+      {
+        "notif_id":"79f30603-bae4-11ec-a59c-42010a2944e2",
+        "user_id":148201295,
+        "shop_id":0,
+        "section_id":"promotion",
+        "section_key":"Promo",
+        "section_icon":"https://images.tokopedia.net/img/AqyecK/2022/1/20/d737dc2e-d1da-4b65-b4f2-631c64b52529.png",
+        "subsection_key":"",
+        "template_key":"buyerinfo_create_21162",
+        "title":"Banner Pertama",
+        "button_text":"Klik di sini",
+        "short_description":"Hi, Referensikan teman Anda untuk berbelanja di Tokopedia dan dapatkan manfaat menarik setelah transaksi pertama mereka.",
+        "short_description_html":"Hi, Referensikan teman Anda untuk berbelanja di Tokopedia dan dapatkan manfaat menarik setelah transaksi pertama mereka.",
+        "is_longer_content":false,
+        "show_bottomsheet":false,
+        "type_bottomsheet":0,
+        "content":"",
+        "type_of_user":1,
+        "type_link":4,
+        "create_time":"11:45",
+        "create_time_unix":1649825100,
+        "update_time":"2022-04-13 11:45:00.146058519 +0700 WIB",
+        "update_time_unix":1649825100,
+        "expire_time":"2022-04-28 11:45:00.146816215 +0700 WIB",
+        "expire_time_unix":1651121100,
+        "status":0,
+        "read_status":3,
+        "notif_order_type":0,
+        "is_last_journey":false,
+        "is_show_expire":false,
+        "unique_id":0,
+        "widget":{
+          "title":"",
+          "description":"",
+          "message":"",
+          "image":"",
+          "button_text":"",
+          "desktop_button_link":"",
+          "mobile_button_link":"",
+          "android_button_link":"",
+          "ios_button_link":""
+        },
+        "track_history":[
+        ],
+        "image":[
+          {
+            "url":"https://images.tokopedia.net/img/eWaZlX/2022/4/13/9682e93a-0615-4e48-ac95-bbf44fc5d3b7.jpg",
+            "width":720,
+            "height":240,
+            "ratio":{
+              "x":3,
+              "y":1
+            }
+          }
+        ],
+        "data_notification":{
+          "app_link":"tokopedia://referral",
+          "desktop_link":"",
+          "info_thumbnail_url":"https://images.tokopedia.net/img/eWaZlX/2022/4/13/9682e93a-0615-4e48-ac95-bbf44fc5d3b7.jpg",
+          "mobile_link":"",
+          "product_name":"",
+          "product_url":"",
+          "checkout_url":""
+        },
+        "total_product":0,
+        "product_data":[
+        ],
+        "bottomsheet":{
+          "title":"",
+          "button_cta":{
+            "type":0,
+            "text":"",
+            "link":"",
+            "data":""
+          },
+          "components":[
+          ]
+        }
+      },
+      {
+        "notif_id":"701694e3-bae4-11ec-a59b-42010a2944e2",
+        "user_id":148201295,
+        "shop_id":0,
+        "section_id":"promotion",
+        "section_key":"Promo",
+        "section_icon":"https://images.tokopedia.net/img/AqyecK/2022/1/20/8d1ce1dc-274d-414c-af90-abf611e87ad6.png",
+        "subsection_key":"",
+        "template_key":"buyerinfo_create_21175",
+        "title":"Banner Kedua",
+        "button_text":"Klik di sini",
+        "short_description":"Hi, Referensikan teman Anda untuk berbelanja di Tokopedia dan dapatkan manfaat menarik setelah transaksi pertama mereka.",
+        "short_description_html":"Hi, Referensikan teman Anda untuk berbelanja di Tokopedia dan dapatkan manfaat menarik setelah transaksi pertama mereka.",
+        "is_longer_content":false,
+        "show_bottomsheet":false,
+        "type_bottomsheet":0,
+        "content":"",
+        "type_of_user":1,
+        "type_link":4,
+        "create_time":"11:44",
+        "create_time_unix":1649825083,
+        "update_time":"2022-04-13 11:44:43.388437132 +0700 WIB",
+        "update_time_unix":1649825083,
+        "expire_time":"2022-04-28 11:44:43.389336244 +0700 WIB",
+        "expire_time_unix":1651121083,
+        "status":0,
+        "read_status":2,
+        "notif_order_type":0,
+        "is_last_journey":false,
+        "is_show_expire":true,
+        "unique_id":0,
+        "widget":{
+          "title":"",
+          "description":"",
+          "message":"",
+          "image":"",
+          "button_text":"",
+          "desktop_button_link":"",
+          "mobile_button_link":"",
+          "android_button_link":"",
+          "ios_button_link":""
+        },
+        "track_history":[
+        ],
+        "image":[
+          {
+            "url":"https://images.tokopedia.net/img/eWaZlX/2022/4/13/1f1daede-6591-49bb-9ce1-59ae2281f58d.jpg",
+            "width":720,
+            "height":240,
+            "ratio":{
+              "x":3,
+              "y":1
+            }
+          }
+        ],
+        "data_notification":{
+          "app_link":"tokopedia://referral",
+          "desktop_link":"",
+          "info_thumbnail_url":"https://images.tokopedia.net/img/eWaZlX/2022/4/13/1f1daede-6591-49bb-9ce1-59ae2281f58d.jpg",
+          "mobile_link":"",
+          "product_name":"",
+          "product_url":"",
+          "checkout_url":""
+        },
+        "total_product":0,
+        "product_data":[
+        ],
+        "bottomsheet":{
+          "title":"",
+          "button_cta":{
+            "type":0,
+            "text":"",
+            "link":"",
+            "data":""
+          },
+          "components":[
+          ]
+        }
+      }
+    ]
+  }
+}

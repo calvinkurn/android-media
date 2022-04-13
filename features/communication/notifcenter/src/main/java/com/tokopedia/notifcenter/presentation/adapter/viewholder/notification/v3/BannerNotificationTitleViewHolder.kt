@@ -50,7 +50,7 @@ class BannerNotificationTitleViewHolder(
     }
 
     private fun bindFooterTimeStatus(element: NotificationUiModel) {
-        if (element.isPromotion()) {
+        if (element.isPromotion() && element.isShowExpire) {
             val isIn24HourAfterCurrentTime = TimeHelper.isIn24HourAfterCurrentTime(
                     element.expireTimeUnixMillis
             )
