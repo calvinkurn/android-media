@@ -68,7 +68,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
+open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapterTypeFactory>(),
     HasComponent<ReadReviewComponent>, ReadReviewItemListener, ReadReviewHeaderListener,
     ReadReviewFilterChipsListener, ReadReviewFilterBottomSheetListener,
     ReviewReportBottomSheetListener, ReadReviewHighlightedTopicListener,
@@ -112,7 +112,6 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     private var reviewReadingCoordinatorLayout: CoordinatorLayout? = null
-    private var reviewHeader: ReadReviewHeader? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
     private var listOnlyLoading: View? = null
@@ -130,6 +129,8 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
     }
+
+    protected var reviewHeader: ReadReviewHeader? = null
 
     override fun onPause() {
         super.onPause()
@@ -736,6 +737,10 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         goToReviewCredibility(userId)
     }
 
+    protected fun showShopPageReviewHeader() {
+        reviewHeader?.showShopPageReviewHeader()
+    }
+
     private fun getProductIdFromArguments() {
         viewModel.setProductId(arguments?.getString(ReviewConstants.ARGS_PRODUCT_ID, "") ?: "")
     }
@@ -816,7 +821,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         })
     }
 
-    private fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
+    open fun onSuccessGetRatingAndTopic(ratingAndTopics: ProductrevGetProductRatingAndTopic) {
         if (ratingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
@@ -847,7 +852,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         }
     }
 
-    private fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
+    open fun onSuccessGetShopRatingAndTopic(shopRatingAndTopics: ProductrevGetShopRatingAndTopic) {
         if (shopRatingAndTopics.rating.totalRating == 0L) {
             showPageNotFound()
             hideFullPageLoading()
@@ -990,7 +995,7 @@ class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAdapter
         loadingView?.hide()
     }
 
-    private fun showFilteredEmpty() {
+    open fun showFilteredEmpty() {
         hideFab()
         emptyFilteredStateImage?.setImageUrl(EMPTY_FILTERED_STATE_IMAGE_URL)
         emptyFilteredState?.show()

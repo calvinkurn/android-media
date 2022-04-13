@@ -383,6 +383,8 @@
     <string name="review_reading_seller_label">Penjual</string>
     <string name="review_reading_hide_response">Tutup Balasan</string>
     <string name="review_reading_empty_review">Tidak ada ulasan</string>
+    <string name="review_reading_empty_review_shop_page_title">Toko ini belum punya ulasan</string>
+    <string name="review_reading_empty_review_shop_page_subtitle">Yuk, belanja di toko ini dan jadi yang pertama kasih ulasan.</string>
     <string name="review_reading_filter_multiple_rating_selected">%d Rating</string>
     <string name="review_reading_filter_multiple_topic_selected">%d Topik</string>
     <string name="review_reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>

@@ -62,8 +62,10 @@ class PlayBroadcasterViewModelTest {
             channelRepo = mockRepo
         )
 
-        robot.getConfig()
-        robot.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(countDown)
+        robot.use {
+            it.getConfig()
+            it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(countDown)
+        }
     }
 
     @Test
@@ -72,9 +74,10 @@ class PlayBroadcasterViewModelTest {
             dispatchers = testDispatcher
         )
 
-        val defaultCountDown = robot.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
-
-        robot.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(defaultCountDown)
+        robot.use {
+            val defaultCountDown = it.getViewModelPrivateField<Int>("DEFAULT_BEFORE_LIVE_COUNT_DOWN")
+            it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(defaultCountDown)
+        }
     }
 
     @Test

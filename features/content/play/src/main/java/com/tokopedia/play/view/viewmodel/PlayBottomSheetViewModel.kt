@@ -29,94 +29,25 @@ import javax.inject.Inject
  * Created by mzennis on 2020-03-06.
  */
 class PlayBottomSheetViewModel @Inject constructor(
-    private val getProductVariantUseCase: GetProductVariantUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     private val repo: PlayViewerRepository,
 ) : ViewModel() {
 
-    private val _observableAddToCart = MutableLiveData<PlayResult<Pair<Event<CartFeedbackUiModel>, ProductSectionUiModel.Section>>>()
-    private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
     private val _observableUserReportReasoning = MutableLiveData<PlayResult<PlayUserReportUiModel.Loaded>>()
     private val _observableUserReportSubmission = MutableLiveData<PlayResult<Event<Unit>>>()
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
-    val observableAddToCart: LiveData<PlayResult<Pair<Event<CartFeedbackUiModel>, ProductSectionUiModel.Section>>> = _observableAddToCart
-    val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
     val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
     val observableUserReportSubmission : LiveData<PlayResult<Event<Unit>>> = _observableUserReportSubmission
-
-    fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction, sectionInfo: ProductSectionUiModel.Section) {
-        _observableProductVariant.value = PlayResult.Loading(true)
-
-        viewModelScope.launchCatchError(block = {
-            val variantSheetUiModel = withContext(dispatchers.io) {
-                getProductVariantUseCase.params = getProductVariantUseCase.createParams(product.id)
-                val response = getProductVariantUseCase.executeOnBackground()
-                val mapOfSelectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(response.data)
-                val categoryVariants = VariantCommonMapper.processVariant(response.data,
-                        mapOfSelectedVariant = mapOfSelectedVariants)
-                VariantSheetUiModel(
-                        product = product,
-                        action = action,
-                        parentVariant = response.data,
-                        mapOfSelectedVariants = mapOfSelectedVariants,
-                        listOfVariantCategory = categoryVariants.orEmpty(),
-                        section = sectionInfo
-                )
-            }
-            _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
-        }){
-            _observableProductVariant.value = PlayResult.Failure(it) {
-                getProductVariant(product, action, sectionInfo)
-            }
-        }
-    }
 
     fun doInteractionEvent(event: InteractionEvent) {
         _observableLoggedInInteractionEvent.value = Event(
                 if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
                 else LoginStateEvent.InteractionAllowed(event)
         )
-    }
-
-    fun addToCart(product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, notes: String = "", action: ProductAction, type: BottomInsetsType) {
-        _observableAddToCart.value = PlayResult.Loading(false)
-
-        //TODO(If isSuccess = false, treat that as Failure instead of Success(isSuccess=true))
-        viewModelScope.launchCatchError(block = {
-            val responseCart = withContext(dispatchers.io) {
-                repo.addItemToCart(
-                    productId = product.id,
-                    productName = product.title,
-                    productShopId = product.shopId,
-                    price = when (product.price) {
-                        is OriginalPrice -> product.price.priceNumber.toString()
-                        is DiscountedPrice -> product.price.discountedPriceNumber.toString()
-                    },
-                    qty = product.minQty,
-                )
-            }
-
-            _observableAddToCart.value = PlayResult.Success(Pair(
-                Event(mappingResponseCart(responseCart, product, action, type)), sectionInfo)
-            )
-        }) {
-            _observableAddToCart.value = PlayResult.Success(
-                Pair(Event(
-                    CartFeedbackUiModel(
-                        isSuccess = false,
-                        errorMessage = it,
-                        cartId = "",
-                        product = product,
-                        action = action,
-                        bottomInsetsType = type
-                    )
-                ), sectionInfo)
-            )
-        }
     }
 
     fun getUserReportList(){
