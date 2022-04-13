@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.imagepicker_insta.common.databinding.ItemFeedAccountTypeBinding
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
+import com.tokopedia.media.loader.loadImageCircle
 
 /**
  * Created By : Jonathan Darwin on April 13, 2022
@@ -15,7 +16,14 @@ class FeedAccountTypeViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: FeedAccountUiModel) {
+        binding.apply {
+            tvAccountName.text = item.name
+            ivAvatar.loadImageCircle(item.iconUrl)
 
+            root.setOnClickListener {
+                listener.onClick(item)
+            }
+        }
     }
 
     companion object {

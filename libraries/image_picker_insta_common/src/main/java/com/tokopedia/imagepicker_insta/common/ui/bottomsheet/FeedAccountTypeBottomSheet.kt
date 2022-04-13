@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.imagepicker_insta.common.R
 import com.tokopedia.imagepicker_insta.common.databinding.BottomSheetFeedAccountTypeBinding
 import com.tokopedia.imagepicker_insta.common.ui.adapter.FeedAccountTypeAdapter
+import com.tokopedia.imagepicker_insta.common.ui.itemdecoration.FeedAccountTypeItemDecoration
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.viewholder.FeedAccountTypeViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,10 +24,13 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
     private val adapter: FeedAccountTypeAdapter by lazy {
         FeedAccountTypeAdapter(object : FeedAccountTypeViewHolder.Listener {
             override fun onClick(item: FeedAccountUiModel) {
+                dismiss()
                 mListener?.onAccountClick(item)
             }
         })
     }
+
+    private val feedAccountList = mutableListOf<FeedAccountUiModel>()
     private var mListener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,15 +57,27 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         setTitle(getString(R.string.feed_account_bottom_sheet_title))
+
+        binding.rvFeedAccount.addItemDecoration(FeedAccountTypeItemDecoration(requireContext()))
         binding.rvFeedAccount.adapter = adapter
+
+        adapter.updateData(feedAccountList)
     }
 
-    private fun setOnAccountClickListener(listener: Listener?) {
+    fun setOnAccountClickListener(listener: Listener?) {
         mListener = listener
     }
 
+    fun setData(itemList: List<FeedAccountUiModel>) {
+        feedAccountList.clear()
+        feedAccountList.addAll(itemList)
+        if(isAdded) {
+            adapter.updateData(feedAccountList)
+        }
+    }
+
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+        if(!isAdded) show(fragmentManager, TAG)
     }
 
     companion object {
@@ -71,7 +87,7 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): FeedAccountTypeBottomSheet {
-            val oldInstance = fragmentManager.findFragmentById(TAG) as? FeedAccountTypeBottomSheet
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedAccountTypeBottomSheet
             return if(oldInstance != null) oldInstance
             else {
                 val fragmentFactory = fragmentManager.fragmentFactory

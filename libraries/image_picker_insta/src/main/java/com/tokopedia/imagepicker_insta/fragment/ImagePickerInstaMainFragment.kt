@@ -26,7 +26,9 @@ import com.tokopedia.imagepicker_insta.bottomsheets.CreatorTypesBottomSheet
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ImagePickerRouter.DEFAULT_MULTI_SELECT_LIMIT
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.imagepicker_insta.di.DaggerImagePickerComponent
 import com.tokopedia.imagepicker_insta.item_decoration.GridItemDecoration
@@ -46,6 +48,8 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.imagepicker_insta_camera_activity.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
@@ -80,6 +84,21 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     var maxMultiSelect: Int = DEFAULT_MULTI_SELECT_LIMIT
     val coachMarkItem = ArrayList<CoachMark2Item>()
     private  lateinit var coachMark: CoachMark2
+
+    private val userSession: UserSessionInterface by lazy(mode = LazyThreadSafetyMode.NONE) {
+        UserSession(requireContext())
+    }
+
+    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
+        val fragment = FeedAccountTypeBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
+        fragment.setData(generateFeedAccount())
+        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+            override fun onAccountClick(account: FeedAccountUiModel) {
+                /** TODO: gonna handle this */
+            }
+        })
+        fragment
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -261,7 +280,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             activity?.finish()
         }
         toolbarCommon.setOnAccountClickListener {
-            openBottomSheet()
+            openFeedAccountBottomSheet()
         }
 
         toolbarCommon.getToolbarParentView().addOneTimeGlobalLayoutListener {
@@ -297,18 +316,45 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
-    private fun openBottomSheet(){
-        var creatorListData= mutableListOf<CreatorListData>()
-        (activity as ImagePickerInstaActivity).run{
-            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
-            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
-        }
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun generateFeedAccount(): List<FeedAccountUiModel> {
+        return buildList{
+            if(userSession.isLoggedIn) {
+                add(
+                    FeedAccountUiModel(
+                        name = userSession.name,
+                        iconUrl = (activity as ImagePickerInstaActivity).toolbarIconUrl,
+                        type = FeedAccountUiModel.Type.BUYER
+                    )
+                )
 
-        val contentProductTagBS = CreatorTypesBottomSheet()
-        contentProductTagBS.show(Bundle.EMPTY,
-            childFragmentManager,
-            creatorListData,
-           )
+                if(userSession.hasShop()) {
+                    add(
+                        FeedAccountUiModel(
+                            name = userSession.shopName,
+                            iconUrl = userSession.shopAvatar,
+                            type = FeedAccountUiModel.Type.SELLER
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun openFeedAccountBottomSheet(){
+        feedAccountBottomSheet.show(childFragmentManager)
+
+//        var creatorListData= mutableListOf<CreatorListData>()
+//        (activity as ImagePickerInstaActivity).run{
+//            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
+//            creatorListData.add(CreatorListData(name = toolbarSubTitle, icon = toolbarIconUrl))
+//        }
+//
+//        val contentProductTagBS = CreatorTypesBottomSheet()
+//        contentProductTagBS.show(Bundle.EMPTY,
+//            childFragmentManager,
+//            creatorListData,
+//           )
 
     }
 
