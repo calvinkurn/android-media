@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:keepScreenOn="true"
         app:resize_mode="fit"
-        app:show_buffering="always"
+        app:show_buffering="never"
         app:surface_type="texture_view"
         app:use_controller="false" />
 
@@ -63,5 +63,21 @@
         app:layout_constraintTop_toBottomOf="@id/ic_review_video_player_error"
         app:typographyType="heading_2"
         tools:visibility="visible" />
+
+    <View
+        android:id="@+id/overlay_review_video_player_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Neutral_N700_68" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_review_video_player"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular_white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

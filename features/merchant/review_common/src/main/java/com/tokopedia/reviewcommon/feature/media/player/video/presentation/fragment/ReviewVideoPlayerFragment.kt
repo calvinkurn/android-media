@@ -216,14 +216,27 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
             reviewVideoPlayerViewModel.videoPlaybackUiState.collectLatest {
                 when (it) {
                     is ReviewVideoPlaybackUiState.Inactive -> {
+                        binding?.loaderReviewVideoPlayer?.gone()
+                        binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.showVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
                     is ReviewVideoPlaybackUiState.Error -> {
+                        binding?.loaderReviewVideoPlayer?.gone()
+                        binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.showVideoThumbnail()
                         reviewVideoPlayerViewModel.showVideoError()
                     }
+                    is ReviewVideoPlaybackUiState.Buffering,
+                    is ReviewVideoPlaybackUiState.Preloading -> {
+                        binding?.loaderReviewVideoPlayer?.show()
+                        binding?.overlayReviewVideoPlayerLoading?.show()
+                        reviewVideoPlayerViewModel.hideVideoThumbnail()
+                        reviewVideoPlayerViewModel.hideVideoError()
+                    }
                     else -> {
+                        binding?.loaderReviewVideoPlayer?.gone()
+                        binding?.overlayReviewVideoPlayerLoading?.gone()
                         reviewVideoPlayerViewModel.hideVideoThumbnail()
                         reviewVideoPlayerViewModel.hideVideoError()
                     }
