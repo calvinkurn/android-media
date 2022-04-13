@@ -47,7 +47,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
         }.executeOnBackground()
 
-        return@withContext interactiveMapper.mapInteractive(response.data.interactive)
+        return@withContext interactiveMapper.mapInteractive(response.data.giveaway)
     }
 
     override suspend fun getInteractiveLeaderboard(
