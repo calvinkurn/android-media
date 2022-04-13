@@ -34,6 +34,7 @@ data class MiniCartProductUiModel(
         var isProductDisabled: Boolean = false,
         var productCashbackPercentage: Int = 0,
         var bundleId: String = "",
+        var bundleGroupId: String = "",
         var bundleName: String = "",
         var bundlePrice: Long = 0,
         var bundlePriceFmt: String = "",

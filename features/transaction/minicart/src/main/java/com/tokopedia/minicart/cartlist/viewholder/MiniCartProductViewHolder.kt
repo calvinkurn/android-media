@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -64,7 +66,6 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
     }
 
     override fun bind(element: MiniCartProductUiModel) {
-        // TODO: BUNDLING NOW MINI CART
         renderDefaultState()
         renderProductImage(element)
         renderProductName(element)
@@ -599,11 +600,22 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textBundleTitle.text = element.bundleName
                 textBundlePrice.text = element.bundlePriceFmt
                 imageBundle.loadImage(element.bundleIconUrl)
+                textChangeBundle.setOnClickListener {
+                    openBundleSelectionPage(element)
+                }
                 containerBundleHeader.show()
             } else {
                 containerBundleHeader.hide()
             }
         }
+    }
+
+    private fun openBundleSelectionPage(element: MiniCartProductUiModel) {
+        RouteManager.route(
+            itemView.context,
+            ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE_BOTTOMSHEET,
+            element.productId
+        )
     }
 
     private fun renderBundleDiscount(element: MiniCartProductUiModel) {
