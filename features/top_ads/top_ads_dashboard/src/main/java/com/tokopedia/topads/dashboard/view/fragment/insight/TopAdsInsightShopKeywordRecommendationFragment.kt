@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
+import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.top_ads_headline_usecase.model.TopAdsManageHeadlineInput2
@@ -23,7 +24,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_topads_insight_shop_keyword.*
 import javax.inject.Inject
 
 class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
@@ -41,7 +41,8 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
         observeViewModel()
         getDataFromArgument()
-        accordionUnify.onItemClick = ::accordionUnifyItemClick
+        view.findViewById<AccordionUnify>(R.id.accordionUnify)?.onItemClick =
+            ::accordionUnifyItemClick
     }
 
     private fun observeViewModel() {
@@ -55,7 +56,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     private fun getDataFromArgument() {
         val data = arguments?.getParcelable<RecommendedKeywordData>(BUNDLE_NEW_KEYWORD)
         if (data == null || data.recommendedKeywordCount == 0) {
-            empty_view.show()
+            view?.findViewById<ConstraintLayout>(R.id.empty_view)?.show()
         } else {
             addAccordion(data)
         }
@@ -64,10 +65,12 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     private fun accordionUnifyItemClick(position: Int, isExpanded: Boolean) {
         expandedPosi = if (isExpanded) position else NOT_EXPANDED
         (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(isExpanded)
-        if (isExpanded) onKeywordSelected(
-            getExpandedView(position).type,
-            getExpandedView(position).selectedItemsCount()
-        )
+        if (isExpanded) getExpandedView(position)?.let {
+            onKeywordSelected(
+                it.type,
+                it.selectedItemsCount()
+            )
+        }
     }
 
     private fun addAccordion(recommendedKeywordData: RecommendedKeywordData) {
@@ -78,7 +81,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
             ::onKeywordSelected
         )
 
-        accordionUnify.addGroup(
+        view?.findViewById<AccordionUnify>(R.id.accordionUnify)?.addGroup(
             AccordionDataUnify(
                 title = getAccordionTitle(
                     NEW_KEYWORD,
@@ -95,7 +98,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     }
 
     fun applyKeywords() {
-        val groupMap = getExpandedView(expandedPosi).getKeywords() ?: return
+        val groupMap = getExpandedView(expandedPosi)?.getKeywords() ?: return
         for ((key, value) in groupMap) {
             val input = TopAdsManageHeadlineInput2(
                 source = "android.insight_center_headline_keyword_recom",
@@ -115,7 +118,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun getExpandedView(posi: Int) =
-        accordionUnify.accordionData[posi].expandableView as TopAdsInsightShopKeywordRecommendationView
+        view?.findViewById<AccordionUnify>(R.id.accordionUnify)?.accordionData?.getOrNull(posi)?.expandableView as? TopAdsInsightShopKeywordRecommendationView
 
     private fun initView(view: View) {
         emptyView = view.findViewById(R.id.empty_view)
@@ -148,7 +151,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
             requireView(),
             String.format(
                 resources.getString(R.string.apply_keyword_toast_message),
-                getExpandedView(expandedPosi).selectedItemsCount()
+                getExpandedView(expandedPosi)?.selectedItemsCount()
             ),
             actionText = resources.getString(R.string.topads_insight_oke_button)
         ).show()
@@ -157,7 +160,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         initInjector()
         val view = inflater.inflate(layout, container, false)
