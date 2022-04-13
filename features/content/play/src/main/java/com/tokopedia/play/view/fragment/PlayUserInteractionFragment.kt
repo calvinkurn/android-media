@@ -73,6 +73,7 @@ import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -118,12 +119,9 @@ class PlayUserInteractionFragment @Inject constructor(
         PlayButtonViewComponent.Listener,
         PiPViewComponent.Listener,
         ProductFeaturedViewComponent.Listener,
-        InteractiveViewComponent.Listener,
-        InteractiveWinnerBadgeViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        KebabMenuViewComponent.Listener,
-        InteractiveActiveViewComponent.Listener
+        KebabMenuViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -151,14 +149,12 @@ class PlayUserInteractionFragment @Inject constructor(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
-    private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     /**
      * Interactive
      */
-    private val interactiveView by viewComponentOrNull { InteractiveViewComponent(it, this) }
-    private val interactiveWinnerBadgeView by viewComponentOrNull(isEagerInit = true) { InteractiveWinnerBadgeViewComponent(it, this) }
+    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it) }
+    private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -467,41 +463,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * Interactive View Component Listener
-     */
-    override fun onFollowButtonClicked(view: InteractiveViewComponent) {
-        playViewModel.submitAction(ClickFollowInteractiveAction)
-    }
-
-    override fun onTapTapClicked(view: InteractiveViewComponent) {
-        playViewModel.submitAction(InteractiveTapTapAction)
-    }
-
-    override fun onRetryButtonClicked(view: InteractiveViewComponent) {
-        playViewModel.submitAction(ClickRetryInteractiveAction)
-    }
-
-    override fun onTapAnimationLoaded(view: InteractiveViewComponent) {
-        /**
-         * Connect to different anchor because Lottie increase the height of interactive view in a significant way
-         * and because of that, the distance between interactive view and winner badge increase significantly
-         */
-        val winnerBadgeView = interactiveWinnerBadgeView?.rootView
-        if (winnerBadgeView != null) {
-            this.view?.changeConstraint {
-                connect(winnerBadgeView.id, ConstraintSet.BOTTOM, R.id.v_winner_badge_bottom, ConstraintSet.TOP)
-            }
-        }
-    }
-
-    /**
-     * InteractiveWinnerBadge View Component Listener
-     */
-    override fun onBadgeClicked(view: InteractiveWinnerBadgeViewComponent) {
-        playViewModel.submitAction(InteractiveWinnerBadgeClickedAction(bottomSheetMaxHeight))
-    }
-
-    /**
      * Cast View Component Listener
      */
     override fun onCastClicked() {
@@ -515,7 +476,6 @@ class PlayUserInteractionFragment @Inject constructor(
         openProductSheet()
         analytic.clickFeaturedProductSeeMore()
     }
-
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -812,8 +772,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(prevState?.interactiveView, state.interactiveView, state.partner)
-                renderWinnerBadgeView(state.winnerBadge)
+                renderInteractiveView(prevState?.interactive, state.interactive, state.partner)
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -846,13 +805,6 @@ class PlayUserInteractionFragment @Inject constructor(
                         getInteractiveWinningDialog().apply {
                             setData(imageUrl = event.userImageUrl, title = event.dialogTitle, subtitle = event.dialogSubtitle)
                         }.show(childFragmentManager)
-                    }
-                    is ShowCoachMarkWinnerEvent -> {
-                        if (interactiveWinnerBadgeView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
-                        interactiveWinnerBadgeView?.showCoachMark(event.title, event.subtitle)
-                    }
-                    HideCoachMarkWinnerEvent -> {
-                        interactiveWinnerBadgeView?.hideCoachMark()
                     }
                     is OpenPageEvent -> {
                         openPageByApplink(
@@ -990,7 +942,6 @@ class PlayUserInteractionFragment @Inject constructor(
             playViewModel.videoOrientation.isHorizontal -> handleVideoHorizontalImmersive(shouldImmersive)
             playViewModel.videoOrientation.isVertical -> {
                 if (shouldImmersive) {
-                    interactiveWinnerBadgeView?.hideCoachMark()
                     playFullscreenManager.onEnterFullscreen()
                 }
                 else playFullscreenManager.onExitFullscreen()
@@ -1397,64 +1348,87 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractiveView(
-        prevState: PlayInteractiveViewUiState?,
-        state: PlayInteractiveViewUiState,
+        prevState: InteractiveUiModel?,
+        state: InteractiveUiModel,
         partner: PlayPartnerInfo,
     ) {
-        if (prevState?.interactive != state.interactive) {
-            when (val interactive = state.interactive) {
-                PlayInteractiveUiState.Loading -> {
-                    interactiveView?.setLoading()
-                }
-                PlayInteractiveUiState.Error -> {
-                    interactiveView?.setError()
-                }
-                is PlayInteractiveUiState.PreStart -> {
-                    interactiveView?.setPreStart(
-                        title = interactive.title,
-                        timeToStartInMs = interactive.timeToStartInMs
-                    ) { playViewModel.submitAction(InteractivePreStartFinishedAction) }
-                }
-                is PlayInteractiveUiState.Ongoing -> {
-                    interactiveView?.setTapTap(durationInMs = interactive.timeRemainingInMs) {
-                        playViewModel.submitAction(InteractiveOngoingFinishedAction)
-                    }
-                }
-                is PlayInteractiveUiState.Finished -> {
-                    interactiveView?.setFinish(info = getString(interactive.info))
-                }
-                else -> {}
-            }
-
-            /**
-             * Connect to different anchor because Lottie increase the height of interactive view in a significant way
-             * and because of that, the distance between interactive view and winner badge increase significantly
-             */
-            val winnerBadgeView = interactiveWinnerBadgeView?.rootView
-            if (winnerBadgeView != null && state.interactive !is PlayInteractiveUiState.Ongoing) {
-                view?.changeConstraint {
-                    val bottomAnchor = interactiveView?.id ?: return@changeConstraint
-                    connect(winnerBadgeView.id, ConstraintSet.BOTTOM, bottomAnchor, ConstraintSet.TOP)
+        if (prevState != state) {
+            when (state) {
+                is InteractiveUiModel.Giveaway -> renderGiveawayView(state)
+                is InteractiveUiModel.Quiz -> renderQuizView(state)
+                InteractiveUiModel.Unknown -> {
+                    interactiveActiveView?.hide()
+                    interactiveFinishView?.hide()
                 }
             }
-
         }
 
-        interactiveView?.showFollowMode(
-            partner.status is PlayPartnerFollowStatus.Followable &&
-                    !partner.status.isFollowing
-        )
+//        interactiveView?.showFollowMode(
+//            partner.status is PlayPartnerFollowStatus.Followable &&
+//                    !partner.status.isFollowing
+//        )
+    }
 
-        when (state.visibility) {
-            ViewVisibility.Visible -> interactiveView?.show()
-            ViewVisibility.Invisible -> interactiveView?.invisible()
-            ViewVisibility.Gone -> interactiveView?.hide()
+    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+        when (val status = state.status) {
+            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
+                interactiveActiveView?.setUpcomingGiveaway(
+                    desc = state.title,
+                    durationInMs = status.timeToStartInMs,
+                    onDurationEnd = {
+                        playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishView?.hide()
+            }
+            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
+                interactiveActiveView?.setOngoingGiveaway(
+                    desc = state.title,
+                    durationInMs = status.durationInMs,
+                    onDurationEnd = {
+                        playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+                    }
+                )
+                interactiveFinishView?.hide()
+            }
+            InteractiveUiModel.Giveaway.Status.Finished -> {
+                interactiveActiveView?.hide()
+
+                interactiveFinishView?.setupGiveaway()
+                interactiveFinishView?.show()
+            }
+            InteractiveUiModel.Giveaway.Status.Unknown -> {
+                interactiveActiveView?.hide()
+                interactiveFinishView?.hide()
+            }
         }
     }
 
-    private fun renderWinnerBadgeView(state: PlayWinnerBadgeUiState) {
-        if (state.shouldShow) interactiveWinnerBadgeView?.show()
-        else interactiveWinnerBadgeView?.hide()
+    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
+        when (val status = state.status) {
+            is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                interactiveActiveView?.setQuiz(
+                    question = state.title,
+                    durationInMs = status.durationInMs,
+                    onDurationEnd = {
+                        playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
+                    }
+                )
+                interactiveActiveView?.show()
+                interactiveFinishView?.hide()
+            }
+            InteractiveUiModel.Quiz.Status.Finished -> {
+                interactiveActiveView?.hide()
+
+                interactiveFinishView?.setupQuiz()
+                interactiveFinishView?.show()
+            }
+            InteractiveUiModel.Quiz.Status.Unknown -> {
+                interactiveActiveView?.hide()
+                interactiveFinishView?.hide()
+            }
+        }
     }
 
     private fun renderToolbarView(title: PlayTitleUiState) {
@@ -1673,13 +1647,6 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
-    }
-
-    /***
-     * Interactive View
-     */
-    override fun onInteractiveWidgetClicked(view: InteractiveActiveViewComponent) {
-        //TODO("Not yet implemented")
     }
 
     companion object {

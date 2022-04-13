@@ -8,7 +8,13 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 /**
  * Created by jegul on 28/06/21
  */
-sealed class PlayViewerNewAction
+sealed class PlayViewerNewAction {
+
+    object GiveawayUpcomingEnded : PlayViewerNewAction()
+    object GiveawayOngoingEnded : PlayViewerNewAction()
+
+    object QuizEnded : PlayViewerNewAction()
+}
 
 /**
  * Interactive

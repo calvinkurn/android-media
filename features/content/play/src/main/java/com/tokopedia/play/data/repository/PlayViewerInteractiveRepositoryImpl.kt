@@ -8,6 +8,7 @@ import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
@@ -25,11 +26,11 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         private val interactiveStorage: PlayInteractiveStorage
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
-    override suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel = withContext(dispatchers.io) {
+    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
         val response = getCurrentInteractiveUseCase.apply {
             setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
         }.executeOnBackground()
-        return@withContext mapper.mapInteractive(response.data.interactive)
+        return@withContext mapper.mapInteractive(response.data)
     }
 
     override suspend fun postInteractiveTap(channelId: String, interactiveId: String): Boolean = withContext(dispatchers.io) {
