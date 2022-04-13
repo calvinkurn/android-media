@@ -6,28 +6,28 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-class VideoCarouselItemAdapter(
-    diffCallback: DiffUtil.ItemCallback<VideoCarouselItemModel> = VideoCarouselItemDiffUtil()
-) : ListAdapter<VideoCarouselItemModel, VideoCarouselItemViewHolder>(diffCallback) {
+class VideoCarouselVideoItemAdapter(
+    diffCallback: DiffUtil.ItemCallback<VideoCarouselDataView.VideoItem> = VideoCarouselDataViewVideoItemDiffUtil()
+) : ListAdapter<VideoCarouselDataView.VideoItem, VideoCarouselVideoItemViewHolder>(diffCallback) {
     private var listener: VideoCarouselItemListener? = null
     private var isWifiConnected = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoCarouselItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoCarouselVideoItemViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(VideoCarouselItemViewHolder.LAYOUT, parent, false)
-        return VideoCarouselItemViewHolder(view).apply {
+            .inflate(VideoCarouselVideoItemViewHolder.LAYOUT, parent, false)
+        return VideoCarouselVideoItemViewHolder(view).apply {
             view.setOnClickListener {
                 val currentPosition = adapterPosition
                 if (currentPosition != RecyclerView.NO_POSITION) {
-                    listener?.onVideoCarouselItemClicked(currentPosition)
+                    listener?.onVideoCarouselItemClicked(getItem(currentPosition))
                 }
             }
         }
     }
 
-    override fun onBindViewHolder(holder: VideoCarouselItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: VideoCarouselVideoItemViewHolder, position: Int) {
         holder.bind(getItem(position), isWifiConnected)
-        listener?.onVideoCarouselItemImpressed(position)
+        listener?.onVideoCarouselItemImpressed(getItem(position))
     }
 
     fun onWifiConnectionChange(isWifiConnected: Boolean) {

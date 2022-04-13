@@ -21,7 +21,7 @@ class VideoCarouselWidgetCoordinator(
     private val scope = CoroutineScope(mainCoroutineDispatcher)
 
     private var widget: VideoCarouselView? = null
-    private var model: VideoCarouselModel? = null
+    private var dataView: VideoCarouselDataView? = null
 
     private val autoPlayCoordinator = VideoCarouselAutoPlayCoordinator(
         scope,
@@ -79,10 +79,10 @@ class VideoCarouselWidgetCoordinator(
         widget?.setWidgetListener(listener)
     }
 
-    fun connect(widget: VideoCarouselView, model: VideoCarouselModel) {
-        this.model = model
-        widget.setCarouselModel(model)
-        autoPlayCoordinator.configureAutoPlay(widget, model.config)
+    fun connect(widget: VideoCarouselView, dataView: VideoCarouselDataView) {
+        this.dataView = dataView
+        widget.setCarouselModel(dataView)
+        autoPlayCoordinator.configureAutoPlay(widget, dataView.config)
     }
 
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {

@@ -17,8 +17,8 @@ import kotlinx.coroutines.flow.flowOf
 
 class VideoCarouselView : BaseCustomView, VideoPlayer {
     private val snapHelper = StartSnapHelper()
-    private val defaultRecyclerViewDecorator = VideoCarouselDefaultDecorator()
-    private val adapter = VideoCarouselItemAdapter()
+    private val defaultRecyclerViewDecorator = VideoCarouselVideoItemDefaultDecorator()
+    private val adapter = VideoCarouselVideoItemAdapter()
     private var listener: VideoCarouselItemListener? = null
     private var internalListener: VideoCarouselInternalListener? = null
     private var videoPlayerStateFlow : MutableStateFlow<VideoPlayerState>? = null
@@ -95,9 +95,9 @@ class VideoCarouselView : BaseCustomView, VideoPlayer {
         recyclerView.addOnScrollListener(scrollChangeListener)
     }
 
-    fun setCarouselModel(carouselModel: VideoCarouselModel) {
-        titleTextView.text = carouselModel.title
-        adapter.submitList(carouselModel.itemList)
+    fun setCarouselModel(carouselDataView: VideoCarouselDataView) {
+        titleTextView.text = carouselDataView.title
+        adapter.submitList(carouselDataView.itemList)
     }
 
     fun recycle() {

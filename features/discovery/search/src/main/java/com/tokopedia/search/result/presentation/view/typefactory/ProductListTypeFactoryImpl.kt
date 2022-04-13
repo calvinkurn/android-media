@@ -73,11 +73,11 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDa
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
-import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoViewHolder
-import com.tokopedia.search.result.product.videowidget.InspirationVideoCarouselListener
 import com.tokopedia.search.result.product.violation.ViolationDataView
 import com.tokopedia.search.result.product.violation.ViolationListener
 import com.tokopedia.search.result.product.violation.ViolationViewHolder
+import com.tokopedia.video_widget.carousel.InspirationCarouselVideoViewHolder
+import com.tokopedia.video_widget.carousel.InspirationVideoCarouselListener
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.NetworkMonitor
 

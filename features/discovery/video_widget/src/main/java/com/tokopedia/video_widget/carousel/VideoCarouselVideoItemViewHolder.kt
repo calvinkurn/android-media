@@ -7,7 +7,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.video_widget.R
 import com.tokopedia.video_widget.databinding.VideoCarouselItemBinding
 
-class VideoCarouselItemViewHolder(
+class VideoCarouselVideoItemViewHolder(
     view: View
 ) : RecyclerView.ViewHolder(view){
     companion object {
@@ -18,7 +18,7 @@ class VideoCarouselItemViewHolder(
 
     private var binding: VideoCarouselItemBinding? by viewBinding()
 
-    fun bind(videoItem: VideoCarouselItemModel, isWifiConnected: Boolean) {
+    fun bind(videoItem: VideoCarouselDataView.VideoItem, isWifiConnected: Boolean) {
         val binding = binding ?: return
         binding.root.setVideoCarouselItemModel(videoItem)
         renderPlayButtonVisibility(binding.root, isWifiConnected)

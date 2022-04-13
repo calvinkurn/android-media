@@ -39,7 +39,7 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
     }
 
     private var player: CarouselVideoPlayer? = null
-    private var model: VideoCarouselItemModel? = null
+    private var model: VideoCarouselDataView.VideoItem? = null
 
     constructor(context: Context) : super(context) {
         init(null)
@@ -61,9 +61,9 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
         View.inflate(context, R.layout.video_carousel_card_view, this)
     }
 
-    fun setVideoCarouselItemModel(videoItem: VideoCarouselItemModel) {
+    fun setVideoCarouselItemModel(videoItem: VideoCarouselDataView.VideoItem) {
         this.model = videoItem
-        videoThumbnailImageView.loadImage(videoItem.imageURL)
+        videoThumbnailImageView.loadImage(videoItem.imageUrl)
         titleTextView.text = videoItem.title
         renderSubTitle(videoItem.subTitle)
     }
@@ -108,7 +108,7 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
             videoView.gone()
         } else {
             model?.let {
-                player.videoUrl = it.videoURL
+                player.videoUrl = it.videoUrl
                 player.shouldCache = true
                 player.start()
             }
@@ -121,6 +121,6 @@ class VideoCarouselCardView : BaseCustomView, CarouselVideoPlayerReceiver {
     }
 
     override fun isPlayable(): Boolean {
-        return model?.videoURL?.isNotBlank() == true
+        return model?.videoUrl?.isNotBlank() == true
     }
 }

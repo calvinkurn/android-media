@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.toPx
 
-class VideoCarouselDefaultDecorator : RecyclerView.ItemDecoration() {
+class VideoCarouselVideoItemDefaultDecorator : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
