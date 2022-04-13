@@ -31,7 +31,9 @@ import com.tokopedia.createpost.view.posttag.TagViewProvider
 import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
+import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.menu.MenuManager
+import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
@@ -63,6 +65,17 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private val imageList: ArrayList<String>
         get() = ArrayList(createPostModel.completeImageList.map { it.path })
+
+    private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
+        val fragment = FeedAccountTypeBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
+        fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
+            override fun onAccountClick(feedAccount: FeedAccountUiModel) {
+                /** TODO: gonna handle this */
+//                viewModel.setSelectedFeedAccount(feedAccount)
+            }
+        })
+        fragment
+    }
 
     companion object {
         private const val REQUEST_ATTACH_PRODUCT = 10

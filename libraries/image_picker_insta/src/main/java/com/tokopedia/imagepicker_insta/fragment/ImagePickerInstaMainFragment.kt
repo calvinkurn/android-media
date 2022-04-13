@@ -94,7 +94,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
         val fragment = FeedAccountTypeBottomSheet.getFragment(childFragmentManager, requireActivity().classLoader)
-        fragment.setData(generateFeedAccount())
         fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
             override fun onAccountClick(feedAccount: FeedAccountUiModel) {
                 viewModel.setSelectedFeedAccount(feedAccount)
@@ -307,35 +306,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             viewModel.setSelectedFeedAccount(
                 FeedAccountUiModel(
                     name = userSession.name,
-                    iconUrl = toolbarIconUrl,
+                    iconUrl = userSession.profilePicture,
                     type = FeedAccountUiModel.Type.BUYER,
                 )
             )
-        }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun generateFeedAccount(): List<FeedAccountUiModel> {
-        return buildList{
-            if(userSession.isLoggedIn) {
-                add(
-                    FeedAccountUiModel(
-                        name = userSession.name,
-                        iconUrl = (activity as ImagePickerInstaActivity).toolbarIconUrl,
-                        type = FeedAccountUiModel.Type.BUYER
-                    )
-                )
-
-                if(userSession.hasShop()) {
-                    add(
-                        FeedAccountUiModel(
-                            name = userSession.shopName,
-                            iconUrl = userSession.shopAvatar,
-                            type = FeedAccountUiModel.Type.SELLER
-                        )
-                    )
-                }
-            }
         }
     }
 

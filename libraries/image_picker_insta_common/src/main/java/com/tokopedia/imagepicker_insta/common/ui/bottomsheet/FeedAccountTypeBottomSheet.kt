@@ -11,6 +11,8 @@ import com.tokopedia.imagepicker_insta.common.ui.itemdecoration.FeedAccountTypeI
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
 import com.tokopedia.imagepicker_insta.common.ui.viewholder.FeedAccountTypeViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * Created By : Jonathan Darwin on April 13, 2022
@@ -30,7 +32,34 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private val feedAccountList = mutableListOf<FeedAccountUiModel>()
+    private val userSession: UserSessionInterface by lazy {
+        UserSession(context)
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private val feedAccountList: List<FeedAccountUiModel> by lazy {
+        buildList{
+            if(userSession.isLoggedIn) {
+                add(
+                    FeedAccountUiModel(
+                        name = userSession.name,
+                        iconUrl = userSession.profilePicture,
+                        type = FeedAccountUiModel.Type.BUYER
+                    )
+                )
+
+                if(userSession.hasShop()) {
+                    add(
+                        FeedAccountUiModel(
+                            name = userSession.shopName,
+                            iconUrl = userSession.shopAvatar,
+                            type = FeedAccountUiModel.Type.SELLER
+                        )
+                    )
+                }
+            }
+        }
+    }
     private var mListener: Listener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,14 +95,6 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
 
     fun setOnAccountClickListener(listener: Listener?) {
         mListener = listener
-    }
-
-    fun setData(itemList: List<FeedAccountUiModel>) {
-        feedAccountList.clear()
-        feedAccountList.addAll(itemList)
-        if(isAdded) {
-            adapter.updateData(feedAccountList)
-        }
     }
 
     fun show(fragmentManager: FragmentManager) {
