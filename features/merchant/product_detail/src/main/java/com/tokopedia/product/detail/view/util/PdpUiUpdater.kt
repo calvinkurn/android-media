@@ -279,7 +279,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         if (selectedOptionId == null) return
         updateData(ProductDetailConstant.MEDIA) {
             mediaMap?.apply {
-                this.variantOptionIdScrollAnchor = selectedOptionId
+                if(this.variantOptionIdScrollAnchor != selectedOptionId){
+                    this.variantOptionIdScrollAnchor = selectedOptionId
+                    this.shouldUpdateImage = true
+                }
             }
         }
     }
