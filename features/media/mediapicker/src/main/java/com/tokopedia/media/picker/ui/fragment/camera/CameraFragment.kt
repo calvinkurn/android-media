@@ -135,6 +135,8 @@ open class CameraFragment : BaseDaggerFragment()
     }
 
     override fun onCameraThumbnailClicked() {
+        if (medias.isEmpty()) return
+
         listener?.onCameraThumbnailClicked()
         cameraAnalytics.clickThumbnail()
     }
