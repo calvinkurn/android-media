@@ -1,7 +1,7 @@
-@file:Suppress("ResponseFieldAnnotation")
 package com.tokopedia.picker.common
 
 import android.os.Parcelable
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.picker.common.types.PageType
 import kotlinx.parcelize.Parcelize
@@ -9,24 +9,24 @@ import java.io.File
 
 @Parcelize
 data class PickerParam(
-    private var pageType: Int = PageType.COMMON,
-    private var modeType: Int = ModeType.COMMON,
-    private var isMultipleSelection: Boolean = true,
-    private var cameraRatio: CameraRatio = CameraRatio.Full,
-    private var maxMediaItem: Int = 4,
-    private var maxVideoItem: Int = 2,
-    private var maxVideoFileSize: Long = 250_000_000, // 250 mb
-    private var minVideoDuration: Int = 3000, // equals 3 sec
-    private var maxVideoDuration: Long = 30_000, // equals 30 sec
-    private var maxImageFileSize: Long = 10_000_000, // 10 mb
-    private var minImageResolution: Int = 300, // px
-    private var maxImageResolution: Int = 20000, // px
-    private var minStorageThreshold: Long = 150_000_000, // 150 mb
-    private var isIncludeAnimation: Boolean = false,
-    private var withEditor: Boolean = false,
-    private var pageSource: PageSource = PageSource.Unknown,
-    private var includeMedias: List<File> = emptyList(),
-    private var excludedMedias: List<File> = emptyList(),
+    @SerializedName("pageType") private var pageType: Int = PageType.COMMON,
+    @SerializedName("modeType") private var modeType: Int = ModeType.COMMON,
+    @SerializedName("isMultipleSelection") private var isMultipleSelection: Boolean = true,
+    @SerializedName("cameraRatio") private var cameraRatio: CameraRatio = CameraRatio.Full,
+    @SerializedName("maxMediaItem") private var maxMediaItem: Int = 4,
+    @SerializedName("maxVideoItem") private var maxVideoItem: Int = 2,
+    @SerializedName("maxVideoFileSize") private var maxVideoFileSize: Long = 250_000_000, // 250 mb
+    @SerializedName("minVideoDuration") private var minVideoDuration: Int = 3000, // equals 3 sec
+    @SerializedName("maxVideoDuration") private var maxVideoDuration: Long = 30_000, // equals 30 sec
+    @SerializedName("maxImageFileSize") private var maxImageFileSize: Long = 10_000_000, // 10 mb
+    @SerializedName("minImageResolution") private var minImageResolution: Int = 300, // px
+    @SerializedName("maxImageResolution") private var maxImageResolution: Int = 20000, // px
+    @SerializedName("minStorageThreshold") private var minStorageThreshold: Long = 150_000_000, // 150 mb
+    @SerializedName("isIncludeAnimation") private var isIncludeAnimation: Boolean = false,
+    @SerializedName("withEditor") private var withEditor: Boolean = false,
+    @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
+    @SerializedName("includeMedias") private var includeMedias: List<File> = emptyList(),
+    @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
 ) : Parcelable {
 
     // getter
