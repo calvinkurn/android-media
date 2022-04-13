@@ -112,7 +112,6 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     private var reviewPerformanceMonitoringListener: ReviewPerformanceMonitoringListener? = null
 
     private var reviewReadingCoordinatorLayout: CoordinatorLayout? = null
-    private var reviewHeader: ReadReviewHeader? = null
     private var statisticsBottomSheet: ReadReviewStatisticsBottomSheet? = null
     private var loadingView: View? = null
     private var listOnlyLoading: View? = null
@@ -130,6 +129,8 @@ open class ReadReviewFragment : BaseListFragment<ReadReviewUiModel, ReadReviewAd
     private val readReviewFilterFactory by lazy {
         ReadReviewSortFilterFactory()
     }
+
+    protected var reviewHeader: ReadReviewHeader? = null
 
     override fun onPause() {
         super.onPause()

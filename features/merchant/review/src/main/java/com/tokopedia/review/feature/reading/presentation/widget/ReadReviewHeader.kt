@@ -107,6 +107,14 @@ class ReadReviewHeader : BaseCustomView {
         showRatingContainerBorderLine()
     }
 
+    fun hideRatingContainer() {
+        reviewRatingContainer.gone()
+    }
+
+    fun showRatingContainer() {
+        reviewRatingContainer.visible()
+    }
+
     private fun showRatingContainerBorderLine() {
         try {
             reviewRatingContainer.setBackgroundResource(R.drawable.bg_review_header_bordered)
