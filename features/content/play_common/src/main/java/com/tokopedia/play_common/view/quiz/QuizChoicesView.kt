@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.quiz
+package com.tokopedia.play_common.view.quiz
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -11,7 +11,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.play.R
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -43,18 +42,18 @@ class QuizChoicesView : ConstraintLayout {
     private val ivIcon: IconUnify
 
     init {
-        val view = View.inflate(context, R.layout.item_quiz_choice, this)
+        val view = View.inflate(context, commonR.layout.item_quiz_choice, this)
 
-        tvQuestion = view.findViewById(R.id.tv_quiz_question)
-        loaderQuiz = view.findViewById(R.id.loader_quiz_option)
+        tvQuestion = view.findViewById(commonR.id.tv_quiz_question)
+        loaderQuiz = view.findViewById(commonR.id.loader_quiz_option)
 
         bgDrawable = MethodChecker.getDrawable(context, commonR.drawable.bg_quiz_choice)
         defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN600)
         filledFontColor = MethodChecker.getColor(context, unifyR.color.Unify_N0)
 
-        ivOption = view.findViewById(R.id.iv_quiz_option)
-        ivAlphabet = ivOption.findViewById(R.id.tv_alphabet)
-        ivIcon = ivOption.findViewById(R.id.iv_icon)
+        ivOption = view.findViewById(commonR.id.iv_quiz_option)
+        ivAlphabet = ivOption.findViewById(commonR.id.tv_alphabet)
+        ivIcon = ivOption.findViewById(commonR.id.iv_icon)
     }
 
     /***
@@ -112,7 +111,7 @@ class QuizChoicesView : ConstraintLayout {
             ivAlphabet.show()
             ivIcon.hide()
             ivAlphabet.text = alphabet.uppercase()
-            ivOption.background = MethodChecker.getDrawable(context, R.drawable.bg_play_option)
+            ivOption.background = MethodChecker.getDrawable(context, commonR.drawable.bg_play_option)
         }
 
         isCorrect?.let {

@@ -10,8 +10,12 @@ import com.tokopedia.play_common.R
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveWinnerAdapter
 import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderboardWinnerItemDecoration
+import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
+import com.tokopedia.play_common.view.quiz.QuizListAdapter
+import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
 import com.tokopedia.play_common.view.setGradientBackground
 import com.tokopedia.unifyprinciples.Typography
 
@@ -32,6 +36,10 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
      */
     private val ivReward = itemView.findViewById<IconUnify>(R.id.iv_reward)
     private val tvReward = itemView.findViewById<Typography>(R.id.tv_reward)
+    private val rvChoices = itemView.findViewById<RecyclerView>(R.id.rv_choices)
+    private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
+        override fun onClicked(item: QuizChoicesUiModel.Complete) {}
+    })
 
     private val winnerAdapter = PlayInteractiveWinnerAdapter(object : PlayInteractiveWinnerViewHolder.Listener{
         override fun onChatButtonClicked(item: PlayWinnerUiModel, position: Int) {
@@ -44,6 +52,9 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         rvWinner.addItemDecoration(
                 PlayLeaderboardWinnerItemDecoration(itemView.context)
         )
+
+        rvChoices.adapter = choicesAdapter
+        rvChoices.addItemDecoration(QuizOptionItemDecoration(itemView.context))
     }
 
     fun bind(leaderboard: PlayLeaderboardUiModel) {
@@ -52,6 +63,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         setupLeaderboardType(leaderboard)
 
         if (leaderboard.winners.isEmpty()) hideParticipant(leaderboard) else showParticipant(leaderboard)
+        if(leaderboard.choices.isEmpty()) hideQuiz(leaderboard) else showQuiz(leaderboard)
     }
 
     private fun setupLeaderboardType(leaderboard: PlayLeaderboardUiModel){
@@ -89,6 +101,19 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
         tvOtherParticipant.hide()
         rvWinner.hide()
         tvEmpty.show()
+    }
+
+    private fun showQuiz(leaderboard: PlayLeaderboardUiModel){
+        rvChoices.show()
+        choicesAdapter.setItemsAndAnimateChanges(leaderboard.choices)
+
+        //no choices
+    }
+
+    private fun hideQuiz(leaderboard: PlayLeaderboardUiModel){
+        rvChoices.hide()
+
+        //no choice
     }
 
     interface Listener {

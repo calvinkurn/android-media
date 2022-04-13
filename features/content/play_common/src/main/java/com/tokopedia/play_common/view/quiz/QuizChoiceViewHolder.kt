@@ -1,9 +1,9 @@
-package com.tokopedia.play.view.quiz
+package com.tokopedia.play_common.view.quiz
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.play.R
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import com.tokopedia.play_common.R
 
 /**
  * @author by astidhiyaa on 08/04/22

@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.quiz
+package com.tokopedia.play_common.view.quiz
 
 import android.content.Context
 import android.graphics.Rect

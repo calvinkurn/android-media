@@ -13,10 +13,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.R
-import com.tokopedia.play.view.quiz.QuizChoiceViewHolder
+import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play.view.quiz.QuizListAdapter
-import com.tokopedia.play.view.quiz.QuizOptionItemDecoration
+import com.tokopedia.play_common.view.quiz.QuizListAdapter
+import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
 import com.tokopedia.play_common.view.game.GameHeaderView
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle

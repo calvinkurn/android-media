@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.quiz
+package com.tokopedia.play_common.view.quiz
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
