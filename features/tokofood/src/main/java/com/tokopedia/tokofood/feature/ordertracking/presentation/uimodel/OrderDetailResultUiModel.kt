@@ -5,6 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 data class OrderDetailResultUiModel(
     val orderDetailList: List<BaseOrderTrackingTypeFactory>,
     val foodItemList: List<BaseOrderTrackingTypeFactory>,
+    val orderStatus: String,
     val isOrderCompleted: Boolean,
     val actionButtonsUiModel: ActionButtonsUiModel,
     val toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel

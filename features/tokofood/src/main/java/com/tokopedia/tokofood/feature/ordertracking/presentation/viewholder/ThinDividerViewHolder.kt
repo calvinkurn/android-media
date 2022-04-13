@@ -19,10 +19,12 @@ class ThinDividerViewHolder(view: View): AbstractViewHolder<ThinDividerUiModel>(
     private val binding = ItemTokofoodOrderTrackingThinDividerFullBinding.bind(itemView)
 
     override fun bind(element: ThinDividerUiModel) {
-        with(binding.thinDividerFull) {
-            val layoutParamsMargin = layoutParams as? RecyclerView.LayoutParams
-            layoutParamsMargin?.topMargin = element.marginTop.toPx()
-            layoutParams = layoutParamsMargin
+        element.marginTop?.let {
+            with(binding.thinDividerFull) {
+                val layoutParamsMargin = layoutParams as? RecyclerView.LayoutParams
+                layoutParamsMargin?.topMargin = it.toPx()
+                layoutParams = layoutParamsMargin
+            }
         }
     }
 

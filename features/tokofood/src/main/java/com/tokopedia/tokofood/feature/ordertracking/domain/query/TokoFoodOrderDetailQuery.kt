@@ -42,10 +42,7 @@ internal object TokoFoodOrderDetailQuery: GqlQueryInterface {
             }
             additionalTickerInfo {
               level
-              notes
-              urlText
-              appUrl
-              webUrl
+              appText
             }
             actionButtons {
               label

@@ -9,9 +9,12 @@ data class TokoFoodOrderStatusResponse(
     val tokofoodOrderDetail: TokofoodOrderDetail = TokofoodOrderDetail()
 ) {
     data class TokofoodOrderDetail(
+        @SerializedName("additionalTickerInfo")
+        @Expose
+        val additionalTickerInfo: List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.AdditionalTickerInfo>? = listOf(),
         @SerializedName("eta")
         @Expose
-        val eta: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta(),
+        val eta: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta? = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Eta(),
         @SerializedName("invoice")
         @Expose
         val invoice: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice(),

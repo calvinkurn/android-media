@@ -11,8 +11,8 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.Toolbar
 import javax.inject.Inject
 
 class TokoFoodOrderDetailMapper @Inject constructor(
-    private val orderLiveTrackingMapper: TokoFoodOrderLiveTrackingMapper,
-    private val orderCompletedMapper: TokoFoodOrderCompletedMapper
+    private val orderLiveTrackingMapper: TokoFoodOrderLiveTrackingMapperSection,
+    private val orderCompletedMapper: TokoFoodOrderCompletedMapperSection
 ) {
 
     fun mapToOrderDetailResultUiModel(orderDetailResponse: TokoFoodOrderDetailResponse.TokofoodOrderDetail): OrderDetailResultUiModel {
@@ -36,6 +36,7 @@ class TokoFoodOrderDetailMapper @Inject constructor(
         return OrderDetailResultUiModel(
             orderDetailList,
             foodItems,
+            orderStatus,
             isOrderCompleted,
             mapToActionButtons(orderDetailResponse),
             mapToToolbarLiveTrackingUiModel(orderDetailResponse)

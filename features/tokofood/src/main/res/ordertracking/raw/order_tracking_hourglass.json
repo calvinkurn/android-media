@@ -1,0 +1,24 @@
+{
+  "tokofoodOrderDetail": {
+    "orderStatus": {
+      "status": "OTW_PICKUP",
+      "title": "Makanan lagi disiapin",
+      "subtitle": "Driver meluncur ke restoran",
+      "iconName": "cooking"
+    },
+    "eta": {
+      "label": "Estimasi tiba pukul",
+      "time": "12:45 - 12:48"
+    },
+    "additionalTickerInfo": [
+      {
+        "level": "info",
+        "appText": "This will be text for cancelation reason <a href='tokopedia://order/123'>This will be link/action</a>"
+      }
+    ],
+    "invoice": {
+      "invoiceNumber": "INV/20181011/XVI/X/55069657",
+      "gofoodOrderNumber": "F-1468046953"
+    }
+  }
+}

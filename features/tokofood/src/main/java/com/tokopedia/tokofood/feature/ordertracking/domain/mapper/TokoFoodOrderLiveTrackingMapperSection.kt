@@ -5,7 +5,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrd
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.RestaurantUserAddressUiModel
 import javax.inject.Inject
 
-class TokoFoodOrderLiveTrackingMapper @Inject constructor() : BaseOrderDetailResult() {
+class TokoFoodOrderLiveTrackingMapperSection @Inject constructor() : BaseOrderDetailSectionResult() {
 
     override fun mapToOrderDetailList(
         tokoFoodOrderDetail:
@@ -15,7 +15,7 @@ class TokoFoodOrderLiveTrackingMapper @Inject constructor() : BaseOrderDetailRes
             addTickerUiModel(tokoFoodOrderDetail.additionalTickerInfo)
             addOrderTrackingStatusInfo(tokoFoodOrderDetail.orderStatus)
             addEstimationUiModel(tokoFoodOrderDetail.eta)
-            addThinDividerUiModel(MARGIN_TOP_EIGHT)
+            addThinDividerUiModel(if (tokoFoodOrderDetail.eta != null ) MARGIN_TOP_EIGHT else null)
             addDriverSectionUiModel(tokoFoodOrderDetail.driverDetails, "081234567890")
             addThinDividerUiModel(MARGIN_TOP_TWENTY)
             addRestaurantUserAddress(tokoFoodOrderDetail.merchant, tokoFoodOrderDetail.destination)

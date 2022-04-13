@@ -17,6 +17,10 @@ internal object TokoFoodOrderStatusQuery: GqlQueryInterface {
               subtitle
               iconName
             }
+            additionalTickerInfo {
+              level
+              appText
+            }
             eta {
               label
               time
