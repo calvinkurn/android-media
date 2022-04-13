@@ -7,27 +7,4 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="behavior_peekHeight">1000dp</item>
     </style>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/Unify_G500</item>
-        <item name="colorPrimaryDark">@color/Unify_G500</item>
-        <item name="colorAccent">@color/Unify_G500</item>
-    </style>
-
-    <style name="ExpandableStyleArrow" parent="style_expandable_option_default">
-        <item name="eo_text_option_style">@style/ExpandableTextOptionsStyle</item>
-        <item name="eo_header_style">@style/ExpandableHeaderStyle</item>
-    </style>
-
-    <style name="ExpandableHeaderStyle" parent="eo_header_style">
-        <item name="android:background">@color/Unify_N0</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:padding">@dimen/dp_16</item>
-    </style>
-
-    <style name="ExpandableTextOptionsStyle" parent="eo_text_option_style">
-        <item name="android:textColor">@color/Unify_N700</item>
-    </style>
 </resources>
