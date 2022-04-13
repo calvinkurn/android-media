@@ -203,12 +203,17 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             binding?.btnManage?.isLoading = false
             when (it) {
                 is Success -> {
-                    ShopDiscountManageDiscountActivity.start(
-                        requireActivity(),
-                        viewModel.getRequestId(),
-                        discountStatusId,
-                        ShopDiscountManageDiscountMode.CREATE
-                    )
+                    val isReservationSuccess = it.data
+                    if (isReservationSuccess) {
+                        ShopDiscountManageDiscountActivity.start(
+                            requireActivity(),
+                            viewModel.getRequestId(),
+                            discountStatusId,
+                            ShopDiscountManageDiscountMode.CREATE
+                        )
+                    } else {
+                        binding?.root showError getString(R.string.sd_error_reserve_product)
+                    }
                 }
                 is Fail -> {
                     binding?.root showError it.throwable

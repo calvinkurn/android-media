@@ -118,6 +118,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         setupView()
         observeProducts()
         observeDeleteDiscount()
+        observeReserveProducts()
     }
 
     private fun setupView() {
@@ -152,7 +153,8 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 SelectProductActivity.start(requireActivity(), discountStatusId)
             }
             btnBulkManage.setOnClickListener {
-
+                val selectedProductIds = viewModel.getSelectedProductIds()
+                reserveProduct(selectedProductIds)
             }
             btnBulkDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
         }
@@ -187,6 +189,36 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 }
             }
         }
+    }
+
+    private fun observeReserveProducts() {
+        viewModel.reserveProduct.observe(viewLifecycleOwner) {
+            binding?.btnBulkManage?.isLoading = false
+            when (it) {
+                is Success -> {
+                    val isReservationSuccess = it.data
+                    if (isReservationSuccess) {
+                        ShopDiscountManageDiscountActivity.start(
+                            requireActivity(),
+                            viewModel.getRequestId(),
+                            discountStatusId,
+                            ShopDiscountManageDiscountMode.UPDATE
+                        )
+                    } else {
+                        binding?.root showError getString(R.string.sd_error_reserve_product)
+                    }
+                }
+                is Fail -> {
+                    binding?.root showError it.throwable
+                }
+            }
+        }
+    }
+
+    private fun reserveProduct(productIds : List<String>) {
+        binding?.btnBulkManage?.isLoading = true
+        binding?.btnBulkManage?.loadingText = getString(R.string.sd_please_wait)
+        viewModel.reserveProduct(viewModel.getRequestId(), productIds)
     }
 
     private fun handleProducts(data: ProductData) {
@@ -397,12 +429,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
-        ShopDiscountManageDiscountActivity.start(
-            requireActivity(),
-            viewModel.getRequestId(),
-            discountStatusId,
-            ShopDiscountManageDiscountMode.UPDATE
-        )
+        reserveProduct(listOf(product.id))
     }
 
     private val onProductClicked: (Product) -> Unit = { product ->

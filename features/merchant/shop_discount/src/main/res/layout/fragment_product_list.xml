@@ -150,6 +150,7 @@
                 android:layout_marginStart="@dimen/unify_space_16"
                 android:layout_marginBottom="@dimen/unify_space_16"
                 android:text="@string/change_discount"
+                app:unifyButtonRightLoader="false"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled" />
 

@@ -6,10 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
-import com.tokopedia.shopdiscount.select.data.mapper.ProblematicProductMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ReservableProductMapper
 import com.tokopedia.shopdiscount.select.data.mapper.ReserveProductRequestMapper
-import com.tokopedia.shopdiscount.select.domain.entity.ProblematicReservableProduct
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.select.domain.usecase.GetSlashPriceProductListToReserveUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -23,7 +21,6 @@ class SelectProductViewModel @Inject constructor(
     private val getSlashPriceProductListToReserveUseCase: GetSlashPriceProductListToReserveUseCase,
     private val reserveProductUseCase : MutationDoSlashPriceProductReservationUseCase,
     private val reservableProductMapper: ReservableProductMapper,
-    private val problematicProductMapper: ProblematicProductMapper,
     private val reserveProductRequestMapper: ReserveProductRequestMapper
 ) : BaseViewModel(dispatchers.main) {
 
@@ -31,8 +28,8 @@ class SelectProductViewModel @Inject constructor(
     val products: LiveData<Result<List<ReservableProduct>>>
         get() = _products
 
-    private val _reserveProduct = MutableLiveData<Result<List<ReservableProduct>>>()
-    val reserveProduct: LiveData<Result<List<ReservableProduct>>>
+    private val _reserveProduct = MutableLiveData<Result<Boolean>>()
+    val reserveProduct: LiveData<Result<Boolean>>
         get() = _reserveProduct
 
     private var requestId = ""
@@ -128,30 +125,13 @@ class SelectProductViewModel @Inject constructor(
             val result = withContext(dispatchers.io) {
                 val request = reserveProductRequestMapper.map(requestId, products)
                 reserveProductUseCase.setParams(request)
-                val response = reserveProductUseCase.executeOnBackground()
-                val problematicProducts = problematicProductMapper.map(response)
-                appendProductWithErrorMessage(products, problematicProducts)
+                reserveProductUseCase.executeOnBackground()
             }
 
-            _reserveProduct.value = Success(result)
+            _reserveProduct.value = Success(result.doSlashPriceProductReservation.responseHeader.success)
 
         }, onError = {
             _reserveProduct.value = Fail(it)
         })
-    }
-
-    private fun appendProductWithErrorMessage(
-        products: List<ReservableProduct>,
-        problematicProducts: List<ProblematicReservableProduct>
-    ): List<ReservableProduct> {
-        return products.map { selectedProduct ->
-            val found = problematicProducts.find { problematicProduct -> selectedProduct.id == problematicProduct.id }
-
-            if (found != null) {
-                selectedProduct.copy(disabledReason = found.errorMessage)
-            } else {
-                selectedProduct
-            }
-        }
     }
 }
