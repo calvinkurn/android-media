@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">people</string>
+    <string name="up_common_failed_desc">Klik ikon di samping untuk coba lagi.</string>
+    <string name="up_common_failed_title">Bagian ini gagal ditampilkan</string>
+    <string name="up_link_see_more">Selengkapnya</string>
+    <string name="up_btn_text_follow">Follow</string>
+    <string name="up_btn_text_live">LIVE</string>
+    <string name="up_btn_text_following">Following</string>
+    <string name="up_empty_page_title">Kamu belum ada postingan</string>
+    <string name="up_empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
+    <string name="up_empty_page_title2">Belum ada postingan</string>
+    <string name="up_lb_post">Postingan</string>
+    <string name="up_lb_follower">Follower</string>
+    <string name="up_btn_profile">Ubah Profil</string>
+    <string name="up_lb_followers">Follower</string>
+    <string name="up_lb_following">Following</string>
+    <string name="up_lb_no_follower">No follower</string>
+    <string name="up_lb_no_following">No following</string>
+    <string name="up_error_unfollow">Gagal unfollow. Coba lagi ya."</string>
+    <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
+    <string name="up_error_local_error">Koneshi internetmu targanggu. Coba lagi ya."</string>
+</resources>

@@ -131,8 +131,8 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
                         invoiceRefNum: String, boughtDate: String, title: String,
                         orderCategory: String): Intent =
                 Intent(context, SeeInvoiceActivity::class.java).apply {
-                    putExtra(STATUS, status.status())
-                    putExtra(KEY_URL, invoice.invoiceUrl())
+                    putExtra(STATUS, status.status)
+                    putExtra(KEY_URL, invoice.invoiceUrl)
                     putExtra(KEY_TITLE, title)
                     putExtra(INVOICE_REF_NUM, invoiceRefNum)
                     putExtra(BOUGHT_DATE, boughtDate)

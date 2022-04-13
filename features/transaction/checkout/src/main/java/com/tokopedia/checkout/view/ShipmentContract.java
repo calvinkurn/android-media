@@ -178,6 +178,8 @@ public interface ShipmentContract {
         void sendEnhancedEcommerceAnalyticsCheckout(Map<String, Object> stringObjectMap,
                                                     Map<String, String> tradeInCustomDimension,
                                                     String transactionId,
+                                                    String userId,
+                                                    boolean promoFlag,
                                                     String eventCategory,
                                                     String eventAction,
                                                     String eventLabel);
@@ -347,8 +349,6 @@ public interface ShipmentContract {
         boolean isIneligiblePromoDialogEnabled();
 
         CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, int isDonation, ArrayList<ShipmentCrossSellModel> crossSellModelArrayList, String leasingId);
-
-        ShipmentDataConverter getShipmentDataConverter();
 
         void releaseBooking();
 

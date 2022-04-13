@@ -121,7 +121,6 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.charts)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.liveData

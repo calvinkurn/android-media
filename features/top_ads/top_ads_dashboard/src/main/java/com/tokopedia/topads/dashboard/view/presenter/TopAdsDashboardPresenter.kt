@@ -481,15 +481,17 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                 })
     }
 
-    fun getWhiteListedUser(onSuccess: (WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit) {
+    fun getWhiteListedUser(onSuccess: (WhiteListUserResponse.TopAdsGetShopWhitelistedFeature) -> Unit, isFinished: () -> Unit) {
         whiteListedUserUseCase.setParams()
         whiteListedUserUseCase.executeQuerySafeMode(
             {
                 onSuccess(it)
+                isFinished.invoke()
             },
             {
                 throwable ->
                     throwable.printStackTrace()
+                    isFinished.invoke()
             }
         )
     }

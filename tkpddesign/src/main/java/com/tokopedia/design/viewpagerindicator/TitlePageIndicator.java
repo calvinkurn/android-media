@@ -165,16 +165,16 @@ public class TitlePageIndicator extends View implements PageIndicator {
 
         //Load defaults from resources
         final Resources res = getResources();
-        final int defaultFooterColor = res.getColor(R.color.default_title_indicator_footer_color);
+        final int defaultFooterColor = res.getColor(R.color.tkpddesign_dms_default_title_indicator_footer_color);
         final float defaultFooterLineHeight = res.getDimension(R.dimen.default_title_indicator_footer_line_height);
         final int defaultFooterIndicatorStyle = res.getInteger(R.integer.default_title_indicator_footer_indicator_style);
         final float defaultFooterIndicatorHeight = res.getDimension(R.dimen.default_title_indicator_footer_indicator_height);
         final float defaultFooterIndicatorUnderlinePadding = res.getDimension(R.dimen.default_title_indicator_footer_indicator_underline_padding);
         final float defaultFooterPadding = res.getDimension(R.dimen.default_title_indicator_footer_padding);
         final int defaultLinePosition = res.getInteger(R.integer.default_title_indicator_line_position);
-        final int defaultSelectedColor = res.getColor(R.color.default_title_indicator_selected_color);
+        final int defaultSelectedColor = res.getColor(R.color.tkpddesign_dms_default_title_indicator_selected_color);
         final boolean defaultSelectedBold = res.getBoolean(R.bool.default_title_indicator_selected_bold);
-        final int defaultTextColor = res.getColor(R.color.default_title_indicator_text_color);
+        final int defaultTextColor = res.getColor(R.color.tkpddesign_dms_default_title_indicator_text_color);
         final float defaultTextSize = res.getDimension(R.dimen.default_title_indicator_text_size);
         final float defaultTitlePadding = res.getDimension(R.dimen.default_title_indicator_title_padding);
         final float defaultClipPadding = res.getDimension(R.dimen.default_title_indicator_clip_padding);

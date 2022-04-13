@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
@@ -23,8 +24,10 @@ import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
+import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifycomponents.UnifyButton
@@ -51,6 +54,9 @@ class ProductSheetViewComponent(
 
     private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
     private val btnProductEmpty: UnifyButton = findViewById(R.id.btn_action_product_empty)
+    private val tvHeaderProductEmpty: TextView = findViewById(R.id.tv_title_product_empty)
+    private val tvBodyProductEmpty: TextView = findViewById(R.id.tv_desc_product_empty)
+    private val ivProductEmpty: AppCompatImageView = findViewById(R.id.iv_img_illustration)
 
     private val productSectionAdapter = ProductSectionAdapter(object : ProductSectionViewHolder.Listener{
         override fun onBuyProduct(
@@ -185,23 +191,30 @@ class ProductSheetViewComponent(
         )
     }
 
-    fun showEmpty(partnerId: Long) {
+    fun showEmpty(emptyBottomSheetInfoUi: PlayEmptyBottomSheetInfoUiModel) {
         showContent(false)
         globalError.hide()
 
+        tvHeaderProductEmpty.text = emptyBottomSheetInfoUi.header
+        tvBodyProductEmpty.text = emptyBottomSheetInfoUi.body
+        btnProductEmpty.text = emptyBottomSheetInfoUi.button
+        ivProductEmpty.loadImage(emptyBottomSheetInfoUi.imageUrl)
+
         btnProductEmpty.setOnClickListener {
-            listener.onEmptyButtonClicked(this@ProductSheetViewComponent, partnerId)
+            listener.onEmptyButtonClicked(this@ProductSheetViewComponent)
         }
     }
 
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
+            tvSheetTitle.show()
             rvProductList.show()
             clProductVoucher.show()
 
             globalError.hide()
             clProductEmpty.hide()
         } else {
+            tvSheetTitle.hide()
             rvProductList.hide()
             clProductVoucher.hide()
 
@@ -227,7 +240,7 @@ class ProductSheetViewComponent(
         fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
         fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
-        fun onEmptyButtonClicked(view: ProductSheetViewComponent, partnerId: Long)
+        fun onEmptyButtonClicked(view: ProductSheetViewComponent)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section)
         fun onProductCountChanged(view: ProductSheetViewComponent)
         fun onInfoVoucherClicked(view: ProductSheetViewComponent)

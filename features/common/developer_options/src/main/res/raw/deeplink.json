@@ -427,7 +427,7 @@
      {
           "destination_activity": "com.tokopedia.liveness.view.activity.LivenessActivity", 
           "deeplink": "tokopedia-android-internal://global/liveness-detection", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.LIVENESS_DETECTION"
+          "deeplink_variable": ""
      }, 
      {
           "destination_activity": "com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity", 
@@ -677,7 +677,7 @@
      {
           "destination_activity": "com.tokopedia.topchat.chatlist.activity.ChatListActivity", 
           "deeplink": "tokopedia-android-internal://global/topchat", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.TOPCHAT"
+          "deeplink_variable": "ApplinkConstInternalMarketplace.TOPCHAT"
      }, 
      {
           "destination_activity": "com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity", 
@@ -687,7 +687,7 @@
      {
           "destination_activity": "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity", 
           "deeplink": "tokopedia-android-internal://global/topchat/.*\\", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.TOPCHAT_ROOM"
+          "deeplink_variable": "ApplinkConstInternalMarketplace.TOPCHAT_ROOM"
      }, 
      {
           "destination_activity": "com.tokopedia.onboarding.view.activity.OnboardingActivity", 
@@ -918,6 +918,11 @@
           "destination_activity": "com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity", 
           "deeplink": "tokopedia-android-internal://payment/add-credit-card", 
           "deeplink_variable": "ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.pdp.fintech.view.activity.ActivationBottomSheetActivity", 
+          "deeplink": "tokopedia-android-internal://fintech/activate_gopay", 
+          "deeplink_variable": "ApplinkConstInternalFintech.ACTIVATE_GOPAY"
      }, 
      {
           "destination_activity": "com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity", 
@@ -2258,6 +2263,11 @@
           "destination_activity": "com.tokopedia.webview.BrowserRedirectActivity", 
           "deeplink": "tokopedia-android-internal://global/browser", 
           "deeplink_variable": "ApplinkConstInternalGlobal.BROWSER"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.data_explorer.db_explorer.presentation.DataExplorerActivity", 
+          "deeplink": "tokopedia-android-internal://global/data-explorer", 
+          "deeplink_variable": "ApplinkConstInternalGlobal.DATA_EXPLORER"
      }, 
      {
           "destination_activity": "com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity", 

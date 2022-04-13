@@ -58,7 +58,7 @@
     <string name="tokopedianow_home_educational_information_duration_bottomsheet"><![CDATA[<font color=\'%2$s\'><b>%1$s tiba.</b></font> Terima belanjaan dalam %1$s setelah pembayaran berhasil & nikmati <font color=\'%2$s\'><b>gratis ongkir</b></font> juga!]]></string>
     <string name="tokopedianow_home_educational_information_stock_available_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Stok pasti tersedia.</b></font> Ada ribuan pilihan produk. Tiap pesananmu siap dikirim sekaligus & dilayani langsung oleh Tokopedia.]]></string>
     <string name="tokopedianow_home_educational_information_guaranteed_quality_bottomsheet"><![CDATA[<font color=\'%1$s\'><b>Kualitas terjamin.</b></font> Kondisi produk dijamin aman & segar, dengan garansi uang kembali.]]></string>
-    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Nantikan layanan 24 jam yang akan tersedia setelah masa PPKM. <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">Pelajari</a></font>]]></string>
+    <string name="tokopedianow_home_educational_information_twenty_four_hours_bottomsheet" tools:ignore="TypographyDashes"><![CDATA[Cek detail jam operasional Tokopedia NOW! <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/apa-itu-tokopedia-now">di sini</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_terms_and_conditions_bottomsheet"><![CDATA[Dengan belanja, kamu menyetujui <font color=\'%1$s\'><a href="https://www.tokopedia.com/help/article/syarat-dan-ketentuan-now">syarat & ketentuan.</a></font>]]></string>
     <string name="tokopedianow_home_educational_information_title">Untungnya pakai Tokopedia NOW!</string>
 

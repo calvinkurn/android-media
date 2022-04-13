@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import androidx.fragment.app.Fragment
+import com.tokopedia.changephonenumber.tracker.ChangePhoneNumberTracker
 import com.tokopedia.webview.BaseWebViewFragment
 import com.tokopedia.webview.KEY_URL
 
@@ -40,6 +41,11 @@ class ChangePhoneNumberWebViewFragment : BaseWebViewFragment() {
 
     private fun isContainAppLinkSuccess(url: String): Boolean {
         return url.contains(APP_LINK_SUCCESS)
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        ChangePhoneNumberTracker.trackClickOnBtnBackChangePhone()
+        return super.onFragmentBackPressed()
     }
 
     private fun onSuccess() {

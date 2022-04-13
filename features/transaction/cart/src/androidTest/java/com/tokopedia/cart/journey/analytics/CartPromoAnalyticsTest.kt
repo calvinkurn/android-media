@@ -8,11 +8,12 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.cart.view.CartActivity
-import com.tokopedia.cart.view.CartIdlingResource
 import com.tokopedia.cart.robot.cartPage
 import com.tokopedia.cart.test.R
+import com.tokopedia.cart.view.CartActivity
+import com.tokopedia.cart.view.CartIdlingResource
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
@@ -22,6 +23,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@CassavaTest
 class CartPromoAnalyticsTest {
 
     @get:Rule

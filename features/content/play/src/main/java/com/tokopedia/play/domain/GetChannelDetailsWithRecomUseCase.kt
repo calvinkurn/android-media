@@ -132,6 +132,13 @@ class GetChannelDetailsWithRecomUseCase @Inject constructor(
                       icon
                       background_color
                     }
+                    has_follow_button
+                    empty_bottom_sheet{
+                        copy_text_header
+                        copy_text_body
+                        copy_text_redirect_button
+                        image_url
+                    }
                   }
                   app_link
                   web_link

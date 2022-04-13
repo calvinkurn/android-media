@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.otaliastudios.cameraview.*
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.media.loader.loadImage
@@ -47,7 +47,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private var shutterButton: View? = null
     private var loading: View? = null
     private var switchCamera: View? = null
-    private var imagePreview: ImageUnify? = null
+    private var imagePreviewKtp: ImageUnify? = null
+    private var imagePreviewFace: ImageUnify? = null
     private var buttonLayout: View? = null
     private var reCaptureButton: View? = null
     private var nextButton: UnifyButton? = null
@@ -89,7 +90,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
         closeButton = view.findViewById(R.id.close_button)
         title = view.findViewById(R.id.title)
         subtitle = view.findViewById(R.id.subtitle)
-        imagePreview = view.findViewById(R.id.full_image_preview)
+        imagePreviewKtp = view.findViewById(R.id.imagePreviewKtp)
+        imagePreviewFace = view.findViewById(R.id.imagePreviewFace)
         focusedFaceView = view.findViewById(R.id.focused_view_face)
         focusedKtpView = view.findViewById(R.id.focused_view_ktp)
         shutterButton = view.findViewById(R.id.image_button_shutter)
@@ -107,7 +109,6 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun populateView() {
-        container?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N700)
         shutterButton?.setOnClickListener {
             sendAnalyticClickShutter()
             checkPermission {
@@ -292,7 +293,13 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
 
     private fun onSuccessImageTakenFromCamera(cameraResultFile: File) {
         if (cameraResultFile.exists()) {
-            imagePreview?.loadImage(cameraResultFile.absolutePath)
+            if (viewMode == PARAM_VIEW_MODE_KTP) {
+                imagePreviewKtp?.loadImage(cameraResultFile.absolutePath)
+                imagePreviewFace?.hide()
+            } else if (viewMode == PARAM_VIEW_MODE_FACE) {
+                imagePreviewFace?.loadImage(cameraResultFile.absolutePath)
+                imagePreviewKtp?.hide()
+            }
             imagePath = cameraResultFile.absolutePath
             Timber.d(
                 "$LIVENESS_TAG: Successfully took an image. path: %s, size: %s",
@@ -324,22 +331,38 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     }
 
     private fun showCameraView() {
+        populateViewByViewMode()
+
         cameraView?.visibility = View.VISIBLE
         shutterButton?.visibility = View.VISIBLE
         switchCamera?.visibility = View.VISIBLE
         startCamera()
         loading?.visibility = View.GONE
-        imagePreview?.visibility = View.GONE
+        imagePreviewKtp?.visibility = View.GONE
+        imagePreviewFace?.visibility = View.GONE
         buttonLayout?.visibility = View.GONE
     }
 
     private fun showImagePreview() {
+        when(viewMode) {
+            PARAM_VIEW_MODE_KTP -> {
+                subtitle?.setText(R.string.camera_ktp_subtitle_preview)
+                imagePreviewKtp?.visibility = View.VISIBLE
+                imagePreviewFace?.visibility = View.GONE
+            }
+            PARAM_VIEW_MODE_FACE -> {
+                subtitle?.setText(R.string.camera_face_subtitle_preview)
+                imagePreviewKtp?.visibility = View.GONE
+                imagePreviewFace?.visibility = View.VISIBLE
+            }
+        }
         cameraView?.visibility = View.GONE
         shutterButton?.visibility = View.GONE
         switchCamera?.visibility = View.GONE
         loading?.visibility = View.GONE
+        focusedKtpView?.visibility = View.GONE
+        focusedFaceView?.visibility = View.GONE
         destroyCamera()
-        imagePreview?.visibility = View.VISIBLE
         buttonLayout?.visibility = View.VISIBLE
         sendAnalyticViewImagePreview()
     }
@@ -347,7 +370,8 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
     private fun hideCameraButtonAndShowLoading() {
         shutterButton?.visibility = View.GONE
         switchCamera?.visibility = View.GONE
-        imagePreview?.visibility = View.GONE
+        imagePreviewKtp?.visibility = View.GONE
+        imagePreviewFace?.visibility = View.GONE
         buttonLayout?.visibility = View.GONE
         loading?.visibility = View.VISIBLE
     }
