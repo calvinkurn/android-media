@@ -54,8 +54,6 @@ class ProductDetailNavigation(
     }
 
     fun setTabItems(items: List<Item>) {
-        if (items.isEmpty()) return
-
         var shouldUpdateTab = false
         items.forEachIndexed { index, item ->
             val currentItem = this.items.getOrNull(index)
@@ -70,6 +68,15 @@ class ProductDetailNavigation(
             this.items = items.onEach { item ->
                 pdpNavTab.addNewTab(item.label)
             }
+        }
+
+        if(this.items.isEmpty()) removeListener()
+    }
+
+    private fun removeListener(){
+        this.recyclerView?.apply {
+            removeOnScrollListener(onScrollListener)
+            removeOnScrollListener(onContentScrollListener)
         }
     }
 
