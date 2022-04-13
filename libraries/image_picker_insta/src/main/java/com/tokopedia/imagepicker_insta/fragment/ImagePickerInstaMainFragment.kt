@@ -791,8 +791,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                 val finalApplink = CameraUtil.createApplinkToSendFileUris(applink, uris)
                 val intent = RouteManager.getIntent(activity, finalApplink)
                 intent.putExtra(EXTRA_SELECTED_FEED_ACCOUNT, viewModel.selectedFeedAccountType.value)
-                startActivity(intent)
-//                RouteManager.route(activity, finalApplink)
+                startActivityForResult(intent, CREATE_POST_REQUEST_CODE)
             } else {
                 activity?.setResult(
                     Activity.RESULT_OK,
@@ -872,6 +871,36 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == CREATE_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val selectedFeedAccountTypeValue = data?.getIntExtra(
+                EXTRA_SELECTED_FEED_ACCOUNT,
+                FeedAccountUiModel.Type.BUYER.value
+            ) ?: FeedAccountUiModel.Type.BUYER.value
+
+            val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
+            val selectedFeedAccount = when(selectedFeedAccountType) {
+                FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
+                    name = userSession.shopName,
+                    iconUrl = userSession.shopAvatar,
+                    type = selectedFeedAccountType
+                )
+                FeedAccountUiModel.Type.BUYER -> FeedAccountUiModel(
+                    name = userSession.name,
+                    iconUrl = userSession.profilePicture,
+                    type = selectedFeedAccountType
+                )
+                else -> FeedAccountUiModel(
+                    name = "",
+                    iconUrl = "",
+                    type = selectedFeedAccountType
+                )
+            }
+            viewModel.setSelectedFeedAccount(selectedFeedAccount)
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         stopMedia()
@@ -879,5 +908,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     companion object {
         private const val EXTRA_SELECTED_FEED_ACCOUNT = "EXTRA_SELECTED_FEED_ACCOUNT"
+        private const val CREATE_POST_REQUEST_CODE = 101
     }
 }

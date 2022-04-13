@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
+import android.app.Activity
 import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
@@ -59,8 +60,12 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
         fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
             override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                /** TODO: gonna handle this */
-//                viewModel.setSelectedFeedAccount(feedAccount)
+                /** TODO: show confirmation popup first */
+                selectedFeedAccount = feedAccount
+                toolbar_common.apply {
+                    subtitle = selectedFeedAccount.name
+                    icon = selectedFeedAccount.iconUrl
+                }
             }
         })
         fragment
@@ -241,6 +246,11 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             dialog.setSecondaryCTAClickListener {
                 createPostAnalytics.eventClickExitOnConfirmationPopup()
                 dialog.dismiss()
+
+                val intent = Intent().apply {
+                    putExtra(EXTRA_SELECTED_FEED_ACCOUNT, selectedFeedAccount.type.value)
+                }
+                setResult(Activity.RESULT_OK, intent)
                 finish()
             }
             dialog.show()
@@ -282,7 +292,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     }
 
     private fun setupToolbar() {
-        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, 0)
+        val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.BUYER.value)
         val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
         selectedFeedAccount = when(selectedFeedAccountType) {
             FeedAccountUiModel.Type.SELLER -> FeedAccountUiModel(
