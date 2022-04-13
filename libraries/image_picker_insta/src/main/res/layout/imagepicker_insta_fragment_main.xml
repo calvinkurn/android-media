@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_width="0dp"
-        android:layout_height="@dimen/imagepicker_insta_com_toolbar_height"/>
+        android:layout_height="wrap_content"/>
 
     <com.tokopedia.imagepicker_insta.views.NoPermissionsView
         android:id="@+id/no_permission_view"
