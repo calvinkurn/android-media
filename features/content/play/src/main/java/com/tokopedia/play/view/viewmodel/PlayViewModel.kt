@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
@@ -1303,13 +1304,15 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun checkLeaderboard(channelId: String) {
-        if (!isInteractiveAllowed) return
-        viewModelScope.launchCatchError(dispatchers.io, block = {
+//        if (!isInteractiveAllowed) return
+        viewModelScope.launchCatchError(block = {
+            Log.d("sukses","masuk")
             val interactiveLeaderboard = repo.getInteractiveLeaderboard(channelId)
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Success(interactiveLeaderboard)
 
             setLeaderboardBadgeState(interactiveLeaderboard)
         }) {
+            Log.d("sukses", it.toString())
             _leaderboardInfo.value = PlayLeaderboardWrapperUiModel.Error
         }
     }

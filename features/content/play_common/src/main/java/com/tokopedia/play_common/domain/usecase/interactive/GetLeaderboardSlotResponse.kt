@@ -8,7 +8,7 @@ import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderbo
  * @author by astidhiyaa on 06/04/22
  */
 data class GetLeaderboardSlotResponse (
-    @SerializedName("playInteractiveViewerGetLeaderboardWithSlot")
+    @SerializedName("slots")
     val data: List<SlotData> = emptyList()
 ){
     data class SlotData(
@@ -30,7 +30,7 @@ data class GetLeaderboardSlotResponse (
         val choices: List<ChannelQuiz.Choices> = emptyList(),
 
         //Must-have
-        @SerializedName("winner")
+        @SerializedName("winners")
         val winner: List<GetInteractiveLeaderboardResponse.Winner> = emptyList(),
 
         @SerializedName("otherParticipantCountText")

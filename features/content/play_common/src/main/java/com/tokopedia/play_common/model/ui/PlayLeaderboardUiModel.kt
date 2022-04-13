@@ -28,7 +28,9 @@ data class PlayLeaderboardUiModel(
     val winners: List<PlayWinnerUiModel>,
     val choices: List<QuizChoicesUiModel> = emptyList(), //opt = not empty when QUIZ, soon Polling
     val otherParticipantText: String,
-    val otherParticipant: Long
+    val otherParticipant: Long,
+    val emptyLeaderBoardCopyText: String = "",
+    val leaderBoardType: LeadeboardType = LeadeboardType.Unknown
 )
 
 /***
@@ -48,10 +50,12 @@ data class PlayLeaderboardConfigUiModel(
         val winnerMessage: String = "",
         val winnerDetail: String = "",
         val loserMessage: String = "",
-        val loserDetail: String = "",
+        val loserDetail: String = ""
 )
 
-/**
- * data class PlayQuizOptionUiModel(val id: String, val question: String, val state: PlayQuizOptionState)
- * use from form uimodel
- */
+enum class LeadeboardType{
+    Giveaway,
+    Quiz,
+    Polling,
+    Unknown
+}

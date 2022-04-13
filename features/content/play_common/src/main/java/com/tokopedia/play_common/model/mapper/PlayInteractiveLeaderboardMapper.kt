@@ -25,7 +25,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         isChatAllowed: () -> Boolean
     ): List<PlayLeaderboardUiModel> = leaderboardsResponse.map {
         PlayLeaderboardUiModel(
-            title = it.title,
+            title = if (getLeaderboardType(it) == LeadeboardType.Quiz) it.question else it.title,
             winners = mapInteractiveWinner(
                 title = it.title,
                 winnersResponse = it.winner,
@@ -33,29 +33,30 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
             ),
             otherParticipantText = it.otherParticipantCountText,
             otherParticipant = it.otherParticipantCount.toLong(),
-            choices = mapChoices(it.choices)
+            choices = mapChoices(it.choices, it.userChoice),
+            leaderBoardType = getLeaderboardType(it),
+            emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText
         )
     }
 
-    fun mapChoices(choices: List<ChannelQuiz.Choices>): List<QuizChoicesUiModel> {
-        val alphabet = getAlphabet(choices.size)
-        return choices.mapIndexed { index: Int, item: ChannelQuiz.Choices ->
+    /***
+     * Change to typename to make sure
+     */
+    private fun getLeaderboardType(leaderboardsResponse: GetLeaderboardSlotResponse.SlotData): LeadeboardType   {
+        return if(leaderboardsResponse.choices.isNotEmpty()) LeadeboardType.Quiz else LeadeboardType.Giveaway
+    }
+
+    fun mapChoices(choices: List<ChannelQuiz.Choices>, userPicksId: String): List<QuizChoicesUiModel> {
+        return choices.map { item: ChannelQuiz.Choices ->
             QuizChoicesUiModel.Complete(
                 item.choicesID,
                 item.choicesText,
-                PlayQuizOptionState.Default(alphabet = alphabet[index])
+                if(item.choicesID == userPicksId)
+                    PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
+                else
+                    PlayQuizOptionState.Result(isCorrect = item.isCorrect ?: false)
             )
         }
-    }
-
-    private fun getAlphabet(size: Int): List<Char> {
-        val array = mutableListOf<Char>()
-        var init = 'A'
-        while (init <= 'Z') {
-            array.add(init)
-            init++
-        }
-        return array
     }
 
     /***

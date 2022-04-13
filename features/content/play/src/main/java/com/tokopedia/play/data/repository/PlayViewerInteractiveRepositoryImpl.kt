@@ -1,5 +1,6 @@
 package com.tokopedia.play.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.network.exception.MessageErrorException
@@ -14,6 +15,7 @@ import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotRe
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -51,7 +53,6 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
           {
               "slots": [
                 {
-                  "__typename": "PlayInteractiveViewerLeaderboardGiveaway",
                   "title": "Bagi-bagi sembako",
                   "winners":[
                     {
@@ -69,10 +70,9 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
                   ],
                   "otherParticipantCountText": "Dari 101 peserta",
                   "otherParticipantCount": 101,
-                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini."
+                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini. [Giveaway]"
                 },
                 {
-                  "__typename": "PlayInteractiveViewerLeaderboardQuiz",
                   "question": "Siapa aku?",
                   "reward": "500 perak",
                   "userChoice": 1,
@@ -106,13 +106,13 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
                   ],
                   "otherParticipantCountText": "Dari 101 peserta",
                   "otherParticipantCount": 101,
-                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini."
+                  "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini.[Quiz]"
                 }
               ]
             }
         """.trimIndent()
-        val response = Gson().fromJson(data, GetLeaderboardSlotResponse::class.java)
-        return@withContext mapper.mapInteractiveLeaderboard(response)
+        val response = try { Gson().fromJson(data, GetLeaderboardSlotResponse::class.java) }catch (e: Exception){ }
+        return@withContext mapper.mapInteractiveLeaderboard(response as GetLeaderboardSlotResponse)
     }
 
     override suspend fun answerQuiz(interactiveId: String, choiceId: String): String = withContext(dispatchers.io) {

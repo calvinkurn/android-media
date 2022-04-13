@@ -625,10 +625,10 @@ class PlayBottomSheetFragment @Inject constructor(
                 }
             }
 
-            it[BottomInsetsType.ProductSheet]?.let { state ->
-                if (state is BottomInsetsState.Shown) productSheetView.showWithHeight(state.estimatedInsetsHeight)
-                else productSheetView.hide()
-            }
+//            it[BottomInsetsType.ProductSheet]?.let { state ->
+////                if (state is BottomInsetsState.Shown) productSheetView.showWithHeight(state.estimatedInsetsHeight)
+////                else productSheetView.hide()
+//            }
 
             it[BottomInsetsType.VariantSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) variantSheetView.showWithHeight(state.estimatedInsetsHeight)
@@ -639,9 +639,9 @@ class PlayBottomSheetFragment @Inject constructor(
                 else couponSheetView.hide()
             }
 
-            it[BottomInsetsType.LeaderboardSheet]?.let { state ->
+            it[BottomInsetsType.ProductSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) {
-                    leaderboardSheetView.showWithHeight(state.estimatedInsetsHeight)
+                    leaderboardSheetView.showWithHeight(variantSheetMaxHeight)
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()

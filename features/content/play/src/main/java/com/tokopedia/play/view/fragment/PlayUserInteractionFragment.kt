@@ -152,7 +152,6 @@ class PlayUserInteractionFragment @Inject constructor(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
 
