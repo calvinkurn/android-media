@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model
 
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
@@ -50,6 +51,7 @@ data class ProductInfoP2UiData(
     var bebasOngkir: BebasOngkir = BebasOngkir(),
     var uspImageUrl: String = "",
     var merchantVoucherSummary: MerchantVoucherSummary = MerchantVoucherSummary(),
+    var buyerPhotosCount: Int = Int.ZERO,
     var reviewMediaThumbnails: ReviewMediaThumbnailUiModel? = null,
     var detailedMediaResult: ProductrevGetReviewMedia? = null,
     var helpfulReviews: List<Review>? = null,

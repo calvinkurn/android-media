@@ -3,8 +3,9 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -370,8 +371,10 @@ object DynamicProductDetailMapper {
     fun generateReviewMediaThumbnails(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ReviewMediaThumbnailUiModel {
         val mappedMediaThumbnails = data.list?.let { mediaList ->
             val hasNext = data.isHasNext
+            var validMediaCount = Int.ZERO
             mediaList.mapIndexedNotNull { index, media ->
                 val lastItem = index == mediaList.size - 1
+                val otherTotalMediaCount = data.detail?.mediaCount.toIntOrZero().minus(validMediaCount).coerceAtLeast(Int.ZERO)
                 if (media.imageID.isMoreThanZero()) {
                     val imageData = data.detail?.images?.find { it.imageAttachmentID == media.imageID }
                     val uriThumbnail = imageData?.uriThumbnail
@@ -379,16 +382,18 @@ object DynamicProductDetailMapper {
                     if (imageData == null || uriThumbnail.isNullOrBlank() || uriLarge.isNullOrBlank()) {
                         null
                     } else {
-                        if (lastItem && hasNext) {
+                        if (lastItem && hasNext && otherTotalMediaCount.isMoreThanZero()) {
+                            validMediaCount++
                             ReviewMediaImageThumbnailUiModel(
                                 uiState = ReviewMediaImageThumbnailUiState.ShowingSeeMore(
                                     reviewID = media.reviewID.toString(),
                                     thumbnailUrl = uriThumbnail,
                                     fullSizeUrl = uriLarge,
-                                    totalImageCount = data.detail?.mediaCount.toIntOrZero()
+                                    totalImageCount = otherTotalMediaCount
                                 )
                             )
                         } else {
+                            validMediaCount++
                             ReviewMediaImageThumbnailUiModel(
                                 uiState = ReviewMediaImageThumbnailUiState.Showing(
                                     reviewID = media.reviewID.toString(),
@@ -404,15 +409,17 @@ object DynamicProductDetailMapper {
                     if (videoData == null || url.isNullOrBlank()) {
                         null
                     } else {
-                        if (lastItem && hasNext) {
+                        if (lastItem && hasNext && otherTotalMediaCount.isMoreThanZero()) {
+                            validMediaCount++
                             ReviewMediaVideoThumbnailUiModel(
                                 uiState = ReviewMediaVideoThumbnailUiState.ShowingSeeMore(
                                     reviewID = media.reviewID.toString(),
                                     url = url,
-                                    totalImageCount = data.detail?.mediaCount.toIntOrZero()
+                                    totalImageCount = otherTotalMediaCount
                                 )
                             )
                         } else {
+                            validMediaCount++
                             ReviewMediaVideoThumbnailUiModel(
                                 uiState = ReviewMediaVideoThumbnailUiState.Showing(
                                     reviewID = media.reviewID.toString(),

@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -439,7 +438,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.reviewMediaThumbnails?.mediaThumbnails?.count().orZero()
+                    buyerPhotosCount = it.buyerPhotosCount
                     setSocialProofData()
                 }
             }
@@ -449,7 +448,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     wishlistCount = it.wishlistCount.toIntOrZero()
                     viewCount = it.productView.toIntOrZero()
                     shouldRenderSocialProof = true
-                    buyerPhotosCount = it.reviewMediaThumbnails?.mediaThumbnails?.count().orZero()
+                    buyerPhotosCount = it.buyerPhotosCount
                     setSocialProofData()
                 }
             }
