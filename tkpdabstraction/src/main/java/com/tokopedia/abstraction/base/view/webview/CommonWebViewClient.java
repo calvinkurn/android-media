@@ -3,24 +3,17 @@ package com.tokopedia.abstraction.base.view.webview;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import androidx.fragment.app.Fragment;
-
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
-
-import java.util.HashMap;
-import java.util.Map;
-
 @Deprecated
 public class CommonWebViewClient extends WebChromeClient {
 
@@ -30,6 +23,7 @@ public class CommonWebViewClient extends WebChromeClient {
     public ValueCallback<Uri[]> callbackAfterL;
     ProgressBar progressBar;
     FilePickerInterface filePickerInterface;
+    Context context;
 
     public CommonWebViewClient(FilePickerInterface filePickerInterface, ProgressBar progressBar) {
         if (filePickerInterface instanceof Activity || filePickerInterface instanceof Fragment) {
@@ -39,20 +33,6 @@ public class CommonWebViewClient extends WebChromeClient {
             throw new RuntimeException("Should be instance of Activity or Fragmant");
         }
 
-    }
-
-    @Override
-    public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        ConsoleMessage.MessageLevel msgType = consoleMessage.messageLevel();
-        if (msgType == ConsoleMessage.MessageLevel.ERROR) {
-            Map<String, String> map = new HashMap<>();
-            map.put("type", "error");
-            map.put("err", "web_console_error");
-            map.put("desc", consoleMessage.message());
-
-            ServerLogger.log(Priority.P1, "WEBVIEW_ERROR", map);
-        }
-        return true;
     }
 
 
