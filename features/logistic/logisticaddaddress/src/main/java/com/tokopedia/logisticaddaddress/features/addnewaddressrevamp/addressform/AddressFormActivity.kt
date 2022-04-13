@@ -1,7 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -12,7 +10,6 @@ import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.AddNewAddressReva
 import com.tokopedia.logisticaddaddress.di.addnewaddressrevamp.DaggerAddNewAddressRevampComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.AddNewAddressRevampAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.analytics.EditAddressRevampAnalytics
-import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.EXTRA_BUNDLE
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -47,12 +44,27 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         if (!isEdit) {
+            super.onBackPressed()
             if (isPositiveFlow == true) AddNewAddressRevampAnalytics.onClickBackPositive(userSession.userId)
             else AddNewAddressRevampAnalytics.onClickBackNegative(userSession.userId)
         } else {
             EditAddressRevampAnalytics.onClickBackArrowEditAddress(userSession.userId)
+            if(supportFragmentManager.fragments.firstOrNull() is AddressFormFragment){
+                supportFragmentManager.fragments.firstOrNull()?.let {
+                    if (it is AddressFormFragment) {
+                        if (it.isBackDialogClicked) {
+                            super.onBackPressed()
+                        } else {
+                            it.showDialogBackButton()
+                        }
+                    }else {
+                        super.onBackPressed()
+                    }
+                }
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 

@@ -337,7 +337,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                             goToAddAddress(it.data.eligible)
                         }
                         EDIT_ADDRESS_REVAMP_FEATURE_ID -> {
-                            it.data.data?.let { recipientAddressModel ->  goToEditAddress(true, recipientAddressModel) }
+                            it.data.data?.let { recipientAddressModel ->  goToEditAddress(it.data.eligible, recipientAddressModel) }
                         }
                     }
                 }

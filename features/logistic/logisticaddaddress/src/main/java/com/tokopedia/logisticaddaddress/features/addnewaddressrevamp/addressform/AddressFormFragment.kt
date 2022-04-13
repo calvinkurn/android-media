@@ -5,31 +5,21 @@ import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
-import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.*
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -88,6 +78,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     private var pinpointKotaKecamatan: String = ""
 
     private var isEdit: Boolean = false
+    var isBackDialogClicked: Boolean = false
+    private var backDialog: DialogUnify? = null
     private var addressId: String = ""
 
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
@@ -1132,6 +1124,33 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 putExtra(EXTRA_EDIT_ADDRESS, saveDataModel)
             })
             finish()
+        }
+    }
+
+    fun showDialogBackButton() {
+        if (backDialog?.isShowing != true) {
+            if (backDialog != null) {
+                backDialog?.show()
+            } else {
+                backDialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+                backDialog?.apply {
+                    setOverlayClose(false)
+                    setCancelable(false)
+                    setTitle("Keluar Halaman?")
+                    setDescription("Kamu akan membatalkan perubahan alamat. Semua perubahan data tidak akan disimpan.")
+                    setPrimaryCTAText("Keluar")
+                    setPrimaryCTAClickListener {
+                        isBackDialogClicked = true
+                        activity?.onBackPressed()
+                    }
+                    setSecondaryCTAText("Batal")
+                    setSecondaryCTAClickListener {
+                        isBackDialogClicked = false
+                        backDialog?.hide()
+                    }
+                    show()
+                }
+            }
         }
     }
 
