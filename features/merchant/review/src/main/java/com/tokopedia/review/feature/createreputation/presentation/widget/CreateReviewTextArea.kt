@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -42,6 +43,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
         binding.layoutTextArea.root.editText.addTextChangedListener(textAreaListener)
         binding.layoutTextArea.root.editText.onFocusChangeListener = textAreaListener
         binding.layoutTextArea.root.icon2.setOnClickListener(textAreaListener)
+        binding.root.setOnClickListener(textAreaListener)
         binding.layoutTextArea.root.labelText.gone()
     }
 
@@ -131,6 +133,13 @@ class CreateReviewTextArea @JvmOverloads constructor(
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
+    private fun View.makeMatchParent() {
+        val layoutParamsCopy = layoutParams
+        layoutParamsCopy.width = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParamsCopy.height = ViewGroup.LayoutParams.MATCH_PARENT
+        layoutParams = layoutParamsCopy
+    }
+
     private fun isChangedByUser(): Boolean {
         return binding.layoutTextArea.root.editText.tag == null
     }
@@ -150,14 +159,14 @@ class CreateReviewTextArea @JvmOverloads constructor(
     fun updateUi(uiState: CreateReviewTextAreaUiState, source: CreateReviewTextAreaTextUiModel.Source) {
         this.sourceName = source
         when(uiState) {
-            is CreateReviewTextAreaUiState.Loading -> {
-                showLoading()
-                animateShow()
-            }
-            is CreateReviewTextAreaUiState.Showing -> {
-                binding.showTextArea(uiState)
-                animateShow()
-            }
+            is CreateReviewTextAreaUiState.Loading -> showLoading()
+            is CreateReviewTextAreaUiState.Showing -> binding.showTextArea(uiState)
+        }
+        if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_TEXT_AREA) {
+            animateShow()
+        } else {
+            binding.root.makeMatchParent()
+            binding.layoutTextArea.root.makeMatchParent()
         }
     }
 
@@ -243,8 +252,16 @@ class CreateReviewTextArea @JvmOverloads constructor(
         }
 
         override fun onClick(v: View?) {
-            if (v?.id == binding.layoutTextArea.root.icon2.id) {
-                listener?.onExpandButtonClicked()
+            when (v?.id) {
+                binding.layoutTextArea.root.icon2.id -> {
+                    listener?.onExpandButtonClicked()
+                }
+                binding.root.id -> {
+                    if (sourceName == CreateReviewTextAreaTextUiModel.Source.CREATE_REVIEW_EXPANDED_TEXT_AREA) {
+                        binding.layoutTextArea.root.requestFocus()
+                        binding.layoutTextArea.root.editText.showKeyboard()
+                    }
+                }
             }
         }
     }
