@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker_insta.common.R
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifyprinciples.Typography
 
 class ImagePickerCommonToolbar @JvmOverloads constructor(
@@ -50,7 +51,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
             mOnBackListener?.invoke()
         }
 
-        toolbarTitle.setOnClickListener {
+        toolbarSubtitle.setOnClickListener {
             mOnClickListener?.invoke()
         }
 
@@ -77,6 +78,7 @@ class ImagePickerCommonToolbar @JvmOverloads constructor(
     }
 
     fun setImageCircle(imageUrl: String) {
+        toolbarIcon.loadImageCircle(imageUrl)
         toolbarIcon.visibility = View.VISIBLE
     }
 

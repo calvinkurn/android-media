@@ -296,6 +296,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
         }
     }
+
     private fun openBottomSheet(){
         var creatorListData= mutableListOf<CreatorListData>()
         (activity as ImagePickerInstaActivity).run{
