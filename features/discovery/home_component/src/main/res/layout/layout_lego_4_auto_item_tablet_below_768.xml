@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="104dp"
+    android:layout_height="89dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_lego_auto"
-    android:background="#FDFBFE">
+    android:id="@+id/item_lego_auto">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/item_name"
-        android:layout_width="87dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
         android:ellipsize="end"
@@ -17,6 +16,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         app:typographyType="heading_5"
+        app:layout_constraintEnd_toStartOf="@id/item_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:text="TITLE"/>
@@ -35,32 +35,24 @@
         app:layout_constraintEnd_toEndOf="@id/item_name"
         tools:text="test"/>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/item_frame_image"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/item_image"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="@color/transparent"
-        app:cardElevation="0dp"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginVertical="8dp"
+        app:layout_constraintStart_toEndOf="@id/item_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/content_desc_lego_image"/>
 
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/item_image"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginVertical="10dp"
-            android:layout_marginEnd="8dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/content_desc_lego_image"
-            android:scaleType="fitCenter"/>
-
-    </androidx.cardview.widget.CardView>
+    <View
+        android:background="@color/Unify_N700"
+        android:alpha="0.06"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

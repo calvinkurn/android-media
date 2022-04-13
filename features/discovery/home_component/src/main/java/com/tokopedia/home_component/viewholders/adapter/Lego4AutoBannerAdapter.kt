@@ -13,14 +13,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.Lego4AutoTabletConfiguration
 import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.Lego4AutoDataModel
 import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -36,7 +35,8 @@ class Lego4AutoBannerAdapter(
     private var itemList: MutableList<Lego4AutoItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_lego_4_auto_item, parent, false))
+        val layout = Lego4AutoTabletConfiguration.getLayout(parent.context)
+        return Holder(LayoutInflater.from(parent.context).inflate(layout, parent, false))
     }
 
     override fun getItemCount(): Int {
