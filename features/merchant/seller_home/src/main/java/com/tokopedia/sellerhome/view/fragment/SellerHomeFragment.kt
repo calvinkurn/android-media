@@ -883,10 +883,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         emptyState?.run {
             setTitle(context?.getString(R.string.sah_failed_to_get_information).orEmpty())
             try {
-                requireContext().getResDrawable(
+                val imageDrawable = requireContext().getResDrawable(
                     com.tokopedia.globalerror.R.drawable.unify_globalerrors_500
-                )?.let {
-                    setImageDrawable(it)
+                )
+                if (imageDrawable != null) {
+                    setImageDrawable(imageDrawable)
+                } else {
+                    setImageUrl(SellerHomeConst.Images.IMG_ERROR_500)
                 }
             } catch (e: Exception) {
                 setImageUrl(SellerHomeConst.Images.IMG_ERROR_500)
