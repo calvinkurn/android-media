@@ -2,6 +2,7 @@ package com.tokopedia.topads.dashboard.view.adapter.group_item.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -17,10 +18,9 @@ import com.tokopedia.topads.dashboard.data.model.CountDataItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.view.adapter.group_item.viewmodel.GroupItemsItemModel
 import com.tokopedia.topads.dashboard.view.sheet.TopadsSelectActionSheet
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.ProgressBarUnify
-import kotlinx.android.synthetic.main.topads_dash_item_with_group_card.view.*
-
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Pika on 2/6/20.
@@ -31,11 +31,37 @@ private const val CLICK_IMG_MENU = "click - edit group button"
 private const val CLICK_NON_AKTIFKAN = "click - nonaktifkan group ads"
 private const val CLICK_UHBAH = "click - ubah iklan group ads"
 private const val CLICK_HAPUS = "click - hapus iklan group ads"
-class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean) -> Unit),
-                               var actionDelete: ((pos: Int) -> Unit),
-                               var actionStatusChange: ((pos: Int, status: Int) -> Unit),
-                               private var editDone: ((groupId: String, strategy: String) -> Unit),
-                               private var onClickItem: ((id: String, priceSpent: String, groupName: String) -> Unit)) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
+
+class GroupItemsItemViewHolder(
+    val view: View, var selectMode: ((select: Boolean) -> Unit),
+    var actionDelete: ((pos: Int) -> Unit),
+    var actionStatusChange: ((pos: Int, status: Int) -> Unit),
+    private var editDone: ((groupId: String, strategy: String) -> Unit),
+    private var onClickItem: ((id: String, priceSpent: String, groupName: String) -> Unit),
+) : GroupItemsViewHolder<GroupItemsItemModel>(view) {
+
+    private val cardView: CardUnify = view.findViewById(R.id.card_view)
+    private val itemCard: ConstraintLayout = view.findViewById(R.id.item_card)
+    private val img: ImageUnify = view.findViewById(R.id.img)
+    private val groupTitle: Typography = view.findViewById(R.id.group_title)
+    private val imgMenu: UnifyImageButton = view.findViewById(R.id.img_menu)
+    private val checkBox: CheckboxUnify = view.findViewById(R.id.check_box)
+    private val label: Label = view.findViewById(R.id.label)
+    private val imgTotal: ImageUnify = view.findViewById(R.id.img_total)
+    private val totalItem: Typography = view.findViewById(R.id.total_item)
+    private val imgKey: ImageUnify = view.findViewById(R.id.img_key)
+    private val keyCount: Typography = view.findViewById(R.id.key_count)
+    private val scheduleImg: ImageUnify = view.findViewById(R.id.scheduleImg)
+    private val tampilCount: Typography = view.findViewById(R.id.tampil_count)
+    private val pengeluaranCount: Typography = view.findViewById(R.id.pengeluaran_count)
+    private val klikCount: Typography = view.findViewById(R.id.klik_count)
+    private val pendapatanCount: Typography = view.findViewById(R.id.pendapatan_count)
+    private val persentaseKlikCount: Typography = view.findViewById(R.id.persentase_klik_count)
+    private val produkTerjualCount: Typography = view.findViewById(R.id.produk_terjual_count)
+    private val progressLayout: ConstraintLayout = view.findViewById(R.id.progress_layout)
+    private val progressStatus1: Typography = view.findViewById(R.id.progress_status1)
+    private val progressStatus2: Typography = view.findViewById(R.id.progress_status2)
+    private val progressBar: ProgressBarUnify = view.findViewById(R.id.progress_bar)
 
     companion object {
         @LayoutRes
@@ -46,94 +72,110 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         TopadsSelectActionSheet.newInstance()
     }
 
-    override fun bind(item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
+    override fun bind(
+        item: GroupItemsItemModel, selectedMode: Boolean, fromSearch: Boolean,
+        statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>,
+    ) {
         item.let {
 
-            if(item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
-                view.img_key.visibility = View.GONE
-                view.key_count.visibility = View.GONE
+            if (item.data.strategies.isNotEmpty() && item.data.strategies[0].isNotEmpty()) {
+                imgKey.visibility = View.GONE
+                keyCount.visibility = View.GONE
             } else {
-                view.img_key.visibility = View.VISIBLE
-                view.key_count.visibility = View.VISIBLE
+                imgKey.visibility = View.VISIBLE
+                keyCount.visibility = View.VISIBLE
             }
-            view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
-            view.img_total.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
-            view.img_key.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
-            view.scheduleImg.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
-            view.img_menu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
+            img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
+            imgTotal.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_total))
+            imgKey.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_key))
+            scheduleImg.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
+            imgMenu.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ic_topads_menu))
             if (selectedMode) {
-                view.img_menu.visibility = View.INVISIBLE
-                view.check_box.visibility = View.VISIBLE
+                imgMenu.visibility = View.INVISIBLE
+                checkBox.visibility = View.VISIBLE
             } else {
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
-                view.img_menu.visibility = View.VISIBLE
-                view.check_box.visibility = View.GONE
-                view.check_box.isChecked = false
+                cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                    R.color.topads_dash_white))
+                imgMenu.visibility = View.VISIBLE
+                checkBox.visibility = View.GONE
+                checkBox.isChecked = false
                 it.isChecked = false
             }
-            view.check_box.isChecked = it.isChecked
-            if (!view.check_box.isChecked) {
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+            checkBox.isChecked = it.isChecked
+            if (!checkBox.isChecked) {
+                cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                    R.color.topads_dash_white))
             } else {
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                    R.color.topads_select_color))
             }
             when (it.data.groupStatusDesc) {
-                ACTIVE -> view.label.setLabelType(Label.GENERAL_DARK_GREEN)
-                TIDAK_AKTIF -> view.label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
-                TIDAK_TAMPIL -> view.label.setLabelType(Label.GENERAL_LIGHT_GREY)
+                ACTIVE -> label.setLabelType(Label.GENERAL_DARK_GREEN)
+                TIDAK_AKTIF -> label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
+                TIDAK_TAMPIL -> label.setLabelType(Label.GENERAL_LIGHT_GREY)
             }
-            view.group_title.text = it.data.groupName
-            view.label.text = it.data.groupStatusDesc
+            groupTitle.text = it.data.groupName
+            label.text = it.data.groupStatusDesc
             if (countList.isNotEmpty() && adapterPosition < countList.size && adapterPosition != RecyclerView.NO_POSITION) {
-                view.total_item.text = countList[adapterPosition].totalAds.toString()
-                view.key_count.text = countList[adapterPosition].totalKeywords.toString()
+                totalItem.text = countList[adapterPosition].totalAds.toString()
+                keyCount.text = countList[adapterPosition].totalKeywords.toString()
             }
             setProgressBar(it.data)
             statsData.forEachIndexed { index, stats ->
                 if (stats.groupId == it.data.groupId) {
-                    view.tampil_count.text = statsData[index].statTotalImpression
-                    view.klik_count.text = statsData[index].statTotalClick
-                    view.persentase_klik_count.text = statsData[index].statTotalCtr
-                    view.pengeluaran_count.text = statsData[index].statTotalSpent
-                    view.pendapatan_count.text = statsData[index].groupTotalIncome
-                    view.produk_terjual_count.text = statsData[index].statTotalConversion
+                    tampilCount.text = statsData[index].statTotalImpression
+                    klikCount.text = statsData[index].statTotalClick
+                    persentaseKlikCount.text = statsData[index].statTotalCtr
+                    pengeluaranCount.text = statsData[index].statTotalSpent
+                    pendapatanCount.text = statsData[index].groupTotalIncome
+                    produkTerjualCount.text = statsData[index].statTotalConversion
                 }
             }
-            view.item_card?.setOnClickListener { _ ->
+            itemCard?.setOnClickListener { _ ->
                 if (!selectedMode) {
                     if (item.data.groupPriceDailyBar.isNotEmpty())
-                        onClickItem.invoke(item.data.groupId, item.data.groupPriceDailySpentFmt, item.data.groupName)
+                        onClickItem.invoke(item.data.groupId,
+                            item.data.groupPriceDailySpentFmt,
+                            item.data.groupName)
                     else
                         onClickItem.invoke(item.data.groupId, NOT_VALID, item.data.groupName)
                 } else {
-                    view.check_box.isChecked = !view.check_box.isChecked
-                    it.isChecked = view.check_box.isChecked
-                    if (view.check_box.isChecked)
-                        view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                    checkBox.isChecked = !checkBox.isChecked
+                    it.isChecked = checkBox.isChecked
+                    if (checkBox.isChecked)
+                        cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                            R.color.topads_select_color))
                     else
-                        view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_dash_white))
+                        cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                            R.color.topads_dash_white))
                 }
             }
-            view.item_card.setOnLongClickListener {
+            itemCard.setOnLongClickListener {
                 item.isChecked = true
-                view.check_box.isChecked = true
-                view.card_view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.topads_select_color))
+                checkBox.isChecked = true
+                cardView.setBackgroundColor(ContextCompat.getColor(view.context,
+                    R.color.topads_select_color))
                 selectMode.invoke(true)
                 true
             }
         }
 
-        view.img_menu.setOnClickListener {
+        imgMenu.setOnClickListener {
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_IMG_MENU, "")
-            sheet?.show(((view.context as FragmentActivity).supportFragmentManager), item.data.groupStatus, item.data.groupName, item.data.groupId)
+            sheet?.show(((view.context as FragmentActivity).supportFragmentManager),
+                item.data.groupStatus,
+                item.data.groupName,
+                item.data.groupId)
             sheet?.onEditAction = {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_UHBAH, "")
-                if(item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
+                if (item.data.strategies.size > 0 && item.data.strategies.isNotEmpty()) {
                     editDone.invoke(item.data.groupId, item.data.strategies[0])
                 } else {
                     editDone.invoke(item.data.groupId, "")
                 }
-                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(CLICK_ATUR_IKLAN, "")
+                TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(
+                    CLICK_ATUR_IKLAN,
+                    "")
             }
             sheet?.onDeleteClick = {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupEvent(CLICK_HAPUS, "")
@@ -151,17 +193,20 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
 
     private fun setProgressBar(data: DataItem) {
         if (data.groupPriceDailyBar.isNotEmpty()) {
-            view.progress_layout.visibility = View.VISIBLE
-            view.progress_bar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+            progressLayout.visibility = View.VISIBLE
+            progressBar.progressBarColorType = ProgressBarUnify.COLOR_GREEN
             try {
-                view.progress_bar.setValue(Utils.convertMoneyToValue(data.groupPriceDailySpentFmt), true)
+                progressBar.setValue(Utils.convertMoneyToValue(data.groupPriceDailySpentFmt),
+                    true)
             } catch (e: NumberFormatException) {
                 e.printStackTrace()
             }
-            view.progress_status1.text = data.groupPriceDailySpentFmt
-            view.progress_status2.text = String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status), data.groupPriceDaily)
+            progressStatus1.text = data.groupPriceDailySpentFmt
+            progressStatus2.text =
+                String.format(view.context.resources.getString(com.tokopedia.topads.common.R.string.topads_dash_group_item_progress_status),
+                    data.groupPriceDaily)
         } else {
-            view.progress_layout.visibility = View.GONE
+            progressLayout.visibility = View.GONE
         }
     }
 
