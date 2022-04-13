@@ -41,6 +41,7 @@ open class GetSmartReplyQuestionUseCase @Inject constructor(
             list {
               content
               intent
+              label
             }
           }
         }
