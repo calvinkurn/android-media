@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -145,7 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -153,7 +152,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
     </LinearLayout>
@@ -169,7 +168,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
         <com.tokopedia.unifycomponents.LoaderUnify
@@ -177,7 +176,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_weight="1"
-            app:corners="@integer/corner_radius_shimmering"
+            app:loader_corner_radius="10dp"
             app:loader_type="rect" />
 
     </LinearLayout>
