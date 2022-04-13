@@ -39,7 +39,7 @@ class TokomemberIntroFactory(val listener: TokomemberIntroAdapterListener) : Bas
     }
 
     fun type(tokomemberIntroBenefitImage: TokomemberIntroBenefitImageItem): Int {
-        return TokomemberIntroVideoVh.LAYOUT_ID
+        return TokomemberIntroBenefitImageVh.LAYOUT_ID
     }
 
 }
