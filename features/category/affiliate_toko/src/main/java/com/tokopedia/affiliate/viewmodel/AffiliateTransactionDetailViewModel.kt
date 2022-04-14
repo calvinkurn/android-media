@@ -22,6 +22,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
 ) : BaseViewModel() {
     private var commssionData = MutableLiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail>()
     private var detailList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
+    private var detailTitle = MutableLiveData<String>()
     private var errorMessage = MutableLiveData<Throwable>()
     private var progressBar = MutableLiveData<Boolean>()
     private var lastItem :String= "0"
@@ -43,6 +44,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
                     affiliateCommissionDetail.data?.pageType?.let {type ->
                         pageType = type
                     }
+                    affiliateCommissionDetail.data?.detailTitle?.let { detailTitle.value = it }
                     commissionType = affiliateCommissionDetail.data?.commissionType
                     if (affiliateCommissionDetail.data?.commissionType == TRAFFIC_TYPE) {
                         affiliateCommissionDetailUserCase.affiliateTrafficCardDetails(additionKey, lastItem,pageType)?.let {
@@ -98,6 +100,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getCommissionData() : LiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail> = commssionData
     fun getDetailList(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = detailList
+    fun getDetailTitle(): LiveData<String> = detailTitle
     fun progressBar(): LiveData<Boolean> = progressBar
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
 }

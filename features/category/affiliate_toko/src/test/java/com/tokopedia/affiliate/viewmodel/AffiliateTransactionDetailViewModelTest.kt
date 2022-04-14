@@ -50,7 +50,7 @@ class AffiliateTransactionDetailViewModelTest{
         val cardList = arrayListOf(AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail(null,null,"divider",null,null,null,null),
             AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail(null,null,"non-divider",null,null,null,null))
         val affiliateCommisionDetails = AffiliateCommissionDetailsData(AffiliateCommissionDetailsData.GetAffiliateCommissionDetail(AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data(null,"","",
-            cardList,null,null,null,null,"","","PRODUCT","","")))
+            cardList,"Title",null,null,null,"","","PRODUCT","","")))
         coEvery { affiliateCommissionDetailUserCase.affiliateCommissionDetails(any()) } returns affiliateCommisionDetails
         val affiliateTrafficCommissionCardDetails = AffiliateTrafficCommissionCardDetails(
             AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards(
@@ -69,6 +69,7 @@ class AffiliateTransactionDetailViewModelTest{
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f")
         affiliateTransactionDetailViewModel.affiliateCommission("16d106d0-38ad-43b3-9245-99cab79eb09f",1)
         assertEquals(affiliateTransactionDetailViewModel.getShimmerVisibility().value,false)
+        assertEquals(affiliateTransactionDetailViewModel.getDetailTitle().value,"Title")
     }
 
     @Test

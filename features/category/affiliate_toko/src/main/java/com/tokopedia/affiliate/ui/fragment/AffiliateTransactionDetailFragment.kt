@@ -99,6 +99,11 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
                 }
             }
         })
+        affiliateVM.getDetailTitle().observe(viewLifecycleOwner,{ title ->
+            title?.let {
+                view?.findViewById<NavToolbar>(R.id.transaction_navToolbar)?.setToolbarTitle(it)
+            }
+        })
     }
 
     private fun showError(it: Throwable?) {

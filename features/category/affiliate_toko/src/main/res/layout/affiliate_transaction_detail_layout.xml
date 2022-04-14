@@ -19,8 +19,7 @@
         app:toolbarBackButton="back"
         app:toolbarContentType="typeTitle"
         app:toolbarInitialFillColor="@color/Unify_N0"
-        app:toolbarInitialTheme="light"
-        app:toolbarTitle="Detail Komisi Penjualan" />
+        app:toolbarInitialTheme="light"/>
     <androidx.constraintlayout.widget.Group
         android:id="@+id/details_view"
         android:visibility="visible"
