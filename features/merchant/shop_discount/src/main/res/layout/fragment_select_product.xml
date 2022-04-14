@@ -77,6 +77,7 @@
             android:layout_marginBottom="@dimen/unify_space_16"
             android:text="@string/sd_manage"
             app:unifyButtonSize="medium"
+            app:unifyButtonRightLoader="false"
             app:unifyButtonVariant="filled" />
 
     </androidx.cardview.widget.CardView>

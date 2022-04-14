@@ -1,4 +1,4 @@
-package com.tokopedia.shopdiscount.manage.data.response
+package com.tokopedia.shopdiscount.search.data.response
 
 
 import com.google.gson.annotations.SerializedName

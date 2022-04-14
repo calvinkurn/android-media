@@ -78,6 +78,7 @@
             android:id="@+id/tpgPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:typographyType="heading_6"
             android:layout_marginTop="@dimen/unify_space_4"
             app:layout_constraintLeft_toRightOf="@id/labelVariantCount"
             app:layout_constraintStart_toStartOf="@+id/tpgSkuNumber"

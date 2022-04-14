@@ -19,6 +19,9 @@ import com.tokopedia.shopdiscount.databinding.FragmentSearchProductBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
+import com.tokopedia.shopdiscount.manage.presentation.list.ProductAdapter
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
@@ -28,10 +31,16 @@ import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
 
-class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Product>() {
+class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     companion object {
         private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "discount-status-name"
@@ -42,6 +51,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         private const val ONE_PRODUCT = 1
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 700
 
         @JvmStatic
         fun newInstance(
@@ -68,10 +78,14 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession : UserSessionInterface
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SearchProductViewModel::class.java) }
     private val productAdapter by lazy {
-        SearchProductAdapter(
+        ProductAdapter(
             onProductClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
@@ -102,6 +116,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         setupView()
         observeProducts()
         observeDeleteDiscount()
+        observeReserveProducts()
     }
 
     private fun setupView() {
@@ -133,6 +148,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
     private fun setupMultiSelection() {
         binding?.run {
             tpgMultiSelect.setOnClickListener {
+                viewModel.setRequestId(generateRequestId())
                 viewModel.removeAllProductFromSelection()
                 viewModel.setInMultiSelectMode(true)
                 enableMultiSelect()
@@ -145,7 +161,8 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
                     String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
             }
             btnManage.setOnClickListener {
-
+                val selectedProductIds = viewModel.getSelectedProductIds()
+                reserveProduct(viewModel.getRequestId(), selectedProductIds)
             }
             btnDelete.setOnClickListener { displayBulkDeleteConfirmationDialog() }
         }
@@ -185,6 +202,24 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         }
     }
 
+    private fun observeReserveProducts() {
+        viewModel.reserveProduct.observe(viewLifecycleOwner) {
+            binding?.btnManage?.isLoading = false
+            when (it) {
+                is Success -> {
+                    val isReservationSuccess = it.data
+                    if (isReservationSuccess) {
+                        redirectToUpdateDiscountPage()
+                    } else {
+                        binding?.root showError getString(R.string.sd_error_reserve_product)
+                    }
+                }
+                is Fail -> {
+                    binding?.root showError it.throwable
+                }
+            }
+        }
+    }
 
     private fun handleProducts(data: ProductData) {
         if (data.totalProduct == Int.ZERO) {
@@ -251,6 +286,9 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
         viewModel.setSelectedProduct(product)
+        val requestId = generateRequestId()
+        viewModel.setRequestId(requestId)
+        reserveProduct(requestId, listOf(product.id))
     }
 
     private val onVariantInfoClicked : (Product) -> Unit = { product ->
@@ -265,6 +303,12 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         guard(product.disableClick) {
             displayMoreMenuBottomSheet(product)
         }
+    }
+
+    private fun reserveProduct(requestId : String, productIds : List<String>) {
+        binding?.btnManage?.isLoading = true
+        binding?.btnManage?.loadingText = getString(R.string.sd_please_wait)
+        viewModel.reserveProduct(requestId, productIds)
     }
 
     private val onProductSelectionChange: (Product, Boolean) -> Unit = { selectedProduct, isSelected ->
@@ -325,7 +369,7 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         }
     }
 
-    override fun createAdapter(): SearchProductAdapter {
+    override fun createAdapter(): ProductAdapter {
         return productAdapter
     }
 
@@ -465,5 +509,21 @@ class SearchProductFragment : BaseSimpleListFragment<SearchProductAdapter, Produ
         val disabledMultiSelect = viewModel.disableMultiSelect(currentItems)
         productAdapter.updateAll(disabledMultiSelect)
         binding?.cardView?.gone()
+    }
+
+    private fun generateRequestId(): String {
+        return userSession.shopId + Date().time
+    }
+
+    private fun redirectToUpdateDiscountPage() {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            ShopDiscountManageDiscountActivity.start(
+                requireActivity(),
+                viewModel.getRequestId(),
+                discountStatusId,
+                ShopDiscountManageDiscountMode.UPDATE
+            )
+        }
     }
 }

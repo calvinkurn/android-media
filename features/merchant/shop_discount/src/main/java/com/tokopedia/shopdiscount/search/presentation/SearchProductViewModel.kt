@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shopdiscount.common.domain.MutationDoSlashPriceProductReservationUseCase
 import com.tokopedia.shopdiscount.manage.data.mapper.ProductMapper
+import com.tokopedia.shopdiscount.manage.data.mapper.UpdateDiscountRequestMapper
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.domain.usecase.DeleteDiscountUseCase
@@ -20,7 +22,9 @@ class SearchProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getSlashPriceProductListUseCase: GetSlashPriceProductListUseCase,
     private val productMapper: ProductMapper,
-    private val deleteDiscountUseCase: DeleteDiscountUseCase
+    private val deleteDiscountUseCase: DeleteDiscountUseCase,
+    private val reserveProductUseCase : MutationDoSlashPriceProductReservationUseCase,
+    private val updateDiscountRequestMapper: UpdateDiscountRequestMapper
 ) : BaseViewModel(dispatchers.main) {
 
     private val _products = MutableLiveData<Result<ProductData>>()
@@ -31,11 +35,16 @@ class SearchProductViewModel @Inject constructor(
     val deleteDiscount: LiveData<Result<Boolean>>
         get() = _deleteDiscount
 
+    private val _reserveProduct = MutableLiveData<Result<Boolean>>()
+    val reserveProduct: LiveData<Result<Boolean>>
+        get() = _reserveProduct
+
     private var totalProduct = 0
     private var selectedProduct : Product? = null
     private var isOnMultiSelectMode = false
     private var shouldDisableProductSelection = false
     private var selectedProductIds : MutableList<String> = mutableListOf()
+    private var requestId = ""
 
     fun getSlashPriceProducts(
         page: Int,
@@ -89,6 +98,22 @@ class SearchProductViewModel @Inject constructor(
             _deleteDiscount.value = Fail(it)
         })
     }
+
+    fun reserveProduct(requestId: String, productIds : List<String>) {
+        launchCatchError(block = {
+            val result = withContext(dispatchers.io) {
+                val request = updateDiscountRequestMapper.map(requestId, productIds)
+                reserveProductUseCase.setParams(request)
+                reserveProductUseCase.executeOnBackground()
+            }
+
+            _reserveProduct.value = Success(result.doSlashPriceProductReservation.responseHeader.success)
+
+        }, onError = {
+            _reserveProduct.value = Fail(it)
+        })
+    }
+
 
     fun setTotalProduct(totalProduct : Int) {
         this.totalProduct = totalProduct
@@ -174,5 +199,13 @@ class SearchProductViewModel @Inject constructor(
 
     fun removeAllProductFromSelection() {
         this.selectedProductIds.clear()
+    }
+
+    fun getRequestId() : String {
+        return requestId
+    }
+
+    fun setRequestId(requestId : String) {
+        this.requestId = requestId
     }
 }

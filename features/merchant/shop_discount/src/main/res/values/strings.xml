@@ -47,6 +47,7 @@
     <string name="sd_bulk_discount_deleted">%s produk berhasil dihapus dari Diskon Toko.</string>
     <string name="sd_manage">Atur</string>
     <string name="sd_error_delete_discount">Terjadi kesalahan dalam menghapus diskon</string>
+    <string name="sd_error_reserve_product">Terjadi kesalahan dalam melakukan atur produk</string>
     <string name="sd_with_variant">Ada Varian Diskon</string>
     <string name="sd_has_variant">%s Varian Produk</string>
     <string name="sd_more_menu">Menu Lainnya</string>
@@ -62,6 +63,7 @@
     <string name="sd_search_product_or_sku">Cari produk atau SKU</string>
     <string name="sd_sku">SKU: %s</string>
     <string name="sd_select_product_max_count_reached">Atur 5 produk dulu, ya</string>
+    <string name="sd_please_wait">Mohon tunggu</string>
 
     <!-- Product Detail   -->
     <string name="change_discount">Ubah Diskon</string>
