@@ -23,6 +23,7 @@ object Lego4AutoTabletConfiguration {
         context?.let {
             return if (DeviceScreenInfo.isTablet(context)) {
                 val width = context.resources.displayMetrics.widthPixels
+                val density = context.resources.displayMetrics.density
                 if (width >= 768) {
                     LAYOUT_TABLET_ABOVE_768
                 }
