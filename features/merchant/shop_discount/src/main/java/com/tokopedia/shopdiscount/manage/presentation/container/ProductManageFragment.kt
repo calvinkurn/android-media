@@ -43,8 +43,6 @@ import javax.inject.Inject
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -115,7 +113,6 @@ class ProductManageFragment : BaseDaggerFragment() {
                     val currentTabPosition = viewModel.getSelectedTabPosition()
                     val tab = viewModel.getSelectedTab(currentTabPosition)
                     refreshSearchBarTitle(tab)
-                    handleEmptyState(tab)
                 }
             })
         }
@@ -192,34 +189,6 @@ class ProductManageFragment : BaseDaggerFragment() {
     private fun refreshSearchBarTitle(tab : PageTab) {
         binding?.searchBar?.isVisible = tab.count > ZERO
         binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
-    }
-
-
-    private fun handleEmptyState(tab: PageTab) {
-        if (tab.count == ZERO) {
-            binding?.emptyState?.visible()
-            showEmptyState(tab.discountStatusId)
-        } else {
-            binding?.emptyState?.gone()
-        }
-    }
-
-    private fun showEmptyState(discountStatusId : Int) {
-        val title = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_paused_discount_title)
-        } else {
-            getString(R.string.sd_no_paused_discount_description)
-        }
-
-        val description = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_discount_title)
-        } else {
-            getString(R.string.sd_no_discount_description)
-        }
-
-        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-        binding?.emptyState?.setTitle(title)
-        binding?.emptyState?.setDescription(description)
     }
 
     private fun displayTabs(tabs: List<PageTab>) {
@@ -325,6 +294,5 @@ class ProductManageFragment : BaseDaggerFragment() {
 
     private val onSwipeRefreshed: () -> Unit = {
         viewModel.getSlashPriceProductsMeta()
-        binding?.emptyState?.gone()
     }
 }
