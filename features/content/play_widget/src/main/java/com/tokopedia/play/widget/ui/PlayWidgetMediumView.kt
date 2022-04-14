@@ -162,6 +162,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private var mLastOverlayImageUrl: String? = null
 
     private val spacing16 by lazy { resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toDp().toInt() }
+    private val spacing12 by lazy { resources.getDimensionPixelOffset(R.dimen.play_widget_dp_12) }
+    private val spacing10 by lazy { resources.getDimensionPixelOffset(R.dimen.play_widget_medium_margin_without_background) }
 
     private var mModel: PlayWidgetUiModel = PlayWidgetUiModel.Empty
 
@@ -274,18 +276,25 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
         recyclerViewItem.setMargin(
                 left = 0,
-                top = if (shouldAddSpacing(data)) spacing16 else 0,
+                top = if (isBackgroundAvailable(data)) spacing16 else 0,
                 right = 0,
                 bottom = spacing16,
         )
         mLastOverlayImageUrl = data.overlayImageUrl
+
+        itemContainer.setMargin(
+            left = 0,
+            top = if(isBackgroundAvailable(data)) spacing12 else spacing10,
+            right = 0,
+            bottom = 0,
+        )
     }
 
     private fun shouldLoadOverlayImage(imageUrl: String) = imageUrl.isNotBlank()
 
     private fun shouldScrollToLeftBanner() = mLastOverlayImageUrl?.isBlank() ?: false
 
-    private fun shouldAddSpacing(data: PlayWidgetBackgroundUiModel): Boolean {
+    private fun isBackgroundAvailable(data: PlayWidgetBackgroundUiModel): Boolean {
         return data.overlayImageUrl.isNotBlank()
                 && (data.gradientColors.isNotEmpty() || data.backgroundUrl.isNotBlank())
     }
