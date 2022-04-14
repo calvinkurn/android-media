@@ -165,6 +165,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                     String.format(getString(R.string.sd_total_product), viewModel.getTotalProduct())
             }
             btnManage.setOnClickListener {
+                showLoaderDialog()
                 val selectedProductIds = viewModel.getSelectedProductIds()
                 reserveProduct(viewModel.getRequestId(), selectedProductIds)
             }
@@ -197,9 +198,11 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         viewModel.deleteDiscount.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    dismissLoaderDialog()
                     handleDeleteDiscountResult(it.data)
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
                     binding?.root showError it.throwable
                 }
             }
@@ -219,6 +222,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
                     }
                 }
                 is Fail -> {
+                    dismissLoaderDialog()
                     binding?.root showError it.throwable
                 }
             }
@@ -461,6 +465,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         val dialogTitle = String.format(title, toBeDeletedProductIds.size)
 
         dialog.setOnDeleteConfirmed {
+            showLoaderDialog()
             viewModel.deleteDiscount(discountStatusId, toBeDeletedProductIds)
         }
 
