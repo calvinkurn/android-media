@@ -156,6 +156,7 @@
     <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
     <string name="txt_empty_state">Oops, alamatmu tidak ditemukan</string>
     <string name="txt_empty_state_desc">Cek ulang alamatmu dan coba lagi, ya.</string>
+    <string name="txt_empty_state_desc_district"> Coba periksa kembali penulisanmu.</string>
 
     <!--PinpointNew Page-->
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
@@ -166,9 +167,11 @@
     <string name="tv_location_unmacted">Nama lokasi tidak sesuai alamatmu?</string>
     <string name="tv_location_unmacted_detail">Tenang, kamu akan isi alamat nanti. Pastikan pinpoint sudah sesuai dulu.</string>
     <string name="txt_toaster_pinpoint_unmatched">Pastikan pinpoint sesuai kota &amp; kecamatan pilihanmu.</string>
-    <string name="out_of_indonesia_desc_new">Saat ini, Tokopedia belum melayani pengiriman ke luar Indonesia. Pilih ulang lokasimu, ya.</string>
+    <string name="out_of_indonesia_desc_new">Saat ini Tokopedia hanya melayani pengiriman di Indonesia saja. Pilih ulang lokasimu, ya.</string>
     <string name="undetected_location_new">Yaah, alamatmu tidak terdeteksi</string>
     <string name="undetected_location_desc_new">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
+    <string name="undetected_location_desc_edit_wo_pinpoint">Tenang, kamu bisa pilih ulang lokasimu atau tetap menyimpan alamat tanpa pinpoint.</string>
+    <string name="undetected_location_desc_edit_w_pinpoint">Tenang, kamu bisa pilih ulang lokasimu atau pakai lokasimu sebelumnya.</string>
 
     <!--Address Form-->
     <string name="title_address_form">Detail Alamat</string>

@@ -228,6 +228,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     if (viewBinding?.searchPageInput?.searchBarTextField?.text.toString().isEmpty()) {
                         viewBinding?.tvDescInputDistrict?.visibility = View.GONE
+                        viewBinding?.emptyStateDistrict?.visibility = View.GONE
                         viewBinding?.llPopularCity?.visibility = View.VISIBLE
                         viewBinding?.rvListDistrict?.visibility = View.GONE
                         if (isEdit) {
@@ -320,6 +321,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             llPopularCity.visibility = View.GONE
             rvListDistrict.visibility = View.VISIBLE
             tvDescInputDistrict.visibility = View.VISIBLE
+            emptyStateDistrict.visibility = View.GONE
             layoutUseCurrentLoc.visibility = View.GONE
             dividerUseCurrentLocation.visibility = View.GONE
             tvDescInputDistrict.setText(R.string.hint_advice_search_address)
@@ -347,13 +349,17 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
     override fun showEmpty() {
         viewBinding?.run {
-            tvDescInputDistrict.visibility = View.VISIBLE
+            tvDescInputDistrict.visibility = View.GONE
             if (isEdit) {
                 layoutUseCurrentLoc.visibility = View.VISIBLE
                 dividerUseCurrentLocation.visibility = View.VISIBLE
             }
-            tvDescInputDistrict.setText(R.string.hint_search_address_no_result)
-            llPopularCity.visibility = View.VISIBLE
+            dividerUseCurrentLocation.visibility = View.VISIBLE
+            emptyStateDistrict.let {
+                it.visibility = View.VISIBLE
+                it.setImageUrl(AddAddressConstant.LOCATION_NOT_FOUND)
+            }
+            llPopularCity.visibility = View.GONE
             rvListDistrict.visibility = View.GONE
         }
     }
@@ -415,6 +421,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             btnChooseZipcode.visibility = View.VISIBLE
             searchPageInput.visibility = View.GONE
             tvDescInputDistrict.visibility = View.GONE
+            emptyStateDistrict.visibility = View.GONE
             rvListDistrict.visibility = View.GONE
             llPopularCity.visibility = View.GONE
             layoutUseCurrentLoc.visibility = View.GONE
@@ -467,6 +474,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
             btnChooseZipcode.visibility = View.GONE
             searchPageInput.visibility = View.VISIBLE
             tvDescInputDistrict.visibility = View.VISIBLE
+            emptyStateDistrict.visibility = View.GONE
             if (isEdit) {
                 layoutUseCurrentLoc.visibility = View.VISIBLE
                 dividerUseCurrentLocation.visibility = View.VISIBLE

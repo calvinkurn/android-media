@@ -61,6 +61,7 @@ import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.LOCATION_NOT_FO
 import com.tokopedia.logisticaddaddress.utils.AddAddressConstant.MAPS_EMPTY
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -99,6 +100,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     private var hasRequestedLocation: Boolean = false
     /*to differentiate positive flow or negative flow*/
     private var isPositiveFlow: Boolean = true
+    private var isPinpoint: Boolean = false
 
     private var isPermissionAccessed: Boolean = false
 
@@ -288,6 +290,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             currentLong = it.getDouble(EXTRA_LONG)
             saveAddressDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
             isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            isPinpoint = currentLat != 0.0 && currentLong != 0.0
             currentDistrictName = it.getString(EXTRA_DISTRICT_NAME)
             districtId = saveAddressDataModel?.districtId
             if (districtId == null) {
@@ -822,6 +825,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 imgInvalidLoc.setImageUrl(IMAGE_OUTSIDE_INDONESIA)
                 tvInvalidLoc.text = getString(R.string.out_of_indonesia_title)
                 tvInvalidLocDetail.text = getString(R.string.out_of_indonesia_desc_new)
+                if (isEdit) { btnAnaNegative.visibility = View.GONE }
             }
         } else {
             if (!isEdit) {
@@ -838,7 +842,24 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
                 tvInvalidLoc.text = getString(R.string.undetected_location_new)
-                tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_new)
+                if (isEdit) {
+                    if (isPinpoint) {
+                        tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_edit_w_pinpoint)
+                        btnAnaNegative.visibility = View.GONE
+                    } else {
+                        tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_edit_wo_pinpoint)
+                        btnAnaNegative.let {
+                            it.buttonVariant = UnifyButton.Variant.GHOST
+                            it.buttonType = UnifyButton.Type.MAIN
+                            it.text = getString(R.string.mismatch_btn_title)
+                            it.setOnClickListener {
+                                goToAddressForm()
+                            }
+                        }
+                    }
+                } else {
+                    tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_new)
+                }
             }
         }
 
