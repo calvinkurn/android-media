@@ -1,7 +1,5 @@
 package com.tokopedia.shopdiscount.manage_discount.util
 
-import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
 import com.tokopedia.shopdiscount.manage_discount.data.request.DoSlashPriceProductSubmissionRequest
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
@@ -27,11 +25,12 @@ object ShopDiscountManageDiscountMapper {
     }
 
     fun mapToShopDiscountSetupProductUiModel(
-        response: GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList
+        response: GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList,
+        selectedProductVariantId: String
     ): ShopDiscountSetupProductUiModel {
         return ShopDiscountSetupProductUiModel(
             responseHeader = response.responseHeader,
-            listSetupProductData = mapToListSetupProductUiModel(response.productList)
+            listSetupProductData = mapToListSetupProductUiModel(response.productList, selectedProductVariantId)
         )
     }
 
@@ -44,7 +43,8 @@ object ShopDiscountManageDiscountMapper {
     }
 
     private fun mapToListSetupProductUiModel(
-        listProductResponse: List<GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList>
+        listProductResponse: List<GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList>,
+        selectedProductVariantId: String
     ): List<ShopDiscountSetupProductUiModel.SetupProductData> {
         return listProductResponse.map {
             ShopDiscountSetupProductUiModel.SetupProductData(
@@ -55,11 +55,8 @@ object ShopDiscountManageDiscountMapper {
                 listProductWarehouse = mapToListProductWarehouseData(it.warehouses),
                 slashPriceInfo = mapToSlashPriceInfo(it.slashPriceInfo),
                 price = mapToPriceData(it.price),
-                listProductVariant = mapToListProductVariant(it)
+                listProductVariant = mapToListProductVariant(it, selectedProductVariantId)
             )
-//                .apply {
-//                updateProductStatusAndMappedData(this)
-//            }
         }
     }
 
@@ -90,9 +87,15 @@ object ShopDiscountManageDiscountMapper {
     }
 
     private fun mapToListProductVariant(
-        productResponse: GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList
+        productResponse: GetSlashPriceSetupProductListResponse.GetSlashPriceSetupProductList.ProductList,
+        selectedProductVariantId: String
     ): List<ShopDiscountSetupProductUiModel.SetupProductData> {
-        return productResponse.variants.map {
+        return productResponse.variants.filter {
+            if(selectedProductVariantId.isNotEmpty())
+                it.productId == selectedProductVariantId
+            else
+                true
+        }.map {
             ShopDiscountSetupProductUiModel.SetupProductData(
                 productId = it.productId,
                 productName = it.name,
