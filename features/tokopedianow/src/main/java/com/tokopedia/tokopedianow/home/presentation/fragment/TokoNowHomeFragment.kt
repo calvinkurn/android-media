@@ -1088,6 +1088,24 @@ class TokoNowHomeFragment: Fragment(),
                 }
             }
         }
+
+        observe(viewModelTokoNow.homeSwitchServiceTracker) {
+            if (it.isImpressionTracker) {
+                analytics.sendImpressSwitcherWidget(
+                    userId = it.userId,
+                    whIdOrigin = it.whIdOrigin,
+                    whIdDestination = it.whIdDestination,
+                    isNow15 = it.isNow15
+                )
+            } else {
+                analytics.sendClickSwitcherWidget(
+                    userId = it.userId,
+                    whIdOrigin = it.whIdOrigin,
+                    whIdDestination = it.whIdDestination,
+                    isNow15 = it.isNow15
+                )
+            }
+        }
     }
 
     private fun updateSharingReferral(isButtonLoading: Boolean, sharingReferralUrlParam: String = "") {
@@ -1641,7 +1659,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun createHomeSwitcherListener(): HomeSwitcherListener {
-        return HomeSwitcherListener(requireContext(), viewModelTokoNow, userSession, analytics)
+        return HomeSwitcherListener(requireContext(), viewModelTokoNow)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

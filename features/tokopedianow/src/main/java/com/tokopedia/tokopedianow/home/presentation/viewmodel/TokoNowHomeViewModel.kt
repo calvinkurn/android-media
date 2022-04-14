@@ -14,6 +14,7 @@ import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -40,6 +41,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
+import com.tokopedia.tokopedianow.home.analytic.HomeSwitchServiceTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
@@ -142,6 +144,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _setUserPreference
     val sharingReferralUrlParam: LiveData<Result<String>>
         get() = _sharingReferralUrlParam
+    val homeSwitchServiceTracker: LiveData<HomeSwitchServiceTracker>
+        get() = _homeSwitchServiceTracker
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -155,6 +159,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _openScreenTracker = MutableLiveData<String>()
     private val _setUserPreference = MutableLiveData<Result<SetUserPreferenceData>>()
     private val _sharingReferralUrlParam = MutableLiveData<Result<String>>()
+    private val _homeSwitchServiceTracker = MutableLiveData<HomeSwitchServiceTracker>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -459,22 +464,21 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun switchService(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-            val currentServiceType = targetServiceType(localCacheModel.service_type)
-            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, currentServiceType)
+            val currentServiceType = localCacheModel.service_type
+
+            val serviceType = if (
+                currentServiceType == ServiceType.NOW_15M ||
+                currentServiceType == ServiceType.NOW_OOC
+            ) {
+                ServiceType.NOW_2H
+            } else {
+                ServiceType.NOW_15M
+            }
+
+            val userPreference = setUserPreferenceUseCase.execute(localCacheModel, serviceType)
             _setUserPreference.postValue(Success(userPreference))
         }) {
             _setUserPreference.postValue(Fail(it))
-        }
-    }
-
-    fun targetServiceType(serviceType: String): String {
-        return if (
-            serviceType == ServiceType.NOW_15M ||
-            serviceType == ServiceType.NOW_OOC
-        ) {
-            ServiceType.NOW_2H
-        } else {
-            ServiceType.NOW_15M
         }
     }
 
@@ -790,6 +794,25 @@ class TokoNowHomeViewModel @Inject constructor(
             val data = HomeAddToCartTracker(position, quantity, cartId, productRecom)
             _homeAddToCartTracker.postValue(data)
         }
+    }
+
+    fun trackSwitchService(localCacheModel: LocalCacheModel, isImpressionTracker: Boolean) {
+        val whIdOrigin = localCacheModel.warehouse_id
+        val whIdDestination = localCacheModel.warehouses.findLast { it.service_type != localCacheModel.service_type }?.warehouse_id.orZero().toString()
+
+        val serviceType = if (localCacheModel.service_type == ServiceType.NOW_2H) {
+            ServiceType.NOW_2H
+        } else {
+            ServiceType.NOW_15M
+        }
+
+        _homeSwitchServiceTracker.value = HomeSwitchServiceTracker(
+            userId = userSession.userId,
+            whIdOrigin = whIdOrigin,
+            whIdDestination = whIdDestination,
+            isNow15 = serviceType == ServiceType.NOW_15M,
+            isImpressionTracker = isImpressionTracker
+        )
     }
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
