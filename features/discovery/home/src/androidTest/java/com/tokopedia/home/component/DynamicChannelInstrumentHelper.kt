@@ -118,9 +118,6 @@ fun enableChooseAddressCoachmark(context: Context) {
         CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
 }
 
-fun waitForDataRecomFeed() {
-    Thread.sleep(10000)
-}
 fun waitForData() {
     Thread.sleep(4000)
 }
@@ -134,6 +131,10 @@ fun waitForLoadCassavaAssert() {
 
 fun addDebugEnd() {
     Thread.sleep(2000)
+}
+
+fun addDebugEndFeed() {
+    Thread.sleep(7000)
 }
 
 fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")
@@ -173,10 +174,46 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
     clickSingleItemOnRecyclerView(R.id.recycleList)
 }
 
-fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
+fun clickOnRecommendationFeedClickSection(viewHolder: RecyclerView.ViewHolder) {
     waitForData()
     clickRecommendationFeedTab()
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+}
+
+fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
+    waitForData()
+    clickRecommendationFeedTab()
+    val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
+    val rvCount = recyclerView.adapter!!.itemCount
+    for (i in 0 until rvCount) {
+        try {
+            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
+                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
+        } catch (e: PerformException) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun clickHomeRecommendationItem(): ViewAction? {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View>? {
+            return null
+        }
+
+        override fun getDescription(): String {
+            return "Click home recommendation item"
+        }
+
+        override fun perform(uiController: UiController?, view: View) {
+            val bannerView: View? = view.findViewById(R.id.bannerImageView)
+            if (bannerView != null) {
+                bannerView.performClick()
+            } else {
+                view.performClick()
+            }
+        }
+    }
 }
 
 fun clickCloseOnReminderWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int, homeRecyclerView: RecyclerView){

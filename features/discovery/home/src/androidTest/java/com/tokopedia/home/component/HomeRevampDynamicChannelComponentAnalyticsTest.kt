@@ -216,10 +216,10 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             initTest()
             login()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedSection(viewHolder)
+                clickOnRecommendationFeedClickSection(viewHolder)
             }
         } validateAnalytics {
-            addDebugEnd()
+            addDebugEndFeed()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
         }
     }
