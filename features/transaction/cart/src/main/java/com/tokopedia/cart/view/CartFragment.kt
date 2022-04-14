@@ -1829,11 +1829,23 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView) {
-        cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+    override fun onWishlistCheckChanged(productId: String, cartId: String, imageView: ImageView, isError: Boolean, errorType: String) {
+        if (isError) {
+            cartPageAnalytics.eventClickMoveToWishlistOnUnavailableSection(userSession.userId, productId, errorType)
+        } else {
+            cartPageAnalytics.eventClickMoveToWishlistOnAvailableSection(userSession.userId, productId)
+        }
         setProductImageAnimationData(imageView, false)
         val isLastItem = cartAdapter.allCartItemData.size == 1
-        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, WISHLIST_SOURCE_AVAILABLE_ITEM)
+        var forceExpand = false
+        if (isError) {
+            // If unavailable item > 1 and state is collapsed, then expand first
+            if (cartAdapter.allDisabledCartItemData.size > 1 && unavailableItemAccordionCollapseState) {
+                collapseOrExpandDisabledItem()
+                forceExpand = true
+            }
+        }
+        dPresenter.processAddCartToWishlist(productId, cartId, isLastItem, if (isError) WISHLIST_SOURCE_UNAVAILABLE_ITEM else WISHLIST_SOURCE_AVAILABLE_ITEM, forceExpand)
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
