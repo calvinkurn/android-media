@@ -64,25 +64,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         fragment
     }
 
-    private val switchAccountDialog: DialogUnify by lazy(mode = LazyThreadSafetyMode.NONE) {
-        val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-        dialog.setTitle(getString(R.string.feed_content_dialog_title))
-        dialog.setDescription(getString(R.string.feed_content_dialog_desc))
-        dialog.setPrimaryCTAText(getString(R.string.feed_content_primary_cta_text))
-        dialog.setSecondaryCTAText(getString(R.string.feed_content_sec_cta_text))
-        dialog.setPrimaryCTAClickListener {
-            dialog.dismiss()
-            createPostAnalytics.eventClickContinueOnConfirmationPopup()
-
-        }
-        dialog.setSecondaryCTAClickListener {
-            createPostAnalytics.eventClickExitOnConfirmationPopup()
-            dialog.dismiss()
-            backWithActionResult()
-        }
-        dialog
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
@@ -377,7 +358,15 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             setSecondaryCTAClickListener {
                 dismiss()
                 /** TODO: check which fragment is the user in */
-                /** TODO: clear product tag */
+
+                when(intent.extras?.get(PARAM_TYPE)) {
+                    TYPE_CONTENT_PREVIEW_PAGE -> {
+                        /** TODO: clear product tag */
+                    }
+                    TYPE_CONTENT_TAGGING_PAGE -> {
+                        /** TODO: clear product tag */
+                    }
+                }
                 selectedFeedAccount = feedAccount
                 toolbarCommon.apply {
                     subtitle = selectedFeedAccount.name

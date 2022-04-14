@@ -56,7 +56,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private lateinit var tvImagePosition: Typography
     private lateinit var icProductTag: IconUnify
     private lateinit var tvContentTagProduct: Typography
-    private lateinit var feecdContentCarousel: CarouselUnify
+    private lateinit var feedContentCarousel: CarouselUnify
     private lateinit var pageIndicatorView: PageControl
 
     /** View Video Post */
@@ -144,7 +144,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         tvImagePosition = view.findViewById(R.id.image_position_text)
         icProductTag = view.findViewById(R.id.product_tag_button)
         tvContentTagProduct = view.findViewById(R.id.content_tag_product_text)
-        feecdContentCarousel = view.findViewById(R.id.feed_content_carousel)
+        feedContentCarousel = view.findViewById(R.id.feed_content_carousel)
         pageIndicatorView = view.findViewById(R.id.page_indicator)
 
         val relatedProducts = ArrayList(createPostModel.relatedProducts)
@@ -169,8 +169,9 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         }
 
         updateCarouselView()
-        feecdContentCarousel.activeIndex = createPostModel.currentCorouselIndex
+        feedContentCarousel.activeIndex = createPostModel.currentCorouselIndex
     }
+
     private fun setProductTagListener(){
         val mediaModel = createPostModel.completeImageList[createPostModel.currentCorouselIndex]
 
@@ -196,7 +197,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_ERROR).show()
         }
-
     }
 
     private fun removeExtraTagListElement(mediaModel: MediaModel) {
@@ -217,7 +217,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     @SuppressLint("ClickableViewAccessibility")
     private fun updateCarouselView() {
 
-        feecdContentCarousel.apply {
+        feedContentCarousel.apply {
             stage.removeAllViews()
             indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
             if (imageList.size > 1) {
@@ -364,7 +364,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         return (videoItem)
     }
 
-    fun playVideo(mediaModel: MediaModel, position: Int = feecdContentCarousel.activeIndex) {
+    fun playVideo(mediaModel: MediaModel, position: Int = feedContentCarousel.activeIndex) {
         setVideoControl(
             mediaModel,
             position
