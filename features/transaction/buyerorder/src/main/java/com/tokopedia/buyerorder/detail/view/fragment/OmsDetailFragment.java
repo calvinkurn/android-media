@@ -394,7 +394,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         icCopyInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                copyInvoice(view, invoiceView.getText().toString());
+                BuyerUtils.copyTextToClipBoard(KEY_TEXT, invoiceView.getText().toString(),requireContext() );
             }
         });
     }
