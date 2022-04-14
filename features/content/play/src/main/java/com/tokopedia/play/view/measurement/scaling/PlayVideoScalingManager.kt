@@ -185,6 +185,8 @@ class PlayVideoScalingManager(
         val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
         val marginTopXt = marginTop * scaleFactor
         view.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
+
+        mListener?.onFinalBottomMostBoundsScalingCalculated(bottomMostBounds)
         animator.apply {
             removeAllListeners()
             addListener(onBottomInsetsShownAnimatorListener)

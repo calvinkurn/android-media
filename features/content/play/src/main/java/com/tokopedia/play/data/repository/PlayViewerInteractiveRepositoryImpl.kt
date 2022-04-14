@@ -10,6 +10,8 @@ import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
+import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.domain.usecase.interactive.InteractiveViewerGetLeaderboardWithSlotUseCase
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -31,11 +33,11 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
     private val interactiveStorage: PlayInteractiveStorage
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
-    override suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel = withContext(dispatchers.io) {
+    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
         val response = getCurrentInteractiveUseCase.apply {
             setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
         }.executeOnBackground()
-        return@withContext mapper.mapInteractive(response.data.giveaway)
+        return@withContext mapper.mapInteractive(response.data)
     }
 
     override suspend fun postInteractiveTap(channelId: String, interactiveId: String): Boolean = withContext(dispatchers.io) {

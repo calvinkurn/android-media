@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.di.key.FragmentKey
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.dialog.interactive.giveaway.InteractiveDialogFragment
 import com.tokopedia.play.view.fragment.*
 import com.tokopedia.play.view.fragment.factory.PlayViewerFragmentFactory
 import dagger.Binds
@@ -66,4 +67,9 @@ abstract class PlayViewerFragmentModule {
     @IntoMap
     @FragmentKey(PlayInteractiveQuizFragment::class)
     abstract fun getQuizDialogFragment(fragment: PlayInteractiveQuizFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(InteractiveDialogFragment::class)
+    abstract fun getGiveawayWidgetDialogFragment(fragment: InteractiveDialogFragment): Fragment
 }

@@ -14,9 +14,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -76,9 +74,10 @@ class PlayWinnerBadgeInteractiveTest {
     @Test
     fun `given has leaderboard, when interactive is finished, there should be winner badge shown`() {
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
-                timeStatus = PlayInteractiveTimeStatus.Finished,
-                title = title
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
+            status = InteractiveUiModel.Giveaway.Status.Finished,
+            title = title,
+            id = 1L,
         )
         coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
                 leaderboardWinners = listOf(interactiveModelBuilder.buildLeaderboard())
@@ -94,8 +93,8 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactiveView.interactive.isEqualTo(
-                        PlayInteractiveUiState.NoInteractive
+                interactive.assertEqualTo(
+                    InteractiveUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertTrue()
             }
@@ -105,9 +104,10 @@ class PlayWinnerBadgeInteractiveTest {
     @Test
     fun `given leaderboard error, when interactive is finished, there should be no badge`() {
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
-                timeStatus = PlayInteractiveTimeStatus.Finished,
-                title = title
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
+            status = InteractiveUiModel.Giveaway.Status.Finished,
+            title = title,
+            id = 1L,
         )
         coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } throws IllegalArgumentException("abc")
 
@@ -120,8 +120,8 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactiveView.interactive.isEqualTo(
-                        PlayInteractiveUiState.NoInteractive
+                interactive.assertEqualTo(
+                    InteractiveUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertFalse()
             }
@@ -139,9 +139,10 @@ class PlayWinnerBadgeInteractiveTest {
 
         val interactiveRepo: PlayViewerRepository = mockk(relaxed = true)
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
-                timeStatus = PlayInteractiveTimeStatus.Finished,
-                title = title
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
+            status = InteractiveUiModel.Giveaway.Status.Finished,
+            title = title,
+            id = 1L,
         )
         coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
                 leaderboardWinners = emptyList()
@@ -156,8 +157,8 @@ class PlayWinnerBadgeInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactiveView.interactive.isEqualTo(
-                        PlayInteractiveUiState.NoInteractive
+                interactive.assertEqualTo(
+                    InteractiveUiModel.Unknown
                 )
                 winnerBadge.shouldShow.assertFalse()
             }
@@ -167,9 +168,10 @@ class PlayWinnerBadgeInteractiveTest {
     @Test
     fun `given winner badge is shown, when click winner badge action, then leaderboard bottom sheet should be shown`() {
         val title = "Giveaway"
-        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns PlayCurrentInteractiveModel(
-                timeStatus = PlayInteractiveTimeStatus.Finished,
-                title = title
+        coEvery { interactiveRepo.getCurrentInteractive(any()) } returns InteractiveUiModel.Giveaway(
+            status = InteractiveUiModel.Giveaway.Status.Finished,
+            title = title,
+            id = 1L,
         )
         coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
                 leaderboardWinners = listOf(interactiveModelBuilder.buildLeaderboard())
