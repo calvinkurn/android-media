@@ -10,9 +10,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.analytics.DigitalTopupAnalytics
@@ -121,7 +121,7 @@ class DigitalSearchNumberFragment : TopupBillsSearchNumberFragment() {
         const val REQUEST_CODE_CONTACT_PICKER = 75
 
         fun newInstance(clientNumberType: String, number: String,
-                        numberList: List<TopupBillsFavNumberItem>): Fragment {
+                        numberList: List<TopupBillsSearchNumberDataView>): Fragment {
             val fragment = DigitalSearchNumberFragment()
             val bundle = Bundle()
             bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)

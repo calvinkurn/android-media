@@ -154,7 +154,7 @@ class TopupBillsViewModel @Inject constructor(
         }
     }
 
-    fun getPersoFavoriteNumbers(
+    fun getFavoriteNumbers(
         categoryIds: List<Int>
     ) {
         launchCatchError(block = {

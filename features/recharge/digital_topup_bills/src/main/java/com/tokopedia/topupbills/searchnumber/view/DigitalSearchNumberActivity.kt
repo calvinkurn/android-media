@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Parcelable
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchComponent
 import com.tokopedia.topupbills.searchnumber.di.DigitalTelcoSearchInstance
@@ -43,7 +43,7 @@ class DigitalSearchNumberActivity : TopupBillsSearchNumberActivity(), HasCompone
 
     companion object {
         fun newInstance(activity: Activity, clientNumberType: String,
-                        number: String, numberList: List<TopupBillsFavNumberItem>): Intent {
+                        number: String, numberList: List<TopupBillsSearchNumberDataView>): Intent {
             val intent = Intent(activity, DigitalSearchNumberActivity::class.java)
             intent.putExtra(EXTRA_CLIENT_NUMBER_TYPE, clientNumberType)
             intent.putExtra(EXTRA_CLIENT_NUMBER, number)

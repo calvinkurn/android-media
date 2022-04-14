@@ -21,7 +21,6 @@ import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumber
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
@@ -401,7 +400,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
-        topupBillsViewModel.getPersoFavoriteNumbers(listOf(categoryId))
+        topupBillsViewModel.getFavoriteNumbers(listOf(categoryId))
     }
 
     fun getSeamlessFavoriteNumbers(
