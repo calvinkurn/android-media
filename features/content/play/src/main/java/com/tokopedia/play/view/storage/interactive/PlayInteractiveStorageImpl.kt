@@ -9,7 +9,7 @@ import javax.inject.Inject
  */
 class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage {
 
-    private val interactiveStatusMap = mutableMapOf<Long, InteractiveUiModel>()
+    private val joinedSet = mutableSetOf<Long>()
 
     /**
      * Detail resembles the detail when inputted
@@ -18,6 +18,14 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
 
     override fun save(model: InteractiveUiModel) {
         interactiveDetailMap[model.id] = model
+    }
+
+    override fun setJoined(id: Long) {
+        joinedSet.add(id)
+    }
+
+    override fun hasJoined(id: Long): Boolean {
+        return joinedSet.contains(id)
     }
 
     override fun setDetail(interactiveId: String, model: PlayCurrentInteractiveModel) {
@@ -41,13 +49,6 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
 //        }
     }
 
-    override fun setJoined(interactiveId: String) {
-//        if (interactiveStatusMap.containsKey(interactiveId)) {
-//            val currentStatus = interactiveStatusMap[interactiveId]!!
-//            interactiveStatusMap[interactiveId] = currentStatus.copy(isJoined = true)
-//        }
-    }
-
     override fun getDetail(interactiveId: String): PlayCurrentInteractiveModel? {
 //        return interactiveDetailMap[interactiveId]
         return null
@@ -58,8 +59,12 @@ class PlayInteractiveStorageImpl @Inject constructor() : PlayInteractiveStorage 
         return null
     }
 
-    override fun hasJoined(interactiveId: String): Boolean {
-//        return interactiveStatusMap[interactiveId]?.isJoined ?: false
+    override fun setJoined(id: String) {
+        //TEMPORARY
+    }
+
+    override fun hasJoined(id: String): Boolean {
+        //TEMPORARY
         return false
     }
 

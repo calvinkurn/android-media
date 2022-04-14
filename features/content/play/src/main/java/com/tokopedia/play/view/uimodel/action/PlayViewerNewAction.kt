@@ -24,9 +24,6 @@ sealed class PlayViewerNewAction {
 /**
  * Interactive
  */
-object InteractivePreStartFinishedAction : PlayViewerNewAction()
-object InteractiveOngoingFinishedAction : PlayViewerNewAction()
-
 data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 
 object InteractiveTapTapAction : PlayViewerNewAction()

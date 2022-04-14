@@ -82,7 +82,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         mDataSource = dataSource
     }
 
-    fun show(fragmentManager: FragmentManager) {
+    fun showNow(fragmentManager: FragmentManager) {
         if (!isAdded) showNow(fragmentManager, TAG)
     }
 
@@ -167,15 +167,10 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
         ): InteractiveDialogFragment {
-            val oldInstance = get(fragmentManager)
-            return if (oldInstance != null) oldInstance
-            else {
-                val fragmentFactory = fragmentManager.fragmentFactory
-                fragmentFactory.instantiate(
-                    classLoader,
-                    InteractiveDialogFragment::class.java.name
-                ) as InteractiveDialogFragment
-            }
+            return get(fragmentManager) ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                InteractiveDialogFragment::class.java.name
+            ) as InteractiveDialogFragment
         }
     }
 

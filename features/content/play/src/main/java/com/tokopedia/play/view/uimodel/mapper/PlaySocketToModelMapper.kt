@@ -76,8 +76,8 @@ class PlaySocketToModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusBanned(isBanned)
     }
 
-    fun mapInteractive(input: GiveawayResponse): PlayCurrentInteractiveModel {
-        return channelInteractiveMapper.mapInteractive(input)
+    fun mapInteractive(input: GiveawayResponse): InteractiveUiModel.Giveaway {
+        return interactiveMapper.mapGiveaway(input)
     }
 
     fun mapInteractive(input: GetCurrentInteractiveResponse.Data): InteractiveUiModel {
