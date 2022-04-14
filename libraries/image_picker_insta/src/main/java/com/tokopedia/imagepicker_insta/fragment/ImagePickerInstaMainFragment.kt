@@ -44,13 +44,10 @@ import com.tokopedia.imagepicker_insta.views.NoPermissionsView
 import com.tokopedia.imagepicker_insta.views.ToggleImageView
 import com.tokopedia.imagepicker_insta.views.adapters.ImageAdapter
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.imagepicker_insta_camera_activity.*
-import kotlinx.android.synthetic.main.imagepicker_insta_fragment_main.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
