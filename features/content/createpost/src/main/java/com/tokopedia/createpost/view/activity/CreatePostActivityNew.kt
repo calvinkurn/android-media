@@ -12,7 +12,6 @@ import android.webkit.MimeTypeMap
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -31,22 +30,21 @@ import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.imagepicker_insta.common.ui.bottomsheet.FeedAccountTypeBottomSheet
 import com.tokopedia.imagepicker_insta.common.ui.model.FeedAccountUiModel
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageCircle
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.imagepicker_insta.common.ui.toolbar.ImagePickerCommonToolbar
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_create_post_new.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
 class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListener {
+
+    /** View */
+    private lateinit var toolbarCommon: ImagePickerCommonToolbar
 
     @Inject
     lateinit var createPostAnalytics: CreatePostAnalytics
@@ -62,7 +60,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             override fun onAccountClick(feedAccount: FeedAccountUiModel) {
                 /** TODO: show confirmation popup first */
                 selectedFeedAccount = feedAccount
-                toolbar_common.apply {
+                toolbarCommon.apply {
                     subtitle = selectedFeedAccount.name
                     icon = selectedFeedAccount.iconUrl
                 }
@@ -207,6 +205,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
+        setupView()
         setupToolbar()
     }
 
@@ -291,6 +290,10 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         }
     }
 
+    private fun setupView() {
+        toolbarCommon = findViewById(R.id.toolbar_common)
+    }
+
     private fun setupToolbar() {
         val selectedFeedAccountTypeValue = intent.getIntExtra(EXTRA_SELECTED_FEED_ACCOUNT, FeedAccountUiModel.Type.BUYER.value)
         val selectedFeedAccountType = FeedAccountUiModel.getTypeByValue(selectedFeedAccountTypeValue)
@@ -313,7 +316,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         }
 
 
-        toolbar_common.apply {
+        toolbarCommon.apply {
             icon = selectedFeedAccount.iconUrl
             title = getString(R.string.feed_content_post_sebagai)
             subtitle = selectedFeedAccount.name
@@ -328,6 +331,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
 
             visibility = View.VISIBLE
         }
-        setSupportActionBar(toolbar_common)
+        setSupportActionBar(toolbarCommon)
     }
 }
