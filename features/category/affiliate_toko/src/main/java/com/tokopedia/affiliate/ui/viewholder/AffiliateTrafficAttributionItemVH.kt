@@ -9,8 +9,10 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficAttributi
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateTrafficAttributionItemVH(itemView: View) :
@@ -38,7 +40,15 @@ class AffiliateTrafficAttributionItemVH(itemView: View) :
         itemView.findViewById<Typography>(R.id.amount)?.apply {
             text = element?.metrics?.metricDifferenceValueFmt
         }
+        setDivider(element)
         setTrend(element)
+    }
+
+    private fun setDivider(element: AffiliateTrafficAttributionModel?) {
+        itemView.findViewById<DividerUnify>(R.id.dividerUnify)?.apply {
+            if(element?.metrics?.isLastItem == false) isVisible = true
+            else invisible()
+        }
     }
 
     private fun setTrend(element: AffiliateTrafficAttributionModel?) {

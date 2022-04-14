@@ -84,7 +84,7 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
     }
 
     private fun initDivider() {
-        if((listItem as? List<Any>)?.isNotEmpty() == true && type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true) {
+        if((listItem as? List<*>)?.isNotEmpty() == true && type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true) {
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.show()
         }else{
             contentView?.findViewById<DividerUnify>(R.id.divider_2)?.gone()
@@ -93,8 +93,11 @@ class AffiliateRecylerBottomSheet: BottomSheetUnify() {
 
     private fun initList(listItem: Any?) {
         if(type == TYPE_HOME && viewModel?.isFeatureWhiteListed() == true){
-            (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)?.forEach {
-                viewModel?.itemList?.add(AffiliateTrafficAttributionModel(it))
+            var metricList = (listItem as? List<AffiliateUserPerformaListItemData.GetAffiliatePerformance.Data.UserData.Metrics.Tooltip.SubMetrics?>)
+            metricList =  metricList?.sortedBy { subMetrics -> subMetrics?.order  }
+            metricList?.forEachIndexed { index, subMetrics ->
+                if(index == metricList.lastIndex) subMetrics?.isLastItem = true
+                viewModel?.itemList?.add(AffiliateTrafficAttributionModel(subMetrics))
             }
         }
         else if(type == TYPE_WITHDRAWAL){

@@ -92,7 +92,10 @@ data class AffiliateUserPerformaListItemData(
                                           @SerializedName("Order")
                                           var order: Int?,
                                           @SerializedName("Tooltip")
-                                          var tooltip : SubTooltip?
+                                          var tooltip : SubTooltip?,
+
+                                          //customAttribute
+                                          var isLastItem: Boolean = false
                                     ){
                                           data class SubTooltip(
                                                 @SerializedName("Description")

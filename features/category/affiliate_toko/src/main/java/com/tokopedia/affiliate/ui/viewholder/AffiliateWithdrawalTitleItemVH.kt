@@ -18,11 +18,7 @@ class AffiliateWithdrawalTitleItemVH(itemView: View)
 
     override fun bind(element: AffiliateWithdrawalTitleItemModel?) {
         itemView.findViewById<Typography>(R.id.title)?.apply {
-            text = element?.count?.let {
-                itemView.context.getString(R.string.affiliate_withdrwal_title_terms).replace("{count}",
-                    it
-                )
-            } ?: ""
+            text = itemView.context.getString(R.string.affiliate_withdrwal_title_terms)
         }
     }
 }

@@ -33,6 +33,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     fun affiliateCommission(transactionID:String,page :Int = PAGE_ZERO) {
         launchCatchError(block = {
             if(page == PAGE_ZERO) {
+                lastItem = "0"
                 progressBar.value = true
                 affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let { affiliateCommissionDetail ->
                     var tempCardDetails: List<AffiliateTrafficCommissionCardDetails.GetAffiliateTrafficCommissionDetailCards.Data.TrafficCommissionCardDetail?>? = null

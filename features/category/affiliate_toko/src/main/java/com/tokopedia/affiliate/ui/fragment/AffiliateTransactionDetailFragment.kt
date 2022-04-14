@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -196,8 +197,10 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
     private fun getData() {
         arguments?.getString(PARAM_TRANSACTION,null)?.let { tID ->
             transactionId = tID
-            affiliateVM.affiliateCommission(tID)
+            affiliateVM.affiliateCommission(tID, PAGE_ZERO)
         }
+        listCount = 0
+        adapter.clearAllElements()
     }
 
     companion object {
