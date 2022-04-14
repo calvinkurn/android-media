@@ -2574,15 +2574,16 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             HomeSwitcherUiModel.Home15mSwitcher()
         )
 
-        val expectedResult = Success(HomeLayoutListUiModel(
-            items = layoutList,
-            state = TokoNowLayoutState.UPDATE
-        ))
-
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
 
-        viewModel.homeLayoutList
-            .verifySuccessEquals(expectedResult)
+        val actualResult = (viewModel.homeLayoutList.value as Success).data
+        actualResult.items.forEachIndexed { index, visitable ->
+            if (visitable is HomeSwitcherUiModel.Home15mSwitcher) {
+                assertEquals(visitable.visitableId, (layoutList[index] as HomeSwitcherUiModel.Home15mSwitcher).visitableId)
+            } else {
+                assertEquals(visitable, layoutList[index])
+            }
+        }
     }
 
     @Test
@@ -2669,15 +2670,16 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             HomeSwitcherUiModel.Home2hSwitcher()
         )
 
-        val expectedResult = Success(HomeLayoutListUiModel(
-            items = layoutList,
-            state = TokoNowLayoutState.UPDATE
-        ))
-
         verifyGetHomeLayoutDataUseCaseCalled(localCacheModel)
 
-        viewModel.homeLayoutList
-            .verifySuccessEquals(expectedResult)
+        val actualResult = (viewModel.homeLayoutList.value as Success).data
+        actualResult.items.forEachIndexed { index, visitable ->
+            if (visitable is HomeSwitcherUiModel.Home2hSwitcher) {
+                assertEquals(visitable.visitableId, (layoutList[index] as HomeSwitcherUiModel.Home2hSwitcher).visitableId)
+            } else {
+                assertEquals(visitable, layoutList[index])
+            }
+        }
     }
 
     @Test

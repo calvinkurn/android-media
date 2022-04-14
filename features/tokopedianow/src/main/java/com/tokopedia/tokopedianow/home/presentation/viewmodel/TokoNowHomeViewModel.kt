@@ -93,6 +93,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoNowHomeViewModel @Inject constructor(
@@ -112,7 +113,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val validateReferralUserUseCase: ValidateReferralUserUseCase,
     private val getReferralSenderHomeUseCase: GetReferralSenderHomeUseCase,
     private val userSession: UserSessionInterface,
-    dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
@@ -464,6 +465,10 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun switchService(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
+            withContext(dispatchers.main) {
+                trackSwitchService(localCacheModel)
+            }
+
             val currentServiceType = localCacheModel.service_type
 
             val serviceType = if (
@@ -796,7 +801,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }
     }
 
-    fun trackSwitchService(localCacheModel: LocalCacheModel, isImpressionTracker: Boolean) {
+    fun trackSwitchService(localCacheModel: LocalCacheModel, isImpressionTracker: Boolean = false) {
         val whIdOrigin = localCacheModel.warehouse_id
         val whIdDestination = localCacheModel.warehouses.findLast { it.service_type != localCacheModel.service_type }?.warehouse_id.orZero().toString()
 
