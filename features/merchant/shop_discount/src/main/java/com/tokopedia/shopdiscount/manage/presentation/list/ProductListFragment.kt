@@ -50,7 +50,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 700
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
 
         @JvmStatic
         fun newInstance(
@@ -85,6 +85,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
+    private var onSwipeRefresh: () -> Unit = {}
     private var isFirstLoad = true
 
     private val productAdapter by lazy {
@@ -317,6 +318,10 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         this.onScrollUp = onScrollUp
     }
 
+    fun setOnSwipeRefresh(onSwipeRefresh : () -> Unit) {
+        this.onSwipeRefresh = onSwipeRefresh
+    }
+
     private fun showProductDetailBottomSheet(product: Product) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
@@ -533,5 +538,9 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 ShopDiscountManageDiscountMode.UPDATE
             )
         }
+    }
+
+    override fun onSwipeRefreshPulled() {
+        onSwipeRefresh()
     }
 }
