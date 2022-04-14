@@ -70,10 +70,30 @@ public class ApplinkNotificationHelper {
             Uri uri = Uri.parse(appLinks);
             String host = uri.getHost();
             if (host.equals("talk") || host.equals("topchat")) {
-                return Integer.parseInt(uri.getLastPathSegment());
+                return getTruncatedMessageId(uri.getLastPathSegment());
             }
             return 0;
         } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private static int getTruncatedMessageId(String messageId) {
+        int LIMIT_NOTIFICATION_ID = 5;
+        int result;
+        if (messageId.length() > LIMIT_NOTIFICATION_ID) {
+            String tempId = messageId.substring(messageId.length() - LIMIT_NOTIFICATION_ID);
+            result = safelyCastStringToInt(tempId);
+        } else {
+            result = safelyCastStringToInt(messageId);
+        }
+        return result;
+    }
+
+    private static int safelyCastStringToInt(String stringText) {
+        try {
+            return Integer.parseInt(stringText);
+        } catch (Throwable ignored) {
             return 0;
         }
     }
