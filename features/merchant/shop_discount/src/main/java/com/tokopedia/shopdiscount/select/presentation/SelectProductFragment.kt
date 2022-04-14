@@ -427,4 +427,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                 .start()
         }
     }
+
+    override fun onSwipeRefreshPulled() {
+
+    }
 }

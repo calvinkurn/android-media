@@ -247,7 +247,7 @@ class ProductManageFragment : BaseDaggerFragment() {
             val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
-
+            fragment.setOnSwipeRefresh { onSwipeRefreshed() }
             val tabName = "${tab.name} (${tab.count})"
             pages.add(Pair(tabName, fragment))
         }
@@ -321,5 +321,10 @@ class ProductManageFragment : BaseDaggerFragment() {
             }
             viewAnimator.showWithAnimation(searchBar)
         }
+    }
+
+    private val onSwipeRefreshed: () -> Unit = {
+        viewModel.getSlashPriceProductsMeta()
+        binding?.emptyState?.gone()
     }
 }

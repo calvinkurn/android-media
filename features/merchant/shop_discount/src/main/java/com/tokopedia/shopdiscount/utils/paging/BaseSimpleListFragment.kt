@@ -38,6 +38,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     abstract fun onHideLoading()
     abstract fun onDataEmpty()
     abstract fun onGetListError(message: String)
+    abstract fun onSwipeRefreshPulled()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,7 @@ abstract class BaseSimpleListFragment<T: RecyclerView.Adapter<*>, F>: BaseDagger
     }
 
     private fun onSwipeRefresh() {
+        onSwipeRefreshPulled()
         swipeToRefresh?.isRefreshing = true
         loadInitialData()
     }

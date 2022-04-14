@@ -526,4 +526,8 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             )
         }
     }
+
+    override fun onSwipeRefreshPulled() {
+
+    }
 }
