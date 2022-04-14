@@ -35,10 +35,8 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    private fun getIntentData() {
-        requestId = intent.extras?.getString(REQUEST_ID_PARAM).orEmpty()
-        status = intent.extras?.getInt(STATUS_PARAM).orZero()
-        mode = intent.extras?.getString(MODE_PARAM).orEmpty()
+    override fun onBackPressed() {
+        (fragment as? ShopDiscountManageDiscountFragment)?.onBackPressed()
     }
 
     override fun getLayoutRes(): Int {
@@ -55,4 +53,9 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
         return R.id.parent_view
     }
 
+    private fun getIntentData() {
+        requestId = intent.extras?.getString(REQUEST_ID_PARAM).orEmpty()
+        status = intent.extras?.getInt(STATUS_PARAM).orZero()
+        mode = intent.extras?.getString(MODE_PARAM).orEmpty()
+    }
 }

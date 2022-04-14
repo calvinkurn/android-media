@@ -56,25 +56,11 @@ object ShopDiscountManageDiscountMapper {
                 slashPriceInfo = mapToSlashPriceInfo(it.slashPriceInfo),
                 price = mapToPriceData(it.price),
                 listProductVariant = mapToListProductVariant(it)
-            ).apply {
-                updateProductStatusAndMappedData(this)
-            }
+            )
+//                .apply {
+//                updateProductStatusAndMappedData(this)
+//            }
         }
-    }
-
-    fun updateProductStatusAndMappedData(uiModel: ShopDiscountSetupProductUiModel.SetupProductData) {
-        uiModel.productStatus = mapToProductStatus(uiModel)
-        uiModel.mappedResultData = mapToMappedResultData(uiModel)
-    }
-
-    private fun mapToProductStatus(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus {
-        return ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus(
-            isProductDiscounted = getIsProductDiscounted(setupProductUiModel),
-            isVariant = isVariant(setupProductUiModel),
-            isMultiLoc = isMultiLoc(setupProductUiModel),
-        )
     }
 
     private fun mapToPriceData(
@@ -146,172 +132,6 @@ object ShopDiscountManageDiscountMapper {
         }
     }
 
-    private fun mapToMappedResultData(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData {
-        return ShopDiscountSetupProductUiModel.SetupProductData.MappedResultData(
-            minOriginalPrice = getMinOriginalPrice(setupProductUiModel),
-            maxOriginalPrice = getMaxOriginalPrice(setupProductUiModel),
-            minDisplayedPrice = getMinDisplayedPrice(setupProductUiModel),
-            maxDisplayedPrice = getMaxDisplayedPrice(setupProductUiModel),
-            minDiscountPercentage = getMinDiscountPercentage(setupProductUiModel),
-            maxDiscountPercentage = getMaxDiscountPercentage(setupProductUiModel),
-            totalVariant = getTotalVariant(setupProductUiModel),
-            totalDiscountedVariant = getTotalDiscountedVariant(setupProductUiModel),
-            totalLocation = getTotalLocation(setupProductUiModel)
-        )
-    }
-
-    private fun getTotalLocation(
-        setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return setupProductUiModel.listProductWarehouse.size
-    }
-
-    private fun getTotalDiscountedVariant(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return setupProductDataUiModel.listProductVariant.count {
-            it.listProductWarehouse.any { productWarehouse ->
-                !productWarehouse.discountedPercentage.isZero()
-            }
-        }
-    }
-
-    private fun getTotalVariant(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return setupProductDataUiModel.listProductVariant.size
-    }
-
-    private fun getIsProductDiscounted(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Boolean {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.any {
-                it.listProductWarehouse.any { productWarehouse ->
-                    !productWarehouse.discountedPercentage.isZero()
-                }
-            }
-        } else {
-            setupProductDataUiModel.listProductWarehouse.any {
-                !it.discountedPercentage.isZero()
-            }
-        }
-    }
-
-    private fun isMultiLoc(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Boolean {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.any {
-                it.listProductWarehouse.size > 1
-            }
-        } else {
-            setupProductDataUiModel.listProductWarehouse.size > 1
-        }
-    }
-
-    private fun getMaxOriginalPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.originalPrice
-                }.maxOrNull().orZero()
-            }.maxOrNull().orZero()
-        } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.originalPrice
-            }.maxOrNull().orZero()
-        }
-    }
-
-    private fun getMinOriginalPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.originalPrice
-                }.minOrNull().orZero()
-            }.minOrNull().orZero()
-        } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.originalPrice
-            }.minOrNull().orZero()
-        }
-    }
-
-    private fun getMaxDisplayedPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPrice
-                }.maxOrNull().orZero()
-            }.maxOrNull().orZero()
-        } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPrice
-            }.maxOrNull().orZero()
-        }
-    }
-
-    private fun getMinDisplayedPrice(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPrice
-                }.minOrNull().orZero()
-            }.minOrNull().orZero()
-        } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPrice
-            }.minOrNull().orZero()
-        }
-    }
-
-    private fun getMaxDiscountPercentage(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPercentage
-                }.maxOrNull().orZero()
-            }.maxOrNull().orZero()
-        } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPercentage
-            }.maxOrNull().orZero()
-        }
-    }
-
-    private fun getMinDiscountPercentage(
-        setupProductDataUiModel: ShopDiscountSetupProductUiModel.SetupProductData
-    ): Int {
-        return if (isVariant(setupProductDataUiModel)) {
-            setupProductDataUiModel.listProductVariant.map {
-                it.listProductWarehouse.map { productWarehouse ->
-                    productWarehouse.discountedPercentage
-                }.minOrNull().orZero()
-            }.minOrNull().orZero()
-        } else {
-            setupProductDataUiModel.listProductWarehouse.map {
-                it.discountedPercentage
-            }.minOrNull().orZero()
-        }
-    }
-
-    private fun isVariant(setupProductUiModel: ShopDiscountSetupProductUiModel.SetupProductData): Boolean {
-        return setupProductUiModel.listProductVariant.isNotEmpty()
-    }
-
     fun mapToDoSlashPriceSubmissionRequest(
         listProductData: List<ShopDiscountSetupProductUiModel.SetupProductData>,
         action: String
@@ -348,8 +168,8 @@ object ShopDiscountManageDiscountMapper {
     ): DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct {
         return DoSlashPriceProductSubmissionRequest.SubmittedSlashPriceProduct(
             productId = it.productId,
-            startTimeUnix = (it.slashPriceInfo.startDate.time/1000L).toString(),
-            endTimeUnix = (it.slashPriceInfo.endDate.time/1000L).toString(),
+            startTimeUnix = (it.slashPriceInfo.startDate.time / 1000L).toString(),
+            endTimeUnix = (it.slashPriceInfo.endDate.time / 1000L).toString(),
             slashPriceWarehouses = mapToListSlashPriceWarehouse(it.listProductWarehouse)
         )
     }
@@ -401,14 +221,15 @@ object ShopDiscountManageDiscountMapper {
     ): DoSlashPriceReservationRequest {
         return DoSlashPriceReservationRequest(
             requestHeader = getRequestHeader(),
-            action =  DoSlashPriceReservationRequest.DoSlashPriceReservationAction.DELETE,
+            action = DoSlashPriceReservationRequest.DoSlashPriceReservationAction.DELETE,
             requestId = requestId,
             state = state,
             listProductData = listOf(
                 DoSlashPriceReservationRequest.SlashPriceReservationProduct(
-                productId = productId,
-                position = position,
-            ))
+                    productId = productId,
+                    position = position,
+                )
+            )
         )
     }
 
