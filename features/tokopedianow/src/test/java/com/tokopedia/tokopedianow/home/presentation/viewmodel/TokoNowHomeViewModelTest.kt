@@ -2860,6 +2860,13 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
     fun `when get referral sender home should be success with code equals to 200 and return sharingUrlParam`() {
         val slug = "slug"
         val sharingUrl = "123"
+        val sharingMetaData = GetReferralSenderHomeResponse.GamiReferralSenderHome.SharingMetadata(
+            sharingUrl = sharingUrl,
+            ogTitle = "",
+            ogImage = "",
+            ogDescription = "",
+            textDescription = ""
+        )
         val getReferralSenderHomeResponse = GetReferralSenderHomeResponse(
             GetReferralSenderHomeResponse.GamiReferralSenderHome(
                 resultStatus = GetReferralSenderHomeResponse.GamiReferralSenderHome.ResultStatus(
@@ -2867,9 +2874,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     message = listOf(),
                     reason = ""
                 ),
-                sharingMetaData = GetReferralSenderHomeResponse.GamiReferralSenderHome.SharingMetadata(
-                    sharingUrl = sharingUrl
-                )
+                sharingMetaData = sharingMetaData
             )
         )
 
@@ -2879,8 +2884,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
 
         verifyGetReferralSenderHomeUseCaseCalled(slug)
 
+        val expectedSharingMetaData = HomeShareMetaDataModel(
+            sharingUrlParam = "$slug/$sharingUrl",
+            ogTitle = "",
+            ogImage = "",
+            ogDescription = "",
+            textDescription = ""
+        )
         viewModel.sharingReferralUrlParam
-            .verifySuccessEquals(Success("$slug/$sharingUrl"))
+            .verifySuccessEquals(Success(expectedSharingMetaData))
     }
 
     @Test
@@ -2895,7 +2907,11 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                     reason = messageError
                 ),
                 sharingMetaData = GetReferralSenderHomeResponse.GamiReferralSenderHome.SharingMetadata(
-                    sharingUrl = "123"
+                    sharingUrl = "123",
+                    ogTitle = "",
+                    ogImage = "",
+                    ogDescription = "",
+                    textDescription = ""
                 )
             )
         )

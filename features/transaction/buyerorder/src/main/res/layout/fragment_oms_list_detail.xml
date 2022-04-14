@@ -23,28 +23,30 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:orientation="vertical">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_margin="@dimen/spacing_lvl4"
                     android:orientation="vertical">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/status_label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/status"
-                        android:textSize="@dimen/sp_11" />
+                        android:textColor="@color/Unify_NN600"
+                        app:typographyType="body_3"/>
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/status_value"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/font_medium"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/Unify_GN500"
+                        app:typographyType="heading_4"
+                        tools:text="Transaksi Berhasil"/>
 
                     <com.tokopedia.unifycomponents.ticker.Ticker
                         android:id="@+id/ticker_status"
@@ -58,69 +60,67 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
-                        android:layout_marginTop="16dp"
+                        android:layout_height="@dimen/order_detail_seperator_1dp"
+                        android:layout_marginTop="@dimen/spacing_lvl4"
                         android:background="@color/Unify_N50" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/conditional_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="@dimen/spacing_lvl4"
                         android:background="@drawable/card_condition_info"
                         android:gravity="center"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        app:typographyWeight="reguler"
+                        tools:text="This is information about order detail"/>
 
                     <LinearLayout
                         android:id="@+id/status_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical" />
+                        android:orientation="vertical"/>
 
                 </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/invoice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1" />
+                        android:textColor="@color/Unify_NN600"
+                        app:typographyType="body_3"
+                        tools:text="FAV/20220204/XXII/II/793849384398489090"/>
 
-                    <TextView
-                        android:id="@+id/lihat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/lihat_text"
-                        android:textColor="@color/Unify_G400" />
-
+                    <com.tokopedia.iconunify.IconUnify
+                        android:id="@+id/ic_copy"
+                        android:layout_width="@dimen/layout_lvl2"
+                        android:layout_height="@dimen/layout_lvl2"
+                        android:layout_marginStart="@dimen/spacing_lvl2"
+                        android:layout_gravity="center_vertical"
+                        app:icon_name="COPY"/>
                 </LinearLayout>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
-                android:layout_marginTop="16dp"
                 android:background="@color/Unify_N50" />
 
             <LinearLayout
                 android:id="@+id/details_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:orientation="vertical">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/detail_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -129,14 +129,13 @@
                     android:layout_marginRight="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/detail_label"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
+                    app:typographyType="heading_5" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/spacing_lvl2"
                     android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -148,36 +147,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_3"
-                android:layout_marginTop="16dp">
-
+                android:layout_marginTop="@dimen/spacing_lvl4">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/Unify_N0"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_Background"
                     android:orientation="vertical"
-                    android:paddingBottom="10dp">
-
-                    <TextView
+                    android:paddingBottom="@dimen/unify_space_12">
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/policy_detail_label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
                         android:layout_marginRight="16dp"
                         android:text="@string/insurance_policy"
-                        android:textColor="@color/Unify_N700_68"
-                        android:textSize="@dimen/sp_16"
-                        android:textStyle="bold" />
-
-
-                    <TextView
+                        app:typographyType="heading_5"/>
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/insurance_policy_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/sp_12"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:layout_marginHorizontal="@dimen/spacing_lvl4"
                         android:text="@string/insurance_policy_content"
-                        android:textSize="@dimen/font_medium" />
-
+                        app:typographyType="body_2"/>
                     <com.tokopedia.unifycomponents.ticker.Ticker
                         android:id="@+id/additional_ticker_info"
                         android:layout_width="match_parent"
@@ -189,8 +182,6 @@
                         app:descriptionText="@string/insurance_ticker"
                         app:tickerShapeType="loose"
                         app:tickerType="announcement" />
-
-
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -201,83 +192,72 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:elevation="@dimen/dp_3"
-                android:layout_marginTop="16dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/Unify_N0"
-                android:orientation="vertical"
-                android:paddingBottom="10dp">
-
-                <TextView
-                    android:id="@+id/insurance_claim"
+                android:layout_marginTop="@dimen/spacing_lvl4">
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:text="@string/insurance_claim"
-                    android:textColor="@color/Unify_N700_68"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/insurance_claim_content"
-                    android:layout_below="@id/insurance_claim"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
-                    android:text="@string/insurance_claim_content"
-                    android:textSize="@dimen/font_medium" />
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginRight="16dp"
-                    android:tint="@color/Unify_N400"
-                    app:srcCompat="@drawable/ic_arrow_right_grey" />
-
-            </RelativeLayout>
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:background="@color/Unify_Background"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/unify_space_12">
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/insurance_claim"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                        android:text="@string/insurance_claim"
+                        app:typographyType="heading_5"/>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/insurance_claim_content"
+                        android:layout_below="@id/insurance_claim"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                        android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:text="@string/insurance_claim_content"
+                        app:typographyType="body_2" />
+                    <com.tokopedia.iconunify.IconUnify
+                        android:layout_width="@dimen/layout_lvl4"
+                        android:layout_height="@dimen/layout_lvl4"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/spacing_lvl4"
+                        android:tint="@color/Unify_N400"
+                        app:icon_name="CHEVRON_RIGHT"/>
+                </RelativeLayout>
             </androidx.cardview.widget.CardView>
-
 
             <View
                 android:id="@+id/divider_above_userInfo"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 android:background="@color/Unify_N50" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/user_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/user_label"
-                android:textSize="@dimen/font_medium"
                 android:visibility="gone"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="16dp"
-                android:textStyle="bold" />
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                app:typographyType="heading_5" />
 
             <LinearLayout
                 android:id="@+id/user_information_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginHorizontal="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 android:orientation="vertical" />
 
             <View
                 android:id="@+id/divider_above_actionButton"
                 android:layout_width="match_parent"
-                android:layout_height="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="@dimen/layout_lvl1"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 android:background="@color/Unify_N50" />
 
@@ -285,42 +265,39 @@
                 android:id="@+id/actionButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_gravity="center_horizontal"
                 android:visibility="gone"
-                android:background="@color/Unify_N0">
+                android:background="@color/Unify_Background">
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iv_event_send_mail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="16dp"
-                    app:srcCompat="@drawable/event_email" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/spacing_lvl4"
+                    app:icon_name="MESSAGE"/>
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/actionButton_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/iv_event_send_mail"
+                    android:layout_toEndOf="@+id/iv_event_send_mail"
                     android:gravity="center"
                     android:layout_centerVertical="true"
-                    android:textColor="@color/Unify_N700_68"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="8dp"
+                    android:layout_marginStart="@dimen/spacing_lvl3"
+                    app:typographyType="heading_5"
                     tools:text="Kirim ulang e-mail and TopChat" />
 
-                <ImageView
+                <com.tokopedia.iconunify.IconUnify
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginTop="4dp"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="@dimen/spacing_lvl4"
                     android:tint="@color/Unify_N700_68"
-                    app:srcCompat="@drawable/ic_arrow_right_grey" />
+                    app:icon_name="CHEVRON_RIGHT" />
 
             </RelativeLayout>
 
@@ -354,19 +331,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:orientation="vertical">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/info_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:text="@string/info_label"
-                    android:textSize="@dimen/font_medium"
-                    android:textStyle="bold" />
+                    app:typographyType="heading_5" />
+
                 <LinearLayout
                     android:id="@+id/info_payment"
                     android:layout_width="match_parent"
@@ -374,25 +350,25 @@
                     android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:orientation="vertical" />
 
-
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/order_detail_seperator_1dp"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:background="@color/Unify_N50" />
 
                 <LinearLayout
                     android:id="@+id/info_value"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:orientation="vertical" />
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginTop="16dp"
+                    android:layout_height="@dimen/order_detail_seperator_1dp"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:background="@color/Unify_N50" />
 
                 <LinearLayout
@@ -415,44 +391,43 @@
                     app:tickerType="information"/>
             </LinearLayout>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/help_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center" />
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:gravity="center"
+                app:typographyType="heading_6"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/Unify_N0"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:background="@color/Unify_Background"
                 android:orientation="vertical">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/langannan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
                     android:background="@drawable/rect_white_stroke_gray"
                     android:gravity="center"
-                    android:padding="16dp"
+                    android:padding="@dimen/spacing_lvl4"
                     android:text="@string/top_btn_text"
                     android:textStyle="bold"
                     android:visibility="gone" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/beli_lagi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl3"
+                    android:layout_marginBottom="@dimen/spacing_lvl5"
                     android:background="@color/Unify_Y500"
                     android:gravity="center"
-                    android:padding="16dp"
+                    android:padding="@dimen/spacing_lvl4"
                     android:text="@string/bottom_btn_text"
                     android:textStyle="bold" />
 
@@ -470,10 +445,10 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/oms_prog_bar"
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center" />
     </FrameLayout>
 </FrameLayout>
