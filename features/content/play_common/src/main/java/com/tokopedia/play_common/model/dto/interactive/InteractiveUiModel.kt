@@ -1,7 +1,18 @@
 package com.tokopedia.play_common.model.dto.interactive
 
+import java.util.*
+
 /**
  * Created by kenny.hadisaputra on 12/04/22
+ */
+
+/**
+ * All time is Calendar instance, at least for now
+ * In the future, we should better migrate to Java 8 LocalTime and ZonedDateTime
+ *
+ * Please migrate it if:
+ * - app level build.gradle allow us to use `coreLibraryDesugaring` (to support API <26) or
+ * - minSdkVersion >= 26
  */
 sealed interface InteractiveUiModel {
 
@@ -17,12 +28,12 @@ sealed interface InteractiveUiModel {
         sealed interface Status {
 
             data class Upcoming(
-                val timeToStartInMs: Long,
-                val durationInMs: Long,
+                val startTime: Calendar,
+                val endTime: Calendar,
             ) : Status
 
             data class Ongoing(
-                val durationInMs: Long,
+                val endTime: Calendar,
             ) : Status
 
             object Finished : Status
@@ -38,7 +49,7 @@ sealed interface InteractiveUiModel {
 
         sealed interface Status {
 
-            data class Ongoing(val durationInMs: Long) : Status
+            data class Ongoing(val endTime: Calendar) : Status
             object Finished : Status
             object Unknown : Status
         }
