@@ -54,8 +54,6 @@ class PreviewViewModelTest {
 
     @Test
     fun `check isLoading not empty`() {
-        // Given
-
         // When
         every { imageCompressorMock.compress(any()) } returns flow { }
         viewModel.files(mediaUiModelMockCollection)
