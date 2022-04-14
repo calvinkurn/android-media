@@ -2,6 +2,7 @@ package com.tokopedia.play_common.view.quiz
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
@@ -71,9 +72,9 @@ class QuizChoicesView : ConstraintLayout {
              */
             is PlayQuizOptionState.Default -> {
                 loaderQuiz.hide()
-                getIconOption(alphabet = (item.type as PlayQuizOptionState.Default).alphabet)
                 tvQuestion.setTextColor(defaultFontColor)
-                this.background = bgDrawable
+                getIconOption(alphabet = item.type.alphabet)
+                getBackground(isDefault = true)
             }
             /**
              * User's answer, icon is white and background is green [correct] and red [false]
@@ -81,22 +82,17 @@ class QuizChoicesView : ConstraintLayout {
             is PlayQuizOptionState.Answered -> {
                 loaderQuiz.hide()
                 tvQuestion.setTextColor(filledFontColor)
-                getIconOption(isCorrect = (item.type as PlayQuizOptionState.Answered).isCorrect, isAnswered = true)
-                this.setBackgroundColor(
-                    MethodChecker.getColor(
-                        context,
-                        if ((item.type as PlayQuizOptionState.Answered).isCorrect) unifyR.color.Unify_GN400 else unifyR.color.Unify_RN500
-                    )
-                )
+                getBackground(isCorrect = item.type.isCorrect)
+                getIconOption(isCorrect = item.type.isCorrect, isAnswered = true)
             }
             /**
              * Other choices beside user's answer, if correct = icon is green and false is red
              */
             is PlayQuizOptionState.Result -> {
-                tvQuestion.setTextColor(defaultFontColor)
                 loaderQuiz.hide()
-                getIconOption(isCorrect = (item.type as PlayQuizOptionState.Result).isCorrect)
-                this.background = bgDrawable
+                tvQuestion.setTextColor(defaultFontColor)
+                getBackground(isDefault = true)
+                getIconOption(isCorrect = item.type.isCorrect)
             }
         }
         tvQuestion.text = item.question
@@ -131,4 +127,26 @@ class QuizChoicesView : ConstraintLayout {
         }
     }
 
+    private fun getBackground(isDefault: Boolean? = null, isCorrect: Boolean? = null){
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.RECTANGLE
+        shape.cornerRadius = QUIZ_OPTION_RADIUS
+
+        isDefault?.let {
+            if(it)
+                shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_N0))
+                shape.setStroke(QUIZ_OPTION_STROKE_WIDTH, MethodChecker.getColor(context, commonR.color.play_stroke_quiz))
+        }
+
+        isCorrect?.let {
+            if(it) shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_GN400))
+            else shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_RN500))
+        }
+        this.background = shape
+    }
+
+    companion object{
+        private const val QUIZ_OPTION_RADIUS = 20f
+        private const val QUIZ_OPTION_STROKE_WIDTH = 1
+    }
 }

@@ -39,7 +39,7 @@ class InteractiveViewerGetLeaderboardWithSlotUseCase @Inject constructor(
                   ... on PlayInteractiveViewerLeaderboardGiveaway{
                     title
                     winners{
-                      username
+                      userName: username
                       imageURL
                     }
                     otherParticipantCountText
@@ -56,7 +56,7 @@ class InteractiveViewerGetLeaderboardWithSlotUseCase @Inject constructor(
                       isCorrect: isCorrectAnswer
                     }
                     winners: winner {
-                      username
+                      userName: username
                       imageURL
                     }
                     otherParticipantCountText

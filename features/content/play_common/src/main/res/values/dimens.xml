@@ -61,4 +61,6 @@
     <!-- Giveaway -->
     <dimen name="play_giveaway_tap_bg_size">72dp</dimen>
 
+    <!--Leaderboard-->
+    <dimen name="play_leaderboard_rv_spacing">36dp</dimen>
 </resources>

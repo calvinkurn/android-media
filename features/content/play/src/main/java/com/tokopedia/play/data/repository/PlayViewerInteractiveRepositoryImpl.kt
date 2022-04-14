@@ -10,8 +10,8 @@ import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
+import com.tokopedia.play_common.domain.usecase.interactive.InteractiveViewerGetLeaderboardWithSlotUseCase
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import kotlinx.coroutines.withContext
@@ -22,13 +22,13 @@ import javax.inject.Inject
  * Created by jegul on 30/06/21
  */
 class PlayViewerInteractiveRepositoryImpl @Inject constructor(
-        private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
-        private val postInteractiveTapUseCase: PostInteractiveTapUseCase,
-        private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
-        private val answerQuizUseCase: AnswerQuizUseCase,
-        private val mapper: PlayUiModelMapper,
-        private val dispatchers: CoroutineDispatchers,
-        private val interactiveStorage: PlayInteractiveStorage
+    private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
+    private val postInteractiveTapUseCase: PostInteractiveTapUseCase,
+    private val getInteractiveLeaderboardUseCase: InteractiveViewerGetLeaderboardWithSlotUseCase,
+    private val answerQuizUseCase: AnswerQuizUseCase,
+    private val mapper: PlayUiModelMapper,
+    private val dispatchers: CoroutineDispatchers,
+    private val interactiveStorage: PlayInteractiveStorage
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
     override suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel = withContext(dispatchers.io) {
@@ -56,15 +56,15 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
                   "title": "Bagi-bagi sembako",
                   "winners":[
                     {
-                      "username": "Jokowi",
+                      "userName": "Jokowi",
                       "imageURL": "http://google.com"
                     },
                     {
-                      "username": "Emak",
+                      "userName": "Emak",
                       "imageURL": "http://google.com"
                     },
                     {
-                      "username": "Bapak",
+                      "userName": "Bapak",
                       "imageURL": "http://google.com"
                     }
                   ],
@@ -95,15 +95,15 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
                   ],
                   "winners":[
                     {
-                      "username": "Jokowi",
+                      "userName": "Jokowi",
                       "imageURL": "http://google.com"
                     },
                     {
-                      "username": "Emak",
+                      "userName": "Emak",
                       "imageURL": "http://google.com"
                     },
                     {
-                      "username": "Bapak",
+                      "userName": "Bapak",
                       "imageURL": "http://google.com"
                     }
                   ],

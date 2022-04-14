@@ -52,4 +52,5 @@
     <color name="play_dms_quiz_widget_gradient_end">#B3CD2F79</color>
     <color name="play_dms_quiz_header_gradient_start">#9B40DE</color>
     <color name="play_dms_quiz_header_gradient_end">#D72C65</color>
+    <color name="play_stroke_quiz">#BFC9D9</color>
 </resources>

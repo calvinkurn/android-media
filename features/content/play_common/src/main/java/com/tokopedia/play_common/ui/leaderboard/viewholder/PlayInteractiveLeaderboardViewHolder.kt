@@ -2,6 +2,7 @@ package com.tokopedia.play_common.ui.leaderboard.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -16,7 +17,7 @@ import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderboardWi
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
-import com.tokopedia.play_common.view.setGradientBackground
+import com.tokopedia.play_common.view.setTextGradient
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -73,9 +74,10 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
                 tvReward.show()
 
                 ivLeaderBoard.setImage(newIconId = IconUnify.QUIZ)
-                ivReward.setImage(newIconId = IconUnify.GIFT)
-                tvReward.text = leaderboard.reward
-                tvReward.setGradientBackground(listOf("",""))
+                ivReward.setImage(newIconId = IconUnify.GIFT, newLightEnable = MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), newDarkEnable = MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start))
+                tvReward.text = "Hadiah: ${leaderboard.reward}"
+
+                tvReward.setTextGradient(intArrayOf(MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_start), MethodChecker.getColor(itemView.context, R.color.play_dms_quiz_header_gradient_end)))
             }
             LeadeboardType.Giveaway -> ivLeaderBoard.setImage(newIconId = IconUnify.GIFT)
             else -> {
@@ -106,14 +108,10 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private fun showQuiz(leaderboard: PlayLeaderboardUiModel){
         rvChoices.show()
         choicesAdapter.setItemsAndAnimateChanges(leaderboard.choices)
-
-        //no choices
     }
 
     private fun hideQuiz(leaderboard: PlayLeaderboardUiModel){
         rvChoices.hide()
-
-        //no choice
     }
 
     interface Listener {
