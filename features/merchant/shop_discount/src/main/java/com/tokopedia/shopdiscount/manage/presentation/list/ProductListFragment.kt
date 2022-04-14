@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
@@ -88,6 +89,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     @Inject
     lateinit var viewAnimator: ViewAnimator
 
+    private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
     private var onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
@@ -442,6 +444,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
+        showLoaderDialog()
         viewModel.setSelectedProduct(product)
         val requestId = generateRequestId()
         viewModel.setRequestId(requestId)
@@ -541,6 +544,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private fun redirectToUpdateDiscountPage() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            dismissLoaderDialog()
             ShopDiscountManageDiscountActivity.start(
                 requireActivity(),
                 viewModel.getRequestId(),
@@ -587,5 +591,14 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private fun hideEmptyState() {
         binding?.emptyState?.gone()
+    }
+
+    private fun showLoaderDialog() {
+        loaderDialog.setLoadingText(getString(R.string.sd_wait))
+        loaderDialog.show()
+    }
+
+    private fun dismissLoaderDialog() {
+        loaderDialog.dialog.dismiss()
     }
 }

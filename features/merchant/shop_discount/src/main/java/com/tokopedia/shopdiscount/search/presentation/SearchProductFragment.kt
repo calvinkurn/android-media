@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentSearchProductBinding
@@ -24,7 +25,9 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.Sho
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
+import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.extension.showToaster
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
@@ -82,6 +85,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     @Inject
     lateinit var userSession : UserSessionInterface
 
+    private val loaderDialog by lazy { LoaderDialog(requireActivity()) }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SearchProductViewModel::class.java) }
     private val productAdapter by lazy {
@@ -272,6 +276,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             viewModel.setInMultiSelectMode(false)
             viewModel.setDisableProductSelection(false)
             disableMultiSelect()
+            handleEmptyState(updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
         }
@@ -285,6 +290,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     }
 
     private val onUpdateDiscountClicked: (Product) -> Unit = { product ->
+        showLoaderDialog()
         viewModel.setSelectedProduct(product)
         val requestId = generateRequestId()
         viewModel.setRequestId(requestId)
@@ -518,6 +524,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun redirectToUpdateDiscountPage() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            dismissLoaderDialog()
             ShopDiscountManageDiscountActivity.start(
                 requireActivity(),
                 viewModel.getRequestId(),
@@ -529,5 +536,50 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
 
     override fun onSwipeRefreshPulled() {
 
+    }
+
+    private fun handleEmptyState(totalProduct : Int) {
+        if (totalProduct == ZERO) {
+            showEmptyState(discountStatusId)
+        } else {
+            hideEmptyState()
+        }
+    }
+
+    private fun showEmptyState(discountStatusId : Int) {
+        val title = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_paused_discount_title)
+        } else {
+            getString(R.string.sd_no_paused_discount_description)
+        }
+
+        val description = if (discountStatusId == DiscountStatus.PAUSED) {
+            getString(R.string.sd_no_discount_title)
+        } else {
+            getString(R.string.sd_no_discount_description)
+        }
+
+        binding?.tpgTotalProduct?.gone()
+        binding?.tpgMultiSelect?.gone()
+        binding?.tpgCancelMultiSelect?.gone()
+
+        binding?.emptyState?.visible()
+        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
+        binding?.emptyState?.setTitle(title)
+        binding?.emptyState?.setDescription(description)
+    }
+
+
+    private fun hideEmptyState() {
+        binding?.emptyState?.gone()
+    }
+
+    private fun showLoaderDialog() {
+        loaderDialog.setLoadingText(getString(R.string.sd_wait))
+        loaderDialog.show()
+    }
+
+    private fun dismissLoaderDialog() {
+        loaderDialog.dialog.dismiss()
     }
 }
