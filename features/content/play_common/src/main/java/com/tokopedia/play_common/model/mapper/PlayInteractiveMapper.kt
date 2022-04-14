@@ -30,7 +30,7 @@ class PlayInteractiveMapper @Inject constructor() {
                         add(Calendar.SECOND, data.countdownStart)
                     },
                     endTime = Calendar.getInstance().apply {
-                        add(Calendar.SECOND, data.countdownEnd - data.countdownStart)
+                        add(Calendar.SECOND, data.countdownStart + data.countdownEnd)
                     }
                 )
                 STATUS_LIVE -> InteractiveUiModel.Giveaway.Status.Ongoing(
