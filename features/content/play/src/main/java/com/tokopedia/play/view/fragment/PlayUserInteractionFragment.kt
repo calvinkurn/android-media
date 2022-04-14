@@ -226,13 +226,17 @@ class PlayUserInteractionFragment @Inject constructor(
     private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
     private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
 
+    private val interactiveDialogDataSource = object : InteractiveDialogFragment.DataSource {
+        override fun getViewModelProvider(): ViewModelProvider {
+            return getPlayViewModelProvider()
+        }
+    }
+
     override fun getScreenName(): String = "Play User Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(
-            requireParentFragment(), (requireParentFragment() as PlayFragment).viewModelProviderFactory
-        ).get(PlayViewModel::class.java)
+        playViewModel = getPlayViewModelProvider().get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
     }
 
@@ -324,18 +328,16 @@ class PlayUserInteractionFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is InteractiveDialogFragment -> {
-                childFragment.setDataSource(
-                    object : InteractiveDialogFragment.DataSource {
-                        override fun getViewModelProvider(): ViewModelProvider {
-                            return ViewModelProvider(
-                                requireParentFragment(),
-                                (requireParentFragment() as PlayFragment).viewModelProviderFactory,
-                            )
-                        }
-                    }
-                )
+                childFragment.setDataSource(interactiveDialogDataSource)
             }
         }
+    }
+
+    private fun getPlayViewModelProvider(): ViewModelProvider {
+        return ViewModelProvider(
+            requireParentFragment(),
+            (requireParentFragment() as PlayFragment).viewModelProviderFactory,
+        )
     }
 
     //region ComponentListener
