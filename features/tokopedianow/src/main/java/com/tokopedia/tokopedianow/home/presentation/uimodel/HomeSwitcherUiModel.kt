@@ -16,13 +16,13 @@ sealed class HomeSwitcherUiModel(
         return typeFactory.type(this)
     }
 
-    object Home15mSwitcher: HomeSwitcherUiModel(
+    class Home15mSwitcher: HomeSwitcherUiModel(
         R.string.tokopedianow_15m_switcher_title,
         R.string.tokopedianow_15m_switcher_subtitle,
         R.drawable.tokopedianow_ic_15m
     )
 
-    object Home2hSwitcher: HomeSwitcherUiModel(
+    class Home2hSwitcher: HomeSwitcherUiModel(
         R.string.tokopedianow_2h_switcher_title,
         R.string.tokopedianow_2h_switcher_subtitle,
         R.drawable.tokopedianow_ic_2h

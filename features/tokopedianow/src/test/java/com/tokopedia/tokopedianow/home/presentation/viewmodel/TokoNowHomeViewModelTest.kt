@@ -2571,7 +2571,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 HomeLayoutItemState.LOADED,
                 ServiceType.NOW_2H
             ),
-            HomeSwitcherUiModel.Home15mSwitcher
+            HomeSwitcherUiModel.Home15mSwitcher()
         )
 
         val expectedResult = Success(HomeLayoutListUiModel(
@@ -2666,7 +2666,7 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
                 HomeLayoutItemState.LOADED,
                 ServiceType.NOW_15M
             ),
-            HomeSwitcherUiModel.Home2hSwitcher
+            HomeSwitcherUiModel.Home2hSwitcher()
         )
 
         val expectedResult = Success(HomeLayoutListUiModel(

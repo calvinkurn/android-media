@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeSwitcherBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSwitcherUiModel
@@ -27,8 +28,10 @@ class HomeSwitcherViewHolder(
             textSubtitle.text = itemView.context.getString(uiModel.subtitle)
             ivIcon.setImageDrawable(ContextCompat.getDrawable(itemView.context, uiModel.icon))
             root.setOnClickListener { listener?.onClickSwitcher() }
+            itemView.addOnImpressionListener(uiModel) {
+                listener?.onImpressSwitcher()
+            }
         }
-        listener?.onImpressSwitcher()
     }
 
     interface HomeSwitcherListener {
