@@ -245,12 +245,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             dialog.setSecondaryCTAClickListener {
                 createPostAnalytics.eventClickExitOnConfirmationPopup()
                 dialog.dismiss()
-
-                val intent = Intent().apply {
-                    putExtra(EXTRA_SELECTED_FEED_ACCOUNT, selectedFeedAccount.type.value)
-                }
-                setResult(Activity.RESULT_OK, intent)
-                finish()
+                backWithActionResult()
             }
             dialog.show()
         } else {
@@ -332,5 +327,13 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             visibility = View.VISIBLE
         }
         setSupportActionBar(toolbarCommon)
+    }
+
+    private fun backWithActionResult() {
+        val intent = Intent().apply {
+            putExtra(EXTRA_SELECTED_FEED_ACCOUNT, selectedFeedAccount.type.value)
+        }
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }
