@@ -379,7 +379,7 @@
     <string name="review_reading_sort_latest">Terbaru</string>
     <string name="review_reading_sort_highest_rating">Rating Tertinggi</string>
     <string name="review_reading_sort_lowest_rating">Rating Terendah</string>
-    <string name="review_reading_filter_with_attachment">Dengan Foto</string>
+    <string name="review_reading_filter_with_attachment">Foto &amp; Video</string>
     <string name="review_reading_filter_all_ratings">Semua Rating</string>
     <string name="review_reading_filter_all_topics">Semua Topik</string>
     <string name="review_reading_submit_filter">Terapkan Filter</string>
