@@ -176,7 +176,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                 binding?.btnManage?.loadingText = getString(R.string.sd_please_wait)
 
                 val requestId = viewModel.getRequestId()
-                val selectedProducts = viewModel.getSelectedProduct()
+                val selectedProducts = viewModel.getSelectedProducts()
                 viewModel.reserveProduct(requestId, selectedProducts)
             }
         }
@@ -258,11 +258,11 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             viewModel.removeProductFromSelection(selectedProduct)
         }
 
+        val selectedProductCount = viewModel.getSelectedProducts().size
+
         val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
         adapter?.update(selectedProduct, updatedProduct)
 
-        val items = adapter?.getItems() ?: emptyList()
-        val selectedProductCount = viewModel.getSelectedProduct().size
 
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
@@ -270,6 +270,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         binding?.btnManage?.text =
             String.format(getString(R.string.sd_manage_with_counter),  selectedProductCount)
         binding?.btnManage?.isEnabled = selectedProductCount > 0
+
+        val items = adapter?.getItems() ?: emptyList()
 
         if (shouldDisableSelection) {
             showTickerWithAnimation()
@@ -384,7 +386,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     }
 
     private fun clearSearchBar() {
-        val selectedProductCount = viewModel.getSelectedProduct().size
+        val selectedProductCount = viewModel.getSelectedProducts().size
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
