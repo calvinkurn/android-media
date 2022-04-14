@@ -2,10 +2,7 @@ package com.tokopedia.catalog.listener
 
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.catalog.model.datamodel.CatalogForYouModel
-import com.tokopedia.catalog.model.raw.CatalogComparisonProductsResponse
-import com.tokopedia.catalog.model.raw.CatalogImage
-import com.tokopedia.catalog.model.raw.ComparisionModel
-import com.tokopedia.catalog.model.raw.VideoComponentData
+import com.tokopedia.catalog.model.raw.*
 
 interface CatalogDetailListener {
 
@@ -22,7 +19,7 @@ interface CatalogDetailListener {
     /**
      * CatalogSpecificationsContainerViewHolder
      */
-    fun onViewMoreSpecificationsClick(){}
+    fun onViewMoreSpecificationsClick(topModel : TopSpecificationsComponentData?){}
 
     /**
      * CatalogProductsContainerViewHolder

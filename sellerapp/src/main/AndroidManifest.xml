@@ -669,29 +669,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3.PlainGreen"></activity>
         <activity
-            android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
-            android:exported="false"
-            android:label="@string/drawer_title_home"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/SellerHomeTheme">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tkpd" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_sellerapp"
-                    android:path="@string/path_sellerhome" />
-            </intent-filter>
-            <meta-data
-                android:name="APPS_HOME"
-                android:value="true" />
-        </activity>
-        <activity
             android:screenOrientation="portrait"
             android:name="com.tokopedia.shop.open.view.activity.ShopOpenMandatoryActivity" />
 
@@ -861,9 +838,6 @@
                     android:sspPattern="//.*?.*redirect_to_sellerapp=true.*" />
             </intent-filter>
         </activity>
-        <service
-            android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
         <receiver android:name=".receiver.SellerAppMediaButtonReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MEDIA_BUTTON" />

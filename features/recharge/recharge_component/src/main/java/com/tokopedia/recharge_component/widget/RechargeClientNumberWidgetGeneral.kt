@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
@@ -13,8 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
-import com.tokopedia.common.topupbills.favorite.data.TopupBillsPersoFavNumberItem
-import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsAutoCompleteAdapter
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
 import com.tokopedia.iconunify.IconUnify
@@ -28,7 +27,9 @@ import com.tokopedia.recharge_component.listener.ClientNumberAutoCompleteListene
 import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
-import com.tokopedia.recharge_component.model.InputFieldType
+import com.tokopedia.recharge_component.model.client_number.InputFieldType
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberAutoCompleteModel
+import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.presentation.adapter.InquiryRechargeClientNumberAdapter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -57,13 +58,13 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     private var textFieldStaticLabel: String = ""
 
     private var isClearableState = false
+    private var inputFieldType: InputFieldType? = null
 
     private var customInputNumberFormatter: ((String) -> String)? = null
 
     init {
         initInputField()
         initSortFilterChip()
-        initAutoComplete()
     }
 
     private fun initInputField() {
@@ -131,15 +132,22 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             }
         }
 
+        val emptyStateUnitRes = when (inputFieldType) {
+            InputFieldType.Listrik -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
+            InputFieldType.Telco -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_hp
+            else -> com.tokopedia.common.topupbills.R.string.common_topup_autocomplete_unit_nomor_meter
+        }
+
         autoCompleteAdapter = TopupBillsAutoCompleteAdapter(
             context,
             R.layout.item_recharge_client_number_auto_complete,
             mutableListOf(),
+            context.getString(emptyStateUnitRes),
             object : TopupBillsAutoCompleteAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
                     return binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.text.toString()
                 }
-            }
+            },
         )
 
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.editText.run {
@@ -147,26 +155,25 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         }
     }
 
-    private fun setSortFilterChip(favnum: List<TopupBillsPersoFavNumberItem>) {
+    private fun setSortFilterChip(favnum: List<RechargeClientNumberChipModel>) {
         val sortFilter = arrayListOf<SortFilterItem>()
 
         // create each chip
         for (number in favnum) {
-            if (number.subtitle.isEmpty()) {
+            val sortFilterItem = if (number.clientName.isEmpty()) {
                 mFilterChipListener?.onShowFilterChip(false)
+                SortFilterItem(number.clientNumber, type = ChipsUnify.TYPE_ALTERNATE)
             } else {
                 mFilterChipListener?.onShowFilterChip(true)
+                SortFilterItem(number.clientName, type = ChipsUnify.TYPE_ALTERNATE)
             }
-            val sortFilterItem = SortFilterItem(number.title, type = ChipsUnify.TYPE_ALTERNATE)
             sortFilterItem.listener = {
-                if (number.subtitle.isEmpty()) {
-                    setContactName("")
-                    setInputNumber(number.title, true)
-                    mFilterChipListener?.onClickFilterChip(false, number.trackingData.operatorId)
+                setContactName(number.clientName)
+                setInputNumber(number.clientNumber, true)
+                if (number.clientName.isEmpty()) {
+                    mFilterChipListener?.onClickFilterChip(false, number.operatorId)
                 } else {
-                    setContactName(number.title)
-                    setInputNumber(number.subtitle, true)
-                    mFilterChipListener?.onClickFilterChip(true, number.trackingData.operatorId)
+                    mFilterChipListener?.onClickFilterChip(true, number.operatorId)
                 }
                 clearFocusAutoComplete()
             }
@@ -197,18 +204,20 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
         last()?.refChipUnify?.addCustomView(chevronRight)
     }
 
-    fun setFavoriteNumber(favNumberItems: List<TopupBillsPersoFavNumberItem>) {
+    fun setFavoriteNumber(favNumberItems: List<RechargeClientNumberChipModel>) {
         setSortFilterChip(favNumberItems)
     }
 
-    fun setAutoCompleteList(suggestions: List<TopupBillsPersoFavNumberItem>) {
+    fun setAutoCompleteList(suggestions: List<RechargeClientNumberAutoCompleteModel>) {
         autoCompleteAdapter?.updateItems(
-            FavoriteNumberDataMapper
-                .mapPersoFavNumberItemToContactDataView(suggestions).toMutableList())
+            suggestions.map {
+                TopupBillsAutoCompleteContactDataView(it.clientName, it.clientNumber)
+            }.toMutableList())
     }
 
     fun setInputFieldType(type: InputFieldType) {
         with(binding) {
+            inputFieldType = type
             clientNumberWidgetBase.clientNumberWidgetInputField.run {
                 editText.inputType = type.inputType
                 icon1.run {
@@ -221,6 +230,7 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
                 }
             }
         }
+        initAutoComplete()
     }
 
     fun setInputFieldStaticLabel(label: String) {
@@ -252,6 +262,9 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
     fun setLoading(isLoading: Boolean) {
         binding.clientNumberWidgetBase.clientNumberWidgetInputField.isLoading = isLoading
     }
+
+    fun isInputFieldEmpty(): Boolean = binding.clientNumberWidgetBase
+        .clientNumberWidgetInputField.editText.text.isEmpty()
 
     fun showIndicatorIcon() {
         if (isClearableState) {
@@ -411,5 +424,10 @@ class RechargeClientNumberWidgetGeneral @JvmOverloads constructor(@NotNull conte
             adapter = adapterInquiry
             layoutManager = LinearLayoutManager(context)
         }
+    }
+
+    fun startShakeAnimation() {
+        binding.clientNumberWidgetBase.clientNumberWidgetInputField.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.client_number_widget_shake_anim))
     }
 }

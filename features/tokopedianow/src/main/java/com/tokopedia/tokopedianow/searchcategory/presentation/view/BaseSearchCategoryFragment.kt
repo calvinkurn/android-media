@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -62,6 +63,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_CART
 import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_NAV_GLOBAL
+import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
@@ -272,22 +274,17 @@ abstract class BaseSearchCategoryFragment:
         stickyView?.setMargin(0.toDp(), top, 0.toDp(), 0.toDp())
     }
 
-    protected open fun createNavToolbarIconBuilder() = IconBuilder()
-            .addCart()
-            .addGlobalNav()
-
-    protected fun IconBuilder.addCart(): IconBuilder = this
-            .addIcon(
-                    iconId = ID_CART,
-                    disableRouteManager = false,
-                    disableDefaultGtmTracker = disableDefaultCartTracker,
-                    onClick = ::onNavToolbarCartClicked,
-            )
-
     protected open val disableDefaultCartTracker
         get() = false
 
+    protected open val disableDefaultShareTracker
+        get() = false
+
     protected open fun onNavToolbarCartClicked() {
+
+    }
+
+    protected open fun onNavToolbarShareClicked() {
 
     }
 
@@ -299,6 +296,26 @@ abstract class BaseSearchCategoryFragment:
                         disableDefaultGtmTracker = false
                 ) { }
             else this
+
+    protected fun IconBuilder.addCart(): IconBuilder = this
+        .addIcon(
+            iconId = ID_CART,
+            disableRouteManager = false,
+            disableDefaultGtmTracker = disableDefaultCartTracker,
+            onClick = ::onNavToolbarCartClicked,
+        )
+
+    protected fun IconBuilder.addShare(): IconBuilder = this
+        .addIcon(
+            iconId = ID_SHARE,
+            disableRouteManager = false,
+            disableDefaultGtmTracker = disableDefaultShareTracker,
+            onClick = ::onNavToolbarShareClicked,
+        )
+
+    protected open fun createNavToolbarIconBuilder() = IconBuilder()
+        .addCart()
+        .addGlobalNav()
 
     protected open fun getNavToolbarHint(): List<HintData> {
         val hint = getString(R.string.tokopedianow_search_bar_hint)
@@ -777,8 +794,14 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun updateHeaderBackgroundVisibility(isVisible: Boolean) {
-        if (!isVisible) headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
-        else headerBackground?.setImageResource(R.drawable.tokopedianow_ic_header_background)
+        if (!isVisible) {
+            headerBackground?.setImageResource(R.color.tokopedianow_dms_transparent)
+        } else {
+            val background = VectorDrawableCompat.create(
+                resources, R.drawable.tokopedianow_ic_header_background, context?.theme
+            )
+            headerBackground?.setImageDrawable(background)
+        }
         headerBackground?.showWithCondition(isVisible)
     }
 
