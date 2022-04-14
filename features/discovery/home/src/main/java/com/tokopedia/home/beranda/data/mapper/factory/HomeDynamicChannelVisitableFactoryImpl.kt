@@ -53,6 +53,8 @@ class HomeDynamicChannelVisitableFactoryImpl(
         private const val VALUE_BANNER_UNKNOWN = "banner unknown"
         private const val VALUE_BANNER_DEFAULT = "default"
         private const val VALUE_BANNER_UNKNOWN_LAYOUT_TYPE = "lego banner unknown"
+
+        private const val CUE_WIDGET_MIN_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -677,8 +679,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createCueCategory(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
         val gridSize = channel.grids.size
-        val cueWidget2x2MinSize = 4
-        if (gridSize >= cueWidget2x2MinSize) {
+        if (gridSize >= CUE_WIDGET_MIN_SIZE) {
             visitableList.add(
                 mappingCueCategoryComponent(
                     channel, isCache, verticalPosition
