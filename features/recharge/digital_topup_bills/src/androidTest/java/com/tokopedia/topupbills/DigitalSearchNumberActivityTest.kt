@@ -29,6 +29,7 @@ import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActiv
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CLIENT_NUMBER_TYPE
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_NUMBER_LIST
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.topupbills.searchnumber.view.DigitalSearchNumberActivity
@@ -163,10 +164,10 @@ class DigitalSearchNumberActivityTest {
         private const val VALID_PHONE_NUMBER_PREFIX = "0812"
 
         fun generateFavoriteNumber() = arrayListOf(
-            TopupBillsFavNumberItem(clientNumber = "081208120812"),
-            TopupBillsFavNumberItem(clientNumber = "085708570857"),
-            TopupBillsFavNumberItem(clientNumber = "081908190819"),
-            TopupBillsFavNumberItem(clientNumber = "081933333333"),
+            TopupBillsSearchNumberDataModel(clientNumber = "081208120812"),
+            TopupBillsSearchNumberDataModel(clientNumber = "085708570857"),
+            TopupBillsSearchNumberDataModel(clientNumber = "081908190819"),
+            TopupBillsSearchNumberDataModel(clientNumber = "081933333333"),
         )
     }
 }
