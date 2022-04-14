@@ -35,22 +35,27 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 object SellerHomeTracking {
 
-    fun sendImpressionCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendImpressionCardEvent(
+        dataKey: String,
+        state: String,
+        cardValue: String,
+        subtitle: String
+    ) {
         val map = createEventMap(
             TrackingConstant.VIEW_HOMEPAGE_IRIS,
             arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
             TrackingConstant.IMPRESSION_WIDGET_CARD,
-            arrayOf(dataKey, state, cardValue).joinToString(" - ")
+            arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String) {
+    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String, subtitle: String) {
         val map = createEventMap(
             TrackingConstant.CLICK_HOMEPAGE,
             arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
             TrackingConstant.CLICK_WIDGET_CARD,
-            arrayOf(dataKey, state, cardValue).joinToString(" - ")
+            arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
     }
