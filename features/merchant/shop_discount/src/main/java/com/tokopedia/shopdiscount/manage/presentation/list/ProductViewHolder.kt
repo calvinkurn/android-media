@@ -21,11 +21,12 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
     }
 
     fun bind(
+        position: Int,
         product: Product,
-        onProductClicked: (Product) -> Unit,
+        onProductClicked: (Product, Int) -> Unit,
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
-        onVariantInfoClicked: (Product) -> Unit,
+        onVariantInfoClicked: (Product, Int) -> Unit,
         onProductSelectionChange: (Product, Boolean) -> Unit,
         isLoading: Boolean
     ) {
@@ -33,10 +34,10 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         binding.tpgProductName.text = product.name
         binding.imgMore.setOnClickListener { onOverflowMenuClicked(product) }
         binding.btnUpdateDiscount.setOnClickListener { onUpdateDiscountButtonClicked(product) }
-        binding.root.setOnClickListener { onProductClicked(product) }
+        binding.root.setOnClickListener { onProductClicked(product, position) }
         binding.loader.isVisible = isLoading
         handleProductType(product)
-        binding.imgInfo.setOnClickListener { onVariantInfoClicked(product) }
+        binding.imgInfo.setOnClickListener { onVariantInfoClicked(product, position) }
         binding.tpgOriginalPrice.strikethrough()
         handleCheckboxAppearance(product, onProductSelectionChange)
         handleChangeDiscountButtonAppearance(product.shouldDisplayCheckbox)

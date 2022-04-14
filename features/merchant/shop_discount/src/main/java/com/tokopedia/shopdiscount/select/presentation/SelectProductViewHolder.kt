@@ -20,14 +20,15 @@ class SelectProductViewHolder(private val binding: SdItemSelectProductBinding) :
     }
 
     fun bind(
+        position: Int,
         product: ReservableProduct,
-        onProductClicked: (ReservableProduct) -> Unit,
+        onProductClicked: (ReservableProduct, Int) -> Unit,
         onProductSelectionChange : (ReservableProduct, Boolean) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.picture)
         binding.tpgProductName.text = product.name
-        binding.root.setOnClickListener { onProductClicked(product) }
+        binding.root.setOnClickListener { onProductClicked(product, position) }
         binding.loader.isVisible = isLoading
 
         displayProductSku(product.sku)

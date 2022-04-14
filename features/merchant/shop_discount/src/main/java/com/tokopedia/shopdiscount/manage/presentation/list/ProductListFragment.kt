@@ -362,11 +362,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         this.onSwipeRefresh = onSwipeRefresh
     }
 
-    private fun showProductDetailBottomSheet(product: Product) {
+    private fun showProductDetailBottomSheet(product: Product, position : Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
-            discountStatusId
+            discountStatusId,
+            position
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -480,17 +481,17 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         reserveProduct(requestId, listOf(product.id))
     }
 
-    private val onProductClicked: (Product) -> Unit = { product ->
+    private val onProductClicked: (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 
-    private val onVariantInfoClicked : (Product) -> Unit = { product ->
+    private val onVariantInfoClicked : (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 

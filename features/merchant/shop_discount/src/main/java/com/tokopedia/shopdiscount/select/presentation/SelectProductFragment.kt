@@ -240,10 +240,10 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         }
     }
 
-    private val onProductClicked: (ReservableProduct) -> Unit = { product ->
+    private val onProductClicked: (ReservableProduct, Int) -> Unit = { product, position ->
         val isDisabled = product.disableClick || product.disabled
         guard(isDisabled, product.disabledReason) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 
@@ -375,11 +375,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     }
 
-    private fun showProductDetailBottomSheet(product: ReservableProduct) {
+    private fun showProductDetailBottomSheet(product: ReservableProduct, position: Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
-            DiscountStatus.ALL
+            DiscountStatus.ALL,
+            position
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
