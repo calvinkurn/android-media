@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.common.domain.response
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 
 data class CheckoutTokoFoodResponse(
     @SerializedName("message")
@@ -107,7 +108,9 @@ data class CheckoutTokoFoodUserAddress(
     @SerializedName("status")
     @Expose
     val status: Int = 0
-)
+) {
+    fun isMainAddress(): Boolean = status == TokoFoodCartUtil.IS_MAIN_ADDRESS_STATUS
+}
 
 data class CheckoutTokoFoodAvailabilitySection(
     @SerializedName("title")

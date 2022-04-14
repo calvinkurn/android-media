@@ -33,7 +33,7 @@
         android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_disabled_title"
+        app:layout_constraintTop_toBottomOf="@+id/unavailableSectionType"
         app:typographyType="body_3"
         tools:text="Tidak dapat dibeli di platform Android" />
 

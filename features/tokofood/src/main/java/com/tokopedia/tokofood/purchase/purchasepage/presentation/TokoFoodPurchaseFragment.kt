@@ -293,10 +293,10 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
                 PurchaseUiEvent.EVENT_SHOW_BULK_DELETE_CONFIRMATION_DIALOG -> showBulkDeleteConfirmationDialog(it.data as Int)
                 PurchaseUiEvent.EVENT_NAVIGATE_TO_SET_PINPOINT -> navigateToSetPinpoint(it.data as LocationPass)
-                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData(true)
+                PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> viewModel.loadData()
                 PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT -> {
                     // TODO: Show error
-                    viewModel.loadData(true)
+                    viewModel.loadData()
                 }
             }
         })
@@ -531,7 +531,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     override fun onQuantityChanged() {
         viewModel.triggerEditQuantity()
-        viewModel.calculateTotal()
     }
 
     override fun onIconDeleteProductClicked(element: TokoFoodPurchaseProductTokoFoodPurchaseUiModel) {

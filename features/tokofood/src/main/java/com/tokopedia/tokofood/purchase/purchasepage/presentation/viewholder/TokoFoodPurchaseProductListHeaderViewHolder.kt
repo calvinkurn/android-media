@@ -21,9 +21,9 @@ class TokoFoodPurchaseProductListHeaderViewHolder(private val viewBinding: ItemP
             addAnotherProductButton.text = element.action
             addAnotherProductButton.setOnClickListener {
                 if (element.isAvailableHeader) {
-                    listener.onTextBulkDeleteUnavailableProductsClicked()
-                } else {
                     listener.onTextAddItemClicked()
+                } else {
+                    listener.onTextBulkDeleteUnavailableProductsClicked()
                 }
             }
 

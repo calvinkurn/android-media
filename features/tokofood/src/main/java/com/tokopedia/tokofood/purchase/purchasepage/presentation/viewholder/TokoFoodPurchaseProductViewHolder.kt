@@ -58,7 +58,7 @@ class TokoFoodPurchaseProductViewHolder(private val viewBinding: ItemPurchasePro
                     constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.addNotesButton, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
                 } else {
                     constraintSet.connect(R.id.divider_bottom, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, 0)
-                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.container_product_price, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
+                    constraintSet.connect(R.id.divider_bottom, ConstraintSet.TOP, R.id.barrier_divider, ConstraintSet.BOTTOM, 16.dpToPx(itemView.resources.displayMetrics))
                 }
                 constraintSet.applyTo(productCell)
             }

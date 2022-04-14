@@ -22,7 +22,8 @@ class TokoFoodPurchaseSummaryTransactionViewHolder(private val viewBinding: Item
     override fun bind(element: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel) {
         with(viewBinding) {
             containerTransactionItem.removeAllViews()
-            element.getTransactionList().forEach {
+            element.transactionList.forEach {
+                // TODO: Fix default hide logic
                 if (it.defaultValueForZero != TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_HIDE) {
                     val summaryTransactionItem = SubItemPurchaseSummaryTransactionBinding.inflate(LayoutInflater.from(itemView.context))
                     summaryTransactionItem.textTransactionTitle.text = it.title

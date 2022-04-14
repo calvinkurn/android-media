@@ -11,6 +11,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.CheckoutTokoFoodParam
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
@@ -23,7 +24,6 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFood
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -98,68 +98,23 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         return dataList.subList(from, to)
     }
 
-    fun loadData(shouldRefresh: Boolean = false) {
-        // Todo : Load from API, if success then map to UiModel and update shared cart data, if error show global error
-        if (fragmentUiModel.value != null && !shouldRefresh) {
-            if (fragmentUiModel.value?.isLastLoadStateSuccess == true) {
+    fun loadData() {
+        launchCatchError(block = {
+            val param = CheckoutTokoFoodParam()
+            checkoutTokoFoodUseCase(param).collect {
                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = fragmentUiModel.value
-                _visitables.value = visitables.value
-                calculateTotal()
-            } else {
-                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-                _fragmentUiModel.value = fragmentUiModel.value
+                // TODO: Add loading state for shop toolbar
+                _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
+                // TODO: Check for success status
+                val isEnabled = it.status == 1
+                _visitables.value =
+                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !tmpAddressData.second)
+                        .toMutableList()
             }
-        } else {
-            launch {
-                delay(500) // Simulate hit API
-                val isSuccess = true
-                if (isSuccess) {
-                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
-                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = true, shopName = "Kopi Kenangan", shopLocation = "Tokopedia Tower")
-                    constructRecycleViewItem()
-                    calculateTotal()
-                } else {
-                    // Todo : Set throwable from network
-                    _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
-                    _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
-                }
-            }
-        }
-    }
-
-    private fun constructRecycleViewItem() {
-        // Todo : read API response, map to UiModel, below is example mapping using mock data
-        val tmpData = mutableListOf<Visitable<*>>()
-        val needPinpoint = !tmpAddressData.second
-        val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel(needPinpoint = needPinpoint)
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingAvailable))
-        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAddressUiModel())
-        tmpData.add(shippingData)
-        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingAvailable, true))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel(shippingData.isShippingAvailable))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, true, "1"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, true, "2"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, true, "3"))
-        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingAvailable, false))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel(shippingData.isShippingAvailable))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, false, "4"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, false, "5"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, false, "6"))
-        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "4"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel(shippingData.isShippingAvailable))
-        if (shippingData.isShippingAvailable) {
-            tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "5"))
-            tmpData.add(TokoFoodPurchaseUiModelMapper.mapPromoUiModel())
-            tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "6"))
-            tmpData.add(TokoFoodPurchaseUiModelMapper.mapSummaryTransactionUiModel())
-        }
-        tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "7"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTotalAmountUiModel())
-        _visitables.value = tmpData
+        }, onError = {
+            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
+        })
     }
 
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
@@ -171,8 +126,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             _visitables.value = dataList
             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT, data = productCount)
         }
-
-        calculateTotal()
     }
 
     fun deleteProduct(productId: String) {
@@ -361,80 +314,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             val dataList = getVisitablesValue().filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
             _updateQuantityState.emit(dataList)
         }
-    }
-
-    fun calculateTotal() {
-        val dataList = getVisitablesValue()
-        var summaryTransactionUiModel: TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel? = null
-        var summaryTransactionUiModelIndex = -1
-        var totalAmountUiModel: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel? = null
-        var totalAmountUiModelIndex = -1
-        var shippingUiModel: TokoFoodPurchaseShippingTokoFoodPurchaseUiModel? = null
-        var totalProduct = 0
-        var subTotal = 0L
-        var wrappingFee = 0L
-        var shippingFee = 0L
-        var serviceFee = 0L
-        loop@ for ((index, data) in dataList.withIndex()) {
-            when {
-                data is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel -> {
-                    shippingUiModel = data
-                    if (data.isShippingAvailable) {
-                        shippingFee = data.shippingPrice
-                        wrappingFee = data.wrappingFee
-                        serviceFee = data.serviceFee
-                    }
-                }
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isAvailable && data.isEnabled -> {
-                    subTotal += (data.price * data.quantity)
-                    totalProduct++
-                }
-                data is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
-                    summaryTransactionUiModel = data
-                    summaryTransactionUiModelIndex = index
-                }
-                data is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
-                    totalAmountUiModel = data
-                    totalAmountUiModelIndex = index
-                }
-            }
-        }
-
-        summaryTransactionUiModel?.let {
-            val newSummaryTransactionData = it.copy()
-            newSummaryTransactionData.subTotal = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                    title = "Total Harga ($totalProduct item)",
-                    value = subTotal,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_ZERO
-            )
-            newSummaryTransactionData.wrappingFee = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                    title = "Biaya Bungkus dari Restoran",
-                    value = wrappingFee,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE
-            )
-            newSummaryTransactionData.shippingFee = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                    title = "Ongkir",
-                    value = shippingFee,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE
-            )
-            newSummaryTransactionData.serviceFee = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction(
-                    title = "Biaya Jasa Aplikasi",
-                    value = serviceFee,
-                    defaultValueForZero = TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel.Transaction.DEFAULT_FREE
-            )
-            dataList[summaryTransactionUiModelIndex] = newSummaryTransactionData
-        }
-
-        totalAmountUiModel?.let {
-            val newTotalAmountData = totalAmountUiModel.copy()
-            newTotalAmountData.apply {
-                isEnabled = shippingUiModel?.isShippingAvailable ?: true
-                totalAmount = subTotal + shippingFee + wrappingFee + serviceFee
-            }
-            dataList[totalAmountUiModelIndex] = newTotalAmountData
-        }
-
-        _visitables.value = dataList
     }
 
     fun updateAddress(chosenAddressModel: ChosenAddressModel) {
