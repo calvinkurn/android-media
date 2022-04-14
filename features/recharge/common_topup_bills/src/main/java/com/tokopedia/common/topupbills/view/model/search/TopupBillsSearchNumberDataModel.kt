@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class TopupBillsSearchNumberDataView(
+data class TopupBillsSearchNumberDataModel(
     val clientName: String = "",
     val clientNumber: String = "",
     val categoryId: String = "",

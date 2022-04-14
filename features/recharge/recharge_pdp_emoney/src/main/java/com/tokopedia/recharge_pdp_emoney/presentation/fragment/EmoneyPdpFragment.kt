@@ -25,7 +25,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
@@ -184,11 +184,11 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                 is Success -> {
                     if (detailPassData.clientNumber != null && detailPassData.clientNumber?.isNotEmpty() == true) {
                         renderClientNumber(
-                            TopupBillsSearchNumberDataView(
+                            TopupBillsSearchNumberDataModel(
                                 clientNumber = detailPassData.clientNumber ?: "")
                         )
                     } else if (emoneyCardNumber.isNotEmpty()) {
-                        renderClientNumber(TopupBillsSearchNumberDataView(
+                        renderClientNumber(TopupBillsSearchNumberDataModel(
                             clientNumber = emoneyCardNumber))
                     } else {
                         topUpBillsViewModel.favNumberData.value?.let { favNumber ->
@@ -373,7 +373,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_EMONEY_PDP_DIGITAL_SEARCH_NUMBER -> {
-                    val favNumber = data?.getParcelableExtra<TopupBillsSearchNumberDataView>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                    val favNumber = data?.getParcelableExtra<TopupBillsSearchNumberDataModel>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                     favNumber?.let {
                         renderClientNumber(it)
 
@@ -388,7 +388,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
 
                     clientNumber?.let {
                         showToastMessage(getString(R.string.recharge_pdp_success_message_scan_ocr))
-                        renderClientNumber(TopupBillsSearchNumberDataView(clientNumber = it))
+                        renderClientNumber(TopupBillsSearchNumberDataModel(clientNumber = it))
 
                         //to handle don't keep activities case, so displayed client number wont be override with client number on detailPassData
                         detailPassData.clientNumber = it
@@ -399,7 +399,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
                 REQUEST_CODE_EMONEY_PDP_CHECK_SALDO -> {
                     val checkSaldoData = data?.getParcelableExtra<DigitalCategoryDetailPassData>(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA)
                     checkSaldoData?.run {
-                        val clientNumberData = TopupBillsSearchNumberDataView(
+                        val clientNumberData = TopupBillsSearchNumberDataModel(
                                 clientNumber = clientNumber ?: "",
                                 productId = productId ?: "",
                                 operatorId = operatorId ?: "",
@@ -433,7 +433,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         Toaster.build(requireView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
     }
 
-    private fun renderClientNumber(item: TopupBillsSearchNumberDataView) {
+    private fun renderClientNumber(item: TopupBillsSearchNumberDataModel) {
         emoneyCardNumber = item.clientNumber
         if (item.clientNumber.length > MAX_CHAR_EMONEY_CARD_NUMBER) {
             emoneyCardNumber = item.clientNumber.substring(0, MAX_CHAR_EMONEY_CARD_NUMBER)
@@ -499,7 +499,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         }
     }
 
-    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsSearchNumberDataView>) {
+    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsSearchNumberDataModel>) {
         startActivityForResult(
                 TopupBillsSearchNumberActivity.getCallingIntent(requireContext(),
                         ClientNumberType.TYPE_INPUT_NUMERIC.value, binding.emoneyPdpInputCardWidget.getNumber(), favoriteNumbers),

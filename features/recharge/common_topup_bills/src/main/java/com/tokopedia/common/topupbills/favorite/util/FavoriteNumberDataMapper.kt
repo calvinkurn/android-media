@@ -6,7 +6,7 @@ import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsPersoFavNum
 import com.tokopedia.common.topupbills.favoritecommon.view.model.contact.TopupBillsContactDataView
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoComplete
 import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactDataView
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 
 object FavoriteNumberDataMapper {
 
@@ -41,14 +41,14 @@ object FavoriteNumberDataMapper {
         }
     }
 
-    fun mapPersoFavNumberItemToSearchDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsSearchNumberDataView> {
+    fun mapPersoFavNumberItemToSearchDataView(clientNumbers: List<TopupBillsPersoFavNumberItem>): List<TopupBillsSearchNumberDataModel> {
         return clientNumbers.map {
             val (clientName, clientNumber) = if (it.subtitle.isNotEmpty()) {
                 it.title to it.subtitle
             } else {
                 "" to it.title
             }
-            TopupBillsSearchNumberDataView(
+            TopupBillsSearchNumberDataModel(
                 clientName = clientName,
                 clientNumber = clientNumber,
                 categoryId = it.trackingData.categoryId,

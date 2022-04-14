@@ -12,7 +12,7 @@ import com.tokopedia.common.topupbills.favorite.domain.usecase.RechargeFavoriteN
 import com.tokopedia.common.topupbills.favorite.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.*
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -57,8 +57,8 @@ class TopupBillsViewModel @Inject constructor(
     val catalogPluginData: LiveData<Result<RechargeCatalogPlugin>>
         get() = _catalogPluginData
 
-    private val _favNumberData = MutableLiveData<Result<List<TopupBillsSearchNumberDataView>>>()
-    val favNumberData: LiveData<Result<List<TopupBillsSearchNumberDataView>>>
+    private val _favNumberData = MutableLiveData<Result<List<TopupBillsSearchNumberDataModel>>>()
+    val favNumberData: LiveData<Result<List<TopupBillsSearchNumberDataModel>>>
         get() = _favNumberData
 
     private val _seamlessFavNumberData = MutableLiveData<Result<Pair<TopupBillsSeamlessFavNumber, Boolean>>>()

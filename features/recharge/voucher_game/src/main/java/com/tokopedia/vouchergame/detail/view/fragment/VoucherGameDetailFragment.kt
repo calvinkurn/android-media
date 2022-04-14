@@ -27,7 +27,7 @@ import com.tokopedia.common.topupbills.data.product.CatalogProductInput
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
@@ -260,7 +260,7 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         }
     }
 
-    override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataView>) {
+    override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
 
     }
 

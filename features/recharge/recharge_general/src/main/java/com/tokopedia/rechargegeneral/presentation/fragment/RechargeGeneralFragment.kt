@@ -31,7 +31,7 @@ import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsIn
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.common.topupbills.view.model.TopupBillsTabItem
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_OPERATOR_ID
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
@@ -97,7 +97,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     lateinit var adapter: RechargeGeneralAdapter
 
-    private var favoriteNumbers: List<TopupBillsSearchNumberDataView> = emptyList()
+    private var favoriteNumbers: List<TopupBillsSearchNumberDataModel> = emptyList()
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataKeys = mutableListOf<String>()
 
@@ -349,7 +349,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_DIGITAL_SEARCH_NUMBER -> {
-                    val favNumber = data?.getParcelableExtra<TopupBillsSearchNumberDataView>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
+                    val favNumber = data?.getParcelableExtra<TopupBillsSearchNumberDataModel>(TopupBillsSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER)
                     favNumber?.run {
                         hasInputData = true
                         rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryName, operatorName)
@@ -661,7 +661,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         }
     }
 
-    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsSearchNumberDataView>,
+    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsSearchNumberDataModel>,
                                         enquiryData: RechargeGeneralProductInput) {
         if (favoriteNumbers.isNotEmpty()) {
             val clientNumberType = when (enquiryData.style) {
@@ -859,7 +859,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         }
     }
 
-    private fun renderClientNumber(favNumber: TopupBillsSearchNumberDataView) {
+    private fun renderClientNumber(favNumber: TopupBillsSearchNumberDataModel) {
         with(favNumber) {
             operatorId.toIntOrNull()?.let { oprId -> this@RechargeGeneralFragment.operatorId = oprId }
             if (clientNumber.isNotEmpty()) inputData[PARAM_CLIENT_NUMBER] = clientNumber
@@ -1054,7 +1054,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         recharge_general_enquiry_button.isLoading = showLoading
     }
 
-    override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataView>) {
+    override fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>) {
         favoriteNumbers = data
         updateFavoriteNumberInputField()
     }

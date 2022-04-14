@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 import com.tokopedia.common.topupbills.R
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_autocomplete_fav_num.view.*
@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.item_autocomplete_fav_num.view.*
  * @author rizkyfadillah on 10/4/2017.
  */
 
-class NumberListAdapter(private val callback: OnClientNumberClickListener, var clientNumbers: List<TopupBillsSearchNumberDataView>) : RecyclerView.Adapter<NumberListAdapter.ItemHolder>() {
+class NumberListAdapter(private val callback: OnClientNumberClickListener, var clientNumbers: List<TopupBillsSearchNumberDataModel>) : RecyclerView.Adapter<NumberListAdapter.ItemHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_autocomplete_fav_num, parent, false)
@@ -32,21 +32,21 @@ class NumberListAdapter(private val callback: OnClientNumberClickListener, var c
         return clientNumbers.size
     }
 
-    fun setNumbers(clientNumbers: List<TopupBillsSearchNumberDataView>) {
+    fun setNumbers(clientNumbers: List<TopupBillsSearchNumberDataModel>) {
         this.clientNumbers = clientNumbers
     }
 
-    fun getNumbers(): List<TopupBillsSearchNumberDataView> {
+    fun getNumbers(): List<TopupBillsSearchNumberDataModel> {
         return this.clientNumbers
     }
 
     interface OnClientNumberClickListener {
-        fun onClientNumberClicked(orderClientNumber: TopupBillsSearchNumberDataView)
+        fun onClientNumberClicked(orderClientNumber: TopupBillsSearchNumberDataModel)
     }
 
     inner class ItemHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(orderClientNumber: TopupBillsSearchNumberDataView) {
+        fun bind(orderClientNumber: TopupBillsSearchNumberDataModel) {
             with (itemView) {
                 text_name.text = orderClientNumber.clientNumber
                 if (orderClientNumber.clientName.isNotEmpty()) {

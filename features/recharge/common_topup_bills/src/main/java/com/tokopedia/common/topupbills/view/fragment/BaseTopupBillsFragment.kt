@@ -24,7 +24,7 @@ import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressChec
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
-import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataView
+import com.tokopedia.common.topupbills.view.model.search.TopupBillsSearchNumberDataModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
@@ -457,7 +457,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun onLoadingAtc(showLoading: Boolean)
 
-    abstract fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataView>)
+    abstract fun processFavoriteNumbers(data: List<TopupBillsSearchNumberDataModel>)
 
     abstract fun processSeamlessFavoriteNumbers(
         data: TopupBillsSeamlessFavNumber,
