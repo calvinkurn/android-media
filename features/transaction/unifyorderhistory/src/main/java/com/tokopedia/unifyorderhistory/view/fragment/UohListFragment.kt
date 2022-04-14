@@ -2002,6 +2002,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun doChatSeller(appUrl: String, order: UohListOrder.Data.UohOrders.Order) {
         var invoiceCode = ""
         var invoiceUrl = ""
+        var status = order.verticalStatus
+        if (order.verticalStatus.contains("-")) {
+            status = order.verticalStatus.split("-")[0]
+        }
 
         try {
             val parser = JsonParser()
@@ -2021,7 +2025,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, order.metadata.paymentDateStr)
         intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl)
-        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, order.verticalStatus)
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, status)
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, order.metadata.status.label)
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, order.metadata.totalPrice.value)
         startActivity(intent)
