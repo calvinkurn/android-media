@@ -118,6 +118,9 @@ fun enableChooseAddressCoachmark(context: Context) {
         CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
 }
 
+fun waitForDataRecomFeed() {
+    Thread.sleep(10000)
+}
 fun waitForData() {
     Thread.sleep(4000)
 }
@@ -174,15 +177,16 @@ fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
     waitForData()
     clickRecommendationFeedTab()
     val recyclerView: RecyclerView = viewHolder.itemView.findViewById(R.id.home_feed_fragment_recycler_view)
-    val rvCount = recyclerView.adapter!!.itemCount
-    for (i in 0 until rvCount) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
-                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
-    }
+//    val rvCount = recyclerView.adapter!!.itemCount
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
+//    for (i in 0 until rvCount) {
+//        try {
+//            Espresso.onView(firstView(ViewMatchers.withId(R.id.home_feed_fragment_recycler_view)))
+//                .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(i, clickHomeRecommendationItem()))
+//        } catch (e: PerformException) {
+//            e.printStackTrace()
+//        }
+//    }
 }
 
 fun clickHomeRecommendationItem(): ViewAction? {
