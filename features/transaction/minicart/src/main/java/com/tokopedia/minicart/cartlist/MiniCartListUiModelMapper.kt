@@ -338,7 +338,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             slashPriceLabel = bundleDetail.slashPriceLabel
             showBundlingHeader = firstProductItem && bundlingItem
             showBottomDivider = (bundlingItem && !lastCartItem && lastProductItem) ||
-                (!bundlingItem && !lastCartItem)
+                (!bundlingItem && !lastCartItem || !lastProductItem)
             isBundlingItem = bundlingItem
             isLastProductItem = lastProductItem
 
