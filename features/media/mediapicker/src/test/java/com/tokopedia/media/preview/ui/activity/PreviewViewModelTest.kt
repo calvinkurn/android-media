@@ -7,6 +7,7 @@ import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isVideoFormat
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -27,54 +28,40 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class PreviewViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
+    private val testCoroutineScope = TestCoroutineScope(coroutineScopeRule.dispatchers.main)
+
     private val saveToGalleryManagerMock = mockk<SaveToGalleryManager>()
     private val imageCompressorMock = mockk<ImageCompressionManager>()
+    private lateinit var viewModel: PreviewViewModel
 
-    @ExperimentalCoroutinesApi
-    private val testCoroutinesDispatcher = CoroutineTestDispatchers
-
-    @ExperimentalCoroutinesApi
-    private val testCoroutineScope = TestCoroutineScope(testCoroutinesDispatcher.main)
-
-    @ExperimentalCoroutinesApi
-    private lateinit var viewModelMock: PreviewViewModel
-
-    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        Dispatchers.setMain(testCoroutinesDispatcher.main)
         mockkStatic(::isVideoFormat)
 
-        viewModelMock = PreviewViewModel(
+        viewModel = PreviewViewModel(
             imageCompressorMock,
             saveToGalleryManagerMock
         )
     }
 
-    @ExperimentalCoroutinesApi
-    @After
-    fun clean() {
-        Dispatchers.resetMain()
-        testCoroutinesDispatcher.main.cleanupTestCoroutines()
-        testCoroutineScope.cleanupTestCoroutines()
-    }
-
-    @ExperimentalCoroutinesApi
     @Test
     fun `check isLoading not empty`() {
         // Given
 
         // When
         every { imageCompressorMock.compress(any()) } returns flow { }
-        viewModelMock.files(mediaUiModelMockCollection)
+        viewModel.files(mediaUiModelMockCollection)
 
         // Then
-        assert(viewModelMock.isLoading.value != null)
+        assert(viewModel.isLoading.value != null)
     }
 
     @ExperimentalCoroutinesApi
@@ -94,7 +81,7 @@ class PreviewViewModelTest {
 
         // Then
         testCoroutineScope.launch {
-            viewModelMock.result
+            viewModel.result
                 .shareIn(this, SharingStarted.WhileSubscribed(), 1)
                 .collect {
                     pickerResult = it
@@ -102,7 +89,7 @@ class PreviewViewModelTest {
                 }
         }
 
-        viewModelMock.files(mediaUiModelMockCollection)
+        viewModel.files(mediaUiModelMockCollection)
         assertEquals(mediaUiModelMockCollection.size, pickerResult?.originalPaths?.size)
     }
 
@@ -123,7 +110,7 @@ class PreviewViewModelTest {
 
         // Then
         testCoroutineScope.launch {
-            viewModelMock.result
+            viewModel.result
                 .shareIn(this, SharingStarted.WhileSubscribed(), 1)
                 .collect {
                     pickerResult = it
@@ -131,12 +118,11 @@ class PreviewViewModelTest {
                 }
         }
 
-        viewModelMock.files(mediaUiModelMockCollection)
+        viewModel.files(mediaUiModelMockCollection)
         assertEquals(expectedNumberOfCompressedImage, pickerResult?.compressedImages?.size)
     }
 
     companion object {
-        // please update the expected number according to ModelMockCollection isFromPickerCamera when mock data is updated
         const val expectedNumberOfCompressedImage = 2
 
         val mediaUiModelMockCollection = listOf(
