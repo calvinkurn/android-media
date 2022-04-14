@@ -15,6 +15,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -29,6 +31,7 @@ import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
 import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
 import com.tokopedia.shopdiscount.utils.constant.EMPTY_STRING
+import com.tokopedia.shopdiscount.utils.constant.UrlConstant
 import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.paging.BaseSimpleListFragment
@@ -39,6 +42,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
 
@@ -134,7 +138,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             ticker.setHtmlDescription(getString(R.string.sd_ticker_search_product_announcement_wording))
             ticker.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-
+                    redirectToDesktopPage()
                 }
 
                 override fun onDismiss() {
@@ -431,4 +435,13 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
     override fun onSwipeRefreshPulled() {
 
     }
+
+    private fun redirectToDesktopPage() {
+        if (!isAdded) return
+        val url = UrlConstant.SELLER_HOSTNAME + UrlConstant.SHOP_DISCOUNT
+        val encodedUrl = URLEncoder.encode(url, "utf-8")
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(requireActivity(), route)
+    }
+
 }
