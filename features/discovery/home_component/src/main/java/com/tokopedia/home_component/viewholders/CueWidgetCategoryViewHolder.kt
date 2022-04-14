@@ -58,12 +58,12 @@ class CueWidgetCategoryViewHolder (
 
     private fun mappingView(channel: ChannelModel) {
         binding?.run {
-            adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener, adapterPosition)
-            homeComponentCueCategoryRv.adapter = adapter
             val spanCount = getSpanCount(channel.channelGrids.size)
             if (spanCount == HIDE_CUE_WIDGET) {
                 root.gone()
             } else {
+                adapter = CueWidgetCategoryAdapter(channel, cueWidgetCategoryListener, adapterPosition)
+                homeComponentCueCategoryRv.adapter = adapter
                 val layoutManager = StaggeredGridLayoutManager(
                     getSpanCount(channel.channelGrids.size),
                     LinearLayoutManager.VERTICAL
@@ -87,10 +87,10 @@ class CueWidgetCategoryViewHolder (
     private fun setHeaderComponent(element: CueCategoryDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                //no op
+                //no-op
             }
             override fun onChannelExpired(channelModel: ChannelModel) {
-                //no op
+                //no-op
             }
         })
     }
