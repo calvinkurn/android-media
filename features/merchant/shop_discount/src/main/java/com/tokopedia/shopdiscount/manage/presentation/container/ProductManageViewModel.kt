@@ -62,8 +62,4 @@ class ProductManageViewModel @Inject constructor(
     fun getSelectedTabPosition(): Int {
         return selectedTabPosition
     }
-
-    fun getSelectedTab(position : Int) : PageTab {
-        return tabs[position]
-    }
 }

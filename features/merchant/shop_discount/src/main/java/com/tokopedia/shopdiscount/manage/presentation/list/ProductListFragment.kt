@@ -20,6 +20,7 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
@@ -27,6 +28,7 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.Sho
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.more_menu.MoreMenuBottomSheet
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
+import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.select.presentation.SelectProductActivity
 import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
@@ -51,7 +53,8 @@ import javax.inject.Inject
 class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     companion object {
-        private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status"
+        private const val BUNDLE_KEY_DISCOUNT_STATUS_NAME = "status_name"
+        private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
@@ -61,17 +64,23 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
         @JvmStatic
         fun newInstance(
+            discountStatusName : String,
             discountStatusId: Int,
             onDiscountRemoved: (Int, Int) -> Unit = { _, _ -> }
         ): ProductListFragment {
             val fragment = ProductListFragment()
             fragment.arguments = Bundle().apply {
+                putString(BUNDLE_KEY_DISCOUNT_STATUS_NAME, discountStatusName)
                 putInt(BUNDLE_KEY_DISCOUNT_STATUS_ID, discountStatusId)
             }
             fragment.onDiscountRemoved = onDiscountRemoved
             return fragment
         }
 
+    }
+
+    private val discountStatusName by lazy {
+        arguments?.getString(BUNDLE_KEY_DISCOUNT_STATUS_NAME).orEmpty()
     }
 
     private val discountStatusId by lazy {
@@ -134,22 +143,32 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun setupView() {
+        setupSearchBar()
         setupMultiSelection()
         setupScrollListener()
         setupButton()
     }
+
+
+    private fun setupSearchBar() {
+        binding?.run {
+            searchBar.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), discountStatusName)
+            searchBar.searchBarTextField.isFocusable = false
+            searchBar.searchBarTextField.setOnClickListener { navigateToSearchProductPage() }
+            searchBar.setOnClickListener { navigateToSearchProductPage() }
+        }
+    }
+
 
     private fun setupScrollListener() {
         binding?.run {
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
-                        viewAnimator.showWithAnimation(binding?.imgScrollUp)
                         onScrollDown()
                         hideView()
                     },
                     onScrollUp = {
-                        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
                         onScrollUp()
                         showView()
                     }
@@ -185,6 +204,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 is Fail -> {
                     binding?.swipeRefresh?.isRefreshing = false
                     binding?.root showError it.throwable
+                    binding?.searchBar?.gone()
                 }
             }
         }
@@ -286,12 +306,17 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
 
     private fun hideView() {
+        viewAnimator.showWithAnimation(binding?.imgScrollUp)
+        viewAnimator.hideWithAnimation(binding?.searchBar)
+
         if (!viewModel.isOnMultiSelectMode()) {
             viewAnimator.hideWithAnimation(binding?.cardViewCreateDiscount)
         }
     }
 
     private fun showView() {
+        viewAnimator.hideWithAnimation(binding?.imgScrollUp)
+        viewAnimator.showWithAnimation(binding?.searchBar)
         if (!viewModel.isOnMultiSelectMode()) {
             viewAnimator.showWithAnimation(binding?.cardViewCreateDiscount)
         }
@@ -582,6 +607,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         binding?.tpgTotalProduct?.gone()
         binding?.tpgMultiSelect?.gone()
         binding?.tpgCancelMultiSelect?.gone()
+        binding?.searchBar?.gone()
 
         binding?.emptyState?.visible()
         binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
@@ -590,6 +616,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     }
 
     private fun hideEmptyState() {
+        binding?.searchBar?.visible()
         binding?.emptyState?.gone()
     }
 
@@ -601,4 +628,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private fun dismissLoaderDialog() {
         loaderDialog.dialog.dismiss()
     }
+
+    private fun navigateToSearchProductPage() {
+        SearchProductActivity.start(
+            requireActivity(),
+            discountStatusName,
+            discountStatusId
+        )
+    }
+
 }
