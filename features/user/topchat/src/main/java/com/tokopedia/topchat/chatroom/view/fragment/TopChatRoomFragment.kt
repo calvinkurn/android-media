@@ -311,6 +311,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
                 adapter.setSrwBubbleState(isExpanded)
             }
+
+            override fun trackViewOnBoarding() {
+                TopChatAnalyticsKt.eventViewSrwOnBoarding()
+            }
+
+            override fun trackDismissOnBoarding() {
+                TopChatAnalyticsKt.eventClickCloseSrwOnBoarding()
+            }
         })
     }
 
