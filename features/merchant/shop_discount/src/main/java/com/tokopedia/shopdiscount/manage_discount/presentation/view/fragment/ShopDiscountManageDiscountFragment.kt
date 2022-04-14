@@ -30,7 +30,6 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDisco
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactoryImpl
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountManageDiscountGlobalErrorViewHolder
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholder.ShopDiscountSetupProductItemViewHolder
-import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
 import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.activity.ShopDiscountManageProductDiscountActivity
@@ -52,18 +51,25 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     ShopDiscountManageDiscountGlobalErrorViewHolder.Listener {
 
     companion object {
-        const val REQUEST_ID_ARG = "request_id_arg"
-        const val STATUS_ARG = "status_arg"
-        const val MODE_ARG = "mode_arg"
+        private const val REQUEST_ID_ARG = "request_id_arg"
+        private const val STATUS_ARG = "status_arg"
+        private const val MODE_ARG = "mode_arg"
+        private const val SELECTED_PRODUCT_VARIANT_ID = "selected_product_variant_id"
         private const val URL_EDU_ABUSIVE_PRODUCT =
             "https://seller.tokopedia.com/edu/ketentuan-baru-diskon-toko/"
 
-        fun createInstance(requestId: String, status: Int, mode: String) =
+        fun createInstance(
+            requestId: String,
+            status: Int,
+            mode: String,
+            selectedProductVariantId: String
+        ) =
             ShopDiscountManageDiscountFragment().apply {
                 arguments = Bundle().apply {
                     putString(REQUEST_ID_ARG, requestId)
                     putInt(STATUS_ARG, status)
                     putString(MODE_ARG, mode)
+                    putString(SELECTED_PRODUCT_VARIANT_ID, selectedProductVariantId)
                 }
             }
     }
@@ -99,6 +105,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     private var requestId: String = ""
     private var status: Int = -1
     private var mode: String = ""
+    private var selectedProductVariantId: String = ""
 
     private val adapter by lazy {
         ShopDiscountManageDiscountAdapter(
@@ -164,10 +171,11 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
                 setPrimaryCTAText(primaryCtaText)
                 setSecondaryCTAText(secondaryCtaText)
                 setSecondaryCTAClickListener {
-                    hide()
+                    dismiss()
                 }
                 setPrimaryCTAClickListener {
                     finishActivity()
+                    dismiss()
                 }
                 show()
             }
@@ -192,6 +200,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
             requestId = getString(REQUEST_ID_ARG).orEmpty()
             status = getInt(STATUS_ARG).orZero()
             mode = getString(MODE_ARG).orEmpty()
+            selectedProductVariantId = getString(SELECTED_PRODUCT_VARIANT_ID).orEmpty()
         }
     }
 
@@ -227,7 +236,7 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
 
     private fun getSetupProductListData() {
         showLoading()
-        viewModel.getSetupProductListData(requestId)
+        viewModel.getSetupProductListData(requestId, selectedProductVariantId)
     }
 
     private fun observeLiveData() {
@@ -481,9 +490,15 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     private fun redirectToManageProductDiscountPage(model: ShopDiscountSetupProductUiModel.SetupProductData) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT)
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT
+        )
         intent.putExtra(ShopDiscountManageProductDiscountActivity.MODE_PARAM, mode)
-        intent.putExtra(ShopDiscountManageProductDiscountActivity.PRODUCT_MANAGE_UI_MODEL, model.copy())
+        intent.putExtra(
+            ShopDiscountManageProductDiscountActivity.PRODUCT_MANAGE_UI_MODEL,
+            model.copy()
+        )
         startActivity(intent)
     }
 

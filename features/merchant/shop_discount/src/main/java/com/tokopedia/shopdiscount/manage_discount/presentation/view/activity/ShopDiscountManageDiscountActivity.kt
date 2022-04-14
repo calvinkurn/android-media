@@ -14,11 +14,13 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
     private var requestId: String = ""
     private var status: Int = -1
     private var mode: String = ""
+    private var selectedProductVariantId: String = ""
 
     companion object {
         const val REQUEST_ID_PARAM = "REQUEST_ID_PARAM"
         const val STATUS_PARAM = "STATUS_PARAM"
         const val MODE_PARAM = "MODE_PARAM"
+        const val SELECTED_PRODUCT_VARIANT_ID_PARAM = "SELECTED_PRODUCT_VARIANT_ID_PARAM"
 
         @JvmStatic
         fun start(context: Context, requestId : String, discountStatus : Int, mode : String) {
@@ -46,7 +48,8 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment = ShopDiscountManageDiscountFragment.createInstance(
         requestId,
         status,
-        mode
+        mode,
+        selectedProductVariantId
     )
 
     override fun getParentViewResourceID(): Int {
@@ -54,8 +57,11 @@ class ShopDiscountManageDiscountActivity : BaseSimpleActivity() {
     }
 
     private fun getIntentData() {
-        requestId = intent.extras?.getString(REQUEST_ID_PARAM).orEmpty()
-        status = intent.extras?.getInt(STATUS_PARAM).orZero()
-        mode = intent.extras?.getString(MODE_PARAM).orEmpty()
+        intent.extras?.let{
+            requestId = it.getString(REQUEST_ID_PARAM).orEmpty()
+            status = it.getInt(STATUS_PARAM).orZero()
+            mode = it.getString(MODE_PARAM).orEmpty()
+            selectedProductVariantId = it.getString(SELECTED_PRODUCT_VARIANT_ID_PARAM).orEmpty()
+        }
     }
 }

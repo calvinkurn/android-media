@@ -21,7 +21,8 @@ data class ShopDiscountProductDetailUiModel(
         val stock: String = "",
         val totalLocation: Int = 0,
         val startDate: String = "",
-        val endDate: String = ""
+        val endDate: String = "",
+        val isVariant: Boolean = false
     ) : Visitable<ShopDiscountProductDetailTypeFactoryImpl> {
         override fun type(typeFactory: ShopDiscountProductDetailTypeFactoryImpl): Int {
             return typeFactory.type(this)
