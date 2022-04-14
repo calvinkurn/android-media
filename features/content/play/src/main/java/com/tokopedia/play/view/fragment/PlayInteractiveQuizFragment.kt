@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,7 +86,6 @@ class PlayInteractiveQuizFragment @Inject constructor(): DialogFragment() {
         rvQuizOption.apply {
             quizAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
                 override fun onClicked(item: QuizChoicesUiModel.Complete) {
-
                 }
             })
             adapter = quizAdapter

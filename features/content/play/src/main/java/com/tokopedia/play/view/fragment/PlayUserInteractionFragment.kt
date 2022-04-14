@@ -1675,7 +1675,7 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
     }
 
-    override fun onInteractiveWidgetClicked(viewComponent: InteractiveActiveViewComponent) {
+    override fun onInteractiveWidgetClicked(view: InteractiveActiveViewComponent) {
         val dialog = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayInteractiveQuizFragment::class.java.name) as PlayInteractiveQuizFragment
         dialog.show(childFragmentManager)
     }

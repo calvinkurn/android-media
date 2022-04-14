@@ -51,7 +51,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
@@ -1525,7 +1525,7 @@ class PlayViewModel @AssistedInject constructor(
             is ChannelInteractiveStatus -> {
                 if (result.isExist) checkInteractive(channelId)
             }
-            is ChannelInteractive -> {
+            is GiveawayResponse -> {
                 val interactive = playSocketToModelMapper.mapInteractive(result)
                 handleInteractiveFromNetwork(interactive)
             }

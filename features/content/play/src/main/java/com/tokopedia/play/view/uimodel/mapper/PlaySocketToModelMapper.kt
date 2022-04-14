@@ -11,7 +11,7 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
@@ -72,7 +72,7 @@ class PlaySocketToModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusBanned(isBanned)
     }
 
-    fun mapInteractive(input: ChannelInteractive): PlayCurrentInteractiveModel {
+    fun mapInteractive(input: GiveawayResponse): PlayCurrentInteractiveModel {
         return channelInteractiveMapper.mapInteractive(input)
     }
 

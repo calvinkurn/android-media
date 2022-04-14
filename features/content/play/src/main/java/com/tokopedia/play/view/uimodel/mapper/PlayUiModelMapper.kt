@@ -14,8 +14,8 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
@@ -79,7 +79,7 @@ class PlayUiModelMapper @Inject constructor(
         return input.map(playUserReportMapper::mapUserReportReasoning)
     }
 
-    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean{
+    fun mapUserReportSubmission(input: UserReportSubmissionResponse.Result): Boolean {
         return input.status == "success"
     }
 
@@ -101,7 +101,7 @@ class PlayUiModelMapper @Inject constructor(
                 DiscountedPrice(
                     originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                     discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
-                    discountPercent = child.campaign?.discountedPercentage?.toInt()?:0,
+                    discountPercent = child.campaign?.discountedPercentage?.toInt() ?: 0,
                     discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                 )
             } else {
