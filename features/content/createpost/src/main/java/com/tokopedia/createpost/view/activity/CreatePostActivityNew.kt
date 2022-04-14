@@ -360,11 +360,13 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
                 /** TODO: check which fragment is the user in */
 
                 when(intent.extras?.get(PARAM_TYPE)) {
-                    TYPE_CONTENT_PREVIEW_PAGE -> {
-                        /** TODO: clear product tag */
-                    }
                     TYPE_CONTENT_TAGGING_PAGE -> {
                         /** TODO: clear product tag */
+                        (fragment as CreatePostPreviewFragmentNew).deleteAllProducts()
+                    }
+                    TYPE_CONTENT_PREVIEW_PAGE -> {
+                        /** TODO: clear product tag */
+
                     }
                 }
                 selectedFeedAccount = feedAccount

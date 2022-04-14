@@ -442,6 +442,16 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     }
 
+    fun deleteAllProducts() {
+        val productIdList = createPostModel.productIdList.toMutableList()
+
+        productIdList.forEach {
+            /** TODO: make sure what mediaType should be passed */
+            /** TODO: need to rebind all the image in the carousel */
+            deleteItemFromProductTagList(0, it, false, "")
+        }
+    }
+
     override fun deleteItemFromProductTagList(
         position: Int,
         productId: String,
