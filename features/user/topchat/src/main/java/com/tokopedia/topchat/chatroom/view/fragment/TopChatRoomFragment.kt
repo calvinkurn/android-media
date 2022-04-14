@@ -7,10 +7,8 @@ import android.content.ClipData
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -235,7 +233,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     protected var topchatViewState: TopChatViewStateImpl? = null
     private var uploadImageBroadcastReceiver: BroadcastReceiver? = null
     private var smoothScroller: CenterSmoothScroller? = null
-    private var commentArea: LinearLayout? = null
+    private var anchor: View? = null
 
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
@@ -312,12 +310,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 adapter.setSrwBubbleState(isExpanded)
             }
 
-            override fun trackViewOnBoarding() {
-                TopChatAnalyticsKt.eventViewSrwOnBoarding()
-            }
-
-            override fun trackDismissOnBoarding() {
-                TopChatAnalyticsKt.eventClickCloseSrwOnBoarding()
+            override fun shouldShowOnBoarding(): Boolean {
+                return replyBubbleOnBoarding.hasBeenShown()
             }
         })
     }
@@ -452,7 +446,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         chatBackground = view?.findViewById(R.id.iv_bg_chat)
         sendButton = view?.findViewById(R.id.send_but)
         chatBoxPadding = view?.findViewById(R.id.view_chat_box_padding)
-        commentArea = view?.findViewById(R.id.add_comment_area)
+        anchor = view?.findViewById(R.id.coachmark_anchor)
     }
 
     private fun initStickerView() {
@@ -782,7 +776,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         val hasShowOnBoarding = replyBubbleOnBoarding.hasBeenShown()
         if (!hasShowOnBoarding && !viewModel.isInTheMiddleOfThePage()) {
             replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                rv, adapter, commentArea, context
+                rv, adapter, anchor, context
             )
         }
     }
@@ -2972,7 +2966,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val REQUEST_UPDATE_STOCK = 120
 
         private const val ELLIPSIZE_MAX_CHAR = 20
-        private const val SECOND_DIVIDER = 1000
 
         const val AB_TEST_OCC = "chat_occ_exp"
         const val AB_TEST_NON_OCC = "chat_occ_control"

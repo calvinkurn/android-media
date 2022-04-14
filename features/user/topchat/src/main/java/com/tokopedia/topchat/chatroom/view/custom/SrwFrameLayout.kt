@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.coachmark.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -24,6 +23,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResp
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.decoration.SrwItemDecoration
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionViewHolder
+import com.tokopedia.topchat.chatroom.view.onboarding.SrwOnBoarding
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -44,7 +44,7 @@ class SrwFrameLayout : FrameLayout {
     private var srwContentContainer: LinearLayout? = null
 
     private var bgExpanded: Drawable? = null
-    private var coachMarkOnBoarding: CoachMark2? = null
+    private var onBoarding = SrwOnBoarding()
 
     /**
      * Default state would be expanded
@@ -60,8 +60,7 @@ class SrwFrameLayout : FrameLayout {
     interface Listener {
         fun trackViewSrw()
         fun onExpandStateChanged(isExpanded: Boolean)
-        fun trackViewOnBoarding()
-        fun trackDismissOnBoarding()
+        fun shouldShowOnBoarding(): Boolean
     }
 
     constructor(context: Context) : super(context)
@@ -242,38 +241,16 @@ class SrwFrameLayout : FrameLayout {
     }
 
     private fun showOnBoardingSrw() {
-        if (!CoachMarkPreference.hasShown(context, TAG)) {
-            coachMarkOnBoarding = CoachMark2(context)
-            titleContainer?.let { anchor ->
-                coachMarkOnBoarding?.let { coachMark2 ->
-                    anchor.post {
-                        val coachMarkItems: ArrayList<CoachMark2Item> = ArrayList()
-                        coachMarkItems.add(
-                            CoachMark2Item(
-                                anchor,
-                                context.getString(R.string.coach_product_bundling_title),
-                                context.getString(R.string.coach_product_bundling_desc),
-                                CoachMark2.POSITION_TOP
-                            )
-                        )
-                        coachMark2.showCoachMark(step = coachMarkItems)
-                        CoachMarkPreference.setShown(context, TAG, true)
-                        trackOnBoarding(coachMark2)
-                    }
-                }
+        if (listener?.shouldShowOnBoarding() == true) {
+            titleContainer?.let {
+                onBoarding.show(context, it)
+
             }
         }
     }
 
-    private fun trackOnBoarding(coachMark2: CoachMark2) {
-        listener?.trackViewOnBoarding()
-        coachMark2.setOnDismissListener {
-            listener?.trackDismissOnBoarding()
-        }
-    }
-
-    fun dismissOnBoarding() {
-        coachMarkOnBoarding?.dismissCoachMark()
+    private fun dismissOnBoarding() {
+        onBoarding.dismiss()
     }
 
     private fun hideSrwContent() {
