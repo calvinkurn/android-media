@@ -58,6 +58,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
         private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
@@ -164,12 +165,16 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
-                        onScrollDown()
-                        hideView()
+                        onDelayFinished {
+                            onScrollDown()
+                            hideView()
+                        }
                     },
                     onScrollUp = {
-                        onScrollUp()
-                        showView()
+                        onDelayFinished {
+                            onScrollUp()
+                            showView()
+                        }
                     }
                 )
             )
@@ -640,6 +645,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             discountStatusName,
             discountStatusId
         )
+    }
+
+    private fun onDelayFinished(block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
+            block()
+        }
     }
 
 }
