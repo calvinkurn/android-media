@@ -36,6 +36,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -46,6 +50,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 700
 
         @JvmStatic
         fun newInstance(
@@ -196,12 +201,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
-                        ShopDiscountManageDiscountActivity.start(
-                            requireActivity(),
-                            viewModel.getRequestId(),
-                            discountStatusId,
-                            ShopDiscountManageDiscountMode.UPDATE
-                        )
+                        redirectToUpdateDiscountPage()
                     } else {
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
@@ -521,5 +521,17 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
 
     private fun generateRequestId(): String {
         return userSession.shopId + Date().time
+    }
+
+    private fun redirectToUpdateDiscountPage() {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            ShopDiscountManageDiscountActivity.start(
+                requireActivity(),
+                viewModel.getRequestId(),
+                discountStatusId,
+                ShopDiscountManageDiscountMode.UPDATE
+            )
+        }
     }
 }
