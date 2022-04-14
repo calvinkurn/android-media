@@ -30,8 +30,8 @@
 
     <!--Engagement Tools-->
     <dimen name="play_interactive_common_radius">12dp</dimen>
-    <dimen name="play_interactive_illustration_width">240dp</dimen>
-    <dimen name="play_interactive_illustration_height">180dp</dimen>
+    <dimen name="play_interactive_illustration_width">160dp</dimen>
+    <dimen name="play_interactive_illustration_height">160dp</dimen>
 
     <dimen name="play_leaderboard_winner_separator_height">1dp</dimen>
 
