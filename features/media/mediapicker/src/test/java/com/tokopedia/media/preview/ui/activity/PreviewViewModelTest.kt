@@ -6,12 +6,10 @@ import com.tokopedia.media.preview.managers.SaveToGalleryManager
 import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,9 +18,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -80,7 +75,7 @@ class PreviewViewModelTest {
         // Then
         testCoroutineScope.launch {
             viewModel.result
-                .shareIn(this, SharingStarted.WhileSubscribed(), 1)
+                .shareIn(this, SharingStarted.Eagerly, 1)
                 .collect {
                     pickerResult = it
                     this.cancel()
@@ -109,7 +104,7 @@ class PreviewViewModelTest {
         // Then
         testCoroutineScope.launch {
             viewModel.result
-                .shareIn(this, SharingStarted.WhileSubscribed(), 1)
+                .shareIn(this, SharingStarted.Eagerly, 1)
                 .collect {
                     pickerResult = it
                     this.cancel()
