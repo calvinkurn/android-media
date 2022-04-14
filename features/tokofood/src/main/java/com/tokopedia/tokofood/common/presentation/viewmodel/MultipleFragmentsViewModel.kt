@@ -178,6 +178,24 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
         })
     }
 
+    fun updateCart(param: CartTokoFoodParam) {
+        launchCatchError(block = {
+            updateCartTokoFoodUseCase(param).collect {
+                if (it.success == 1) {
+                    loadCartList()
+                    cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY))
+                }
+            }
+        }, onError = {
+            cartDataValidationState.emit(
+                UiEvent(
+                    state = UiEvent.EVENT_ERROR_VALIDATE,
+                    throwable = it
+                )
+            )
+        })
+    }
+
     // TODO: Move to mapper
     private fun mapCartDataToMiniCart(cartData: CheckoutTokoFoodData): MiniCartUiModel {
         val products = cartData.availableSection.products

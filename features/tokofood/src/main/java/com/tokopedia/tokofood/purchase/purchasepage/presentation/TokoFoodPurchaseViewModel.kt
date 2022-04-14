@@ -2,12 +2,15 @@ package com.tokopedia.tokofood.purchase.purchasepage.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
@@ -17,12 +20,29 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHe
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMap
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@FlowPreview
 class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
     val dispatcher: CoroutineDispatchers)
@@ -46,6 +66,29 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     // Dummy temporary field to store address data
     private var tmpAddressData = "0" to false
+
+    private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>?> =
+        MutableSharedFlow()
+
+    private val _updateQuantityStateFlow: MutableStateFlow<CartTokoFoodParam?> = MutableStateFlow(null)
+    val updateQuantityStateFlow = _updateQuantityStateFlow.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _updateQuantityState
+                .debounce(1000)
+                .flatMapConcat { productList ->
+                    flow {
+                        productList?.let {
+                            emit(convertProductListToUpdateParam(it))
+                        }
+                    }
+                }
+                .collect {
+                    _updateQuantityStateFlow.emit(it)
+                }
+        }
+    }
 
     private fun getVisitablesValue(): MutableList<Visitable<*>> {
         return visitables.value ?: mutableListOf()
@@ -277,6 +320,18 @@ class TokoFoodPurchaseViewModel @Inject constructor(
 
     }
 
+    private fun convertProductListToUpdateParam(productList: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): CartTokoFoodParam {
+        val cartList = productList.map {
+            CartItemTokoFoodParam(
+                productId = it.id,
+                quantity = it.quantity
+            )
+        }
+        return CartTokoFoodParam(
+            carts = cartList
+        )
+    }
+
     fun scrollToUnavailableItem() {
         val dataList = getVisitablesValue()
         var targetIndex = -1
@@ -304,6 +359,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             dataList[it.first] = newProductData
 
             _visitables.value = dataList
+        }
+    }
+
+    fun triggerEditQuantity() {
+        viewModelScope.launch {
+            val dataList = getVisitablesValue().filterIsInstance<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
+            _updateQuantityState.emit(dataList)
         }
     }
 

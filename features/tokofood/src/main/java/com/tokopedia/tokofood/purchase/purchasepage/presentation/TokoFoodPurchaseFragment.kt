@@ -38,6 +38,8 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.TestMerchantFragment
+import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
+import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -58,6 +60,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -126,6 +136,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         observeFragmentUiModel()
         observeUiEvent()
         collectSharedUiState()
+        collectDebouncedQuantityUpdate()
         loadData()
     }
 
@@ -329,8 +340,30 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             }
                         }
                     }
+                    UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                        view?.let {
+                            Toaster.build(
+                                view = it,
+                                text = "Quantity berhasil diubah",
+                                duration = Toaster.LENGTH_SHORT,
+                                type = Toaster.TYPE_NORMAL,
+                                actionText = "Oke"
+                            ).show()
+                        }
+                    }
                 }
             }
+        }
+    }
+
+    private fun collectDebouncedQuantityUpdate() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.updateQuantityStateFlow
+                .collect { param ->
+                    param?.let {
+                        activityViewModel?.updateCart(it)
+                    }
+                }
         }
     }
 
@@ -462,6 +495,18 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         if (loaderDialog?.dialog?.isShowing == true) loaderDialog?.dialog?.dismiss()
     }
 
+    private fun convertProductListToUpdateParam(productList: List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>): CartTokoFoodParam {
+        val cartList = productList.map {
+            CartItemTokoFoodParam(
+                productId = it.id,
+                quantity = it.quantity
+            )
+        }
+        return CartTokoFoodParam(
+            carts = cartList
+        )
+    }
+
     override fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         return viewModel.getNextItems(currentIndex, count)
     }
@@ -485,6 +530,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onQuantityChanged() {
+        viewModel.triggerEditQuantity()
         viewModel.calculateTotal()
     }
 
