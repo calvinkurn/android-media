@@ -216,10 +216,10 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             initTest()
             login()
             doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnRecommendationFeedClickSection(viewHolder)
+                clickOnRecommendationFeedSection(viewHolder)
             }
         } validateAnalytics {
-            addDebugEndFeed()
+            addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_LOGIN)
         }
     }
@@ -498,7 +498,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     private fun login() {
-        InstrumentationAuthHelper.loginInstrumentationTestUser1()
+        InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
         InstrumentationAuthHelper.loginToAnUser(activityRule.activity.application)
     }
 

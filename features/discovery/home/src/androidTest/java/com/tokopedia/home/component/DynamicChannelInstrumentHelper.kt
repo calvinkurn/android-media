@@ -133,10 +133,6 @@ fun addDebugEnd() {
     Thread.sleep(2000)
 }
 
-fun addDebugEndFeed() {
-    Thread.sleep(7000)
-}
-
 fun String.name(loggedIn: Boolean, darkMode: Boolean = false) = this + (if (loggedIn) "-login" else "-nonlogin") + (if (darkMode) "-dark" else "-light")
 
 
@@ -172,12 +168,6 @@ fun clickOnLegoBannerSection(viewHolder: RecyclerView.ViewHolder, itemPosition: 
     clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList, 0)
     clickSingleItemOnRecyclerView(R.id.recycleList)
-}
-
-fun clickOnRecommendationFeedClickSection(viewHolder: RecyclerView.ViewHolder) {
-    waitForData()
-    clickRecommendationFeedTab()
-    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_feed_fragment_recycler_view, 0)
 }
 
 fun clickOnRecommendationFeedSection(viewHolder: RecyclerView.ViewHolder) {
