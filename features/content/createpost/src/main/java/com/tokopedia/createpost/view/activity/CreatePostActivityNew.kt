@@ -58,15 +58,29 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         val fragment = FeedAccountTypeBottomSheet.getFragment(supportFragmentManager, classLoader)
         fragment.setOnAccountClickListener(object : FeedAccountTypeBottomSheet.Listener {
             override fun onAccountClick(feedAccount: FeedAccountUiModel) {
-                /** TODO: show confirmation popup first */
-                selectedFeedAccount = feedAccount
-                toolbarCommon.apply {
-                    subtitle = selectedFeedAccount.name
-                    icon = selectedFeedAccount.iconUrl
-                }
+                showSwitchAccountDialog(feedAccount)
             }
         })
         fragment
+    }
+
+    private val switchAccountDialog: DialogUnify by lazy(mode = LazyThreadSafetyMode.NONE) {
+        val dialog = DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        dialog.setTitle(getString(R.string.feed_content_dialog_title))
+        dialog.setDescription(getString(R.string.feed_content_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.feed_content_primary_cta_text))
+        dialog.setSecondaryCTAText(getString(R.string.feed_content_sec_cta_text))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            createPostAnalytics.eventClickContinueOnConfirmationPopup()
+
+        }
+        dialog.setSecondaryCTAClickListener {
+            createPostAnalytics.eventClickExitOnConfirmationPopup()
+            dialog.dismiss()
+            backWithActionResult()
+        }
+        dialog
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -335,5 +349,41 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         }
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    private fun showSwitchAccountDialog(feedAccount: FeedAccountUiModel) {
+        if(selectedFeedAccount.type == FeedAccountUiModel.Type.UNKNOWN ||
+            selectedFeedAccount.type == feedAccount.type) return
+
+        DialogUnify(this, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            if(selectedFeedAccount.type == FeedAccountUiModel.Type.BUYER) {
+                setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
+                setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
+                setPrimaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_primary_button))
+                setSecondaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_secondary_button))
+            }
+            else if(selectedFeedAccount.type == FeedAccountUiModel.Type.SELLER){
+                /** TODO: gonna change the text */
+                setTitle(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_title))
+                setDescription(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_desc))
+                setPrimaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_primary_button))
+                setSecondaryCTAText(getString(R.string.feed_cc_dialog_switch_account_buyer_to_seller_secondary_button))
+            }
+
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+
+            setSecondaryCTAClickListener {
+                dismiss()
+                /** TODO: check which fragment is the user in */
+                /** TODO: clear product tag */
+                selectedFeedAccount = feedAccount
+                toolbarCommon.apply {
+                    subtitle = selectedFeedAccount.name
+                    icon = selectedFeedAccount.iconUrl
+                }
+            }
+        }.show()
     }
 }
