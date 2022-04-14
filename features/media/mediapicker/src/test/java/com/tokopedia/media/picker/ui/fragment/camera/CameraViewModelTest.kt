@@ -50,7 +50,7 @@ class CameraViewModelTest {
         }
 
         // Then
-        stateOnCameraCapturePublished(mediaUiModelMock)
+        stateOnCameraCapturePublished(mediaUiModelMockCollection.first())
         assert(eventState is EventPickerState.CameraCaptured)
         EventFlowFactory.reset()
     }
@@ -86,14 +86,12 @@ class CameraViewModelTest {
         }
 
         // Then
-        stateOnRemovePublished(mediaUiModelMock)
+        stateOnRemovePublished(mediaUiModelMockCollection.first())
         assert(eventState is EventPickerState.SelectionRemoved)
         EventFlowFactory.reset()
     }
 
     companion object {
-        val mediaUiModelMock =
-            MediaUiModel(0, "media 0", "sdcard/images/media0.jpg")
         val mediaUiModelMockCollection = listOf(
             MediaUiModel(1, "media 1", "sdcard/images/media1.jpg"),
             MediaUiModel(2, "media 2", "sdcard/images/media2.jpg"),
