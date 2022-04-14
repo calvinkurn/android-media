@@ -190,7 +190,8 @@
     <string name="feed_product_tag_up">Product Tag Pointer Up</string>
     <string name="feed_product_tag_down">Product Tag Pointer Down</string>
 
-    <string name="feeds_sek_sekarang">Cek Sekarang</string>
+    <string name="feeds_cek_sekarang">Cek Sekarang</string>
+    <string name="feeds_check_x_products">Cek %d Barang Lainnya</string>
     <string name="feeds_ads_text">Ad</string>
     <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
     <string name="feeds_asgc_restock_text">Restock</string>

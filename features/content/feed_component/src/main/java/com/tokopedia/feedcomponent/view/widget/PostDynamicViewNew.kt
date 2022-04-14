@@ -921,7 +921,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     labelDiscount.hide()
                                     labelCashback.hide()
 
-                                    topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+                                    topAdsProductName.text = context.getString(R.string.feeds_cek_sekarang)
                                     topAdsProductName.setTypeface(null,Typeface.BOLD)
                                     topAdsProductName.setTextColor(
                                             MethodChecker.getColor(
@@ -1767,7 +1767,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                 labelDiscount.hide()
                                 labelCashback.hide()
 
-                                topAdsProductName.text = context.getString(R.string.feeds_sek_sekarang)
+                                topAdsProductName.text = if (feedXCard.totalProducts > 0) {
+                                    context.getString(R.string.feeds_check_x_products, feedXCard.totalProducts)
+                                } else context.getString(R.string.feeds_cek_sekarang)
                                 topAdsProductName.setTypeface(null,Typeface.BOLD)
                                 topAdsProductName.setTextColor(
                                         MethodChecker.getColor(
