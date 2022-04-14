@@ -12,10 +12,16 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountProductDetailBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
+import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.ShopDiscountProductDetailAdapter
@@ -24,11 +30,16 @@ import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder
 import com.tokopedia.shopdiscount.product_detail.presentation.adapter.viewholder.ShopDiscountProductDetailListGlobalErrorViewHolder
 import com.tokopedia.shopdiscount.product_detail.presentation.viewmodel.ShopDiscountProductDetailBottomSheetViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
@@ -52,6 +63,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     private var productParentId: String = ""
     private var status: Int = 0
     private var productParentName: String = ""
+    private var productParentPosition: Int = 0
     private val adapter by lazy {
         ShopDiscountProductDetailAdapter(
             typeFactory = ShopDiscountProductDetailTypeFactoryImpl(
@@ -63,20 +75,24 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
     companion object {
         private const val PARAM_PRODUCT_PARENT_ID = "param_product_parent_id"
-        private const val PARAM_STATUS = "param_status"
         private const val PARAM_PRODUCT_PARENT_NAME = "param_product_parent_name"
+        private const val PARAM_STATUS = "param_status"
+        private const val PARAM_PARENT_PRODUCT_POSITION = "param_parent_product_position"
         private const val MARGIN_TOP_BOTTOM_VALUE_DIVIDER = 16
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
 
         fun newInstance(
             productId: String,
             productParentName: String,
             status: Int,
+            productPosition: Int = 0
         ): ShopDiscountProductDetailBottomSheet {
             return ShopDiscountProductDetailBottomSheet().apply {
                 val bundle = Bundle()
                 bundle.putString(PARAM_PRODUCT_PARENT_ID, productId)
                 bundle.putString(PARAM_PRODUCT_PARENT_NAME, productParentName)
                 bundle.putInt(PARAM_STATUS, status)
+                bundle.putInt(PARAM_PARENT_PRODUCT_POSITION, productPosition)
                 arguments = bundle
             }
         }
@@ -89,6 +105,49 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
 
     private fun observeLiveData() {
         observeProductDetailListLiveData()
+        observeReserveProduct()
+    }
+
+    private fun observeReserveProduct() {
+        viewModel.reserveProduct.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    if (!it.data.responseHeader.success) {
+                        val errorMessage = ErrorHandler.getErrorMessage(context, null)
+                        showToasterError(errorMessage)
+                    } else {
+                        redirectToManageDiscountPage(it.data)
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, it.throwable)
+                    showToasterError(errorMessage)
+                }
+            }
+        })
+    }
+
+    private fun redirectToManageDiscountPage(uiModel: ShopDiscountDetailReserveProductUiModel) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            context?.let {
+                val intent = RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_DISCOUNT
+                )
+                intent.putExtra(ShopDiscountManageDiscountActivity.REQUEST_ID_PARAM, uiModel.requestId)
+                intent.putExtra(ShopDiscountManageDiscountActivity.STATUS_PARAM, status)
+                intent.putExtra(
+                    ShopDiscountManageDiscountActivity.MODE_PARAM,
+                    ShopDiscountManageDiscountMode.UPDATE
+                )
+                intent.putExtra(
+                    ShopDiscountManageDiscountActivity.SELECTED_PRODUCT_VARIANT_ID_PARAM,
+                    uiModel.selectedProductVariantId
+                )
+                startActivity(intent)
+            }
+        }
     }
 
     private fun observeProductDetailListLiveData() {
@@ -110,6 +169,12 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 }
             }
         })
+    }
+
+    private fun showToasterError(message: String) {
+        activity?.run {
+            view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+        }
     }
 
     private fun showHeaderSection(totalProductData: Int) {
@@ -173,7 +238,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     private fun setupProductParentNameSection() {
         textProductName?.text = productParentName
         textChangeDiscount?.setOnClickListener {
-
+            updateProductDiscount(productParentId, productParentPosition)
         }
     }
 
@@ -248,10 +313,23 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         productParentId = arguments?.getString(PARAM_PRODUCT_PARENT_ID).orEmpty()
         status = arguments?.getInt(PARAM_STATUS).orZero()
         productParentName = arguments?.getString(PARAM_PRODUCT_PARENT_NAME).orEmpty()
+        productParentPosition = arguments?.getInt(PARAM_PARENT_PRODUCT_POSITION).orZero()
     }
 
-    override fun onClickEditProduct(model: ShopDiscountProductDetailUiModel.ProductDetailData) {
+    override fun onClickEditProduct(
+        model: ShopDiscountProductDetailUiModel.ProductDetailData,
+        position: Int
+    ) {
+        val selectedProductVariantId = model.productId
+        updateProductDiscount(productParentId, productParentPosition, selectedProductVariantId)
+    }
 
+    private fun updateProductDiscount(
+        productParentId: String,
+        productParentPosition: Int,
+        selectedProductVariantId: String = ""
+    ) {
+        viewModel.reserveProduct(productParentId, productParentPosition, selectedProductVariantId)
     }
 
     override fun onGlobalErrorActionClickRetry() {

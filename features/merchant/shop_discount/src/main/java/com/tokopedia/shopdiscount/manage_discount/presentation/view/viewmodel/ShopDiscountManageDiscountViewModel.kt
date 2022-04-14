@@ -60,12 +60,13 @@ class ShopDiscountManageDiscountViewModel @Inject constructor(
     private val _resultDeleteSlashPriceProductLiveData =
         MutableLiveData<Result<ShopDiscountSlashPriceStopUiModel>>()
 
-    fun getSetupProductListData(requestId: String) {
+    fun getSetupProductListData(requestId: String, selectedProductVariantId: String) {
         launchCatchError(dispatcherProvider.io, block = {
             val response = getSetupProductListResponse(requestId)
             val mappedUiModel =
                 ShopDiscountManageDiscountMapper.mapToShopDiscountSetupProductUiModel(
-                    response.getSlashPriceSetupProductList
+                    response.getSlashPriceSetupProductList,
+                    selectedProductVariantId
                 ).apply {
                     listSetupProductData.forEach { setupProductData ->
                         updateProductStatusAndMappedData(setupProductData)

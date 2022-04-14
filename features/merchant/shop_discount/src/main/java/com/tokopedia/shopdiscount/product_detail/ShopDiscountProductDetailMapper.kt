@@ -1,10 +1,12 @@
 package com.tokopedia.shopdiscount.product_detail
 
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
+import com.tokopedia.shopdiscount.common.data.response.DoSlashPriceProductReservationResponse
 import com.tokopedia.shopdiscount.product_detail.data.request.GetSlashPriceProductDetailRequest
 import com.tokopedia.shopdiscount.product_detail.data.response.GetSlashPriceProductDetailResponse
+import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountDetailReserveProductUiModel
 import com.tokopedia.shopdiscount.product_detail.data.uimodel.ShopDiscountProductDetailUiModel
 
 object ShopDiscountProductDetailMapper {
@@ -46,6 +48,25 @@ object ShopDiscountProductDetailMapper {
         )
     }
 
+    fun mapToDoSlashPriceReservationRequest(
+        requestId: String,
+        productParentId: String,
+        productParentPosition: Int
+    ): DoSlashPriceReservationRequest {
+        return DoSlashPriceReservationRequest(
+            requestHeader = getRequestHeader(),
+            action = DoSlashPriceReservationRequest.DoSlashPriceReservationAction.RESERVE,
+            requestId = requestId,
+            state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.EDIT,
+            listProductData = listOf(
+                DoSlashPriceReservationRequest.SlashPriceReservationProduct(
+                    productId = productParentId,
+                    position = productParentPosition.toString()
+                )
+            )
+        )
+    }
+
     private fun mapToListProductDetailData(
         productList: List<GetSlashPriceProductDetailResponse.GetSlashPriceProductDetail.ProductList>
     ): List<ShopDiscountProductDetailUiModel.ProductDetailData> {
@@ -63,7 +84,8 @@ object ShopDiscountProductDetailMapper {
                 stock = it.stock,
                 totalLocation = it.warehouses.size,
                 startDate = it.startDate,
-                endDate = it.endDate
+                endDate = it.endDate,
+                isVariant = it.isVariant
             )
         }
     }
@@ -98,6 +120,18 @@ object ShopDiscountProductDetailMapper {
         }.toMutableList().apply {
             add(it.discountedPercentage)
         }.maxOrNull().orZero()
+    }
+
+    fun mapToShopDiscountDetailReserveProductUiModel(
+        response: DoSlashPriceProductReservationResponse,
+        requestId: String,
+        selectedProductVariantId: String
+    ): ShopDiscountDetailReserveProductUiModel {
+        return ShopDiscountDetailReserveProductUiModel(
+            responseHeader = response.doSlashPriceProductReservation.responseHeader,
+            selectedProductVariantId = selectedProductVariantId,
+            requestId = requestId
+        )
     }
 
 }

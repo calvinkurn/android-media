@@ -32,7 +32,10 @@ open class ShopDiscountProductDetailItemViewHolder(
     }
 
     interface Listener {
-        fun onClickEditProduct(model: ShopDiscountProductDetailUiModel.ProductDetailData)
+        fun onClickEditProduct(
+            model: ShopDiscountProductDetailUiModel.ProductDetailData,
+            position: Int
+        )
     }
 
     override fun bind(uiModel: ShopDiscountProductDetailUiModel.ProductDetailData) {
@@ -49,7 +52,7 @@ open class ShopDiscountProductDetailItemViewHolder(
             setStockAndTotalLocationData(textStockAndTotalLocation, uiModel)
             setExpiryRange(textStartDateEndDate, uiModel)
             imgEditProduct.setOnClickListener {
-                listener.onClickEditProduct(uiModel)
+                listener.onClickEditProduct(uiModel, adapterPosition)
             }
         }
     }
@@ -170,11 +173,11 @@ open class ShopDiscountProductDetailItemViewHolder(
             ""
         } else if (min == max) {
             formatNonRange(min)
-        } else if(min.isZero()){
+        } else if (min.isZero()) {
             formatNonRange(max)
-        } else if(max.isZero()){
+        } else if (max.isZero()) {
             formatNonRange(min)
-        }else {
+        } else {
             formatWithRange(min, max)
         }
     }
