@@ -23,10 +23,8 @@ import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.presentation.bottomsheet.ShopDiscountSellerInfoBottomSheet
 import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
-import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.utils.animator.ViewAnimator
 import com.tokopedia.shopdiscount.utils.constant.DiscountStatus
-import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.extension.applyUnifyBackgroundColor
 import com.tokopedia.shopdiscount.utils.extension.showError
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
@@ -43,8 +41,6 @@ import javax.inject.Inject
 class ProductManageFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val EMPTY_STATE_IMAGE_URL =
-            "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
         @JvmStatic
         fun newInstance() = ProductManageFragment().apply {
@@ -99,7 +95,6 @@ class ProductManageFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        setupSearchBar()
         setupHeader()
         setupTabs()
     }
@@ -111,11 +106,6 @@ class ProductManageFragment : BaseDaggerFragment() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.setSelectedTabPosition(position)
-
-                    val currentTabPosition = viewModel.getSelectedTabPosition()
-                    val tab = viewModel.getSelectedTab(currentTabPosition)
-                    refreshSearchBarTitle(tab)
-                    handleEmptyState(tab)
                 }
             })
         }
@@ -140,14 +130,6 @@ class ProductManageFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setupSearchBar() {
-        binding?.run {
-            searchBar.searchBarTextField.isFocusable = false
-            searchBar.searchBarTextField.setOnClickListener { navigateToSearchProductPage() }
-            searchBar.setOnClickListener { navigateToSearchProductPage() }
-        }
-    }
-
     private fun setupHeader() {
         val shopIcon = IconUnify(requireContext(), IconUnify.SHOP_INFO)
         binding?.run {
@@ -165,7 +147,7 @@ class ProductManageFragment : BaseDaggerFragment() {
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.visible()
                     binding?.globalError?.gone()
-                    binding?.searchBar?.visible()
+
                     val discountStatusWithCounter = viewModel.findDiscountStatusCount(tabs, it.data)
                     displayTabs(discountStatusWithCounter)
                     viewModel.storeTabsData(discountStatusWithCounter)
@@ -175,7 +157,6 @@ class ProductManageFragment : BaseDaggerFragment() {
                     binding?.shimmer?.content?.gone()
                     binding?.groupContent?.gone()
                     binding?.globalError?.gone()
-                    binding?.searchBar?.gone()
 
                     displayError(it.throwable)
                 }
@@ -189,38 +170,6 @@ class ProductManageFragment : BaseDaggerFragment() {
         getTabsMetadata()
     }
 
-    private fun refreshSearchBarTitle(tab : PageTab) {
-        binding?.searchBar?.isVisible = tab.count > ZERO
-        binding?.searchBar?.searchBarPlaceholder = String.format(getString(R.string.sd_search_at), tab.name)
-    }
-
-
-    private fun handleEmptyState(tab: PageTab) {
-        if (tab.count == ZERO) {
-            binding?.emptyState?.visible()
-            showEmptyState(tab.discountStatusId)
-        } else {
-            binding?.emptyState?.gone()
-        }
-    }
-
-    private fun showEmptyState(discountStatusId : Int) {
-        val title = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_paused_discount_title)
-        } else {
-            getString(R.string.sd_no_paused_discount_description)
-        }
-
-        val description = if (discountStatusId == DiscountStatus.PAUSED) {
-            getString(R.string.sd_no_discount_title)
-        } else {
-            getString(R.string.sd_no_discount_description)
-        }
-
-        binding?.emptyState?.setImageUrl(EMPTY_STATE_IMAGE_URL)
-        binding?.emptyState?.setTitle(title)
-        binding?.emptyState?.setDescription(description)
-    }
 
     private fun displayTabs(tabs: List<PageTab>) {
         val fragments = createFragments(tabs)
@@ -244,10 +193,12 @@ class ProductManageFragment : BaseDaggerFragment() {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         tabs.forEach { tab ->
-            val fragment = ProductListFragment.newInstance(tab.discountStatusId, onDiscountRemoved)
+            val fragment =
+                ProductListFragment.newInstance(tab.name, tab.discountStatusId, onDiscountRemoved)
             fragment.setOnScrollDownListener { onRecyclerViewScrollDown() }
             fragment.setOnScrollUpListener { onRecyclerViewScrollUp() }
             fragment.setOnSwipeRefresh { onSwipeRefreshed() }
+
             val tabName = "${tab.name} (${tab.count})"
             pages.add(Pair(tabName, fragment))
         }
@@ -275,20 +226,10 @@ class ProductManageFragment : BaseDaggerFragment() {
         return tabLayout?.selectedTabPosition.orZero()
     }
 
-    private fun navigateToSearchProductPage() {
-        val currentTabPosition = viewModel.getSelectedTabPosition()
-        val tab = viewModel.getSelectedTab(currentTabPosition)
-        SearchProductActivity.start(
-            requireActivity(),
-            tab.name,
-            tab.discountStatusId
-        )
-    }
 
     private fun getTabsMetadata() {
         binding?.shimmer?.content?.visible()
         binding?.groupContent?.gone()
-        binding?.searchBar?.gone()
         binding?.globalError?.gone()
         viewModel.getSlashPriceProductsMeta()
     }
@@ -308,7 +249,6 @@ class ProductManageFragment : BaseDaggerFragment() {
     private val onRecyclerViewScrollDown: () -> Unit = {
         binding?.run {
             viewAnimator.hideWithAnimation(ticker)
-            viewAnimator.hideWithAnimation(searchBar)
         }
     }
 
@@ -319,12 +259,10 @@ class ProductManageFragment : BaseDaggerFragment() {
             if (shouldShowTicker){
                 viewAnimator.showWithAnimation(ticker)
             }
-            viewAnimator.showWithAnimation(searchBar)
         }
     }
 
     private val onSwipeRefreshed: () -> Unit = {
         viewModel.getSlashPriceProductsMeta()
-        binding?.emptyState?.gone()
     }
 }

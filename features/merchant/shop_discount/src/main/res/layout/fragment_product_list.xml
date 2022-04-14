@@ -6,15 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".manage.presentation.list.ProductListFragment">
 
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_scrollFlags="scroll|snap"
+        app:search_bar_clearable="false"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:search_bar_placeholder="@string/sd_search"
+        app:search_bar_show_icon="false" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgTotalProduct"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:typographyType="body_3"
         tools:text="80 Produk" />
 
@@ -22,16 +38,16 @@
         android:id="@+id/tpgMultiSelect"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:text="@string/sd_multi_select"
         android:textColor="@color/Unify_G500"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:layout_marginTop="@dimen/unify_space_16"
         android:visibility="gone"
-        tools:visibility="visible"
-        app:typographyWeight="bold"
+        android:layout_marginTop="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3" />
+        app:layout_constraintTop_toBottomOf="@+id/searchBar"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgCancelMultiSelect"
@@ -44,7 +60,7 @@
         app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBar"
         android:text="@string/sd_cancel" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -110,6 +126,19 @@
             app:unifyButtonVariant="filled" />
 
     </androidx.cardview.widget.CardView>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/emptyState"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tpgTotalProduct"
+        app:unifyEmptyStateOrientation="vertical"
+        app:unifyEmptyStateType="section" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardViewMultiSelect"
