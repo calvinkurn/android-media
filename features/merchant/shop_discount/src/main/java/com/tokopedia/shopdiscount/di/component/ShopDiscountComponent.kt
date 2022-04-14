@@ -10,6 +10,7 @@ import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageAct
 import com.tokopedia.shopdiscount.manage.presentation.container.ProductManageFragment
 import com.tokopedia.shopdiscount.manage.presentation.list.ProductListFragment
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.fragment.ShopDiscountManageDiscountFragment
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.fragment.ShopDiscountManageProductDiscountFragment
 import com.tokopedia.shopdiscount.product_detail.presentation.bottomsheet.ShopDiscountProductDetailBottomSheet
 import com.tokopedia.shopdiscount.search.presentation.SearchProductActivity
 import com.tokopedia.shopdiscount.search.presentation.SearchProductFragment
@@ -37,4 +38,5 @@ interface ShopDiscountComponent {
     fun inject(fragment: SelectProductFragment)
     fun inject(fragment: SelectProductActivity)
     fun inject(fragment: ShopDiscountManageDiscountFragment)
+    fun inject(fragment: ShopDiscountManageProductDiscountFragment)
 }

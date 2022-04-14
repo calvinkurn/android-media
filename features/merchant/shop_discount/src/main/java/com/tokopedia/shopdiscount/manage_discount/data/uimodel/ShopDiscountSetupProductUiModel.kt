@@ -1,7 +1,7 @@
 package com.tokopedia.shopdiscount.manage_discount.data.uimodel
 
+import android.os.Parcelable
 import androidx.annotation.IntDef
-import androidx.annotation.StringDef
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shopdiscount.common.data.response.ResponseHeader
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.ALL_ABUSIVE_ERROR
@@ -9,12 +9,15 @@ import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetup
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.PARTIAL_ABUSIVE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.data.uimodel.ShopDiscountSetupProductUiModel.SetupProductData.ProductStatus.ErrorType.Companion.VALUE_ERROR
 import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.ShopDiscountManageDiscountTypeFactory
+import kotlinx.parcelize.Parcelize
 import java.util.*
+
 
 data class ShopDiscountSetupProductUiModel(
     val responseHeader: ResponseHeader = ResponseHeader(),
     val listSetupProductData: List<SetupProductData> = listOf()
 ) {
+    @Parcelize
     data class SetupProductData(
         val productId: String = "",
         val productName: String = "",
@@ -26,8 +29,9 @@ data class ShopDiscountSetupProductUiModel(
         val listProductVariant: List<SetupProductData> = listOf(),
         var productStatus: ProductStatus = ProductStatus(),
         var mappedResultData: MappedResultData = MappedResultData(),
-    ) : Visitable<ShopDiscountManageDiscountTypeFactory> {
+    ) : Parcelable, Visitable<ShopDiscountManageDiscountTypeFactory> {
 
+        @Parcelize
         data class MappedResultData(
             val minOriginalPrice: Int = 0,
             val maxOriginalPrice: Int = 0,
@@ -38,14 +42,15 @@ data class ShopDiscountSetupProductUiModel(
             val totalVariant: Int = 0,
             val totalDiscountedVariant: Int = 0,
             val totalLocation: Int = 0
-        )
+        ) : Parcelable
 
+        @Parcelize
         data class ProductStatus(
             val isProductDiscounted: Boolean = false,
             val isVariant: Boolean = false,
             val isMultiLoc: Boolean = false,
             val errorType: Int = 0,
-        ){
+        ) : Parcelable {
             @Retention(AnnotationRetention.SOURCE)
             @IntDef(NO_ERROR, VALUE_ERROR, PARTIAL_ABUSIVE_ERROR, ALL_ABUSIVE_ERROR)
             annotation class ErrorType {
@@ -58,6 +63,7 @@ data class ShopDiscountSetupProductUiModel(
             }
         }
 
+        @Parcelize
         data class ProductWarehouse(
             val warehouseId: String = "",
             val warehouseName: String = "",
@@ -77,8 +83,9 @@ data class ShopDiscountSetupProductUiModel(
             val disableRecommendation: Boolean = true,
             val warehouseType: Int = 0,
             val originalPrice: Int = 0
-        )
+        ) : Parcelable
 
+        @Parcelize
         data class ProductSlashPriceInfo(
             val slashPriceProductId: String = "",
             val discountedPrice: Int = 0,
@@ -86,14 +93,15 @@ data class ShopDiscountSetupProductUiModel(
             var startDate: Date = Date(),
             var endDate: Date = Date(),
             val slashPriceStatusId: String = ""
-        )
+        ) : Parcelable
 
+        @Parcelize
         data class ProductPrice(
             val min: Int = 0,
             val minFormatted: String = "",
             val max: Int = 0,
             val maxFormatted: String = ""
-        )
+        ) : Parcelable
 
         override fun type(typeFactory: ShopDiscountManageDiscountTypeFactory): Int {
             return typeFactory.type(this)

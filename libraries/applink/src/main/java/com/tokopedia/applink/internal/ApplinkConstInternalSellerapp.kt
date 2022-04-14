@@ -92,4 +92,6 @@ object ApplinkConstInternalSellerapp {
 
     //ShopDiscount
     const val SHOP_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount"
+    const val SHOP_DISCOUNT_MANAGE_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount"
+    const val SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT = "$INTERNAL_SELLERAPP/shop-discount/manage-discount/product"
 }

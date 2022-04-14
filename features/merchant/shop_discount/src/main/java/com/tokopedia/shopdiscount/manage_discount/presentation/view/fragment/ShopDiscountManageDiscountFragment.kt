@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -32,6 +33,7 @@ import com.tokopedia.shopdiscount.manage_discount.presentation.adapter.viewholde
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.activity.ShopDiscountManageDiscountActivity
 import com.tokopedia.shopdiscount.manage_discount.presentation.view.viewmodel.ShopDiscountManageDiscountViewModel
 import com.tokopedia.shopdiscount.manage_discount.util.ShopDiscountManageDiscountMode
+import com.tokopedia.shopdiscount.manage_product_discount.presentation.view.activity.ShopDiscountManageProductDiscountActivity
 import com.tokopedia.shopdiscount.product_detail.presentation.ShopDiscountProductDetailDividerItemDecoration
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import com.tokopedia.unifycomponents.CardUnify2
@@ -475,6 +477,14 @@ class ShopDiscountManageDiscountFragment : BaseDaggerFragment(),
     }
 
     override fun onClickManageDiscount(model: ShopDiscountSetupProductUiModel.SetupProductData) {
+        redirectToManageProductDiscountPage(model)
+    }
+
+    private fun redirectToManageProductDiscountPage(model: ShopDiscountSetupProductUiModel.SetupProductData) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SHOP_DISCOUNT_MANAGE_PRODUCT_DISCOUNT)
+        intent.putExtra(ShopDiscountManageProductDiscountActivity.MODE_PARAM, mode)
+        intent.putExtra(ShopDiscountManageProductDiscountActivity.PRODUCT_MANAGE_UI_MODEL, model.copy())
+        startActivity(intent)
     }
 
     override fun onClickDeleteProduct(
