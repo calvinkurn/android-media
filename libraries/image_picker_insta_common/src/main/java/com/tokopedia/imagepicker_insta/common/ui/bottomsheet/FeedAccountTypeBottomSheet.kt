@@ -109,14 +109,10 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
             classLoader: ClassLoader,
         ): FeedAccountTypeBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? FeedAccountTypeBottomSheet
-            return if(oldInstance != null) oldInstance
-            else {
-                val fragmentFactory = fragmentManager.fragmentFactory
-                fragmentFactory.instantiate(
-                    classLoader,
-                    FeedAccountTypeBottomSheet::class.java.name
-                ) as FeedAccountTypeBottomSheet
-            }
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
+                classLoader,
+                FeedAccountTypeBottomSheet::class.java.name
+            ) as FeedAccountTypeBottomSheet
         }
     }
 
