@@ -46,8 +46,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_6"
-                tools:text="asdjfhl h ajlskdf alsdjkfh ljkasdfh" />
+                app:typographyType="display_3"
+                app:typographyWeight="bold"
+                tools:text="Category" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
