@@ -62,7 +62,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                 cartDetail.products.forEach { product ->
                     val item = MiniCartItem.MiniCartItemProduct().apply {
                         isError = false
-                        cartId = cartDetail.cartId
+                        cartId = product.cartId
                         productId = product.productId
                         productParentId = product.parentId
                         quantity = if (product.productSwitchInvenage == 0) {
@@ -91,8 +91,31 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                         productPrice = product.productPrice
                     }
                     val key = MiniCartItemKey(product.productId)
-                    miniCartSimplifiedDataList[key] = item
-
+                    val bundleDetail = cartDetail.bundleDetail
+                    if (bundleDetail.isBundlingItem()) {
+                        val bundleKey = MiniCartItemKey(bundleDetail.bundleId, type = MiniCartItemType.BUNDLE)
+                        if (!miniCartSimplifiedDataList.contains(bundleKey)) {
+                            miniCartSimplifiedDataList[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                                    bundleId = bundleDetail.bundleId,
+                                    bundleGroupId = bundleDetail.bundleGroupId,
+                                    bundleTitle = bundleDetail.bundleName,
+                                    bundlePrice = bundleDetail.bundlePrice,
+                                    bundleSlashPriceLabel = bundleDetail.slashPriceLabel,
+                                    bundleOriginalPrice = bundleDetail.bundleOriginalPrice,
+                                    bundleQuantity = bundleDetail.bundleQty,
+                                    bundleMultiplier = product.productQuantity / bundleDetail.bundleQty,
+                                    bundleLabelQuantity = product.productQuantity / bundleDetail.bundleQty,
+                                    products = hashMapOf(key to item)
+                            )
+                        } else {
+                            val currentBundleItem = miniCartSimplifiedDataList[bundleKey] as MiniCartItem.MiniCartItemBundle
+                            val products = HashMap(currentBundleItem.products)
+                            products[key] = item
+                            miniCartSimplifiedDataList[bundleKey] = currentBundleItem.copy(products = products)
+                        }
+                    } else {
+                        miniCartSimplifiedDataList[key] = item
+                    }
                     if (item.productParentId.isNotBlankOrZero()) {
                         val parentKey = MiniCartItemKey(product.parentId, type = MiniCartItemType.PARENT)
                         if (!miniCartSimplifiedDataList.contains(parentKey)) {
@@ -125,7 +148,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                     cartDetail.products.forEach { product ->
                         val item = MiniCartItem.MiniCartItemProduct().apply {
                             isError = true
-                            cartId = cartDetail.cartId
+                            cartId = product.cartId
                             productId = product.productId
                             productParentId = product.parentId
                             quantity = product.productQuantity
@@ -133,7 +156,30 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                             cartString = unavailableGroup.cartString
                         }
                         val key = MiniCartItemKey(product.productId)
-                        if (!miniCartSimplifiedDataList.contains(key)) {
+                        val bundleDetail = cartDetail.bundleDetail
+                        if (bundleDetail.isBundlingItem()) {
+                            val bundleKey = MiniCartItemKey(bundleDetail.bundleId, type = MiniCartItemType.BUNDLE)
+                            if (!miniCartSimplifiedDataList.contains(bundleKey)) {
+                                miniCartSimplifiedDataList[bundleKey] = MiniCartItem.MiniCartItemBundle(
+                                        isError = true,
+                                        bundleId = bundleDetail.bundleId,
+                                        bundleGroupId = bundleDetail.bundleGroupId,
+                                        bundleTitle = bundleDetail.bundleName,
+                                        bundlePrice = bundleDetail.bundlePrice,
+                                        bundleSlashPriceLabel = bundleDetail.slashPriceLabel,
+                                        bundleOriginalPrice = bundleDetail.bundleOriginalPrice,
+                                        bundleQuantity = bundleDetail.bundleQty,
+                                        bundleMultiplier = product.productQuantity / bundleDetail.bundleQty,
+                                        bundleLabelQuantity = product.productQuantity / bundleDetail.bundleQty,
+                                        products = hashMapOf(key to item)
+                                )
+                            } else {
+                                val currentBundleItem = miniCartSimplifiedDataList[bundleKey] as MiniCartItem.MiniCartItemBundle
+                                val products = HashMap(currentBundleItem.products)
+                                products[key] = item
+                                miniCartSimplifiedDataList[bundleKey] = currentBundleItem.copy(products = products)
+                            }
+                        } else if (!miniCartSimplifiedDataList.contains(key)) {
                             miniCartSimplifiedDataList[key] = item
                         }
                         if (item.productParentId.isNotBlankOrZero()) {

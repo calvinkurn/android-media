@@ -436,6 +436,7 @@ object ConstantTransactionAnalytics {
         const val CURRENT_SITE = "currentSite"
         const val PAGE_TYPE = "pageType"
         const val PAGE_PATH = "pagePath"
+        const val PROMO_FLAG = "promoFlag"
     }
 
     object ScreenName {

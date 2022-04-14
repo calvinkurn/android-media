@@ -17,49 +17,55 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ChangeGenderViewModel @Inject constructor(private val graphqlUseCase:  GraphqlUseCase<ChangeGenderPojo>,
-                                                val dispatcher: CoroutineDispatchers) : BaseViewModel(dispatcher.main) {
+class ChangeGenderViewModel @Inject constructor(
+    private val graphqlUseCase: GraphqlUseCase<ChangeGenderPojo>,
+    val dispatcher: CoroutineDispatchers
+) : BaseViewModel(dispatcher.main) {
 
     val mutateChangeGenderResponse = MutableLiveData<Result<ChangeGenderResult>>()
 
     fun mutateChangeGender(context: Context, gender: Int) {
 
-        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)?.let { query ->
+	GraphqlHelper.loadRawString(context.resources, R.raw.mutation_change_gender)?.let { query ->
 
-            val params = mapOf(PARAM_GENDER to gender)
+	    val params = mapOf(PARAM_GENDER to gender)
 
-            graphqlUseCase.setTypeClass(ChangeGenderPojo::class.java)
-            graphqlUseCase.setRequestParams(params)
-            graphqlUseCase.setGraphqlQuery(query)
+	    graphqlUseCase.setTypeClass(ChangeGenderPojo::class.java)
+	    graphqlUseCase.setRequestParams(params)
+	    graphqlUseCase.setGraphqlQuery(query)
 
-            graphqlUseCase.execute(
-                    onSuccessMutateChangeGender(gender),
-                    onErrorMutateChangeGender()
-            )
-        }
+	    graphqlUseCase.execute(
+		onSuccessMutateChangeGender(gender),
+		onErrorMutateChangeGender()
+	    )
+	}
     }
 
     private fun onErrorMutateChangeGender(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutateChangeGenderResponse.value = Fail(it)
-        }
+	return {
+	    it.printStackTrace()
+	    mutateChangeGenderResponse.value = Fail(it)
+	}
     }
 
     private fun onSuccessMutateChangeGender(gender: Int): (ChangeGenderPojo) -> Unit {
-        return {
+	return {
 
-            val errorMessage = it.data.errorMessage
-            val isSuccess = it.data.isSuccess
+	    val errorMessage = it.data.errorMessage
+	    val isSuccess = it.data.isSuccess
 
-            if (errorMessage.isBlank() && isSuccess) {
-                mutateChangeGenderResponse.value = Success(ChangeGenderResult(it.data, gender))
-            } else if (!errorMessage.isBlank()) {
-                mutateChangeGenderResponse.value = Fail(MessageErrorException(errorMessage,
-                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
-            } else {
-                mutateChangeGenderResponse.value = Fail(RuntimeException())
-            }
-        }
+	    if (errorMessage.isBlank() && isSuccess) {
+		mutateChangeGenderResponse.value = Success(ChangeGenderResult(it.data, gender))
+	    } else if (!errorMessage.isBlank()) {
+		mutateChangeGenderResponse.value = Fail(
+		    MessageErrorException(
+			errorMessage,
+			ErrorHandlerSession.ErrorCode.WS_ERROR.toString()
+		    )
+		)
+	    } else {
+		mutateChangeGenderResponse.value = Fail(RuntimeException())
+	    }
+	}
     }
 }

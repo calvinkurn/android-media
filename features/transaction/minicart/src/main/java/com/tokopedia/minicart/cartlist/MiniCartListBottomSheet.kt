@@ -122,6 +122,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 isShow = false
                 cancelAllDebounceJob()
                 resetObserver()
+                Toaster.onCTAClick = View.OnClickListener { }
                 bottomSheetListener?.onMiniCartListBottomSheetDismissed()
                 this@MiniCartListBottomSheet.viewBinding = null
                 this@MiniCartListBottomSheet.bottomSheet = null
@@ -554,8 +555,8 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
         updateCart()
     }
 
-    override fun onNotesChanged(productId: String, newNotes: String) {
-        viewModel?.updateProductNotes(productId, newNotes)
+    override fun onNotesChanged(productId: String, isBundlingItem: Boolean, bundleId: String, newNotes: String) {
+        viewModel?.updateProductNotes(productId, isBundlingItem, bundleId, newNotes)
         updateCart()
     }
 

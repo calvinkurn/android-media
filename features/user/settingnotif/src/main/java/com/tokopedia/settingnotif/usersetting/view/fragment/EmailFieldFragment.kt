@@ -1,9 +1,12 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
+import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.analytics.NotifSettingAnalytics
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingStateDataView.removeBuyerNotificationSetting
@@ -22,6 +25,11 @@ class EmailFieldFragment: SettingFieldFragment() {
 
     private val settingStates by lazy(LazyThreadSafetyMode.NONE) {
         viewModel.getSettingStates()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        NotifSettingAnalytics.sendScreenName(SCREEN_NAME)
     }
 
     override fun getGqlRawQuery(): Int {
@@ -68,4 +76,8 @@ class EmailFieldFragment: SettingFieldFragment() {
 
     override fun getScreenName() = getString(R.string.settingnotif_email)
     override fun getNotificationType() = TYPE_EMAIL
+
+    companion object{
+        private const val SCREEN_NAME = "Email Notification Settings Page"
+    }
 }

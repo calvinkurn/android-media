@@ -91,6 +91,7 @@ object CommonTopupBillsGqlQuery {
                     detail_compact
                     detail_url
                     detail_url_text
+                    status
                   }
                 }
               }

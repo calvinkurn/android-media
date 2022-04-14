@@ -49,9 +49,8 @@ sealed class MiniCartItem {
             var bundleSlashPriceLabel: String = "",
             var bundleOriginalPrice: Long = 0L,
             var bundleQuantity: Int = 0,
-            var editBundleApplink: String = "",
-            var bundleIconUrl: String = "",
             var bundleLabelQuantity: Int = 0,
+            var bundleMultiplier: Int = 0,
             var products: Map<MiniCartItemKey, MiniCartItemProduct> = emptyMap()
     ): MiniCartItem()
 

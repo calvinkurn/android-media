@@ -9,13 +9,13 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class AddBodData(
-        @SerializedName("isSuccess")
-        @Expose
-        var isSuccess: Boolean = false,
-        @SerializedName("birthDateMessage")
-        @Expose
-        var birthDateMessage: String = "",
-        @SerializedName("completionScore")
-        @Expose
-        var completionScore: Int = 0
+    @SerializedName("isSuccess")
+    @Expose
+    var isSuccess: Boolean = false,
+    @SerializedName("birthDateMessage")
+    @Expose
+    var birthDateMessage: String = "",
+    @SerializedName("completionScore")
+    @Expose
+    var completionScore: Int = 0
 )

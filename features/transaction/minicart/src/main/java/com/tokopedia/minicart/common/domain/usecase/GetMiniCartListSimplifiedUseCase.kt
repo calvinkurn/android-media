@@ -92,7 +92,6 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                     }
                   }
                   cart_details {
-                    cart_id
                     bundle_detail { 
                       bundle_id
                       bundle_name
@@ -113,6 +112,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       bundle_grayscale_icon_url
                     }
                     products {
+                      cart_id
                       parent_id
                       product_id
                       product_quantity
@@ -177,6 +177,7 @@ class GetMiniCartListSimplifiedUseCase @Inject constructor(@ApplicationContext p
                       bundle_grayscale_icon_url
                     }
                     products {
+                      cart_id
                       parent_id
                       product_id
                       product_quantity

@@ -20,7 +20,8 @@ class CMHomeWidgetAnalytics @Inject constructor(
         parentId: String,
         campaignId: String,
         notificationId: String,
-        messageId: String
+        messageId: String,
+        sessionId : String?
     ) {
         kotlin.runCatching {
             val map = TrackAppUtils.gtmData(
@@ -30,7 +31,7 @@ class CMHomeWidgetAnalytics @Inject constructor(
                 getLabel(parentId, campaignId)
             )
             addStaticCommonData(map)
-            addDynamicCommonData(map, parentId, campaignId, notificationId, messageId)
+            addDynamicCommonData(map, parentId, campaignId, notificationId, messageId, sessionId)
             sendGeneralEvent(map)
         }
     }
@@ -39,7 +40,8 @@ class CMHomeWidgetAnalytics @Inject constructor(
         parentId: String,
         campaignId: String,
         notificationId: String,
-        messageId: String
+        messageId: String,
+        sessionId : String?
     ) {
         val map = TrackAppUtils.gtmData(
             CMHomeWidgetAnalyticsConstants.Event.WIDGET_CLICKED,
@@ -48,7 +50,7 @@ class CMHomeWidgetAnalytics @Inject constructor(
             getLabel(parentId, campaignId)
         )
         addStaticCommonData(map)
-        addDynamicCommonData(map, parentId, campaignId, notificationId, messageId)
+        addDynamicCommonData(map, parentId, campaignId, notificationId, messageId, sessionId)
         sendGeneralEvent(map)
     }
 
@@ -74,13 +76,17 @@ class CMHomeWidgetAnalytics @Inject constructor(
         map: MutableMap<String, Any>, parentId: String,
         campaignId: String,
         notificationId: String,
-        messageId: String
+        messageId: String,
+        sessionId: String?
     ) {
         map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
         map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
         map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
         map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
         map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
+        sessionId?.let {
+            map[CMHomeWidgetAnalyticsConstants.Key.SESSION_ID] =  sessionId
+        }
     }
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {

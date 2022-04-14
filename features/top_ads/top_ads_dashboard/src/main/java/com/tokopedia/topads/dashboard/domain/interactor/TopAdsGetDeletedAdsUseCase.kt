@@ -34,6 +34,9 @@ const val TOP_ADS_DELETED_ADS_QUERY =
       ad_deleted_time
       ad_title
       product_image_uri
+      keyword_tag
+      price_bid
+      search_type
     }
     errors {
       code

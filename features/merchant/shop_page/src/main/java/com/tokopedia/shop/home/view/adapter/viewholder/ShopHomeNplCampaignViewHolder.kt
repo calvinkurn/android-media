@@ -391,14 +391,6 @@ class ShopHomeNplCampaignViewHolder(
             imageTnc?.hide()
         } else {
             textTitle?.apply {
-                (layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-                    val topMargin = if (adapterPosition == 0) {
-                        TITLE_MARGIN_FIRST_ITEM.toPx()
-                    } else {
-                        this.topMargin
-                    }
-                    setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
-                }
                 text = title
                 show()
             }
