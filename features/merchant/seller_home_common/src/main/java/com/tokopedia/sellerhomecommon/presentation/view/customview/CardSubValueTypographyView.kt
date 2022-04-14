@@ -37,6 +37,8 @@ class CardSubValueTypographyView : RelativeLayout {
     )
 
     private val binding: ShcViewCardSubValueTypographyBinding
+    private var primaryText: String = ""
+    private var secondaryText: String = ""
     private var hasAnimated = false
 
     init {
@@ -45,10 +47,16 @@ class CardSubValueTypographyView : RelativeLayout {
     }
 
     fun show(primary: String, secondary: String) {
-        if (primary.isNotBlank() && secondary.isNotBlank()) {
-            showWithAnimation(primary.parseAsHtml(), secondary.parseAsHtml())
+        this.primaryText = primary
+        this.secondaryText = secondary
+        showPrimaryOnly(primary.parseAsHtml())
+    }
+
+    fun showTextWithAnimation() {
+        if (primaryText.isNotBlank() && secondaryText.isNotBlank()) {
+            showTextWithAnimation(primaryText.parseAsHtml(), secondaryText.parseAsHtml())
         } else {
-            showPrimaryOnly(primary.parseAsHtml())
+            showPrimaryOnly(primaryText.parseAsHtml())
         }
     }
 
@@ -57,7 +65,7 @@ class CardSubValueTypographyView : RelativeLayout {
         binding.tvShcSecondarySubValue.gone()
     }
 
-    private fun showWithAnimation(primary: CharSequence, secondary: CharSequence) {
+    private fun showTextWithAnimation(primary: CharSequence, secondary: CharSequence) {
         if (hasAnimated) return
         hasAnimated = true
 

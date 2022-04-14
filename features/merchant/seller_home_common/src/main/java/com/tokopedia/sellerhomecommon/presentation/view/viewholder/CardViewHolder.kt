@@ -83,7 +83,7 @@ class CardViewHolder(
     }
 
     private fun showViewComponent(element: CardWidgetUiModel, isShown: Boolean) {
-        var shouldLoadAnimation = true
+        var shouldLoadAnimation = false
         with(binding) {
             tvCardTitle.isVisible = isShown
             tvCardValue.isVisible = isShown
@@ -136,6 +136,7 @@ class CardViewHolder(
             )
             root.addOnImpressionListener(element.impressHolder) {
                 listener.sendCardImpressionEvent(element)
+                tvCardSubValue.showTextWithAnimation()
             }
 
             root.setOnClickListener {
