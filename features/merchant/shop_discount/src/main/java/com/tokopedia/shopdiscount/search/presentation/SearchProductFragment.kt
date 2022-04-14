@@ -51,7 +51,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
         private const val ONE_PRODUCT = 1
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 700
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
 
         @JvmStatic
         fun newInstance(

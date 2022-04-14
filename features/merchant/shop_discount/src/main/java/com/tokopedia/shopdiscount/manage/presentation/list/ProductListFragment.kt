@@ -50,7 +50,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         private const val PAGE_SIZE = 10
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
-        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 700
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
 
         @JvmStatic
         fun newInstance(
