@@ -17,7 +17,6 @@ import javax.inject.Inject
 
 class GetSlashPriceProductListToReserveUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val userSession : UserSessionInterface
 ) : GraphqlUseCase<GetSlashPriceProductListToReserveResponse>(repository) {
 
     companion object {
@@ -77,6 +76,7 @@ class GetSlashPriceProductListToReserveUseCase @Inject constructor(
         useCase: String = EMPTY_STRING,
         sortBy: String= EMPTY_STRING,
         sortType: String = EMPTY_STRING,
+        requestId : String,
         page: Int,
         pageSize: Int = 10,
         keyword: String = EMPTY_STRING,
@@ -84,7 +84,7 @@ class GetSlashPriceProductListToReserveUseCase @Inject constructor(
         categoryIds: List<String> = emptyList(),
         warehouseIds: List<String> = emptyList()
     ) {
-        val requestId = userSession.shopId + System.currentTimeMillis()
+
         val request = GetSlashPriceProductListToReserveRequest(
             RequestHeader(source, ip, useCase),
             requestId,

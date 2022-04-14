@@ -11,11 +11,10 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSellerInfoBinding
-import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSellerInfoCardItemBinding
-import com.tokopedia.shopdiscount.databinding.LayoutBottomSheetShopDiscountSellerInfoShimmeringBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
 import com.tokopedia.shopdiscount.info.data.uimodel.ShopDiscountSellerInfoUiModel
 import com.tokopedia.shopdiscount.info.presentation.widget.ShopDiscountSellerInfoSectionView
@@ -23,7 +22,6 @@ import com.tokopedia.shopdiscount.info.presentation.viewmodel.ShopDiscountSeller
 import com.tokopedia.shopdiscount.utils.extension.parseTo
 import com.tokopedia.shopdiscount.utils.extension.unixToMs
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.date.DateUtil
@@ -91,10 +89,14 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val contentText: String
             val descriptionText: String
             if (data.isUseVps) {
+                val vpsPackageData = getSellerVpsPackageData(data)
                 val formattedExpiryDate = Date(
-                    data.listSlashPriceBenefitData.getOrNull(1)?.expiredAtUnix.orZero().unixToMs()
+                    vpsPackageData?.expiredAtUnix.orZero().unixToMs()
                 ).parseTo(DateUtil.DEFAULT_VIEW_FORMAT)
-                contentText = formattedExpiryDate
+                contentText = String.format(
+                    getString(R.string.seller_info_bottom_sheet_expiry_content_vps),
+                    formattedExpiryDate
+                )
                 descriptionText = ""
             } else {
                 contentText = getString(R.string.seller_info_bottom_sheet_expiry_content_non_vps)
@@ -116,7 +118,7 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
             val contentText: String
             val descriptionText: String
             if (data.isUseVps) {
-                val vpsData = data.listSlashPriceBenefitData.getOrNull(1)
+                val vpsData = getSellerVpsPackageData(data)
                 contentText = String.format(
                     getString(R.string.seller_info_bottom_sheet_quota_left_content_vps_format),
                     vpsData?.remainingQuota,
@@ -141,9 +143,9 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
         sourceQuotaSection?.apply {
             val title = getString(R.string.seller_info_quota_source_quota_source_title)
             val sourceQuota = if (data.isUseVps) {
-                data.listSlashPriceBenefitData.getOrNull(1)
+                getSellerVpsPackageData(data)
             } else {
-                data.listSlashPriceBenefitData.getOrNull(0)
+                getSellerNonVpsPackageData(data)
             }
             val contentText = String.format(
                 getString(R.string.seller_info_bottom_sheet_quota_source_content_format),
@@ -160,6 +162,18 @@ class ShopDiscountSellerInfoBottomSheet : BottomSheetUnify() {
                 descriptionText
             )
             setOptionData(data)
+        }
+    }
+
+    private fun getSellerNonVpsPackageData(data: ShopDiscountSellerInfoUiModel): ShopDiscountSellerInfoUiModel.SlashPriceBenefitData? {
+        return data.listSlashPriceBenefitData.firstOrNull {
+            it.packageId.toIntOrZero() == -1
+        }
+    }
+
+    private fun getSellerVpsPackageData(data: ShopDiscountSellerInfoUiModel): ShopDiscountSellerInfoUiModel.SlashPriceBenefitData? {
+        return data.listSlashPriceBenefitData.firstOrNull {
+            it.packageId.toIntOrZero() != -1
         }
     }
 

@@ -48,6 +48,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
     private var rvProductList: RecyclerView? = null
     private var textProductName: Typography? = null
     private var textChangeDiscount: Typography? = null
+    private var divider: View? = null
     private var productParentId: String = ""
     private var status: Int = 0
     private var productParentName: String = ""
@@ -99,6 +100,8 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                         val errorMessage = it.data.responseHeader.errorMessages.joinToString()
                         showErrorState(Throwable(errorMessage))
                     } else {
+                        val totalProductData = it.data.listProductDetailData.size
+                        showHeaderSection(totalProductData)
                         addListProductDetailData(it.data.listProductDetailData)
                     }
                 }
@@ -107,6 +110,21 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
                 }
             }
         })
+    }
+
+    private fun showHeaderSection(totalProductData: Int) {
+        val bottomSheetTitle = if (totalProductData > 1) {
+            String.format(
+                getString(R.string.product_detail_multiple_product_title),
+                totalProductData
+            )
+        } else {
+            getString(R.string.product_detail_single_product_title)
+        }
+        setTitle(bottomSheetTitle)
+        textProductName?.show()
+        textChangeDiscount?.show()
+        divider?.show()
     }
 
     private fun showErrorState(throwable: Throwable) {
@@ -149,6 +167,7 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         rvProductList = viewBinding?.rvProductList
         textProductName = viewBinding?.textProductParentName
         textChangeDiscount = viewBinding?.textChangeDiscount
+        divider = viewBinding?.divider
     }
 
     private fun setupProductParentNameSection() {
@@ -204,7 +223,6 @@ class ShopDiscountProductDetailBottomSheet : BottomSheetUnify(),
         viewBinding = LayoutBottomSheetShopDiscountProductDetailBinding.inflate(
             LayoutInflater.from(context)
         ).apply {
-            setTitle("Title")
             setChild(this.root)
             setCloseClickListener {
                 dismiss()

@@ -11,24 +11,31 @@
         android:id="@+id/text_product_parent_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_3"
         android:maxLines="2"
-        tools:text="Judul produk bisa Judul produk bisaJudul produk bisaJudul produk bisaJudul produk bisa" />
+        android:visibility="gone"
+        app:typographyType="body_3"
+        tools:text="Judul produk bisa Judul produk bisaJudul produk bisaJudul produk bisaJudul produk bisa"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_change_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:text="@string/change_discount"
         android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:text="@string/change_discount"/>
+        tools:visibility="gone" />
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="12dp" />
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_product_list"

@@ -81,12 +81,6 @@
                 app:layout_constraintStart_toEndOf="@id/chipOneMonthPeriod"
                 app:layout_constraintTop_toBottomOf="@id/chipSixMonthPeriod" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupDiscountPeriod"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tpgInformation,chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection, tfuStartDate, tfuEndDate" />
-
             <com.tokopedia.unifycomponents.TextFieldUnify2
                 android:id="@+id/tfuStartDate"
                 android:layout_width="0dp"
@@ -208,12 +202,6 @@
                 app:qty_max_value="99"
                 app:qty_min_value="0"
                 app:unify_qty_step_value="1" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupChipPeriod"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="chipOneYearPeriod,chipSixMonthPeriod,chipOneMonthPeriod,chipCustomSelection" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
