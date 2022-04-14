@@ -36,11 +36,13 @@ abstract class OrderDetailSectionCommon {
     fun mapToInvoiceOrderNumberUiModel(
         invoice: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Invoice,
         paymentDate: String
-    ) = InvoiceOrderNumberUiModel(
-        invoiceNumber = invoice.invoiceNumber,
-        goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
-        paymentDate = paymentDate
-    )
+    ): InvoiceOrderNumberUiModel {
+        return InvoiceOrderNumberUiModel(
+            invoiceNumber = invoice.invoiceNumber,
+            goFoodOrderNumber = invoice.gofoodOrderNumber.orEmpty(),
+            paymentDate = paymentDate
+        )
+    }
 
     protected fun getOrderStatusLottieUrl(orderStatus: String): String {
         return when (orderStatus) {

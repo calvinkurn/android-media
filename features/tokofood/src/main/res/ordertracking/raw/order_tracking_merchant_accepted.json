@@ -4,9 +4,12 @@
       "status": "MERCHANT_ACCEPTED",
       "title": "Pesananmu sudah dikonfirmasi",
       "subtitle": "Kami bakal segera cariin driver",
-      "iconName": "hourglass"
+      "iconName": "cook"
     },
-    "eta": null,
+    "eta": {
+      "label": "Estimasi tiba pukul",
+      "time": "12:45 - 12:48"
+    },
     "additionalTickerInfo": [
       {
         "level": "info",

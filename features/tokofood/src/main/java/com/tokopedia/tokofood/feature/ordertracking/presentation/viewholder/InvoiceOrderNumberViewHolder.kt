@@ -49,9 +49,11 @@ class InvoiceOrderNumberViewHolder(view: View) :
 
     private fun ItemTokofoodOrderTrackingInvoiceOrderNumberBinding.setOrderNumber(orderNumber: String) {
         if (orderNumber.isNotEmpty()) {
+            tvOrderNumberLabel.show()
             tvOrderNumberValue.show()
             tvOrderNumberValue.text = orderNumber
         } else {
+            tvOrderNumberLabel.hide()
             tvOrderNumberValue.hide()
         }
     }

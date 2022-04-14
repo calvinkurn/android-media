@@ -1,5 +1,7 @@
 package com.tokopedia.tokofood.feature.ordertracking.domain.usecase
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.tokofood.feature.ordertracking.domain.mapper.TokoFoodOrderDetailMapper
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
@@ -9,6 +11,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDe
 import javax.inject.Inject
 
 class GetTokoFoodOrderDetailUseCase @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val useCase: GraphqlUseCase<TokoFoodOrderDetailResponse>,
     private val tokoFoodOrderDetailMapper: TokoFoodOrderDetailMapper,
     private val fileUtilsTemp: FileUtilsTemp
@@ -28,7 +31,8 @@ class GetTokoFoodOrderDetailUseCase @Inject constructor(
         }
     }
 
-    fun executeTemp(json: String): OrderDetailResultUiModel {
+    fun executeTemp(resourceId: Int): OrderDetailResultUiModel {
+        val json = fileUtilsTemp.getJsonFromRaw(context.resources, resourceId)
         val response = fileUtilsTemp.getJsonResources<TokoFoodOrderDetailResponse>(json).tokofoodOrderDetail
         return tokoFoodOrderDetailMapper.mapToOrderDetailResultUiModel(response)
     }

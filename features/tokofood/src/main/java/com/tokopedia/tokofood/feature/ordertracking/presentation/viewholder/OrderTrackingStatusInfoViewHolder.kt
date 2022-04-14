@@ -2,13 +2,11 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.GridLayoutManager
-import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingStatusInfoSectionBinding
-import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.StepperStatusAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.partialview.OrderTrackingStatusInfoWidget
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.StepperStatusUiModel
 
 class OrderTrackingStatusInfoViewHolder(
     itemView: View
@@ -17,20 +15,14 @@ class OrderTrackingStatusInfoViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_status_info_section
-
-        const val SPAN_WIDTH_DEFAULT = 3
-        const val SPAN_WIDTH_LAST_ITEM = 1
-        const val MAX_SPAN_COUNT = 10
     }
 
     private val binding = ItemTokofoodOrderTrackingStatusInfoSectionBinding.bind(itemView)
 
-    private var stepperStatusAdapter: StepperStatusAdapter? = null
-
     override fun bind(element: OrderTrackingStatusInfoUiModel) {
         with(binding) {
             orderStatusInfoWidget.setupStatusInfoWidget(element)
-            setupStepperStatusAdapter(element)
+            setStepperListView(element.stepperStatusList)
         }
     }
 
@@ -42,7 +34,7 @@ class OrderTrackingStatusInfoViewHolder(
                 updateStatusLottieUrl(oldItem, newItem)
                 updateStatusTitle(oldItem, newItem)
                 updateStatusSubTitle(oldItem, newItem)
-                updateStepperStatus(oldItem, newItem)
+                updateStepperListView(oldItem, newItem)
             }
         }
     }
@@ -74,41 +66,23 @@ class OrderTrackingStatusInfoViewHolder(
         }
     }
 
-    private fun updateStepperStatus(
-        oldItem: OrderTrackingStatusInfoUiModel,
-        newItem: OrderTrackingStatusInfoUiModel
-    ) {
-        if (oldItem.stepperStatusList != newItem.stepperStatusList) {
-            stepperStatusAdapter?.setStepperList(newItem.stepperStatusList)
-        }
-    }
-
     private fun OrderTrackingStatusInfoWidget.setupStatusInfoWidget(item: OrderTrackingStatusInfoUiModel) {
         setupLottie(item.lottieUrl)
         setOrderTrackingStatusTitle(item.orderStatusTitle)
         setOrderTrackingStatusSubTitle(item.orderStatusSubTitle)
     }
 
-    private fun setupStepperStatusAdapter(item: OrderTrackingStatusInfoUiModel) {
-        stepperStatusAdapter = StepperStatusAdapter()
-
-        val gridLayoutManager = GridLayoutManager(itemView.context, MAX_SPAN_COUNT)
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return if (item.stepperStatusList.size == position + Int.ONE) {
-                    SPAN_WIDTH_LAST_ITEM
-                } else SPAN_WIDTH_DEFAULT
-            }
-        }
-
-        binding.rvOrderStatusStepper.run {
-            setHasFixedSize(true)
-            layoutManager = gridLayoutManager
-            adapter = stepperStatusAdapter
-        }
-
-        stepperStatusAdapter?.setStepperList(item.stepperStatusList)
+    private fun setStepperListView(stepperStatusList: List<StepperStatusUiModel>) {
+        binding.orderStatusStepperListView.setStepperStatusListView(stepperStatusList)
     }
 
+    private fun updateStepperListView(
+        oldItem: OrderTrackingStatusInfoUiModel,
+        newItem: OrderTrackingStatusInfoUiModel
+    ) {
+        if (oldItem.stepperStatusList != newItem.stepperStatusList) {
+            binding.orderStatusStepperListView.updateStepperStatus(newItem.stepperStatusList)
+        }
+    }
 
 }

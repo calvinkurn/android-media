@@ -29,6 +29,9 @@ internal object TokoFoodOrderStatusQuery: GqlQueryInterface {
               invoiceNumber
               gofoodOrderNumber
             }
+            payment {
+              paymentDate
+            }
           }
         }
     """.trimIndent()

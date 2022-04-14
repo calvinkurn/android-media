@@ -1,12 +1,15 @@
 {
   "tokofoodOrderDetail": {
     "orderStatus": {
-      "status": "MERCHANT_ACCEPTED",
-      "title": "Pesananmu sudah dikonfirmasi",
-      "subtitle": "Kami bakal segera cariin driver",
-      "iconName": "hourglass"
+      "status": "PICKUP_REQUESTED",
+      "title": "Makanan lagi disiapin",
+      "subtitle": "Driver tiba di restoran",
+      "iconName": "cook"
     },
-    "eta": null,
+    "eta": {
+      "label": "Estimasi tiba pukul",
+      "time": "12:45 - 12:48"
+    },
     "additionalTickerInfo": [
       {
         "level": "info",

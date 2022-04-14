@@ -6,10 +6,7 @@
       "subtitle": "Driver meluncur ke restoran",
       "iconName": "cooking"
     },
-    "eta": {
-      "label": "Estimasi tiba pukul",
-      "time": "12:45 - 12:48"
-    },
+    "eta": null,
     "merchant": {
       "displayName": "Kopi Janji Jiwa, Permata Hijau",
       "distanceInKm": "2.5 km dari tujuan"
@@ -113,7 +110,7 @@
     },
     "invoice": {
       "invoiceNumber": "INV/20181011/XVI/X/55069657",
-      "gofoodOrderNumber": "F-1468046953"
+      "gofoodOrderNumber": null
     },
     "payment": {
       "paymentMethod": {

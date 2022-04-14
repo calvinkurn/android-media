@@ -2,6 +2,7 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -9,6 +10,8 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.diffutil.OrderTrackingDiffUtilCallback
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.FoodItemUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingEstimationUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingStatusInfoUiModel
 
 class OrderTrackingAdapter(
     private val orderTrackingAdapterTypeFactory: OrderTrackingAdapterTypeFactoryImpl
@@ -42,6 +45,19 @@ class OrderTrackingAdapter(
         if (orderTrackingDataCount.isMoreThanZero()) {
             visitables.removeAll { it is BaseOrderTrackingTypeFactory }
             notifyItemRangeRemoved(visitables.size, orderTrackingDataCount)
+        }
+    }
+
+    fun updateEtaLiveTracking(newEtaItem: OrderTrackingEstimationUiModel?) {
+        if (newEtaItem != null) {
+            val index = visitables.indexOfFirst { it is OrderTrackingEstimationUiModel }
+            if (index == RecyclerView.NO_POSITION) {
+                val liveTrackingStatusIndex =
+                    visitables.indexOfFirst { it is OrderTrackingStatusInfoUiModel }
+                val newEtaIndex = liveTrackingStatusIndex + Int.ONE
+                visitables.add(newEtaIndex, newEtaItem)
+                notifyItemInserted(newEtaIndex)
+            }
         }
     }
 
@@ -91,6 +107,10 @@ class OrderTrackingAdapter(
             visitables.removeAt(lastIndex)
             notifyItemRemoved(lastIndex)
         }
+    }
+
+    inline fun <reified T: Visitable<*>> filterUiModel(): T? {
+        return list.filterIsInstance<T>().firstOrNull()
     }
 
     companion object {

@@ -67,9 +67,15 @@ class OrderTrackingStatusInfoWidget : ConstraintLayout {
             else -> ""
         }
         if (cacheKey.isBlank()) {
-            binding?.lottieOrderTrackingStatus?.setAnimationFromUrl(animationUrl)
+            binding?.lottieOrderTrackingStatus?.run {
+                setAnimationFromUrl(animationUrl)
+                resumeAnimation()
+            }
         } else {
-            binding?.lottieOrderTrackingStatus?.setAnimationFromUrl(animationUrl, cacheKey)
+            binding?.lottieOrderTrackingStatus?.run {
+                setAnimationFromUrl(animationUrl, cacheKey)
+                resumeAnimation()
+            }
         }
     }
 

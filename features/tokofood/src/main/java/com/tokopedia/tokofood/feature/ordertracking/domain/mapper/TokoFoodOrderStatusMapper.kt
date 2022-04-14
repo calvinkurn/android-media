@@ -16,5 +16,9 @@ class TokoFoodOrderStatusMapper @Inject constructor() : OrderDetailSectionCommon
         orderStatusKey = tokofoodOrderDetail.orderStatus.status,
         estimationUiModel = if (tokofoodOrderDetail.eta != null)
             mapToEstimationUiModel(tokofoodOrderDetail.eta) else null,
+        invoiceOrderNumberUiModel = mapToInvoiceOrderNumberUiModel(
+            tokofoodOrderDetail.invoice,
+            tokofoodOrderDetail.payment.paymentDate
+        )
     )
 }

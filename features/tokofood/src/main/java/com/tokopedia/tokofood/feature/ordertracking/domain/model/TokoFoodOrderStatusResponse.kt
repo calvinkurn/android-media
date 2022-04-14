@@ -21,5 +21,8 @@ data class TokoFoodOrderStatusResponse(
         @SerializedName("orderStatus")
         @Expose
         val orderStatus: TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus = TokoFoodOrderDetailResponse.TokofoodOrderDetail.OrderStatus(),
+        @SerializedName("payment")
+        @Expose
+        val payment: TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment = TokoFoodOrderDetailResponse.TokofoodOrderDetail.Payment()
     )
 }

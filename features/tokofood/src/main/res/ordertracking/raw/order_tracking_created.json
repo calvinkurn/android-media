@@ -1,10 +1,10 @@
 {
   "tokofoodOrderDetail": {
     "orderStatus": {
-      "status": "MERCHANT_ACCEPTED",
-      "title": "Pesananmu sudah dikonfirmasi",
-      "subtitle": "Kami bakal segera cariin driver",
-      "iconName": "hourglass"
+      "status": "CREATED",
+      "title": "Lagi memproses pesanan",
+      "subtitle": "Kami segera sampaikan ke resto",
+      "iconName": "cook"
     },
     "eta": null,
     "additionalTickerInfo": [
@@ -15,7 +15,7 @@
     ],
     "invoice": {
       "invoiceNumber": "INV/20181011/XVI/X/55069657",
-      "gofoodOrderNumber": "F-1468046953"
+      "gofoodOrderNumber": null
     },
     "payment": {
       "paymentDate": "19 Maret 2022, 20:04"

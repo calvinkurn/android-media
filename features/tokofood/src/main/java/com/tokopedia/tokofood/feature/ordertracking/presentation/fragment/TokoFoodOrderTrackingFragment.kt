@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
@@ -19,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.di.component.TokoFoodOrderTrackingComponent
-import com.tokopedia.tokofood.feature.ordertracking.domain.utils.FileUtilsTemp
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
@@ -28,12 +29,15 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.navigator.Order
 import com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar.OrderTrackingToolbarHandler
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ActionButtonsUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderLiveTrackingStatusEvent
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderStatusLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderTrackingErrorUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.ToolbarLiveTrackingUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerListener,
@@ -41,9 +45,6 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-
-    @Inject
-    lateinit var fileUtilsTemp: FileUtilsTemp
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(TokoFoodOrderTrackingViewModel::class.java)
@@ -67,8 +68,6 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
 
     private var binding by autoClearedNullable<FragmentTokofoodOrderTrackingBinding>()
 
-    private var isCompletedOrder = false
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,6 +83,7 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
         setupRvOrderTracking()
         setSwipeRefreshDisabled()
         observeOrderDetail()
+        observeOrderLiveTracking()
         fetchOrderDetail()
     }
 
@@ -127,7 +127,8 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
             orderTrackingAdapter.hideLoadingShimmer()
             when (it) {
                 is Success -> {
-                    isCompletedOrder = it.data.isOrderCompleted
+                    val isCompletedOrder = it.data.isOrderCompleted
+                    fetchOrderLiveTracking(isCompletedOrder)
                     orderTrackingAdapter.updateOrderTracking(it.data.orderDetailList)
                     setupViews(isCompletedOrder, it.data.actionButtonsUiModel)
                     setToolbarLiveTracking(it.data.toolbarLiveTrackingUiModel, isCompletedOrder)
@@ -139,16 +140,54 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
         }
     }
 
+    private fun observeOrderLiveTracking() {
+        lifecycleScope.launchWhenResumed {
+            viewModel.orderLiveTrackingStatus.collect {
+                when (it) {
+                    is OrderLiveTrackingStatusEvent.Success -> {
+                        updateAllOrderLiveTracking(it.orderStatusLiveTrackingUiModel)
+                    }
+                    is OrderLiveTrackingStatusEvent.Error -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateAllOrderLiveTracking(orderStatusLiveTrackingUiModel: OrderStatusLiveTrackingUiModel) {
+        with(orderStatusLiveTrackingUiModel) {
+            updateLiveTrackingItem(tickerInfoData)
+            updateLiveTrackingItem(orderTrackingStatusInfoUiModel)
+            orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
+            updateLiveTrackingItem(invoiceOrderNumberUiModel)
+        }
+    }
+
+    private inline fun <reified T: BaseOrderTrackingTypeFactory> updateLiveTrackingItem(newItem: T?) {
+        if (newItem != null) {
+            val oldItem = orderTrackingAdapter.filterUiModel<T>()
+            oldItem?.let {
+                orderTrackingAdapter.updateItem(
+                    oldItem,
+                    newItem
+                )
+            }
+        }
+    }
+
+    private fun fetchOrderLiveTracking(isOrderCompleted: Boolean) {
+        if (!isOrderCompleted) {
+            viewModel.fetchOrderLiveTracking()
+        }
+    }
+
     private fun fetchOrderDetail() {
         orderTrackingAdapter.run {
             hideError()
             showLoadingShimmer(LoadingModel())
         }
-        context?.resources?.let {
-            viewModel.fetchOrderDetail(
-                fileUtilsTemp.getJsonFromRaw(it, ORDER_TRACKING_RESOURCE)
-            )
-        }
+        viewModel.fetchOrderDetail(ORDER_TRACKING_RESOURCE)
     }
 
     private fun setupRvOrderTracking() {
@@ -190,7 +229,7 @@ class TokoFoodOrderTrackingFragment : BaseDaggerFragment(), RecyclerViewPollerLi
             supportActionBar?.hide()
             setSupportActionBar(binding?.orderTrackingToolbar)
             supportActionBar?.run {
-                title = getString(R.string.title_tokofood_post_purchase)
+                title = getString(com.tokopedia.tokofood.R.string.title_tokofood_post_purchase)
             }
         }
     }

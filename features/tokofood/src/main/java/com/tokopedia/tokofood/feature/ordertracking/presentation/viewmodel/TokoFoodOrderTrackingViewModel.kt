@@ -2,22 +2,32 @@ package com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderDetailUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.GetTokoFoodOrderStatusUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailResultUiModel
+import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderLiveTrackingStatusEvent
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val coroutineDispatchers: CoroutineDispatchers,
-    private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>
+    private val getTokoFoodOrderDetailUseCase: Lazy<GetTokoFoodOrderDetailUseCase>,
+    private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>
 ): BaseViewModel(coroutineDispatchers.main) {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
@@ -25,16 +35,25 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         get() = _orderDetailResult
 
 
+    private val resources = listOf(
+        R.raw.order_tracking_created, R.raw.order_tracking_new,
+        R.raw.order_tracking_awaiting_merchant_acceptance, R.raw.order_tracking_merchant_accepted, R.raw.order_tracking_searching_driver,
+        R.raw.order_tracking_otw_pickup, R.raw.order_tracking_driver_arrived, R.raw.order_tracking_pickup_requested, R.raw.order_tracking_order_placed,
+        R.raw.order_tracking_otw_destination
+    )
+
     private var foodItems = listOf<BaseOrderTrackingTypeFactory>()
 
-    init {
+    private var orderId = ""
 
-    }
+    private val _orderLiveTrackingStatus = MutableSharedFlow<OrderLiveTrackingStatusEvent>(replay = Int.ONE)
+    val orderLiveTrackingStatus = _orderLiveTrackingStatus.shareIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Int.ONE)
 
-    fun fetchOrderDetail(json: String) {
+
+    fun fetchOrderDetail(resourceId: Int) {
         launchCatchError(block = {
             val orderDetailResult = withContext(coroutineDispatchers.io) {
-                getTokoFoodOrderDetailUseCase.get().executeTemp(json)
+                getTokoFoodOrderDetailUseCase.get().executeTemp(resourceId)
             }
             foodItems = orderDetailResult.foodItemList
             _orderDetailResult.value = Success(orderDetailResult)
@@ -44,5 +63,24 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     }
 
     fun getFoodItems() = foodItems
+
+    fun fetchOrderLiveTracking() {
+        viewModelScope.launchCatchError(block = {
+            var index = 0
+            while (true) {
+                if (index == resources.size) {
+                    index = 0
+                }
+                val orderStatusResult = withContext(coroutineDispatchers.io) {
+                    getTokoFoodOrderStatusUseCase.get().executeTemp(resources[index])
+                }
+                index++
+                _orderLiveTrackingStatus.emit(OrderLiveTrackingStatusEvent.Success(orderStatusResult))
+                delay(5000)
+            }
+        }, onError = {
+
+        })
+    }
 
 }
