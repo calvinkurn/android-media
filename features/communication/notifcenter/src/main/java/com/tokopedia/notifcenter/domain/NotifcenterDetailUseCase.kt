@@ -175,18 +175,18 @@ open class NotifcenterDetailUseCase @Inject constructor(
 
         private val query = """
             query notifcenter_detail_v3(
-                $PARAM_TYPE_ID: Int
-            	$PARAM_TAG_ID: Int
-            	$PARAM_TIMEZONE: String
-            	$PARAM_LAST_NOTIF_ID: String
-            	$PARAM_FIELDS: [String]
+                $$PARAM_TYPE_ID: Int
+            	$$PARAM_TAG_ID: Int
+            	$$PARAM_TIMEZONE: String
+            	$$PARAM_LAST_NOTIF_ID: String
+            	$$PARAM_FIELDS: [String]
             ) {
             	notifcenter_detail_v3(
-            		type_id: $PARAM_TYPE_ID
-            		tag_id: $PARAM_TAG_ID
-            		timezone: $PARAM_TIMEZONE
-            		last_notif_id: $PARAM_LAST_NOTIF_ID
-            		fields: $PARAM_FIELDS
+            		type_id: $$PARAM_TYPE_ID
+            		tag_id: $$PARAM_TAG_ID
+            		timezone: $$PARAM_TIMEZONE
+            		last_notif_id: $$PARAM_LAST_NOTIF_ID
+            		fields: $$PARAM_FIELDS
             	) {
             		paging {
             			has_next
