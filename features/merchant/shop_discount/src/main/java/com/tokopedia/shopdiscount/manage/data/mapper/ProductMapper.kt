@@ -56,10 +56,10 @@ class ProductMapper @Inject constructor() {
         val hasVariant = this.isVariant
         val availableOnMultiLocation = this.warehouses.isNotEmpty()
         return when {
-            !hasVariant -> ProductType.SINGLE
             !hasVariant && availableOnMultiLocation -> ProductType.SINGLE_MULTI_LOCATION
-            hasVariant -> ProductType.VARIANT
             hasVariant && availableOnMultiLocation -> ProductType.VARIANT_MULTI_LOCATION
+            !hasVariant -> ProductType.SINGLE
+            hasVariant -> ProductType.VARIANT
             else -> ProductType.SINGLE
         }
     }

@@ -76,11 +76,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 binding.labelDiscount.text = product.formattedDiscountMaxPercentage
                 binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice
                 binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice
-                binding.tpgInformation.text = String.format(
-                    binding.tpgInformation.context.getString(R.string.sd_placeholder),
-                    product.discountStartDate,
-                    product.discountEndDate
-                )
+                displayDiscountPeriodRange(product)
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock),
@@ -89,14 +85,11 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 )
             }
             ProductType.SINGLE_MULTI_LOCATION -> {
-                binding.labelDiscount.text = product.formattedDiscountMaxPercentage
-                binding.tpgDiscountedPrice.text = product.formattedDiscountMaxPrice
-                binding.tpgOriginalPrice.text = product.formattedOriginalMaxPrice
-                binding.tpgInformation.text = String.format(
-                    binding.tpgInformation.context.getString(R.string.sd_placeholder),
-                    product.discountStartDate,
-                    product.discountEndDate
-                )
+                displayDiscountPercentageRange(product)
+                displayDiscountedPriceRange(product)
+                displayOriginalPriceRange(product)
+                displayDiscountPeriodRange(product)
+                displayVariantCount()
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock_multiple_location),
@@ -104,14 +97,12 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                         product.locationCount
                     )
                 )
-
             }
             ProductType.VARIANT -> {
-                displayDiscountPercentage(product)
-                displayDiscountedPrice(product)
-                displayOriginalPrice(product)
-                binding.tpgInformation.text =
-                    binding.tpgInformation.context.getString(R.string.sd_with_variant)
+                displayDiscountPercentageRange(product)
+                displayDiscountedPriceRange(product)
+                displayOriginalPriceRange(product)
+                displayVariantCount()
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock),
@@ -120,58 +111,58 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 )
             }
             ProductType.VARIANT_MULTI_LOCATION -> {
-                displayDiscountPercentage(product)
-                displayDiscountedPrice(product)
-                displayOriginalPrice(product)
-                binding.tpgInformation.text =
-                    binding.tpgInformation.context.getString(R.string.sd_with_variant)
+                displayDiscountPercentageRange(product)
+                displayDiscountedPriceRange(product)
+                displayOriginalPriceRange(product)
+                displayVariantCount()
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock_various_multiple_location),
                         product.totalStock
                     )
                 )
-
             }
         }
     }
 
-    private fun displayDiscountPercentage(product: Product) {
-        binding.labelDiscount.text =
-            if (product.hasSameDiscountPercentageAmount) {
-                product.formattedDiscountMaxPercentage
-            } else {
-                String.format(
-                    binding.labelDiscount.context.getString(R.string.sd_placeholder),
-                    product.formattedDiscountMinPercentage,
-                    product.formattedDiscountMaxPercentage
-                )
-            }
+    private fun displayDiscountPercentageRange(product: Product) {
+        binding.labelDiscount.text = String.format(
+            binding.labelDiscount.context.getString(R.string.sd_placeholder),
+            product.formattedDiscountMinPercentage,
+            product.formattedDiscountMaxPercentage
+        )
+
     }
 
-    private fun displayDiscountedPrice(product: Product) {
+    private fun displayDiscountedPriceRange(product: Product) {
         binding.tpgDiscountedPrice.text =
-            if (product.hasSameDiscountedPriceAmount) {
+            String.format(
+                binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
+                product.formattedDiscountMinPrice,
                 product.formattedDiscountMaxPrice
-            } else {
-                String.format(
-                    binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
-                    product.formattedDiscountMinPrice,
-                    product.formattedDiscountMaxPrice
-                )
-            }
+            )
     }
 
-    private fun displayOriginalPrice(product: Product) {
+    private fun displayOriginalPriceRange(product: Product) {
         binding.tpgOriginalPrice.text =
-            if (product.hasSameOriginalPrice) {
+            String.format(
+                binding.tpgOriginalPrice.context.getString(R.string.sd_placeholder),
+                product.formattedOriginalMinPrice,
                 product.formattedOriginalMaxPrice
-            } else {
-                String.format(
-                    binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
-                    product.formattedOriginalMinPrice,
-                    product.formattedOriginalMaxPrice
-                )
-            }
+            )
+
+    }
+
+    private fun displayVariantCount() {
+        binding.tpgInformation.text =
+            binding.tpgInformation.context.getString(R.string.sd_with_variant)
+    }
+
+    private fun displayDiscountPeriodRange(product: Product) {
+        binding.tpgInformation.text = String.format(
+            binding.tpgInformation.context.getString(R.string.sd_placeholder),
+            product.discountStartDate,
+            product.discountEndDate
+        )
     }
 }

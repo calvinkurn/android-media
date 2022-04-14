@@ -20,7 +20,6 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
