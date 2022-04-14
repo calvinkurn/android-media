@@ -51,7 +51,7 @@ class PreviewViewModelTest {
     fun `check isLoading not empty`() {
         // When
         every { imageCompressorMock.compress(any()) } returns flow { }
-        viewModel.files(mediaUiModelMockCollection)
+        viewModel.files(mediaUiModelMock)
 
         // Then
         assert(viewModel.isLoading.value != null)
@@ -82,8 +82,8 @@ class PreviewViewModelTest {
                 }
         }
 
-        viewModel.files(mediaUiModelMockCollection)
-        assertEquals(mediaUiModelMockCollection.size, pickerResult?.originalPaths?.size)
+        viewModel.files(mediaUiModelMock)
+        assertEquals(mediaUiModelMock.size, pickerResult?.originalPaths?.size)
     }
 
     @ExperimentalCoroutinesApi
@@ -111,31 +111,21 @@ class PreviewViewModelTest {
                 }
         }
 
-        viewModel.files(mediaUiModelMockCollection)
-        assertEquals(expectedNumberOfCompressedImage, pickerResult?.compressedImages?.size)
+        viewModel.files(mediaUiModelMock)
+        assertEquals(expectedCompressedImageSize, pickerResult?.compressedImages?.size)
     }
 
     companion object {
-        const val expectedNumberOfCompressedImage = 2
-
-        val mediaUiModelMockCollection = listOf(
-            MediaUiModel(
-                13,
-                "img1",
-                "/storage/emulated/0/Pictures/img1.jpg",
-                isFromPickerCamera = true
-            ),
-            MediaUiModel(14, "img2", "/storage/emulated/0/Pictures/img2.jpg"),
-            MediaUiModel(
-                15,
-                "img3",
-                "/storage/emulated/0/Pictures/img3.jpg",
-                isFromPickerCamera = true
-            ),
-            MediaUiModel(16, "vid1", "/storage/emulated/0/Pictures/vid1.mp4"),
-            MediaUiModel(17, "vid2", "/storage/emulated/0/Pictures/vid2.mp4"),
-            MediaUiModel(18, "vid3", "/storage/emulated/0/Pictures/vid3.mp4"),
+        private val mediaUiModelMock = listOf(
+            MediaUiModel(1, "img2", "/path/img2.jpg", isFromPickerCamera = true),
+            MediaUiModel(2, "img3", "/path/img3.jpg", isFromPickerCamera = true),
+            MediaUiModel(3, "img1", "/path/img1.jpg"),
+            MediaUiModel(4, "vid1", "/path/vid1.mp4"),
+            MediaUiModel(5, "vid2", "/path/vid2.mp4"),
+            MediaUiModel(6, "vid3", "/path/vid3.mp4"),
         )
+        private val expectedCompressedImageSize
+                = mediaUiModelMock.filter { it.isFromPickerCamera }.size
     }
 
 }
