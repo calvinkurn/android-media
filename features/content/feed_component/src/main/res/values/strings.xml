@@ -177,7 +177,7 @@
     <string name="feed_share_detail_format_text">Ini bagus deh, kayaknya cocok buat kamu %s </string>
 
     <!--POST-->
-    <string name="feed_post_tag_text">Lihat Produk</string>
+    <string name="feed_post_tag_text">Lihat Barang</string>
 
     <!--VOD-->
     <string name="feed_post_lanjut_menonton">Lanjut Menonton</string>
@@ -192,7 +192,7 @@
 
     <string name="feeds_sek_sekarang">Cek Sekarang</string>
     <string name="feeds_ads_text">Ad</string>
-    <string name="feeds_asgc_new_product_text">Produk Terbaru</string>
+    <string name="feeds_asgc_new_product_text">Barang Terbaru</string>
     <string name="feeds_asgc_restock_text">Restock</string>
 
     //video Tab in feed
