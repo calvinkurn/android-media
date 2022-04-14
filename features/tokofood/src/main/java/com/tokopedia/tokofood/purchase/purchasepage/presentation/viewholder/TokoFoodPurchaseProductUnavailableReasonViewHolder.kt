@@ -19,7 +19,7 @@ class TokoFoodPurchaseProductUnavailableReasonViewHolder(private val viewBinding
 
     override fun bind(element: TokoFoodPurchaseProductUnavailableReasonTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            textDisabledTitle.text = element.reason
+            unavailableSectionType.text = element.reason
             if (element.detail.isNotBlank()) {
                 textDisabledSubTitle.text = element.detail
                 textDisabledSubTitle.show()
