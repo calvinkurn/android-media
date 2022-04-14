@@ -240,8 +240,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                         shopLocation = recommendation.grid.shop.shopLocation,
                         shopBadgeList = recommendation.grid.badges.map {
                             ProductCardModel.ShopBadge(imageUrl = it.imageUrl)
-                        },
-                        animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                        }
                     )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)

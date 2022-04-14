@@ -31,8 +31,7 @@ object ProductHighlightModelMapper {
                  isOutOfStock = isOutOfStock,
                  ratingCount = rating,
                  reviewCount = countReview,
-                 countSoldRating = ratingFloat,
-                 animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                 countSoldRating = ratingFloat
              )
          }
      }

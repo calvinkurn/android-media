@@ -35,8 +35,7 @@ object ChannelModelMapper {
                 isOutOfStock = channelGrid.isOutOfStock,
                 ratingCount = channelGrid.rating,
                 countSoldRating = channelGrid.ratingFloat,
-                reviewCount = channelGrid.countReview,
-                animationOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
+                reviewCount = channelGrid.countReview
         )
     }
 }
