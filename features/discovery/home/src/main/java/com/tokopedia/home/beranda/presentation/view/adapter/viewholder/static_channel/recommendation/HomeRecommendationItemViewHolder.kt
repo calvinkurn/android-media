@@ -10,7 +10,6 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
-import com.tokopedia.unifycomponents.CardUnify2
 
 /**
  * Created by Lukas on 2019-07-15

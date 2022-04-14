@@ -2,7 +2,6 @@ package com.tokopedia.home_component.mapper
 
 import com.tokopedia.home_component.model.*
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.unifycomponents.CardUnify2
 
 object ChannelModelMapper {
     fun mapToProductCardModel(channelGrid: ChannelGrid): ProductCardModel {

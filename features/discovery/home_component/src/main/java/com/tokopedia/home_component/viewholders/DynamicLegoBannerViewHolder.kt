@@ -6,6 +6,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -32,7 +33,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
-import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 /**
  * Created by Devara on 2020-04-28
@@ -185,6 +185,12 @@ class DynamicLegoBannerViewHolder(itemView: View,
             if(viewType == LEGO_LANDSCAPE){
                 viewHolder.cardUnify.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
             }
+            else if(viewType == LEGO_SQUARE){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    viewHolder.imageView.findViewById<ImageView>(R.id.imageView).foreground =
+                        ColorDrawable(ContextCompat.getColor(parent.context, android.R.color.transparent))
+                }
+            }
             return viewHolder
         }
 
@@ -268,11 +274,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardUnify: CardUnify2 by lazy { view.findViewById(R.id.item_lego_card) }
-        val imageView: ShimmeringImageView = view.findViewById<ShimmeringImageView?>(R.id.image).apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                this.imageView.foreground = ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent))
-            }
-        }
+        val imageView: ShimmeringImageView = view.findViewById<ShimmeringImageView?>(R.id.image)
         val context: Context
             get() = itemView.context
     }
