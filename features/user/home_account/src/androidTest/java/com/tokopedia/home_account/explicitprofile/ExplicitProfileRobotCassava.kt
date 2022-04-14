@@ -6,7 +6,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 
 
 infix fun ExplicitProfileResult.validateTracker(action: ExplicitProfileRobotCassava.() -> Unit): ExplicitProfileRobotCassava {
-    Thread.sleep(2500)
+    Thread.sleep(1000)
     return ExplicitProfileRobotCassava().apply(action)
 }
 

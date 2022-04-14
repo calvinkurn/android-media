@@ -6,7 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home_account.explicitprofile.fakes.ExplicitProfileInterceptor
-import com.tokopedia.home_account.explicitprofile.features.ExplicitProfileActivity
+import com.tokopedia.home_account.explicitprofile.fakes.FakeExplicitProfileActivity
 import com.tokopedia.test.application.annotations.CassavaTest
 import org.junit.After
 import org.junit.Before
@@ -20,7 +20,7 @@ class ExplicitProfileUiTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(
-        ExplicitProfileActivity::class.java, false, false
+        FakeExplicitProfileActivity::class.java, false, false
     )
 
     @get:Rule
@@ -34,8 +34,6 @@ class ExplicitProfileUiTest {
             listOf(ExplicitProfileInterceptor(context)),
             context
         )
-
-        activityRule.launchActivity(null)
     }
 
     @After
@@ -45,6 +43,7 @@ class ExplicitProfileUiTest {
 
     @Test
     fun selectTabKategoriLain() {
+        activityRule.launchActivity(null)
         explicitProfileRobot {
             /**
              * Simulate swipe tab to left
@@ -63,6 +62,9 @@ class ExplicitProfileUiTest {
 
     @Test
     fun saveShoppingPreferences() {
+        activityRule.launchActivity(null)
+
+
         explicitProfileRobot {
             /**
              * click on chips with text
@@ -71,6 +73,7 @@ class ExplicitProfileUiTest {
             clickAnswerWithText("Halal")
             clickAnswerWithText("Vegan")
             clickAnswerWithText("Halal")
+            clickButtonSave()
         } validateComponent {
             shouldButtonSaveEnabled()
         } validateTracker {
@@ -82,6 +85,7 @@ class ExplicitProfileUiTest {
 
     @Test
     fun userAnswerSameWithDefault() {
+        activityRule.launchActivity(null)
         explicitProfileRobot {
             /**
              * click on chips with text
@@ -103,6 +107,7 @@ class ExplicitProfileUiTest {
 
     @Test
     fun showSectionInfoBottomSheet() {
+        activityRule.launchActivity(null)
         explicitProfileRobot {
             clickOnInfoSection()
         } validateComponent {

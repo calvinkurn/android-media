@@ -30,7 +30,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class ExplicitProfileFragment : BaseDaggerFragment() {
+open class ExplicitProfileFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var tracker: ExplicitProfileAnalytics
@@ -99,6 +99,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
                     onError(it.error)
                 }
                 is ExplicitProfileResult.Success -> {
+                    showLoading(false)
                     tracker.onSavePreference(true)
                     successSaveShoppingPreference(true)
                 }
@@ -236,7 +237,7 @@ class ExplicitProfileFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun successSaveShoppingPreference(isSave: Boolean) {
+    open fun successSaveShoppingPreference(isSave: Boolean) {
         activity?.let {
             it.setResult(if (isSave) Activity.RESULT_OK else Activity.RESULT_CANCELED)
             it.finish()

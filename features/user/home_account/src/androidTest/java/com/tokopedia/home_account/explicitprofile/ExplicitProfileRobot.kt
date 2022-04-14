@@ -60,6 +60,13 @@ class ExplicitProfileRobot {
         onView(allOf(withId(R.id.sectionInfoIcon), isDisplayed()))
             .perform(clickOnUnifyIcon())
     }
+
+    fun clickButtonSave() {
+        onView(withId(R.id.btnSave))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
+            .perform(click())
+    }
 }
 
 class ExplicitProfileResult {
