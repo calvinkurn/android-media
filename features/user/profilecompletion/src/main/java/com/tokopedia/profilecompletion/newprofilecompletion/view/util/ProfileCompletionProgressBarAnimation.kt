@@ -12,14 +12,14 @@ class ProfileCompletionProgressBarAnimation(private val progressBar: ProgressBar
     private var from = 0f
     private var to = 0f
     fun setValue(from: Int, to: Int) {
-        this.from = from * max / 100.toFloat()
-        this.to = to * max / 100.toFloat()
+	this.from = from * max / 100.toFloat()
+	this.to = to * max / 100.toFloat()
     }
 
     override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-        super.applyTransformation(interpolatedTime, t)
-        val value = from + (to - from) * interpolatedTime
-        progressBar.progress = value.toInt()
+	super.applyTransformation(interpolatedTime, t)
+	val value = from + (to - from) * interpolatedTime
+	progressBar.progress = value.toInt()
     }
 
 }
