@@ -5,6 +5,7 @@ import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -20,7 +21,7 @@ class PlayInteractiveMapper @Inject constructor() {
         }
     }
 
-    private fun mapGiveaway(data: GiveawayResponse): InteractiveUiModel.Giveaway {
+    fun mapGiveaway(data: GiveawayResponse): InteractiveUiModel.Giveaway {
         return InteractiveUiModel.Giveaway(
             id = data.interactiveID,
             title = data.title,
@@ -40,7 +41,8 @@ class PlayInteractiveMapper @Inject constructor() {
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Giveaway.Status.Finished
                 else -> InteractiveUiModel.Giveaway.Status.Unknown
-            }
+            },
+            waitingDuration = TimeUnit.SECONDS.toMillis(data.waitingDuration.toLong()),
         )
     }
 
@@ -56,7 +58,7 @@ class PlayInteractiveMapper @Inject constructor() {
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished
                 else -> InteractiveUiModel.Quiz.Status.Unknown
-            }
+            },
         )
     }
 

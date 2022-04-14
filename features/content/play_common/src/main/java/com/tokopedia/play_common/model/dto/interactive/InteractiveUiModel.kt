@@ -23,6 +23,7 @@ sealed interface InteractiveUiModel {
         override val id: Long,
         override val title: String,
         val status: Status,
+        val waitingDuration: Long,
     ) : InteractiveUiModel {
 
         sealed interface Status {
