@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +44,7 @@ class ProductDetailNavigation(
     private var showJob: Job? = null
 
     private var translateInProgress = false
+    private var disableNavigation = false
 
     init {
         addView(view)
@@ -74,7 +75,13 @@ class ProductDetailNavigation(
             }
         }
 
-        if (this.items.isEmpty()) view.hide()
+        if (this.items.isEmpty()) {
+            disableNavigation = true
+            view.gone()
+        } else {
+            disableNavigation = false
+            view.visibility = View.INVISIBLE
+        }
     }
 
     private fun scrollToContent(tabPosition: Int) {
@@ -92,14 +99,14 @@ class ProductDetailNavigation(
     }
 
     private fun toggle(show: Boolean) {
-        if (translateInProgress) return
+        if (translateInProgress || disableNavigation) return
         translateInProgress = true
         val showY = 0f
         val hideY = -1f * view.height
 
+        if (show) view.show()
         if (view.translationY < showY && view.translationY > hideY) return
 
-        if (show) view.show()
         val y = if (show) showY else hideY
         view.animate().translationY(y).setDuration(300).withEndAction {
             translateInProgress = false
@@ -183,7 +190,7 @@ class ProductDetailNavigation(
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if(state == RecyclerView.SCROLL_STATE_SETTLING) return
+            if (state == RecyclerView.SCROLL_STATE_SETTLING) return
             updateSelectedTab(recyclerView)
         }
 
