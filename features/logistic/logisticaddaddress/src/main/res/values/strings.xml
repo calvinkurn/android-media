@@ -156,7 +156,6 @@
     <string name="txt_info_location_not_detected">Kami tidak dapat mengakses lokasimu. Untuk menggunakan fitur ini, silakan aktifkan layanan lokasi kamu.</string>
     <string name="txt_empty_state">Oops, alamatmu tidak ditemukan</string>
     <string name="txt_empty_state_desc">Cek ulang alamatmu dan coba lagi, ya.</string>
-    <string name="txt_empty_state_desc_district"> Coba periksa kembali penulisanmu.</string>
 
     <!--PinpointNew Page-->
     <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
@@ -189,6 +188,8 @@
     <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2$s, %3$s</string>
     <string name="tv_discom_dialog_secondary">Lain Kali</string>
     <string name="discom_on_deny_location_subtitle">Untuk menggunakan fitur ini silahkan aktifkan layanan lokasi perangkat Anda</string>
+    <string name="discom_empty_state_title">Oops, lokasimu tidak ditemukan</string>
+    <string name="txt_empty_state_desc_district"> Coba periksa kembali penulisanmu.</string>
 
     <string name="tv_error_field">Wajib diisi</string>
     <string name="tv_title_nama_penerima_bottomsheet">Informasi nama penerima</string>

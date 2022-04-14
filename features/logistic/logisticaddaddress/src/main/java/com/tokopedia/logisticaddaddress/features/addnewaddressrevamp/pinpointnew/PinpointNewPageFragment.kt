@@ -841,8 +841,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
-                tvInvalidLoc.text = getString(R.string.undetected_location_new)
                 if (isEdit) {
+                    tvInvalidLoc.text = getString(R.string.discom_empty_state_title)
                     if (isPinpoint) {
                         tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_edit_w_pinpoint)
                         btnAnaNegative.visibility = View.GONE
@@ -858,6 +858,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                         }
                     }
                 } else {
+                    tvInvalidLoc.text = getString(R.string.undetected_location_new)
                     tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_new)
                 }
             }

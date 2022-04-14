@@ -74,7 +74,7 @@
             android:layout_below="@id/divider_use_current_location"
             app:unifyEmptyStateDescription="@string/txt_empty_state_desc_district"
             app:unifyEmptyStateOrientation="vertical"
-            app:unifyEmptyStateTitle="@string/txt_empty_state"
+            app:unifyEmptyStateTitle="@string/discom_empty_state_title"
             android:visibility="gone" />
 
         <LinearLayout
