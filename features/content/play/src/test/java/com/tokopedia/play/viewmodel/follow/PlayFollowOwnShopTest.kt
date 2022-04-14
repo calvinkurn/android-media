@@ -10,7 +10,6 @@ import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
-import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction.FollowPartner
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -75,7 +74,7 @@ class PlayFollowOwnShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(PlayViewerNewAction.FollowPartner)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.isEqualTo(
@@ -99,7 +98,7 @@ class PlayFollowOwnShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(PlayViewerNewAction.FollowPartner)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.isEqualTo(
@@ -131,7 +130,7 @@ class PlayFollowOwnShopTest {
             createPage(mockChannelData)
             focusPage(mockChannelData)
         } andWhen {
-            submitAction(PlayViewerNewAction.FollowPartner)
+            submitAction(PlayViewerNewAction.Follow)
         } thenVerify {
             withState {
                 partner.status.isEqualTo(

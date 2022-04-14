@@ -38,7 +38,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
 
     private val followViewListener = object : InteractiveFollowView.Listener {
         override fun onFollowClicked(view: InteractiveFollowView) {
-            viewModel.submitAction(PlayViewerNewAction.FollowPartner)
+            viewModel.submitAction(PlayViewerNewAction.Follow)
         }
     }
 

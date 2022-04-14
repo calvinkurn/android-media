@@ -806,7 +806,7 @@ class PlayViewModel @AssistedInject constructor(
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
-            PlayViewerNewAction.FollowPartner -> handleClickFollow(isFromLogin = false)
+            PlayViewerNewAction.Follow -> handleClickFollow(isFromLogin = false)
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()

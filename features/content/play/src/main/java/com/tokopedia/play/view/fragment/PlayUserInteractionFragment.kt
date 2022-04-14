@@ -384,7 +384,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onFollowButtonClicked(view: PartnerInfoViewComponent) {
-        playViewModel.submitAction(PlayViewerNewAction.FollowPartner)
+        playViewModel.submitAction(PlayViewerNewAction.Follow)
     }
 
     /**
