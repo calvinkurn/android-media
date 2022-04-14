@@ -55,6 +55,7 @@ class ProductDetailDevActivity : BaseActivity() {
         val shopIdVbsEditText = findViewById<TextFieldUnify>(R.id.pdp_shopid_vbs)
         val saveAfterCloseEditText = findViewById<TextFieldUnify>(R.id.pdp_save_after_close_atc_vbs)
         val dismissAfterAtc = findViewById<TextFieldUnify>(R.id.pdp_dismiss_after_atc_vbs)
+        val extParamsEditText = findViewById<TextFieldUnify>(R.id.pdp_ext_param_vbs)
         val toggleTokoNow = findViewById<CheckBox>(R.id.toggle_is_tokonow)
         val spinnerPageSource = findViewById<Spinner>(R.id.page_source_spinner)
 
@@ -72,6 +73,7 @@ class ProductDetailDevActivity : BaseActivity() {
             val saveAfterClose = saveAfterCloseEditText.textFieldInput.text.toString().toBoolean()
 
             val productId = productIdVbsEditText.textFieldInput.text.toString()
+            val extParams = extParamsEditText.textFieldInput.text.toString()
             val shopId = shopIdVbsEditText.textFieldInput.text.toString()
             val pageSource = VariantPageSource.values().firstOrNull {
                 it.source == spinnerPageSource.selectedItem.toString()
@@ -86,6 +88,7 @@ class ProductDetailDevActivity : BaseActivity() {
                     trackerCdListName = "",
                     dismissAfterTransaction = dismissAfterAtcData,
                     saveAfterClose = saveAfterClose,
+                    extParams = extParams,
                     startActivitResult = { data, _ ->
                         startActivity(data)
                     }

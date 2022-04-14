@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -22,16 +25,86 @@ import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.productcard.video.ProductCardVideo
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_footer_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import com.tokopedia.unifyprinciples.Typography
+import kotlin.LazyThreadSafetyMode.NONE
 
 class ProductCardGridView: BaseCustomView, IProductCardView {
 
     private val cartExtension = ProductCardCartExtension(this)
     private val video: ProductCardVideo by lazy{
         ProductCardVideo(this)
+    }
+    private val cardViewProductCard: CardView? by lazy(NONE) {
+        findViewById(R.id.cardViewProductCard)
+    }
+    private val constraintLayoutProductCard: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.constraintLayoutProductCard)
+    }
+    private val outOfStockOverlay: View? by lazy(NONE) {
+        findViewById(R.id.outOfStockOverlay)
+    }
+    private val labelProductStatus: Label? by lazy(NONE) {
+        findViewById(R.id.labelProductStatus)
+    }
+    private val textTopAds: Typography? by lazy(NONE) {
+        findViewById(R.id.textTopAds)
+    }
+    private val imageVideoIdentifier: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageVideoIdentifier)
+    }
+    private val progressBarStock: ProgressBarUnify? by lazy(NONE) {
+        findViewById(R.id.progressBarStock)
+    }
+    private val textViewStockLabel: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewStockLabel)
+    }
+    private val imageThreeDots: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageThreeDots)
+    }
+    private val buttonSimilarProduct: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeSimilarProduct)
+    }
+    private val labelCampaignBackground: ImageView? by lazy(NONE) {
+        findViewById(R.id.labelCampaignBackground)
+    }
+    private val textViewLabelCampaign: Typography? by lazy(NONE) {
+        findViewById(R.id.textViewLabelCampaign)
+    }
+    private val labelBestSeller: Typography? by lazy(NONE) {
+        findViewById(R.id.labelBestSeller)
+    }
+    private val textCategorySide: Typography? by lazy(NONE) {
+        findViewById(R.id.textCategorySide)
+    }
+    private val textCategoryBottom: Typography? by lazy(NONE) {
+        findViewById(R.id.textCategoryBottom)
+    }
+    private val imageProduct: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageProduct)
+    }
+    private val buttonAddVariant: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddVariant)
+    }
+    private val buttonNotify: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonNotify)
+    }
+    private val buttonThreeDotsWishlist: FrameLayout? by lazy(NONE) {
+        findViewById(R.id.buttonThreeDotsWishlist)
+    }
+    private val buttonAddToCartWishlist: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonAddToCartWishlist)
+    }
+    private val buttonSeeSimilarProductWishlist: UnifyButton? by lazy(NONE) {
+        findViewById(R.id.buttonSeeSimilarProductWishlist)
+    }
+    private val imageShopBadge: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageShopBadge)
+    }
+    private val imageFreeOngkirPromo: ImageView? by lazy(NONE) {
+        findViewById(R.id.imageFreeOngkirPromo)
     }
 
     constructor(context: Context): super(context) {
@@ -96,7 +169,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderProductCardFooter(productCardModel, isProductCardList = false)
 
-        imageThreeDots?.shouldShowWithAction(productCardModel.hasThreeDots) {
+        imageThreeDots.shouldShowWithAction(productCardModel.hasThreeDots) {
             constraintLayoutProductCard?.post {
                 imageThreeDots?.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_8),
@@ -128,7 +201,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setSimilarProductClickListener(similarProductClickListener: (View) -> Unit) {
-        val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
         buttonSimilarProduct?.setOnClickListener(similarProductClickListener)
     }
 

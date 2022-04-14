@@ -30,26 +30,26 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
     }
 
     private fun initView(view: View) {
-        txtDone = view.findViewById(R.id.txt_done)
+	txtDone = view.findViewById(R.id.txt_done)
         val imgGender = view.findViewById<ImageView>(R.id.rg_gender)
         imgGender?.loadImage(MAIN_IMG)
     }
 
     private fun setViewListener() {
-        txtDone?.setOnClickListener {
-            if (context != null) {
-                userSession = UserSession(context)
-                val intent = RouteManager.getIntent(
-                        context,
-                        userSession?.userId?.let { userId ->
-                                ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
-                            }
-                )
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                activity?.startActivity(intent)
-                activity?.finish()
-            }
-        }
+	txtDone?.setOnClickListener {
+	    if (context != null) {
+		userSession = UserSession(context)
+		val intent = RouteManager.getIntent(
+		    context,
+		    userSession?.userId?.let { userId ->
+			ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId)
+		    }
+		)
+		intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+		activity?.startActivity(intent)
+		activity?.finish()
+	    }
+	}
     }
 
     override fun getScreenName(): String = ""
@@ -59,8 +59,8 @@ class ProfileCompletionFinishedFragment : BaseDaggerFragment() {
         const val TAG = "finished"
         const val MAIN_IMG = "https://images.tokopedia.net/img/android/user/profilecompletion/profilecompletion_akun_terverifikasi.png"
 
-        fun createInstance(): ProfileCompletionFinishedFragment {
-            return ProfileCompletionFinishedFragment()
-        }
+	fun createInstance(): ProfileCompletionFinishedFragment {
+	    return ProfileCompletionFinishedFragment()
+	}
     }
 }

@@ -29,6 +29,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_COMMUNICATION
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_NOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CAMPAIGN_CODE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_PG
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_PRODUCT_CLICK
@@ -38,6 +39,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_TOKONOW_IRIS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ACTION_FIELD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ADD
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_AFFINITY_LABEL
@@ -116,11 +118,14 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_BANNER_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_LEGO_3
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_QUEST_CARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_REWARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SEE_DETAILS_QUEST_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_TITLE_CARD_QUEST_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL
@@ -129,11 +134,15 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_LEGO_3
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_PRODUCT_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_QUEST_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_IMPRESSION_USP_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.ITEM_LIST_LEFT_CAROUSEL
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.REFERRAL_STATUS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -180,6 +189,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val EVENT_ACTION_CLICK_CLOSE_QUEST_WIDGET = "click close quest widget"
         const val EVENT_ACTION_IMPRESSION_USP_WIDGET = "impression usp widget"
         const val EVENT_ACTION_CLICK_USP_WIDGET = "click drop down on usp widget"
+        const val EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET = "click cek detail on tokonow referral widget - receiver"
+        const val EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET = "view tokonow referral widget - receiver"
+        const val EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET = "click bagikan ke temanmu on tokonow referral widget - sender"
+        const val EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET = "click selengkapnya on tokonow referral widget - sender"
+        const val EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET = "view tokonow referral widget - sender"
     }
 
     object VALUE {
@@ -196,6 +210,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val HOMEPAGE_TOKONOW = "homepage tokonow"
         const val ITEM_LIST_LEFT_CAROUSEL = "/tokonow - left carousel - carousel"
         const val HOME_WIDGET = "homewidget"
+        const val REFERRAL_STATUS = "1"
     }
 
     fun onClickSearchBar() {
@@ -505,7 +520,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
                 productCategory = grid.categoryId
             )
         )
-        
+
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
             action = EVENT_ACTION_IMPRESSION_PRODUCT_LEFT_CAROUSEL,
@@ -534,7 +549,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
 
         val itemList = "$ITEM_LIST_LEFT_CAROUSEL${channelModel.type} - " +
             "${channelModel.pageName} - " + headerName
-        
+
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL,
@@ -674,7 +689,10 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_CLICK_PG, dataLayer)
     }
 
-    /* Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/1963 */
+    /*
+        -- Global Sharing Bottom Sheet --
+        Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/1963
+    */
 
     // - 1
     fun trackClickShareButtonTopNav() {
@@ -848,6 +866,160 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         dataLayer[KEY_USER_ID] = userSession.userId.getOrDefaultZeroString()
 
         getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    /*
+        -- Referral Widget --
+        Thanos : https://mynakama.tokopedia.com/datatracker/requestdetail/view/2906
+    */
+
+    private fun getEventLabelReferralWidget(slug: String, referralCode: String, userStatus: String, referralStatus: String, warehouseId: String): String {
+        return "$slug - $referralCode - $userStatus - $referralStatus - $warehouseId"
+    }
+
+    // - 1
+    fun sendImpressSenderReferralWidget(
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_PG_IRIS)
+            .setEventAction(EVENT_ACTION_IMPRESSION_SENDER_REFERRAL_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = REFERRAL_STATUS,
+                    warehouseId = warehouseId
+                )
+            )
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setUserId(userSession.userId.getOrDefaultZeroString())
+            .setCustomProperty(EVENT_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
+    }
+
+    // - 2
+    fun sendClickMoreSenderReferralWidget(
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_PG)
+            .setEventAction(EVENT_ACTION_CLICK_MORE_SENDER_REFERRAL_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = REFERRAL_STATUS,
+                    warehouseId = warehouseId
+                )
+            )
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setUserId(userSession.userId.getOrDefaultZeroString())
+            .setCustomProperty(EVENT_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
+    }
+
+    // - 3
+    fun sendClickShareSenderReferralWidget(
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_PG)
+            .setEventAction(EVENT_ACTION_CLICK_SHARE_SENDER_REFERRAL_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = REFERRAL_STATUS,
+                    warehouseId = warehouseId
+                )
+            )
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setUserId(userSession.userId.getOrDefaultZeroString())
+            .setCustomProperty(EVENT_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
+    }
+
+    // - 4
+    fun sendImpressReceiverReferralWidget(
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_PG_IRIS)
+            .setEventAction(EVENT_ACTION_IMPRESSION_RECEIVER_REFERRAL_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = REFERRAL_STATUS,
+                    warehouseId = warehouseId
+                )
+            )
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setUserId(userSession.userId.getOrDefaultZeroString())
+            .setCustomProperty(EVENT_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
+    }
+
+    // - 5
+    fun sendClickCheckDetailReceiverReferralWidget(
+        slug: String,
+        referralCode: String,
+        userStatus: String,
+        campaignCode: String,
+        warehouseId: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_PG)
+            .setEventAction(EVENT_ACTION_CLICK_CHECK_DETAIL_RECEIVER_REFERRAL_WIDGET)
+            .setEventCategory(EVENT_CATEGORY_HOME_PAGE)
+            .setEventLabel(getEventLabelReferralWidget(
+                    slug = slug,
+                    referralCode = referralCode,
+                    userStatus = userStatus,
+                    referralStatus = REFERRAL_STATUS,
+                    warehouseId = warehouseId
+                )
+            )
+            .setBusinessUnit(BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
+            .setCustomProperty(EVENT_CAMPAIGN_CODE, campaignCode)
+            .setCurrentSite(CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)
+            .setUserId(userSession.userId.getOrDefaultZeroString())
+            .setCustomProperty(EVENT_WAREHOUSE_ID, warehouseId)
+            .build()
+            .send()
     }
 
     private fun ecommerceDataLayerBannerClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int): Bundle {
