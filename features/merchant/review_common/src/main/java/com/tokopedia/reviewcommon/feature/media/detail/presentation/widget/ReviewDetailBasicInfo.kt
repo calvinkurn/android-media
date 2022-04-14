@@ -113,8 +113,9 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
         source: Source
     ) {
         tvReviewDetailLikeCount.run {
-            text = likeCount.toString()
-            showWithCondition(likeCount.isMoreThanZero() && source == Source.REVIEW_DETAIL_FRAGMENT)
+            text = if (likeCount.isMoreThanZero() && source == Source.REVIEW_DETAIL_FRAGMENT) {
+                likeCount.toString()
+            } else ""
         }
     }
 

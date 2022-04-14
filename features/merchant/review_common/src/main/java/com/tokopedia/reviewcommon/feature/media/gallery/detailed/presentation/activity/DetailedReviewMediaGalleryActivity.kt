@@ -1,5 +1,6 @@
 package com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.net.ConnectivityManager
@@ -156,7 +157,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
         if (sharedReviewMediaGalleryViewModel.orientationUiState.value.isLandscape()) {
             sharedReviewMediaGalleryViewModel.requestPortraitMode()
         } else {
-            super.onBackPressed()
+            finishActivity()
         }
     }
 
@@ -274,7 +275,7 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun ActivityDetailedReviewMediaGalleryBinding.setupToolbar() {
-        icReviewMediaGalleryClose.setOnClickListener { finish() }
+        icReviewMediaGalleryClose.setOnClickListener { finishActivity() }
         icReviewMediaGalleryKebab.setOnClickListener {
             sharedReviewMediaGalleryViewModel.showActionMenuBottomSheet()
         }
@@ -390,6 +391,13 @@ class DetailedReviewMediaGalleryActivity : AppCompatActivity(), CoroutineScope {
             sharedReviewMediaGalleryViewModel.toggleOverlayVisibility()
             return true
         }
+    }
+
+    private fun finishActivity() {
+        if (sharedReviewMediaGalleryViewModel.hasSuccessToggleLikeStatus()) {
+            setResult(Activity.RESULT_OK)
+        }
+        finish()
     }
 
     private inner class BottomSheetHandler {

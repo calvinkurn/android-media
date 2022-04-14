@@ -55,6 +55,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         const val SAVED_STATE_ORIENTATION_UI_STATE = "savedStateOrientationUiState"
         const val SAVED_STATE_OVERLAY_VISIBILITY = "savedStateOverlayVisibility"
         const val SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET = "savedStateShowActionMenuBottomSheet"
+        const val SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS = "savedStateHasSuccessToggleLikeStatus"
 
         const val EXTRAS_PRODUCT_ID = "extrasProductId"
         const val EXTRAS_SHOP_ID = "extrasShopId"
@@ -76,6 +77,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     private val _isFromGallery = MutableStateFlow(false)
     private val _showDetailedReviewActionMenuBottomSheet = MutableStateFlow(false)
     private val _connectedToWifi = MutableStateFlow(false)
+    private val _hasSuccessToggleLikeStatus = MutableStateFlow(false)
     val connectedToWifi: StateFlow<Boolean>
         get() = _connectedToWifi
     private val _toasterQueue = MutableSharedFlow<ToasterUiModel>()
@@ -222,6 +224,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(params.first, params.second)
             toggleLikeReviewUseCase.executeOnBackground().also { response ->
+                _hasSuccessToggleLikeStatus.value = true
                 _detailedReviewMediaResult.update { currentDetailedReviewMediaResult ->
                     currentDetailedReviewMediaResult?.copy(
                         detail = currentDetailedReviewMediaResult.detail.copy(
@@ -238,7 +241,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 }
             }
         }, onError = {
-            // noop
+            _toggleLikeRequest.value = null
         })
     }
 
@@ -304,6 +307,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         outState.putSerializable(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)
         outState.putBoolean(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)
         outState.putBoolean(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)
+        outState.putBoolean(SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, _hasSuccessToggleLikeStatus.value)
     }
 
     fun restoreState(savedState: Bundle) {
@@ -313,6 +317,7 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
         _orientationUiState.value = savedState.getSavedState(SAVED_STATE_ORIENTATION_UI_STATE, _orientationUiState.value)!!
         _overlayVisibility.value = savedState.getSavedState(SAVED_STATE_OVERLAY_VISIBILITY, _overlayVisibility.value)!!
         _showDetailedReviewActionMenuBottomSheet.value = savedState.getSavedState(SAVED_STATE_SHOW_ACTION_MENU_BOTTOM_SHEET, _showDetailedReviewActionMenuBottomSheet.value)!!
+        _hasSuccessToggleLikeStatus.value = savedState.getSavedState(SAVED_STATE_HAS_SUCCESS_TOGGLE_LIKE_STATUS, _hasSuccessToggleLikeStatus.value)!!
     }
 
     fun tryGetPreloadedData(cacheManager: CacheManager) {
@@ -413,5 +418,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
 
     fun updateWifiConnectivityStatus(connected: Boolean) {
         _connectedToWifi.value = connected
+    }
+
+    fun hasSuccessToggleLikeStatus(): Boolean {
+        return _hasSuccessToggleLikeStatus.value
     }
 }

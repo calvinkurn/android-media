@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="12dp"
+    android:paddingStart="12dp"
     android:paddingTop="4dp"
+    android:paddingEnd="0dp"
     android:paddingBottom="8dp"
     tools:background="#CC000000">
 
@@ -35,12 +36,13 @@
         android:id="@+id/tv_review_detail_like_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="end"
+        android:minWidth="12dp"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintBottom_toBottomOf="@id/ic_review_detail_toggle_expand_button"
         app:layout_constraintEnd_toStartOf="@id/barrier_start_like_dislike_button"
         app:layout_constraintTop_toTopOf="@id/ic_review_detail_toggle_expand_button"
-        app:typographyType="body_3"
-        tools:text="200" />
+        app:typographyType="body_3" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_start_like_dislike_button"
@@ -78,11 +80,11 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_review_detail_like_button"
-        android:layout_width="24dp"
-        android:layout_height="32dp"
-        android:paddingVertical="8dp"
+        android:layout_width="32dp"
+        android:layout_height="40dp"
+        android:paddingVertical="10dp"
         android:paddingStart="0dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="12dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
@@ -93,11 +95,11 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_review_detail_liked_button"
-        android:layout_width="24dp"
-        android:layout_height="32dp"
-        android:paddingVertical="8dp"
+        android:layout_width="32dp"
+        android:layout_height="40dp"
+        android:paddingVertical="10dp"
         android:paddingStart="0dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="12dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
@@ -118,11 +120,11 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_review_detail_toggle_expand_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="48dp"
+        android:layout_height="40dp"
         android:paddingVertical="8dp"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="16dp"
         app:icon_color_light_disabled="@color/Unify_Static_White"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_disabled="@color/Unify_Static_White"
