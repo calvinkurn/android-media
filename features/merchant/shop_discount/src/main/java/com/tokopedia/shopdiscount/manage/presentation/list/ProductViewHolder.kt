@@ -26,7 +26,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
         onVariantInfoClicked: (Product) -> Unit,
-        onProductSelectionChange : (Product, Boolean) -> Unit,
+        onProductSelectionChange: (Product, Boolean) -> Unit,
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
@@ -44,12 +44,20 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         handleCardSelectable(product.disableClick)
     }
 
-    private fun handleCheckboxAppearance(product: Product, onProductSelectionChange: (Product, Boolean) -> Unit) {
+    private fun handleCheckboxAppearance(
+        product: Product,
+        onProductSelectionChange: (Product, Boolean) -> Unit
+    ) {
         binding.checkBox.setOnCheckedChangeListener(null)
         binding.checkBox.isVisible = product.shouldDisplayCheckbox
         binding.checkBox.isChecked = product.isCheckboxTicked
         binding.checkBox.isClickable = !product.disableClick
-        binding.checkBox.setOnCheckedChangeListener { _, isSelected -> onProductSelectionChange(product, isSelected) }
+        binding.checkBox.setOnCheckedChangeListener { _, isSelected ->
+            onProductSelectionChange(
+                product,
+                isSelected
+            )
+        }
     }
 
     private fun handleOverflowMenuAppearance(shouldDisplayCheckbox: Boolean) {
@@ -60,8 +68,8 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         binding.btnUpdateDiscount.isVisible = !shouldDisplayCheckbox
     }
 
-    private fun handleCardSelectable(disableClick : Boolean) {
-        val labelType =  if (disableClick) HIGHLIGHT_LIGHT_GREY else HIGHLIGHT_LIGHT_RED
+    private fun handleCardSelectable(disableClick: Boolean) {
+        val labelType = if (disableClick) HIGHLIGHT_LIGHT_GREY else HIGHLIGHT_LIGHT_RED
         binding.labelDiscount.setLabelType(labelType)
 
         val alpha = if (disableClick) ALPHA_DISABLED else ALPHA_ENABLED
@@ -126,31 +134,40 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
     }
 
     private fun displayDiscountPercentageRange(product: Product) {
-        binding.labelDiscount.text = String.format(
-            binding.labelDiscount.context.getString(R.string.sd_placeholder),
-            product.formattedDiscountMinPercentage,
+        binding.labelDiscount.text = if (product.hasSameDiscountPercentageAmount) {
             product.formattedDiscountMaxPercentage
-        )
-
+        } else {
+            String.format(
+                binding.labelDiscount.context.getString(R.string.sd_placeholder),
+                product.formattedDiscountMinPercentage,
+                product.formattedDiscountMaxPercentage
+            )
+        }
     }
 
     private fun displayDiscountedPriceRange(product: Product) {
-        binding.tpgDiscountedPrice.text =
+        binding.tpgDiscountedPrice.text = if (product.hasSameDiscountedPriceAmount) {
+            product.formattedDiscountMaxPrice
+        } else {
             String.format(
                 binding.tpgDiscountedPrice.context.getString(R.string.sd_placeholder),
                 product.formattedDiscountMinPrice,
                 product.formattedDiscountMaxPrice
             )
+        }
+
     }
 
     private fun displayOriginalPriceRange(product: Product) {
-        binding.tpgOriginalPrice.text =
+        binding.tpgOriginalPrice.text = if (product.hasSameOriginalPrice) {
+            product.formattedOriginalMaxPrice
+        } else {
             String.format(
                 binding.tpgOriginalPrice.context.getString(R.string.sd_placeholder),
                 product.formattedOriginalMinPrice,
                 product.formattedOriginalMaxPrice
             )
-
+        }
     }
 
     private fun displayVariantCount() {
