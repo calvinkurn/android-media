@@ -11,7 +11,7 @@ data class TokoFoodPurchaseShippingTokoFoodPurchaseUiModel(
         var wrappingFee: Long = 0L,
         var serviceFee: Long = 0L,
         var isNeedPinpoint: Boolean = false,
-        var isShippingUnavailable: Boolean = false
+        var isShippingAvailable: Boolean = true
 ) : Visitable<TokoFoodPurchaseAdapterTypeFactory>, BaseTokoFoodPurchaseUiModel() {
 
     override fun type(typeFactory: TokoFoodPurchaseAdapterTypeFactory): Int {

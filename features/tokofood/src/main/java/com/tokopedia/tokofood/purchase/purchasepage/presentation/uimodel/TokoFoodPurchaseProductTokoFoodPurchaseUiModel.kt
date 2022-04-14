@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.adapter.TokoFoodPurchaseAdapterTypeFactory
 
 data class TokoFoodPurchaseProductTokoFoodPurchaseUiModel(
-        var isUnavailable: Boolean = false,
+        var isAvailable: Boolean = true,
         var id: String = "",
         var name: String = "",
         var imageUrl: String = "",

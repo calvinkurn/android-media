@@ -94,7 +94,7 @@ object VisitableDataHelper {
         val unavailableProducts = mutableListOf<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>()
         loop@ for ((index, data) in this.withIndex()) {
             when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isUnavailable -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isAvailable -> {
                     if (firstItemIndex == -1) firstItemIndex = index
                     unavailableProducts.add(data)
                 }

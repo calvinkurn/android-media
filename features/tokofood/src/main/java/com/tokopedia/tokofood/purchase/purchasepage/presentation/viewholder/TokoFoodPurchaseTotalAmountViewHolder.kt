@@ -18,12 +18,7 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
 
     override fun bind(element: TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            if (element.isDisabled) {
-                totalAmountPurchase.amountCtaView.isEnabled = false
-                totalAmountPurchase.setCtaText("Pilih Pembayaran")
-                totalAmountPurchase.setLabelTitle("Total Tagihan")
-                totalAmountPurchase.setAmount("-")
-            } else {
+            if (element.isEnabled) {
                 totalAmountPurchase.amountCtaView.isEnabled = true
                 totalAmountPurchase.setCtaText("Pilih Pembayaran")
                 totalAmountPurchase.setLabelTitle("Total Tagihan")
@@ -32,6 +27,11 @@ class TokoFoodPurchaseTotalAmountViewHolder(private val viewBinding: ItemPurchas
                 totalAmountPurchase.amountCtaView.setOnClickListener {
                     listener.onButtonCheckoutClicked()
                 }
+            } else {
+                totalAmountPurchase.amountCtaView.isEnabled = false
+                totalAmountPurchase.setCtaText("Pilih Pembayaran")
+                totalAmountPurchase.setLabelTitle("Total Tagihan")
+                totalAmountPurchase.setAmount("-")
             }
         }
     }

@@ -11,6 +11,7 @@ import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
+import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.CheckoutTokoFoodUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
@@ -20,24 +21,16 @@ import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHe
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMap
 import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -45,6 +38,7 @@ import javax.inject.Inject
 @FlowPreview
 class TokoFoodPurchaseViewModel @Inject constructor(
     private val keroEditAddressUseCase: KeroEditAddressUseCase,
+    private val checkoutTokoFoodUseCase: CheckoutTokoFoodUseCase,
     val dispatcher: CoroutineDispatchers)
     : BaseViewModel(dispatcher.main) {
 
@@ -139,25 +133,25 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val tmpData = mutableListOf<Visitable<*>>()
         val needPinpoint = !tmpAddressData.second
         val shippingData = TokoFoodPurchaseUiModelMapper.mapShippingUiModel(needPinpoint = needPinpoint)
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingUnavailable))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapGeneralTickerUiModel(shippingData.isShippingAvailable))
         tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "1"))
         tmpData.add(TokoFoodPurchaseUiModelMapper.mapAddressUiModel())
         tmpData.add(shippingData)
         tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "2"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingUnavailable, false))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel(shippingData.isShippingUnavailable))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "1"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "2"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, false, "3"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingAvailable, true))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapTickerErrorShopLevelUiModel(shippingData.isShippingAvailable))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, true, "1"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, true, "2"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, true, "3"))
         tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "3"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingUnavailable, true))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel(shippingData.isShippingUnavailable))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "4"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "5"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingUnavailable, true, "6"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductListHeaderUiModel(shippingData.isShippingAvailable, false))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUnavailableReasonUiModel(shippingData.isShippingAvailable))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, false, "4"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, false, "5"))
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapProductUiModel(shippingData.isShippingAvailable, false, "6"))
         tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "4"))
-        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel(shippingData.isShippingUnavailable))
-        if (!shippingData.isShippingUnavailable) {
+        tmpData.add(TokoFoodPurchaseUiModelMapper.mapAccordionUiModel(shippingData.isShippingAvailable))
+        if (shippingData.isShippingAvailable) {
             tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "5"))
             tmpData.add(TokoFoodPurchaseUiModelMapper.mapPromoUiModel())
             tmpData.add(TokoFoodPurchaseDividerTokoFoodPurchaseUiModel(id = "6"))
@@ -226,10 +220,10 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         var count = 0
         loop@ for (data in dataList) {
             when {
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isUnavailable -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isAvailable -> {
                     count++
                 }
-                (data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isUnavailable) || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
+                (data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isAvailable) || data is TokoFoodPurchasePromoTokoFoodPurchaseUiModel -> {
                     break@loop
                 }
             }
@@ -336,7 +330,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         val dataList = getVisitablesValue()
         var targetIndex = -1
         loop@ for ((index, data) in dataList.withIndex()) {
-            if (data is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel && data.isUnavailableHeader) {
+            if (data is TokoFoodPurchaseProductListHeaderTokoFoodPurchaseUiModel && !data.isAvailableHeader) {
                 targetIndex = index
                 break@loop
             }
@@ -385,13 +379,13 @@ class TokoFoodPurchaseViewModel @Inject constructor(
             when {
                 data is TokoFoodPurchaseShippingTokoFoodPurchaseUiModel -> {
                     shippingUiModel = data
-                    if (!data.isShippingUnavailable) {
+                    if (data.isShippingAvailable) {
                         shippingFee = data.shippingPrice
                         wrappingFee = data.wrappingFee
                         serviceFee = data.serviceFee
                     }
                 }
-                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && !data.isUnavailable && !data.isDisabled -> {
+                data is TokoFoodPurchaseProductTokoFoodPurchaseUiModel && data.isAvailable && data.isEnabled -> {
                     subTotal += (data.price * data.quantity)
                     totalProduct++
                 }
@@ -434,7 +428,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         totalAmountUiModel?.let {
             val newTotalAmountData = totalAmountUiModel.copy()
             newTotalAmountData.apply {
-                isDisabled = shippingUiModel?.isShippingUnavailable ?: false
+                isEnabled = shippingUiModel?.isShippingAvailable ?: true
                 totalAmount = subTotal + shippingFee + wrappingFee + serviceFee
             }
             dataList[totalAmountUiModelIndex] = newTotalAmountData
