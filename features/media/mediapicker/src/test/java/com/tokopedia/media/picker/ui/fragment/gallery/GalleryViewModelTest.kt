@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.media.picker.ui.activity.main.PickerViewModelTest
 import com.tokopedia.media.picker.ui.fragment.camera.CameraViewModelTest
 import com.tokopedia.media.picker.ui.observer.EventPickerState
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
@@ -13,6 +14,7 @@ import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -22,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -31,90 +34,105 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.MockitoAnnotations
 
+@ExperimentalCoroutinesApi
 class GalleryViewModelTest{
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val galleryRepository = mockk<MediaRepository>()
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
+    private val testCoroutineScope = TestCoroutineScope(coroutineScopeRule.dispatchers.main)
 
-    @ExperimentalCoroutinesApi
+    private val galleryRepository = mockk<MediaRepository>()
     private lateinit var viewModel: GalleryViewModel
 
-    @ExperimentalCoroutinesApi
     @Before
     fun setup(){
-        MockitoAnnotations.initMocks(this)
-        Dispatchers.setMain(CoroutineTestDispatchers.main)
-
         mockkStatic(EventFlowFactory::class)
 
         mockkStatic(::mediaToUiModel)
-        every { mediaToUiModel(any()) } returns mediaUiCollection
+        every { mediaToUiModel(any()) } returns mediaUiMockCollection
 
         viewModel = GalleryViewModel(
             galleryRepository,
             CoroutineTestDispatchers)
     }
 
-    @ExperimentalCoroutinesApi
-    @After
-    fun reset() {
-        Dispatchers.resetMain()
+    @Test
+    fun `check fetch device media`() = coroutineScopeRule.runBlockingTest {
+        // When
+        every { galleryRepository.execute(any()) } returns mediaMockCollection
+        coEvery { galleryRepository.invoke(any()) } returns mediaMockCollection
+        viewModel.fetch(-1)
+
+        // Then
+        assert(viewModel.medias.value?.size == mediaUiMockCollection.size)
+        assert(viewModel.medias.value?.size != null)
     }
 
-    @ExperimentalCoroutinesApi
     @Test
-    fun `check gallery UI state`() {
+    fun `validate camera state`() {
         // Given
-        var cameraEventState: EventPickerState.CameraCaptured? = null
-        var selectionChangedEventState: EventPickerState.SelectionChanged? = null
-        var selectionRemovedEventState: EventPickerState.SelectionRemoved? = null
+        var eventState: EventState? = null
 
         // When
-        val job = CoroutineScope(CoroutineTestDispatchers.main).launch {
+        testCoroutineScope.launch {
             viewModel.uiEvent.collect {
-                when(it){
-                    is EventPickerState.CameraCaptured -> cameraEventState = it
-                    is EventPickerState.SelectionChanged -> selectionChangedEventState = it
-                    is EventPickerState.SelectionRemoved -> selectionRemovedEventState = it
-                }
+                eventState = it
             }
         }
 
         // Then
-        stateOnCameraCapturePublished(CameraViewModelTest.mediaUiModelSample)
-        stateOnChangePublished(CameraViewModelTest.collectionMediaUiModelSample)
-        stateOnRemovePublished(CameraViewModelTest.mediaUiModelSample)
-        assert(cameraEventState != null)
-        assert(selectionChangedEventState != null)
-        assert(selectionRemovedEventState != null)
-        job.cancel()
+        stateOnCameraCapturePublished(mediaUiMockCollection.first())
+        assert(eventState is EventPickerState.CameraCaptured)
+        EventFlowFactory.reset()
     }
 
-    @ExperimentalCoroutinesApi
     @Test
-    fun `check fetch device media`() {
+    fun `validate selection change state`() {
         // Given
+        var eventState: EventState? = null
 
         // When
-        every { galleryRepository.execute(any()) } returns mediaCollection
-        coEvery { galleryRepository.invoke(any()) } returns mediaCollection
-        viewModel.fetch(-1)
+        testCoroutineScope.launch {
+            viewModel.uiEvent.collect {
+                eventState = it
+            }
+        }
 
         // Then
-        assert(viewModel.medias.value?.size == mediaUiCollection.size)
-        assert(viewModel.medias.value?.size != null)
+        stateOnChangePublished(mediaUiMockCollection)
+        assert(eventState is EventPickerState.SelectionChanged)
+        EventFlowFactory.reset()
+    }
+
+    @Test
+    fun `validate selection removed state`() {
+        // Given
+        var eventState: EventState? = null
+
+        // When
+        testCoroutineScope.launch {
+            viewModel.uiEvent.collect {
+                eventState = it
+            }
+        }
+
+        // Then
+        stateOnRemovePublished(mediaUiMockCollection.first())
+        assert(eventState is EventPickerState.SelectionRemoved)
+        EventFlowFactory.reset()
     }
 
     companion object{
-        val mediaCollection = listOf(
+        val mediaMockCollection = listOf(
             Media(12, "media sample 1", "sdcard/images/sample_1.png"),
             Media(13, "media sample 2", "sdcard/images/sample_2.png"),
             Media(14, "media sample 3", "sdcard/images/sample_3.png")
         )
 
-        val mediaUiCollection = listOf(
+        val mediaUiMockCollection = listOf(
             MediaUiModel(12, "media sample 1", "sdcard/images/sample_1.png"),
             MediaUiModel(13, "media sample 2", "sdcard/images/sample_2.png"),
             MediaUiModel(14, "media sample 3", "sdcard/images/sample_3.png"),
