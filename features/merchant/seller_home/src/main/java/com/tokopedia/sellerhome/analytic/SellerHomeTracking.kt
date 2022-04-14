@@ -42,20 +42,26 @@ object SellerHomeTracking {
         subtitle: String
     ) {
         val map = createEventMap(
-            TrackingConstant.VIEW_HOMEPAGE_IRIS,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-            TrackingConstant.IMPRESSION_WIDGET_CARD,
-            arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
+            event = TrackingConstant.VIEW_PG_IRIS,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.IMPRESSION_WIDGET_CARD,
+            label = arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
     }
 
     fun sendClickCardEvent(dataKey: String, state: String, cardValue: String, subtitle: String) {
         val map = createEventMap(
-            TrackingConstant.CLICK_HOMEPAGE,
-            arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
-            TrackingConstant.CLICK_WIDGET_CARD,
-            arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
+            event = TrackingConstant.CLICK_PG,
+            category = arrayOf(
+                TrackingConstant.SELLER_APP,
+                TrackingConstant.HOME
+            ).joinToString(" - "),
+            action = TrackingConstant.CLICK_WIDGET_CARD,
+            label = arrayOf(dataKey, state, cardValue, subtitle).joinToString(" - ")
         )
         TrackingHelper.sendGeneralEvent(map)
     }
