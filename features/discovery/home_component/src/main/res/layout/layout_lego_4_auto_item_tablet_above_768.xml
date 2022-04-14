@@ -44,7 +44,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/item_name"
                 app:layout_constraintStart_toStartOf="@+id/item_name"
-                app:typographyType="display_3"
+                app:typographyType="paragraph_2"
                 app:typographyWeight="reguler"
                 tools:text="test" />
 
