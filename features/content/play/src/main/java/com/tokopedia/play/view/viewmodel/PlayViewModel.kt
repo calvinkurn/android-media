@@ -798,8 +798,8 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.GiveawayUpcomingEnded -> handleGiveawayUpcomingEnded()
             PlayViewerNewAction.GiveawayOngoingEnded -> handleGiveawayOngoingEnded()
             PlayViewerNewAction.QuizEnded -> handleQuizEnded()
-            PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(isPlaying = true)
-            PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(isPlaying = false)
+            PlayViewerNewAction.StartPlayingInteractive -> handlePlayingInteractive(shouldPlay = true)
+            PlayViewerNewAction.StopPlayingInteractive -> handlePlayingInteractive(shouldPlay = false)
 
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
@@ -1677,9 +1677,18 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handlePlayingInteractive(isPlaying: Boolean) {
+    private fun handlePlayingInteractive(shouldPlay: Boolean) {
         _interactive.update {
-            it.copy(isPlaying = isPlaying)
+            val isOngoing = when (it.interactive) {
+                is InteractiveUiModel.Giveaway -> {
+                    it.interactive.status is InteractiveUiModel.Giveaway.Status.Ongoing
+                }
+                is InteractiveUiModel.Quiz -> {
+                    it.interactive.status is InteractiveUiModel.Quiz.Status.Ongoing
+                }
+                else -> false
+            }
+            it.copy(isPlaying = if (shouldPlay) isOngoing else shouldPlay)
         }
     }
 
