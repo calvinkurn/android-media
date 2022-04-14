@@ -18,12 +18,13 @@ sealed interface InteractiveUiModel {
 
     val id: Long
     val title: String
+    val waitingDuration: Long
 
     data class Giveaway(
         override val id: Long,
         override val title: String,
+        override val waitingDuration: Long,
         val status: Status,
-        val waitingDuration: Long,
     ) : InteractiveUiModel {
 
         sealed interface Status {
@@ -45,6 +46,7 @@ sealed interface InteractiveUiModel {
     data class Quiz(
         override val id: Long,
         override val title: String,
+        override val waitingDuration: Long,
         val status: Status,
     ) : InteractiveUiModel {
 
@@ -62,5 +64,8 @@ sealed interface InteractiveUiModel {
 
         override val title: String
             get() = ""
+
+        override val waitingDuration: Long
+            get() = 0L
     }
 }
