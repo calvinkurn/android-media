@@ -58,11 +58,11 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Given choose address is enabled`() {
-        every { productListView.isChooseAddressWidgetEnabled } returns true
+        every { chooseAddressView.isChooseAddressWidgetEnabled } returns true
     }
 
     private fun `Given chosen address data`(chooseAddressModel: LocalCacheModel?) {
-        every { productListView.chooseAddressData } returns chooseAddressModel
+        every { chooseAddressView.chooseAddressData } returns chooseAddressModel
     }
 
     private fun `Given search product API will return data`() {
@@ -213,7 +213,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
 
     private fun `Then verify view will fetch new chosen address and reload data`() {
         verify {
-            productListView.chooseAddressData
+            chooseAddressView.chooseAddressData
             productListView.reloadData()
         }
     }
@@ -297,7 +297,9 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Given choose address data has updated`() {
-        every { productListView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData) } returns true
+        every {
+            chooseAddressView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData)
+        } returns true
     }
 
     private fun `When view is resumed`() {
@@ -305,7 +307,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     }
 
     private fun `Then verify check choose address data updated is called`() {
-        verify { productListView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData) }
+        verify { chooseAddressView.getIsLocalizingAddressHasUpdated(dummyChooseAddressData) }
     }
 
     @Test

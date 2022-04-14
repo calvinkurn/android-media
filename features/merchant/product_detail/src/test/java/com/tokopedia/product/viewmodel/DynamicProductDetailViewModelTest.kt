@@ -1409,25 +1409,13 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `variant clicked partialy with image not blank`() {
+    fun `variant clicked partialy will post clicked variant option id`() {
         val partialySelect = true
-        val imageVariant = "image"
-        viewModel.listOfParentMedia = mutableListOf(Media(uRLOriginal = "gambar 1"))
-        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        val variantOptionId = "1234567890"
+        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), variantOptionId)
         Assert.assertTrue(viewModel.onVariantClickedData.value == null)
         Assert.assertTrue(viewModel.updatedImageVariant.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.first()?.uRLOriginal == imageVariant)
-    }
-
-    @Test
-    fun `variant clicked partialy with blank image`() {
-        val partialySelect = true
-        val imageVariant = "gambar gan"
-        viewModel.listOfParentMedia = null
-        viewModel.onVariantClicked(ProductVariant(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
-        Assert.assertTrue(viewModel.onVariantClickedData.value == null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value != null)
-        Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.isEmpty() == true)
+        Assert.assertTrue(viewModel.updatedImageVariant.value?.second == variantOptionId)
     }
 
     /**
