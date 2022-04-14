@@ -185,6 +185,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         cartExtension.setProductModel(productCardModel)
         video.setProductModel(productCardModel)
+        cardViewProductCard?.animateOnPress = CardUnify2.ANIMATE_OVERLAY_BOUNCE
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
