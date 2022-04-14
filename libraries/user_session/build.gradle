@@ -21,6 +21,7 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.javaxInject
+    implementation projectOrAar(rootProject.ext.libraries.logger)
 }
 
 project.ext {

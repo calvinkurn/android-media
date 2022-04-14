@@ -127,6 +127,14 @@ object DeviceInfo {
         }
     }
 
+    private fun logAdsId() {
+        ServerLogger.log(
+            Priority.P2,
+            "GET_ADS_ID",
+            mapOf("type" to "ads_id_empty", "source" to "DeviceInfo")
+        )
+    }
+
     @JvmStatic
     fun getAdsId(context: Context): String {
         val appContext = context.applicationContext
@@ -136,7 +144,11 @@ object DeviceInfo {
         } else {
             // try catch to get error Fatal Exception: java.lang.NoClassDefFoundError in android 5 Samsung
             try {
-                runBlocking { getlatestAdId(context, 3000L) }
+                val result = runBlocking { getlatestAdId(context, 3000L) }
+                if(result.isEmpty()) {
+                    logAdsId()
+                }
+                result
             } catch (e: Exception) {
                 ""
             }
