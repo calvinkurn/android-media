@@ -97,8 +97,8 @@ class FeedAccountTypeBottomSheet : BottomSheetUnify() {
         mListener = listener
     }
 
-    fun show(fragmentManager: FragmentManager) {
-        if(!isAdded) show(fragmentManager, TAG)
+    fun showNow(fragmentManager: FragmentManager) {
+        if(!isAdded) showNow(fragmentManager, TAG)
     }
 
     companion object {

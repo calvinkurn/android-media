@@ -85,7 +85,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     private  lateinit var coachMark: CoachMark2
 
     private val userSession: UserSessionInterface by lazy(mode = LazyThreadSafetyMode.NONE) {
-        UserSession(requireContext())
+        UserSession(context)
     }
 
     private val feedAccountBottomSheet: FeedAccountTypeBottomSheet by lazy(mode = LazyThreadSafetyMode.NONE) {
@@ -310,7 +310,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun openFeedAccountBottomSheet(){
-        feedAccountBottomSheet.show(childFragmentManager)
+        feedAccountBottomSheet.showNow(childFragmentManager)
     }
 
     private fun showFabCoachMark() {

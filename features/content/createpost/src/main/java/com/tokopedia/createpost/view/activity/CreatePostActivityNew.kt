@@ -321,7 +321,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             }
 
             setOnAccountClickListener {
-                feedAccountBottomSheet.show(supportFragmentManager)
+                feedAccountBottomSheet.showNow(supportFragmentManager)
             }
 
             visibility = View.VISIBLE
