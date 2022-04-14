@@ -1,11 +1,14 @@
 package com.tokopedia.home_component.viewholders
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -29,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
+import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 /**
  * Created by Devara on 2020-04-28
@@ -264,7 +268,11 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardUnify: CardUnify2 by lazy { view.findViewById(R.id.item_lego_card) }
-        val imageView: ShimmeringImageView = view.findViewById(R.id.image)
+        val imageView: ShimmeringImageView = view.findViewById<ShimmeringImageView?>(R.id.image).apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                this.imageView.foreground = ColorDrawable(ContextCompat.getColor(context, android.R.color.transparent))
+            }
+        }
         val context: Context
             get() = itemView.context
     }
