@@ -9,81 +9,96 @@ import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.mockkStatic
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.MockitoAnnotations
 
+@ExperimentalCoroutinesApi
 class CameraViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @ExperimentalCoroutinesApi
+    @get:Rule
+    val coroutineScopeRule = CoroutineTestRule()
+    private val testCoroutineScope = TestCoroutineScope(coroutineScopeRule.dispatchers.main)
+
     private lateinit var viewModel: CameraViewModel
 
-    @ExperimentalCoroutinesApi
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
-        Dispatchers.setMain(CoroutineTestDispatchers.main)
-
         mockkStatic(EventFlowFactory::class)
-
         viewModel = CameraViewModel(CoroutineTestDispatchers)
     }
 
-    @ExperimentalCoroutinesApi
-    @After
-    fun reset() {
-        Dispatchers.resetMain()
-    }
-
-    @ExperimentalCoroutinesApi
     @Test
-    fun `check camera UI state`() {
+    fun `validate camera state`() {
         // Given
-        var cameraEventState: EventPickerState.CameraCaptured? = null
-        var selectionChangedEventState: EventPickerState.SelectionChanged? = null
-        var selectionRemovedEventState: EventPickerState.SelectionRemoved? = null
+        var eventState: EventState? = null
 
         // When
-        val job = CoroutineScope(CoroutineTestDispatchers.main).launch {
+        testCoroutineScope.launch {
             viewModel.uiEvent.collect {
-                when(it){
-                    is EventPickerState.CameraCaptured -> cameraEventState = it
-                    is EventPickerState.SelectionChanged -> selectionChangedEventState = it
-                    is EventPickerState.SelectionRemoved -> selectionRemovedEventState = it
-                }
+                eventState = it
             }
         }
 
         // Then
-        stateOnCameraCapturePublished(CameraViewModelTest.mediaUiModelSample)
-        stateOnChangePublished(CameraViewModelTest.collectionMediaUiModelSample)
-        stateOnRemovePublished(CameraViewModelTest.mediaUiModelSample)
-        assert(cameraEventState != null)
-        assert(selectionChangedEventState != null)
-        assert(selectionRemovedEventState != null)
-        job.cancel()
+        stateOnCameraCapturePublished(mediaUiModelMock)
+        assert(eventState is EventPickerState.CameraCaptured)
+        EventFlowFactory.reset()
     }
 
-    companion object{
-        val mediaUiModelSample = MediaUiModel(12, "Test Single MediaUiModel", "sdcard/images/test.jgp")
-        val collectionMediaUiModelSample = listOf(
-            MediaUiModel(12, "Test Collection MediaUiModel 1", "sdcard/images/test_1.jgp"),
-            MediaUiModel(13, "Test Collection MediaUiModel 2", "sdcard/images/test_2.jgp"),
-            MediaUiModel(14, "Test Collection MediaUiModel 3", "sdcard/images/test_3.jgp"),
-            MediaUiModel(15, "Test Collection MediaUiModel 4", "sdcard/images/test_4.jgp"),
+    @Test
+    fun `validate selection change state`() {
+        // Given
+        var eventState: EventState? = null
+
+        // When
+        testCoroutineScope.launch {
+            viewModel.uiEvent.collect {
+                eventState = it
+            }
+        }
+
+        // Then
+        stateOnChangePublished(mediaUiModelMockCollection)
+        assert(eventState is EventPickerState.SelectionChanged)
+        EventFlowFactory.reset()
+    }
+
+    @Test
+    fun `validate selection removed state`() {
+        // Given
+        var eventState: EventState? = null
+
+        // When
+        testCoroutineScope.launch {
+            viewModel.uiEvent.collect {
+                eventState = it
+            }
+        }
+
+        // Then
+        stateOnRemovePublished(mediaUiModelMock)
+        assert(eventState is EventPickerState.SelectionRemoved)
+        EventFlowFactory.reset()
+    }
+
+    companion object {
+        val mediaUiModelMock =
+            MediaUiModel(0, "media 0", "sdcard/images/media0.jpg")
+        val mediaUiModelMockCollection = listOf(
+            MediaUiModel(1, "media 1", "sdcard/images/media1.jpg"),
+            MediaUiModel(2, "media 2", "sdcard/images/media2.jpg"),
+            MediaUiModel(3, "media 3", "sdcard/images/media3.jpg"),
+            MediaUiModel(4, "media 4", "sdcard/images/media4.jpg")
         )
     }
 
