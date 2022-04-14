@@ -35,12 +35,6 @@ object InstrumentationAuthHelper {
         }
     }
 
-    fun loginInstrumentationTestUser3() {
-        userSession {
-            userId = "108956738"
-        }
-    }
-
     fun loginInstrumentationTestTopAdsUser() {
         userSession {
             userId = "24095631"
