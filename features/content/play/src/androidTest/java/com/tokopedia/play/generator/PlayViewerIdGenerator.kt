@@ -27,7 +27,13 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.type.MerchantVoucherType
+import com.tokopedia.play.view.type.OriginalPrice
+import com.tokopedia.play.view.type.ProductSectionType
+import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUpcomingUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayCartMapper
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelStatusMapper
@@ -48,19 +54,24 @@ import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
+import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Rule
@@ -202,7 +213,62 @@ class PlayViewerIdGenerator {
 
     @Test
     fun inhousePlayer() {
+        val tagItem = TagItemUiModel(
+            product = ProductUiModel(
+                productSectionList = listOf(
+                    ProductSectionUiModel.Section(
+                        productList = listOf(
+                            PlayProductUiModel.Product(
+                                id = "1",
+                                shopId = "2",
+                                imageUrl = "",
+                                title = "Barang 1",
+                                stock = StockAvailable(1),
+                                isVariantAvailable = false,
+                                price = OriginalPrice("0", 0.0),
+                                minQty = 1,
+                                isFreeShipping = false,
+                                applink = "",
+                            )
+                        ),
+                        config = ProductSectionUiModel.Section.ConfigUiModel(
+                            type = ProductSectionType.Other,
+                            title = "Section 1",
+                            startTime = "",
+                            timerInfo = "",
+                            serverTime = "",
+                            background = ProductSectionUiModel.Section.BackgroundUiModel(
+                                gradients = emptyList(), imageUrl = ""
+                            ),
+                            endTime = ""
+                        ),
+                        id = "1"
+                    )
+                ),
+                canShow = true,
+            ),
+            voucher = VoucherUiModel(
+                voucherList = listOf(
+                    MerchantVoucherUiModel(
+                        id = "",
+                        type = MerchantVoucherType.Private,
+                        title = "",
+                        description = "",
+                        code = "",
+                        copyable = false,
+                        highlighted = false,
+                        voucherStock = 1,
+                        expiredDate = "",
+                    )
+                )
+            ),
+            maxFeatured = 1,
+            bottomSheetTitle = "Product List",
+            resultState = ResultState.Success,
+        )
+
         val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
+        coEvery { repo.getTagItem(any()) } returns tagItem
         every { mockChannelStorage.getChannelList() } returns listOf("12669")
         every { mockChannelStorage.getData(any()) } returns PlayChannelData(
             id = "12669",
@@ -228,7 +294,7 @@ class PlayViewerIdGenerator {
             ),
             leaderboardInfo = PlayLeaderboardWrapperUiModel.Unknown,
             upcomingInfo = PlayUpcomingUiModel(),
-            tagItems = TagItemUiModel.Empty,
+            tagItems = tagItem,
             status = PlayStatusUiModel.Empty,
         )
 
