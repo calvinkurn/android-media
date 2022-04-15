@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.common.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -19,7 +18,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 class ProductDetailGalleryActivity : AppCompatActivity() {
 
     private var data: ProductDetailGallery? = null
-    private var trackingQueue:TrackingQueue? = null
+    private var trackingQueue: TrackingQueue? = null
 
     private var imageGallery: ImageGallery? = null
     private var closeButton: ImageUnify? = null
@@ -40,8 +39,6 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
         }
 
         data?.let { processData(it) }
-
-        preventionCrash()
     }
 
     override fun onPause() {
@@ -98,21 +95,6 @@ class ProductDetailGalleryActivity : AppCompatActivity() {
             heightOffset = R.dimen.pdp_common_80_dp,
             ctaText = getString(R.string.pdp_common_oke)
         )
-    }
-
-    /**
-     * This method to prevent pointerIndex out of range issue
-     */
-    @SuppressLint("ClickableViewAccessibility")
-    private fun preventionCrash(){
-        imageGallery?.viewPager?.setOnTouchListener { view, motionEvent ->
-            try { super.onTouchEvent(motionEvent) }
-            catch (_:Throwable){
-                /* no-op */
-                true
-            }
-
-        }
     }
 
     companion object {
