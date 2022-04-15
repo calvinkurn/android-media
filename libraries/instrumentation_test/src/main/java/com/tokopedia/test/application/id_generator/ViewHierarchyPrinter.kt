@@ -1,10 +1,10 @@
-package com.tokopedia.play.test
+package com.tokopedia.test.application.id_generator
 
 import android.view.View
 import android.view.ViewGroup
 
 /**
- * Created by kenny.hadisaputra on 21/03/22
+ * Created by kenny.hadisaputra on 15/04/22
  */
 class ViewHierarchyPrinter(
     private val printConditions: List<PrintCondition> = emptyList(),

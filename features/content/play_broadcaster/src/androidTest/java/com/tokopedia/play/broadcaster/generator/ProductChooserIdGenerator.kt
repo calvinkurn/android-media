@@ -37,15 +37,15 @@ import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogC
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.play.test.FileWriter
-import com.tokopedia.play.test.PrintCondition
-import com.tokopedia.play.test.ViewHierarchyPrinter
+import com.tokopedia.test.application.id_generator.FileWriter
+import com.tokopedia.test.application.id_generator.PrintCondition
+import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
+import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.hamcrest.Matcher
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
@@ -200,8 +200,7 @@ class ProductChooserIdGenerator {
         scenario.onFragment {
             val bottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
-            fileWriter.write(
-                folderName = folderName,
+            fileWriter.writeGeneratedViewIds(
                 fileName = "product_chooser.csv",
                 text = info
             )
@@ -224,8 +223,7 @@ class ProductChooserIdGenerator {
             val chooserBottomSheet = ProductChooserBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val sortBottomSheet = ProductSortBottomSheet.getFragment(chooserBottomSheet.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = sortBottomSheet.requireView())
-            fileWriter.write(
-                folderName = folderName,
+            fileWriter.writeGeneratedViewIds(
                 fileName = "product_sort.csv",
                 text = info
             )
@@ -247,8 +245,7 @@ class ProductChooserIdGenerator {
         scenario.onFragment {
             val bottomSheet = EtalaseListBottomSheet.getFragment(it.childFragmentManager, it.requireActivity().classLoader)
             val info = viewPrinter.printAsCSV(view = bottomSheet.requireView())
-            fileWriter.write(
-                folderName = folderName,
+            fileWriter.writeGeneratedViewIds(
                 fileName = "etalase_list.csv",
                 text = info
             )
@@ -263,9 +260,5 @@ class ProductChooserIdGenerator {
                 uiController.loopMainThreadForAtLeast(delay)
             }
         }
-    }
-
-    companion object {
-        private const val folderName = "res_id_result"
     }
 }

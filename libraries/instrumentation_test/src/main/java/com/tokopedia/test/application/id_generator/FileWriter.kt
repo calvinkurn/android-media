@@ -1,4 +1,4 @@
-package com.tokopedia.play.test
+package com.tokopedia.test.application.id_generator
 
 import android.content.ContentValues
 import android.os.Build
@@ -11,7 +11,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 /**
- * Created by kenny.hadisaputra on 17/03/22
+ * Created by kenny.hadisaputra on 15/04/22
  */
 class FileWriter {
 
