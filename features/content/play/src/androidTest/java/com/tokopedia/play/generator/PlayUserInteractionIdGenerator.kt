@@ -345,8 +345,6 @@ class PlayUserInteractionIdGenerator {
 
     companion object {
 
-        //private val dateFormatter = SimpleDateFormat("dd_MM_yyyy_HH_mm_ss", Locale.getDefault())
-        //private val folderName = dateFormatter.format(Date())
-        private val folderName = "res_id_result"
+        private const val folderName = "res_id_result"
     }
 }
