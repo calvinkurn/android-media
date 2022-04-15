@@ -207,7 +207,7 @@ class PlayViewerIdGenerator {
         }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition)
+    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition, customIdPrefix = "P")
     private val viewPrinter = ViewHierarchyPrinter(printConditions)
     private val fileWriter = FileWriter()
 
