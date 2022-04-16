@@ -4,15 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.homenav.base.datamodel.*
 import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
 import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
-import com.tokopedia.homenav.base.datamodel.HomeNavGlobalErrorDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.mainnav.view.adapter.viewholder.*
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.*
@@ -69,6 +66,10 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
 
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
+    }
+
+    override fun type(visitable: HomeNavCategoryDataModel): Int {
+        TODO("Not yet implemented")
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
