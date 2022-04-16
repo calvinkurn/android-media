@@ -5,11 +5,12 @@ import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.helper.matchers.withRecyclerView
+import com.tokopedia.media.picker.helper.utils.ImageGenerator
+import com.tokopedia.media.picker.helper.utils.VideoGenerator
 import com.tokopedia.media.picker.ui.PickerTest
 import com.tokopedia.test.application.matcher.hasTotalItemOf
 import org.hamcrest.Matcher
@@ -18,21 +19,24 @@ open class GalleryPageTest : PickerTest() {
 
     override fun createAndAppendUri(builder: Uri.Builder) {}
 
-    object DataProvider {
-        val imageOnly = listOf(
-            Media(1, "sample.png", ""),
-            Media(2, "sample.png", ""),
-        )
+    fun mockImageFiles(): List<Media> {
+        val files = ImageGenerator.getFiles(context)
+        var mockMediaId = 0L
 
-        val videoOnly = listOf(
-            Media(1, "videoplayback.mp4", ""),
-            Media(2, "videoplayback.mp4", ""),
-        )
+        return files.map {
+            mockMediaId++
 
-        val imageAndVideo = listOf(
-            Media(1, "sample.png", ""),
-            Media(2, "videoplayback.mp4", ""),
-        )
+            Media(mockMediaId, it.name, it.path)
+        }
+    }
+
+    fun mockVideoFiles(): List<Media> {
+        val videoFile = VideoGenerator.getFiles(context)
+        val mockMediaId = Long.MAX_VALUE
+
+        return videoFile.map {
+            Media(mockMediaId, it.name, it.path)
+        }
     }
 
     object Robot {
@@ -42,15 +46,21 @@ open class GalleryPageTest : PickerTest() {
             ).perform(click())
         }
 
-        fun clickFirstItemMediaList() {
+        fun clickRecyclerViewItemAt(position: Int) {
             onView(
                 withRecyclerView(R.id.lst_media)
-                    .atPosition(0)
+                    .atPosition(position)
             ).perform(click())
         }
     }
 
     object Asserts {
+        fun assertToasterIsShownWithText(text: String) {
+            onView(
+                withId(R.id.snackbar_txt)
+            ).check(matches(withText(text)))
+        }
+
         fun assertRecyclerViewDisplayed() {
             onView(
                 withId(R.id.lst_media)
