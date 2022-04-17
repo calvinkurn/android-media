@@ -2363,6 +2363,13 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 boeImageUrl = boeData.imageURL,
                 isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
 
+        getRecyclerView()?.let { rv->
+            val items = it.navBar.items.map { item->
+                val position = getComponentPositionByName(item.componentName)
+                ProductDetailNavigation.Item(item.title, position)
+            }
+            binding?.pdpNavigationTab?.setup(rv, items)
+        }
         updateUi()
     }
 
@@ -2372,7 +2379,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
             val position = getComponentPositionByName(item.componentName)
             ProductDetailNavigation.Item(item.title, position)
         }
-        binding?.pdpNavigationTab?.setTabItems(items)
+        binding?.pdpNavigationTab?.updateItems(items)
     }
 
     override fun onButtonFollowNplClick() {

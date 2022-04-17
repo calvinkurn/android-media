@@ -72,8 +72,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         binding?.pdpBackToTop?.setOnClickListener {
             scrollToPosition(0)
         }
-
-        getRecyclerView()?.let { binding?.pdpNavigationTab?.setRecyclerView(it) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

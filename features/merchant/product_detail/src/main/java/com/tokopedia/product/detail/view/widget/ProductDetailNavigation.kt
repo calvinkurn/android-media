@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import kotlinx.coroutines.CoroutineScope
@@ -44,21 +43,26 @@ class ProductDetailNavigation(
     private var showJob: Job? = null
 
     private var translateInProgress = false
-    private var disableNavigation = false
+    private var enableTabSelectedListener = true
+    private var enableScrollUpListener = true
+    private var enableContentChangeListener = true
 
     init {
         addView(view)
         binding.pdpNavTab.tabLayout.addOnTabSelectedListener(onTabSelectedListener)
     }
 
-    fun setRecyclerView(recyclerView: RecyclerView) {
-        this.recyclerView = recyclerView.apply {
-            addOnScrollListener(onScrollListener)
-            addOnScrollListener(onContentScrollListener)
+    fun setup(recyclerView: RecyclerView, items: List<Item>) {
+        updateItems(items)
+
+        if (this.items.isEmpty()) {
+            removeNavigationTab(recyclerView)
+        } else {
+            addNavigationTab(recyclerView)
         }
     }
 
-    fun setTabItems(items: List<Item>) {
+    fun updateItems(items: List<Item>) {
         var shouldUpdateTab = false
         items.forEachIndexed { index, item ->
             val currentItem = this.items.getOrNull(index)
@@ -69,18 +73,28 @@ class ProductDetailNavigation(
         }
 
         if (shouldUpdateTab) {
+            enableTabSelectedListener = false
             tabLayout.removeAllTabs()
             this.items = items.onEach { item ->
                 pdpNavTab.addNewTab(item.label)
             }
+            enableTabSelectedListener = true
         }
+    }
 
-        if (this.items.isEmpty()) {
-            disableNavigation = true
-            view.gone()
-        } else {
-            disableNavigation = false
-            view.visibility = View.INVISIBLE
+    private fun removeNavigationTab(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView.apply {
+            removeOnScrollListener(onScrollListener)
+            removeOnScrollListener(onContentScrollListener)
+        }
+        toggle(false)
+        view.visibility = INVISIBLE
+    }
+
+    private fun addNavigationTab(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView.apply {
+            addOnScrollListener(onScrollListener)
+            addOnScrollListener(onContentScrollListener)
         }
     }
 
@@ -94,20 +108,22 @@ class ProductDetailNavigation(
 
         recyclerView?.apply {
             smoothScroller.targetPosition = position
+            enableScrollUpListener = false
+            enableContentChangeListener = false
             layoutManager?.startSmoothScroll(smoothScroller)
         }
     }
 
     private fun toggle(show: Boolean) {
-        if (translateInProgress || disableNavigation) return
-        translateInProgress = true
+        if (translateInProgress) return
+
         val showY = 0f
         val hideY = -1f * view.height
 
         if (show) view.show()
-        if (view.translationY < showY && view.translationY > hideY) return
 
         val y = if (show) showY else hideY
+        translateInProgress = true
         view.animate().translationY(y).setDuration(300).withEndAction {
             translateInProgress = false
         }
@@ -120,27 +136,20 @@ class ProductDetailNavigation(
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
 
-        private var state = RecyclerView.SCROLL_STATE_IDLE
-
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            when (newState) {
-                RecyclerView.SCROLL_STATE_IDLE -> {
-                    showJob?.cancel()
-                    val firstPosition = getFirstVisibleItemPosition(recyclerView)
-                    if (firstPosition == 0) {
-                        toggle(false)
-                    } else delayedShow()
-                }
-            }
-            state = newState
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                enableScrollUpListener = true
 
+                showJob?.cancel()
+                val firstPosition = getFirstVisibleItemPosition(recyclerView)
+                if (firstPosition == 0) {
+                    toggle(false)
+                } else delayedShow()
+            }
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-
-            if (state == RecyclerView.SCROLL_STATE_SETTLING) return
-
-            if (getFirstVisibleItemPosition(recyclerView) == 0 || dy < 0) {
+            if (enableScrollUpListener && (getFirstVisibleItemPosition(recyclerView) == 0 || dy < 0)) {
                 toggle(false)
             } else {
                 toggle(true)
@@ -167,31 +176,27 @@ class ProductDetailNavigation(
 
     private inner class OnTabSelected : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
-            scrollToContent(tab.position)
+            if (enableTabSelectedListener) scrollToContent(tab.position)
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {
         }
 
         override fun onTabReselected(tab: TabLayout.Tab) {
-            scrollToContent(tab.position)
+            if (enableTabSelectedListener) scrollToContent(tab.position)
         }
     }
 
     private inner class OnContentChangeListener : RecyclerView.OnScrollListener() {
 
-        private var state = RecyclerView.SCROLL_STATE_IDLE
-
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                updateSelectedTab(recyclerView)
+                enableContentChangeListener = true
             }
-            state = newState
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (state == RecyclerView.SCROLL_STATE_SETTLING) return
-            updateSelectedTab(recyclerView)
+            if (enableContentChangeListener) updateSelectedTab(recyclerView)
         }
 
         /**
@@ -220,9 +225,9 @@ class ProductDetailNavigation(
             val indexTab = items.indexOfFirst { firstVisibleItemPosition == it.position }
 
             pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
-                tabLayout.removeOnTabSelectedListener(onTabSelectedListener)
+                enableTabSelectedListener = false
                 select()
-                tabLayout.addOnTabSelectedListener(onTabSelectedListener)
+                enableTabSelectedListener = true
             }
         }
 
