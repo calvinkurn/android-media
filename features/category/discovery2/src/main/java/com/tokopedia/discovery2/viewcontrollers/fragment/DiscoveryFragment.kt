@@ -1488,13 +1488,13 @@ class DiscoveryFragment :
         discoveryViewModel.getMiniCart(shopId, warehouseId)
     }
 
-    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int) {
+    fun addOrUpdateItemCart(parentPosition: Int, position: Int, productId: String, quantity: Int,shopId : String? = null) {
         discoveryViewModel.addProductToCart(
             parentPosition,
             position,
             productId,
             quantity,
-            userAddressData?.shop_id ?: ""
+            shopId ?: (userAddressData?.shop_id ?: "")
         )
     }
 

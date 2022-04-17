@@ -54,6 +54,9 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                 openVariantSheet()
             }
             masterProductCardListView?.setAddToCartNonVariantClickListener(this)
+            masterProductCardListView?.setAddToCartWishlistOnClickListener {
+                addToCartWishlist()
+            }
         } else {
             masterProductCardGridView = itemView.findViewById(R.id.master_product_card_grid)
             buttonNotify = masterProductCardGridView?.getNotifyMeButton()
@@ -70,6 +73,23 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
 
         productCardView.setOnClickListener {
             handleUIClick(it)
+        }
+    }
+
+    private fun addToCartWishlist() {
+        if (masterProductCardItemViewModel.isUserLoggedIn()) {
+            masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
+                if (!productItem.productId.isNullOrEmpty())
+                    (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                        masterProductCardItemViewModel.getParentPositionForCarousel(),
+                        masterProductCardItemViewModel.position,
+                        productItem.productId!!,
+                        productItem.minQuantity,
+                        productItem.shopId
+                    )
+            }
+        } else {
+            (fragment as DiscoveryFragment).openLoginScreen()
         }
     }
 
