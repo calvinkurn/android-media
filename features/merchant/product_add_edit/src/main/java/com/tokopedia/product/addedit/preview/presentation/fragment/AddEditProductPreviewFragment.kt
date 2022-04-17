@@ -1638,15 +1638,19 @@ class AddEditProductPreviewFragment :
     }
 
     private fun activateVariantStatusConfirmation(stockStatus: VariantStockStatus) {
+        var titleText: String = getString(R.string.label_dialog_title_activate_variant_status)
         val descMessage: String
         val buttonPrimaryText: String
         val primaryClickAction: () -> Unit
         when (stockStatus) {
             VariantStockStatus.ALL_EMPTY -> {
-                descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty)
-                primaryClickAction = {
-                    if (GlobalConfig.isSellerApp()) showVariantDetailActivity()
-                    else goToSellerAppEditProduct(viewModel.getProductId())
+                if (GlobalConfig.isSellerApp()) {
+                    descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty)
+                    primaryClickAction = { showVariantDetailActivity() }
+                } else {
+                    titleText = getString(R.string.title_dialog_desc_activate_variant_status_all_empty_mainapp)
+                    descMessage = getString(R.string.label_dialog_desc_activate_variant_status_all_empty_mainapp)
+                    primaryClickAction = { goToSellerAppEditProduct(viewModel.getProductId()) }
                 }
                 buttonPrimaryText = getString(R.string.action_activate_variant_status_stock_empty)
             }
@@ -1666,7 +1670,7 @@ class AddEditProductPreviewFragment :
             DialogUnify.HORIZONTAL_ACTION,
             DialogUnify.NO_IMAGE
         ).apply {
-            setTitle(getString(R.string.label_dialog_title_activate_variant_status))
+            setTitle(titleText)
             setDescription(descMessage)
             setPrimaryCTAText(buttonPrimaryText)
             setSecondaryCTAText(getString(R.string.action_cancel_activate_variant_status))

@@ -39,6 +39,10 @@ data class VariantInputModel(
                     else -> VariantStockStatus.PARTIALLY_AVAILABLE
                 }
         }
+
+        fun getImageUrl(colorVariantLevel: Int, index: Int) = products.find {
+                it.combination.getOrNull(colorVariantLevel) == index
+        }?.pictures?.firstOrNull()
 }
 
 @Parcelize
@@ -63,7 +67,9 @@ data class SelectionInputModel(
         var unitName: String = "",
         var identifier: String = "",
         var options: List<OptionInputModel> = listOf()
-) : Parcelable
+) : Parcelable {
+
+}
 
 @Parcelize
 data class OptionInputModel(
