@@ -7,6 +7,7 @@ import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.CipherProviderImpl
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreferenceImpl
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
@@ -421,5 +422,43 @@ class KycUploadViewModelTest {
 
         val result = viewModel.kycResponseLiveData.value
         assert(result is Fail)
+    }
+
+    @Test
+    fun `upload failed - on decryption ktp file`() {
+        coEvery {
+            sharedPreference.getByteArrayCache(any())
+        } throws Throwable(KycUploadErrorCodeUtil.FAILED_ENCRYPTION)
+
+        viewModel.uploadImages(
+            ktpPath,
+            facePath,
+            projectId,
+            isKtpFileUsingEncryption = true,
+            isFaceFileUsingEncryption = true
+        )
+
+        assert(viewModel.kycResponseLiveData.value is Fail)
+        val result = viewModel.kycResponseLiveData.value as Fail
+        assert(result.throwable.message?.contains(KycUploadErrorCodeUtil.FAILED_ENCRYPTION) == true)
+    }
+
+    @Test
+    fun `upload failed - on decryption face file`() {
+        coEvery {
+            sharedPreference.getByteArrayCache(any())
+        } throws Throwable(KycUploadErrorCodeUtil.FAILED_ENCRYPTION)
+
+        viewModel.uploadImages(
+            ktpPath,
+            facePath,
+            projectId,
+            isKtpFileUsingEncryption = false,
+            isFaceFileUsingEncryption = true
+        )
+
+        assert(viewModel.kycResponseLiveData.value is Fail)
+        val result = viewModel.kycResponseLiveData.value as Fail
+        assert(result.throwable.message?.contains(KycUploadErrorCodeUtil.FAILED_ENCRYPTION) == true)
     }
 }

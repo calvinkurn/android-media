@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.CipherProvider
+import com.tokopedia.kyc_centralized.util.ExcludeFromJacocoGeneratedReport
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycSharedPreference
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.FAILED_ENCRYPTION
@@ -224,6 +225,7 @@ class KycUploadViewModel @Inject constructor(
         return deleteAndRenameResult(originalFilePath, decryptedFilePath)
     }
 
+    @ExcludeFromJacocoGeneratedReport
     private fun sendLoadTimeUploadLog(
         type: LogType,
         uploadTime: Long,
