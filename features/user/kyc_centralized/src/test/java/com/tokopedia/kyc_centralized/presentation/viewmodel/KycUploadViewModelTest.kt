@@ -11,6 +11,7 @@ import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_FACE_CACHE
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel.Companion.KYC_IV_KTP_CACHE
 import com.tokopedia.logger.ServerLogger
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -20,7 +21,6 @@ import junit.framework.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import javax.crypto.Cipher
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -190,8 +190,8 @@ class KycUploadViewModelTest {
     @Test
     fun `Register - Failed and get error header response`() {
         val kycResponse = KycResponse().apply {
-            header.errorCode = "9999"
-            header.message = mutableListOf("Error message on header")
+            header?.errorCode = "9999"
+            header?.message = mutableListOf("Error message on header")
         }
 
         provideEveryUseCase(kycResponse)

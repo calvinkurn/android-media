@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.domain.KycUploadUseCase
 import com.tokopedia.kyc_centralized.util.CipherProvider
@@ -112,19 +113,18 @@ class KycUploadViewModel @Inject constructor(
                     }
                     else -> {
                         val result = kycUploadUseCase.uploadImages(finalKtp, finalFace, tkpdProjectId)
-                        if (result.header != null) {
-                            result.header?.let {
-                                _kycResponse.postValue(Fail(MessageErrorException(it.message[0])))
-                                sendLoadTimeUploadLog(
-                                        type = LogType.ERROR_HEADER,
-                                        uploadTime = System.currentTimeMillis() - startTimeLog,
-                                        encryptionTimeFileKtp = encryptionTimeKtp,
-                                        encryptionTimeFileFace = encryptionTimeFace,
-                                        fileKtp = finalKtp,
-                                        fileFace = finalFace,
-                                        message = String.format("%s (%s)", it.message[0].orEmpty(), it.errorCode.orEmpty())
-                                )
-                            }
+                        if (result.header?.message?.size.orZero() > 0) {
+                            val message = result.header?.message?.get(0).orEmpty()
+                            _kycResponse.postValue(Fail(MessageErrorException(message)))
+                            sendLoadTimeUploadLog(
+                                type = LogType.ERROR_HEADER,
+                                uploadTime = System.currentTimeMillis() - startTimeLog,
+                                encryptionTimeFileKtp = encryptionTimeKtp,
+                                encryptionTimeFileFace = encryptionTimeFace,
+                                fileKtp = finalKtp,
+                                fileFace = finalFace,
+                                message = String.format("%s (%s)", message, result.header?.errorCode.orEmpty())
+                            )
                         } else {
                             _kycResponse.postValue(Success(result.data))
                             if (result.data.isSuccessRegister) {
