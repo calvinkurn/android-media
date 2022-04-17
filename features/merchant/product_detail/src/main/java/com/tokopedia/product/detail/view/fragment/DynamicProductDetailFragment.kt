@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModelStore
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabItem
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -66,9 +65,7 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -140,7 +137,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasic
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
-import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.upcoming.NotifyMeUiData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
@@ -162,8 +158,11 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
+import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
+import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
+import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracking
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger
 import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_HIT_ADS_TRACKER
@@ -228,7 +227,6 @@ import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.TabsUnify
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -2363,14 +2361,18 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 boeImageUrl = boeData.imageURL,
                 isProductParent = viewModel.getDynamicProductInfoP1?.isProductParent ?: false)
 
+        initNavigationTab(it)
+        updateUi()
+    }
+
+    private fun initNavigationTab(data: ProductInfoP2UiData){
         getRecyclerView()?.let { rv->
-            val items = it.navBar.items.map { item->
+            val items = data.navBar.items.map { item->
                 val position = getComponentPositionByName(item.componentName)
                 ProductDetailNavigation.Item(item.title, position)
             }
-            binding?.pdpNavigationTab?.setup(rv, items)
+            binding?.pdpNavigationTab?.setup(rv, items, this)
         }
-        updateUi()
     }
 
     private fun setupNavigationTab() {
@@ -3991,6 +3993,37 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 componentTrackDataModel,
                 isRemindMe = isRemindMe
             )
+        )
+    }
+
+    private fun getCommonTracker(componentTrackDataModel: ComponentTrackDataModel): CommonTracker? {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
+        return CommonTracker(productInfo, componentTrackDataModel, viewModel.userId)
+    }
+
+    override fun onImpressProductDetailNavigation(
+        componentTrackDataModel: ComponentTrackDataModel,
+        labels: List<String>
+    ) {
+        val common = getCommonTracker(componentTrackDataModel) ?: return
+        labels.forEachIndexed { index, label ->
+            ProductDetailNavigationTracking.impressNavigation(
+                common,
+                ProductDetailNavigationTracker(index, label),
+                trackingQueue
+            )
+        }
+    }
+
+    override fun onClickProductDetailnavigation(
+        componentTrackDataModel: ComponentTrackDataModel,
+        position: Int,
+        label: String
+    ) {
+        val common = getCommonTracker(componentTrackDataModel) ?: return
+        ProductDetailNavigationTracking.clickNavigation(
+            common,
+            ProductDetailNavigationTracker(position, label)
         )
     }
 

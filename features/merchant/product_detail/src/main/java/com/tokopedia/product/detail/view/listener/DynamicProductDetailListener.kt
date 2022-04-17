@@ -218,4 +218,10 @@ interface DynamicProductDetailListener {
     fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
     fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
     fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetChannelUiModel, isRemindMe: Boolean)
+
+    /**
+     * ProductDetailNavigation / Navigation Bar / Tab
+     */
+    fun onImpressProductDetailNavigation(componentTrackDataModel: ComponentTrackDataModel, labels: List<String>)
+    fun onClickProductDetailnavigation(componentTrackDataModel: ComponentTrackDataModel, position: Int, label: String)
 }

@@ -12,7 +12,9 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,6 +35,7 @@ class ProductDetailNavigation(
 
     private var recyclerView: RecyclerView? = null
     private var items: List<Item> = emptyList()
+    private var listener: DynamicProductDetailListener? = null
 
     private val smoothScroller = SmoothScroller(context)
     private val onTabSelectedListener = OnTabSelected()
@@ -46,13 +49,20 @@ class ProductDetailNavigation(
     private var enableTabSelectedListener = true
     private var enableScrollUpListener = true
     private var enableContentChangeListener = true
+    private var impressNavigation = false
 
     init {
         addView(view)
         binding.pdpNavTab.tabLayout.addOnTabSelectedListener(onTabSelectedListener)
     }
 
-    fun setup(recyclerView: RecyclerView, items: List<Item>) {
+    fun setup(
+        recyclerView: RecyclerView,
+        items: List<Item>,
+        listener: DynamicProductDetailListener
+    ) {
+        this.listener = listener
+
         updateItems(items)
 
         if (this.items.isEmpty()) {
@@ -120,7 +130,14 @@ class ProductDetailNavigation(
         val showY = 0f
         val hideY = -1f * view.height
 
-        if (show) view.show()
+        if (show) {
+            view.show()
+            if (impressNavigation) {
+                listener?.onImpressProductDetailNavigation(
+                    getComponentTrackData(), items.map { it.label }
+                )
+            }
+        }
 
         val y = if (show) showY else hideY
         translateInProgress = true
@@ -128,6 +145,12 @@ class ProductDetailNavigation(
             translateInProgress = false
         }
     }
+
+    private fun getComponentTrackData() = ComponentTrackDataModel(
+        "",
+        "",
+        -1
+    )
 
     data class Item(
         val label: String,
@@ -175,15 +198,26 @@ class ProductDetailNavigation(
 
 
     private inner class OnTabSelected : TabLayout.OnTabSelectedListener {
+
         override fun onTabSelected(tab: TabLayout.Tab) {
-            if (enableTabSelectedListener) scrollToContent(tab.position)
+            if (!enableTabSelectedListener) return
+            val position = tab.position
+            scrollToContent(position)
+            trackOnClickTab(position)
         }
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {
-        }
+        override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
         override fun onTabReselected(tab: TabLayout.Tab) {
-            if (enableTabSelectedListener) scrollToContent(tab.position)
+            if (!enableTabSelectedListener) return
+            val position = tab.position
+            scrollToContent(position)
+            trackOnClickTab(position)
+        }
+
+        private fun trackOnClickTab(position: Int) {
+            val label = items.getOrNull(position)?.label ?: ""
+            listener?.onClickProductDetailnavigation(getComponentTrackData(), position, label)
         }
     }
 
