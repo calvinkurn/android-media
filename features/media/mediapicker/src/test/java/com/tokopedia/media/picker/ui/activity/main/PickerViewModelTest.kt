@@ -3,7 +3,6 @@ package com.tokopedia.media.picker.ui.activity.main
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
-import com.tokopedia.media.picker.ui.fragment.camera.CameraViewModelTest
 import com.tokopedia.media.picker.ui.observer.EventPickerState
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
@@ -12,28 +11,17 @@ import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
 class PickerViewModelTest {
