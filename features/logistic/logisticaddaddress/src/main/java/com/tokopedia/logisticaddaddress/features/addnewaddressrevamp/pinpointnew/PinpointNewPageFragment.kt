@@ -591,10 +591,10 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         if (AddNewAddressUtils.isGpsEnabled(context)) {
+            showLoading()
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
-                    showLoading()
                     moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(data.latitude, data.longitude)
                 } else {
@@ -716,7 +716,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     //send to maps
                     hasRequestedLocation = true
                 }
-                showLoading()
                 moveMap(getLatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude), ZOOM_LEVEL)
                 viewModel.getDistrictData(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
