@@ -2,23 +2,29 @@ package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
+import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTIVE_OLDER
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_OPTION_MENU
 import com.tokopedia.tokomember_seller_dashboard.util.CANCELED
 import com.tokopedia.tokomember_seller_dashboard.util.DRAFT
 import com.tokopedia.tokomember_seller_dashboard.util.ENDED
 import com.tokopedia.tokomember_seller_dashboard.util.WAITING
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberOptionsMenuBottomsheet
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class TokomemberDashProgramVh(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var programStatus: Typography
     lateinit var periodProgram: Typography
@@ -32,6 +38,7 @@ class TokomemberDashProgramVh(itemView: View) : RecyclerView.ViewHolder(itemView
     lateinit var programMemberTransaksivalue: Typography
     lateinit var btn_edit: UnifyButton
     lateinit var view_status: View
+    lateinit var optionMenu: ImageUnify
 
     @SuppressLint("ResourcePackage")
     fun bind(item: ProgramSellerListItem) {
@@ -47,6 +54,7 @@ class TokomemberDashProgramVh(itemView: View) : RecyclerView.ViewHolder(itemView
         programMemberTransaksivalue = itemView.findViewById(R.id.programMemberTransaksivalue)
         btn_edit = itemView.findViewById(R.id.btn_edit)
         view_status = itemView.findViewById(R.id.view_status)
+        optionMenu = itemView.findViewById(R.id.optionMenu)
 
         programStatus.text = item.statusStr
         programStartDate.text = item.timeWindow?.startTime?.let { getDate(it) }
@@ -57,14 +65,15 @@ class TokomemberDashProgramVh(itemView: View) : RecyclerView.ViewHolder(itemView
         programMemberValue.text = item.analytics?.totalNewMember
         programMemberTransaksivalue.text = item.analytics?.trxCount
 
-//        ivTime.setImageDrawable(getIconUnifyDrawable(itemView.context, IconUnify.CLOCK))
-//        ivTime.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_icon)
-//        ivTime.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
-//        ivMemberStatistics.setImageDrawable(getIconUnifyDrawable(itemView.context, IconUnify.PROJECT))
-//        ivMemberStatistics.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_icon)
-//        ivMemberStatistics.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
+        if(item.actions?.tripleDots.isNullOrEmpty()){
+            optionMenu.hide()
+        }
 
-        //TODO handle actions on 3 dots icon click
+        optionMenu.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_OPTION_MENU, Gson().toJson(item.actions))
+            TokomemberOptionsMenuBottomsheet.show(bundle, fragmentManager)
+        }
 
         when(item.status){
             DRAFT ->{

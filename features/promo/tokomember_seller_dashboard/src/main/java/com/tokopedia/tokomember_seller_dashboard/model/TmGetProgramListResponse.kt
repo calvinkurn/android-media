@@ -14,7 +14,7 @@ data class Actions(
 	val buttons: List<ButtonsItem?>? = null,
 
 	@SerializedName("tripleDots")
-	val tripleDots: List<TripleDotsItem?>? = null
+	var tripleDots: ArrayList<TripleDotsItem?>? = null
 )
 
 data class Analytics(

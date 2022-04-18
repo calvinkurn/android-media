@@ -23,7 +23,7 @@ class TokomemberDashProgramFragment : BaseDaggerFragment() {
     private var cardId = 3827
 
     private val tokomemberDashProgramAdapter: TokomemberDashProgramAdapter by lazy{
-        TokomemberDashProgramAdapter(arrayListOf())
+        TokomemberDashProgramAdapter(arrayListOf(), childFragmentManager)
     }
 
     @Inject
