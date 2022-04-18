@@ -69,7 +69,7 @@ class Lego4AutoBannerViewHolder (itemView: View,
 
     private fun initRV() {
         recyclerView = itemView.findViewById(R.id.recycleList)
-        layoutManager = GridLayoutManager(itemView.context, DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context))
+        layoutManager = GridLayoutManager(itemView.context, Lego4AutoTabletConfiguration.getSpanCount(itemView.context))
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.layoutManager = layoutManager
     }
@@ -80,7 +80,7 @@ class Lego4AutoBannerViewHolder (itemView: View,
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(), false))
+                GridSpacingItemDecoration(Lego4AutoTabletConfiguration.getSpanCount(itemView.context), Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(), false))
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
