@@ -78,7 +78,13 @@ data class AffiliateTransactionHistoryData(
                     @SerializedName("WithdrawalID")
                     var withdrawalID: String,
                     @SerializedName("HasDetail")
-                    var hasDetail: Boolean? = false
+                    var hasDetail: Boolean? = false,
+                    @SerializedName("CommissionType")
+                    var commissionType: String?,
+                    @SerializedName("PageType")
+                    var pageType: String?,
+
+
             ) {
                 data class Label(
                         @SerializedName("LabelText")

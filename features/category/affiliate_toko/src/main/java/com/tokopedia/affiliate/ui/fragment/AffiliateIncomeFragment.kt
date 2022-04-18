@@ -373,7 +373,10 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             transactionID = it
         }
         item?.transactionType?.let {
-            if(it == TRANSACTION_TYPE_DEPOSIT) label = AffiliateAnalytics.LabelKeys.DEPOSIT
+            if(it == TRANSACTION_TYPE_DEPOSIT) {
+                label = if(item.commissionType == PRODUCT_TYPE) AffiliateAnalytics.LabelKeys.DEPOSIT_ORDER
+                else AffiliateAnalytics.LabelKeys.DEPOSIT_TRAFFIC
+            }
             else if(it == TRANSACTION_TYPE_WITHDRAWAL) label = AffiliateAnalytics.LabelKeys.WITHDRAWAL
         }
 

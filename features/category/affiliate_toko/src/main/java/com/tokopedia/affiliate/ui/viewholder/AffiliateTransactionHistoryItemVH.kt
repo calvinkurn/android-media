@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.PRODUCT_TYPE
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
@@ -40,7 +41,9 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
             itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
                 when(element?.transaction?.transactionType){
                     TRANSACTION_TYPE_DEPOSIT -> {
-                        sendTransactionClickEvent(element?.transaction?.transactionID,AffiliateAnalytics.LabelKeys.DEPOSIT)
+                        val label = if(element.transaction.commissionType == PRODUCT_TYPE) AffiliateAnalytics.LabelKeys.DEPOSIT_ORDER
+                        else AffiliateAnalytics.LabelKeys.DEPOSIT_TRAFFIC
+                        sendTransactionClickEvent(element?.transaction?.transactionID,label)
                         itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
                     }
                     TRANSACTION_TYPE_WITHDRAWAL -> {

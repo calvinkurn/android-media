@@ -112,6 +112,8 @@ const val SHOP_INACTIVE = 5
 
 const val TRAFFIC_TYPE = "TRAFFIC"
 
+const val PRODUCT_TYPE = "PRODUCT"
+
 const val TYPE_DIVIDER = "divider"
 
 const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
