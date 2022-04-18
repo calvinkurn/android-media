@@ -189,6 +189,4 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
 
         rvPdp?.adapter = productAdapter
     }
-
-    abstract fun showTemporary(view:View)
 }
