@@ -4,7 +4,7 @@ import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeTypeFactory
 
 data class TokoFoodHomeLoadingStateUiModel (
     val id: String
-): TokoFoodHomeLayoutUiModel(id) {
+    ): TokoFoodHomeLayoutUiModel(id) {
     override fun type(typeFactory: TokoFoodHomeTypeFactory): Int {
         return typeFactory.type(this)
     }

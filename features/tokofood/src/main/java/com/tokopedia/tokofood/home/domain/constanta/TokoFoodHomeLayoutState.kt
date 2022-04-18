@@ -4,15 +4,15 @@ import androidx.annotation.IntDef
 
 @Retention(AnnotationRetention.SOURCE)
 @IntDef(
-    TokoFoodLayoutState.SHOW,
-    TokoFoodLayoutState.LOADING,
-    TokoFoodLayoutState.HIDE,
-    TokoFoodLayoutState.LOAD_MORE,
-    TokoFoodLayoutState.LOADED,
-    TokoFoodLayoutState.EMPTY,
-    TokoFoodLayoutState.UPDATE
+    TokoFoodHomeLayoutState.SHOW,
+    TokoFoodHomeLayoutState.LOADING,
+    TokoFoodHomeLayoutState.HIDE,
+    TokoFoodHomeLayoutState.LOAD_MORE,
+    TokoFoodHomeLayoutState.LOADED,
+    TokoFoodHomeLayoutState.EMPTY,
+    TokoFoodHomeLayoutState.UPDATE
 )
-annotation class TokoFoodLayoutState {
+annotation class TokoFoodHomeLayoutState {
     companion object {
         const val SHOW = 1
         const val LOADING = 2

@@ -11,14 +11,11 @@ class TokoFoodHomeCategoryWidgetV2ComponentCallback: CategoryWidgetV2Listener {
         grid: ChannelGrid,
         position: Int
     ) {
-        TODO("Not yet implemented")
     }
 
     override fun onImpressCategoryWidget(channelModel: ChannelModel) {
-        TODO("Not yet implemented")
     }
 
     override fun onSeeAllCategoryWidget(channelModel: ChannelModel) {
-        TODO("Not yet implemented")
     }
 }

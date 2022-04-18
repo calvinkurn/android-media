@@ -14,6 +14,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.IBaseMultiFragment
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -21,16 +23,22 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodHomeBinding
 import com.tokopedia.tokofood.home.di.DaggerTokoFoodHomeComponent
+import com.tokopedia.tokofood.home.domain.constanta.TokoFoodHomeLayoutState
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.home.presentation.adapter.TokoFoodHomeListDiffer
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeListUiModel
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeBannerComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeCategoryWidgetV2ComponentCallback
 import com.tokopedia.tokofood.home.presentation.view.listener.TokoFoodHomeLegoComponentCallback
 import com.tokopedia.tokofood.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
 
     @Inject
@@ -101,6 +109,21 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
         setupUi()
         setupNavToolbar()
         setupRecycleView()
+        observeLiveData()
+
+        loadLayout()
+    }
+
+    private fun showLayout() {
+        getHomeLayout()
+    }
+
+    private fun getHomeLayout() {
+        viewModel.getHomeLayout()
+    }
+
+    private fun loadLayout(){
+        viewModel.getLoadingState()
     }
 
     private fun setupUi() {
@@ -134,7 +157,6 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
         }
     }
 
-
     private fun setIconNavigation() {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
             .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton)
@@ -142,7 +164,6 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
             .addIcon(IconList.ID_NAV_GLOBAL, onClick = ::onClickNavGlobalButton)
         navToolbar?.setIcon(icons)
     }
-
 
     private fun onClickShareButton() {
         //TODO SHARE FUNC
@@ -156,6 +177,40 @@ class TokoFoodHomeFragment: BaseDaggerFragment(), IBaseMultiFragment {
         //TODO CLICK LIST TRANSACTION
     }
 
+    private fun observeLiveData() {
+        observe(viewModel.homeLayoutList) {
+            when (it) {
+                is Success -> onSuccessGetHomeLayout(it.data)
+            }
+        }
+    }
+
+    private fun onSuccessGetHomeLayout(data: TokoFoodHomeListUiModel) {
+        when (data.state) {
+            TokoFoodHomeLayoutState.SHOW -> onShowHomeLayout(data)
+            TokoFoodHomeLayoutState.HIDE -> onHideHomeLayout(data)
+            TokoFoodHomeLayoutState.LOADING -> onLoadingHomelayout(data)
+            else -> showHomeLayout(data)
+        }
+    }
+
+    private fun onHideHomeLayout(data: TokoFoodHomeListUiModel) {
+
+    }
+
+    private fun onShowHomeLayout(data: TokoFoodHomeListUiModel) {
+        showHomeLayout(data)
+    }
+
+    private fun onLoadingHomelayout(data: TokoFoodHomeListUiModel) {
+        showLayout()
+    }
+
+    private fun showHomeLayout(data: TokoFoodHomeListUiModel) {
+        rvHome?.post {
+            adapter.submitList(data.items)
+        }
+    }
 
     // region TokoFood Home Component Callback
 
