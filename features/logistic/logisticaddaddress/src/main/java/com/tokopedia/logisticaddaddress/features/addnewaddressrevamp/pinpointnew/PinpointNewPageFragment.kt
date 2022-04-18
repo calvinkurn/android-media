@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
@@ -177,7 +178,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             } else if (requestCode == GPS_REQUEST) {
                 bottomSheetLocUndefined?.dismiss()
-                getLocation()
+                Handler().postDelayed ({getLocation()}, 1000)
             }
         }
     }

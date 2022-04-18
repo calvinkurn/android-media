@@ -136,7 +136,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == AddressConstants.GPS_REQUEST) {
                 turnOnGpsDialog?.dismiss()
-                getLocation()
+                Handler().postDelayed ({getLocation()}, 1000)
             }
         }
     }
@@ -529,7 +529,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
     @SuppressLint("MissingPermission")
     fun getLocation() {
-        if (AddNewAddressUtils.isGpsEnabled(context)) {
+        if (AddNewAddressUtils.isGpsEnabled(requireActivity())) {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 if (data != null) {
                     presenter.autoFill(data.latitude, data.longitude)

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextUtils
@@ -145,7 +146,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 newAddress?.let { finishActivity(it, false) }
             } else if (requestCode == GPS_REQUEST) {
                 bottomSheetLocUndefined?.dismiss()
-                getLocation()
+                Handler().postDelayed ({getLocation()}, 1000)
             }
         } else {
             showInitialLoadMessage()
