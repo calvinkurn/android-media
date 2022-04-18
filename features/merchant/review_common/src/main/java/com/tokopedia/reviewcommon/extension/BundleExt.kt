@@ -58,7 +58,11 @@ fun Bundle.appendPromotionsEnhancedEcommerce(
             .appendPromotionsEnhancedEcommerceItemName(itemName)
             .appendPromotionsEnhancedEcommerceCreativeSlot(creativeSlot)
     )
-    putParcelableArrayList("promotions", promotions)
+    val payloadPromotions = Bundle().apply {
+        putParcelableArrayList("promotions", ArrayList(promotions))
+    }
+    val payloadPromoView = Bundle().apply { putBundle("promoView", payloadPromotions) }
+    putBundle("ecommerce", payloadPromoView)
     return this
 }
 

@@ -56,6 +56,9 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     lateinit var userSession: UserSessionInterface
 
     @Inject
+    lateinit var reviewMediaGalleryTracker: ReviewMediaGalleryTracker
+
+    @Inject
     @ReviewMediaGalleryViewModelFactory
     lateinit var reviewMediaGalleryViewModelFactory: ViewModelProvider.Factory
 
@@ -112,6 +115,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         super.onPause()
         stopUiStateCollector()
         releaseVideoPlayer()
+        reviewMediaGalleryTracker.sendQueuedTrackers()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -132,7 +136,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
             sharedReviewMediaGalleryViewModel.getProductId()
         )
         if (routed) {
-            ReviewMediaGalleryTracker.trackClickShowSeeMore(
+            reviewMediaGalleryTracker.trackClickShowSeeMore(
                 sharedReviewMediaGalleryViewModel.getProductId()
             )
         }
@@ -140,7 +144,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     override fun onImageImpressed(imageUri: String) {
         galleryAdapter.getItemByUri(imageUri)?.let { (index, media) ->
-            ReviewMediaGalleryTracker.trackImpressImage(
+            reviewMediaGalleryTracker.trackImpressImage(
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
                 sharedReviewMediaGalleryViewModel.getProductId(),
                 media.id,
@@ -152,7 +156,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     override fun onVideoImpressed(videoUri: String) {
         galleryAdapter.getItemByUri(videoUri)?.let { (index, media) ->
-            ReviewMediaGalleryTracker.trackImpressVideo(
+            reviewMediaGalleryTracker.trackImpressVideo(
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
                 sharedReviewMediaGalleryViewModel.getProductId(),
                 media.id,
@@ -195,7 +199,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
                     val currentViewPagerState = reviewMediaGalleryViewModel.viewPagerUiState.value
                     if (currentViewPagerState.previousPagerPosition != currentViewPagerState.currentPagerPosition) {
                         if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                            ReviewMediaGalleryTracker.trackSwipeImage(
+                            reviewMediaGalleryTracker.trackSwipeImage(
                                 it.feedbackId,
                                 currentViewPagerState.previousPagerPosition,
                                 currentViewPagerState.currentPagerPosition,
@@ -203,7 +207,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
                                 userSession.userId
                             )
                         } else {
-                            ReviewMediaGalleryTracker.trackShopReviewSwipeImage(
+                            reviewMediaGalleryTracker.trackShopReviewSwipeImage(
                                 it.feedbackId,
                                 currentViewPagerState.previousPagerPosition,
                                 currentViewPagerState.currentPagerPosition,

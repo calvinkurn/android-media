@@ -1,6 +1,5 @@
 package com.tokopedia.reviewcommon.feature.media.gallery.base.analytic
 
-import android.os.Bundle
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
@@ -8,11 +7,15 @@ import com.tokopedia.reviewcommon.extension.appendProductId
 import com.tokopedia.reviewcommon.extension.appendPromotionsEnhancedEcommerce
 import com.tokopedia.reviewcommon.extension.appendShopId
 import com.tokopedia.reviewcommon.extension.appendUserId
-import com.tokopedia.reviewcommon.extension.sendEnhancedEcommerce
+import com.tokopedia.reviewcommon.extension.queueEnhancedEcommerce
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
 import com.tokopedia.reviewcommon.feature.media.detail.analytic.ReviewDetailTrackerConstant
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import javax.inject.Inject
 
-object ReviewMediaGalleryTracker {
+class ReviewMediaGalleryTracker @Inject constructor(
+    private val trackingQueue: TrackingQueue
+) {
 
     private fun getImageSwipeDirection(previousIndex: Int, currentIndex: Int): String {
         return if (previousIndex < currentIndex) {
@@ -77,7 +80,7 @@ object ReviewMediaGalleryTracker {
         position: Int,
         userId: String
     ) {
-        Bundle().appendGeneralEventData(
+        mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewDetailTrackerConstant.EVENT_VIEW_ITEM,
             ReviewDetailTrackerConstant.EVENT_CATEGORY,
             ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
@@ -87,7 +90,7 @@ object ReviewMediaGalleryTracker {
             .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
             .appendProductId(productId)
             .appendPromotionsEnhancedEcommerce("", position, attachmentId, "image")
-            .sendEnhancedEcommerce(ReviewDetailTrackerConstant.EVENT_VIEW_ITEM)
+            .queueEnhancedEcommerce(trackingQueue)
     }
 
     fun trackImpressVideo(
@@ -97,7 +100,7 @@ object ReviewMediaGalleryTracker {
         position: Int,
         userId: String
     ) {
-        Bundle().appendGeneralEventData(
+        mutableMapOf<String, Any>().appendGeneralEventData(
             ReviewDetailTrackerConstant.EVENT_VIEW_ITEM,
             ReviewDetailTrackerConstant.EVENT_CATEGORY,
             ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
@@ -107,7 +110,7 @@ object ReviewMediaGalleryTracker {
             .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
             .appendProductId(productId)
             .appendPromotionsEnhancedEcommerce("", position, attachmentId, "video")
-            .sendEnhancedEcommerce(ReviewDetailTrackerConstant.EVENT_VIEW_ITEM)
+            .queueEnhancedEcommerce(trackingQueue)
     }
 
     fun trackClickShowSeeMore(productId: String) {
@@ -120,5 +123,9 @@ object ReviewMediaGalleryTracker {
             .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
             .appendProductId(productId)
             .sendGeneralEvent()
+    }
+
+    fun sendQueuedTrackers() {
+        trackingQueue.sendAll()
     }
 }

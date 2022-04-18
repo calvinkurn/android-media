@@ -3,9 +3,14 @@ package com.tokopedia.reviewcommon.extension
 import com.tokopedia.reviewcommon.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.trackingoptimizer.TrackingQueue
 
 fun Map<String, Any>.sendGeneralEvent() {
     TrackApp.getInstance().gtm.sendGeneralEvent(this)
+}
+
+fun Map<String, Any>.queueEnhancedEcommerce(trackingQueue: TrackingQueue) {
+    trackingQueue.putEETracking(HashMap(this))
 }
 
 fun MutableMap<String, Any>.appendGeneralEventData(
@@ -43,5 +48,43 @@ fun MutableMap<String, Any>.appendBusinessUnit(businessUnit: String): MutableMap
 
 fun MutableMap<String, Any>.appendCurrentSite(currentSite: String): MutableMap<String, Any> {
     put(ReviewDetailTrackerConstant.KEY_CURRENT_SITE, currentSite)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerce(
+    creativeName: String,
+    creativeSlot: Int,
+    itemId: String,
+    itemName: String
+): MutableMap<String, Any> {
+    val promotions = arrayListOf(
+        mutableMapOf<String, Any>().appendPromotionsEnhancedEcommerceItemId(itemId)
+            .appendPromotionsEnhancedEcommerceCreativeName(creativeName)
+            .appendPromotionsEnhancedEcommerceItemName(itemName)
+            .appendPromotionsEnhancedEcommerceCreativeSlot(creativeSlot)
+    )
+    val payloadPromotions = mapOf("promotions" to promotions)
+    val payloadPromoView = mapOf("promoView" to payloadPromotions)
+    put(ReviewDetailTrackerConstant.KEY_ECOMMERCE, payloadPromoView)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceItemId(attachmentId: String): MutableMap<String, Any> {
+    put("item_id", attachmentId)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeName(creativeName: String): MutableMap<String, Any> {
+    put("creative_name", creativeName)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceItemName(name: String): MutableMap<String, Any> {
+    put("item_name", name)
+    return this
+}
+
+fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeSlot(position: Int): MutableMap<String, Any> {
+    put("creative_slot", position.toString())
     return this
 }
