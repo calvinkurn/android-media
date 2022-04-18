@@ -32,7 +32,6 @@ class PlayFeedSlotTabViewHolder private constructor() {
             rvSlotTab.adapter = adapter
             adapter.setItems(item.items)
             rvSlotTab.scrollLayout(activity.getTabMenuPosition())
-
         }
 
         override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
