@@ -100,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/unify_space_16"
         android:visibility="gone"
-        android:elevation="@dimen/unify_space_4"
+        android:elevation="@dimen/unify_space_48"
         android:src="@drawable/ic_scroll_up"
         app:layout_constraintBottom_toBottomOf="@+id/swipeRefresh"
         app:layout_constraintEnd_toEndOf="parent" />
