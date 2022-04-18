@@ -211,9 +211,8 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-        this.addAll(buildBUTitleList())
+//        this.addAll(buildBUTitleList())
         allCategory = HomeNavExpandableDataModel()
-        allCategory.menus = listOf(HomeNavMenuDataModel("something", 1, 1, "", null, "Kategori", ""))
         this.add(allCategory)
         this.add(SeparatorDataModel())
     }
@@ -243,15 +242,7 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
 
-                val shimmeringDataModel = _mainNavListVisitable.find {
-                    it is InitialShimmerDataModel
-                }
-
                 allCategory.menus = result
-                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                findBuStartIndexPosition()?.let {
-                    addWidgetList(result, it)
-                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -267,32 +258,36 @@ class MainNavViewModel @Inject constructor(
 
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
+                allCategory.menus = result
                 val shimmeringDataModel = _mainNavListVisitable.find {
                     it is InitialShimmerDataModel
                 }
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-                findBuStartIndexPosition()?.let {
-                    if (findExistingEndBuIndexPosition() == null) {
-                        addWidgetList(result, it)
-                    }
-                }
+//                findBuStartIndexPosition()?.let {
+//                    if (findExistingEndBuIndexPosition() == null) {
+//                        addWidgetList(result, it)
+//                    }
+//                }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
                 //then error state is not needed
                 val isBuExist = findExistingEndBuIndexPosition()
                 if (isBuExist == null) {
-                    findBuStartIndexPosition()?.let {
-                        updateWidget(ErrorStateBuDataModel(), it)
-                    }
+                    allCategory.menus = listOf(ErrorStateBuDataModel())
+//                    findBuStartIndexPosition()?.let {
+//
+//                        updateWidget(ErrorStateBuDataModel(), it)
+//                    }
                 }
 
                 val buShimmering = _mainNavListVisitable.find {
                     it is InitialShimmerDataModel
                 }
                 buShimmering?.let {
-                    updateWidget(ErrorStateBuDataModel(),
-                            _mainNavListVisitable.indexOf(it)
-                    )
+                    allCategory.menus = listOf(ErrorStateBuDataModel())
+//                    updateWidget(ErrorStateBuDataModel(),
+//                            _mainNavListVisitable.indexOf(it)
+//                    )
                 }
                 e.printStackTrace()
             }
@@ -416,15 +411,6 @@ class MainNavViewModel @Inject constructor(
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
             e.printStackTrace()
         }
-    }
-
-    private fun buildBUTitleList(): List<Visitable<*>> {
-        clientMenuGenerator.get()?.let {
-            return mutableListOf(
-                    it.getSectionTitle(IDENTIFIER_TITLE_ALL_CATEGORIES)
-            )
-        }
-        return listOf()
     }
 
     private fun buildUserMenuList(): List<Visitable<*>> {
@@ -704,7 +690,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun findBuStartIndexPosition(): Int? {
         val findBUTitle = _mainNavListVisitable.firstOrNull {
-            it is HomeNavTitleDataModel && it.identifier == IDENTIFIER_TITLE_ALL_CATEGORIES
+            it is HomeNavExpandableDataModel
         }
         findBUTitle?.let{
             return _mainNavListVisitable.indexOf(it) + 1
