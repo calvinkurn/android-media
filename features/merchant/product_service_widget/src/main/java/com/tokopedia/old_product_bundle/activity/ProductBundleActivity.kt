@@ -61,7 +61,7 @@ class ProductBundleActivity : BaseSimpleActivity() {
         observeGetBundleInfoResult()
     }
 
-    override fun getLayoutRes() = R.layout.activity_product_bundle
+    override fun getLayoutRes() = R.layout.old_activity_product_bundle
 
     override fun getNewFragment(): Fragment {
         return entryPointFragment

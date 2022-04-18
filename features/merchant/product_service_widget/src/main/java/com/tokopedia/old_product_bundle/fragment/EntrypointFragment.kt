@@ -9,7 +9,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.old_product_bundle.activity.ProductBundleActivity
 import com.tokopedia.old_product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.old_product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_service_widget.R

@@ -40,7 +40,6 @@ import com.tokopedia.old_product_bundle.multiple.presentation.adapter.ProductBun
 import com.tokopedia.old_product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
 import com.tokopedia.old_product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter
 import com.tokopedia.old_product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
-import com.tokopedia.old_product_bundle.multiple.presentation.fragment.MultipleProductBundleFragment
 import com.tokopedia.old_product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.old_product_bundle.multiple.presentation.model.ProductBundleMaster
 import com.tokopedia.old_product_bundle.tracking.MultipleProductBundleTracking
@@ -100,7 +99,7 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_multiple_product_bundle, container, false)
+        return inflater.inflate(R.layout.old_fragment_multiple_product_bundle, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

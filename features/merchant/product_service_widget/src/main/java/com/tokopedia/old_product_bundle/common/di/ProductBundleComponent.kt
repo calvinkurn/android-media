@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product_bundle.activity.ProductBundleActivity
+import com.tokopedia.old_product_bundle.activity.ProductBundleActivity
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.logging.HttpLoggingInterceptor

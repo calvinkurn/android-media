@@ -83,7 +83,7 @@ class SingleProductBundleFragment(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
+        return inflater.inflate(R.layout.old_fragment_single_product_bundle, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
