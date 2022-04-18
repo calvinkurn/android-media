@@ -48,7 +48,7 @@ class AlbumViewModelTest {
         assert(viewModel.isLoading.value != null)
     }
 
-    companion object{
+    companion object {
         val albumCollection = listOf(
             Album(0, "album name 0", count = 0),
             Album(1, "album name 1", count = 1),
