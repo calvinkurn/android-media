@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
@@ -324,14 +325,8 @@ class ReadReviewViewHolder(
     private fun showAttachedImages(
         mediaThumbnails: ReviewMediaThumbnailUiModel
     ) {
-        if (mediaThumbnails.mediaThumbnails.isEmpty()) {
-            attachedMedia?.hide()
-            return
-        }
-        attachedMedia?.apply {
-            setData(mediaThumbnails)
-            show()
-        }
+        attachedMedia?.showWithCondition(mediaThumbnails.mediaThumbnails.isNotEmpty())
+        attachedMedia?.setData(mediaThumbnails)
     }
 
     private fun setReviewerStats(userStats: List<UserReviewStats>) {
