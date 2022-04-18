@@ -13,18 +13,18 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:layout_marginTop="2dp"
-        android:layout_marginEnd="8dp"
         android:ellipsize="end"
+        android:maxLines="1"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/iv_quiz_option"
-        app:layout_constraintEnd_toStartOf="@+id/loader_quiz_option"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@id/tv_respondent"
         app:layout_constraintStart_toEndOf="@+id/iv_quiz_option"
         app:layout_constraintTop_toTopOf="@+id/iv_quiz_option"
         app:layout_constraintVertical_bias="0.0"
+        app:layout_goneMarginEnd="@dimen/spacing_lvl8"
         app:typographyType="heading_5"
         app:typographyWeight="reguler"
-        tools:text="Follow untuk ikut quiz"
+        tools:text="Follow untuk ikut quiz Follow untuk ikut quiz quiz quiz quiz"
         tools:textColor="@color/Unify_NN600" />
 
     <include
@@ -45,11 +45,12 @@
         android:layout_width="21dp"
         android:layout_height="21dp"
         android:layout_marginEnd="14dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tv_quiz_question"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_quiz_question"
         app:loader_type="circular"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_arrow"
@@ -61,16 +62,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_quiz_question"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_quiz_question"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_respondent"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="223"
-        tools:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iv_arrow"
         app:layout_constraintEnd_toStartOf="@+id/iv_arrow"
-        app:layout_constraintTop_toTopOf="@+id/iv_arrow" />
+        app:layout_constraintTop_toTopOf="@+id/iv_arrow"
+        tools:text="223"
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>
