@@ -6,11 +6,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.text.TextUtils
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant.ReviewStarNumber.*
 import com.tokopedia.notifications.common.CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED
+import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.common.CMNotificationUtils.getSpannedTextFromStr
 import com.tokopedia.notifications.model.BaseNotificationModel
 import java.lang.Exception
@@ -77,9 +79,14 @@ class ReviewNotification internal constructor(
             R.id.tvReviewPushTitle,
             getSpannedTextFromStr(baseNotificationModel.title)
         )
+        val message = if (!TextUtils.isEmpty(baseNotificationModel.detailMessage))
+            baseNotificationModel.detailMessage
+        else if (!TextUtils.isEmpty(baseNotificationModel.message))
+            baseNotificationModel.message
+        else ""
         expandedView.setTextViewText(
             R.id.tvReviewPushMessage,
-            getSpannedTextFromStr(baseNotificationModel.detailMessage?:baseNotificationModel.message)
+            getSpannedTextFromStr(message)
         )
     }
 

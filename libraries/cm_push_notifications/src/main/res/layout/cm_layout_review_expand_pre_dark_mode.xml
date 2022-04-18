@@ -43,39 +43,61 @@
         android:layout_below="@+id/ivProductLargeImage"
         android:layout_centerHorizontal="true">
 
-        <include
+        <ImageView
             android:id="@+id/ivReviewStarOne"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            layout="@layout/cm_layout_star_unselected_big_item" />
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:tint="#000"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
 
-        <include
+        <ImageView
             android:id="@+id/ivReviewStarTwo"
-            layout="@layout/cm_layout_star_unselected_big_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/cm_dp_6" />
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:tint="#000"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
 
-        <include
+
+        <ImageView
             android:id="@+id/ivReviewStarThree"
-            layout="@layout/cm_layout_star_unselected_big_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/cm_dp_6" />
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:tint="#000"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
 
-        <include
+        <ImageView
             android:id="@+id/ivReviewStarFour"
-            layout="@layout/cm_layout_star_unselected_big_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/cm_dp_6" />
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:tint="#000"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
 
-        <include
+        <ImageView
             android:id="@+id/ivReviewStarFive"
-            layout="@layout/cm_layout_star_unselected_big_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/cm_dp_6" />
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:paddingStart="@dimen/cm_dp_4"
+            android:paddingEnd="@dimen/cm_dp_4"
+            android:adjustViewBounds="true"
+            android:tint="#000"
+            android:src="@drawable/cm_ic_star_review_white"
+            tools:ignore="ContentDescription" />
 
     </LinearLayout>
 
