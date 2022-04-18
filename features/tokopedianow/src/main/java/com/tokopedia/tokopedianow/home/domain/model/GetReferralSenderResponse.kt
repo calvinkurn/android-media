@@ -29,6 +29,18 @@ data class GetReferralSenderHomeResponse(
         )
         data class SharingMetadata(
             @Expose
+            @SerializedName("ogImage")
+            val ogImage: String,
+            @Expose
+            @SerializedName("ogTitle")
+            val ogTitle: String,
+            @Expose
+            @SerializedName("ogDescription")
+            val ogDescription: String,
+            @Expose
+            @SerializedName("textDescription")
+            val textDescription: String,
+            @Expose
             @SerializedName("sharingURL")
             val sharingUrl: String
         )
