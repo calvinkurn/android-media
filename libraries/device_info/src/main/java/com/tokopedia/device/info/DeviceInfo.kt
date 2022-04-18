@@ -5,6 +5,9 @@ import android.content.Context
 import android.os.Build
 import android.provider.Settings
 import com.google.android.gms.ads.identifier.AdvertisingIdClient
+import com.google.android.gms.tasks.Task
+import com.google.firebase.installations.FirebaseInstallations
+import com.google.firebase.installations.FirebaseInstallationsException
 import com.tokopedia.device.info.cache.DeviceInfoCache
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
@@ -15,6 +18,7 @@ import java.io.InputStreamReader
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object DeviceInfo {
 
@@ -127,12 +131,61 @@ object DeviceInfo {
         }
     }
 
-    private fun logAdsId() {
-        ServerLogger.log(
-            Priority.P2,
-            "GET_ADS_ID",
-            mapOf("type" to "ads_id_empty", "source" to "DeviceInfo")
-        )
+    @JvmStatic
+    fun logIdentifier(context: Context, source: String) {
+        GlobalScope.launch {
+            try {
+                val hasFID = !getFirebaseId().isNullOrBlank()
+                ServerLogger.log(
+                    Priority.P2,
+                    "DEVICE_UNIQUE_ID",
+                    mapOf(
+                        "type" to "ads_id_empty",
+                        "source" to source,
+                        "hasUUID" to hasUuid(context).toString(),
+                        "hasFID" to hasFID.toString()
+                    )
+                )
+            } catch (ignored: Exception) {}
+        }
+    }
+
+    @JvmStatic
+    fun hasUuid(context: Context): Boolean {
+        return try {
+            val uuid = getUUID(context)
+            uuid.isNotEmpty()
+        }catch (e: Exception) {
+            false
+        }
+    }
+
+    @JvmStatic
+    fun hasFid(): Boolean {
+        return try {
+            !runBlocking { getFirebaseId() }.isNullOrBlank()
+        }catch (e: Exception) {
+            false
+        }
+    }
+
+    suspend fun <T> Task<T>.await2(): T? = suspendCoroutine { continuation ->
+        addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                continuation.resume(task.result)
+            } else {
+                continuation.resume(null)
+            }
+        }
+    }
+
+    suspend fun getFirebaseId(): String? {
+        return try {
+            FirebaseInstallations.getInstance().id.await2()
+        } catch (e: FirebaseInstallationsException) {
+            e.printStackTrace()
+            ""
+        }
     }
 
     @JvmStatic
@@ -146,7 +199,7 @@ object DeviceInfo {
             try {
                 val result = runBlocking { getlatestAdId(context, 3000L) }
                 if(result.isEmpty()) {
-                    logAdsId()
+                    logIdentifier(context, "DeviceInfo")
                 }
                 result
             } catch (e: Exception) {
