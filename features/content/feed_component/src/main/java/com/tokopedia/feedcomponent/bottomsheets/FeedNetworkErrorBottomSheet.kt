@@ -11,9 +11,13 @@ import kotlinx.android.synthetic.main.bottomsheet_network_error.*
 class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
 
     private var dismissedByClosing = false
+    var onRetry: (() -> Unit)? = null
+
 
     companion object {
-        fun newInstance(): FeedNetworkErrorBottomSheet {
+        private var shouldShowCobaLagiBtn = false
+        fun newInstance(shouldShowRetryBtn: Boolean = false): FeedNetworkErrorBottomSheet {
+            this.shouldShowCobaLagiBtn = shouldShowRetryBtn
             return FeedNetworkErrorBottomSheet()
         }
     }
@@ -32,7 +36,16 @@ class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         showCloseIcon = true
         isDragable = false
+        if (shouldShowCobaLagiBtn)
+        globalError.errorAction.visibility = View.VISIBLE
+        else
         globalError.errorAction.visibility = View.GONE
+
+
+        globalError.errorAction.setOnClickListener {
+            onRetry?.invoke()
+            dismiss()
+        }
 
         setCloseClickListener {
             dismissedByClosing = true
