@@ -35,6 +35,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -68,6 +69,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     private var binding by viewBinding(FragmentReviewMediaGalleryBinding::bind)
     private var uiStateCollectorJob: Job? = null
+    private var swipeTrackerEventHandlerJob: Job? = null
     private var currentMediaItemCollectorJob: Job? = null
     private var detailedReviewMediaResultCollectorJob: Job? = null
     private var orientationUiStateCollectorJob: Job? = null
@@ -191,10 +193,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
                 if (needUpdate) binding?.updateViewPager(it.viewPagerUiState)
             }
         }
-        currentMediaItemCollectorJob = currentMediaItemCollectorJob?.takeIf {
+        swipeTrackerEventHandlerJob = swipeTrackerEventHandlerJob?.takeIf {
             !it.isCompleted
         } ?: launch {
-            reviewMediaGalleryViewModel.currentMediaItem.collectLatest {
+            reviewMediaGalleryViewModel.currentMediaItem.distinctUntilChangedBy {
+                it?.id
+            }.collectLatest {
                 if (it is ImageMediaItemUiModel || it is VideoMediaItemUiModel) {
                     val currentViewPagerState = reviewMediaGalleryViewModel.viewPagerUiState.value
                     if (currentViewPagerState.previousPagerPosition != currentViewPagerState.currentPagerPosition) {
@@ -217,6 +221,12 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
                         }
                     }
                 }
+            }
+        }
+        currentMediaItemCollectorJob = currentMediaItemCollectorJob?.takeIf {
+            !it.isCompleted
+        } ?: launch {
+            reviewMediaGalleryViewModel.currentMediaItem.collectLatest {
                 sharedReviewMediaGalleryViewModel.updateCurrentMediaItem(it)
             }
         }
@@ -250,6 +260,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
 
     private fun stopUiStateCollector() {
         uiStateCollectorJob?.cancel()
+        swipeTrackerEventHandlerJob?.cancel()
         currentMediaItemCollectorJob?.cancel()
         detailedReviewMediaResultCollectorJob?.cancel()
         orientationUiStateCollectorJob?.cancel()
