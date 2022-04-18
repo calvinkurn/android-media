@@ -2,8 +2,6 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.sho
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -11,28 +9,27 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
-import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 
-private const val DEFAULT_DESIGN = 2.1
+private const val DEFAULT_DESIGN = 2
 
 class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
-    private val parentView: ConstraintLayout = itemView.findViewById(R.id.parent_layout)
-    private var bannerImage: ImageView = itemView.findViewById(R.id.banner_image)
+    private var bannerImage: ImageUnify = itemView.findViewById(R.id.banner_image)
     private lateinit var shopBannerInfiniteItemViewModel: ShopBannerInfiniteItemViewModel
     private val displayMetrics = Utils.getDisplayMetric(fragment.context)
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         shopBannerInfiniteItemViewModel = discoveryBaseViewModel as ShopBannerInfiniteItemViewModel
-        parentView.setOnClickListener {
+        bannerImage.setOnClickListener {
             shopBannerInfiniteItemViewModel.getNavigationUrl()?.let {
                 RouteManager.route(fragment.activity, it)
                 shopBannerInfiniteItemViewModel.getItemData()?.let { itemData ->
-
+                    //to be handled for click impressions
                 }
             }
         }
@@ -44,7 +41,7 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
             shopBannerInfiniteItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
                 componentItem.data?.let {
                     if (it.isNotEmpty()) {
-                        setupImage(it.first(),componentItem)
+                        setupImage(it.first())
                     }
                 }
             })
@@ -58,13 +55,13 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
         }
     }
 
-    private fun setupImage(itemData: DataItem,componentItem:ComponentsItem){
+    private fun setupImage(itemData: DataItem){
         try {
             val layoutParams: ViewGroup.LayoutParams = bannerImage.layoutParams
-            layoutParams.width = ((displayMetrics.widthPixels - itemView.context.resources.getDimensionPixelSize(R.dimen.carousel_gap))
-                    / if (componentItem.design.isEmpty()) DEFAULT_DESIGN else componentItem.design.toDouble()).toInt()
-            val height = Utils.extractDimension(itemData.image,Constant.Dimensions.HEIGHT)
-            val width = Utils.extractDimension(itemData.image,Constant.Dimensions.WIDTH)
+            layoutParams.width = ((displayMetrics.widthPixels)
+                    / DEFAULT_DESIGN)
+            val height = Utils.extractDimension(itemData.imageUrlDynamicMobile,Constant.Dimensions.HEIGHT)
+            val width = Utils.extractDimension(itemData.imageUrlDynamicMobile,Constant.Dimensions.WIDTH)
             if (width != null && height != null && width != 1 && height != 1) {
                 val aspectRatio = width.toFloat() / height.toFloat()
                 layoutParams.height = (layoutParams.width / aspectRatio).toInt()
@@ -72,9 +69,11 @@ class ShopBannerInfiniteItemViewHolder(itemView: View, private val fragment: Fra
                 layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
             bannerImage.layoutParams = layoutParams
-            bannerImage.loadImageWithoutPlaceholder(itemData.image)
+            bannerImage.apply {
+                loadImage(itemData.imageUrlDynamicMobile)
+            }
         } catch (exception: NumberFormatException) {
-            parentView.hide()
+            bannerImage.hide()
             exception.printStackTrace()
         }
     }

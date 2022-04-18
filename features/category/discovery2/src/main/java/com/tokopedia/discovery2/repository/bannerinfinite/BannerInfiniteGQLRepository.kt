@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.repository.bannerinfinite
 
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
-import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
@@ -25,9 +24,9 @@ class BannerInfiniteGQLRepository @Inject constructor() : BaseRepository(), Bann
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = when (bannerComponentName) {
             ComponentNames.BannerInfinite.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName, parentListSize = componentsListSize)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
 
         }
         return Pair(list,nextPage)
