@@ -174,22 +174,25 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
         } ?: launch {
             reviewMediaGalleryViewModel.currentMediaItem.collectLatest {
                 if (it is ImageMediaItemUiModel || it is VideoMediaItemUiModel) {
-                    if (sharedReviewMediaGalleryViewModel.isProductReview()) {
-                        ReviewMediaGalleryTracker.trackSwipeImage(
-                            it.feedbackId,
-                            reviewMediaGalleryViewModel.viewPagerUiState.value.previousPagerPosition,
-                            reviewMediaGalleryViewModel.viewPagerUiState.value.currentPagerPosition,
-                            sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
-                            userSession.userId
-                        )
-                    } else {
-                        ReviewMediaGalleryTracker.trackShopReviewSwipeImage(
-                            it.feedbackId,
-                            reviewMediaGalleryViewModel.viewPagerUiState.value.previousPagerPosition,
-                            reviewMediaGalleryViewModel.viewPagerUiState.value.currentPagerPosition,
-                            sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
-                            sharedReviewMediaGalleryViewModel.getShopId()
-                        )
+                    val currentViewPagerState = reviewMediaGalleryViewModel.viewPagerUiState.value
+                    if (currentViewPagerState.previousPagerPosition != currentViewPagerState.currentPagerPosition) {
+                        if (sharedReviewMediaGalleryViewModel.isProductReview()) {
+                            ReviewMediaGalleryTracker.trackSwipeImage(
+                                it.feedbackId,
+                                currentViewPagerState.previousPagerPosition,
+                                currentViewPagerState.currentPagerPosition,
+                                sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
+                                userSession.userId
+                            )
+                        } else {
+                            ReviewMediaGalleryTracker.trackShopReviewSwipeImage(
+                                it.feedbackId,
+                                currentViewPagerState.previousPagerPosition,
+                                currentViewPagerState.currentPagerPosition,
+                                sharedReviewMediaGalleryViewModel.getTotalMediaCount().toInt(),
+                                sharedReviewMediaGalleryViewModel.getShopId()
+                            )
+                        }
                     }
                 }
                 sharedReviewMediaGalleryViewModel.updateCurrentMediaItem(it)

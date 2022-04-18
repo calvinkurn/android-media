@@ -152,10 +152,12 @@ class ReviewMediaGalleryViewModel @Inject constructor(
             enableViewPagerTimer.cancel()
             requestToggleViewPagerSwipe(false)
             _viewPagerUiState.update {
-                it.copy(
-                    previousPagerPosition = it.currentPagerPosition,
-                    currentPagerPosition = position
-                )
+                if (it.currentPagerPosition != position) {
+                    it.copy(
+                        previousPagerPosition = it.currentPagerPosition,
+                        currentPagerPosition = position
+                    )
+                } else it
             }
             enableViewPagerTimer.start()
         }
