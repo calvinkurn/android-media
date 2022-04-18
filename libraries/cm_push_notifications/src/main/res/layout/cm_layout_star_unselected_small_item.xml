@@ -3,5 +3,5 @@
     android:layout_width="16dp"
     android:layout_height="16dp"
     android:adjustViewBounds="true"
-    android:background="@drawable/cm_ic_star_review_white"
+    android:src="@drawable/cm_ic_star_review_white"
     tools:ignore="ContentDescription" />
