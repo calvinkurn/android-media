@@ -130,6 +130,11 @@ class CardViewHolder(
                 tvCardValue.visible()
                 tvCardValue.text = (element.data?.value ?: ZERO_STR).parseAsHtml()
             }
+            if (element.data?.description.isNullOrBlank()) {
+                tvCardSubValue.invisible()
+            } else {
+                tvCardSubValue.visible()
+            }
             tvCardSubValue.show(
                 primary = element.data?.description.orEmpty(),
                 secondary = element.data?.secondaryDescription.orEmpty()
@@ -155,7 +160,8 @@ class CardViewHolder(
         with(binding) {
             containerCard.viewTreeObserver.addOnPreDrawListener {
                 element.data?.lastUpdated?.let {
-                    val shouldShowRefreshButton = it.needToUpdated.orFalse() && !element.showLoadingState
+                    val shouldShowRefreshButton =
+                        it.needToUpdated.orFalse() && !element.showLoadingState
                     icShcRefreshCard.isVisible = shouldShowRefreshButton && it.isEnabled
                     icShcRefreshCard.setOnClickListener {
                         refreshWidget(element)

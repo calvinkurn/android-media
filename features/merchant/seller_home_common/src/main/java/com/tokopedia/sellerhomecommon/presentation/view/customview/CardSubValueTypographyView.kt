@@ -36,6 +36,9 @@ class CardSubValueTypographyView : RelativeLayout {
         defStyleAttr
     )
 
+    private val animationHandler by lazy {
+        Handler(Looper.getMainLooper())
+    }
     private val binding: ShcViewCardSubValueTypographyBinding
     private var primaryText: String = ""
     private var secondaryText: String = ""
@@ -93,7 +96,7 @@ class CardSubValueTypographyView : RelativeLayout {
 
     private fun showPrimaryValueAnimation(delay: Long, onAnimationEnd: (() -> Unit)? = null) {
         with(binding) {
-            Handler(Looper.getMainLooper()).postDelayed({
+            animationHandler.postDelayed({
                 tvShcSecondarySubValue.animate()
                     .translationY(tvShcSecondarySubValue.height.toFloat())
                     .scaleY(Float.ZERO)
@@ -124,7 +127,7 @@ class CardSubValueTypographyView : RelativeLayout {
 
     private fun showSecondaryValueAnimation(delay: Long) {
         with(binding) {
-            Handler(Looper.getMainLooper()).postDelayed({
+            animationHandler.postDelayed({
                 tvShcPrimarySubValue.translationY = Float.ZERO
                 tvShcPrimarySubValue.animate()
                     .translationY(tvShcPrimarySubValue.height.inv().toFloat())
