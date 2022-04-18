@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.tokofood.common.domain.param.CartItemTokoFoodParam
 import com.tokopedia.tokofood.common.domain.param.CartTokoFoodParam
@@ -61,8 +62,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     // Temporary field to store collapsed unavailable products
     private var tmpCollapsedUnavailableItems = mutableListOf<Visitable<*>>()
 
-    // Dummy temporary field to store address data
-    private var tmpAddressData = "0" to false
+    private val _isAddressHasPinpoint = MutableStateFlow(false)
 
     private val _updateQuantityState: MutableSharedFlow<List<TokoFoodPurchaseProductTokoFoodPurchaseUiModel>?> =
         MutableSharedFlow()
@@ -95,6 +95,17 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         return visitables.value ?: mutableListOf()
     }
 
+    fun resetValues() {
+        viewModelScope.launch {
+            _updateQuantityStateFlow.value = null
+            _shouldRefreshCartData.emit(false)
+        }
+    }
+
+    fun setIsHasPinpoint(hasPinpoint: Boolean) {
+        _isAddressHasPinpoint.value = hasPinpoint
+    }
+
     fun getNextItems(currentIndex: Int, count: Int): List<Visitable<*>> {
         val dataList = getVisitablesValue()
         val from = currentIndex + 1
@@ -115,7 +126,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 // TODO: Check for success status
                 val isEnabled = it.status == 1
                 _visitables.value =
-                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !tmpAddressData.second)
+                    TokoFoodPurchaseUiModelMapper.mapCheckoutResponseToUiModels(it, isEnabled, !_isAddressHasPinpoint.value)
                         .toMutableList()
             }
         }, onError = {
@@ -137,7 +148,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
                     it,
                     isEnabled,
-                    !tmpAddressData.second
+                    !_isAddressHasPinpoint.value
                 )
                 val dataList = getVisitablesValue().toMutableList().apply {
                     getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
@@ -376,10 +387,6 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         }
     }
 
-    fun updateAddress(chosenAddressModel: ChosenAddressModel) {
-        // Todo : hit API change address, then reload purchase page if success and show toaster
-    }
-
     fun validateSetPinpoint() {
         val addressData = getVisitablesValue().getAddressUiModel()
         addressData?.let {
@@ -400,14 +407,15 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 val isSuccess = withContext(dispatcher.io) {
                     keroEditAddressUseCase.execute()
                 }
-                tmpAddressData = tmpAddressData.first to isSuccess
                 if (isSuccess) {
+                    _isAddressHasPinpoint.value = latitude.isNotEmpty() && longitude.isNotEmpty()
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
                 } else {
+                    _isAddressHasPinpoint.value = false
                     _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
                 }
             }, onError = {
-                tmpAddressData = tmpAddressData.first to false
+                _isAddressHasPinpoint.value = false
                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
             }
         )

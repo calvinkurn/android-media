@@ -31,8 +31,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loaderdialog.LoaderDialog
-import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.EXTRA_SELECTED_ADDRESS_DATA
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.exception.ResponseErrorException
@@ -133,6 +132,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         loadData()
     }
 
+    override fun onStop() {
+        super.onStop()
+        viewModel.resetValues()
+    }
+
     override fun getFragmentToolbar(): Toolbar? {
         return null
     }
@@ -181,6 +185,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun loadData() {
         showLoadingLayout()
+        context?.applicationContext?.let {
+            ChooseAddressUtils.getLocalizingAddressData(it).latLong.isNotEmpty().let { hasPinpoint ->
+                viewModel.setIsHasPinpoint(hasPinpoint)
+            }
+        }
         viewModel.loadData()
     }
 
@@ -463,7 +472,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress(resultCode, data)
+            REQUEST_CODE_CHANGE_ADDRESS -> onResultFromChangeAddress()
             REQUEST_CODE_SET_PINPOINT -> onResultFromSetPinpoint(resultCode, data)
         }
     }
@@ -480,15 +489,8 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
-    private fun onResultFromChangeAddress(resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
-            data?.let {
-                val chosenAddressModel = it.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA) as? ChosenAddressModel
-                chosenAddressModel?.let {
-                    viewModel.updateAddress(it)
-                }
-            }
-        }
+    private fun onResultFromChangeAddress() {
+        loadData()
     }
 
     private fun showLoadingDialog() {
