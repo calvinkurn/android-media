@@ -1,8 +1,11 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -12,18 +15,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.tasks.OnFailureListener
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetLocationUndefinedBinding
 import com.tokopedia.logisticaddaddress.di.DaggerDistrictRecommendationComponent
@@ -81,6 +93,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private var hasRequestedLocation: Boolean = false
     private var fusedLocationClient: FusedLocationProviderClient? = null
+    private var turnOnGpsDialog: DialogUnify? = null
 
     interface DiscomRevampListener {
         fun onGetDistrict(districtAddress: Address)
@@ -117,6 +130,15 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     override fun onDetach() {
         super.onDetach()
         presenter.detach()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == AddressConstants.GPS_REQUEST) {
+                turnOnGpsDialog?.dismiss()
+                getLocation()
+            }
+        }
     }
 
     private fun initInjector() {
@@ -530,20 +552,66 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
 
     private fun showDialogAskGps() {
-        val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
-        dialog?.apply {
+        turnOnGpsDialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        turnOnGpsDialog?.apply {
             setTitle(getString(R.string.txt_location_not_detected))
             setDescription(getString(R.string.discom_on_deny_location_subtitle))
             setPrimaryCTAText(getString(R.string.btn_ok))
             setPrimaryCTAClickListener {
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                context?.let { turnGPSOn(it) }
             }
             setSecondaryCTAText(getString(R.string.tv_discom_dialog_secondary))
             setSecondaryCTAClickListener {
-                dialog.hide()
+                turnOnGpsDialog?.hide()
             }
             show()
         }
+    }
+
+    private fun turnGPSOn(context: Context): Boolean {
+        var isGpsOn = false
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val mSettingsClient = LocationServices.getSettingsClient(context)
+
+        val locationRequest = LocationRequest.create()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 10 * 1000
+        locationRequest.fastestInterval = 2 * 1000
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val mLocationSettingsRequest = builder.build()
+        builder.setAlwaysShow(true)
+
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            isGpsOn = true
+        } else {
+            mSettingsClient
+                .checkLocationSettings(mLocationSettingsRequest)
+                .addOnSuccessListener(requireActivity()) {
+                    //  GPS is already enable, callback GPS status through listener
+                    isGpsOn = true
+                }
+                .addOnFailureListener(requireActivity(), OnFailureListener { e ->
+                    when ((e as ApiException).statusCode) {
+                        LocationSettingsStatusCodes.RESOLUTION_REQUIRED ->
+
+                            try {
+                                // Show the dialog by calling startResolutionForResult(), and check the
+                                // result in onActivityResult().
+                                val rae = e as ResolvableApiException
+                                startIntentSenderForResult(rae.resolution.intentSender,
+                                    AddressConstants.GPS_REQUEST, null, 0, 0, 0, null)
+                            } catch (sie: IntentSender.SendIntentException) {
+                                sie.printStackTrace()
+                            }
+
+                        LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE -> {
+                            val errorMessage = "Location settings are inadequate, and cannot be " + "fixed here. Fix in Settings."
+                            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                })
+        }
+        return isGpsOn
     }
 
     fun createLocationCallback(): LocationCallback {
