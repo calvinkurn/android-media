@@ -745,7 +745,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         val bundle = Bundle()
         bundle.putDouble(EXTRA_LAT, currentLat)
         bundle.putDouble(EXTRA_LONG, currentLong)
-//        bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, false)
         bundle.putBoolean(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
         bundle.putString(EXTRA_DISTRICT_NAME, currentDistrictName)
         bundle.putString(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
@@ -1060,9 +1059,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showLabelAlamatList() {
-//        val res: Resources = resources
-//        labelAlamatList = res.getStringArray(R.array.labelAlamatList).map { Pair(it, false) }.toTypedArray()
-
         if (isPositiveFlow) binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
         else binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
         binding?.formAddress?.rvLabelAlamatChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
@@ -1136,9 +1132,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 backDialog?.apply {
                     setOverlayClose(false)
                     setCancelable(false)
-                    setTitle("Keluar Halaman?")
-                    setDescription("Kamu akan membatalkan perubahan alamat. Semua perubahan data tidak akan disimpan.")
-                    setPrimaryCTAText("Keluar")
+                    setTitle(getString(R.string.editaddress_back_dialog_title))
+                    setDescription(getString(R.string.editaddress_back_dialog_description))
+                    setPrimaryCTAText(getString(R.string.editaddress_back_dialog_cta))
                     setPrimaryCTAClickListener {
                         isBackDialogClicked = true
                         activity?.onBackPressed()

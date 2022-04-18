@@ -29,7 +29,6 @@ class EditAddressRevampRobot {
         rule.launchActivity(i)
         waitForData()
     }
-    // positive layout
 
     fun fillAddress(address: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_alamat_new))))
@@ -40,11 +39,6 @@ class EditAddressRevampRobot {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nomor_hp))))
             .perform(click(), clearText(), typeText(phone), closeSoftKeyboard())
     }
-// todo need to change id to differentiate with the negative ana layout
-//    fun fillCourierNotes(notes: String) {
-//        onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_courier_note))))
-//            .perform(click(), clearText(), typeText(notes), closeSoftKeyboard())
-//    }
 
     fun fillReceiver(receiver: String) {
         onView(allOf(withId(R.id.text_field_input), isDescendantOfA(withId(R.id.et_nama_penerima))))
@@ -81,8 +75,6 @@ class EditAddressRevampRobot {
         onView(withId(R.id.btn_save_address_new)).perform(scrollTo(), click())
         return EditAddressResultRobot().apply(func)
     }
-
-//    batas suci
 
 
     fun clickManualForm() {

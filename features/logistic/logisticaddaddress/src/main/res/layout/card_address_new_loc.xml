@@ -75,10 +75,5 @@
                 android:text="@string/change_pinpoint_positive_text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.tokopedia.unifycomponents.CardUnify>
-
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

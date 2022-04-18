@@ -25,11 +25,7 @@ class SaveAddressMapper @Inject constructor() {
         return saveAddressDataModel
     }
 
-    fun map(
-        getDistrictDataUiModel: GetDistrictDataUiModel,
-        zipCodes: MutableList<String>?,
-        existingModel: SaveAddressDataModel?
-    ): SaveAddressDataModel {
+    fun map(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?, existingModel: SaveAddressDataModel? = null): SaveAddressDataModel {
         val saveAddressDataModel = existingModel ?: SaveAddressDataModel()
         saveAddressDataModel.title = getDistrictDataUiModel.title
         saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress

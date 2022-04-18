@@ -151,7 +151,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             val addressData = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_EDIT_ADDRESS)
             if (addressData != null) {
                 view?.let {
-                    Toaster.build(it, "Alamat berhasil disimpan!", Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                    Toaster.build(it, getString(R.string.edit_address_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
                 }
             }
         }
