@@ -71,11 +71,21 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return InitialShimmeringTransactionDataViewHolder.LAYOUT
     }
 
+    override fun type(initialShimmerFavoriteShopDataModel: InitialShimmerFavoriteShopDataModel): Int {
+        //Temporary, set to be changed into separate viewholder
+        return InitialShimmeringTransactionDataViewHolder.LAYOUT
+    }
+
     override fun type(errorStateBuDataModel: ErrorStateBuDataModel): Int {
         return ErrorStateBuViewHolder.LAYOUT
     }
 
     override fun type(errorStateOngoingTransactionModel: ErrorStateOngoingTransactionModel): Int {
+        return ErrorStateOngoingTransactionViewHolder.LAYOUT
+    }
+
+    override fun type(errorStateFavoriteShopDataModel: ErrorStateFavoriteShopDataModel): Int {
+        //Temporary, set to be changed into separate viewholder
         return ErrorStateOngoingTransactionViewHolder.LAYOUT
     }
 
@@ -92,6 +102,9 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
+            WishlistListViewHolder.LAYOUT -> WishlistListViewHolder(view, mainNavListener)
+            FavoriteShopListViewHolder.LAYOUT -> FavoriteShopListViewHolder(view, mainNavListener)
+            InitialShimmeringFavoriteShopDataViewHolder.LAYOUT -> InitialShimmeringFavoriteShopDataViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

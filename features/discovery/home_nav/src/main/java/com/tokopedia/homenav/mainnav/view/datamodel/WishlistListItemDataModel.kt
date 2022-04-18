@@ -4,6 +4,9 @@ import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
+/**
+ * Created by Frenzel on 18/04/22
+ */
 data class WishlistListItemDataModel(
         val orderListModel: NavOrderListModel,
         val othersTransactionCount: Int = 0

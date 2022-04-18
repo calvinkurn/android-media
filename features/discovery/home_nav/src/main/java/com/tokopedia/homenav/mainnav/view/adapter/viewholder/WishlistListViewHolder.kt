@@ -9,6 +9,9 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.datamodel.WishlistListItemDataModel
 import com.tokopedia.utils.view.binding.viewBinding
 
+/**
+ * Created by Frenzel on 18/04/22
+ */
 class WishlistListViewHolder(itemView: View,
                              val mainNavListener: MainNavListener
 ): AbstractViewHolder<WishlistListItemDataModel>(itemView) {
