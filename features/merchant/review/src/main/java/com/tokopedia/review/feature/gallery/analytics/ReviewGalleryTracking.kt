@@ -48,22 +48,29 @@ class ReviewGalleryTracking @Inject constructor(
         trackingQueue.putEETracking(payload)
     }
 
-    fun trackOpenScreen(productId: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(ReviewGalleryTrackingConstants.SCREEN_NAME, getOpenScreenCustomDimensMap(productId))
+    fun trackMediaClick(
+        feedbackId: String,
+        productId: String,
+        attachmentId: String
+    ) {
+        val payload = mapOf(
+            TrackAppUtils.EVENT to ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+            TrackAppUtils.EVENT_ACTION to ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_THUMBNAIL,
+            TrackAppUtils.EVENT_CATEGORY to ReviewGalleryTrackingConstants.EVENT_CATEGORY,
+            TrackAppUtils.EVENT_LABEL to String.format(
+                ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_THUMBNAIL,
+                feedbackId, attachmentId
+            ),
+            ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
+            ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
+            ReviewTrackingConstant.KEY_PRODUCT_ID to productId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(payload)
     }
 
-    fun trackClickImage(attachmentId: String, feedbackId: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            getTrackEventMap(
-                ReviewGalleryTrackingConstants.EVENT_ACTION_CLICK_IMAGE,
-                String.format(
-                    ReviewGalleryTrackingConstants.EVENT_LABEL_CLICK_IMAGE,
-                    feedbackId,
-                    attachmentId
-                ),
-                productId
-            )
-        )
+    fun trackOpenScreen(productId: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(ReviewGalleryTrackingConstants.SCREEN_NAME, getOpenScreenCustomDimensMap(productId))
     }
 
     fun trackClickSatisfactionScore(

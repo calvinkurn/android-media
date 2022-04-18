@@ -240,10 +240,10 @@ class ReviewGalleryFragment :
     }
 
     override fun onThumbnailClicked(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
-        reviewGalleryTracker.trackClickImage(
-            reviewGalleryMediaThumbnailUiModel.attachmentId,
+        reviewGalleryTracker.trackMediaClick(
             reviewGalleryMediaThumbnailUiModel.feedbackId,
-            viewModel.getProductId()
+            viewModel.getProductId(),
+            reviewGalleryMediaThumbnailUiModel.attachmentId
         )
         goToMediaPreview(reviewGalleryMediaThumbnailUiModel)
     }
