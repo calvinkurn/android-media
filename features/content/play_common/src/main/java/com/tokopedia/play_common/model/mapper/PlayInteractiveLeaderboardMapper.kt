@@ -43,8 +43,12 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
     /***
      * Change to typename to make sure
      */
-    private fun getLeaderboardType(leaderboardsResponse: GetLeaderboardSlotResponse.SlotData): LeadeboardType   {
-        return if(leaderboardsResponse.choices.isNotEmpty()) LeadeboardType.Quiz else LeadeboardType.Giveaway
+    private fun getLeaderboardType(leaderboardsResponse: GetLeaderboardSlotResponse.SlotData): LeadeboardType {
+        return when(leaderboardsResponse.type){
+            "PlayInteractiveViewerLeaderboardGiveaway" -> LeadeboardType.Giveaway
+            "PlayInteractiveViewerLeaderboardQuiz" -> LeadeboardType.Quiz
+            else -> LeadeboardType.Unknown
+        }
     }
 
     fun mapChoices(choices: List<QuizResponse.Choice>, userPicksId: String): List<QuizChoicesUiModel> {

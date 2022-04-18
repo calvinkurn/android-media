@@ -41,5 +41,8 @@ data class GetLeaderboardSlotResponse (
 
         @SerializedName("emptyLeaderboardCopyText")
         val emptyLeaderboardCopyText: String = "",
+
+        @SerializedName("__typename")
+        val type: String = "",
     )
 }

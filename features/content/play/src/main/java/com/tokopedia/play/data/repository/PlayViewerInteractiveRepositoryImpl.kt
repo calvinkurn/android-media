@@ -93,6 +93,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
           {
               "slots": [
                 {
+                  "__typename": "PlayInteractiveViewerLeaderboardGiveaway",
                   "title": "Bagi-bagi sembako",
                   "winners":[
                     {
@@ -113,6 +114,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
                   "emptyLeaderboardCopyText": "Belum ada yang ikut main di sesi ini. [Giveaway]"
                 },
                 {
+                  "__typename": "PlayInteractiveViewerLeaderboardQuiz",
                   "question": "Siapa aku?",
                   "reward": "500 perak",
                   "user_choice": "1",
