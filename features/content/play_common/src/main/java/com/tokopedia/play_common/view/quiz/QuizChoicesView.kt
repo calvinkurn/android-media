@@ -4,18 +4,17 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
-import android.view.View
-import android.widget.TextView
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.play_common.databinding.ItemQuizChoiceBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.unifyprinciples.R as unifyR
 
@@ -35,26 +34,22 @@ class QuizChoicesView : ConstraintLayout {
     private val defaultFontColor: Int
     private val filledFontColor: Int
 
-    private val tvQuestion: Typography
-    private val loaderQuiz: LoaderUnify
+    private val binding = ItemQuizChoiceBinding.inflate(
+        LayoutInflater.from(context),
+        this,
+        true
+    )
 
-    private val ivOption: ConstraintLayout
-    private val ivAlphabet: TextView
-    private val ivIcon: IconUnify
+    private var mListener: Listener? = null
 
     init {
-        val view = View.inflate(context, commonR.layout.item_quiz_choice, this)
-
-        tvQuestion = view.findViewById(commonR.id.tv_quiz_question)
-        loaderQuiz = view.findViewById(commonR.id.loader_quiz_option)
+        binding.root.setOnClickListener {
+            mListener?.onOptionClicked()
+        }
 
         bgDrawable = MethodChecker.getDrawable(context, commonR.drawable.bg_quiz_choice)
         defaultFontColor = MethodChecker.getColor(context, unifyR.color.Unify_NN600)
         filledFontColor = MethodChecker.getColor(context, unifyR.color.Unify_N0)
-
-        ivOption = view.findViewById(commonR.id.iv_quiz_option)
-        ivAlphabet = ivOption.findViewById(commonR.id.tv_alphabet)
-        ivIcon = ivOption.findViewById(commonR.id.iv_icon)
     }
 
     /***
@@ -64,18 +59,10 @@ class QuizChoicesView : ConstraintLayout {
     fun setupView(item: QuizChoicesUiModel) {
         when (item.type) {
             /**
-             * When user clicked one of the option show loader
-             */
-            PlayQuizOptionState.Loading -> {
-                loaderQuiz.show()
-                getBackground(isDefault = true)
-            }
-            /**
              * Initial state, bg is default and icon is alphabet - please loop through view holder or view or anything nanti
              */
             is PlayQuizOptionState.Default -> {
-                loaderQuiz.hide()
-                tvQuestion.setTextColor(defaultFontColor)
+                binding.tvQuizQuestion.setTextColor(defaultFontColor)
                 getIconOption(alphabet = item.type.alphabet)
                 getBackground(isDefault = true)
             }
@@ -83,8 +70,7 @@ class QuizChoicesView : ConstraintLayout {
              * User's answer, icon is white and background is green [correct] and red [false]
              */
             is PlayQuizOptionState.Answered -> {
-                loaderQuiz.hide()
-                tvQuestion.setTextColor(filledFontColor)
+                binding.tvQuizQuestion.setTextColor(filledFontColor)
                 getBackground(isCorrect = item.type.isCorrect)
                 getIconOption(isCorrect = item.type.isCorrect, isAnswered = true)
             }
@@ -92,13 +78,13 @@ class QuizChoicesView : ConstraintLayout {
              * Other choices beside user's answer, if correct = icon is green and false is red
              */
             is PlayQuizOptionState.Result -> {
-                loaderQuiz.hide()
-                tvQuestion.setTextColor(defaultFontColor)
+                binding.tvQuizQuestion.setTextColor(defaultFontColor)
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)
             }
         }
-        tvQuestion.text = item.text
+        binding.tvQuizQuestion.text = item.text
+        setupClickable(item.type)
     }
 
     private fun getIconOption(
@@ -107,15 +93,15 @@ class QuizChoicesView : ConstraintLayout {
         isAnswered: Boolean = false
     ) {
         alphabet?.let {
-            ivAlphabet.show()
-            ivIcon.hide()
-            ivAlphabet.text = alphabet.uppercase()
-            ivOption.background = MethodChecker.getDrawable(context, commonR.drawable.bg_play_option)
+            binding.ivQuizOption.tvAlphabet.show()
+            binding.ivQuizOption.ivIcon.hide()
+            binding.ivQuizOption.tvAlphabet.text = alphabet.uppercase()
+            binding.ivQuizOption.root.background = MethodChecker.getDrawable(context, commonR.drawable.bg_play_option)
         }
 
         isCorrect?.let {
-            ivAlphabet.hide()
-            ivIcon.show()
+            binding.ivQuizOption.tvAlphabet.hide()
+            binding.ivQuizOption.ivIcon.show()
 
             val unifyDrawable = getIconUnifyDrawable(
                 context,
@@ -126,8 +112,8 @@ class QuizChoicesView : ConstraintLayout {
                     else -> MethodChecker.getColor(context, unifyR.color.Unify_RN500)
                 }
             )
-            ivIcon.setImageDrawable(unifyDrawable)
-            ivOption.background = null
+            binding.ivQuizOption.ivIcon.setImageDrawable(unifyDrawable)
+            binding.ivQuizOption.root.background = null
         }
     }
 
@@ -146,7 +132,23 @@ class QuizChoicesView : ConstraintLayout {
             if(it) shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_GN400))
             else shape.setColor(MethodChecker.getColor(context, unifyR.color.Unify_RN500))
         }
-        this.background = shape
+        binding.root.background = shape
+    }
+
+    private fun setupClickable(type: PlayQuizOptionState){
+        binding.root.isClickable = type is PlayQuizOptionState.Default
+    }
+
+    fun setupLoading(isLoading: Boolean){
+        binding.loaderQuizOption.showWithCondition(isLoading)
+    }
+
+    fun setListener(listener: Listener) {
+        mListener = listener
+    }
+
+    interface Listener  {
+        fun onOptionClicked()
     }
 
     companion object{

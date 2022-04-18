@@ -17,7 +17,6 @@ sealed class PlayQuizOptionState {
         val isCorrect: Boolean
     ): PlayQuizOptionState()
 
-    object Loading: PlayQuizOptionState()
     object Unknown: PlayQuizOptionState()
 }
 

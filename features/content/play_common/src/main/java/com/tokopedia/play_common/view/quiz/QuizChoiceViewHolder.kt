@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.R
-import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 
 /**
  * @author by astidhiyaa on 08/04/22
@@ -18,12 +17,12 @@ class QuizChoiceViewHolder(
 
     fun bind(item: QuizChoicesUiModel){
         widget.setupView(item)
-
-        if (item.type is PlayQuizOptionState.Default){
-            widget.setOnClickListener {
+        widget.setupLoading(isLoading = item.isLoading)
+        widget.setListener(object : QuizChoicesView.Listener{
+            override fun onOptionClicked() {
                 listener.onClicked(item)
             }
-        }
+        })
     }
 
     interface Listener {

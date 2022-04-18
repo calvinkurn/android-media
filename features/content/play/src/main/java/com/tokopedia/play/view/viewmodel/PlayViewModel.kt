@@ -1736,9 +1736,9 @@ class PlayViewModel @AssistedInject constructor(
             val new = quiz.copy(
                 listOfChoices =  quiz.listOfChoices.map { choice ->
                     when {
-                        isLoading != null && choice.id == selectedId -> choice.copy(type = PlayQuizOptionState.Loading)
-                        choice.id == selectedId -> choice.copy(type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
-                        isLoading == null -> choice.copy(type = PlayQuizOptionState.Result(correctId == choice.id))
+                        isLoading != null && choice.id == selectedId -> choice.copy(isLoading = true)
+                        choice.id == selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
+                        isLoading == null -> choice.copy(isLoading = false, type = PlayQuizOptionState.Result(correctId == choice.id))
                         else -> choice
                     }
                 }

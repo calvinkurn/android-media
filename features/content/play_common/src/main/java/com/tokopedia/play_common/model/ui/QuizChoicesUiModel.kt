@@ -8,7 +8,8 @@ import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
 data class QuizChoicesUiModel(
     val id: String,
     val text: String,
-    val type: PlayQuizOptionState
+    val type: PlayQuizOptionState,
+    val isLoading: Boolean = false,
 )
 
 sealed class QuizInteractiveUiModel {
