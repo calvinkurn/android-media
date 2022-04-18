@@ -550,9 +550,9 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
         return object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 if (!hasRequestedLocation) {
-                    presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
                     hasRequestedLocation = true
                 }
+                presenter.autoFill(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
     }

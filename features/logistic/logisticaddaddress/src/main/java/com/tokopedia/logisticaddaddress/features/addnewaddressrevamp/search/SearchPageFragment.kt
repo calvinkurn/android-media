@@ -143,6 +143,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             } else if (requestCode == REQUEST_ADDRESS_FORM_PAGE) {
                 val newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 newAddress?.let { finishActivity(it, false) }
+            } else if (requestCode == GPS_REQUEST) {
+                bottomSheetLocUndefined?.dismiss()
+                getLocation()
             }
         } else {
             showInitialLoadMessage()
@@ -332,9 +335,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun goToSettingLocationDevice() {
-        if (context?.let { turnGPSOn(it) } == false) {
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-        }
+       context?.let { turnGPSOn(it) }
     }
 
     private fun goToSettingLocationApps() {
@@ -374,7 +375,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                                 // Show the dialog by calling startResolutionForResult(), and check the
                                 // result in onActivityResult().
                                 val rae = e as ResolvableApiException
-                                rae.startResolutionForResult(context, GPS_REQUEST)
+                                startIntentSenderForResult(rae.resolution.intentSender, GPS_REQUEST, null, 0, 0, 0, null)
                             } catch (sie: IntentSender.SendIntentException) {
                                 sie.printStackTrace()
                             }
@@ -480,6 +481,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     //send to maps
                     hasRequestedLocation = true
                 }
+                currentLat = locationResult.lastLocation.latitude
+                currentLong = locationResult.lastLocation.longitude
+                goToPinpointPage(null, locationResult.lastLocation.latitude, locationResult.lastLocation.longitude,
+                    isFromAddressForm = false,
+                    isPositiveFlow = true)
             }
         }
     }

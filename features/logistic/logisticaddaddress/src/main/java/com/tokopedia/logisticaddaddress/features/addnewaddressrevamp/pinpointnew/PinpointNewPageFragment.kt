@@ -175,6 +175,9 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                         goToAddressForm()
                     }
                 }
+            } else if (requestCode == GPS_REQUEST) {
+                bottomSheetLocUndefined?.dismiss()
+                getLocation()
             }
         }
     }
@@ -646,9 +649,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToSettingLocationDevice() {
-        if (context?.let { turnGPSOn(it) } == false) {
-            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-        }
+        context?.let { turnGPSOn(it) }
     }
 
 
@@ -689,7 +690,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     val rae = e as ResolvableApiException
-                                    rae.startResolutionForResult(context, GPS_REQUEST)
+                                    startIntentSenderForResult(rae.resolution.intentSender, GPS_REQUEST, null, 0, 0, 0, null)
                                 } catch (sie: IntentSender.SendIntentException) {
                                     sie.printStackTrace()
                                 }
@@ -711,6 +712,8 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     //send to maps
                     hasRequestedLocation = true
                 }
+                moveMap(getLatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude), ZOOM_LEVEL)
+                viewModel.getDistrictData(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
         }
     }
