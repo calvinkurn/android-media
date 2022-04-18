@@ -2,11 +2,11 @@ package com.tokopedia.homenav.mainnav.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
-import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
@@ -175,7 +175,6 @@ class MainNavViewModel @Inject constructor(
         }
         initialList.addTransactionMenu()
         initialList.addBUTitle()
-        initialList.add(InitialShimmerDataModel())
         initialList.addUserMenu()
         return initialList
     }
@@ -211,8 +210,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
-//        this.addAll(buildBUTitleList())
-        allCategory = HomeNavExpandableDataModel()
+        allCategory = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES, menus = listOf(InitialShimmerDataModel()))
         this.add(allCategory)
         this.add(SeparatorDataModel())
     }
@@ -259,28 +257,21 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
                 allCategory.menus = result
-                val shimmeringDataModel = _mainNavListVisitable.find {
-                    it is InitialShimmerDataModel
-                }
-                shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
-//                findBuStartIndexPosition()?.let {
-//                    if (findExistingEndBuIndexPosition() == null) {
-//                        addWidgetList(result, it)
-//                    }
-//                }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
                 //then error state is not needed
                 val isBuExist = findExistingEndBuIndexPosition()
                 if (isBuExist == null) {
-                    allCategory.menus = listOf(ErrorStateBuDataModel())
+//                    allCategory.menus = listOf(ErrorStateBuDataModel())
+
+
 //                    findBuStartIndexPosition()?.let {
 //
 //                        updateWidget(ErrorStateBuDataModel(), it)
 //                    }
                 }
 
-                val buShimmering = _mainNavListVisitable.find {
+                val buShimmering = allCategory.menus.find {
                     it is InitialShimmerDataModel
                 }
                 buShimmering?.let {
@@ -322,37 +313,42 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun updateProfileData() {
-        try {
-            val accountHeaderModel = async { getProfileDataUseCase.get().executeOnBackground() }
-            val adminData = async { getAdminData() }
+        viewModelScope.launch {
+            try {
+                val accountHeaderModel = getProfileDataUseCase.get().executeOnBackground()
+                val adminData = getAdminData()
 
-            accountHeaderModel.await().apply {
-                adminData.await().let { (_, canGoToSellerAccount, _) ->
-                    val adminRole = null
-                    setAdminData(adminRole, canGoToSellerAccount)
+                accountHeaderModel.apply {
+                    adminData.let { (_, canGoToSellerAccount, _) ->
+                        val adminRole = null
+                        setAdminData(adminRole, canGoToSellerAccount)
+                    }
+                }.let {
+                    it.state = NAV_PROFILE_STATE_SUCCESS
+                    updateWidget(it, INDEX_MODEL_ACCOUNT)
+                    _profileDataLiveData.postValue(it)
                 }
-            }.let {
-                it.state = NAV_PROFILE_STATE_SUCCESS
-                updateWidget(it, INDEX_MODEL_ACCOUNT)
-                _profileDataLiveData.postValue(it)
-            }
-        } catch (e: Exception) {
-            val accountModel = _mainNavListVisitable.find {
-                it is AccountHeaderDataModel
-            } as? AccountHeaderDataModel
+            } catch (e: Exception) {
+                val accountModel = _mainNavListVisitable.find {
+                    it is AccountHeaderDataModel
+                } as? AccountHeaderDataModel
 
-            accountModel?.let { account ->
-                if (account.state == NAV_PROFILE_STATE_LOADING) {
-                    updateWidget(account.copy(state = NAV_PROFILE_STATE_FAILED), INDEX_MODEL_ACCOUNT)
+                accountModel?.let { account ->
+                    if (account.state == NAV_PROFILE_STATE_LOADING) {
+                        updateWidget(
+                            account.copy(state = NAV_PROFILE_STATE_FAILED),
+                            INDEX_MODEL_ACCOUNT
+                        )
+                    }
                 }
+                e.printStackTrace()
             }
-            e.printStackTrace()
         }
     }
 
     fun refreshBuListdata() {
         findBuStartIndexPosition()?.let {
-            updateWidget(InitialShimmerDataModel(), it)
+            allCategory.menus = listOf(InitialShimmerDataModel())
             launchCatchError(coroutineContext, block = {
                 getBuListMenu()
             }) {
@@ -690,7 +686,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun findBuStartIndexPosition(): Int? {
         val findBUTitle = _mainNavListVisitable.firstOrNull {
-            it is HomeNavExpandableDataModel
+            it is HomeNavExpandableDataModel && it.id == IDENTIFIER_TITLE_ALL_CATEGORIES
         }
         findBUTitle?.let{
             return _mainNavListVisitable.indexOf(it) + 1
@@ -699,7 +695,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun findExistingEndBuIndexPosition(): Int? {
-        val findHomeMenu = _mainNavListVisitable.findLast {
+        val findHomeMenu = allCategory.menus.findLast {
             it is HomeNavMenuDataModel && it.sectionId == MainNavConst.Section.BU_ICON
         }
         findHomeMenu?.let{

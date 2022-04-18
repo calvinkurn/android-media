@@ -9,14 +9,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
  * Created by dhaba
  */
 class HomeNavExpandableDataModel (
-        val trackerName: String = "",
-        val sectionId: Int = 0,
         val id: Int = 0,
-        val srcImage: String = "",
-        var srcIconId: Int? = null,
-        val itemTitle: String = "",
-        val applink: String = "",
-        var notifCount: String = "",
         var menus: List<Visitable<*>> = listOf()
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
