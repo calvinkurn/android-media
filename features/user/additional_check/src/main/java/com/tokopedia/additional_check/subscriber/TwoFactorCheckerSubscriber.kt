@@ -47,7 +47,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity",
             "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity", "BiometricOfferingActivity",
-            "RegisterFingerprintActivity", "VerifyFingerprintActivity"
+            "RegisterFingerprintActivity", "VerifyFingerprintActivity", "BiometricOfferingActivity"
     )
 
     private val exceptionPageSeller = listOf(
@@ -56,7 +56,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity",
             "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity", "BiometricOfferingActivity",
-            "RegisterFingerprintActivity", "VerifyFingerprintActivity"
+            "RegisterFingerprintActivity", "VerifyFingerprintActivity", "BiometricOfferingActivity"
     )
 
 
@@ -116,9 +116,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
             handleResponseOfferingData(activity, it)
         }, {
-            //REVERT
-//            it.printStackTrace()
-            handleResponseOfferingData(activity, mutableListOf())
+            it.printStackTrace()
         })
     }
 
@@ -128,13 +126,13 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
 
     private fun handleResponseOfferingData(activity: Activity?, offeringList: MutableList<OfferingData>){
-        val newOfferingList = mutableListOf(
-            OfferingData(name = "phone", false),
-            OfferingData(name = "biometric", false),
-        )
+//        val newOfferingList = mutableListOf(
+//            OfferingData(name = "phone", false),
+//            OfferingData(name = "biometric", false),
+//        )
 
-        if(newOfferingList.isNotEmpty()) {
-            val firstIntent = mapToApplink(activity!!, newOfferingList.first(), true)
+        if(offeringList.isNotEmpty()) {
+            val firstIntent = mapToApplink(activity!!, offeringList.first(), true)
             if(firstIntent != null) {
                 activity.startActivity(firstIntent)
             }
