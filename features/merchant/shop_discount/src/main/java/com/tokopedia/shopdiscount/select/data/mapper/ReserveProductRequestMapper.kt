@@ -2,20 +2,19 @@ package com.tokopedia.shopdiscount.select.data.mapper
 
 import com.tokopedia.shopdiscount.common.data.request.DoSlashPriceReservationRequest
 import com.tokopedia.shopdiscount.common.data.request.RequestHeader
-import com.tokopedia.shopdiscount.select.domain.entity.ReservableProduct
 import javax.inject.Inject
 
 class ReserveProductRequestMapper @Inject constructor() {
 
-    fun map(requestId: String, products: List<ReservableProduct>): DoSlashPriceReservationRequest {
+    fun map(requestId: String, products: List<String>): DoSlashPriceReservationRequest {
         return DoSlashPriceReservationRequest(
             requestHeader = RequestHeader(),
             action = DoSlashPriceReservationRequest.DoSlashPriceReservationAction.RESERVE,
             requestId = requestId,
             state = DoSlashPriceReservationRequest.DoSlashPriceReservationState.CREATE,
-            listProductData = products.mapIndexed { position, product ->
+            listProductData = products.mapIndexed { position, productId ->
                 DoSlashPriceReservationRequest.SlashPriceReservationProduct(
-                    product.id,
+                    productId,
                     position.toString()
                 )
             }

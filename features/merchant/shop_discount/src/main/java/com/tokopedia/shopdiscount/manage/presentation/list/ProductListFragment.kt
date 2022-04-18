@@ -20,7 +20,6 @@ import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.cancel.CancelDiscountDialog
 import com.tokopedia.shopdiscount.databinding.FragmentProductListBinding
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
-import com.tokopedia.shopdiscount.manage.domain.entity.PageTab
 import com.tokopedia.shopdiscount.manage.domain.entity.Product
 import com.tokopedia.shopdiscount.manage.domain.entity.ProductData
 import com.tokopedia.shopdiscount.manage.presentation.container.RecyclerViewScrollListener
@@ -59,6 +58,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         private const val MAX_PRODUCT_SELECTION = 5
         private const val ONE_PRODUCT = 1
         private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
+        private const val SCROLL_DISTANCE_DELAY_IN_MILLIS: Long = 300
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/empty_product_with_discount.png"
 
@@ -165,12 +165,16 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             recyclerView.addOnScrollListener(
                 RecyclerViewScrollListener(
                     onScrollDown = {
-                        onScrollDown()
-                        hideView()
+                        onDelayFinished {
+                            onScrollDown()
+                            hideView()
+                        }
                     },
                     onScrollUp = {
-                        onScrollUp()
-                        showView()
+                        onDelayFinished {
+                            onScrollUp()
+                            showView()
+                        }
                     }
                 )
             )
@@ -363,11 +367,12 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         this.onSwipeRefresh = onSwipeRefresh
     }
 
-    private fun showProductDetailBottomSheet(product: Product) {
+    private fun showProductDetailBottomSheet(product: Product, position : Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
-            discountStatusId
+            discountStatusId,
+            position
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
@@ -481,17 +486,17 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         reserveProduct(requestId, listOf(product.id))
     }
 
-    private val onProductClicked: (Product) -> Unit = { product ->
+    private val onProductClicked: (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 
-    private val onVariantInfoClicked : (Product) -> Unit = { product ->
+    private val onVariantInfoClicked : (Product, Int) -> Unit = { product, position ->
         viewModel.setSelectedProduct(product)
         guard(product.disableClick) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 
@@ -640,6 +645,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
             discountStatusName,
             discountStatusId
         )
+    }
+
+    private fun onDelayFinished(block: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(SCROLL_DISTANCE_DELAY_IN_MILLIS)
+            block()
+        }
     }
 
 }

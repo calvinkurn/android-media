@@ -42,6 +42,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.net.URLEncoder
 import java.util.*
 import javax.inject.Inject
@@ -59,6 +63,7 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         private const val EMPTY_STATE_IMAGE_URL =
             "https://images.tokopedia.net/img/android/campaign/slash_price/search_not_found.png"
         private const val BUNDLE_KEY_DISCOUNT_STATUS_ID = "status_id"
+        private const val PAGE_REDIRECTION_DELAY_IN_MILLIS : Long = 1000
 
         @JvmStatic
         fun newInstance(discountStatusId: Int): SelectProductFragment {
@@ -104,12 +109,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             .inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val requestId = userSession.shopId + Date().time
-        viewModel.setRequestId(requestId)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -142,7 +141,6 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
                 }
 
                 override fun onDismiss() {
-                    preferenceDataStore.markTickerMultiSelectAsDismissed()
                 }
 
             })
@@ -173,10 +171,12 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             binding?.btnManage?.text = String.format(getString(R.string.sd_manage_with_counter), ZERO)
             btnManage.setOnClickListener {
                 binding?.btnManage?.isLoading = true
-                binding?.btnManage?.loadingText = getString(R.string.sd_please_wait)
+                binding?.btnManage?.loadingText = getString(R.string.sd_wait)
 
-                val requestId = viewModel.getRequestId()
-                val selectedProducts = viewModel.getSelectedProduct()
+                val requestId = generateRequestId()
+                viewModel.setRequestId(requestId)
+
+                val selectedProducts = viewModel.getSelectedProducts()
                 viewModel.reserveProduct(requestId, selectedProducts)
             }
         }
@@ -204,22 +204,18 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     private fun observeReserveProducts() {
         viewModel.reserveProduct.observe(viewLifecycleOwner) {
-            binding?.btnManage?.isLoading = false
             when (it) {
                 is Success -> {
                     val isReservationSuccess = it.data
                     if (isReservationSuccess) {
-                        ShopDiscountManageDiscountActivity.start(
-                            requireActivity(),
-                            viewModel.getRequestId(),
-                            discountStatusId,
-                            ShopDiscountManageDiscountMode.CREATE
-                        )
+                        redirectToUpdateDiscountPage()
                     } else {
+                        binding?.btnManage?.isLoading = false
                         binding?.root showError getString(R.string.sd_error_reserve_product)
                     }
                 }
                 is Fail -> {
+                    binding?.btnManage?.isLoading = false
                     binding?.root showError it.throwable
                 }
             }
@@ -244,10 +240,10 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         }
     }
 
-    private val onProductClicked: (ReservableProduct) -> Unit = { product ->
+    private val onProductClicked: (ReservableProduct, Int) -> Unit = { product, position ->
         val isDisabled = product.disableClick || product.disabled
         guard(isDisabled, product.disabledReason) {
-            showProductDetailBottomSheet(product)
+            showProductDetailBottomSheet(product, position)
         }
     }
 
@@ -258,11 +254,11 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
             viewModel.removeProductFromSelection(selectedProduct)
         }
 
+        val selectedProductCount = viewModel.getSelectedProducts().size
+
         val updatedProduct = selectedProduct.copy(isCheckboxTicked = isSelected)
         adapter?.update(selectedProduct, updatedProduct)
 
-        val items = adapter?.getItems() ?: emptyList()
-        val selectedProductCount = viewModel.getSelectedProduct().size
 
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
@@ -270,6 +266,8 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         binding?.btnManage?.text =
             String.format(getString(R.string.sd_manage_with_counter),  selectedProductCount)
         binding?.btnManage?.isEnabled = selectedProductCount > 0
+
+        val items = adapter?.getItems() ?: emptyList()
 
         if (shouldDisableSelection) {
             showTickerWithAnimation()
@@ -334,7 +332,10 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         binding?.globalError?.gone()
         binding?.emptyState?.gone()
         val keyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
-        val requestId = viewModel.getRequestId()
+
+        val requestId = generateRequestId()
+        viewModel.setRequestId(requestId)
+
         viewModel.getProducts(
             requestId,
             page,
@@ -374,26 +375,26 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
 
     }
 
-    private fun showProductDetailBottomSheet(product: ReservableProduct) {
+    private fun showProductDetailBottomSheet(product: ReservableProduct, position: Int) {
         val bottomSheet = ShopDiscountProductDetailBottomSheet.newInstance(
             product.id,
             product.name,
-            DiscountStatus.ALL
+            DiscountStatus.ALL,
+            position
         )
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun clearSearchBar() {
-        val selectedProductCount = viewModel.getSelectedProduct().size
+        val selectedProductCount = viewModel.getSelectedProducts().size
         val shouldDisableSelection = selectedProductCount >= MAX_PRODUCT_SELECTION
         viewModel.setDisableProductSelection(shouldDisableSelection)
 
         clearAllData()
         onShowLoading()
         binding?.shimmer?.content?.visible()
-        val requestId = viewModel.getRequestId()
         viewModel.getProducts(
-            requestId,
+            viewModel.getRequestId(),
             FIRST_PAGE,
             EMPTY_STRING,
             viewModel.shouldDisableProductSelection(),
@@ -444,4 +445,20 @@ class SelectProductFragment : BaseSimpleListFragment<SelectProductAdapter, Reser
         RouteManager.route(requireActivity(), route)
     }
 
+    private fun generateRequestId(): String {
+        return userSession.shopId + Date().time
+    }
+
+    private fun redirectToUpdateDiscountPage() {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(PAGE_REDIRECTION_DELAY_IN_MILLIS)
+            binding?.btnManage?.isLoading = false
+            ShopDiscountManageDiscountActivity.start(
+                requireActivity(),
+                viewModel.getRequestId(),
+                discountStatusId,
+                ShopDiscountManageDiscountMode.CREATE
+            )
+        }
+    }
 }

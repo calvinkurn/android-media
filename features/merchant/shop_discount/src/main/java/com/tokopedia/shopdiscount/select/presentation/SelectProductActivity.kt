@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shopdiscount.R
 import com.tokopedia.shopdiscount.di.component.DaggerShopDiscountComponent
+import com.tokopedia.shopdiscount.utils.constant.ZERO
 import com.tokopedia.shopdiscount.utils.navigation.FragmentRouter
 import javax.inject.Inject
 
@@ -30,7 +31,7 @@ class SelectProductActivity : AppCompatActivity() {
     private val discountStatusId by lazy {
         intent.getIntExtra(
             BUNDLE_KEY_BUNDLE_DISCOUNT_STATUS_ID,
-            0
+            ZERO
         ).orZero()
     }
 
