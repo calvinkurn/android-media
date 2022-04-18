@@ -23,6 +23,7 @@ class AffiliateUserPerformanceUseCase @Inject constructor(
             AffiliateUserPerformaListItemData::class.java,
                 createRequestParams(dayRange)
         )
+
     }
 
     suspend fun getAffiliateFilter(): AffiliateDateFilterResponse? {

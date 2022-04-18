@@ -12,6 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapterFactory
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapter
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetDiffcallback
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetTypeFactory
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDatePickerAdapterFactory
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeAdapter
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeDiffcallback
@@ -154,17 +158,16 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     }
 
     private val adapter by lazy {
-        val asyncDifferConfig = AsyncDifferConfig.Builder(AffiliateDateRangeDiffcallback())
+        val asyncDifferConfig = AsyncDifferConfig.Builder(AffiliateBottomSheetDiffcallback())
             .build()
-        AffiliateDateRangeAdapter(asyncDifferConfig, AffiliateDatePickerAdapterFactory(this))
+        AffiliateBottomSheetAdapter(asyncDifferConfig, AffiliateBottomSheetAdapterFactory(this))
     }
 
     private fun setData() {
        dateRV?.layoutManager = LinearLayoutManager(context)
        dateRV?.adapter = adapter
-       affiliateDatePickerBottomSheetViewModel.getAffiliateFilterData()
+        affiliateDatePickerBottomSheetViewModel.getAffiliateFilterData()
     }
-
     override fun onDateRangeClicked(position: Int) {
         updateItem(position)
         adapter.notifyDataSetChanged()

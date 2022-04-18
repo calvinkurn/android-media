@@ -99,6 +99,8 @@ class TopSectionVH(
     private var textLagi : Typography? = null
     private var containerProgressBar : FrameLayout ? = null
     private var isNextTier = false
+    val maxProgress = 100
+    private var TIME_DELAY_PROGRESS = 1000L
 
     fun bind(model: TopSectionResponse) {
 
@@ -526,7 +528,6 @@ class TopSectionVH(
         val progressValues = getProgress(progressInfoList)
         val progressLast = progressValues.first ?: -1
         val progressCurrent = progressValues.second ?: -1
-        val maxProgress = 100
         progressBar?.apply {
             progressBarHeight = ProgressBarUnify.SIZE_LARGE
             progressBarColorType = ProgressBarUnify.COLOR_GREEN
@@ -548,43 +549,47 @@ class TopSectionVH(
                 setValue(progressLast, true)
             }
         }
-
         progressBar?.postDelayed(
             {
-                if (progressBar?.getValue() == maxProgress) {
-                    progressBarIconAnimation(
-                        container
-                    ) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
-                        }
-                    }
-                } else {
-                    progressBar?.setValue(progressCurrent, true)
-                    if (progressCurrent == 0) {
-                        progressBar?.setProgressIcon(null)
-                    } else {
-                        progressBar?.setProgressIcon(
-                            AppCompatResources.getDrawable(
-                                itemView.context,
-                                R.drawable.tp_tier_progress
-                            )
-                        )
-                    }
-                    progressBarIconAnimation(
-                        container
-                    ) {
-                        progressBar?.setProgressIcon(null)
-                        if (!isNextTier) {
-                            topSectionData?.popupNotification = null
-                            refreshOnTierUpgrade.refreshReward(popupNotification)
-                        }
-                    }
-                }
-            }, 1000L
+                handleDelayedProgress(container, progressCurrent)
+            }, TIME_DELAY_PROGRESS
         )
+
+    }
+
+    private fun handleDelayedProgress(container: FrameLayout? , progressCurrent:Int){
+        try {
+            //Check max progress for higher tier and open bottomsheet
+            if (progressBar?.getValue() == maxProgress) {
+                progressBarIconAnimation(container) {
+                    progressBar?.setProgressIcon(null)
+                    progressIconProgressCompletionHandle()
+                }
+            } else {
+                progressBar?.setValue(progressCurrent, true)
+                if (progressCurrent == 0) {
+                    progressBar?.setProgressIcon(null)
+                } else {
+                    progressBar?.setProgressIcon(
+                        AppCompatResources.getDrawable(
+                            itemView.context,
+                            R.drawable.tp_tier_progress
+                        )
+                    )
+                }
+                progressBarIconAnimation(container) {
+                    progressBar?.setProgressIcon(null)
+                    progressIconProgressCompletionHandle()
+                }
+            }
+        } catch (e:Exception){}
+    }
+
+    private fun progressIconProgressCompletionHandle(){
+        if (!isNextTier) {
+            topSectionData?.popupNotification = null
+            refreshOnTierUpgrade.refreshReward(popupNotification)
+        }
     }
 
     private fun progressBarIconAnimation(container:FrameLayout? , completion: (() -> Unit)? = null){

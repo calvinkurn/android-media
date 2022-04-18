@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
@@ -15,6 +16,8 @@ import com.tokopedia.pdp_fintech.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.resources.isDarkMode
+import java.util.*
+import kotlin.collections.ArrayList
 
 class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetClickListner) :
     RecyclerView.Adapter<MyViewHolder>() {
@@ -53,6 +56,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         if (it == 0) {
             holder.dummyView.visibility = View.GONE
             holder.seeMoreIcon.visibility = View.VISIBLE
+            holder.seeMoreIcon.loadImage(R.drawable.fintechwidget_procced_icon)
         } else {
             holder.dummyView.visibility = View.VISIBLE
             holder.seeMoreIcon.visibility = View.GONE
@@ -164,29 +168,21 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
 
         private fun clickedWidgetData() {
-            safeLet(
-                chipsData[adapterPosition].cta?.androidUrl,
-                chipsData[adapterPosition].cta?.type,
-                chipsData[adapterPosition].tenure,
-                chipsData[adapterPosition].productCode,
-                chipsData[adapterPosition].cta?.bottomsheet,
-                chipsData[adapterPosition].gatewayId,
-                chipsData[adapterPosition].name,
-                chipsData[adapterPosition].userStatus,
-                chipsData[adapterPosition].linkingStatus
-            ) { url, ctaType, tenure, gatewayCode, bottomSheetWidgetDetail, gatewayId, userStatus, partnerName, linkingStatus ->
-
+          val listOfAllChecker   = listOf( chipsData[adapterPosition].cta?.androidUrl,chipsData[adapterPosition].cta?.type, chipsData[adapterPosition].tenure,  chipsData[adapterPosition].productCode, chipsData[adapterPosition].cta?.bottomsheet, chipsData[adapterPosition].gatewayId, chipsData[adapterPosition].userStatus,chipsData[adapterPosition].name,  chipsData[adapterPosition].linkingStatus,chipsData[adapterPosition].installmentAmount)
+           if(safeLet(listOfAllChecker) == true)
+             {
                 widgetClickListner.clickedWidget(
                     FintechRedirectionWidgetDataClass(
-                        cta = ctaType,
-                        redirectionUrl = url,
-                        tenure = tenure,
-                        gatewayId = gatewayId,
-                        gatewayCode = gatewayCode,
-                        widgetBottomSheet = bottomSheetWidgetDetail,
-                        userStatus = userStatus,
-                        linkingStatus = linkingStatus,
-                        gatewayPartnerName = partnerName
+                        cta = chipsData[adapterPosition].cta?.type!!,
+                        redirectionUrl = chipsData[adapterPosition].cta?.androidUrl,
+                        tenure =  chipsData[adapterPosition].tenure!!,
+                        gatewayId = chipsData[adapterPosition].gatewayId!!,
+                        gatewayCode =  chipsData[adapterPosition].productCode,
+                        widgetBottomSheet = chipsData[adapterPosition].cta?.bottomsheet,
+                        userStatus =  chipsData[adapterPosition].userStatus,
+                        linkingStatus = chipsData[adapterPosition].linkingStatus,
+                        gatewayPartnerName =  chipsData[adapterPosition].name,
+                        installmentAmout = chipsData[adapterPosition].installmentAmount
                     )
                 )
             }
@@ -194,32 +190,19 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
 
     }
 
+      fun safeLet(listOfAllChecker: List<Any?>): Any {
+        var counter = 0
+        for(i in listOfAllChecker.indices)
+        {
+            if(listOfAllChecker[i] == null) {
+                counter = -1
+                break;
+            }
+        }
+        return counter != -1
 
-    // Null Checker
-    inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, T6 : Any, T7 : Any, T8 : Any, T9 : Any, R : Any> safeLet(
-        p1: T1?,
-        p2: T2?,
-        p3: T3?,
-        p4: T4?,
-        p5: T5?,
-        p6: T6?,
-        p7: T7?,
-        p8: T8?,
-        p9: T9?,
-        block: (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R?
-    ): R? {
-        return if (p1 != null && p2 != null && p3 != null && p4 != null && p5 != null && p6 != null && p7 != null && p8 != null && p9 != null) block(
-            p1,
-            p2,
-            p3,
-            p4,
-            p5,
-            p6,
-            p7,
-            p8,
-            p9
-        ) else null
     }
+
 }
 
 

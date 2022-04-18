@@ -90,6 +90,12 @@ abstract class AffiliateVMModule {
     @Binds
     @IntoMap
     @AffiliateScope
+    @ViewModelKey(AffiliateRecyclerViewModel::class)
+    internal abstract fun affiliateRecyclerViewModel(viewModel: AffiliateRecyclerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
     @ViewModelKey(AffiliateDatePickerBottomSheetViewModel::class)
     internal abstract fun affiliateDatePickerViewModel(viewModel: AffiliateDatePickerBottomSheetViewModel): ViewModel
 

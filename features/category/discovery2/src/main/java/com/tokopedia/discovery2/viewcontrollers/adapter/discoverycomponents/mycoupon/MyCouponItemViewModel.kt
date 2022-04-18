@@ -22,7 +22,7 @@ class MyCouponItemViewModel(val application: Application, val components: Compon
         navigate(context, getCouponAppLink())
     }
 
-    private fun getCouponAppLink(): String {
+    fun getCouponAppLink(): String {
         val appLink = components.myCouponList?.firstOrNull()?.redirectAppLink
         if (appLink.isNullOrEmpty()) return ""
 

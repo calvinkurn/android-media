@@ -27,4 +27,6 @@
 
     <string name="applink_global_sharing">/sharing</string>
 
+    <string name="applink_new_profile_info">/profile-info</string>
+
 </resources>

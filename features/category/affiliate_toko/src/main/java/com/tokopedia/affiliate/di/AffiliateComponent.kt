@@ -13,7 +13,7 @@ import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragme
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
-import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
 import dagger.Component
 
@@ -40,6 +40,8 @@ interface AffiliateComponent {
 
     fun injectPromotionBottomSheet(affiliatePromotionBottomSheet: AffiliatePromotionBottomSheet)
 
+    fun injectRecyclerBottomSheet(affiliateRecyclerBottomSheet: AffiliateRecylerBottomSheet)
+
     fun injectLoginFragment(affiliateLoginFragment : AffiliateLoginFragment)
 
     fun injectPortfolioFragment(affiliatePortfolioFragment: AffiliatePortfolioFragment)
@@ -51,6 +53,8 @@ interface AffiliateComponent {
     fun injectWithdrawalDetailFragment(affiliateSaldoWithdrawalDetailFragment: AffiliateSaldoWithdrawalDetailFragment)
 
     fun injectPromotionHistoryFragment(viewModel: AffiliatePromotionHistoryFragment)
+
+    fun injectWithdrawalInfoFragment(affiliateTransactionDetailFragment: AffiliateTransactionDetailFragment)
 
     fun injectDateFilterBottomSheet(affiliateDateFilterBottomSheet: AffiliateBottomDatePicker)
 

@@ -37,6 +37,8 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ValidateReferralUserUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.GetReferralSenderHomeUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
@@ -90,6 +92,10 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var setUserPreferenceUseCase: SetUserPreferenceUseCase
     @RelaxedMockK
+    lateinit var validateReferralUserUseCase: ValidateReferralUserUseCase
+    @RelaxedMockK
+    lateinit var getReferralSenderHomeUseCase: GetReferralSenderHomeUseCase
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -118,6 +124,8 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getRepurchaseWidgetUseCase,
                 getQuestWidgetListUseCase,
                 setUserPreferenceUseCase,
+                validateReferralUserUseCase,
+                getReferralSenderHomeUseCase,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
