@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.play_common.databinding.ViewQuizWidgetBinding
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.setupQuiz
@@ -83,6 +84,12 @@ class QuizWidgetView : ConstraintLayout {
 
     fun setupQuizForm(listOfChoices: List<QuizChoicesUiModel>) {
         quizAdapter.setItemsAndAnimateChanges(listOfChoices)
+    }
+
+    fun setReward(reward: String){
+        binding.viewGameReward.root.shouldShowWithAction(reward.isNotBlank()){
+            binding.viewGameReward.tvGameReward.text = reward
+        }
     }
 
     interface Listener {

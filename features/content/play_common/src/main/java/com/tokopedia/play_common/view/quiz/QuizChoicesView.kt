@@ -78,7 +78,7 @@ class QuizChoicesView : ConstraintLayout {
              * Other choices beside user's answer, if correct = icon is green and false is red
              */
             is PlayQuizOptionState.Result -> {
-                binding.tvQuizQuestion.setTextColor(defaultFontColor)
+                binding.tvQuizQuestion.setTextColor(defaultFontColor) 
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)
             }
@@ -139,6 +139,9 @@ class QuizChoicesView : ConstraintLayout {
         binding.root.isClickable = type is PlayQuizOptionState.Default
     }
 
+    /***
+     * Use this method if you want to show loader
+     */
     fun setupLoading(isLoading: Boolean){
         binding.loaderQuizOption.showWithCondition(isLoading)
     }
