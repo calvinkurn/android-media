@@ -5,7 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.media.picker.data.mapper.toUiModel
+import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.MediaRepository
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.uimodel.MediaUiModel
@@ -31,7 +31,7 @@ class GalleryViewModel @Inject constructor(
             val result = repository(bucketId)
 
             withContext(dispatchers.main) {
-                _medias.value = result.toUiModel()
+                _medias.value = mediaToUiModel(result)
             }
         }
     }
