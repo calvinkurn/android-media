@@ -66,6 +66,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
     lateinit var videoPlayer: ReviewVideoPlayer
 
     private var binding by viewBinding(FragmentReviewMediaGalleryVideoPlayerBinding::bind)
+    private var listener: Listener? = null
     private var videoPlayerUiStateCollector: Job? = null
     private var videoPlaybackUiStateCollector: Job? = null
     private var videoErrorUiStateCollector: Job? = null
@@ -180,6 +181,7 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
             reviewVideoPlayerViewModel.videoPlayerUiState.collectLatest {
                 when (it) {
                     is ReviewVideoPlayerUiState.Initial -> {
+                        trackImpression()
                         videoPlayer.initializeVideoPlayer(it.videoUri, true)
                         reviewVideoPlayerViewModel.setVideoPlayerStateToRestoring()
                     }
@@ -198,6 +200,13 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
                     }
                 }
             }
+        }
+    }
+
+    private fun trackImpression() {
+        if (listener != null && !reviewVideoPlayerViewModel.getImpressHolder().isInvoke) {
+            reviewVideoPlayerViewModel.getImpressHolder().invoke()
+            listener?.onVideoImpressed(getVideoUri())
         }
     }
 
@@ -313,5 +322,13 @@ class ReviewVideoPlayerFragment : BaseDaggerFragment(), CoroutineScope, ReviewVi
 
     private fun getCurrentFrameBitmap(): Bitmap? {
         return (binding?.playerViewReviewVideoPlayer?.videoSurfaceView as? TextureView)?.bitmap
+    }
+
+    fun setListener(newListener: Listener) {
+        listener = newListener
+    }
+
+    interface Listener {
+        fun onVideoImpressed(videoUri: String)
     }
 }

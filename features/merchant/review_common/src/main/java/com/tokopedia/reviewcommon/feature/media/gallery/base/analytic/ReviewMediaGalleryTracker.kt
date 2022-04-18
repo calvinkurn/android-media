@@ -78,7 +78,7 @@ object ReviewMediaGalleryTracker {
         userId: String
     ) {
         Bundle().appendGeneralEventData(
-            ReviewDetailTrackerConstant.KEY_PROMO_VIEW,
+            ReviewDetailTrackerConstant.EVENT_VIEW_ITEM,
             ReviewDetailTrackerConstant.EVENT_CATEGORY,
             ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
             String.format(ReviewDetailTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
@@ -86,8 +86,28 @@ object ReviewMediaGalleryTracker {
             .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
             .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
             .appendProductId(productId)
-            .appendPromotionsEnhancedEcommerce(attachmentId, position)
-            .sendEnhancedEcommerce(ReviewDetailTrackerConstant.KEY_PROMO_VIEW)
+            .appendPromotionsEnhancedEcommerce("", position, attachmentId, "image")
+            .sendEnhancedEcommerce(ReviewDetailTrackerConstant.EVENT_VIEW_ITEM)
+    }
+
+    fun trackImpressVideo(
+        imageCount: Long,
+        productId: String,
+        attachmentId: String,
+        position: Int,
+        userId: String
+    ) {
+        Bundle().appendGeneralEventData(
+            ReviewDetailTrackerConstant.EVENT_VIEW_ITEM,
+            ReviewDetailTrackerConstant.EVENT_CATEGORY,
+            ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
+            String.format(ReviewDetailTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
+        ).appendUserId(userId)
+            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendProductId(productId)
+            .appendPromotionsEnhancedEcommerce("", position, attachmentId, "video")
+            .sendEnhancedEcommerce(ReviewDetailTrackerConstant.EVENT_VIEW_ITEM)
     }
 
     fun trackClickShowSeeMore(productId: String) {

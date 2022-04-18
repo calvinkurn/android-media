@@ -46,39 +46,38 @@ fun Bundle.appendCurrentSite(currentSite: String): Bundle {
     return this
 }
 
-fun Bundle.appendPromotionsEnhancedEcommerce(attachmentId: String, position: Int): Bundle {
-    val promotions = listOf(
-        Bundle().appendPromotionsEnhancedEcommerceId(attachmentId)
-            .appendPromotionsEnhancedEcommerceCreativeName("")
-            .appendPromotionsEnhancedEcommerceName("")
-            .appendPromotionsEnhancedEcommercePosition(position)
+fun Bundle.appendPromotionsEnhancedEcommerce(
+    creativeName: String,
+    creativeSlot: Int,
+    itemId: String,
+    itemName: String
+): Bundle {
+    val promotions = arrayListOf(
+        Bundle().appendPromotionsEnhancedEcommerceItemId(itemId)
+            .appendPromotionsEnhancedEcommerceCreativeName(creativeName)
+            .appendPromotionsEnhancedEcommerceItemName(itemName)
+            .appendPromotionsEnhancedEcommerceCreativeSlot(creativeSlot)
     )
-    val payloadPromotions = Bundle().apply {
-        putParcelableArrayList("promotions", ArrayList(promotions))
-    }
-    val payloadPromoView = Bundle().apply {
-        putBundle("promoView", payloadPromotions)
-    }
-    putBundle("ecommerce", payloadPromoView)
+    putParcelableArrayList("promotions", promotions)
     return this
 }
 
-fun Bundle.appendPromotionsEnhancedEcommerceId(attachmentId: String): Bundle {
-    putString("id", attachmentId)
+fun Bundle.appendPromotionsEnhancedEcommerceItemId(attachmentId: String): Bundle {
+    putString("item_id", attachmentId)
     return this
 }
 
 fun Bundle.appendPromotionsEnhancedEcommerceCreativeName(creativeName: String): Bundle {
-    putString("creative", creativeName)
+    putString("creative_name", creativeName)
     return this
 }
 
-fun Bundle.appendPromotionsEnhancedEcommerceName(name: String): Bundle {
-    putString("name", name)
+fun Bundle.appendPromotionsEnhancedEcommerceItemName(name: String): Bundle {
+    putString("item_name", name)
     return this
 }
 
-fun Bundle.appendPromotionsEnhancedEcommercePosition(position: Int): Bundle {
-    putString("position", position.toString())
+fun Bundle.appendPromotionsEnhancedEcommerceCreativeSlot(position: Int): Bundle {
+    putString("creative_slot", position.toString())
     return this
 }

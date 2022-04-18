@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
@@ -28,6 +29,7 @@ class ReviewVideoPlayerViewModel @Inject constructor(
         const val SAVED_STATE_PLAYBACK_UI_STATE = "savedStatePlaybackUiState"
     }
 
+    private val _impressHolder = ImpressHolder()
     private val _videoPlaybackUiState: MutableStateFlow<ReviewVideoPlaybackUiState> =
         MutableStateFlow(ReviewVideoPlaybackUiState.Inactive())
     private val _videoPlayerUiState: MutableStateFlow<ReviewVideoPlayerUiState> =
@@ -241,5 +243,9 @@ class ReviewVideoPlayerViewModel @Inject constructor(
 
     fun updateWifiConnectivityStatus(connected: Boolean) {
         _connectedToWifi.value = connected
+    }
+
+    fun getImpressHolder(): ImpressHolder {
+        return _impressHolder
     }
 }

@@ -25,6 +25,7 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.di.qualifier.De
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
 import com.tokopedia.reviewcommon.feature.media.player.image.presentation.fragment.ReviewImagePlayerFragment
 import com.tokopedia.reviewcommon.feature.media.player.image.presentation.uimodel.ImageMediaItemUiModel
+import com.tokopedia.reviewcommon.feature.media.player.video.presentation.fragment.ReviewVideoPlayerFragment
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.model.VideoMediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.widget.ReviewVideoPlayer
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,7 +40,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
-    ReviewImagePlayerFragment.Listener {
+    ReviewImagePlayerFragment.Listener, ReviewVideoPlayerFragment.Listener {
 
     companion object {
         const val TAG = "ReviewMediaGalleryFragment"
@@ -77,7 +78,7 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
             .get(SharedReviewMediaGalleryViewModel::class.java)
     }
     private val galleryAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ReviewMediaGalleryAdapter(this, this)
+        ReviewMediaGalleryAdapter(this, this, this)
     }
     private val pageChangeListener = PagerListener()
 
@@ -140,6 +141,18 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     override fun onImageImpressed(imageUri: String) {
         galleryAdapter.getItemByUri(imageUri)?.let { (index, media) ->
             ReviewMediaGalleryTracker.trackImpressImage(
+                sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
+                sharedReviewMediaGalleryViewModel.getProductId(),
+                media.id,
+                index,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun onVideoImpressed(videoUri: String) {
+        galleryAdapter.getItemByUri(videoUri)?.let { (index, media) ->
+            ReviewMediaGalleryTracker.trackImpressVideo(
                 sharedReviewMediaGalleryViewModel.getTotalMediaCount(),
                 sharedReviewMediaGalleryViewModel.getProductId(),
                 media.id,
