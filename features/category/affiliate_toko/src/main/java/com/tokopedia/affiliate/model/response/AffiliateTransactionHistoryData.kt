@@ -14,7 +14,7 @@ data class AffiliateTransactionHistoryData(
                 @SerializedName("EndDate")
                 var endDate: String,
                 @SerializedName("Error")
-                var error: Error,
+                var error: Error?,
                 @SerializedName("HasNext")
                 var hasNext: Boolean,
                 @SerializedName("Limit")

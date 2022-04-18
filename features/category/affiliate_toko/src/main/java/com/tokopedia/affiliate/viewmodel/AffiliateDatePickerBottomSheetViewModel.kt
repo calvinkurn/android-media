@@ -27,11 +27,12 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
     fun getAffiliateFilterData() {
         launchCatchError(block = {
             shimmerVisibility.value = true
-            affiliateUserPerformanceUseCase.getAffiliateFilter()?.let { response ->
+            affiliateUserPerformanceUseCase.getAffiliateFilter().let { response ->
                 response.data?.ticker?.let { ticker->
                     if(ticker.isNotEmpty()) tickerInformation.value = ticker.first()?.tickerDescription
                 }
-                convertFilterToVisitable(response.data?.getAffiliateDateFilter)
+
+                affiliateFilterList.value = convertFilterToVisitable(response.data?.getAffiliateDateFilter)
             }
             shimmerVisibility.value = false
         }, onError = {
@@ -41,7 +42,7 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
         })
     }
 
-    private fun convertFilterToVisitable(affiliateDateFilter: List<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter?>?) {
+    fun convertFilterToVisitable(affiliateDateFilter: List<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter?>?): ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> {
         val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
         affiliateDateFilter?.forEach { filter ->
             var title = ""
@@ -52,7 +53,7 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
             filter?.filterValue?.let { value = it }
             itemList.add(AffiliateDateRangePickerModel(AffiliateDatePickerData(title,rangeSelected == title, value, message,identifier == AffiliateBottomDatePicker.IDENTIFIER_HOME)))
         }
-        affiliateFilterList.value = itemList
+        return itemList
     }
 
     fun updateItem(position: Int) {

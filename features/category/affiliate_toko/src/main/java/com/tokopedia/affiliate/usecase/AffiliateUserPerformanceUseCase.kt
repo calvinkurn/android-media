@@ -26,7 +26,7 @@ class AffiliateUserPerformanceUseCase @Inject constructor(
 
     }
 
-    suspend fun getAffiliateFilter(): AffiliateDateFilterResponse? {
+    suspend fun getAffiliateFilter(): AffiliateDateFilterResponse {
         return repository.getGQLData(
             GQL_Affiliate_Date_FILTER,
             AffiliateDateFilterResponse::class.java,
