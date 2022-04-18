@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -7,18 +7,25 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <FrameLayout
         android:id="@+id/cvShop"
         android:layout_width="296dp"
         android:layout_height="166dp"
         android:layout_margin="@dimen/unify_space_4"
         app:cardCornerRadius="@dimen/unify_space_8"
-        android:background="@color/Unify_G300_32"
+        android:background="@drawable/tm_bg_round_corner"
         app:cardElevation="@dimen/dp_0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/ivShopContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/ivShopIcon"
@@ -39,7 +46,7 @@
                 app:layout_constraintStart_toEndOf="@id/ivShopIcon"
                 app:layout_constraintTop_toTopOf="@id/ivShopIcon"
                 app:typographyType="heading_5"
-                tools:text="Sabun Coklat" />
+                android:text="Sabun Coklat" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvShopMemberName"
@@ -50,7 +57,7 @@
                 app:layout_constraintStart_toStartOf="@id/ivShopIcon"
                 app:layout_constraintTop_toBottomOf="@id/ivShopIcon"
                 app:typographyType="heading_2"
-                tools:text="Sabun Coklat" />
+                android:text="Sabun Coklat" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvShopStartDateLabel"
@@ -61,7 +68,7 @@
                 app:layout_constraintStart_toStartOf="@id/ivShopIcon"
                 app:layout_constraintTop_toBottomOf="@id/tvShopMemberName"
                 app:typographyType="small"
-                tools:text="Sabun Coklat" />
+                android:text="Sejak" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvShopStartDateValue"
@@ -71,7 +78,7 @@
                 app:layout_constraintStart_toStartOf="@id/ivShopIcon"
                 app:layout_constraintTop_toBottomOf="@id/tvShopStartDateLabel"
                 app:typographyType="heading_5"
-                tools:text="Sabun Coklat" />
+                android:text="DD MM YY" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvShopEndDateLabel"
@@ -83,7 +90,7 @@
                 app:layout_constraintStart_toEndOf="@id/tvShopStartDateLabel"
                 app:layout_constraintTop_toBottomOf="@id/tvShopMemberName"
                 app:typographyType="small"
-                tools:text="Sabun Coklat" />
+                android:text="Berlaku Hingga" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvShopEndDateValue"
@@ -93,18 +100,18 @@
                 app:layout_constraintStart_toStartOf="@id/tvShopEndDateLabel"
                 app:layout_constraintTop_toBottomOf="@id/tvShopEndDateLabel"
                 app:typographyType="heading_5"
-                tools:text="Sabun Coklat" />
+                android:text="DD MM YY" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.unifycomponents.CardUnify>
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/dp_12">
+        android:layout_alignEnd="@+id/cvShop"
+        android:layout_marginTop="22dp">
 
         <FrameLayout
             android:id="@+id/containerBadge"
@@ -128,8 +135,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
-            tools:text="Premium" />
+            android:text="Premium" />
 
     </RelativeLayout>
 
-</FrameLayout>
+</RelativeLayout>

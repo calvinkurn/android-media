@@ -12,12 +12,36 @@ import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCa
 object TokomemberCardMapper {
 
     fun getColorData(cardData: CardData): TokomemberCardColorItem {
-        val arrayList = arrayListOf<Visitable<*>>()
+        val arrayListOfColor = arrayListOf<Visitable<*>>()
+        val arrayListOfPattern = arrayListOf<String>()
         val template = cardData.membershipGetCardForm?.colorTemplateList
-        template?.forEach {
-            arrayList.add(getColorTemplate(it ?: ColorTemplateListItem()))
+        val templatePattern = cardData.membershipGetCardForm?.patternList
+        templatePattern?.forEach {
+            arrayListOfPattern.add(it?:"")
         }
-        return TokomemberCardColorItem(tokoVisitableCardColor = arrayList)
+        template?.forEach {
+            arrayListOfColor.add(getColorTemplate(it ?: ColorTemplateListItem(), templatePattern))
+        }
+        return TokomemberCardColorItem(tokoVisitableCardColor = arrayListOfColor )
+
+    }
+
+    fun getBackground(cardData: ArrayList<CardTemplateImageListItem>, colorCode:String, pattern: ArrayList<String>):TokomemberCardBgItem{
+        val arr =arrayListOf<String>()
+        pattern?.forEach {
+            val p = "$it-$colorCode"
+            cardData?.filter {it2->
+                it2?.name?.equals(p) == true
+            }?.forEach {it3->
+                arr.add(it3?.imageURL ?: "")
+            }
+        }
+        val arrayListOfBg = arrayListOf<Visitable<*>>()
+        arr?.forEach {
+            arrayListOfBg.add(getBackgroundTemplateN(it))
+        }
+        return TokomemberCardBgItem(tokoVisitableCardBg = arrayListOfBg)
+        }
     }
 
     fun getBackgroundData(cardData: CardData): TokomemberCardBgItem {
@@ -35,9 +59,16 @@ object TokomemberCardMapper {
         )
     }
 
-    private fun getColorTemplate(template: ColorTemplateListItem): TokomemberCardColor {
+private fun getBackgroundTemplateN(template: String): TokomemberCardBg {
+    return TokomemberCardBg(
+        imageUrl = template
+    )
+}
+
+    private fun getColorTemplate(template: ColorTemplateListItem, templatePattern: List<String?>?): TokomemberCardColor {
         return TokomemberCardColor(
-            colorCode = template.colorCode
+            colorCode = template.colorCode,
+            id = template.id,
+            tokoCardPatternList = templatePattern as ArrayList<String>
         )
     }
-}

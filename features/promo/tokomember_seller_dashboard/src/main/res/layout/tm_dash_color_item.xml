@@ -4,13 +4,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/unify_space_4"
+    app:cardCornerRadius="@dimen/unify_space_8"
     tools:ignore="MissingDefaultResource">
 
     <FrameLayout
         android:id="@+id/colorFrame"
-        android:padding="@dimen/unify_space_8"
+        android:layout_gravity="center"
         android:layout_width="@dimen/unify_space_40"
+        android:background="@drawable/tm_bg_round_corner"
         android:layout_height="@dimen/unify_space_40" />
+
+    <View
+        android:id="@+id/viewColorSelector"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        android:background="@drawable/tm_dash_item_selector"/>
 
 </androidx.cardview.widget.CardView>

@@ -4,18 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.model.MembershipGetProgramForm
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashProgramViewmodel
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_create_card.*
 import kotlinx.android.synthetic.main.tm_dash_create_card.progressCard
 import kotlinx.android.synthetic.main.tm_dash_progrm_form.*
+import java.util.*
 import javax.inject.Inject
 
 class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
@@ -28,6 +34,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TokomemberDashProgramViewmodel::class.java)
     }
+    private var selectedCalendar: Calendar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +48,7 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         renderHeader()
         observeViewModel()
+        tokomemberDashProgramViewmodel.getProgramInfo(3827)
     }
 
     override fun getScreenName() = ""
@@ -76,11 +84,88 @@ class TokomemberDashCreateProgramFragment : BaseDaggerFragment() {
     }
 
     private fun renderProgramUI(membershipGetProgramForm: MembershipGetProgramForm?) {
+        chipOne.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(0)?.name
+        chipTwo.chipText = membershipGetProgramForm?.timePeriodList?.getOrNull(1)?.name
+        context?.let {
+            textFieldDuration?.setFirstIcon(R.drawable.tm_dash_calender)
+        }
+        textFieldDuration.iconContainer.setOnClickListener {
+            clickDatePicker("Pilih tanggal mulai","Tentukan tanggal mulai untuk kupon TokoMember yang sudah kamu buat.")
+        }
+        chipOne.setOnClickListener {
+            chipOne.chipType  = ChipsUnify.TYPE_SELECTED
+            chipTwo.chipType = ChipsUnify.TYPE_NORMAL
+        }
+        chipTwo.setOnClickListener {
+            chipOne.chipType  = ChipsUnify.TYPE_NORMAL
+            chipTwo.chipType = ChipsUnify.TYPE_SELECTED
+        }
+        //TODO 1. get program name
+        btnCreateProgram?.setOnClickListener {
+            tokomemberDashProgramViewmodel.updateProgram(
+                ProgramUpdateDataInput(
+                    actionType = "create",
+                    apiVersion = "3.0",
+                    name = "name",
+
+                )
+            )
+        }
+    }
+
+
+     private fun clickDatePicker(title: String, helpText: String) {
+         var date = ""
+         var month = ""
+         var year = ""
+        context?.let{
+            val calMax = Calendar.getInstance()
+            calMax.add(Calendar.YEAR, MAX_YEAR);
+            val yearMax = calMax.get(Calendar.YEAR)
+            val monthMax = calMax.get(Calendar.MONTH)
+            val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
+
+            val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
+            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+
+            val calMin = Calendar.getInstance()
+            calMin.add(Calendar.YEAR, MIN_YEAR);
+            val yearMin = calMin.get(Calendar.YEAR)
+            val monthMin = calMin.get(Calendar.MONTH)
+            val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
+
+            val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
+            val datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
+                setTitle(title)
+                setInfo(helpText)
+                setInfoVisible(true)
+                datePickerButton.let { button ->
+                    button.setOnClickListener {
+                        selectedCalendar = getDate()
+                         date = selectedCalendar?.get(Calendar.DATE).toString()
+                         month = selectedCalendar?.getDisplayName(Calendar.MONTH, Calendar.LONG, LocaleUtils.getIDLocale()).toString()
+                         year = selectedCalendar?.get(Calendar.YEAR).toString()
+                        dismiss()
+                    }
+                }
+            }
+            fragmentManager?.let {
+                datepickerObject.show(it, "")
+            }
+            datepickerObject.setOnDismissListener {
+                textFieldDuration?.textInputLayout?.editText?.setText(( "$date $month $year"))
+            }
+        }
 
     }
 
-    companion object {
+     fun getDate(): Calendar? {
+        return selectedCalendar
+    }
 
+    companion object {
+        const val MAX_YEAR = 10
+        const val MIN_YEAR = -90
         fun newInstance(): TokomemberDashCreateProgramFragment {
             return TokomemberDashCreateProgramFragment()
         }

@@ -1,0 +1,97 @@
+package com.tokopedia.tokomember_seller_dashboard.domain.requestparam
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
+data class TmProgramUpdateResponse(
+	@Expose
+	@SerializedName("input")
+	val input: ProgramUpdateDataInput? = null
+)
+
+data class ProgramUpdateDataInput(
+	@Expose
+	@SerializedName("actionType")
+	val actionType: String? = null,
+	@Expose
+	@SerializedName("timeWindow")
+	val timeWindow: TimeWindow? = null,
+	@Expose
+	@SerializedName("apiVersion")
+	val apiVersion: String? = null,
+	@Expose
+	@SerializedName("programAttributes")
+	val programAttributes: List<ProgramAttributesItem?>? = null,
+	@Expose
+	@SerializedName("cardID")
+	val cardID: Int? = 0,
+	@Expose
+	@SerializedName("name")
+	val name: String? = null,
+	@Expose
+	@SerializedName("id")
+	val id: Int? = 0,
+
+	@SerializedName("tierLevels")
+	val tierLevels: List<TierLevelsItem?>? = null
+)
+
+data class TimeWindow(
+	@Expose
+	@SerializedName("periodInMonth")
+	val periodInMonth: Int? = null,
+	@Expose
+	@SerializedName("startTime")
+	val startTime: String? = null,
+	@Expose
+	@SerializedName("id")
+	val id: Int? = 0,
+	@Expose
+	@SerializedName("endTime")
+	val endTime: String? = null
+)
+
+data class TierLevelsItem(
+	@Expose
+	@SerializedName("metadata")
+	val metadata: String? = null,
+	@Expose
+	@SerializedName("tierGroupID")
+	val tierGroupID: Int? = 0,
+	@Expose
+	@SerializedName("level")
+	val level: Int? = 0,
+	@Expose
+	@SerializedName("activeTime")
+	val activeTime: Int? = null,
+	@Expose
+	@SerializedName("name")
+	val name: String? = null,
+	@Expose
+	@SerializedName("threshold")
+	val threshold: Int? = null,
+	@Expose
+	@SerializedName("id")
+	val id: Int? = 0
+)
+
+data class ProgramAttributesItem(
+	@Expose
+	@SerializedName("minimumTransaction")
+	val minimumTransaction: Int? = null,
+	@Expose
+	@SerializedName("multiplierRates")
+	val multiplierRates: Int? = null,
+	@Expose
+	@SerializedName("tierLevelID")
+	val tierLevelID: Int? = null,
+	@Expose
+	@SerializedName("id")
+	val id: Int? = 0,
+	@Expose
+	@SerializedName("isUseMultiplier")
+	val isUseMultiplier: Boolean? = null,
+	@Expose
+	@SerializedName("programID")
+	val programID: Int? = 0
+)

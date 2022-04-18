@@ -10,3 +10,8 @@ const val ACTIVE = 3
 const val ACTIVE_OLDER = 4
 const val ENDED = 5
 const val CANCELED = 6
+
+const val MIN_THRESHOLD_LEVEL_1 = 0
+const val MAX_THRESHOLD_LEVEL_1 = 1000000
+const val MIN_THRESHOLD_LEVEL_2 = 500000
+const val MAX_THRESHOLD_LEVEL_2 = 50000000

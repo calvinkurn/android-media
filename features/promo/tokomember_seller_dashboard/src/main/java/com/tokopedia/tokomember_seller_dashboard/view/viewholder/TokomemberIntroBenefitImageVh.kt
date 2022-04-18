@@ -43,22 +43,20 @@ class TokomemberIntroBenefitImageVh(val view: View)
     //7 position image L->R
 
     private fun setAnimation() {
-        if (adapterPosition > lastPosition) {
             val animType = getAnimationLeftOrRight()
             val animation: Animation =
                 AnimationUtils.loadAnimation(itemView.context, animType)
-            animation.duration = 600L
             this@TokomemberIntroBenefitImageVh.itemView.startAnimation(animation)
             lastPosition = adapterPosition
-        }
     }
 
     private fun getAnimationLeftOrRight(): Int {
-        return if (adapterPosition % 2 == 0) {
+         /*if (adapterPosition % 2 == 0) {
             R.anim.tm_dash_intro_benefit_left
-        } else {
-            R.anim.tm_dash_intro_benefit_right
-        }
+        } else {*/
+         return  R.anim.tm_dash_intro_benefit_left
+
+
     }
     companion object {
         val LAYOUT_ID = R.layout.tm_dash_intro_benefit_image_item

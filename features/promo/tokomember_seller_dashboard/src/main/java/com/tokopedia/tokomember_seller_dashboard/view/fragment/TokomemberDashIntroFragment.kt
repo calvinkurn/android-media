@@ -11,10 +11,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.ViewFlipper
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -34,6 +37,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tm_dash_intro.*
 import javax.inject.Inject
+import androidx.recyclerview.widget.PagerSnapHelper
+
+import androidx.recyclerview.widget.SnapHelper
+
+
+
 
 private const val ARG_OPEN_BS = "openBS"
 private const val ARG_SHOP_ID = "shopId"
@@ -131,10 +140,22 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
         }
 
 
+        val animation: Animation =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_benefit_left)
+         cardTokmemberParent.startAnimation(animation)
+
+        val animation1: Animation =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
+        buttonContainer.startAnimation(animation1)
+
+        val animation2: Animation =
+            AnimationUtils.loadAnimation(this.context, R.anim.tm_dash_intro_push_up)
+        frame_video.startAnimation(animation2)
+
         val headerData = membershipData.membershipGetSellerOnboarding?.sellerHomeContent?.sellerHomeText
         headerData?.let {
             tvTitle.text = it.title?.getOrNull(0)
-            tvSubtitle.text =it.subTitle?.getOrNull(0)
+            tvSubtitle.text = it.subTitle?.getOrNull(0)
         }
 
         frame_video.addView(
@@ -151,8 +172,20 @@ class TokomemberDashIntroFragment : BaseDaggerFragment(), TokomemberIntroAdapter
 
     @SuppressLint("NotifyDataSetChanged")
     private fun renderSectionBenefit(data: TokomemberIntroItem) {
-        recyclerView.layoutManager = LinearLayoutManager(context)
+
+        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+            }
+        })
         adapter.addItems(data.tokoVisitable)
         adapter.notifyDataSetChanged()
     }

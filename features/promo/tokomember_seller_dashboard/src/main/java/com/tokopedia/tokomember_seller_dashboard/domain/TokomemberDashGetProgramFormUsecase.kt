@@ -26,14 +26,6 @@ class TokomemberDashGetProgramFormUsecase @Inject constructor(graphqlRepository:
         })
     }
 
-    fun getProgramList(
-        success: (ProgramList) -> Unit,
-        onFail: (Throwable) -> Unit,
-        shopId: Int, cardId: Int, status: Int, page: Int, pageSize: Int
-    ){
-
-    }
-
     private fun getRequestParams(programID: Int, shopId: Int, actionType: String): Map<String, Any> {
         return mapOf(PROGRAM_ID to programID , SHOP_ID to shopId, ACTION_TYPE to actionType )
     }

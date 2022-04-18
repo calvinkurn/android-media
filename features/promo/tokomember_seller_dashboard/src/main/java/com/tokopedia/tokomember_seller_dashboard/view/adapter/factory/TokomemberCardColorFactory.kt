@@ -12,7 +12,7 @@ class TokomemberCardColorFactory(val listener: TokomemberCardColorAdapterListene
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            TokomemberDashCardColorVh.LAYOUT_ID -> return TokomemberDashCardColorVh(parent)
+            TokomemberDashCardColorVh.LAYOUT_ID -> return TokomemberDashCardColorVh(parent , listener)
         }
         return super.createViewHolder(parent, type)
     }

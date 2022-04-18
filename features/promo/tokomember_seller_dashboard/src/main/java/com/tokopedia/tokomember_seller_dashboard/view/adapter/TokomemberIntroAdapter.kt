@@ -17,12 +17,12 @@ class TokomemberIntroAdapter(private val visitableList: ArrayList<Visitable<*>>,
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        holder.itemView.tag?.let {
+        /*holder.itemView.tag?.let {
             if (it is TokomemberIntroHeaderItem && !it.isVisited) {
                 it.isVisited = true
                 typeFactory.listener.onItemDisplayed(it, holder.adapterPosition)
             }
-        }
+        }*/
     }
 
 }

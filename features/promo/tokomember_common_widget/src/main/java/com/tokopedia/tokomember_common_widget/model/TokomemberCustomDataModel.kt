@@ -5,7 +5,11 @@ data class TokomemberShopCardModel(
     var shopMemberName: String = "",
     var shopType: Int = 0,
     var startDate: String = "",
-    var endData: String = ""
+    var endData: String = "",
+    var numberOfLevel : Int = 0,
+    var fontColor : String ="",
+    var backgroundColor: String ="",
+    var backgroundImgUrl:String=""
 )
 
 data class TokomemberProgramCardModel(

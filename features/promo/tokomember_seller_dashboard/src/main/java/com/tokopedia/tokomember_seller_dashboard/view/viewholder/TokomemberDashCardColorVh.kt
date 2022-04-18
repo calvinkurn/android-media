@@ -1,20 +1,47 @@
 package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberProgramColorItem
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardColorAdapterListener
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import kotlinx.android.synthetic.main.tm_dash_color_item.view.*
 
-class TokomemberDashCardColorVh(val view: View)
-    : AbstractViewHolder<TokomemberProgramColorItem>(view) {
+var selectedItemPosColor = -1
+var lastItemSelectedPosColor = -1
 
-    private val tmProgramColorFrame = itemView.colorFrame
+class TokomemberDashCardColorVh(val view: View, val listener: TokomemberCardColorAdapterListener) :
+    AbstractViewHolder<TokomemberCardColor>(view) {
 
-    override fun bind(element: TokomemberProgramColorItem?) {
+    private val tmCardColorFrame = itemView.colorFrame
+    private val tmCardColorFrameSelector = itemView.viewColorSelector
+
+    override fun bind(element: TokomemberCardColor?) {
+
         element?.apply {
-            tmProgramColorFrame.setBackgroundColor(Color.parseColor(colorCode))
+            tmCardColorFrame.background.setColorFilter(
+                Color.parseColor(colorCode),
+                PorterDuff.Mode.SRC_ATOP
+            )
+        }
+        itemView.setOnClickListener {
+            selectedItemPosColor = adapterPosition
+            lastItemSelectedPosColor = if (lastItemSelectedPosColor == -1)
+                selectedItemPosColor
+            else {
+                listener.onItemClickCardColorSelect(tokoCardItem = element,position = lastItemSelectedPosColor)
+                selectedItemPosColor
+            }
+            listener.onItemClickCardColorSelect(tokoCardItem = element,position = selectedItemPosColor)
+        }
+        if (adapterPosition == selectedItemPosColor) {
+            tmCardColorFrameSelector.show()
+        } else {
+            tmCardColorFrameSelector.hide()
         }
     }
 

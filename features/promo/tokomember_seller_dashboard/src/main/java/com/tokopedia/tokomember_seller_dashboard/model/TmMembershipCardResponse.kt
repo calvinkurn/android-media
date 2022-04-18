@@ -110,3 +110,9 @@ data class MembershipGetCardForm(
 	@SerializedName("card")
 	val card: Card? = null
 )
+
+data class CardDataTemplate(
+	val card: Card? = null,
+	val cardTemplate: CardTemplate? = null,
+	val cardTemplateImageList: List<CardTemplateImageListItem?>? = null
+	)

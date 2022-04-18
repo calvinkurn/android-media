@@ -28,5 +28,6 @@ class TokomemberCardBgAdapter(private val visitableList: ArrayList<Visitable<*>>
 }
 
 interface TokomemberCardBgAdapterListener {
-    fun onItemDisplayedCardBg(tokoIntroItem: Visitable<*>, position: Int)
+    fun onItemDisplayedCardBg(tokoCardItem: Visitable<*>, position: Int)
+    fun onItemClickCardCBg(tokoCardItem: Visitable<*>, position: Int)
 }

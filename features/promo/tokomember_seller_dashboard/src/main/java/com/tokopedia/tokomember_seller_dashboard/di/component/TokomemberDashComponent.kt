@@ -4,13 +4,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberActivityCon
 import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberDashModule
 import com.tokopedia.tokomember_seller_dashboard.di.module.TokomemberViewmodelModule
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCouponFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCreateCardFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashCreateProgramFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashIntroFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashProgramFragment
-import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberMainFragment
+import com.tokopedia.tokomember_seller_dashboard.view.fragment.*
 import dagger.Component
 
 @TokomemberDashScope
@@ -23,4 +17,6 @@ interface TokomemberDashComponent {
     fun inject(tokomemberDashIntroFragment: TokomemberDashIntroFragment)
     fun inject(tokomemberDashCreateCardFragment: TokomemberDashCreateCardFragment)
     fun inject(tokomemberDashCreateProgramFragment: TokomemberDashCreateProgramFragment)
+    fun inject(tokomemberDashCreateProgramFragment: TokomemberDashPreviewFragment)
+
 }

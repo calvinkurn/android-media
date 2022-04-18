@@ -15,7 +15,7 @@ open class TokomemberProgramModel {
 }
 
 data class TokomemberCardColorItem(
-    var tokoVisitableCardColor: ArrayList<Visitable<*>>
+    var tokoVisitableCardColor: ArrayList<Visitable<*>>,
 )
 
 data class TokomemberCardBgItem(
@@ -29,7 +29,12 @@ open class TokomemberCardBgModel {
 data class TokomemberCardColor(
     @Expose
     @SerializedName("colorCode")
-    val colorCode: String? = null
+    val colorCode: String? = null,
+    @Expose
+    @SerializedName("id")
+    val id: String? = null,
+    var isSelected:Boolean = false,
+    var tokoCardPatternList: ArrayList<String>
 ) : Visitable<TokomemberCardColorFactory>, TokomemberProgramModel() {
 
     override fun type(typeFactory: TokomemberCardColorFactory): Int {

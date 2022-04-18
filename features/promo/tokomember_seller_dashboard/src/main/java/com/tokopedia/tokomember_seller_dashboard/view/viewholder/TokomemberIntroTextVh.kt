@@ -27,7 +27,6 @@ class TokomemberIntroTextVh(val listener: TokomemberIntroAdapterListener, view: 
             val animType = getAnimationLeftOrRight()
             val animation: Animation =
                 AnimationUtils.loadAnimation(itemView.context, animType)
-            animation.duration = 600L
             this@TokomemberIntroTextVh.itemView.startAnimation(animation)
             lastPosition = adapterPosition
         }

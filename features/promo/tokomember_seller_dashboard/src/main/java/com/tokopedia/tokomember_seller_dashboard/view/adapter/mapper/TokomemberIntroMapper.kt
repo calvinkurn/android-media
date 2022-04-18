@@ -18,6 +18,12 @@ object TokomemberIntroMapper {
             for (item in sellerOnboarding.sellerHomeContent.sellerHomeText.sellerHomeTextBenefit) {
                 arrayListOfIntroData.add(getIntroTextData(item))
                 arrayListOfIntroData.add(getIntroImageData(item))
+                arrayListOfIntroData.add(getIntroTextData(item))
+                arrayListOfIntroData.add(getIntroImageData(item))
+                arrayListOfIntroData.add(getIntroTextData(item))
+                arrayListOfIntroData.add(getIntroImageData(item))
+                arrayListOfIntroData.add(getIntroTextData(item))
+                arrayListOfIntroData.add(getIntroImageData(item))
             }
         }
         return TokomemberIntroItem(tokoVisitable = arrayListOfIntroData)

@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.factory.TokomemberCardColorFactory
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberIntroHeaderItem
 
 class TokomemberCardColorAdapter(private val visitableList: ArrayList<Visitable<*>>,
@@ -24,8 +25,27 @@ class TokomemberCardColorAdapter(private val visitableList: ArrayList<Visitable<
             }
         }
     }
+
+    fun unselectModel(position: Int){
+        if( position!=-1){
+            visitableList[position]  is TokomemberCardColor
+            ( visitableList[position] as TokomemberCardColor).isSelected = false
+            notifyItemChanged(position)
+        }
+    }
+
+    fun selectModel(position: Int){
+        if( position!=-1){
+            visitableList[position]  is TokomemberCardColor
+            ( visitableList[position] as TokomemberCardColor).isSelected = true
+            notifyItemChanged(position)
+        }
+    }
 }
 
 interface TokomemberCardColorAdapterListener {
-    fun onItemDisplayedCardColor(tokoIntroItem: Visitable<*>, position: Int)
+    fun onItemDisplayedCardColor(tokoCardItem: Visitable<*>, position: Int)
+    fun onItemClickCardColorSelect(tokoCardItem: Visitable<*>?=null, position: Int)
+    fun onItemClickCardColorUnselect(tokoCardItem: Visitable<*>?=null, position: Int)
+
 }

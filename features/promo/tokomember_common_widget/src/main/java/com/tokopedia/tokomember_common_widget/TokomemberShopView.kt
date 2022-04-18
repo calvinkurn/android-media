@@ -5,22 +5,19 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.unifyprinciples.Typography
 import android.widget.FrameLayout
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.model.TokomemberShopCardModel
 import com.tokopedia.tokomember_common_widget.util.MemberType
-import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import kotlinx.android.synthetic.main.tm_shop_view.view.*
 
 class TokomemberShopView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    companion object {
-        const val REQUEST_CODE = 121
-        const val RESULT_CODE_OK = 1
-    }
 
-    lateinit var cvShop: CardUnify
+    lateinit var cvShop: FrameLayout
     lateinit var ivShopIcon: ImageUnify
     lateinit var tvShopName: Typography
     lateinit var tvShopMemberName: Typography
@@ -30,7 +27,8 @@ class TokomemberShopView @JvmOverloads constructor(
     lateinit var tvShopEndDateValue: Typography
     lateinit var containerBadge: FrameLayout
     lateinit var tvShopType: Typography
-
+    private var mBackgroundImageUrl =""
+    private var mCardShopName =""
 
     @MemberType
     var shopType: Int = MemberType.PREMIUM
@@ -62,21 +60,16 @@ class TokomemberShopView @JvmOverloads constructor(
         super.onDetachedFromWindow()
     }
 
-    fun setData(
+    fun getCardBackgroundImageUrl() = mBackgroundImageUrl
+    fun getCardShopName() = mCardShopName
 
-    ) {
-
-    }
-
-    private fun setShopCardData(tokomemberShopViewModel: TokomemberShopCardModel) {
-        tvShopName.text = tokomemberShopViewModel.shopName
+    fun setShopCardData(tokomemberShopViewModel: TokomemberShopCardModel) {
+        mBackgroundImageUrl = tokomemberShopViewModel.backgroundImgUrl
+        mCardShopName = tokomemberShopViewModel.shopName
+        tvShopName.text = mCardShopName
         tvShopMemberName.text = tokomemberShopViewModel.shopMemberName
-        tvShopStartDateValue.text = tokomemberShopViewModel.shopName
-        tvShopEndDateValue.text = tokomemberShopViewModel.shopName
         shopType = tokomemberShopViewModel.shopType
+        ivShopContainer.loadImage(mBackgroundImageUrl)
     }
 
-    fun sendImpressionTrackerForPdp() {
-
-    }
 }

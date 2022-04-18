@@ -2,19 +2,43 @@ package com.tokopedia.tokomember_seller_dashboard.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_seller_dashboard.R
-import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberProgramBgItem
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberCardBgAdapterListener
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBg
 import kotlinx.android.synthetic.main.tm_dash_colorbg_item.view.*
+var lastItemSelectedPosBg = -1
+var selectedItemPosBg = -1
+class TokomemberDashCardBgVh(val view: View, val listener: TokomemberCardBgAdapterListener)
+    : AbstractViewHolder<TokomemberCardBg>(view) {
 
-class TokomemberDashCardBgVh(val view: View)
-    : AbstractViewHolder<TokomemberProgramBgItem>(view) {
+    private val tmCardColorBg = itemView.colorBg
+    private val tmCardColorBgSelector = itemView.viewBgSelector
 
-    private val tmProgramColorBg = itemView.colorBg
-
-    override fun bind(element: TokomemberProgramBgItem?) {
+    override fun bind(element: TokomemberCardBg?) {
         element?.apply {
-            tmProgramColorBg.loadImage(imageUrl)
+            tmCardColorBg.loadImage(imageUrl)
+        }
+        itemView.setOnClickListener {
+            selectedItemPosBg = adapterPosition
+            lastItemSelectedPosBg = if (lastItemSelectedPosBg == -1)
+                selectedItemPosBg
+            else {
+                if (element != null) {
+                    listener.onItemClickCardCBg(tokoCardItem = element,position = lastItemSelectedPosBg)
+                }
+                selectedItemPosBg
+            }
+            if (element != null) {
+                listener.onItemClickCardCBg(tokoCardItem = element,position = selectedItemPosBg)
+            }
+        }
+        if (adapterPosition == selectedItemPosBg) {
+            tmCardColorBgSelector.show()
+        } else {
+            tmCardColorBgSelector.hide()
         }
     }
 

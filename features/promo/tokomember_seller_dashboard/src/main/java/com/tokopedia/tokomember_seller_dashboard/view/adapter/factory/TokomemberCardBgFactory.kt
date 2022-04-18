@@ -12,7 +12,7 @@ class TokomemberCardBgFactory(val listener: TokomemberCardBgAdapterListener) : B
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            TokomemberDashCardBgVh.LAYOUT_ID -> return TokomemberDashCardBgVh(parent)
+            TokomemberDashCardBgVh.LAYOUT_ID -> return TokomemberDashCardBgVh(parent , listener)
         }
         return super.createViewHolder(parent, type)
     }

@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@id/headerProgram"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        tools:text="Detail informasi" />
+        android:text="Detail informasi" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvDurasi"
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvDetail"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Detail informasi" />
+        android:text="Detail informasi" />
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/chipOne"
@@ -59,6 +59,7 @@
         app:showNewNotification="false" />
 
     <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/chipTwo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
@@ -84,7 +85,7 @@
         app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
         app:unify_text_field_clearable="true"
         app:unify_text_field_input_type="text|number"
-        app:unify_text_field_label="Kam, 12 Jan 2022"
+        app:unify_text_field_label="Mulai"
         app:unify_text_field_label_static="false"
         app:unify_text_field_message="Program mulai pukul 00:00 WIB"
         app:unify_text_field_prepend_text="Kam" />
@@ -107,7 +108,7 @@
         app:layout_constraintTop_toBottomOf="@id/viewDivider"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
-        tools:text="Skema level" />
+        android:text="Skema level" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconInfo"
@@ -131,27 +132,40 @@
         app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
         app:unify_text_field_clearable="true"
         app:unify_text_field_input_type="text|number"
-        app:unify_text_field_label="Kam, 12 Jan 2022"
+        app:unify_text_field_label="Min. transaksi Premium (Level 1)"
         app:unify_text_field_label_static="false"
-        app:unify_text_field_message="Program mulai pukul 00:00 WIB"
-        app:unify_text_field_prepend_text="Kam" />
+        app:unify_text_field_prepend_text="Rp" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerInfo"
+        android:layout_width="0dp"
+        app:tickerType="announcement"
+        android:layout_height="@dimen/unify_space_48"
+        app:layout_constraintStart_toStartOf="@id/tvDetail"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tickerShapeType="loose"
+        app:closeButtonVisibility="gone"
+        android:visibility="gone"
+        app:descriptionText="Undangan TokoMember diberikan ke pembeli yang belanja senilai nominal transaksi minimum."
+        android:layout_marginTop="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldTranskPremium"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textFieldTranskVip"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvDetail"
-        app:layout_constraintTop_toBottomOf="@id/textFieldTranskPremium"
+        app:layout_constraintTop_toBottomOf="@id/tickerInfo"
         app:unify_text_field_append_drawable_icon_1="@drawable/iconunify_calendar"
         app:unify_text_field_clearable="true"
         app:unify_text_field_input_type="text|number"
-        app:unify_text_field_label="Kam, 12 Jan 2022"
+        app:unify_text_field_label="Min. transaksi VIP (Level 2)"
         app:unify_text_field_label_static="false"
-        app:unify_text_field_message="Program mulai pukul 00:00 WIB"
-        app:unify_text_field_prepend_text="Kam" />
+        app:unify_text_field_prepend_text="Rp" />
 
     <View
         android:id="@+id/viewDividerTwo"
@@ -163,6 +177,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textFieldTranskVip" />
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCreateProgram"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
