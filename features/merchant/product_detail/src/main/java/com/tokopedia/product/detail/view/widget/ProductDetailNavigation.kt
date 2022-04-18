@@ -177,17 +177,17 @@ class ProductDetailNavigation(
     private inner class OnTabSelected : TabLayout.OnTabSelectedListener {
 
         override fun onTabSelected(tab: TabLayout.Tab) {
-            if (!enableTabSelectedListener) return
-            val position = tab.position
-            scrollToContent(position)
-            trackOnClickTab(position)
+            selectTab(tab.position)
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
         override fun onTabReselected(tab: TabLayout.Tab) {
+            selectTab(tab.position)
+        }
+
+        private fun selectTab(position: Int) {
             if (!enableTabSelectedListener) return
-            val position = tab.position
             scrollToContent(position)
             trackOnClickTab(position)
         }

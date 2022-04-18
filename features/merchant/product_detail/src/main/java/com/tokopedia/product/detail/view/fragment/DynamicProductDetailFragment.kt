@@ -158,7 +158,6 @@ import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantStrin
 import com.tokopedia.product.detail.data.util.roundToIntOrZero
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpActivity
-import com.tokopedia.product.detail.tracking.CommonTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracker
 import com.tokopedia.product.detail.tracking.ContentWidgetTracking
 import com.tokopedia.product.detail.tracking.ProductDetailNavigationTracker
@@ -2166,7 +2165,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun updateUi() {
         val newData = pdpUiUpdater?.mapOfData?.values?.toList()
         submitList(newData ?: listOf())
-        setupNavigationTab()
+        updateNavigationItems()
     }
 
     private fun onSuccessGetDataP1(productInfo: DynamicProductInfoP1) {
@@ -2321,8 +2320,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         updateUi()
     }
 
-    private fun initNavigationTab(data: ProductInfoP2UiData){
-        val items = data.navBar.items.map { item->
+    private fun initNavigationTab(data: ProductInfoP2UiData) {
+        val items = data.navBar.items.map { item ->
             val position = adapter.getComponentPositionByName(item.componentName)
             ProductDetailNavigation.Item(item.title, position)
         }
@@ -2330,17 +2329,17 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         val navigationTab = binding?.pdpNavigationTab
         val backToTop = binding?.pdpBackToTop
         getRecyclerView()?.let { recyclerView ->
-            if(items.isEmpty()){
+            if (items.isEmpty()) {
                 navigationTab?.stop(recyclerView)
                 backToTop?.stop(recyclerView)
-            } else{
+            } else {
                 navigationTab?.start(recyclerView, this)
                 backToTop?.start(recyclerView, this)
             }
         }
     }
 
-    private fun setupNavigationTab() {
+    private fun updateNavigationItems() {
         val navBar = viewModel.p2Data.value?.navBar ?: return
         val items = navBar.items.map { item ->
             val position = adapter.getComponentPositionByName(item.componentName)
