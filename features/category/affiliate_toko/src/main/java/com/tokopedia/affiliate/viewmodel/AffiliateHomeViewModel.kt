@@ -166,6 +166,7 @@ class AffiliateHomeViewModel @Inject constructor(
     private var selectedDateMessage = DateUtils().getMessage(selectedDateRange)
 
     private var selectedDateValue = "30"
+
     fun getSelectedDate(): String {
         return selectedDateRange
     }

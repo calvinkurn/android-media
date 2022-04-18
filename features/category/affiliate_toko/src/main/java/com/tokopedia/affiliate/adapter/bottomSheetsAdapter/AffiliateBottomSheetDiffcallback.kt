@@ -1,10 +1,10 @@
-package com.tokopedia.affiliate.adapter.dateRangePicker
+package com.tokopedia.affiliate.adapter.bottomSheetsAdapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
 
-class AffiliateDateRangeDiffcallback: DiffUtil.ItemCallback<Visitable<*>>() {
+class AffiliateBottomSheetDiffcallback: DiffUtil.ItemCallback<Visitable<*>>() {
     override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         var itemAreSame = false
         if(oldItem is AffiliateDateRangePickerModel && newItem is AffiliateDateRangePickerModel) {
