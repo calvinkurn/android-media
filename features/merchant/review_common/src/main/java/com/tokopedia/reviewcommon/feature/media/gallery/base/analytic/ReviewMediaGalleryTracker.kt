@@ -1,5 +1,6 @@
 package com.tokopedia.reviewcommon.feature.media.gallery.base.analytic
 
+import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
@@ -9,7 +10,6 @@ import com.tokopedia.reviewcommon.extension.appendShopId
 import com.tokopedia.reviewcommon.extension.appendUserId
 import com.tokopedia.reviewcommon.extension.queueEnhancedEcommerce
 import com.tokopedia.reviewcommon.extension.sendGeneralEvent
-import com.tokopedia.reviewcommon.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -19,9 +19,9 @@ class ReviewMediaGalleryTracker @Inject constructor(
 
     private fun getImageSwipeDirection(previousIndex: Int, currentIndex: Int): String {
         return if (previousIndex < currentIndex) {
-            ReviewDetailTrackerConstant.SWIPE_DIRECTION_RIGHT
+            ReviewMediaGalleryTrackerConstant.SWIPE_DIRECTION_RIGHT
         } else {
-            ReviewDetailTrackerConstant.SWIPE_DIRECTION_LEFT
+            ReviewMediaGalleryTrackerConstant.SWIPE_DIRECTION_LEFT
         }
     }
 
@@ -33,19 +33,19 @@ class ReviewMediaGalleryTracker @Inject constructor(
         productId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY,
-            ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SWIPE,
+            AnalyticConstant.EVENT_CLICK_PDP,
+            AnalyticConstant.EVENT_CATEGORY,
+            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_SWIPE,
             String.format(
-                ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_SWIPE,
+                ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_SWIPE,
                 feedbackId,
                 getImageSwipeDirection(previousIndex, currentIndex),
                 currentIndex,
                 totalImages
             )
         ).appendProductId(productId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .sendGeneralEvent()
     }
 
@@ -57,19 +57,19 @@ class ReviewMediaGalleryTracker @Inject constructor(
         shopId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY_SHOP_REVIEW,
-            ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SWIPE,
+            AnalyticConstant.EVENT_CLICK_PDP,
+            AnalyticConstant.EVENT_CATEGORY_SHOP_REVIEW,
+            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_SWIPE,
             String.format(
-                ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_SWIPE,
+                ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_SWIPE,
                 feedbackId,
                 getImageSwipeDirection(previousIndex, currentIndex),
                 currentIndex,
                 totalImages
             )
         ).appendShopId(shopId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.PHYSICAL_GOODS)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.PHYSICAL_GOODS)
             .sendGeneralEvent()
     }
 
@@ -81,13 +81,13 @@ class ReviewMediaGalleryTracker @Inject constructor(
         userId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_PROMO_VIEW,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY,
-            ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
-            String.format(ReviewDetailTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
+            ReviewMediaGalleryTrackerConstant.EVENT_PROMO_VIEW,
+            AnalyticConstant.EVENT_CATEGORY,
+            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
+            String.format(ReviewMediaGalleryTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
         ).appendUserId(userId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .appendProductId(productId)
             .appendPromotionsEnhancedEcommerce("", position, attachmentId, "image")
             .queueEnhancedEcommerce(trackingQueue)
@@ -101,13 +101,13 @@ class ReviewMediaGalleryTracker @Inject constructor(
         userId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_PROMO_VIEW,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY,
-            ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
-            String.format(ReviewDetailTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
+            ReviewMediaGalleryTrackerConstant.EVENT_PROMO_VIEW,
+            AnalyticConstant.EVENT_CATEGORY,
+            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
+            String.format(ReviewMediaGalleryTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
         ).appendUserId(userId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .appendProductId(productId)
             .appendPromotionsEnhancedEcommerce("", position, attachmentId, "video")
             .queueEnhancedEcommerce(trackingQueue)
@@ -115,12 +115,12 @@ class ReviewMediaGalleryTracker @Inject constructor(
 
     fun trackClickShowSeeMore(productId: String) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY,
-            ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE,
-            String.format(ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_SEE_MORE, productId)
-        ).appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            AnalyticConstant.EVENT_CLICK_PDP,
+            AnalyticConstant.EVENT_CATEGORY,
+            ReviewMediaGalleryTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE,
+            String.format(ReviewMediaGalleryTrackerConstant.EVENT_LABEL_CLICK_SEE_MORE, productId)
+        ).appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .appendProductId(productId)
             .sendGeneralEvent()
     }

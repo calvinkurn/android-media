@@ -8,4 +8,17 @@ object AnalyticConstant {
     const val KEY_ITEM_NAME = "item_name"
     const val KEY_CREATIVE_NAME = "creative_name"
     const val KEY_CREATIVE_SLOT = "creative_slot"
+    const val KEY_PRODUCT_ID = "productId"
+    const val KEY_SHOP_ID = "shopId"
+    const val KEY_BUSINESS_UNIT = "businessUnit"
+    const val KEY_CURRENT_SITE = "currentSite"
+    const val KEY_ENHANCED_ECOMMERCE_USER_ID = "userId"
+
+    const val EVENT_CLICK_PDP = "clickPDP"
+    const val EVENT_CATEGORY = "product detail page - review - review image"
+    const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"
+
+    const val BUSINESS_UNIT = "product detail page"
+    const val PHYSICAL_GOODS = "physical goods"
+    const val CURRENT_SITE = "tokopediamarketplace"
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.reviewcommon.feature.media.detail.analytic
 
+import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.extension.appendBusinessUnit
 import com.tokopedia.reviewcommon.extension.appendCurrentSite
 import com.tokopedia.reviewcommon.extension.appendGeneralEventData
@@ -16,8 +17,8 @@ object ReviewDetailTracker {
         isFromGallery: Boolean
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_IMAGE_GALLERY else ReviewDetailTrackerConstant.EVENT_CATEGORY,
+            AnalyticConstant.EVENT_CLICK_PDP,
+            if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_IMAGE_GALLERY else AnalyticConstant.EVENT_CATEGORY,
             if (isFromGallery) ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_LIKE_REVIEW_FROM_IMAGE_GALLERY else ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_LIKE_REVIEW,
             String.format(
                 ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_LIKE,
@@ -25,15 +26,15 @@ object ReviewDetailTracker {
                 (!isLiked).toString()
             )
         ).appendProductId(productId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .sendGeneralEvent()
     }
 
     fun trackOnShopReviewLikeReviewClicked(feedbackId: String, isLiked: Boolean, shopId: String) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY_SHOP_REVIEW,
+            AnalyticConstant.EVENT_CLICK_PDP,
+            AnalyticConstant.EVENT_CATEGORY_SHOP_REVIEW,
             ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_LIKE_REVIEW,
             String.format(
                 ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_LIKE,
@@ -41,32 +42,32 @@ object ReviewDetailTracker {
                 (!isLiked).toString()
             )
         ).appendShopId(shopId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.PHYSICAL_GOODS)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.PHYSICAL_GOODS)
             .sendGeneralEvent()
     }
 
     fun trackOnSeeAllClicked(feedbackId: String, productId: String, isFromGallery: Boolean) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_IMAGE_GALLERY else ReviewDetailTrackerConstant.EVENT_CATEGORY,
+            AnalyticConstant.EVENT_CLICK_PDP,
+            if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_IMAGE_GALLERY else AnalyticConstant.EVENT_CATEGORY,
             if (isFromGallery) ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ALL_FROM_IMAGE_GALLERY else ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ALL,
             String.format(ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_SEE_ALL, feedbackId)
         ).appendProductId(productId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .sendGeneralEvent()
     }
 
     fun trackOnShopReviewSeeAllClicked(feedbackId: String, shopId: String) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
-            ReviewDetailTrackerConstant.EVENT_CATEGORY_SHOP_REVIEW,
+            AnalyticConstant.EVENT_CLICK_PDP,
+            AnalyticConstant.EVENT_CATEGORY_SHOP_REVIEW,
             ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_ALL,
             String.format(ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_SEE_ALL, feedbackId)
         ).appendShopId(shopId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.PHYSICAL_GOODS)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.PHYSICAL_GOODS)
             .sendGeneralEvent()
     }
 
@@ -79,7 +80,7 @@ object ReviewDetailTracker {
         currentUserId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
+            AnalyticConstant.EVENT_CLICK_PDP,
             if (isFromGallery) ReviewDetailTrackerConstant.EVENT_CATEGORY_REVIEW_IMAGE_GALLERY else ReviewDetailTrackerConstant.EVENT_CATEGORY_REVIEW_IMAGE_READING_PAGE,
             ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_REVIEWER_NAME,
             String.format(
@@ -90,8 +91,8 @@ object ReviewDetailTracker {
             )
         ).appendProductId(productId)
             .appendUserId(currentUserId)
-            .appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
-            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendBusinessUnit(AnalyticConstant.BUSINESS_UNIT)
+            .appendCurrentSite(AnalyticConstant.CURRENT_SITE)
             .sendGeneralEvent()
     }
 }
