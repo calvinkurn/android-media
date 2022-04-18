@@ -32,6 +32,8 @@ import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
+import com.tokopedia.tokopedianow.home.domain.model.GetReferralSenderHomeResponse
+import com.tokopedia.tokopedianow.home.domain.model.ValidateReferralUserResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
@@ -194,6 +196,14 @@ abstract class TokoNowHomeViewModelTestFixture {
         Assert.assertTrue(actualResponse is Fail)
     }
 
+    protected fun verifyGetReferralSenderHomeUseCaseCalled(slug: String) {
+        coVerify { getReferralSenderHomeUseCase.execute(slug) }
+    }
+
+    protected fun verifyValidateReferralSenderUseCaseCalled(slug: String) {
+        coVerify { validateReferralUserUseCase.execute(slug) }
+    }
+
     protected fun verifyGetHomeLayoutDataUseCaseCalled(
         localCacheModel: LocalCacheModel = LocalCacheModel(),
         times: Int = 1
@@ -318,6 +328,38 @@ abstract class TokoNowHomeViewModelTestFixture {
         coEvery { getQuestWidgetListUseCase.execute(any()) } throws  errorThrowable
     }
 
+    protected fun onGetRepurchaseWidget_thenReturn(response: RepurchaseData) {
+        coEvery { getRepurchaseWidgetUseCase.execute(any()) } returns response
+    }
+
+    protected fun onGetRepurchaseWidget_thenReturn(error: Throwable) {
+        coEvery { getRepurchaseWidgetUseCase.execute(any()) } throws error
+    }
+
+    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreferenceData) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
+    }
+
+    protected fun onSetUserPreference_thenReturn(error: Throwable) {
+        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
+    }
+
+    protected fun onGetReferralSenderHome_thenReturn(slug: String, getReferralSenderHomeResponse: GetReferralSenderHomeResponse) {
+        coEvery { getReferralSenderHomeUseCase.execute(slug) } returns getReferralSenderHomeResponse
+    }
+
+    protected fun onGetReferralSenderHome_thenReturn(slug: String, errorThrowable: Throwable) {
+        coEvery { getReferralSenderHomeUseCase.execute(slug) } throws errorThrowable
+    }
+
+    protected fun onValidateReferralSender_thenReturn(slug: String, validateReferralUserResponse: ValidateReferralUserResponse) {
+        coEvery { validateReferralUserUseCase.execute(slug) } returns validateReferralUserResponse
+    }
+
+    protected fun onValidateReferralSender_thenReturn(slug: String, errorThrowable: Throwable) {
+        coEvery { validateReferralUserUseCase.execute(slug) } throws  errorThrowable
+    }
+
     protected fun onGetChooseAddress_thenReturn(errorThrowable: Throwable) {
         coEvery {
             getChooseAddressWarehouseLocUseCase.getStateChosenAddress(any(), any(), any())
@@ -404,22 +446,6 @@ abstract class TokoNowHomeViewModelTestFixture {
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(error)
         }
-    }
-
-    protected fun onGetRepurchaseWidget_thenReturn(response: RepurchaseData) {
-        coEvery { getRepurchaseWidgetUseCase.execute(any()) } returns response
-    }
-
-    protected fun onGetRepurchaseWidget_thenReturn(error: Throwable) {
-        coEvery { getRepurchaseWidgetUseCase.execute(any()) } throws error
-    }
-
-    protected fun onSetUserPreference_thenReturn(userPreferenceData: SetUserPreferenceData) {
-        coEvery { setUserPreferenceUseCase.execute(any(), any()) } returns userPreferenceData
-    }
-
-    protected fun onSetUserPreference_thenReturn(error: Throwable) {
-        coEvery { setUserPreferenceUseCase.execute(any(), any()) } throws error
     }
 
     protected fun addHomeLayoutItem(item: HomeLayoutItemUiModel) {
