@@ -23,6 +23,7 @@ object ReviewDetailTrackerConstant {
     const val EVENT_ACTION_CLICK_SWIPE = "click - swipe review image"
     const val EVENT_ACTION_IMPRESS_IMAGE = "impression - image detail on review gallery"
     const val EVENT_ACTION_CLICK_REVIEWER_NAME = "click - reviewer name"
+    const val EVENT_ACTION_CLICK_SEE_MORE = "click - lihat semua image preview"
     const val EVENT_CATEGORY = "product detail page - review - review image"
     const val EVENT_CATEGORY_SHOP_REVIEW = "shop page - buyer - review"
     const val EVENT_CATEGORY_IMAGE_GALLERY = "product detail page - review - review gallery - image detail"
@@ -33,6 +34,7 @@ object ReviewDetailTrackerConstant {
     const val EVENT_LABEL_CLICK_SWIPE = "feedback_id:%s;direction:%s;image_position:%d;total_image:%d;"
     const val EVENT_LABEL_IMPRESS_IMAGE = "count_attachment:%d;"
     const val EVENT_LABEL_CLICK_REVIEWER_NAME = "feedback_id:%s;user_id:%s;statistics:%s;"
+    const val EVENT_LABEL_CLICK_SEE_MORE = "product_id:%s;"
 
     const val BUSINESS_UNIT = "product detail page"
     const val PHYSICAL_GOODS = "physical goods"

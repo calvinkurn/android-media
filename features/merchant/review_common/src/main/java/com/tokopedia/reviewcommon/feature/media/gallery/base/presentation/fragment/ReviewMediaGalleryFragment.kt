@@ -125,11 +125,16 @@ class ReviewMediaGalleryFragment : BaseDaggerFragment(), CoroutineScope,
     }
 
     override fun onSeeMoreClicked() {
-        RouteManager.route(
+        val routed = RouteManager.route(
             context,
             ApplinkConstInternalMarketplace.IMAGE_REVIEW_GALLERY,
             sharedReviewMediaGalleryViewModel.getProductId()
         )
+        if (routed) {
+            ReviewMediaGalleryTracker.trackClickShowSeeMore(
+                sharedReviewMediaGalleryViewModel.getProductId()
+            )
+        }
     }
 
     override fun onImageImpressed(imageUri: String) {

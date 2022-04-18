@@ -89,4 +89,16 @@ object ReviewMediaGalleryTracker {
             .appendPromotionsEnhancedEcommerce(attachmentId, position)
             .sendEnhancedEcommerce(ReviewDetailTrackerConstant.KEY_PROMO_VIEW)
     }
+
+    fun trackClickShowSeeMore(productId: String) {
+        mutableMapOf<String, Any>().appendGeneralEventData(
+            ReviewDetailTrackerConstant.EVENT_CLICK_PDP,
+            ReviewDetailTrackerConstant.EVENT_CATEGORY,
+            ReviewDetailTrackerConstant.EVENT_ACTION_CLICK_SEE_MORE,
+            String.format(ReviewDetailTrackerConstant.EVENT_LABEL_CLICK_SEE_MORE, productId)
+        ).appendBusinessUnit(ReviewDetailTrackerConstant.BUSINESS_UNIT)
+            .appendCurrentSite(ReviewDetailTrackerConstant.CURRENT_SITE)
+            .appendProductId(productId)
+            .sendGeneralEvent()
+    }
 }
