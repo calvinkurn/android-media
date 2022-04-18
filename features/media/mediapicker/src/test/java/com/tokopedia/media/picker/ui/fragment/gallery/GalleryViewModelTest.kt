@@ -4,8 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.media.picker.data.entity.Media
 import com.tokopedia.media.picker.data.mapper.mediaToUiModel
 import com.tokopedia.media.picker.data.repository.MediaRepository
-import com.tokopedia.media.picker.ui.activity.main.PickerViewModelTest
-import com.tokopedia.media.picker.ui.fragment.camera.CameraViewModelTest
 import com.tokopedia.media.picker.ui.observer.EventPickerState
 import com.tokopedia.media.picker.ui.observer.stateOnCameraCapturePublished
 import com.tokopedia.media.picker.ui.observer.stateOnChangePublished
@@ -13,29 +11,21 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
-class GalleryViewModelTest{
+class GalleryViewModelTest {
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -48,15 +38,14 @@ class GalleryViewModelTest{
     private lateinit var viewModel: GalleryViewModel
 
     @Before
-    fun setup(){
-        mockkStatic(EventFlowFactory::class)
-
+    fun setup() {
         mockkStatic(::mediaToUiModel)
         every { mediaToUiModel(any()) } returns mediaUiMockCollection
 
         viewModel = GalleryViewModel(
             galleryRepository,
-            CoroutineTestDispatchers)
+            coroutineScopeRule.dispatchers
+        )
     }
 
     @Test
@@ -74,7 +63,7 @@ class GalleryViewModelTest{
     @Test
     fun `validate camera state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -92,7 +81,7 @@ class GalleryViewModelTest{
     @Test
     fun `validate selection change state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -110,7 +99,7 @@ class GalleryViewModelTest{
     @Test
     fun `validate selection removed state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -125,7 +114,7 @@ class GalleryViewModelTest{
         EventFlowFactory.reset()
     }
 
-    companion object{
+    companion object {
         val mediaMockCollection = listOf(
             Media(12, "media sample 1", "sdcard/images/sample_1.png"),
             Media(13, "media sample 2", "sdcard/images/sample_2.png"),
