@@ -49,7 +49,7 @@ object SellerHomeTracking {
             TrackingConstant.MULTIPLE
         }
         val map = createEventMap(
-            event = TrackingConstant.VIEW_PG_IRIS,
+            event = TrackingConstant.VIEW_HOMEPAGE_IRIS,
             category = arrayOf(
                 TrackingConstant.SELLER_APP,
                 TrackingConstant.HOME
@@ -67,7 +67,7 @@ object SellerHomeTracking {
             TrackingConstant.MULTIPLE
         }
         val map = createEventMap(
-            event = TrackingConstant.CLICK_PG,
+            event = TrackingConstant.CLICK_HOMEPAGE,
             category = arrayOf(
                 TrackingConstant.SELLER_APP,
                 TrackingConstant.HOME
