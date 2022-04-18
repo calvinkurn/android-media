@@ -2924,16 +2924,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickCtaProductBundling(element: ProductBundlingUiModel) {
         TopChatAnalyticsKt.eventClickProductBundlingCta(
-            element.productBundling.bundleItem.first().productId,
-            element.productBundling.bundleId
+            element.productBundling.bundleItem?.first()?.productId?: "",
+            element.productBundling.bundleId?: ""
         )
     }
 
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {
-        if (seenAttachmentProductBundling.add(element.productBundling.bundleId)) {
+        if (seenAttachmentProductBundling.add(element.productBundling.bundleId?: "")) {
             TopChatAnalyticsKt.eventViewProductBundling(
-                element.productBundling.bundleItem.first().productId,
-                element.productBundling.bundleId
+                element.productBundling.bundleItem?.first()?.productId?: "",
+                element.productBundling.bundleId?: ""
             )
         }
     }

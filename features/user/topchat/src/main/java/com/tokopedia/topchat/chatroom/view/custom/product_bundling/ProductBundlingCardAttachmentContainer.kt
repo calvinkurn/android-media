@@ -175,9 +175,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
             initRecyclerView(element)
             showRecyclerView()
         } else {
-            bindImage(element.productBundling.bundleItem.first())
-            bindLabel(element.productBundling.bundleItem.first())
-            bindBundlingName(element.productBundling.bundleItem.first())
+            bindImage(element.productBundling.bundleItem?.first())
+            bindLabel(element.productBundling.bundleItem?.first())
+            bindBundlingName(element.productBundling.bundleItem?.first())
             hideRecyclerView()
         }
     }
@@ -199,7 +199,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     private fun initRecyclerView(element: ProductBundlingUiModel) {
         recyclerView?.let {
             it.adapter = adapter
-            bindBundleItemList(element.productBundling.bundleItem)
+            element.productBundling.bundleItem?.let { list ->
+                bindBundleItemList(list)
+            }
             it.setHasFixedSize(true)
             it.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false)
@@ -260,17 +262,21 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
         }
     }
 
-    private fun bindImage(item: BundleItem) {
-        image?.setImageUrl(item.imageUrl)
+    private fun bindImage(item: BundleItem?) {
+        item?.imageUrl?.let {
+            image?.setImageUrl(it)
+        }
     }
 
-    private fun bindLabel(item: BundleItem) {
-        label?.text = "Paket isi ${item.quantity}"
+    private fun bindLabel(item: BundleItem?) {
+        item?.quantity?.let {
+            label?.text = context.getString(R.string.topchat_product_bundling_label, it)
+        }
     }
 
-    private fun bindBundlingName(item: BundleItem) {
+    private fun bindBundlingName(item: BundleItem?) {
         val query = searchListener?.getSearchQuery() ?: ""
-        val spanText = SpannableString(item.name)
+        val spanText = SpannableString(item?.name?: "")
         if (query.isNotEmpty()) {
             val color = Constant.searchTextBackgroundColor
             val index = spanText.indexOf(query, ignoreCase = true)
@@ -308,7 +314,7 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindButton(button: UnifyButton, element: ProductBundlingUiModel) {
-        button.text = element.productBundling.buttonText
+        button.text = element.productBundling.ctaButton?.ctaText
         button.buttonType = UnifyButton.Type.MAIN
         when(element.productBundling.bundleStatus) {
             STATUS_ACTIVE -> bindActiveButton(button, element)
