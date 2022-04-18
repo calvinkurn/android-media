@@ -124,8 +124,8 @@ class PreviewViewModelTest {
             MediaUiModel(5, "vid2", "/path/vid2.mp4"),
             MediaUiModel(6, "vid3", "/path/vid3.mp4"),
         )
-        private val expectedCompressedImageSize
-                = mediaUiModelMock.filter { it.isFromPickerCamera }.size
+        private val expectedCompressedImageSize =
+            mediaUiModelMock.filter { it.isFromPickerCamera }.size
     }
 
 }
