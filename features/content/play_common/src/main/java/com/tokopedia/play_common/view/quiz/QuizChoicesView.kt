@@ -85,6 +85,8 @@ class QuizChoicesView : ConstraintLayout {
         }
         binding.tvQuizQuestion.text = item.text
         setupClickable(item.type)
+        binding.tvRespondent.hide()
+        binding.ivArrow.hide()
     }
 
     private fun getIconOption(
@@ -144,6 +146,16 @@ class QuizChoicesView : ConstraintLayout {
      */
     fun setupLoading(isLoading: Boolean){
         binding.loaderQuizOption.showWithCondition(isLoading)
+    }
+
+    /***
+     * Use this method if you want to show responded view
+     */
+    fun setupResponded(type: PlayQuizOptionState, respondent: String){
+        binding.root.isClickable = type is PlayQuizOptionState.Default || type is PlayQuizOptionState.Answered
+        binding.tvRespondent.text = respondent
+        binding.tvRespondent.show()
+        binding.ivArrow.show()
     }
 
     fun setListener(listener: Listener) {
