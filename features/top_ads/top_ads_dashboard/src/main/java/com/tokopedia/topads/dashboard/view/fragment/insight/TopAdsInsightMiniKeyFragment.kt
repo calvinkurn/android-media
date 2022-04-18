@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
@@ -14,7 +15,6 @@ import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMa
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsMiniKeywordInsightAdapter
-import kotlinx.android.synthetic.main.topads_dash_insight_mini_keword_layout.*
 
 /**
  * Created by Pika on 20/7/20.
@@ -52,19 +52,24 @@ class TopAdsInsightMiniKeyFragment : BaseDaggerFragment() {
         startActivity(intent)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
         return inflater.inflate(R.layout.topads_dash_insight_mini_keword_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setView()
-        keyword_list.adapter = adapter
-        keyword_list.layoutManager = LinearLayoutManager(context)
+        view.findViewById<RecyclerView>(R.id.keyword_list)?.apply {
+            adapter = adapter
+            layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun setView() {
-        val data: HashMap<String, KeywordInsightDataMain> = arguments?.getSerializable(DATA_INSIGHT) as HashMap<String, KeywordInsightDataMain>
+        val data: HashMap<String, KeywordInsightDataMain> =
+            arguments?.getSerializable(DATA_INSIGHT) as HashMap<String, KeywordInsightDataMain>
         listOfKeys.clear()
         var sizeLimit = 3
         data.forEach {
