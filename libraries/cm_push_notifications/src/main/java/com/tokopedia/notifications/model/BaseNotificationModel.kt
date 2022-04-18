@@ -164,12 +164,11 @@ data class BaseNotificationModel(
 
 ) : Parcelable {
 
-            fun webHookParamData(): String? {
+        fun webHookParamData(): String? {
                 return webHookToJson(this.webHookParam)
-            }
-
-    fun isReviewOn(): Boolean {
-        return pushPayloadExtra.isReviewNotif == true
-    }
+        }
+        fun isReviewOn(): Boolean {
+                return pushPayloadExtra.isReviewNotif == true
+        }
 
 }

@@ -9,8 +9,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PushPayloadExtra(
+
     @SerializedName("isReview_Notif")
-    @ColumnInfo(name = "isReview_Notif")
     @Expose
     var isReviewNotif: Boolean? = false,
 
