@@ -1324,7 +1324,6 @@ class PlayViewModel @AssistedInject constructor(
 //            _interactive.value = PlayInteractiveUiState.Loading
 
             val interactive = repo.getCurrentInteractive(channelId)
-            Log.d("sukses vm", interactive.toString())
             handleInteractiveFromNetwork(interactive)
         }) {
 //            _interactive.value = PlayInteractiveUiState.Error

@@ -16,7 +16,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.custom.interactive.InteractiveQuizErrorView
 import com.tokopedia.play.view.custom.interactive.follow.InteractiveFollowView
+import com.tokopedia.play.view.uimodel.action.ClickRetryInteractiveAction
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
@@ -150,32 +152,48 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
         partner: PlayPartnerInfo,
     ) {
         val status = quiz.status
-        if (partner.status == PlayPartnerFollowStatus.Followable(false)) {
-            setChildView { ctx ->
-                val view = InteractiveFollowView(ctx)
-                view.setListener(followViewListener)
-                view
-            }.apply {
-                setBadgeUrl(partner.badgeUrl)
-                setAvatarUrl(partner.iconUrl)
-                setPartnerName(partner.name)
-                setLoading(partner.isLoadingFollow)
-                getHeader().setupQuiz(quiz.title)
-            }
-        } else if (status is InteractiveUiModel.Quiz.Status.Ongoing) {
-            setChildView { ctx ->
-                QuizWidgetView(ctx)
-            }.apply {
-                setTitle(quiz.title)
-                setTargetTime(status.endTime) {
-                    viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+        when {
+            partner.status == PlayPartnerFollowStatus.Followable(false) -> {
+                setChildView { ctx ->
+                    val view = InteractiveFollowView(ctx)
+                    view.setListener(followViewListener)
+                    view
+                }.apply {
+                    setBadgeUrl(partner.badgeUrl)
+                    setAvatarUrl(partner.iconUrl)
+                    setPartnerName(partner.name)
+                    setLoading(partner.isLoadingFollow)
+                    getHeader().setupQuiz(quiz.title)
                 }
-                setupQuizForm(quiz.listOfChoices)
-                setListener(object : QuizWidgetView.Listener{
-                    override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
-                        viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
+            }
+            status is InteractiveUiModel.Quiz.Status.Ongoing -> {
+                setChildView { ctx ->
+                    QuizWidgetView(ctx)
+                }.apply {
+                    setTitle(quiz.title)
+                    setTargetTime(status.endTime) {
+                        viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                     }
-                })
+                    setupQuizForm(quiz.listOfChoices)
+                    setListener(object : QuizWidgetView.Listener{
+                        override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
+                            viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
+                        }
+                    })
+                }
+            }
+            status is InteractiveUiModel.Quiz.Status.Failed -> {
+                setChildView { ctx ->
+                    val view = InteractiveQuizErrorView(ctx)
+                    view.setListener(object : InteractiveQuizErrorView.Listener {
+                        override fun onRetryButtonClicked(view: InteractiveQuizErrorView) {
+                            viewModel.submitAction(ClickRetryInteractiveAction)
+                        }
+                    })
+                    view
+                }.apply {
+                    getHeader().setupQuiz(quiz.title)
+                }
             }
         }
     }

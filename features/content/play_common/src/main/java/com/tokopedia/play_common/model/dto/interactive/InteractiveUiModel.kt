@@ -53,6 +53,7 @@ sealed interface InteractiveUiModel {
         sealed interface Status {
 
             data class Ongoing(val endTime: Calendar) : Status
+            object Failed: Status
             object Finished : Status
             object Unknown : Status
         }
