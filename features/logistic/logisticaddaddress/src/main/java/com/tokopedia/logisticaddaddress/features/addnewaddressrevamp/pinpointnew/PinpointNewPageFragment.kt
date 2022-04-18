@@ -508,17 +508,17 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
 
             bottomsheetLocation.btnPrimary.setOnClickListener {
-                if (isPositiveFlow) {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
-
-                    }
-                    goToAddressForm()
-                } else {
-                    if (!isEdit) {
-                        AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
-                    }
+                if (isEdit) {
+                    EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId, true)
                     setResultAddressFormNegative()
+                } else {
+                    if (isPositiveFlow) {
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiPositive(userSession.userId, SUCCESS)
+                        goToAddressForm()
+                    } else {
+                        AddNewAddressRevampAnalytics.onClickPilihLokasiNegative(userSession.userId, SUCCESS)
+                        setResultAddressFormNegative()
+                    }
                 }
             }
 
@@ -793,12 +793,6 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             }
         } else {
             currentKotaKecamatan = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
-            binding?.bottomsheetLocation?.btnPrimary?.setOnClickListener {
-                if (isEdit) {
-                    EditAddressRevampAnalytics.onClickPilihLokasiIni(userSession.userId, true)
-                }
-                setResultAddressFormNegative()
-            }
         }
 
         val saveAddress = saveAddressMapper.map(data, zipCodes, saveAddressDataModel)
