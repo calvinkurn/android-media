@@ -1714,12 +1714,20 @@ class NewShopPageFragment :
             shopPageHomeFragment.clearCache()
         }
         isRefresh = true
+        resetShopProductFilterParameterSharedViewModel()
         getInitialData()
         if (swipeToRefresh?.isRefreshing == false)
             setViewState(VIEW_LOADING)
         swipeToRefresh?.isRefreshing = true
 
         stickyLoginView?.loadContent()
+    }
+
+    private fun resetShopProductFilterParameterSharedViewModel() {
+        initialProductFilterParameter = ShopProductFilterParameter()
+        initialProductFilterParameter?. let{
+            shopProductFilterParameterSharedViewModel?.changeSharedSortData(it)
+        }
     }
 
     override fun collapseAppBar() {
