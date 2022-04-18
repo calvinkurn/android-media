@@ -147,7 +147,6 @@
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
     <string name="reputation_point_format">%1$s poin</string>
-    <string name="note_title">Catatan</string>
     <string name="shop_product_title">Produk</string>
     <string name="shop_sort_title">Urutkan</string>
     <string name="choose_etalase_label">Pilih Etalase</string>
@@ -196,7 +195,6 @@
     <string name="shop_search_product_in_this_shop_etalase">di Etalase Toko ini</string>
     <string name="shop_search_product_in_shop_name">di %1s</string>
     <string name="shop_product_list_empty_button_text">Cari di toko lain</string>
-    <string name="shop_note_detail_date_format">%1$s, pukul %2$s</string>
     <string name="shop_product_seller_empty_state_label"><![CDATA[Kata orang, <b>jutaan mimpi</b> berawal dari satu langkah kecil.Tambah produk pertamamu]]></string>
     <string name="text_shop_no_product">Toko belum memiliki produk</string>
     <string name="text_shop_no_product_seller">Belum ada produk terjual nih</string>

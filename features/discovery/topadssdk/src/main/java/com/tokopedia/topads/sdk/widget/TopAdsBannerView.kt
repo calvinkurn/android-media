@@ -324,7 +324,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun setTopAdsCarousel(cpmModel: CpmModel?, topAdsCarousel: ToadsCarousel?) {
         topAdsCarousel?.setTopAdsCarouselModel(
             TopAdsCarouselModel(
-                title = context.getString(com.tokopedia.topads.sdk.R.string.topads_sdk_layout_6_title),
+                title = getTopAdsCarouselTitle(cpmModel?.data?.firstOrNull()?.cpm?.widgetTitle),
                 items = getTopAdsItem(cpmModel)
             ), object : TopAdsCarouselListener {
                 override fun onItemImpressed(position: Int) {
@@ -379,6 +379,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                 }
             }
         )
+    }
+
+    private fun getTopAdsCarouselTitle(widgetTitle: String?): String {
+        return if (widgetTitle.isNullOrEmpty()) context.getString(R.string.topads_sdk_layout_6_title)
+        else widgetTitle
     }
 
     private fun getTopAdsItem(cpmModel: CpmModel?): List<TopAdsCarouselModel.TopAdsCarouselItem> {

@@ -81,312 +81,322 @@ open class ChangePinFragment : BaseDaggerFragment(), CoroutineScope {
     private var mainView: View? = null
 
     override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+	get() = job + Dispatchers.Main
 
     private val onForgotPinClick = View.OnClickListener {
-        forgotPinState()
+	forgotPinState()
     }
 
     override fun getScreenName(): String = TrackingPinConstant.Screen.SCREEN_POPUP_PIN_INPUT
 
     override fun initInjector() {
-        getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
+	getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        ColorUtils.setBackgroundColor(context, activity)
+	super.onCreate(savedInstanceState)
+	ColorUtils.setBackgroundColor(context, activity)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
-        changePinInput = view.findViewById(R.id.pin)
-        methodIcon = view.findViewById(R.id.method_icon)
-        mainView = view.findViewById(R.id.container)
-        return view
+    override fun onCreateView(
+	inflater: LayoutInflater, container: ViewGroup?,
+	savedInstanceState: Bundle?
+    ): View? {
+	val view = inflater.inflate(R.layout.fragment_change_pin, container, false)
+	changePinInput = view.findViewById(R.id.pin)
+	methodIcon = view.findViewById(R.id.method_icon)
+	mainView = view.findViewById(R.id.container)
+	return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initViews()
-        initObserver()
-        ColorUtils.setBackgroundColor(context, activity)
+	super.onViewCreated(view, savedInstanceState)
+	initViews()
+	initObserver()
+	ColorUtils.setBackgroundColor(context, activity)
     }
 
     override fun onResume() {
-        super.onResume()
-        showKeyboard()
+	super.onResume()
+	showKeyboard()
     }
 
     override fun onPause() {
-        super.onPause()
-        hideKeyboard()
+	super.onPause()
+	hideKeyboard()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
+	super.onDestroy()
+	job.cancel()
     }
 
     private fun initViews() {
-        methodIcon?.scaleType = ImageView.ScaleType.FIT_CENTER
-        methodIcon?.setImage(R.drawable.ic_lock_green, 0f)
-        toggleForgotText(false)
-        changePinInput?.pinTextField?.addTextChangedListener(object : TextWatcher {
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+	methodIcon?.scaleType = ImageView.ScaleType.FIT_CENTER
+	methodIcon?.setImage(R.drawable.ic_lock_green, 0f)
+	toggleForgotText(false)
+	changePinInput?.pinTextField?.addTextChangedListener(object : TextWatcher {
+	    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+	    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun afterTextChanged(s: Editable?) {
-                handleInputPin(s.toString())
-            }
-        })
+	    override fun afterTextChanged(s: Editable?) {
+		handleInputPin(s.toString())
+	    }
+	})
     }
 
     open fun handleInputPin(text: String) {
-        if (text.length == PIN_LENGTH) {
-            when {
-                isConfirm -> handleConfirmState(text)
-                inputNewPin -> handleInputNewPinState(text)
-                isValidated -> handleValidatedAndForgotState(text)
-                else -> {
-                    changePinViewModel.validatePin(text)
-                }
-            }
-        } else {
-            changePinInput?.isError = false
-        }
+	if (text.length == PIN_LENGTH) {
+	    when {
+		isConfirm -> handleConfirmState(text)
+		inputNewPin -> handleInputNewPinState(text)
+		isValidated -> handleValidatedAndForgotState(text)
+		else -> {
+		    changePinViewModel.validatePin(text)
+		}
+	    }
+	} else {
+	    changePinInput?.isError = false
+	}
     }
 
     open fun handleValidatedAndForgotState(input: String) {
-        pin = input
-        konfirmasiState()
+	pin = input
+	konfirmasiState()
     }
 
     open fun handleConfirmState(input: String) {
-        if (pin == input) {
-            showLoading()
-            changePinViewModel.changePin(pin, input, oldPin)
-        } else {
-            displayErrorPin(getString(R.string.error_wrong_pin))
-        }
+	if (pin == input) {
+	    showLoading()
+	    changePinViewModel.changePin(pin, input, oldPin)
+	} else {
+	    displayErrorPin(getString(R.string.error_wrong_pin))
+	}
     }
 
     open fun handleInputNewPinState(input: String) {
-        changePinViewModel.checkPin(input)
+	changePinViewModel.checkPin(input)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION) {
-            val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
-            showLoading()
-            changePinViewModel.resetPin(validateToken)
-        }
+	if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_COTP_PHONE_VERIFICATION) {
+	    val validateToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
+	    showLoading()
+	    changePinViewModel.resetPin(validateToken)
+	}
     }
 
     open fun goToVerificationActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        val bundle = Bundle().apply {
-            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
-            putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
-            putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
+	val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+	val bundle = Bundle().apply {
+	    putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+	    putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+	    putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+	    putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+	    putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+	}
+	intent.putExtras(bundle)
+	startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
     private fun showLoading() {
-        loadingDialog.show()
-        hideKeyboard()
+	loadingDialog.show()
+	hideKeyboard()
     }
 
     private fun dismissLoading() {
-        loadingDialog.dismiss()
-        showKeyboard()
+	loadingDialog.dismiss()
+	showKeyboard()
     }
 
     private fun showKeyboard() {
-        changePinInput?.pinTextField?.let { view ->
-            view.post {
-                if (view.requestFocus()) {
-                    val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
-                    inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_FORCED)
-                }
-            }
-        }
+	changePinInput?.pinTextField?.let { view ->
+	    view.post {
+		if (view.requestFocus()) {
+		    val inputMethodManager =
+			context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
+		    inputMethodManager?.showSoftInput(view, InputMethodManager.SHOW_FORCED)
+		}
+	    }
+	}
     }
 
     private fun hideKeyboard() {
-        KeyboardHandler.hideSoftKeyboard(activity)
+	KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     private fun konfirmasiState() {
-        resetInputPin()
-        isConfirm = true
-        changePinInput?.pinTitle = getString(R.string.confirm_create_pin)
-        changePinInput?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
-        changePinInput?.pinMessage = ""
-        changePinInput?.pinSecondaryActionText = ""
+	resetInputPin()
+	isConfirm = true
+	changePinInput?.pinTitle = getString(R.string.confirm_create_pin)
+	changePinInput?.pinDescription = getString(R.string.subtitle_confirm_create_pin)
+	changePinInput?.pinMessage = ""
+	changePinInput?.pinSecondaryActionText = ""
     }
 
     protected fun forgotPinState() {
-        arguments?.let { (activity as ChangePinActivity).goToForgotPin(it) }
+	arguments?.let { (activity as ChangePinActivity).goToForgotPin(it) }
     }
 
     open fun inputNewPinState() {
-        inputNewPin = true
-        resetInputPin()
-        changePinInput?.pinTitle = getString(R.string.change_pin_title_new_pin)
-        changePinInput?.pinDescription = getString(R.string.change_pin_subtitle_new_pin)
-        changePinInput?.pinSecondaryActionText = ""
-        toggleForgotText(true)
+	inputNewPin = true
+	resetInputPin()
+	changePinInput?.pinTitle = getString(R.string.change_pin_title_new_pin)
+	changePinInput?.pinDescription = getString(R.string.change_pin_subtitle_new_pin)
+	changePinInput?.pinSecondaryActionText = ""
+	toggleForgotText(true)
     }
 
     private fun resetInputPin() {
-        hideErrorPin()
-        changePinInput?.pinTextField?.setText("")
+	hideErrorPin()
+	changePinInput?.pinTextField?.setText("")
     }
 
     private fun toggleForgotText(isForgot: Boolean) {
-        if (isForgot) {
-            changePinInput?.pinMessage = getString(R.string.change_pin_avoid_info)
-        } else {
-            changePinInput?.pinSecondaryActionView?.apply {
-                text = getString(R.string.change_pin_forgot_btn)
-                setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                setOnClickListener(onForgotPinClick)
-                isEnabled = true
-            }
-        }
+	if (isForgot) {
+	    changePinInput?.pinMessage = getString(R.string.change_pin_avoid_info)
+	} else {
+	    changePinInput?.pinSecondaryActionView?.apply {
+		text = getString(R.string.change_pin_forgot_btn)
+		setTextColor(
+		    MethodChecker.getColor(
+			context,
+			com.tokopedia.unifyprinciples.R.color.Unify_G500
+		    )
+		)
+		setOnClickListener(onForgotPinClick)
+		isEnabled = true
+	    }
+	}
     }
 
     private fun onSuccessCheckPin(checkPinData: CheckPinData) {
-        if (checkPinData.valid) {
-            if (inputNewPin) {
-                pin = changePinInput?.pinTextField?.text.toString()
-                inputNewPin = false
-                konfirmasiState()
-            } else inputNewPinState()
-        } else {
-            displayErrorPin(checkPinData.errorMessage)
-        }
+	if (checkPinData.valid) {
+	    if (inputNewPin) {
+		pin = changePinInput?.pinTextField?.text.toString()
+		inputNewPin = false
+		konfirmasiState()
+	    } else inputNewPinState()
+	} else {
+	    displayErrorPin(checkPinData.errorMessage)
+	}
     }
 
     private fun displayErrorPin(error: String) {
-        changePinInput?.isError = true
-        mainView?.run {
-            Toaster.make(this, error, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        }
+	changePinInput?.isError = true
+	mainView?.run {
+	    Toaster.make(this, error, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+	}
     }
 
     private fun hideErrorPin() {
-        changePinInput?.isError = false
+	changePinInput?.isError = false
     }
 
     private fun onError(throwable: Throwable?) {
-        dismissLoading()
-        mainView?.run {
-            val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
-            Toaster.make(this, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-        }
+	dismissLoading()
+	mainView?.run {
+	    val errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+	    Toaster.make(this, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+	}
     }
 
     private fun onSuccessValidatePin(data: ValidatePinData) {
-        isValidated = data.valid
-        oldPin = changePinInput?.pinTextField?.text.toString()
-        if (data.valid) {
-            inputNewPinState()
-        } else {
-            displayErrorPin(data.errorMessage)
-        }
+	isValidated = data.valid
+	oldPin = changePinInput?.pinTextField?.text.toString()
+	if (data.valid) {
+	    inputNewPinState()
+	} else {
+	    displayErrorPin(data.errorMessage)
+	}
     }
 
     private fun onErrorValidatePin(error: Throwable) {
-        oldPin = ""
-        isValidated = false
-        onError(error)
+	oldPin = ""
+	isValidated = false
+	onError(error)
     }
 
     open fun goToSuccessPage() {
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE).apply {
-            flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-            if(source < 1) {
-                source = PinCompleteFragment.SOURCE_CHANGE_PIN
-            }
-            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
-            source = 0
-        }
+	val intent =
+	    RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN_COMPLETE)
+		.apply {
+		    flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+		    if (source < 1) {
+			source = PinCompleteFragment.SOURCE_CHANGE_PIN
+		    }
+		    putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+		    source = 0
+		}
 
-        startActivity(intent)
-        activity?.finish()
+	startActivity(intent)
+	activity?.finish()
     }
 
     private fun onSuccessResetPin(data: AddChangePinData) {
-        dismissLoading()
-        if (data.success) goToSuccessPage()
-        else onError(Throwable())
+	dismissLoading()
+	if (data.success) goToSuccessPage()
+	else onError(Throwable())
     }
 
     private fun onSuccessChangePin(data: AddChangePinData) {
-        dismissLoading()
-        if (data.success) goToSuccessPage()
-        else onError(Throwable())
+	dismissLoading()
+	if (data.success) goToSuccessPage()
+	else onError(Throwable())
     }
 
     private fun initObserver() {
-        changePinViewModel.resetPinResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessResetPin(it.data)
-                is Fail -> onError(it.throwable)
-            }
-        })
+	changePinViewModel.resetPinResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessResetPin(it.data)
+		is Fail -> onError(it.throwable)
+	    }
+	})
 
-        changePinViewModel.resetPin2FAResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    dismissLoading()
-                    if (it.data.is_success == 1) goToSuccessPage()
-                    else onError(Throwable())
-                }
-                is Fail -> onError(it.throwable)
-            }
-        })
+	changePinViewModel.resetPin2FAResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> {
+		    dismissLoading()
+		    if (it.data.is_success == 1) goToSuccessPage()
+		    else onError(Throwable())
+		}
+		is Fail -> onError(it.throwable)
+	    }
+	})
 
-        changePinViewModel.validatePinResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessValidatePin(it.data)
-                is Fail -> onErrorValidatePin(it.throwable)
-            }
-        })
+	changePinViewModel.validatePinResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessValidatePin(it.data)
+		is Fail -> onErrorValidatePin(it.throwable)
+	    }
+	})
 
-        changePinViewModel.checkPinResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessCheckPin(it.data)
-                is Fail -> onError(it.throwable)
-            }
-        })
+	changePinViewModel.checkPinResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessCheckPin(it.data)
+		is Fail -> onError(it.throwable)
+	    }
+	})
 
-        changePinViewModel.changePinResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> onSuccessChangePin(it.data)
-                is Fail -> onError(it.throwable)
-            }
-        })
+	changePinViewModel.changePinResponse.observe(viewLifecycleOwner, Observer {
+	    when (it) {
+		is Success -> onSuccessChangePin(it.data)
+		is Fail -> onError(it.throwable)
+	    }
+	})
 
     }
 
     companion object {
-        const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
-        const val OTP_TYPE_PHONE_VERIFICATION = 125
-        const val PIN_LENGTH = 6
+	const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
+	const val OTP_TYPE_PHONE_VERIFICATION = 125
+	const val PIN_LENGTH = 6
 
-        fun createInstance(bundle: Bundle): ChangePinFragment {
-            val fragment = ChangePinFragment()
-            fragment.arguments = bundle
-            return fragment
-        }
+	fun createInstance(bundle: Bundle): ChangePinFragment {
+	    val fragment = ChangePinFragment()
+	    fragment.arguments = bundle
+	    return fragment
+	}
     }
 }

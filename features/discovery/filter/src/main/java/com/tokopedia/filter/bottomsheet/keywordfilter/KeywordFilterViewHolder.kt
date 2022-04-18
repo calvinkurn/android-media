@@ -167,7 +167,7 @@ internal class KeywordFilterViewHolder(
         val context = context ?: return
 
         val iconPlusDrawable = getIconUnifyDrawable(
-            context, ADD_CIRCLE, getColor(context, com.tokopedia.abstraction.R.color.black)
+            context, ADD_CIRCLE
         )
 
         setImageDrawable(iconPlusDrawable)

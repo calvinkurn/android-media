@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.pdp.fintech.adapter.FintechWidgetAdapter.MyViewHolder
 import com.tokopedia.pdp.fintech.domain.datamodel.ChipsData
 import com.tokopedia.pdp.fintech.domain.datamodel.FintechRedirectionWidgetDataClass
@@ -53,6 +54,7 @@ class FintechWidgetAdapter(val context: Context, var widgetClickListner: WidgetC
         if (it == 0) {
             holder.dummyView.visibility = View.GONE
             holder.seeMoreIcon.visibility = View.VISIBLE
+            holder.seeMoreIcon.loadImage(R.drawable.fintechwidget_procced_icon)
         } else {
             holder.dummyView.visibility = View.VISIBLE
             holder.seeMoreIcon.visibility = View.GONE

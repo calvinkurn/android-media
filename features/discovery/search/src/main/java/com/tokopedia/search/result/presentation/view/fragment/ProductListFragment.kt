@@ -1279,17 +1279,6 @@ class ProductListFragment: BaseDaggerFragment(),
             return !isSortHasDefaultValue(mapParameter)
         }
 
-    @Suppress("UNCHECKED_CAST")
-    override val filterParamString: String
-        get() {
-            val searchParameterMap = (searchParameter?.getSearchParameterHashMap() ?: mapOf())
-                as Map<String?, String?>
-
-            val filterParam = getFilterParams(searchParameterMap)
-
-            return UrlParamUtils.generateUrlParamString(filterParam)
-        }
-
     private fun getSortFilterParamStringFromSearchParameter() =
         searchParameter?.let {
             @Suppress("UNCHECKED_CAST")

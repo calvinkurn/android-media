@@ -410,10 +410,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     productPrice.setText(metaDataInfo.getProductPrice());
 
                     String productCategory = "";
-                    if (orderDetails.title() != null) {
-                        for (Title title : orderDetails.title()) {
-                            if (title.label().equalsIgnoreCase(CATEGORY_PRODUCT)) {
-                                productCategory = title.value();
+                    if (orderDetails.getTitle() != null) {
+                        for (Title title : orderDetails.getTitle()) {
+                            if (title.getLabel().equalsIgnoreCase(CATEGORY_PRODUCT)) {
+                                productCategory = title.getValue();
                             }
                         }
                     }
@@ -483,8 +483,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
-                    if (ItemsAdapter.this.orderDetails.actionButtons() != null && ItemsAdapter.this.orderDetails.actionButtons().size() > 0) {
-                        setEventDetails.setActionButtonEvent(item, ItemsAdapter.this.orderDetails.actionButtons().get(0), ItemsAdapter.this.orderDetails);
+                    if (ItemsAdapter.this.orderDetails.getActionButtons() != null && ItemsAdapter.this.orderDetails.getActionButtons().size() > 0) {
+                        setEventDetails.setActionButtonEvent(item, ItemsAdapter.this.orderDetails.getActionButtons().get(0), ItemsAdapter.this.orderDetails);
                     }
                     setEventDetails.setPassengerEvent(item);
                     setEventDetails.setDetailTitle(context.getResources().getString(R.string.detail_label_events));
