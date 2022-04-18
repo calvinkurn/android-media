@@ -160,16 +160,7 @@ object DeviceInfo {
         }
     }
 
-    @JvmStatic
-    fun hasFid(): Boolean {
-        return try {
-            !runBlocking { getFirebaseId() }.isNullOrBlank()
-        }catch (e: Exception) {
-            false
-        }
-    }
-
-    suspend fun <T> Task<T>.await2(): T? = suspendCoroutine { continuation ->
+    suspend fun <T> Task<T>.await(): T? = suspendCoroutine { continuation ->
         addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 continuation.resume(task.result)
@@ -181,7 +172,7 @@ object DeviceInfo {
 
     suspend fun getFirebaseId(): String? {
         return try {
-            FirebaseInstallations.getInstance().id.await2()
+            FirebaseInstallations.getInstance().id.await()
         } catch (e: FirebaseInstallationsException) {
             e.printStackTrace()
             ""
