@@ -62,7 +62,9 @@ open class TopAdsDashboardBerandaFragment : BaseDaggerFragment() {
     private val anggarnHarianAdapter = TopAdsBerandaAnggarnHarianAdapter()
     private val produkBerpotensiAdapter = TopadsImageRvAdapter()
     private val summaryRvAdapter = TopAdsBerandaSummaryRvAdapter()
-    private val latestReadingRvAdapter = LatestReadingTopAdsDashboardRvAdapter()
+    private val latestReadingRvAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        LatestReadingTopAdsDashboardRvAdapter(context)
+    }
 
     companion object {
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
