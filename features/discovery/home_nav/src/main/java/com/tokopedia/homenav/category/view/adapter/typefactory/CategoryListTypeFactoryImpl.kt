@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedExc
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.base.datamodel.*
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavGlobalErrorViewHolder
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavMenuViewHolder
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavTickerViewHolder
-import com.tokopedia.homenav.base.diffutil.holder.HomeNavTitleViewHolder
+import com.tokopedia.homenav.base.diffutil.holder.*
 import com.tokopedia.homenav.category.view.adapter.model.CategoryListLoadingDataModel
 import com.tokopedia.homenav.category.view.adapter.viewholder.CategoryListLoadingViewHolder
 
@@ -40,7 +37,7 @@ class CategoryListTypeFactoryImpl(
         return HomeNavTickerViewHolder.LAYOUT
     }
 
-    override fun type(visitable: HomeNavCategoryDataModel): Int {
+    override fun type(visitable: HomeNavExpandableDataModel): Int {
         TODO("Not yet implemented")
     }
 

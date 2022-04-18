@@ -9,7 +9,7 @@ import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.homenav.base.datamodel.HomeNavCategoryDataModel
+import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
@@ -106,6 +106,7 @@ class MainNavViewModel @Inject constructor(
     val profileDataLiveData: LiveData<AccountHeaderDataModel>
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
+    private val allCategory = HomeNavExpandableDataModel()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -211,7 +212,7 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
         this.addAll(buildBUTitleList())
-        this.add(HomeNavCategoryDataModel())
+        this.add(allCategory)
         this.add(SeparatorDataModel())
     }
 
@@ -243,6 +244,8 @@ class MainNavViewModel @Inject constructor(
                 val shimmeringDataModel = _mainNavListVisitable.find {
                     it is InitialShimmerDataModel
                 }
+
+//                allCategory.menus = result
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
                 findBuStartIndexPosition()?.let {
                     addWidgetList(result, it)

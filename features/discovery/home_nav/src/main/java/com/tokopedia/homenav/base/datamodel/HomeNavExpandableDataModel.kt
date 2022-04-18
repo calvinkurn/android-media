@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.base.datamodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
@@ -7,7 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 /**
  * Created by dhaba
  */
-class HomeNavCategoryDataModel (
+class HomeNavExpandableDataModel (
         val trackerName: String = "",
         val sectionId: Int = 0,
         val id: Int = 0,
@@ -16,7 +17,7 @@ class HomeNavCategoryDataModel (
         val itemTitle: String = "",
         val applink: String = "",
         var notifCount: String = "",
-        val submenus: List<HomeNavMenuDataModel> = listOf()
+        var menus: List<Visitable<*>> = listOf()
 ): HomeNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
