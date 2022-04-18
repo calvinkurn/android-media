@@ -51,8 +51,6 @@ class PickerViewModelTest {
 
     @Before
     fun setup() {
-        mockkStatic(EventFlowFactory::class)
-
         viewModel = PickerViewModel(
             deviceRepo,
             param,
@@ -81,7 +79,7 @@ class PickerViewModelTest {
     @Test
     fun `validate selection change state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -99,7 +97,7 @@ class PickerViewModelTest {
     @Test
     fun `validate selection removed state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -117,13 +115,12 @@ class PickerViewModelTest {
     @Test
     fun `check storage threshold`() = coroutineScopeRule.runBlockingTest {
         // Given
-        var isStorageLimit = false
         var pickerParam = PickerParam()
 
         // When
         every { param.get() } returns pickerParam
         every { deviceRepo.execute(any()) } returns true
-        isStorageLimit = viewModel.isDeviceStorageFull()
+        val isStorageLimit = viewModel.isDeviceStorageFull()
 
         // Then
         assertEquals(isStorageLimit, true)
