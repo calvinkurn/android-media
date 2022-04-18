@@ -7,5 +7,6 @@ interface AffiliateBottomSheetTypeFactory {
     fun type(viewModelShared: AffiliateTrafficAttributionModel): Int
     fun type(viewModelShared: AffiliateWithrawalInfoAttributionModel): Int
     fun type(viewModel: AffiliateBottomDividerItemModel): Int
+    fun type(viewModelShared: AffiliateShimmerViewModel): Int
 
 }

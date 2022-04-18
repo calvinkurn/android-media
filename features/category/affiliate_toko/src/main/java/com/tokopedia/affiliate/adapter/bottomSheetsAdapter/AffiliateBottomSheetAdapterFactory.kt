@@ -17,6 +17,7 @@ class AffiliateBottomSheetAdapterFactory(
             AffiliateTrafficAttributionItemVH.LAYOUT -> AffiliateTrafficAttributionItemVH(parent)
             AffiliateWithdrawalInfoItemVH.LAYOUT -> AffiliateWithdrawalInfoItemVH(parent)
             AffiliateBottomSheetDivderItemVH.LAYOUT -> AffiliateBottomSheetDivderItemVH(parent)
+            AffiliateDatePickerShimmerItemVH.LAYOUT -> AffiliateDatePickerShimmerItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -35,5 +36,9 @@ class AffiliateBottomSheetAdapterFactory(
 
     override fun type(viewModel: AffiliateBottomDividerItemModel): Int {
         return AffiliateBottomSheetDivderItemVH.LAYOUT
+    }
+
+    override fun type(viewModelShared: AffiliateShimmerViewModel): Int {
+        return AffiliateDatePickerShimmerItemVH.LAYOUT
     }
 }

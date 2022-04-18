@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeTypeFactory
+import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateDateFilterResponse
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
@@ -11,7 +11,6 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerM
 import com.tokopedia.affiliate.usecase.AffiliateUserPerformanceUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import kotlinx.coroutines.delay
 import java.util.ArrayList
 import javax.inject.Inject
 
@@ -22,7 +21,7 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
     var identifier = ""
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var tickerInformation = MutableLiveData<String>()
-    private var affiliateFilterList = MutableLiveData<ArrayList<Visitable<AffiliateDateRangeTypeFactory>>>()
+    private var affiliateFilterList = MutableLiveData<ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>>()
     private var error = MutableLiveData<Boolean>()
 
     fun getAffiliateFilterData() {
@@ -43,7 +42,7 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
     }
 
     private fun convertFilterToVisitable(affiliateDateFilter: List<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter?>?) {
-        val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
+        val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
         affiliateDateFilter?.forEach { filter ->
             var title = ""
             var message = ""
@@ -61,11 +60,11 @@ class AffiliateDatePickerBottomSheetViewModel@Inject constructor(
             (visitable as AffiliateDateRangePickerModel).dateRange.isSelected = index == position
         }
     }
-    fun getItemList(): ArrayList<Visitable<AffiliateDateRangeTypeFactory>>? {
+    fun getItemList(): ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>? {
         return affiliateFilterList.value
     }
 
-    fun getAffiliateFilterItems(): LiveData<ArrayList<Visitable<AffiliateDateRangeTypeFactory>>> = affiliateFilterList
+    fun getAffiliateFilterItems(): LiveData<ArrayList<Visitable<AffiliateBottomSheetTypeFactory>>> = affiliateFilterList
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getTickerInfo(): LiveData<String> = tickerInformation
     fun getError(): LiveData<Boolean> = error

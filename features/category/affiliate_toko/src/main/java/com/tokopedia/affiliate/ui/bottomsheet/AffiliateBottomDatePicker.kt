@@ -16,10 +16,6 @@ import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetA
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetAdapter
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetDiffcallback
 import com.tokopedia.affiliate.adapter.bottomSheetsAdapter.AffiliateBottomSheetTypeFactory
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDatePickerAdapterFactory
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeAdapter
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeDiffcallback
-import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeTypeFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
@@ -112,7 +108,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         })
         affiliateDatePickerBottomSheetViewModel.getShimmerVisibility().observe(this,{shimmer ->
             if(shimmer!=null && shimmer){
-                val itemList: ArrayList<Visitable<AffiliateDateRangeTypeFactory>> = ArrayList()
+                val itemList: ArrayList<Visitable<AffiliateBottomSheetTypeFactory>> = ArrayList()
                 repeat(4){ itemList.add(AffiliateShimmerViewModel()) }
                 adapter.submitList(itemList as List<Visitable<*>>?)
             }
@@ -132,7 +128,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
     private fun setTicker(info: String) {
         contentView?.findViewById<Ticker>(R.id.affiliate_filter_announcement_ticker)?.setTextDescription(info)
             when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-                in 0..9 -> tickerCv?.show()
+                in 0..8 -> tickerCv?.show()
                 else -> tickerCv?.hide()
             }
 
