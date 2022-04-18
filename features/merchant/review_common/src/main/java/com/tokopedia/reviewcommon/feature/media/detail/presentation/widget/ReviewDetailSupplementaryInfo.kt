@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,7 +22,6 @@ import com.tokopedia.reviewcommon.databinding.PartialWidgetReviewDetailSupplemen
 import com.tokopedia.reviewcommon.databinding.WidgetReviewDetailSupplementaryInfoBinding
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel.ReviewDetailSupplementaryInfoUiModel
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uistate.ReviewDetailSupplementaryUiState
-import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 @SuppressLint("ClickableViewAccessibility")
@@ -29,14 +29,14 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : BaseReviewDetailCustomView<WidgetReviewDetailSupplementaryInfoBinding>(context, attrs, defStyleAttr) {
 
-    private val binding = WidgetReviewDetailSupplementaryInfoBinding.inflate(
+    override val binding = WidgetReviewDetailSupplementaryInfoBinding.inflate(
         LayoutInflater.from(context),
         this,
         true
     )
-    private val reviewOnPreDrawListener = reviewOnPreDrawListener()
+    private val reviewOnGlobalLayoutListener = reviewOnGlobalLayoutListener()
     private var currentUiState: ReviewDetailSupplementaryUiState? = null
     private var listener: Listener? = null
 
@@ -44,9 +44,8 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
         binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.setOnTouchListener(ReviewDetailSupplementaryInfo())
     }
 
-    private fun reviewOnPreDrawListener(): ViewTreeObserver.OnPreDrawListener {
-        return ViewTreeObserver.OnPreDrawListener {
-            var continueDraw = true
+    private fun reviewOnGlobalLayoutListener(): ViewTreeObserver.OnGlobalLayoutListener {
+        return ViewTreeObserver.OnGlobalLayoutListener {
             if (currentUiState is ReviewDetailSupplementaryUiState.Showing) {
                 binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.layout?.run {
                     val lines = lineCount
@@ -61,27 +60,26 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
                         ).spannedString ?: ""
                         val seeMoreTextLength = seeMoreText.length * 15 / 10 // since see more text is a link, it might be wider so we add some error correction
                         val concatenatedNonEllipsizedText = SpannableStringBuilder().apply {
-                            append(currentText.take(nonEllipsizedTextLength - ellipsisCount - seeMoreTextLength))
+                            append(currentText.take((nonEllipsizedTextLength - ellipsisCount - seeMoreTextLength).coerceAtLeast(Int.ZERO)))
                             append(seeMoreText)
                         }
                         binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.text = concatenatedNonEllipsizedText
-                        continueDraw = false
                     }
                 }
             }
-            binding.layoutReviewDetailSupplementaryInfo.tvReviewDetailReviewText.viewTreeObserver.removeOnPreDrawListener(reviewOnPreDrawListener)
-            continueDraw
         }
     }
 
     private fun hideReviewDetailSupplementaryInfo() {
-        gone()
+        show()
+        animateHide()
     }
 
     private fun showReviewDetailSupplementaryInfoLoading() {
         show()
         binding.layoutReviewDetailSupplementaryInfo.root.gone()
         binding.layoutReviewDetailSupplementaryInfoShimmer.root.show()
+        animateShow()
     }
 
     private fun showReviewDetailSupplementaryInfoData(
@@ -92,6 +90,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
         binding.layoutReviewDetailSupplementaryInfoShimmer.root.gone()
         setData(data, source)
         binding.layoutReviewDetailSupplementaryInfo.root.show()
+        animateShow()
     }
 
     private fun PartialWidgetReviewDetailSupplementaryInfoBinding.setupProductVariant(
@@ -126,8 +125,8 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
         }
         tvReviewDetailReviewText.run {
             if (source == Source.REVIEW_DETAIL_FRAGMENT) {
-                viewTreeObserver.removeOnPreDrawListener(reviewOnPreDrawListener)
-                viewTreeObserver.addOnPreDrawListener(reviewOnPreDrawListener)
+                viewTreeObserver.removeOnGlobalLayoutListener(reviewOnGlobalLayoutListener)
+                viewTreeObserver.addOnGlobalLayoutListener(reviewOnGlobalLayoutListener)
             }
             this.maxLines = maxLines
             text = review

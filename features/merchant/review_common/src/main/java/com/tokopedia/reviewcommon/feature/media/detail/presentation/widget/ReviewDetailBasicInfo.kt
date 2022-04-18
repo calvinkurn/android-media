@@ -13,15 +13,14 @@ import com.tokopedia.reviewcommon.databinding.WidgetReviewDetailBasicInfoBinding
 import com.tokopedia.reviewcommon.extension.generateHapticFeedback
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel.ReviewDetailBasicInfoUiModel
 import com.tokopedia.reviewcommon.feature.media.detail.presentation.uistate.ReviewDetailBasicInfoUiState
-import com.tokopedia.unifycomponents.BaseCustomView
 
 class ReviewDetailBasicInfo @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+) : BaseReviewDetailCustomView<WidgetReviewDetailBasicInfoBinding>(context, attrs, defStyleAttr) {
 
-    private val binding = WidgetReviewDetailBasicInfoBinding.inflate(
+    override val binding = WidgetReviewDetailBasicInfoBinding.inflate(
         LayoutInflater.from(context),
         this,
         true
@@ -48,12 +47,14 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
 
     private fun hideReviewDetailBasicInfo() {
         gone()
+        animateHide()
     }
 
     private fun showReviewDetailBasicInfoLoading() {
         show()
         binding.layoutReviewDetailBasicInfo.root.gone()
         binding.layoutReviewDetailBasicInfoShimmer.root.show()
+        animateShow()
     }
 
     private fun showReviewDetailBasicInfoData(data: ReviewDetailBasicInfoUiModel, source: Source) {
@@ -61,6 +62,7 @@ class ReviewDetailBasicInfo @JvmOverloads constructor(
         binding.layoutReviewDetailBasicInfoShimmer.root.gone()
         setData(data, source)
         binding.layoutReviewDetailBasicInfo.root.show()
+        animateShow()
     }
 
     private fun setData(data: ReviewDetailBasicInfoUiModel, source: Source) {
