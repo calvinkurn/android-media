@@ -1,6 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.chatbubble
 
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,6 +14,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.customview.CustomChatbotChatLayout
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -20,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 abstract class CustomChatbotMessageViewHolder(
         itemView: View?,
         protected val listener: ChatLinkHandlerListener,
+        val replyBubbleListener : ReplyBubbleAreaMessage.Listener
 ) : BaseChatViewHolder<MessageUiModel>(itemView) {
 
     protected open val customChatLayout: CustomChatbotChatLayout? = itemView?.findViewById(com.tokopedia.chatbot.R.id.customChatLayout)
@@ -35,6 +38,16 @@ abstract class CustomChatbotMessageViewHolder(
         ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
+
+//        customChatLayout?.setOnClickListener {
+//            Log.d("FATAL", "bind: TESTS ")
+//
+//        }
+        //TODO check for msg link
+        customChatLayout?.message?.setOnClickListener {
+            Log.d("FATAL", "bind: TESTE TEST")
+            replyBubbleListener.showReplyOption()
+        }
     }
 
     protected fun verifyReplyTime(chat: MessageUiModel) {

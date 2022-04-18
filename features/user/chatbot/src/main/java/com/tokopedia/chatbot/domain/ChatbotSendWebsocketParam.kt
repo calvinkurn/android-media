@@ -7,6 +7,21 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UP
 
 object ChatbotSendWebsocketParam {
 
+    fun generateParamSendMessage(
+        messageId: String, sendMessage: String, startTime: String, toUid
+        : String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("message_id", Integer.valueOf(messageId))
+        data.addProperty("message", sendMessage)
+        data.addProperty("start_time", startTime)
+        data.addProperty("to_uid", toUid)
+        json.add("data", data)
+        return json
+    }
+
     fun generateParamSendImage(
         messageId: String,
         path: String,

@@ -38,6 +38,7 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
+        const val TYPE_REPLY_BUBBLE = "28"
     }
 
     object ChatbotUnification{

@@ -10,6 +10,7 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.domain.pojo.senderinfo.SenderInfoData
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
@@ -18,11 +19,13 @@ import com.tokopedia.unifyprinciples.Typography
 class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
-        private val chatbotAdapterListener: ChatbotAdapterListener
-) : CustomChatbotMessageViewHolder(itemView, listener) {
+        private val chatbotAdapterListener: ChatbotAdapterListener,
+        replyBubbleListener: ReplyBubbleAreaMessage.Listener
+) : CustomChatbotMessageViewHolder(itemView, listener,replyBubbleListener) {
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
+    private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -45,6 +48,14 @@ class LeftChatMessageViewHolder(
         if (chatbotAdapterListener.isPreviousItemSender(adapterPosition)) {
             senderInfoData?.let { bindSenderInfo(it) }
         }
+    }
+
+    private fun bindReplyBubbleListener() {
+        replyBubbleArea?.setReplyListener(replyBubbleListener)
+    }
+
+    private fun bindReplyReference(msg: MessageUiModel) {
+        replyBubbleArea?.bindReplyData(msg)
     }
 
     private fun hideSenderInfo() {
@@ -71,6 +82,7 @@ class LeftChatMessageViewHolder(
 
     private fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
+        replyBubbleArea?.updateBackground(true)
     }
 
     private fun bindMessageInfo(message: MessageUiModel) {

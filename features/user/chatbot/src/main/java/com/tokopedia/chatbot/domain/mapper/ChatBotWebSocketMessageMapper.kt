@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -59,9 +60,12 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(pojo)
             TYPE_STICKED_BUTTON_ACTIONS -> convertToStickedButtonActionsViewModel(pojo)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(pojo, jsonAttributes)
+ //           TYPE_REPLY_BUBBLE -> convertToReplyBubble(pojo,jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
+
+
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
             ImageUploadUiModel {
@@ -249,4 +253,8 @@ class ChatBotWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapp
         }
         return list
     }
+
+//    private fun convertToReplyBubble(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+//
+//    }
 }

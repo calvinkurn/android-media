@@ -5,6 +5,8 @@ import android.content.res.Resources
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.basemvvm.repository.BaseRepository
+import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
+import com.tokopedia.chatbot.data.cache.ChatbotCacheManagerImpl
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
@@ -82,4 +84,13 @@ class ChatbotModule {
     fun provideBaseRepository(): BaseRepository {
         return BaseRepository()
     }
+
+    //TODO why internal and check whether application context is required or not
+    @ChatbotScope
+    @Provides
+    internal fun provideChatbotCacheManager(@ApplicationContext context: Context): ChatbotCacheManager{
+        val chatbotCacheManager = context.getSharedPreferences("chatbotCache", Context.MODE_PRIVATE)
+        return ChatbotCacheManagerImpl(chatbotCacheManager)
+    }
+
 }

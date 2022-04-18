@@ -24,7 +24,6 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -54,6 +53,7 @@ import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
@@ -233,6 +233,9 @@ class ChatbotPresenter @Inject constructor(
                         mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
+                    val agentMode: ReplyBubbleAttributes = Gson().fromJson(chatResponse.attachment?.attributes, ReplyBubbleAttributes::class.java)
+                    handleReplyBubble(agentMode)
+
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
                 }
@@ -271,6 +274,16 @@ class ChatbotPresenter @Inject constructor(
                 ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
+    }
+
+    private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
+        if (agentMode!=null){
+            if (agentMode.mode=="agent"){
+                view.replyBubbleStateHandler(true)
+            }else if (agentMode.mode=="bot"){
+                view.replyBubbleStateHandler(false)
+            }
+        }
     }
 
     private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {
@@ -460,7 +473,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String,
                                           startTime: String, opponentId: String) {
-        RxWebSocket.send(SendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
+        RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
                 startTime, opponentId),
                 listInterceptor)
     }

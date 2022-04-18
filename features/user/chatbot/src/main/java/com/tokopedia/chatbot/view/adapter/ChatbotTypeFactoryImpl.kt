@@ -26,6 +26,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMes
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.RightChatMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -43,7 +44,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatOptionListListener: ChatOptionListListener,
                                   private val csatOptionListListener: CsatOptionListListener,
                                   private val actionButtonClickListener: StickyActionButtonClickListener,
-                                  private val userSession: UserSessionInterface) :
+                                  private val userSession: UserSessionInterface,
+                                  private val replyBubbleListener: ReplyBubbleAreaMessage.Listener) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -80,7 +82,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
 
     private fun createViewHolder(parent: View, type: Int, chatbotAdapterListener: ChatbotAdapterListener): AbstractViewHolder<*> {
         return when (type) {
-            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
+            LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener,replyBubbleListener)
             CsatOptionListViewHolder.LAYOUT -> CsatOptionListViewHolder(parent, csatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             ChatHelpfullQuestionViewHolder.LAYOUT -> ChatHelpfullQuestionViewHolder(parent, chatOptionListListener, chatLinkHandlerListener, chatbotAdapterListener)
             QuickReplyViewHolder.LAYOUT -> QuickReplyViewHolder(parent, chatLinkHandlerListener, chatbotAdapterListener)
@@ -146,7 +148,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
-            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener)
+            RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, replyBubbleListener)
             ConnectionDividerViewHolder.LAYOUT -> ConnectionDividerViewHolder(parent)
             ChatbotLiveChatSeparatorViewHolder.LAYOUT -> ChatbotLiveChatSeparatorViewHolder(parent)
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)

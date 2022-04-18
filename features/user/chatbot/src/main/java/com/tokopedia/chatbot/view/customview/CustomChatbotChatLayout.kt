@@ -25,7 +25,8 @@ class CustomChatbotChatLayout : FrameLayout {
 
     var checkMark: ImageView? = null
         private set
-    private var message: TextView? = null
+    //TODO private
+    var message: TextView? = null
     private var status: LinearLayout? = null
     private var timeStamp: TextView? = null
     private var hourTime: TextView? = null
@@ -99,6 +100,14 @@ class CustomChatbotChatLayout : FrameLayout {
             readMoreView = it.findViewById(R.id.read_more_text)
         }
         initCheckMarkVisibility()
+//        message?.setOnClickListener {
+//            Log.d("FATAL", "initView: ON CLICK")
+//        }
+//
+//        message?.setOnLongClickListener {
+//            Log.d("FATAL", "initView: ON LONG CLICK")
+//            return@setOnLongClickListener true
+//        }
     }
 
     private fun initCheckMarkVisibility() {

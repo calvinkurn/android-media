@@ -7,11 +7,15 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 
 open class RightChatMessageViewHolder(
         itemView: View?,
-        listener: ChatLinkHandlerListener
-) : CustomChatbotMessageViewHolder(itemView, listener) {
+        listener: ChatLinkHandlerListener,
+        replyBubbleListener: ReplyBubbleAreaMessage.Listener
+) : CustomChatbotMessageViewHolder(itemView, listener, replyBubbleListener) {
+
+    private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
     protected open val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -32,8 +36,17 @@ open class RightChatMessageViewHolder(
         bindBackground(message)
     }
 
+    private fun bindReplyBubbleListener() {
+        replyBubbleArea?.setReplyListener(replyBubbleListener)
+    }
+
+    private fun bindReplyReference(msg: MessageUiModel) {
+        replyBubbleArea?.bindReplyData(msg)
+    }
+
     protected open fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
+        replyBubbleArea?.updateBackground(false)
     }
 
     override fun getChatStatusId(): Int {

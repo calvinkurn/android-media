@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
@@ -99,7 +101,9 @@ import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_U
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.ImageRetryBottomSheetAdapter
+import com.tokopedia.chatbot.view.adapter.ReplyBubbleBottomSheetAdapter
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
+import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
@@ -117,6 +121,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
+import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
 
@@ -136,13 +141,15 @@ private const val WELCOME_MESSAGE_VALIDATION = "dengan Toped di sini"
 private const val FIRST_PAGE = 1
 private const val RESEND = 1
 private const val DELETE = 0
+private const val REPLY = 0
 private const val SEE_ALL_INVOICE_TEXT = "lihat_semua_transaksi"
 
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
         ChatActionListBubbleListener, ChatRatingListener,
         TypingListener, ChatOptionListListener, CsatOptionListListener,
-        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener{
+        View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener
+        , ReplyBubbleAreaMessage.Listener{
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -187,6 +194,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
+    private lateinit var replyBubbleContainer : ReplyBubbleAreaMessage
+    private var replyBubbleEnabled : Boolean = false
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -285,6 +294,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         replyEditText = view.findViewById(R.id.new_comment)
         replyEditTextContainer = view.findViewById(R.id.new_comment_container)
+        replyBubbleContainer = view.findViewById(R.id.reply_bubble_container)
         bindReplyTextBackground()
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
@@ -503,7 +513,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 this,
                 this,
                 this,
-                getUserSession()
+                getUserSession(),
+            this
         )
     }
 
@@ -1286,6 +1297,66 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun transactionNotFoundClick() {
         val selected = presenter.getActionBubbleforNoTrasaction()
         presenter.sendActionBubble(messageId, selected, SendableUiModel.generateStartTime(), opponentId)
+    }
+
+    override fun getUserName(senderId: String): String {
+        return " "
+    }
+
+    override fun goToBubble(parentReply: ParentReply) {
+
+    }
+
+    override fun showReplyOption() {
+        Log.d("FATAL", "showReplyOption: On the ChatbotFragment here")
+
+        if (replyBubbleEnabled) {
+
+            Log.d("FATAL", "showReplyOption: On the ChatbotFragment here inside if statement")
+            val bottomSheetPage = BottomSheetUnify()
+            val viewBottomSheetPage =
+                View.inflate(context, R.layout.reply_bubble_bottom_sheet_layout, null).apply {
+                    val rvPages = findViewById<RecyclerView>(R.id.rv_reply_bubble)
+                    rvPages.layoutManager =
+                        LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    val adapter =
+                        ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage))
+                    rvPages.adapter = adapter
+
+                }
+
+            //TODO fix this
+            bottomSheetPage.apply {
+                setTitle("Pengaturan pesan")
+                showCloseIcon = true
+                setChild(viewBottomSheetPage)
+                showKnob = false
+            }
+            //TODO fix this
+            fragmentManager?.let {
+                bottomSheetPage.show(it, "retry reply bubble bottom sheet")
+            }
+        }
+    }
+
+    private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify): (position: Int) -> Unit {
+        return {
+            when (it) {
+                REPLY -> {
+                    initReplyBubble()
+                    Log.d("FATAL", "onReplyBottomSheetItemClicked: HIDE")
+                    bottomSheetPage.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun initReplyBubble(){
+        replyBubbleContainer.show()
+    }
+
+    override fun replyBubbleStateHandler(state: Boolean) {
+        replyBubbleEnabled = state
     }
 }
 
