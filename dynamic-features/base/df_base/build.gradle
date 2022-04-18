@@ -160,7 +160,4 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.snapshot)
     implementation projectOrAar(rootProject.ext.features.buyercancellationorder)
     implementation projectOrAar(rootProject.ext.features.people)
-
-    //Media
-    implementation projectOrAar(rootProject.ext.features.mediapicker)
 }
