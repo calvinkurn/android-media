@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
@@ -108,6 +107,10 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
 
     fun showError(data: PageErrorDataModel) {
         submitList(listOf(data))
+    }
+
+    fun getComponentPositionByName(componentName: String): Int {
+        return currentList.indexOfFirst { it.name() == componentName }
     }
 
     private fun isLoading(): Boolean {

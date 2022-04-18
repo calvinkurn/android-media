@@ -2323,7 +2323,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private fun initNavigationTab(data: ProductInfoP2UiData){
         val items = data.navBar.items.map { item->
-            val position = getComponentPositionByName(item.componentName)
+            val position = adapter.getComponentPositionByName(item.componentName)
             ProductDetailNavigation.Item(item.title, position)
         }
 
@@ -2343,7 +2343,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun setupNavigationTab() {
         val navBar = viewModel.p2Data.value?.navBar ?: return
         val items = navBar.items.map { item ->
-            val position = getComponentPositionByName(item.componentName)
+            val position = adapter.getComponentPositionByName(item.componentName)
             ProductDetailNavigation.Item(item.title, position)
         }
         binding?.pdpNavigationTab?.updateItems(items)

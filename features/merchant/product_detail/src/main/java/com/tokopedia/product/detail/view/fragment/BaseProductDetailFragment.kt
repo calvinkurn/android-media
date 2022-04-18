@@ -118,12 +118,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         }
     }
 
-    fun getComponentPositionByName(componentName: String): Int {
-        return productAdapter?.currentList?.indexOfFirst {
-            it.name() == componentName
-        } ?: RecyclerView.NO_POSITION
-    }
-
     fun <T : DynamicPdpDataModel> getComponentPositionBeforeUpdate(data: T?): Int {
         return if (data != null) {
             productAdapter?.currentList?.indexOfFirst {
