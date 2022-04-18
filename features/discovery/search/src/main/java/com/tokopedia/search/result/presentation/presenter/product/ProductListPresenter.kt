@@ -81,21 +81,22 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
-import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
+import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
+import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
+import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
@@ -164,6 +165,7 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
         )
+        private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val DEFAULT_USER_ID = "0"
@@ -238,6 +240,22 @@ class ProductListPresenter @Inject constructor(
                 ""
             )
             RollenceKey.SEARCH_ADVANCED_NEGATIVE_NO_ADS == abTestKeywordAdvNeg
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private val isABTestVideoWidget: Boolean by lazy {
+        getABTestVideoWidget()
+    }
+
+    private fun getABTestVideoWidget() : Boolean {
+        return try {
+            val abTestVideoWidget = view.abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_VIDEO_WIDGET,
+                ""
+            )
+            RollenceKey.SEARCH_VIDEO_WIDGET_VARIANT == abTestVideoWidget
         } catch (e: Exception) {
             false
         }
@@ -1336,22 +1354,52 @@ class ProductListPresenter @Inject constructor(
 
     private fun isInvalidInspirationCarousel(data: InspirationCarouselDataView): Boolean {
         if (data.position <= 0) return true
-        val firstOption = data.options.getOrNull(0)
-        return data.layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-                && firstOption != null
-                && !firstOption.hasProducts()
+        return isInvalidInspirationCarouselLayout(data)
     }
 
-    private fun shouldShowInspirationCarousel(layout: String) = showInspirationCarouselLayout.contains(layout)
+    private fun InspirationCarouselDataView.isFirstOptionHasNoProducts() : Boolean {
+        val firstOption = options.getOrNull(0)
+        return firstOption != null && !firstOption.hasProducts()
+    }
+
+    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
+        return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
+    }
+
+    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
+        return data.isInvalidCarouselChipsLayout() || data.isInvalidCarouselVideoLayout()
+    }
+
+    private fun shouldShowInspirationCarousel(layout: String): Boolean {
+        val validInspirationCarouselLayout = if(!isABTestVideoWidget) {
+            showInspirationCarouselLayout
+        } else {
+            showInspirationCarouselLayoutWithVideo
+        }
+        return validInspirationCarouselLayout.contains(layout)
+    }
 
     private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
-            if (data.isDynamicProductLayout())
-                convertInspirationCarouselToBroadMatch(data)
-            else
-                listOf(data)
-
+        when {
+            data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
+            data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
+            else -> listOf(data)
+        }
+    private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
+        return isABTestVideoWidget && isVideoLayout()
+    }
+    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
+        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+                && isFirstOptionHasNoProducts()
+    }
     private fun InspirationCarouselDataView.isDynamicProductLayout() =
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
+    private fun InspirationCarouselDataView.isVideoLayout() =
+            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
+
+    private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView) : List<Visitable<*>> {
+        return listOf(InspirationCarouselVideoDataView(data))
+    }
 
     private fun convertInspirationCarouselToBroadMatch(data: InspirationCarouselDataView): List<Visitable<*>> {
         val broadMatchVisitableList = mutableListOf<Visitable<*>>()

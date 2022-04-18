@@ -36,6 +36,7 @@ includeIfEnabled("features:discovery:productcard_options")
 includeIfEnabled("features:discovery:filter")
 includeIfEnabled("features:home:searchbar")
 includeIfEnabled("features:discovery:shopwidget")
+includeIfEnabled("features:discovery:video_widget")
 
 includeIfEnabled("features:fintech:home_credit")
 includeIfEnabled("features:fintech:saldo_details")
