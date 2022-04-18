@@ -118,7 +118,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
-        val dataList = getVisitablesValue()
+        val dataList = getVisitablesValue().toMutableList()
         dataList.removeAll(visitables)
         if (!hasRemainingProduct()) {
             _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_REMOVE_ALL_PRODUCT)
