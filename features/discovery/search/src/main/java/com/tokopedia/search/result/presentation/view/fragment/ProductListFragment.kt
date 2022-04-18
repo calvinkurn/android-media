@@ -90,7 +90,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -103,6 +102,7 @@ import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ProductListParameterListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
@@ -113,9 +113,9 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaLi
 import com.tokopedia.search.result.product.searchparameterprovider.SearchParameterProvider
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
-import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
@@ -1541,7 +1541,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val productDataLayerList = createInspirationCarouselChipsProductDataLayer(product)
@@ -1565,7 +1565,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun createInspirationCarouselChipsProductDataLayer(
         product: InspirationCarouselDataView.Option.Product
     ): ArrayList<Any> {
-        val filterSortParams = getSortFilterParamStringFromSearchParameter()
+        val filterSortParams = getSortFilterParamStringFromSearchParameter(searchParameter)
         val productDataLayer =
             product.getInspirationCarouselChipsProductAsObjectDataLayer(filterSortParams)
 
