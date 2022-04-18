@@ -5,8 +5,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.new_product_bundle.common.customview.DiscountPriceView
-import com.tokopedia.new_product_bundle.common.customview.SpinnerView
+import com.tokopedia.product_bundle.common.customview.DiscountPriceView
+import com.tokopedia.product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.MIN_DISPLAYED_QTY
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
@@ -19,14 +19,14 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class SingleProductBundleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    var layoutItem: ConstraintLayout = itemView.findViewById(R.id.layout_item)
-    var radioItem: RadioButtonUnify = itemView.findViewById(R.id.radio_item)
-    var ivItemImage: ImageUnify = itemView.findViewById(R.id.iv_item_image)
-    var bundleName: Label = itemView.findViewById(R.id.label_item_bundle_name)
-    var title: Typography = itemView.findViewById(R.id.tv_item_title)
-    var spinnerItemVariant: SpinnerView = itemView.findViewById(R.id.spinner_item_variant)
-    var discountViewItem: DiscountPriceView = itemView.findViewById(R.id.discountview_item)
-    var tvVariantEmpty: View = itemView.findViewById(R.id.tv_variant_empty)
+    var layoutItem: ConstraintLayout = itemView.findViewById(R.id.old_layout_item)
+    var radioItem: RadioButtonUnify = itemView.findViewById(R.id.old_radio_item)
+    var ivItemImage: ImageUnify = itemView.findViewById(R.id.old_iv_item_image)
+    var bundleName: Label = itemView.findViewById(R.id.old_label_item_bundle_name)
+    var title: Typography = itemView.findViewById(R.id.old_tv_item_title)
+    var spinnerItemVariant: SpinnerView = itemView.findViewById(R.id.old_spinner_item_variant)
+    var discountViewItem: DiscountPriceView = itemView.findViewById(R.id.old_discountview_item)
+    var tvVariantEmpty: View = itemView.findViewById(R.id.old_tv_variant_empty)
 
     fun bindData(
         item: SingleProductBundleItem,

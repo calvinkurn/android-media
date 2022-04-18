@@ -18,7 +18,7 @@ class SingleProductBundleAdapter(
     private var selectedData: List<SingleProductBundleSelectedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SingleProductBundleViewHolder {
-        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_single_product_bundle, parent, false)
+        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.old_item_single_product_bundle, parent, false)
         val viewHolder = SingleProductBundleViewHolder(rootView)
         setupViewHolderOnClick(viewHolder)
         return viewHolder

@@ -21,7 +21,7 @@ class ProductBundleDetailAdapter(
     private var productBundleDetails: MutableList<ProductBundleDetail> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductBundleDetailViewHolder {
-        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.product_bundle_detail_item, parent, false)
+        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.old_product_bundle_detail_item, parent, false)
         return ProductBundleDetailViewHolder(rootView, clickListener)
     }
 
