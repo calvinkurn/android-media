@@ -8,9 +8,7 @@ import com.tokopedia.media.picker.ui.observer.stateOnRemovePublished
 import com.tokopedia.picker.common.observer.EventFlowFactory
 import com.tokopedia.picker.common.observer.EventState
 import com.tokopedia.picker.common.uimodel.MediaUiModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,14 +31,13 @@ class CameraViewModelTest {
 
     @Before
     fun setup() {
-        mockkStatic(EventFlowFactory::class)
-        viewModel = CameraViewModel(CoroutineTestDispatchers)
+        viewModel = CameraViewModel(coroutineScopeRule.dispatchers)
     }
 
     @Test
     fun `validate camera state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -58,7 +55,7 @@ class CameraViewModelTest {
     @Test
     fun `validate selection change state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -76,7 +73,7 @@ class CameraViewModelTest {
     @Test
     fun `validate selection removed state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
