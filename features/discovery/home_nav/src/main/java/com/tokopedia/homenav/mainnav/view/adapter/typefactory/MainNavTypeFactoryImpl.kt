@@ -86,7 +86,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             InitialShimmeringProfileDataViewHolder.LAYOUT -> InitialShimmeringProfileDataViewHolder(view)
             InitialShimmeringTransactionDataViewHolder.LAYOUT -> InitialShimmeringTransactionDataViewHolder(view)
-            HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener)
+            HomeNavExpandableViewHolder.LAYOUT -> HomeNavExpandableViewHolder(view, mainNavListener, userSession)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

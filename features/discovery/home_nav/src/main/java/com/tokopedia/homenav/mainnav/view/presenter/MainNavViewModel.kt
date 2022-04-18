@@ -106,7 +106,7 @@ class MainNavViewModel @Inject constructor(
     val profileDataLiveData: LiveData<AccountHeaderDataModel>
         get() = _profileDataLiveData
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
-    private val allCategory = HomeNavExpandableDataModel()
+    private lateinit var allCategory : HomeNavExpandableDataModel
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -212,6 +212,8 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
         this.addAll(buildBUTitleList())
+        allCategory = HomeNavExpandableDataModel()
+        allCategory.menus = listOf(HomeNavMenuDataModel("something", 1, 1, "", null, "Kategori", ""))
         this.add(allCategory)
         this.add(SeparatorDataModel())
     }
@@ -245,7 +247,7 @@ class MainNavViewModel @Inject constructor(
                     it is InitialShimmerDataModel
                 }
 
-//                allCategory.menus = result
+                allCategory.menus = result
                 shimmeringDataModel?.let { deleteWidget(shimmeringDataModel) }
                 findBuStartIndexPosition()?.let {
                     addWidgetList(result, it)
