@@ -29,7 +29,7 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
         val response = getCurrentInteractiveUseCase.apply {
             setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
         }.executeOnBackground()
-        return@withContext mapper.mapInteractive(response.data.interactive)
+        return@withContext mapper.mapInteractive(response.data)
     }
 
     override suspend fun postInteractiveTap(channelId: String, interactiveId: String): Boolean = withContext(dispatchers.io) {

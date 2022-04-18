@@ -49,7 +49,7 @@ class PlayInteractiveMapper @Inject constructor() {
             title = data.question,
             status = when (data.status) {
                 STATUS_LIVE -> InteractiveUiModel.Quiz.Status.Ongoing(
-                    durationInMs = TimeUnit.SECONDS.toMillis(data.countdownEnd.toLong())
+                    durationInMs = data.countdownEnd.toLong()
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished
                 else -> InteractiveUiModel.Quiz.Status.Unknown

@@ -10,9 +10,9 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.GameConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
@@ -29,7 +29,7 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val createInteractiveQuizUseCase: PostInteractiveCreateQuizUseCase,
     private val userSession: UserSessionInterface,
     private val mapper: PlayBroadcastMapper,
-    private val interactiveMapper: PlayChannelInteractiveMapper,
+    private val interactiveMapper: PlayInteractiveMapper,
     private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
@@ -42,13 +42,14 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
         return@withContext mapper.mapInteractiveConfig(response)
     }
 
-    override suspend fun getCurrentInteractive(channelId: String): PlayCurrentInteractiveModel = withContext(dispatchers.io) {
-        val response = getCurrentInteractiveUseCase.apply {
-            setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-        }.executeOnBackground()
+    override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel =
+        withContext(dispatchers.io) {
+            val response = getCurrentInteractiveUseCase.apply {
+                setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+            }.executeOnBackground()
 
-        return@withContext interactiveMapper.mapInteractive(response.data.giveaway)
-    }
+            return@withContext interactiveMapper.mapInteractive(response.data)
+        }
 
     override suspend fun getInteractiveLeaderboard(
         channelId: String,
