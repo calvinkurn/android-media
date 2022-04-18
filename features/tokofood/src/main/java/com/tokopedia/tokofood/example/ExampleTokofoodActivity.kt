@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
+import com.tokopedia.tokofood.feature.merchant.presentation.fragment.MerchantPageFragment
 
 class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragmentsViewModel> {
 
@@ -17,7 +18,7 @@ class ExampleTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFr
     }
 
     override fun getRootFragment(): Fragment {
-        return FragmentA()
+        return MerchantPageFragment()
     }
 
     override fun mapUriToFragment(uri: Uri): Fragment? {

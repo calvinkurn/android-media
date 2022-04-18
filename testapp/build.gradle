@@ -128,4 +128,11 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.changePhoneNumber)
+	implementation project(rootProject.ext.features.localizationchooseaddress)
+	implementation project(rootProject.ext.features.localizationchooseaddress_common)
+	implementation project(rootProject.ext.features.logisticaddaddress)
+	implementation project(rootProject.ext.features.profileCompletion)
+	implementation project(rootProject.ext.features.loginregister)
+	implementation project(rootProject.ext.features.tokofood)
 }
