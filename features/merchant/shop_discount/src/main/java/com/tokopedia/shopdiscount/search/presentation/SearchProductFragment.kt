@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.shopdiscount.R
@@ -91,6 +92,7 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private val productAdapter by lazy {
         ProductAdapter(
             onProductClicked,
+            onProductImageClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
             onVariantInfoClicked,
@@ -283,6 +285,13 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
             handleEmptyState(updatedTotalProduct)
         } else {
             binding?.root showError getString(R.string.sd_error_delete_discount)
+        }
+    }
+
+    private val onProductImageClicked: (Product) -> Unit = { product ->
+        viewModel.setSelectedProduct(product)
+        guard(product.disableClick) {
+            redirectToProductDetailPage(product)
         }
     }
 
@@ -588,4 +597,15 @@ class SearchProductFragment : BaseSimpleListFragment<ProductAdapter, Product>() 
     private fun dismissLoaderDialog() {
         loaderDialog.dialog.dismiss()
     }
+
+     private fun redirectToProductDetailPage(product: Product) {
+        val imageUrl = arrayListOf(product.imageUrl)
+        val intent = ImagePreviewActivity.getCallingIntent(
+            context = requireActivity(),
+            imageUris = imageUrl,
+            disableDownloadButton = true
+        )
+        startActivity(intent)
+    }
+
 }

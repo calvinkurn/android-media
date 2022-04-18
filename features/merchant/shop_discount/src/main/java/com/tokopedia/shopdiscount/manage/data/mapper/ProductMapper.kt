@@ -46,7 +46,8 @@ class ProductMapper @Inject constructor() {
                     product.price.min,
                     product.price.max
                 ),
-                sku = product.sku
+                sku = product.sku,
+                isExpand = product.isExpand
             )
         }
 
@@ -54,12 +55,12 @@ class ProductMapper @Inject constructor() {
 
     private fun GetSlashPriceProductListResponse.GetSlashPriceProductList.SlashPriceProduct.find(): ProductType {
         val hasVariant = this.isVariant
-        val availableOnMultiLocation = this.warehouses.isNotEmpty()
+        val availableOnMultiLocation = this.isExpand
         return when {
             !hasVariant && availableOnMultiLocation -> ProductType.SINGLE_MULTI_LOCATION
-            hasVariant && availableOnMultiLocation -> ProductType.VARIANT_MULTI_LOCATION
+            hasVariant && availableOnMultiLocation -> ProductType.VARIANT
+            hasVariant && !availableOnMultiLocation -> ProductType.VARIANT
             !hasVariant -> ProductType.SINGLE
-            hasVariant -> ProductType.VARIANT
             else -> ProductType.SINGLE
         }
     }

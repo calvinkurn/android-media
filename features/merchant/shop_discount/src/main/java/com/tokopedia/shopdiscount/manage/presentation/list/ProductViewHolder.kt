@@ -23,6 +23,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
     fun bind(
         position: Int,
         product: Product,
+        onProductImageClicked: (Product) -> Unit,
         onProductClicked: (Product, Int) -> Unit,
         onUpdateDiscountButtonClicked: (Product) -> Unit,
         onOverflowMenuClicked: (Product) -> Unit,
@@ -31,6 +32,7 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
         isLoading: Boolean
     ) {
         binding.imgProduct.loadImage(product.imageUrl)
+        binding.imgProduct.setOnClickListener { onProductImageClicked(product) }
         binding.tpgProductName.text = product.name
         binding.imgMore.setOnClickListener { onOverflowMenuClicked(product) }
         binding.btnUpdateDiscount.setOnClickListener { onUpdateDiscountButtonClicked(product) }
@@ -98,7 +100,6 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 displayDiscountedPriceRange(product)
                 displayOriginalPriceRange(product)
                 displayDiscountPeriodRange(product)
-                displayVariantCount()
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock_multiple_location),
@@ -115,18 +116,6 @@ class ProductViewHolder(private val binding: SdItemProductBinding) :
                 binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
                     String.format(
                         binding.tpgInformation.context.getString(R.string.sd_total_stock),
-                        product.totalStock
-                    )
-                )
-            }
-            ProductType.VARIANT_MULTI_LOCATION -> {
-                displayDiscountPercentageRange(product)
-                displayDiscountedPriceRange(product)
-                displayOriginalPriceRange(product)
-                displayVariantCount()
-                binding.tpgStockAndLocation.text = MethodChecker.fromHtml(
-                    String.format(
-                        binding.tpgInformation.context.getString(R.string.sd_total_stock_various_multiple_location),
                         product.totalStock
                     )
                 )

@@ -35,6 +35,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.supportLibDependencies.supportV4
+
+    implementation projectOrAar(rootProject.ext.libraries.imagePreview)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
