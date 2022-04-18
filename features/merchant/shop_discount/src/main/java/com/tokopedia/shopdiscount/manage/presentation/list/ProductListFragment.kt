@@ -11,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -108,6 +109,7 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
     private val productAdapter by lazy {
         ProductAdapter(
             onProductClicked,
+            onProductImageClicked,
             onUpdateDiscountClicked,
             onOverflowMenuClicked,
             onVariantInfoClicked,
@@ -377,6 +379,16 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
+    private fun redirectToProductDetailPage(product: Product) {
+        val imageUrl = arrayListOf(product.imageUrl)
+        val intent = ImagePreviewActivity.getCallingIntent(
+            context = requireActivity(),
+            imageUris = imageUrl,
+            disableDownloadButton = true
+        )
+        startActivity(intent)
+    }
+
     private fun setupMultiSelection() {
         binding?.run {
             tpgMultiSelect.setOnClickListener {
@@ -484,6 +496,13 @@ class ProductListFragment : BaseSimpleListFragment<ProductAdapter, Product>() {
         val requestId = generateRequestId()
         viewModel.setRequestId(requestId)
         reserveProduct(requestId, listOf(product.id))
+    }
+
+    private val onProductImageClicked: (Product) -> Unit = { product ->
+        viewModel.setSelectedProduct(product)
+        guard(product.disableClick) {
+            redirectToProductDetailPage(product)
+        }
     }
 
     private val onProductClicked: (Product, Int) -> Unit = { product, position ->

@@ -11,6 +11,7 @@ import com.tokopedia.shopdiscount.utils.constant.ZERO
 
 class ProductAdapter(
     private val onProductClicked: (Product, Int) -> Unit,
+    private val onProductImageClicked: (Product) -> Unit,
     private val onUpdateDiscountButtonClicked: (Product) -> Unit,
     private val onOverflowMenuClicked: (Product) -> Unit,
     private val onVariantInfoClicked : (Product, Int) -> Unit,
@@ -40,6 +41,7 @@ class ProductAdapter(
             holder.bind(
                 position,
                 product,
+                onProductImageClicked,
                 onProductClicked,
                 onUpdateDiscountButtonClicked,
                 onOverflowMenuClicked,

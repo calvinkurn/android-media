@@ -24,7 +24,6 @@
     <string name="sd_shop_discount">Diskon Toko</string>
     <string name="sd_tab_name">%s (%s)</string>
     <string name="sd_placeholder">%s - %s</string>
-    <string name="sd_total_stock_various_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di beberapa lokasi</string>
     <string name="sd_total_stock_multiple_location">Total stok: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
 
     <string name="sd_total_stock">Total stok: <![CDATA[<b>%1s</b>]]></string>
