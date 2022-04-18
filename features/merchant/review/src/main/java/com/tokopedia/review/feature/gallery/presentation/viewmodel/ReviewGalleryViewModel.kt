@@ -136,4 +136,8 @@ class ReviewGalleryViewModel @Inject constructor(
         val firstLoaded = _concatenatedReviewImages.value?.reviewMedia?.firstOrNull()?.mediaNumber.orZero()
         return (firstLoaded / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT)
     }
+
+    fun getMediaCount(): Int {
+        return _concatenatedReviewImages.value?.detail?.mediaCount?.toInt().orZero()
+    }
 }

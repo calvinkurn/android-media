@@ -5,7 +5,10 @@ import com.tokopedia.review.feature.gallery.presentation.fragment.ReviewGalleryF
 import com.tokopedia.review.feature.imagepreview.presentation.di.ReviewImagePreviewScope
 import dagger.Component
 
-@Component(modules = [ReviewGalleryViewModelModule::class], dependencies = [ReviewComponent::class])
+@Component(
+    modules = [ReviewGalleryViewModelModule::class, ReviewGalleryModule::class],
+    dependencies = [ReviewComponent::class]
+)
 @ReviewImagePreviewScope
 interface ReviewGalleryComponent {
     fun inject(reviewGalleryFragment: ReviewGalleryFragment)

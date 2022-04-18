@@ -2,6 +2,7 @@ package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -13,7 +14,7 @@ import com.tokopedia.review.feature.gallery.presentation.listener.ReviewGalleryM
 
 class ReviewGalleryImageThumbnailViewHolder(
     view: View,
-    reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener
+    private val reviewGalleryMediaThumbnailListener: ReviewGalleryMediaThumbnailListener
 ) : AbstractViewHolder<ReviewGalleryImageThumbnailUiModel>(view) {
 
     companion object {
@@ -37,6 +38,7 @@ class ReviewGalleryImageThumbnailViewHolder(
             setupThumbnail(element.mediaUrl)
             setupRating(element.rating)
             setupVariant(element.variantName)
+            setupImpressHolder(element)
         }
     }
 
@@ -66,6 +68,14 @@ class ReviewGalleryImageThumbnailViewHolder(
         tvReviewGalleryImageThumbnailProductVariantName.run {
             text = getString(R.string.review_gallery_variant, variantName)
             showWithCondition(variantName.isNotBlank())
+        }
+    }
+
+    private fun ItemReviewGalleryImageThumbnailBinding.setupImpressHolder(
+        element: ReviewGalleryImageThumbnailUiModel
+    ) {
+        root.addOnImpressionListener(element.impressHolder) {
+            reviewGalleryMediaThumbnailListener.onImageImpressed(element)
         }
     }
 }

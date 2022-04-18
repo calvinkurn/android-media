@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.gallery.presentation.adapter.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.review.feature.gallery.presentation.adapter.ReviewGalleryAdapterTypeFactory
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.UserReviewStats
 
@@ -21,7 +22,8 @@ data class ReviewGalleryImageThumbnailUiModel(
     override val userStats: List<UserReviewStats> = listOf(),
     override val isAnonymous: Boolean = false,
     override val userImage: String = "",
-    override val badRatingReason: String = ""
+    override val badRatingReason: String = "",
+    override val impressHolder: ImpressHolder = ImpressHolder()
 ) : ReviewGalleryMediaThumbnailUiModel {
     override fun type(typeFactory: ReviewGalleryAdapterTypeFactory): Int {
         return typeFactory.type(this)

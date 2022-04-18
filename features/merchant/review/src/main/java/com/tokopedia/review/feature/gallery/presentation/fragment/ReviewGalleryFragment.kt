@@ -75,6 +75,9 @@ class ReviewGalleryFragment :
     @Inject
     lateinit var viewModel: ReviewGalleryViewModel
 
+    @Inject
+    lateinit var reviewGalleryTracker: ReviewGalleryTracking
+
     private var reviewGalleryCoordinatorLayout: CoordinatorLayout? = null
     private var reviewHeader: ReadReviewHeader? = null
     private var loadingView: ReviewGalleryLoadingView? = null
@@ -87,7 +90,12 @@ class ReviewGalleryFragment :
             activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         getProductIdFromArguments()
-        ReviewGalleryTracking.trackOpenScreen(viewModel.getProductId())
+        reviewGalleryTracker.trackOpenScreen(viewModel.getProductId())
+    }
+
+    override fun onPause() {
+        super.onPause()
+        reviewGalleryTracker.sendQueuedTrackers()
     }
 
     override fun stopPreparePerfomancePageMonitoring() {
@@ -184,7 +192,7 @@ class ReviewGalleryFragment :
     }
 
     override fun openStatisticsBottomSheet() {
-        ReviewGalleryTracking.trackClickSatisfactionScore(
+        reviewGalleryTracker.trackClickSatisfactionScore(
             getSatisfactionRate(),
             getRating(),
             getTotalReview(),
@@ -208,7 +216,7 @@ class ReviewGalleryFragment :
     }
 
     override fun onSeeAllClicked() {
-        ReviewGalleryTracking.trackClickSeeAll(viewModel.getProductId())
+        reviewGalleryTracker.trackClickSeeAll(viewModel.getProductId())
         goToReadingPage()
     }
 
@@ -232,12 +240,30 @@ class ReviewGalleryFragment :
     }
 
     override fun onThumbnailClicked(reviewGalleryMediaThumbnailUiModel: ReviewGalleryMediaThumbnailUiModel) {
-        ReviewGalleryTracking.trackClickImage(
+        reviewGalleryTracker.trackClickImage(
             reviewGalleryMediaThumbnailUiModel.attachmentId,
             reviewGalleryMediaThumbnailUiModel.feedbackId,
             viewModel.getProductId()
         )
         goToMediaPreview(reviewGalleryMediaThumbnailUiModel)
+    }
+
+    override fun onImageImpressed(element: ReviewGalleryImageThumbnailUiModel) {
+        reviewGalleryTracker.trackImageImpression(
+            viewModel.getMediaCount(),
+            viewModel.getProductId(),
+            element.attachmentId,
+            element.mediaNumber
+        )
+    }
+
+    override fun onVideoImpressed(element: ReviewGalleryVideoThumbnailUiModel) {
+        reviewGalleryTracker.trackVideoImpression(
+            viewModel.getMediaCount(),
+            viewModel.getProductId(),
+            element.attachmentId,
+            element.mediaNumber
+        )
     }
 
     private fun getProductIdFromArguments() {

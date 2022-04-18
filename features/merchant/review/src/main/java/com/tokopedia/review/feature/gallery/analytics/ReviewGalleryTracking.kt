@@ -3,8 +3,50 @@ package com.tokopedia.review.feature.gallery.analytics
 import com.tokopedia.review.common.analytics.ReviewTrackingConstant
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTrackingConstants
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-object ReviewGalleryTracking {
+class ReviewGalleryTracking @Inject constructor(
+    private val trackingQueue: TrackingQueue,
+    private val userSession: UserSessionInterface
+) {
+    private fun trackMediaImpression(
+        mediaCount: Int,
+        productId: String,
+        attachmentId: String,
+        mediaNumber: Int,
+        mediaName: String
+    ) {
+        val payload = hashMapOf<String, Any>(
+            TrackAppUtils.EVENT to ReviewTrackingConstant.EVENT_PROMO_VIEW,
+            TrackAppUtils.EVENT_ACTION to ReviewGalleryTrackingConstants.EVENT_ACTION_VIEW_THUMBNAIL,
+            TrackAppUtils.EVENT_CATEGORY to ReviewGalleryTrackingConstants.EVENT_CATEGORY,
+            TrackAppUtils.EVENT_LABEL to String.format(
+                ReviewGalleryTrackingConstants.EVENT_LABEL_VIEW_THUMBNAIL,
+                mediaCount
+            ),
+            ReviewTrackingConstant.KEY_BUSINESS_UNIT to ReviewTrackingConstant.BUSINESS_UNIT,
+            ReviewTrackingConstant.KEY_CURRENT_SITE to ReviewTrackingConstant.CURRENT_SITE,
+            ReviewTrackingConstant.KEY_PRODUCT_ID to productId,
+            ReviewTrackingConstant.KEY_USER_ID to userSession.userId,
+            ReviewTrackingConstant.KEY_ECOMMERCE to hashMapOf<String, Any>(
+                ReviewTrackingConstant.KEY_PROMO_VIEW to hashMapOf<String, Any>(
+                    ReviewTrackingConstant.KEY_PROMOTIONS to listOf(
+                        hashMapOf<String, Any>(
+                            ReviewTrackingConstant.KEY_CREATIVE_NAME to "",
+                            ReviewTrackingConstant.KEY_CREATIVE_SLOT to mediaNumber,
+                            ReviewTrackingConstant.KEY_ITEM_ID to attachmentId,
+                            ReviewTrackingConstant.KEY_ITEM_NAME to mediaName
+                        )
+                    )
+                )
+            )
+        )
+
+        trackingQueue.putEETracking(payload)
+    }
 
     fun trackOpenScreen(productId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(ReviewGalleryTrackingConstants.SCREEN_NAME, getOpenScreenCustomDimensMap(productId))
@@ -84,5 +126,27 @@ object ReviewGalleryTracking {
             ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
             ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId
         )
+    }
+
+    fun trackImageImpression(
+        mediaCount: Int,
+        productId: String,
+        attachmentId: String,
+        mediaNumber: Int
+    ) {
+        trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "image")
+    }
+
+    fun trackVideoImpression(
+        mediaCount: Int,
+        productId: String,
+        attachmentId: String,
+        mediaNumber: Int
+    ) {
+        trackMediaImpression(mediaCount, productId, attachmentId, mediaNumber, "video")
+    }
+
+    fun sendQueuedTrackers() {
+        trackingQueue.sendAll()
     }
 }

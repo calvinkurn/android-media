@@ -31,11 +31,16 @@ class ReviewGalleryAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            ReviewGalleryImageThumbnailViewHolder.LAYOUT -> ReviewGalleryImageThumbnailViewHolder(parent, reviewGalleryMediaThumbnailListener)
-            ReviewGalleryVideoThumbnailViewHolder.LAYOUT -> ReviewGalleryVideoThumbnailViewHolder(parent, reviewGalleryMediaThumbnailListener)
+            ReviewGalleryImageThumbnailViewHolder.LAYOUT -> ReviewGalleryImageThumbnailViewHolder(
+                parent,
+                reviewGalleryMediaThumbnailListener
+            )
+            ReviewGalleryVideoThumbnailViewHolder.LAYOUT -> ReviewGalleryVideoThumbnailViewHolder(
+                parent,
+                reviewGalleryMediaThumbnailListener
+            )
             ReviewGalleryLoadingViewHolder.LAYOUT -> ReviewGalleryLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }
-
 }
