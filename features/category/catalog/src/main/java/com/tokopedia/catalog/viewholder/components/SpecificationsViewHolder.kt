@@ -25,16 +25,15 @@ class SpecificationsViewHolder(v: View) : RecyclerView.ViewHolder(v) {
                     specification_iv.loadImage(model.icon)
                 specification_name.text = model.key
                 specification_description.text = model.value
-                itemView.setOnClickListener(null)
             }else {
                 specification_iv.hide()
                 specification_name.hide()
                 specification_description.hide()
                 lihat_logo.show()
                 lihat_text.show()
-                itemView.setOnClickListener{
-                    catalogDetailListener.onViewMoreSpecificationsClick()
-                }
+            }
+            setOnClickListener{
+                catalogDetailListener.onViewMoreSpecificationsClick(model)
             }
         }
     }

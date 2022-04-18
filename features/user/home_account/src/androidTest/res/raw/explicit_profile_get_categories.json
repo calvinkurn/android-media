@@ -1,0 +1,38 @@
+[
+  {
+    "data": {
+      "explicitprofileGetAllCategories": {
+        "data": [
+          {
+            "id": 1,
+            "name": "Kuliner",
+            "imageDisabled": "https://images.tokopedia.net/img/explicit/profile/food_disabled.png",
+            "imageEnabled": "https://images.tokopedia.net/img/explicit/profile/food_enabled.png",
+            "templateName": "food_preference"
+          },
+          {
+            "id": 2,
+            "name": "Sepatu",
+            "imageDisabled": "https://images.tokopedia.net/img/explicit/profile/shoes_disabled.png",
+            "imageEnabled": "https://images.tokopedia.net/img/explicit/profile/shoes_enabled.png",
+            "templateName": "shoes_preference"
+          },
+          {
+            "id": 3,
+            "name": "Olahraga",
+            "imageDisabled": "https://images.tokopedia.net/img/explicit/profile/sports_disabled.png",
+            "imageEnabled": "https://images.tokopedia.net/img/explicit/profile/sports_enabled.png",
+            "templateName": "sport_preference"
+          },
+          {
+            "id": 4,
+            "name": "Kaos",
+            "imageDisabled": "https://images.tokopedia.net/img/explicit/profile/shirt_disabled.png",
+            "imageEnabled": "https://images.tokopedia.net/img/explicit/profile/shirt_enabled.png",
+            "templateName": "shirt"
+          }
+        ]
+      }
+    }
+  }
+]

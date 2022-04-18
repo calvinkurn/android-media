@@ -161,9 +161,24 @@
                             android:layout_margin="@dimen/spacing_lvl4"
                             android:text="@string/affiliate_transaction_history"
                             android:textColor="@color/Unify_NN950"
-                            app:layout_constraintTop_toBottomOf="@id/withdrawal_home_widget"
+                            app:layout_constraintTop_toBottomOf="@id/affiliate_income_ticker"
                             app:typographyType="heading_3"
                             app:typographyWeight="bold" />
+
+                            <com.tokopedia.unifycomponents.ticker.Ticker
+                                android:visibility="gone"
+                                android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                                android:id="@+id/affiliate_income_ticker"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:closeButtonVisibility="gone"
+                                app:descriptionText="@string/affiliate_income_blacklisted_ticker_desc"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:tickerType="announcement"
+                                app:tickerShapeType="loose"
+                                app:layout_constraintTop_toBottomOf="@id/withdrawal_home_widget"
+                                app:titleText="@string/affiliate_blacklisted_ticker_title" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
 

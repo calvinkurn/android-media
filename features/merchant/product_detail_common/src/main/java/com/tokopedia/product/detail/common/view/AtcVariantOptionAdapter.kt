@@ -12,9 +12,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
  */
 class AtcVariantOptionAdapter(val listener: AtcVariantListener) : RecyclerView.Adapter<BaseAtcVariantItemViewHolder<VariantOptionWithAttribute>>() {
 
-    private val TYPE_IMAGE = 1
-    private val TYPE_CHIP = 3
-
     private val optionList: MutableList<VariantOptionWithAttribute> = mutableListOf()
 
     fun setData(newOptionList: List<VariantOptionWithAttribute>) {
@@ -28,19 +25,9 @@ class AtcVariantOptionAdapter(val listener: AtcVariantListener) : RecyclerView.A
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseAtcVariantItemViewHolder<VariantOptionWithAttribute> {
-        when (viewType) {
-            TYPE_CHIP -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(ItemVariantChipViewHolder.LAYOUT, parent, false)
-                return ItemVariantChipViewHolder(view, listener)
-            }
-            TYPE_IMAGE -> {
-                val view = LayoutInflater.from(parent.context)
-                        .inflate(ItemVariantImageViewHolder.LAYOUT, parent, false)
-                return ItemVariantImageViewHolder(view, listener)
-            }
-            else -> throw IllegalArgumentException("Invalid view type")
-        }
+        val view = LayoutInflater.from(parent.context)
+            .inflate(ItemVariantChipViewHolder.LAYOUT, parent, false)
+        return ItemVariantChipViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = optionList.size
@@ -52,13 +39,7 @@ class AtcVariantOptionAdapter(val listener: AtcVariantListener) : RecyclerView.A
         if (option.currentState == VariantConstant.STATE_SELECTED) listener.onSelectionChanged(holderItem.itemView, position)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (optionList[position].hasCustomImages) {
-            TYPE_IMAGE
-        } else {
-            TYPE_CHIP
-        }
-    }
+    override fun getItemViewType(position: Int) = 0
 
     inner class AtcVariantOptionDiffUtilCallback(
             private val oldList: List<VariantOptionWithAttribute>,

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -53,14 +54,10 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.emptyAddress
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
-import com.tokopedia.productcard.video.ProductVideoAutoplay
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -70,6 +67,8 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.InspirationCarouselAnalyticsData
 import com.tokopedia.search.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.analytics.InspirationCarouselTrackingUnificationDataMapper.getSortFilterParamStringFromSearchParameter
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
 import com.tokopedia.search.analytics.RecommendationTracking
 import com.tokopedia.search.analytics.SearchEventTracking
@@ -91,7 +90,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.decorati
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BannerListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
+import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
@@ -109,10 +108,14 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDele
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.performancemonitoring.stopPerformanceMonitoring
+import com.tokopedia.search.result.product.querykeyprovider.QueryKeyProvider
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.searchparameterprovider.SearchParameterProvider
+import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
@@ -130,8 +133,10 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import com.tokopedia.video_widget.VideoPlayerAutoplay
+import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
+import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import org.json.JSONArray
-import timber.log.Timber
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -151,7 +156,10 @@ class ProductListFragment: BaseDaggerFragment(),
     ChooseAddressListener,
     BannerListener,
     LastFilterListener,
-    ProductListParameterListener {
+    ProductListParameterListener,
+    QueryKeyProvider,
+    SearchParameterProvider,
+    FragmentProvider {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -159,7 +167,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC"
         private const val LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT"
         private const val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
-        private const val SEARCH_RESULT_PRODUCT_ONBOARDING_TAG = "SEARCH_RESULT_PRODUCT_ONBOARDING_TAG"
         private const val REQUEST_CODE_LOGIN = 561
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
@@ -217,9 +224,13 @@ class ProductListFragment: BaseDaggerFragment(),
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
-    private val productVideoAutoplay : ProductVideoAutoplay by lazy {
-        ProductVideoAutoplay(remoteConfig)
+    private val productVideoAutoplay : VideoPlayerAutoplay by lazy {
+        VideoPlayerAutoplay(remoteConfig)
     }
+    private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
+    private lateinit var networkMonitor : DefaultNetworkMonitor
+
+    override fun getFragment(): Fragment = this
 
     //region onCreate Fragments
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -228,6 +239,7 @@ class ProductListFragment: BaseDaggerFragment(),
         loadDataFromArguments()
         initTrackingQueue()
         initProductCardLifecycleObserver()
+        initNetworkMonitor()
     }
 
     private fun loadDataFromArguments() {
@@ -255,6 +267,10 @@ class ProductListFragment: BaseDaggerFragment(),
             productCardLifecycleObserver = it
             lifecycle.addObserver(it)
         }
+    }
+
+    private fun initNetworkMonitor() {
+        networkMonitor = DefaultNetworkMonitor(activity, this)
     }
 
     override fun initInjector() {
@@ -289,6 +305,7 @@ class ProductListFragment: BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         restoreInstanceState(savedInstanceState)
+        initVideoCarouselWidgetController()
         initViews(view)
         addDefaultSelectedSort()
         initProductVideoAutoplayLifecycleObserver()
@@ -310,6 +327,13 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initProductVideoAutoplayLifecycleObserver() {
         productVideoAutoplay.registerLifecycleObserver(viewLifecycleOwner)
+    }
+
+    private fun initVideoCarouselWidgetController() {
+        videoCarouselWidgetCoordinator = VideoCarouselWidgetCoordinator(
+            lifecycleOwner = this,
+            hasExternalAutoPlayController = true,
+        )
     }
     //endregion
 
@@ -359,7 +383,16 @@ class ProductListFragment: BaseDaggerFragment(),
             this,
         )
 
+        val videoCarouselListenerDelegate = VideoCarouselListenerDelegate(
+            activity,
+            trackingQueue,
+            inspirationCarouselTrackingUnification,
+            this,
+            this
+        )
+
         val productListTypeFactory = ProductListTypeFactoryImpl(
+            fragmentProvider = this,
             productListener = this,
             tickerListener = this,
             suggestionListener = this,
@@ -382,7 +415,10 @@ class ProductListFragment: BaseDaggerFragment(),
             bannerListener = this,
             lastFilterListener = this,
             inspirationSizeListener = inspirationWidgetListenerDelegate,
-            violationListener = ViolationListenerDelegate(activity)
+            violationListener = ViolationListenerDelegate(activity),
+            videoCarouselListener = videoCarouselListenerDelegate,
+            videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
+            networkMonitor = networkMonitor
         )
 
         productListAdapter = ProductListAdapter(itemChangeView = this, typeFactory = productListTypeFactory)
@@ -463,7 +499,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override val isLandingPage: Boolean
         get() = searchParameter?.getBoolean(SearchApiConst.LANDING_PAGE) ?: false
 
-    private fun getSearchParameter(): SearchParameter? {
+    override fun getSearchParameter(): SearchParameter? {
         return searchParameter
     }
 
@@ -1278,12 +1314,6 @@ class ProductListFragment: BaseDaggerFragment(),
             return !isSortHasDefaultValue(mapParameter)
         }
 
-    private fun getSortFilterParamStringFromSearchParameter() =
-        searchParameter?.let {
-            @Suppress("UNCHECKED_CAST")
-            getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, String?>)
-        } ?: ""
-
     override fun refreshSearchParameter(queryParams: Map<String, String>) {
         searchParameter?.resetParams(queryParams)
         searchNavigationListener?.updateSearchParameter(searchParameter)
@@ -1406,15 +1436,6 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.onInspirationCarouselProductImpressed(product)
     }
 
-    private fun createCarouselTrackingUnificationData(
-        product: InspirationCarouselDataView.Option.Product
-    ): InspirationCarouselTrackingUnification.Data =
-        InspirationCarouselTrackingUnification.Data(
-            queryKey,
-            product,
-            getSortFilterParamStringFromSearchParameter(),
-        )
-
     override fun onInspirationCarouselListProductClicked(
         product: InspirationCarouselDataView.Option.Product
     ) {
@@ -1423,7 +1444,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventImpressionInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
         val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val products = ArrayList<Any>()
@@ -1440,7 +1461,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
         val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val products = ArrayList<Any>()
@@ -1456,7 +1477,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val products = ArrayList<Any>()
@@ -1471,7 +1492,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val products = ArrayList<Any>()
@@ -1498,7 +1519,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackEventImpressionInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
-        val data = createCarouselTrackingUnificationData(product)
+        val data = createCarouselTrackingUnificationData(product, searchParameter)
         val trackingQueue = trackingQueue ?: return
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
@@ -1608,7 +1629,7 @@ class ProductListFragment: BaseDaggerFragment(),
         inspirationCarouselProduct: InspirationCarouselDataView.Option.Product
     ) {
         val trackingQueue = trackingQueue ?: return
-        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
+        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data) {
             val broadMatchItemAsObjectDataLayer = ArrayList<Any>()
@@ -1629,7 +1650,7 @@ class ProductListFragment: BaseDaggerFragment(),
         type: String,
         inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
     ) {
-        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct)
+        val data = createCarouselTrackingUnificationData(inspirationCarouselProduct, searchParameter)
 
         inspirationCarouselTrackingUnification.trackCarouselClick(data) {
             val broadMatchItem = ArrayList<Any>()
@@ -1940,36 +1961,9 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     //endregion
 
-    //region Choose Address / Localizing Address / LCA
     override fun onLocalizingAddressSelected() {
         presenter?.onLocalizingAddressSelected()
     }
-
-    override fun getFragment() = this
-
-    override val isChooseAddressWidgetEnabled: Boolean = true
-
-    override val chooseAddressData: LocalCacheModel
-        get() = context?.let {
-            try {
-                ChooseAddressUtils.getLocalizingAddressData(it)
-            } catch (e: Throwable) {
-                Timber.w(e)
-                emptyAddress
-            }
-        } ?: emptyAddress
-
-    override fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean {
-        return context?.let {
-            try {
-                ChooseAddressUtils.isLocalizingAddressHasUpdated(it, currentChooseAddressData)
-            } catch (e: Throwable) {
-                Timber.w(e)
-                false
-            }
-        } ?: false
-    }
-    //endregion
 
     //region Banner
     override fun onBannerClicked(bannerDataView: BannerDataView) {
