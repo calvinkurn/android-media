@@ -3,7 +3,6 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -19,7 +18,9 @@ import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
 import com.tokopedia.topads.common.data.response.KeySharedModel
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
+import com.tokopedia.topads.common.view.TopadsAutoBidSwitchPartialLayout
 import com.tokopedia.topads.common.view.adapter.viewpager.KeywordEditPagerAdapter
+import com.tokopedia.topads.common.view.sheet.BidInfoBottomSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
@@ -36,15 +37,10 @@ import com.tokopedia.topads.edit.utils.Constants.POSITIVE_DELETE
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_EDIT
 import com.tokopedia.topads.edit.utils.Constants.POSITIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.STRATEGIES
-import com.tokopedia.topads.edit.utils.showChangeBidTypeConfirmationDialog
 import com.tokopedia.topads.edit.view.activity.SaveButtonStateCallBack
-import com.tokopedia.topads.edit.view.sheet.BidInfoBottomSheet
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 
 private const val CLICK_KATA_KUNCI_POSITIF = "click - kata kunci positif"
 private const val CLICK_KATA_KUNCI_NEGATIF = "click - kata kunci negatif"
@@ -56,9 +52,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
-    private lateinit var switchBidEditKeyword: SwitchUnify
-    private var txtBidTitleEditKeyword: Typography? = null
-    private var ivBidInfoEditKeyword: ImageUnify? = null
+    private var autoBidSwitch: TopadsAutoBidSwitchPartialLayout? = null
     private var keywordGroup: LinearLayout? = null
     private var autoBidTicker: Ticker? = null
     private var chipKeyword: ChipsUnify? = null
@@ -85,7 +79,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(
             resources.getLayout(R.layout.topads_edit_keyword_base_layout),
@@ -97,9 +91,7 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     }
 
     private fun initView(view: View) {
-        switchBidEditKeyword = view.findViewById(R.id.switchBidEditKeyword) //checked for otomatis
-        txtBidTitleEditKeyword = view.findViewById(R.id.txtBidTitleEditKeyword)
-        ivBidInfoEditKeyword = view.findViewById(R.id.ivBidInfoEditKeyword)
+        autoBidSwitch = view.findViewById(R.id.autoBidSwitchLayout)
         keywordGroup = view.findViewById(R.id.keyword_grp)
         autoBidTicker = view.findViewById(R.id.autobid_ticker)
         chipKeyword = view.findViewById(R.id.keyword)
@@ -153,30 +145,21 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             viewPager?.currentItem = POSITION1
         }
 
-        //disabling isclickable, to make sure switch button state change only if user confirms
-        switchBidEditKeyword.isClickable = false
-        switchBidEditKeyword.setOnTouchListener { view, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                context?.let {
-                    showChangeBidTypeConfirmationDialog(it, isBidAutomatic()) {
-                        switchBidEditKeyword.isChecked = !switchBidEditKeyword.isChecked
-                        handleAutoBidState(if (isBidAutomatic()) AUTO_BID_STATE else "")
-                    }
-                }
+        autoBidSwitch?.let {
+            it.onCheckBoxStateChanged = { isAutomatic ->
+                handleAutoBidState(if (isAutomatic) AUTO_BID_STATE else "")
             }
-            false
+
+            it.onInfoClicked = {
+                BidInfoBottomSheet().show(childFragmentManager, "")
+            }
         }
 
-        ivBidInfoEditKeyword?.setOnClickListener {
-            BidInfoBottomSheet().show(childFragmentManager, "")
-        }
     }
-
-    private fun isBidAutomatic() = switchBidEditKeyword.isChecked
 
     private fun handleInitialAutoBidState(it: String) {
         handleAutoBidState(it)
-        switchBidEditKeyword.isChecked = it.isNotEmpty()
+        if(it.isNotEmpty()) autoBidSwitch?.switchToAutomatic() else autoBidSwitch?.switchToManual()
     }
 
     private fun handleAutoBidState(autoBidState: String) {
@@ -276,8 +259,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
             }
         }
         strategies.clear()
-        if (isBidAutomatic()) {
-            strategies.add("auto_bid")
+        if (autoBidSwitch?.isBidAutomatic == true) {
+            strategies.add(ParamObject.AUTO_BID_STATE)
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
         dataMap[POSITIVE_DELETE] = deletedKeywordsPos

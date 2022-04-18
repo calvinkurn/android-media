@@ -2,12 +2,6 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.seller.menu.common.domain.usecase.BalanceInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetShopBadgeUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetShopTotalFollowersUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.GetUserShopInfoUseCase
-import com.tokopedia.seller.menu.common.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
@@ -43,7 +37,6 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTickerUseCase
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -222,25 +215,4 @@ class SellerHomeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
 
-    @SellerHomeScope
-    @Provides
-    fun provideGetAllShopInfoUseCase(
-        userSession: UserSessionInterface,
-        balanceInfoUseCase: BalanceInfoUseCase,
-        getShopBadgeUseCase: GetShopBadgeUseCase,
-        getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase,
-        getUserShopInfoUseCase: GetUserShopInfoUseCase,
-        topAdsDashboardDepositUseCase: TopAdsDashboardDepositUseCase,
-        dispatchers: CoroutineDispatchers
-    ): GetAllShopInfoUseCase {
-        return GetAllShopInfoUseCase(
-            userSession,
-            balanceInfoUseCase,
-            getShopBadgeUseCase,
-            getShopTotalFollowersUseCase,
-            getUserShopInfoUseCase,
-            topAdsDashboardDepositUseCase,
-            dispatchers
-        )
-    }
 }

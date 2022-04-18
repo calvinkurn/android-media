@@ -11,10 +11,6 @@ object ReviewInboxConstants {
     const val TAB_BUYER_REVIEW = 3
     const val EXTRA_FROM_PUSH = "from_notif"
     const val GCM_NOTIFICATION = "GCM_NOTIFICATION"
-    const val PARAM_TAB = "tab"
-    const val PENDING_TAB = "waiting-review"
-    const val HISTORY_TAB = "history"
-    const val SELLER_TAB = "seller"
     const val PARAM_SOURCE = "pageSource"
     const val DEFAULT_SOURCE = "app link"
 

@@ -71,7 +71,7 @@
             android:layout_marginEnd="@dimen/unify_space_2"
             android:maxLines="1"
             android:text="@string/tp_transaksi"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:typographyType="body_3" />
 
         <LinearLayout
@@ -92,7 +92,7 @@
             android:layout_toEndOf="@id/digitContainer"
             android:maxLines="1"
             android:text="@string/tp_lagi"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -104,7 +104,7 @@
             android:layout_marginEnd="@dimen/unify_space_16"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Static_White"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Gold" />
@@ -137,7 +137,7 @@
                 android:layout_height="@dimen/tp_dp_20"
                 android:layout_gravity="center|end"
                 android:layout_marginTop="2dp"
-                android:layout_marginEnd="-2dp"
+                android:layout_marginEnd="-4dp"
                 android:elevation="@dimen/unify_space_2" />
 
         </FrameLayout>

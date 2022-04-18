@@ -4,6 +4,280 @@
       "dynamicHomeChannel": {
         "channels": [
           {
+            "id": 38004,
+            "dividerType": 0,
+            "group_id": 237,
+            "galaxy_attribution": "PG",
+            "persona": "",
+            "brand_id": "",
+            "category_persona": "",
+            "name": "Android Test - Campaign featuring",
+            "layout": "campaign_featuring",
+            "type": "inspiration",
+            "pageName": "",
+            "showPromoBadge": false,
+            "categoryID": "{}",
+            "perso_type": 1,
+            "campaignCode": "",
+            "has_close_button": false,
+            "isAutoRefreshAfterExpired": true,
+            "token": "",
+            "widgetParam": "",
+            "contextualInfo": 0,
+            "viewAllCard": {
+              "id": 587,
+              "contentType": "default",
+              "title": "Voucher Lainnya di Tokopedia!",
+              "description": "",
+              "imageUrl": "https://images.tokopedia.net/img/",
+              "gradientColor": [
+                "#FFFFFF"
+              ]
+            },
+            "header": {
+              "id": 12145,
+              "name": "Campaign Featuring Test Header",
+              "subtitle": "haiya",
+              "url": "",
+              "applink": "https://google.com",
+              "serverTime": 0,
+              "expiredTime": "",
+              "backColor": "",
+              "backImage": "",
+              "textColor": "#31353b"
+            },
+            "grids": [
+              {
+                "campaignCode": "",
+                "id": 433192,
+                "expiredTime": "2022-02-15T17:00:00+07:00",
+                "label": "Rilisan Spesial mulai",
+                "back_color": "",
+                "name": "Cashback 5% hingga",
+                "url": "https://staging.tokopedia.com/christin-os-1/bar4ng-du44",
+                "applink": "tokopedia://product/2147956088",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/22/5e162848-fb41-485f-871e-713a278e8c97.jpg",
+                "productImageUrl": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "isTopads": false,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "productViewCountFormatted": "",
+                "isOutOfStock": false,
+                "warehouseID": 0,
+                "minOrder": 0,
+                "recommendationType": "",
+                "shop": {
+                  "shopID": 6550307,
+                  "name": "Shop Test",
+                  "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                  "url": "https://staging.tokopedia.com/christin-os-1",
+                  "applink": "tokopedia://shop/6550307"
+                },
+                "labelGroup": [],
+                "has_buy_button": false,
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "benefit": {
+                  "type": "",
+                  "value": "Rp100.000"
+                },
+                "textColor": "",
+                "badges": [
+                  {
+                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                  }
+                ]
+              },
+              {
+                "campaignCode": "",
+                "id": 433192,
+                "expiredTime": "2022-02-15T17:00:00+07:00",
+                "label": "Rilisan Spesial mulai",
+                "back_color": "",
+                "name": "Cashback 5% hingga",
+                "url": "https://staging.tokopedia.com/christin-os-1/bar4ng-du44",
+                "applink": "tokopedia://product/2147956088",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/22/5e162848-fb41-485f-871e-713a278e8c97.jpg",
+                "productImageUrl": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "isTopads": false,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "productViewCountFormatted": "",
+                "isOutOfStock": false,
+                "warehouseID": 0,
+                "minOrder": 0,
+                "recommendationType": "",
+                "shop": {
+                  "shopID": 6550307,
+                  "name": "Shop Test",
+                  "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                  "url": "https://staging.tokopedia.com/christin-os-1",
+                  "applink": "tokopedia://shop/6550307"
+                },
+                "labelGroup": [],
+                "has_buy_button": false,
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "benefit": {
+                  "type": "",
+                  "value": "Rp100.000"
+                },
+                "textColor": "",
+                "badges": [
+                  {
+                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                  }
+                ]
+              },
+              {
+                "campaignCode": "",
+                "id": 433192,
+                "expiredTime": "2022-02-15T17:00:00+07:00",
+                "label": "Rilisan Spesial mulai",
+                "back_color": "",
+                "name": "Cashback 5% hingga",
+                "url": "https://staging.tokopedia.com/christin-os-1/bar4ng-du44",
+                "applink": "tokopedia://product/2147956088",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/22/5e162848-fb41-485f-871e-713a278e8c97.jpg",
+                "productImageUrl": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "isTopads": false,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "productViewCountFormatted": "",
+                "isOutOfStock": false,
+                "warehouseID": 0,
+                "minOrder": 0,
+                "recommendationType": "",
+                "shop": {
+                  "shopID": 6550307,
+                  "name": "Shop Test",
+                  "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                  "url": "https://staging.tokopedia.com/christin-os-1",
+                  "applink": "tokopedia://shop/6550307"
+                },
+                "labelGroup": [],
+                "has_buy_button": false,
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "benefit": {
+                  "type": "",
+                  "value": "Rp100.000"
+                },
+                "textColor": "",
+                "badges": [
+                  {
+                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                  }
+                ]
+              },
+              {
+                "campaignCode": "",
+                "id": 433192,
+                "expiredTime": "2022-02-15T17:00:00+07:00",
+                "label": "Rilisan Spesial mulai",
+                "back_color": "",
+                "name": "Cashback 5% hingga",
+                "url": "https://staging.tokopedia.com/christin-os-1/bar4ng-du44",
+                "applink": "tokopedia://product/2147956088",
+                "price": "",
+                "slashedPrice": "",
+                "discount": "",
+                "imageUrl": "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/22/5e162848-fb41-485f-871e-713a278e8c97.jpg",
+                "productImageUrl": "",
+                "soldPercentage": 0,
+                "attribution": "",
+                "productClickUrl": "",
+                "impression": "",
+                "cashback": "",
+                "isTopads": false,
+                "freeOngkir": {
+                  "isActive": false,
+                  "imageUrl": ""
+                },
+                "productViewCountFormatted": "",
+                "isOutOfStock": false,
+                "warehouseID": 0,
+                "minOrder": 0,
+                "recommendationType": "",
+                "shop": {
+                  "shopID": 6550307,
+                  "name": "Shop Test",
+                  "imageUrl": "https://images.tokopedia.net/img/cache/215-square/GAnVPX/2022/2/8/c764a972-51c3-4ae5-a967-ae6597adf87c.png",
+                  "url": "https://staging.tokopedia.com/christin-os-1",
+                  "applink": "tokopedia://shop/6550307"
+                },
+                "labelGroup": [],
+                "has_buy_button": false,
+                "rating": 0,
+                "ratingAverage": "",
+                "count_review": 0,
+                "benefit": {
+                  "type": "",
+                  "value": "Rp100.000"
+                },
+                "textColor": "",
+                "badges": [
+                  {
+                    "image_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
+                  }
+                ]
+              }
+            ],
+            "banner": {
+              "id": 2195,
+              "title": "",
+              "description": "",
+              "url": "",
+              "back_color": "",
+              "cta": {
+                "type": "",
+                "mode": "",
+                "text": "",
+                "coupon_code": ""
+              },
+              "applink": "",
+              "text_color": "#ffffff",
+              "image_url": "",
+              "attribution": "",
+              "gradient_color": [
+                "#FFFFFF"
+              ]
+            }
+          },
+          {
             "id": 67859,
             "name": "Kejar Diskon Tokopedia Dibawah 99rb 19 Januari 2021 - Slot 2",
             "layout": "top_carousel",

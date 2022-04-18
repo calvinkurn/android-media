@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.notifications.data.converters.CarouselConverter;
 import com.tokopedia.notifications.data.converters.GridConverter;
+import com.tokopedia.notifications.data.converters.PayloadExtraConverter;
 import com.tokopedia.notifications.data.converters.JsonObjectConverter;
 import com.tokopedia.notifications.data.converters.NotificationModeConverter;
 import com.tokopedia.notifications.data.converters.NotificationStatusConverter;
@@ -31,7 +32,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 10)
+}, version = 11)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -42,6 +43,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         GridConverter.class,
         ProductInfoConverter.class,
         PushPersistentButtonConvertor.class,
+        PayloadExtraConverter.class,
         PushPayloadExtraConverter.class
 })
 public abstract class RoomNotificationDB extends RoomDatabase {
@@ -69,7 +71,7 @@ public abstract class RoomNotificationDB extends RoomDatabase {
         }
     };
 
-    private static Migration MIGRATION_3_4 = new Migration(3, 4) {
+    private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `customValues` TEXT");
@@ -116,9 +118,18 @@ public abstract class RoomNotificationDB extends RoomDatabase {
     private static final Migration MIGRATION_9_10 = new Migration(9, 10) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `payloadExtra` TEXT");
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `payloadExtra` TEXT");
+        }
+    };
+
+    private static final Migration MIGRATION_10_11 = new Migration(10, 11) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE `BaseNotificationModel` ADD COLUMN `push_payload_extra` TEXT");
         }
     };
+
 
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -135,7 +146,8 @@ public abstract class RoomNotificationDB extends RoomDatabase {
                                     MIGRATION_6_7,
                                     MIGRATION_7_8,
                                     MIGRATION_8_9,
-                                    MIGRATION_9_10
+                                    MIGRATION_9_10,
+                                    MIGRATION_10_11
                             ).build();
                 }
             }

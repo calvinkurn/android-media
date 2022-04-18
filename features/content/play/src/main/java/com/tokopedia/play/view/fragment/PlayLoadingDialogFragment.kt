@@ -11,16 +11,27 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import com.bumptech.glide.Glide
 import com.tokopedia.play.R
+import javax.inject.Inject
 import com.tokopedia.resources.common.R as commonResourceR
 
 /**
  * Created by jegul on 16/03/20
  */
-class PlayLoadingDialogFragment : DialogFragment() {
+class PlayLoadingDialogFragment @Inject constructor() : DialogFragment() {
 
     companion object {
-        fun newInstance(): PlayLoadingDialogFragment {
-            return PlayLoadingDialogFragment()
+        private const val TAG = "PlayLoadingDialogFragment"
+
+        fun get(fragmentManager: FragmentManager, classLoader: ClassLoader): PlayLoadingDialogFragment {
+            val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayLoadingDialogFragment
+            return if (oldInstance != null) oldInstance
+            else {
+                val fragmentFactory = fragmentManager.fragmentFactory
+                fragmentFactory.instantiate(
+                    classLoader,
+                    PlayLoadingDialogFragment::class.java.name
+                ) as PlayLoadingDialogFragment
+            }
         }
     }
 
@@ -43,7 +54,7 @@ class PlayLoadingDialogFragment : DialogFragment() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, PlayLoadingDialogFragment::class.java.simpleName)
+        show(fragmentManager, TAG)
     }
 
     private fun setupView(view: View) {

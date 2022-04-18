@@ -1,11 +1,13 @@
 package com.tokopedia.globalnavwidget
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -14,9 +16,51 @@ import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.GLOBAL_NAV_SPAN_COU
 import com.tokopedia.globalnavwidget.GlobalNavWidgetConstant.NAV_TEMPLATE_PILL
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.global_nav_widget_layout.view.*
+import kotlin.LazyThreadSafetyMode.NONE
 
 class GlobalNavWidget: BaseCustomView {
+    private val globalNavContainerLayout: LinearLayout? by lazy(NONE) {
+        findViewById(R.id.globalNavContainerLayout)
+    }
+    private val globalNavTitleLayout: LinearLayout? by lazy(NONE) {
+        findViewById(R.id.globalNavTitleLayout)
+    }
+    private val globalNavTitle: Typography?? by lazy(NONE) {
+        findViewById(R.id.globalNavTitle)
+    }
+    private val globalNavSeeAllButton: Typography? by lazy(NONE) {
+        findViewById(R.id.globalNavSeeAllButton)
+    }
+    private val globalNavPillRecyclerView: RecyclerView? by lazy(NONE) {
+        findViewById(R.id.globalNavPillRecyclerView)
+    }
+    private val globalNavCardRecyclerView: RecyclerView? by lazy(NONE) {
+        findViewById(R.id.globalNavCardRecyclerView)
+    }
+    private val singleGlobalNavCard: CardView? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavCard)
+    }
+    private val singleGlobalNavIcon: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavIcon)
+    }
+    private val singleGlobalNavImage: AppCompatImageView? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavImage)
+    }
+    private val singleGlobalNavCategory: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavCategory)
+    }
+    private val singleGlobalNavTitle: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavTitle)
+    }
+    private val singleGlobalNavSubtitleInfoLayout: ConstraintLayout? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavSubtitleInfoLayout)
+    }
+    private val singleGlobalNavSubtitle: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavSubtitle)
+    }
+    private val singleGlobalNavInfo: Typography? by lazy(NONE) {
+        findViewById(R.id.singleGlobalNavInfo)
+    }
 
     private val backgroundGradientColorList = intArrayOf(-0x51a, -0x1a0a01, -0x140011, -0x1511)
 
