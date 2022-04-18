@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.coroutines.CoroutineScope
@@ -45,31 +44,32 @@ class ProductDetailNavigation(
 
     private var showJob: Job? = null
 
-    private var translateInProgress = false
     private var enableTabSelectedListener = true
     private var enableScrollUpListener = true
     private var enableContentChangeListener = true
     private var impressNavigation = false
+    private var isVisibile = false
 
     init {
         addView(view)
         binding.pdpNavTab.tabLayout.addOnTabSelectedListener(onTabSelectedListener)
     }
 
-    fun setup(
-        recyclerView: RecyclerView,
-        items: List<Item>,
-        listener: DynamicProductDetailListener
-    ) {
+    fun start(recyclerView: RecyclerView, listener: DynamicProductDetailListener) {
+        recyclerView.removeOnScrollListener(onScrollListener)
+        recyclerView.removeOnScrollListener(onContentScrollListener)
+
         this.listener = listener
+        recyclerView.addOnScrollListener(onScrollListener)
+        recyclerView.addOnScrollListener(onContentScrollListener)
+        this.recyclerView = recyclerView
+    }
 
-        updateItems(items)
-
-        if (this.items.isEmpty()) {
-            removeNavigationTab(recyclerView)
-        } else {
-            addNavigationTab(recyclerView)
-        }
+    fun stop(recyclerView: RecyclerView) {
+        recyclerView.removeOnScrollListener(onScrollListener)
+        recyclerView.removeOnScrollListener(onContentScrollListener)
+        toggle(false)
+        view.visibility = INVISIBLE
     }
 
     fun updateItems(items: List<Item>) {
@@ -92,22 +92,6 @@ class ProductDetailNavigation(
         }
     }
 
-    private fun removeNavigationTab(recyclerView: RecyclerView) {
-        this.recyclerView = recyclerView.apply {
-            removeOnScrollListener(onScrollListener)
-            removeOnScrollListener(onContentScrollListener)
-        }
-        toggle(false)
-        view.visibility = INVISIBLE
-    }
-
-    private fun addNavigationTab(recyclerView: RecyclerView) {
-        this.recyclerView = recyclerView.apply {
-            addOnScrollListener(onScrollListener)
-            addOnScrollListener(onContentScrollListener)
-        }
-    }
-
     private fun scrollToContent(tabPosition: Int) {
         val position = items.getOrNull(tabPosition)?.position ?: -1
         smoothScrollToPosition(position)
@@ -125,32 +109,25 @@ class ProductDetailNavigation(
     }
 
     private fun toggle(show: Boolean) {
-        if (translateInProgress) return
+        if (isVisibile == show) return
 
         val showY = 0f
         val hideY = -1f * view.height
 
         if (show) {
             view.show()
-            if (impressNavigation) {
+            if (!impressNavigation) {
                 listener?.onImpressProductDetailNavigation(
-                    getComponentTrackData(), items.map { it.label }
+                    items.map { it.label }
                 )
+                impressNavigation = true
             }
         }
 
         val y = if (show) showY else hideY
-        translateInProgress = true
-        view.animate().translationY(y).setDuration(300).withEndAction {
-            translateInProgress = false
-        }
+        view.animate().translationY(y).duration = 300
+        isVisibile = show
     }
-
-    private fun getComponentTrackData() = ComponentTrackDataModel(
-        "",
-        "",
-        -1
-    )
 
     data class Item(
         val label: String,
@@ -217,7 +194,7 @@ class ProductDetailNavigation(
 
         private fun trackOnClickTab(position: Int) {
             val label = items.getOrNull(position)?.label ?: ""
-            listener?.onClickProductDetailnavigation(getComponentTrackData(), position, label)
+            listener?.onClickProductDetailnavigation(position, label)
         }
     }
 

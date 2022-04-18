@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.tracking
 
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.tracking.TrackingConstant.Hit
 import com.tokopedia.product.detail.tracking.TrackingConstant.Item
 import com.tokopedia.product.detail.tracking.TrackingConstant.Value
@@ -14,10 +15,14 @@ object ProductDetailNavigationTracking {
     private const val ITEM_NAME = "pdp navbar"
 
     fun impressNavigation(
-        common: CommonTracker,
+        productInfo: DynamicProductInfoP1,
+        userId: String,
         data: ProductDetailNavigationTracker,
         trackingQueue: TrackingQueue
     ) {
+
+        val common = CommonTracker(productInfo, userId)
+
         val productId = common.productId
 
         val mapEvent = hashMapOf<String, Any>(
@@ -26,7 +31,7 @@ object ProductDetailNavigationTracking {
             Hit.EVENT_CATEGORY to Value.PRODUCT_DETAIL_PAGE,
             Hit.EVENT_LABEL to "",
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
-            Hit.COMPONENT to "comp:${common.componentName};temp:${common.componentType};elem:$ACTION_IMPRESSION_NAVIGATION;cpos:${common.componentPosition};",
+            Hit.COMPONENT to "",
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
             Hit.LAYOUT to "layout:${common.layoutName};catName:${common.categoryName};catId:${common.categoryId};",
             Hit.PRODUCT_ID to productId,
@@ -49,14 +54,20 @@ object ProductDetailNavigationTracking {
         trackingQueue.putEETracking(mapEvent)
     }
 
-    fun clickNavigation(common: CommonTracker, data: ProductDetailNavigationTracker) {
+    fun clickNavigation(
+        productInfo: DynamicProductInfoP1,
+        userId: String,
+        data: ProductDetailNavigationTracker
+    ) {
+        val common = CommonTracker(productInfo, userId)
+
         val mapEvent = hashMapOf<String, Any>(
             Hit.EVENT to "clickPG",
             Hit.EVENT_ACTION to ACTION_CLICK_NAVIGATION,
             Hit.EVENT_CATEGORY to Value.PRODUCT_DETAIL_PAGE,
             Hit.EVENT_LABEL to "product_id:${common.productId};button_name:${data.buttonName};button_position:${data.buttonPosition};",
             Hit.BUSINESS_UNIT to Value.PRODUCT_DETAIL_PAGE,
-            Hit.COMPONENT to "comp:${common.componentName};temp:${common.componentType};elem:$ACTION_CLICK_NAVIGATION;cpos:${common.componentPosition};",
+            Hit.COMPONENT to "",
             Hit.CURRENT_SITE to Value.TOKOPEDIA_MARKETPLACE,
             Hit.LAYOUT to "layout:${common.layoutName};catName:${common.categoryName};catId:${common.categoryId};",
             Hit.PRODUCT_ID to common.productId,

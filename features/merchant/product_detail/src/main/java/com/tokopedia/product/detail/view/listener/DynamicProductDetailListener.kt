@@ -222,6 +222,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductDetailNavigation / Navigation Bar / Tab
      */
-    fun onImpressProductDetailNavigation(componentTrackDataModel: ComponentTrackDataModel, labels: List<String>)
-    fun onClickProductDetailnavigation(componentTrackDataModel: ComponentTrackDataModel, position: Int, label: String)
+    fun onImpressBackToTop(label: String)
+    fun onImpressProductDetailNavigation(labels: List<String>)
+    fun onClickProductDetailnavigation(position: Int, label: String)
 }

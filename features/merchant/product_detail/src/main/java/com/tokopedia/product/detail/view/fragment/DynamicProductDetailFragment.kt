@@ -2322,12 +2322,21 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun initNavigationTab(data: ProductInfoP2UiData){
-        getRecyclerView()?.let { rv->
-            val items = data.navBar.items.map { item->
-                val position = getComponentPositionByName(item.componentName)
-                ProductDetailNavigation.Item(item.title, position)
+        val items = data.navBar.items.map { item->
+            val position = getComponentPositionByName(item.componentName)
+            ProductDetailNavigation.Item(item.title, position)
+        }
+
+        val navigationTab = binding?.pdpNavigationTab
+        val backToTop = binding?.pdpBackToTop
+        getRecyclerView()?.let { recyclerView ->
+            if(items.isEmpty()){
+                navigationTab?.stop(recyclerView)
+                backToTop?.stop(recyclerView)
+            } else{
+                navigationTab?.start(recyclerView, this)
+                backToTop?.start(recyclerView, this)
             }
-            binding?.pdpNavigationTab?.setup(rv, items, this)
         }
     }
 
@@ -3952,34 +3961,37 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         )
     }
 
-    private fun getCommonTracker(componentTrackDataModel: ComponentTrackDataModel): CommonTracker? {
-        val productInfo = viewModel.getDynamicProductInfoP1 ?: return null
-        return CommonTracker(productInfo, componentTrackDataModel, viewModel.userId)
-    }
-
-    override fun onImpressProductDetailNavigation(
-        componentTrackDataModel: ComponentTrackDataModel,
-        labels: List<String>
-    ) {
-        val common = getCommonTracker(componentTrackDataModel) ?: return
+    override fun onImpressProductDetailNavigation(labels: List<String>) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val userId = viewModel.userId
         labels.forEachIndexed { index, label ->
             ProductDetailNavigationTracking.impressNavigation(
-                common,
-                ProductDetailNavigationTracker(index, label),
+                productInfo,
+                userId,
+                ProductDetailNavigationTracker(index + 1, label),
                 trackingQueue
             )
         }
     }
 
-    override fun onClickProductDetailnavigation(
-        componentTrackDataModel: ComponentTrackDataModel,
-        position: Int,
-        label: String
-    ) {
-        val common = getCommonTracker(componentTrackDataModel) ?: return
+    override fun onClickProductDetailnavigation(position: Int, label: String) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val userId = viewModel.userId
         ProductDetailNavigationTracking.clickNavigation(
-            common,
+            productInfo,
+            userId,
             ProductDetailNavigationTracker(position, label)
+        )
+    }
+
+    override fun onImpressBackToTop(label: String) {
+        val productInfo = viewModel.getDynamicProductInfoP1 ?: return
+        val userId = viewModel.userId
+        ProductDetailNavigationTracking.impressNavigation(
+            productInfo,
+            userId,
+            ProductDetailNavigationTracker(0, label),
+            trackingQueue
         )
     }
 

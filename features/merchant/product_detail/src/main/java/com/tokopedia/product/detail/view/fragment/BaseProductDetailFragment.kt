@@ -68,10 +68,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         super.onViewCreated(view, savedInstanceState)
         setupSwipeLayout(view)
         setupRecyclerView(view)
-
-        binding?.pdpBackToTop?.setOnClickListener {
-            scrollToPosition(0)
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -171,20 +167,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
         rvPdp?.isNestedScrollingEnabled = false
         rvPdp?.layoutManager = CenterLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
         rvPdp?.itemAnimator = null
-
-        rvPdp?.addOnScrollListener(object: RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val layoutManager = recyclerView.layoutManager
-                if (layoutManager !is LinearLayoutManager) return
-
-                binding?.pdpBackToTop?.run {
-                    val scale = if(layoutManager.findFirstVisibleItemPosition() == 0) 0f else 1f
-                    animate().scaleX(scale).scaleY(scale).setDuration(265)
-                }
-            }
-        })
         showLoading()
 
         rvPdp?.adapter = productAdapter
