@@ -135,11 +135,6 @@
 
         </RelativeLayout>
 
-        <View
-            android:id="@+id/coachmark_anchor"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"/>
-
         <LinearLayout
             android:id="@+id/add_comment_area"
             android:layout_width="match_parent"
