@@ -8,8 +8,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.ImageUnify
-import kotlinx.android.synthetic.main.topads_insight_bottomsheet_page_1.view.*
-
 
 /**
  * Created by Pika on 21/7/20.
