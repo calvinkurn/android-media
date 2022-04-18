@@ -1,5 +1,6 @@
 package com.tokopedia.reviewcommon.extension
 
+import com.tokopedia.reviewcommon.constant.AnalyticConstant
 import com.tokopedia.reviewcommon.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -63,28 +64,28 @@ fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerce(
             .appendPromotionsEnhancedEcommerceItemName(itemName)
             .appendPromotionsEnhancedEcommerceCreativeSlot(creativeSlot)
     )
-    val payloadPromotions = mapOf("promotions" to promotions)
-    val payloadPromoView = mapOf("promoView" to payloadPromotions)
-    put(ReviewDetailTrackerConstant.KEY_ECOMMERCE, payloadPromoView)
+    val payloadPromotions = mapOf(AnalyticConstant.KEY_PROMOTIONS to promotions)
+    val payloadPromoView = mapOf(AnalyticConstant.KEY_PROMO_VIEW to payloadPromotions)
+    put(AnalyticConstant.KEY_ECOMMERCE, payloadPromoView)
     return this
 }
 
 fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceItemId(attachmentId: String): MutableMap<String, Any> {
-    put("item_id", attachmentId)
+    put(AnalyticConstant.KEY_ITEM_ID, attachmentId)
     return this
 }
 
 fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeName(creativeName: String): MutableMap<String, Any> {
-    put("creative_name", creativeName)
+    put(AnalyticConstant.KEY_CREATIVE_NAME, creativeName)
     return this
 }
 
 fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceItemName(name: String): MutableMap<String, Any> {
-    put("item_name", name)
+    put(AnalyticConstant.KEY_ITEM_NAME, name)
     return this
 }
 
 fun MutableMap<String, Any>.appendPromotionsEnhancedEcommerceCreativeSlot(position: Int): MutableMap<String, Any> {
-    put("creative_slot", position.toString())
+    put(AnalyticConstant.KEY_CREATIVE_SLOT, position.toString())
     return this
 }

@@ -81,7 +81,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
         userId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_VIEW_ITEM,
+            ReviewDetailTrackerConstant.EVENT_PROMO_VIEW,
             ReviewDetailTrackerConstant.EVENT_CATEGORY,
             ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
             String.format(ReviewDetailTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
@@ -101,7 +101,7 @@ class ReviewMediaGalleryTracker @Inject constructor(
         userId: String
     ) {
         mutableMapOf<String, Any>().appendGeneralEventData(
-            ReviewDetailTrackerConstant.EVENT_VIEW_ITEM,
+            ReviewDetailTrackerConstant.EVENT_PROMO_VIEW,
             ReviewDetailTrackerConstant.EVENT_CATEGORY,
             ReviewDetailTrackerConstant.EVENT_ACTION_IMPRESS_IMAGE,
             String.format(ReviewDetailTrackerConstant.EVENT_LABEL_IMPRESS_IMAGE, imageCount)
