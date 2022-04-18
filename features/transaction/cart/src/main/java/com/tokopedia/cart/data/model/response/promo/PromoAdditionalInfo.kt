@@ -18,4 +18,7 @@ data class PromoAdditionalInfo (
 
         @SerializedName("usage_summaries")
         var usageSummaries: List<UsageSummaries> = emptyList(),
+
+        @SerializedName("poml_auto_applied")
+        var pomlAutoApplied: Boolean = false,
 )

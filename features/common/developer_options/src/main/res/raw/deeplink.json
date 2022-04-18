@@ -677,7 +677,7 @@
      {
           "destination_activity": "com.tokopedia.topchat.chatlist.activity.ChatListActivity", 
           "deeplink": "tokopedia-android-internal://global/topchat", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.TOPCHAT"
+          "deeplink_variable": "ApplinkConstInternalMarketplace.TOPCHAT"
      }, 
      {
           "destination_activity": "com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity", 
@@ -687,7 +687,7 @@
      {
           "destination_activity": "com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity", 
           "deeplink": "tokopedia-android-internal://global/topchat/.*\\", 
-          "deeplink_variable": "ApplinkConstInternalGlobal.TOPCHAT_ROOM"
+          "deeplink_variable": "ApplinkConstInternalMarketplace.TOPCHAT_ROOM"
      }, 
      {
           "destination_activity": "com.tokopedia.onboarding.view.activity.OnboardingActivity", 
@@ -2263,6 +2263,11 @@
           "destination_activity": "com.tokopedia.webview.BrowserRedirectActivity", 
           "deeplink": "tokopedia-android-internal://global/browser", 
           "deeplink_variable": "ApplinkConstInternalGlobal.BROWSER"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.data_explorer.db_explorer.presentation.DataExplorerActivity", 
+          "deeplink": "tokopedia-android-internal://global/data-explorer", 
+          "deeplink_variable": "ApplinkConstInternalGlobal.DATA_EXPLORER"
      }, 
      {
           "destination_activity": "com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity", 

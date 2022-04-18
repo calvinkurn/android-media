@@ -112,7 +112,7 @@ class ProductDescBottomSheet: BottomSheetUnify() {
                 }
 
                 if (::listener.isInitialized) {
-                    buyWidgetProductDesc.showBuyWidget(denomData, listener)
+                    buyWidgetProductDesc.renderBuyWidget(denomData, listener)
                 }
             }
         }
