@@ -10,8 +10,7 @@ import com.tokopedia.play.data.multiplelikes.UpdateMultipleLikeConfig
 import com.tokopedia.play.data.realtimenotif.RealTimeNotification
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
-import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.play_common.domain.model.interactive.ChannelQuiz
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import java.lang.reflect.Type
 
@@ -136,7 +135,7 @@ class PlaySocketMapper(
         return convertToModel(webSocketResponse.jsonObject, UserWinnerStatus::class.java)
     }
 
-    private fun mapToChannelQuiz(): ChannelQuiz? = convertToModel(webSocketResponse.jsonObject, ChannelQuiz::class.java)
+    private fun mapToChannelQuiz(): QuizResponse? = convertToModel(webSocketResponse.jsonObject, QuizResponse::class.java)
 
     private fun <T> convertToModel(jsonElement: JsonElement?, classOfT: Class<T>): T? {
         try {

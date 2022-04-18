@@ -11,9 +11,9 @@ import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
  */
 class QuizListCompleteAdapterDelegate(
     listener: QuizChoiceViewHolder.Listener
-) : TypedAdapterDelegate<QuizChoicesUiModel.Complete, QuizChoicesUiModel, QuizChoiceViewHolder>(R.layout.item_quiz_option), QuizChoiceViewHolder.Listener by listener {
+) : TypedAdapterDelegate<QuizChoicesUiModel, QuizChoicesUiModel, QuizChoiceViewHolder>(R.layout.item_quiz_option), QuizChoiceViewHolder.Listener by listener {
 
-    override fun onBindViewHolder(item: QuizChoicesUiModel.Complete, holder: QuizChoiceViewHolder) {
+    override fun onBindViewHolder(item: QuizChoicesUiModel, holder: QuizChoiceViewHolder) {
         holder.bind(item)
     }
 

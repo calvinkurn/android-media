@@ -16,8 +16,6 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
-import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
-import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
@@ -76,8 +74,6 @@ class PlayUiModelMapper @Inject constructor(
         return interactiveMapper.mapInteractive(input)
     }
 
-    fun mapInteractiveLeaderboard(input: GetInteractiveLeaderboardResponse): PlayLeaderboardInfoUiModel {
-        return interactiveLeaderboardMapper.mapLeaderboard(input) { false }
     fun mapInteractiveLeaderboard(input: GetLeaderboardSlotResponse): PlayLeaderboardInfoUiModel {
         return interactiveLeaderboardMapper.mapNewLeaderboard(input) { false }
     }

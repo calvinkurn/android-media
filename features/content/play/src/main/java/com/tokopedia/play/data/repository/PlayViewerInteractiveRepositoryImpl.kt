@@ -9,6 +9,7 @@ import com.tokopedia.play.domain.interactive.PostInteractiveTapUseCase
 import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
 import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
@@ -34,9 +35,46 @@ class PlayViewerInteractiveRepositoryImpl @Inject constructor(
 ) : PlayViewerInteractiveRepository, PlayInteractiveStorage by interactiveStorage {
 
     override suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel = withContext(dispatchers.io) {
-        val response = getCurrentInteractiveUseCase.apply {
-            setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-        }.executeOnBackground()
+//        val response = getCurrentInteractiveUseCase.apply {
+//            setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
+//        }.executeOnBackground()
+        val data = """
+                {
+                "playInteractiveGetCurrentInteractive": {
+                  "meta": {
+                    "active": "QUIZ", 
+                    "waitingDuration": 10
+                  },
+                  "quiz": {
+                    "interactiveID": 2,
+                    "status": 1,
+                    "question": "Kapan Tokopedia IPO?",
+                    "prize": "sepasang sepatu",
+                    "countdownEnd": 12,
+                    "choices": [
+                      {
+                        "id": "3",
+                        "text": "23 Juni 2022"
+                      },
+                      {
+                        "id": "4",
+                        "text": "11 Agustus 2022"
+                      }
+                    ],
+                    "user_choice": "" 
+                  }
+                }
+              }
+        """.trimIndent()
+        try {
+            Gson().fromJson(data, GetCurrentInteractiveResponse::class.java)
+        }
+        catch (
+            e:Exception
+        ){
+            Log.d("sukses ff", e.toString())
+        }
+        val response = Gson().fromJson(data, GetCurrentInteractiveResponse::class.java)
         return@withContext mapper.mapInteractive(response.data)
     }
 

@@ -97,3 +97,9 @@ data class AllowedWhenInactiveEvent(
         require(event !is AllowedWhenInactiveEvent)
     }
 }
+
+/**
+ * Interactive
+ * */
+
+object QuizAnsweredEvent: PlayViewerNewUiEvent()

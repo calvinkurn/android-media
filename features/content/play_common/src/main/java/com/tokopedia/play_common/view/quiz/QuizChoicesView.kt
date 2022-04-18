@@ -61,12 +61,15 @@ class QuizChoicesView : ConstraintLayout {
      * if state is default = clickable, after click turn off all clickable? Need to ask
      */
 
-    fun setupView(item: QuizChoicesUiModel.Complete) {
+    fun setupView(item: QuizChoicesUiModel) {
         when (item.type) {
             /**
              * When user clicked one of the option show loader
              */
-            PlayQuizOptionState.Loading -> loaderQuiz.show()
+            PlayQuizOptionState.Loading -> {
+                loaderQuiz.show()
+                getBackground(isDefault = true)
+            }
             /**
              * Initial state, bg is default and icon is alphabet - please loop through view holder or view or anything nanti
              */
@@ -95,7 +98,7 @@ class QuizChoicesView : ConstraintLayout {
                 getIconOption(isCorrect = item.type.isCorrect)
             }
         }
-        tvQuestion.text = item.question
+        tvQuestion.text = item.text
     }
 
     private fun getIconOption(
@@ -124,6 +127,7 @@ class QuizChoicesView : ConstraintLayout {
                 }
             )
             ivIcon.setImageDrawable(unifyDrawable)
+            ivOption.background = null
         }
     }
 

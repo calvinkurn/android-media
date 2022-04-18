@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.model.dto.interactive
 
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.util.*
 
 /**
@@ -45,6 +46,8 @@ sealed interface InteractiveUiModel {
         override val id: Long,
         override val title: String,
         val status: Status,
+        val listOfChoices: List<QuizChoicesUiModel>,
+        val reward: String,
     ) : InteractiveUiModel {
 
         sealed interface Status {

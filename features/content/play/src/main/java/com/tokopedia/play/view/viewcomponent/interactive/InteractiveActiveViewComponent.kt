@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.play.R
 import com.tokopedia.play_common.view.game.GameSmallWidgetView
+import com.tokopedia.play_common.view.game.setupOngoingGiveaway
 import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.game.setupUpcomingGiveaway
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -21,10 +22,7 @@ class InteractiveActiveViewComponent(
 
     init {
         rootView.setOnClickListener {
-            listener.onInteractiveWidgetClicked(this@InteractiveActiveViewComponent)
-        }
-        rootView.setOnClickListener {
-            listener.onWidgetClicked(this)
+            listener.onWidgetClicked(this@InteractiveActiveViewComponent)
         }
     }
 
@@ -40,22 +38,8 @@ class InteractiveActiveViewComponent(
                 onDurationEnd = { onDurationEnd() }
             )
         }
-    fun setOngoingGiveaway() {
-        //TODO("Stitch with real code")
-//        widget.setupOngoingGiveaway(
-//            desc = "Kapan ulang tahun Rockbros Indonesia?",
-//            durationInMs = 7000,
-//            onDurationEnd = {},
-//        )
     }
 
-    fun setUpcomingGiveaway() {
-        //TODO("Stitch with real code")
-//        widget.setupUpcomingGiveaway(
-//            desc = "Kapan ulang tahun Rockbros Indonesia?",
-//            durationInMs = 7000,
-//            onDurationEnd = {},
-//        )
     fun setUpcomingGiveaway(
         desc: String,
         targetTime: Calendar,
@@ -70,17 +54,7 @@ class InteractiveActiveViewComponent(
         }
     }
 
-    fun setQuiz(question: String,
-                timerInfo: String,
-                durationInMs: Long,
-                onDurationEnd: (GameSmallWidgetView) -> Unit) {
-        widget.setupQuiz(
-            question = question,
-            onDurationEnd = onDurationEnd,
-            targetTime = Calendar.getInstance().apply {
-                add(Calendar.MILLISECOND, 5000)
-            }
-        )
+
     fun setQuiz(
         question: String,
         targetTime: Calendar,

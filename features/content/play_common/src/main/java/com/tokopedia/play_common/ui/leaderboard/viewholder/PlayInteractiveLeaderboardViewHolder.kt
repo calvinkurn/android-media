@@ -39,7 +39,7 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, listener: Listener) :
     private val tvReward = itemView.findViewById<Typography>(R.id.tv_reward)
     private val rvChoices = itemView.findViewById<RecyclerView>(R.id.rv_choices)
     private val choicesAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
-        override fun onClicked(item: QuizChoicesUiModel.Complete) {}
+        override fun onClicked(item: QuizChoicesUiModel) {}
     })
 
     private val winnerAdapter = PlayInteractiveWinnerAdapter(object : PlayInteractiveWinnerViewHolder.Listener{

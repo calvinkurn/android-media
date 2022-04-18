@@ -26,11 +26,6 @@ data class GetCurrentInteractiveResponse(
 
         @SerializedName("waiting_duration")
         val waitingDuration: Int = 0,
-            @SerializedName("interactive")
-            val interactive: ChannelInteractive = ChannelInteractive(),
-
-            @SerializedName("quiz")
-            val quiz: ChannelQuiz = ChannelQuiz()
     )
 }
 
@@ -82,7 +77,7 @@ data class QuizResponse(
     @SerializedName("choices")
     val choices: List<Choice> = emptyList(),
 
-    @SerializedName("userChoice")
+    @SerializedName("user_choice")
     val userChoice: String = "",
 ) {
 
@@ -92,5 +87,8 @@ data class QuizResponse(
 
         @SerializedName("text")
         val text: String = "",
+
+        @SerializedName("isCorrect")
+        val isCorrect: Boolean? = null,
     )
 }

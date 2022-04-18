@@ -1,7 +1,7 @@
 package com.tokopedia.play_common.model.mapper
 
-import com.tokopedia.play_common.domain.model.interactive.ChannelQuiz
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.domain.usecase.interactive.GetLeaderboardSlotResponse
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
@@ -47,12 +47,12 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
         return if(leaderboardsResponse.choices.isNotEmpty()) LeadeboardType.Quiz else LeadeboardType.Giveaway
     }
 
-    fun mapChoices(choices: List<ChannelQuiz.Choices>, userPicksId: String): List<QuizChoicesUiModel> {
-        return choices.map { item: ChannelQuiz.Choices ->
-            QuizChoicesUiModel.Complete(
-                item.choicesID,
-                item.choicesText,
-                if(item.choicesID == userPicksId)
+    fun mapChoices(choices: List<QuizResponse.Choice>, userPicksId: String): List<QuizChoicesUiModel> {
+        return choices.map { item: QuizResponse.Choice ->
+            QuizChoicesUiModel(
+                item.id,
+                item.text,
+                if(item.id == userPicksId)
                     PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
                 else
                     PlayQuizOptionState.Result(isCorrect = item.isCorrect ?: false)

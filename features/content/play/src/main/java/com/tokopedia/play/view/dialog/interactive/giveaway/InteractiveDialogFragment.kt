@@ -22,8 +22,11 @@ import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.view.game.giveaway.GiveawayWidgetView
+import com.tokopedia.play_common.view.game.quiz.QuizWidgetView
 import com.tokopedia.play_common.view.game.setupGiveaway
+import com.tokopedia.play_common.view.game.setupQuiz
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -106,6 +109,7 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
                         state.interactive.interactive,
                         state.partner
                     )
+                    is InteractiveUiModel.Quiz -> renderQuizDialog(state.interactive.interactive, state.partner)
                 }
 
             }
@@ -137,6 +141,41 @@ class InteractiveDialogFragment @Inject constructor() : DialogFragment() {
                 setTargetTime(giveawayStatus.endTime) {
                     viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
                 }
+            }
+        }
+    }
+
+    private fun renderQuizDialog(
+        quiz: InteractiveUiModel.Quiz,
+        partner: PlayPartnerInfo,
+    ) {
+        val status = quiz.status
+        if (partner.status == PlayPartnerFollowStatus.Followable(false)) {
+            setChildView { ctx ->
+                val view = InteractiveFollowView(ctx)
+                view.setListener(followViewListener)
+                view
+            }.apply {
+                setBadgeUrl(partner.badgeUrl)
+                setAvatarUrl(partner.iconUrl)
+                setPartnerName(partner.name)
+                setLoading(partner.isLoadingFollow)
+                getHeader().setupQuiz(quiz.title)
+            }
+        } else if (status is InteractiveUiModel.Quiz.Status.Ongoing) {
+            setChildView { ctx ->
+                QuizWidgetView(ctx)
+            }.apply {
+                setTitle(quiz.title)
+                setTargetTime(status.endTime) {
+                    viewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+                }
+                setupQuizForm(quiz.listOfChoices)
+                setListener(object : QuizWidgetView.Listener{
+                    override fun onQuizOptionClicked(item: QuizChoicesUiModel) {
+                        viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item))
+                    }
+                })
             }
         }
     }

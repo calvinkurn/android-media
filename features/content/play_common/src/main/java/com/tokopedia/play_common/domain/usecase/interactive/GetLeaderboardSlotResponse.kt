@@ -1,8 +1,8 @@
 package com.tokopedia.play_common.domain.usecase.interactive
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.play_common.domain.model.interactive.ChannelQuiz
 import com.tokopedia.play_common.domain.model.interactive.GetInteractiveLeaderboardResponse
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 
 /**
  * @author by astidhiyaa on 06/04/22
@@ -27,7 +27,7 @@ data class GetLeaderboardSlotResponse (
         val userChoice: String = "",
 
         @SerializedName("choices")
-        val choices: List<ChannelQuiz.Choices> = emptyList(),
+        val choices: List<QuizResponse.Choice> = emptyList(),
 
         //Must-have
         @SerializedName("winners")

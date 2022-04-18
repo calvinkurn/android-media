@@ -402,7 +402,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * Like View Component Listener
      */
     override fun onLikeClicked(view: LikeViewComponent) {
-        playViewModel.submitAction(ClickLikeAction)
+//        playViewModel.submitAction(ClickLikeAction)
+        playViewModel.submitAction(ClickRetryInteractiveAction)
     }
 
     /**
@@ -910,6 +911,12 @@ class PlayUserInteractionFragment @Inject constructor(
                             message = getString(R.string.play_sharing_error_generate_link),
                             actionText = getString(R.string.play_sharing_refresh),
                         )
+                    }
+                    QuizAnsweredEvent -> {
+                        InteractiveDialogFragment.getOrCreate(
+                            childFragmentManager,
+                            requireActivity().classLoader
+                        ).dismiss()
                     }
                 }
             }

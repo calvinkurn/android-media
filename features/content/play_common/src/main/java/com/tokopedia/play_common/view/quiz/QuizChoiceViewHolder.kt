@@ -16,7 +16,7 @@ class QuizChoiceViewHolder(
 
     private val widget = itemView.findViewById<QuizChoicesView>(R.id.quiz_option)
 
-    fun bind(item: QuizChoicesUiModel.Complete){
+    fun bind(item: QuizChoicesUiModel){
         widget.setupView(item)
 
         if (item.type is PlayQuizOptionState.Default){
@@ -27,6 +27,6 @@ class QuizChoiceViewHolder(
     }
 
     interface Listener {
-        fun onClicked(item: QuizChoicesUiModel.Complete)
+        fun onClicked(item: QuizChoicesUiModel)
     }
 }

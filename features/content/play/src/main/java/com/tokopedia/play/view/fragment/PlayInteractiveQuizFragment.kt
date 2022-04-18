@@ -77,22 +77,6 @@ class PlayInteractiveQuizFragment @Inject constructor(): DialogFragment() {
 
         //TODO() testing purpose should be from the parameters
 
-        val list = mutableListOf<QuizChoicesUiModel.Complete>()
-        list.add(0, QuizChoicesUiModel.Complete("1", "Pertanyaan Answere",PlayQuizOptionState.Answered(true)))
-        list.add(1, QuizChoicesUiModel.Complete("2", "Pertanyaan Default",PlayQuizOptionState.Default('b')))
-        list.add(2, QuizChoicesUiModel.Complete("3", "Pertanyaan Result",PlayQuizOptionState.Result(false)))
-        list.add(3, QuizChoicesUiModel.Complete("4", "Pertanyaan Answer",PlayQuizOptionState.Answered(false)))
-
-        rvQuizOption.apply {
-            quizAdapter = QuizListAdapter(object : QuizChoiceViewHolder.Listener{
-                override fun onClicked(item: QuizChoicesUiModel.Complete) {
-                }
-            })
-            adapter = quizAdapter
-            layoutManager = LinearLayoutManager(rvQuizOption.context, RecyclerView.VERTICAL, false)
-            addItemDecoration(QuizOptionItemDecoration(this.context))
-        }
-        quizAdapter.setItemsAndAnimateChanges(list)
     }
 
     companion object{

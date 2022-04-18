@@ -11,7 +11,7 @@ import com.tokopedia.play_common.R
  */
 class PlayChatItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_bro_chat_spacing)
+    private val dividerHeight = 1
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.bottom = dividerHeight
