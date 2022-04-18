@@ -171,6 +171,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     if (!currentPlaceId.isNullOrEmpty()) {
                         currentPlaceId?.let { viewModel.getDistrictLocation(it) }
                     } else if (currentLong != 0.0 && currentLat != 0.0) {
+                        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                         viewModel.getDistrictData(currentLat, currentLong)
                     } else {
                         goToAddressForm()
@@ -178,6 +179,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                 }
             } else if (requestCode == GPS_REQUEST) {
                 bottomSheetLocUndefined?.dismiss()
+                showLoading()
                 Handler().postDelayed ({getLocation()}, 1000)
             }
         }
@@ -592,6 +594,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
+                    showLoading()
                     moveMap(getLatLng(data.latitude, data.longitude), ZOOM_LEVEL)
                     viewModel.getDistrictData(data.latitude, data.longitude)
                 } else {
@@ -713,6 +716,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
                     //send to maps
                     hasRequestedLocation = true
                 }
+                showLoading()
                 moveMap(getLatLng(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude), ZOOM_LEVEL)
                 viewModel.getDistrictData(locationResult.lastLocation.latitude, locationResult.lastLocation.longitude)
             }
@@ -840,7 +844,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             binding?.bottomsheetLocation?.run {
                 imgInvalidLoc.setImageUrl(LOCATION_NOT_FOUND)
                 if (isEdit) {
-                    tvInvalidLoc.text = getString(R.string.discom_empty_state_title)
+                    tvInvalidLoc.text = getString(R.string.undetected_location_new_edit)
                     if (isPinpoint) {
                         tvInvalidLocDetail.text = getString(R.string.undetected_location_desc_edit_w_pinpoint)
                         btnAnaNegative.visibility = View.GONE

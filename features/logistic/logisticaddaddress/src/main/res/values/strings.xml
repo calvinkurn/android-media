@@ -168,6 +168,7 @@
     <string name="txt_toaster_pinpoint_unmatched">Pastikan pinpoint sesuai kota &amp; kecamatan pilihanmu.</string>
     <string name="out_of_indonesia_desc_new">Saat ini Tokopedia hanya melayani pengiriman di Indonesia saja. Pilih ulang lokasimu, ya.</string>
     <string name="undetected_location_new">Yaah, alamatmu tidak terdeteksi</string>
+    <string name="undetected_location_new_edit">Yaah, lokasimu tidak terdeteksi</string>
     <string name="undetected_location_desc_new">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
     <string name="undetected_location_desc_edit_wo_pinpoint">Tenang, kamu bisa pilih ulang lokasimu atau tetap menyimpan alamat tanpa pinpoint.</string>
     <string name="undetected_location_desc_edit_w_pinpoint">Tenang, kamu bisa pilih ulang lokasimu atau pakai lokasimu sebelumnya.</string>
@@ -188,7 +189,7 @@
     <string name="tv_discom_item_revamp_province">&lt;b&gt;%1$s,&lt;/b&gt; %2$s, %3$s</string>
     <string name="tv_discom_dialog_secondary">Lain Kali</string>
     <string name="discom_on_deny_location_subtitle">Untuk menggunakan fitur ini silahkan aktifkan layanan lokasi perangkat Anda</string>
-    <string name="discom_empty_state_title">Oops, lokasimu tidak ditemukan</string>
+    <string name="discom_empty_state_title">Oops, lokasi tidak ditemukan</string>
     <string name="txt_empty_state_desc_district"> Coba periksa kembali penulisanmu.</string>
 
     <string name="tv_error_field">Wajib diisi</string>

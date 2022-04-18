@@ -168,7 +168,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         if (addressDataFromPinpoint != null) {
             if (isEdit) {
                 if (addressDataFromPinpoint.latitude != saveDataModel?.latitude || addressDataFromPinpoint.longitude != saveDataModel?.longitude) {
-                    if (kotaKecamatanFromEditPinpoint != currentKotaKecamatan) {
+                    if (kotaKecamatanFromEditPinpoint != currentKotaKecamatan && !isPositiveFlow) {
                         showToasterInfo(getString(R.string.change_pinpoint_outside_district))
                     } else {
                         showToasterInfo(getString(R.string.change_pinpoint_edit_address))
