@@ -808,6 +808,7 @@ class PlayViewModel @AssistedInject constructor(
             InteractivePreStartFinishedAction -> handleInteractivePreStartFinished()
             InteractiveOngoingFinishedAction -> handleInteractiveOngoingFinished()
             is InteractiveWinnerBadgeClickedAction -> handleWinnerBadgeClicked(action.height)
+            is InteractiveGameResultBadgeClickedAction -> showLeaderboardSheet(action.height)
             InteractiveTapTapAction -> handleTapTapAction()
             ClickCloseLeaderboardSheetAction -> handleCloseLeaderboardSheet()
             PlayViewerNewAction.Follow -> handleClickFollow(isFromLogin = false)

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -125,7 +126,8 @@ class PlayUserInteractionFragment @Inject constructor(
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
         KebabMenuViewComponent.Listener,
-        InteractiveActiveViewComponent.Listener
+        InteractiveActiveViewComponent.Listener,
+        InteractiveGameResultViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -159,6 +161,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
+    private val interactiveResultView by viewComponentOrNull { InteractiveGameResultViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -1716,6 +1719,10 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
         analytic.clickKebabMenu()
         playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
+    }
+
+    override fun onGameResultClicked(view: InteractiveGameResultViewComponent) {
+        playViewModel.submitAction(InteractiveGameResultBadgeClickedAction(bottomSheetMaxHeight))
     }
 
     companion object {

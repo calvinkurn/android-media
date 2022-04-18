@@ -30,6 +30,7 @@ object InteractivePreStartFinishedAction : PlayViewerNewAction()
 object InteractiveOngoingFinishedAction : PlayViewerNewAction()
 
 data class InteractiveWinnerBadgeClickedAction(val height: Int) : PlayViewerNewAction()
+data class InteractiveGameResultBadgeClickedAction(val height: Int) : PlayViewerNewAction()
 
 object InteractiveTapTapAction : PlayViewerNewAction()
 
