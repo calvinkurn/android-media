@@ -13,14 +13,13 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AlbumViewModelTest {
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val coroutineScopeRule = CoroutineTestRule()
+    @get:Rule val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutineScopeRule = CoroutineTestRule()
 
     private val albumRepository = mockk<AlbumRepository>()
-    private val viewModel: AlbumViewModel = AlbumViewModel(
+
+    private val viewModel = AlbumViewModel(
         albumRepository,
         coroutineScopeRule.dispatchers
     )

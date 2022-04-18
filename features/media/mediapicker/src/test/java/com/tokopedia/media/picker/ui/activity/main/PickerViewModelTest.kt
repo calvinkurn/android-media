@@ -25,12 +25,13 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class PickerViewModelTest {
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    @get:Rule
-    val coroutineScopeRule = CoroutineTestRule()
-    private val testCoroutineScope = TestCoroutineScope(coroutineScopeRule.dispatchers.main)
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutineScopeRule = CoroutineTestRule()
+
+    private val testCoroutineScope = TestCoroutineScope(
+        coroutineScopeRule.dispatchers.main
+    )
 
     private val deviceRepo = mockk<DeviceInfoRepository>()
     private val param = mockk<ParamCacheManager>()
@@ -49,7 +50,7 @@ class PickerViewModelTest {
     @Test
     fun `validate camera state`() {
         // Given
-        var eventState: EventState? = null
+        lateinit var eventState: EventState
 
         // When
         testCoroutineScope.launch {
@@ -61,6 +62,7 @@ class PickerViewModelTest {
         // Then
         stateOnCameraCapturePublished(mediaUiModelMockCollection.first())
         assert(eventState is EventPickerState.CameraCaptured)
+
         EventFlowFactory.reset()
     }
 
@@ -79,6 +81,7 @@ class PickerViewModelTest {
         // Then
         stateOnChangePublished(mediaUiModelMockCollection)
         assert(eventState is EventPickerState.SelectionChanged)
+
         EventFlowFactory.reset()
     }
 
@@ -97,16 +100,14 @@ class PickerViewModelTest {
         // Then
         stateOnRemovePublished(mediaUiModelMockCollection.first())
         assert(eventState is EventPickerState.SelectionRemoved)
+
         EventFlowFactory.reset()
     }
 
     @Test
     fun `check storage threshold`() = coroutineScopeRule.runBlockingTest {
-        // Given
-        var pickerParam = PickerParam()
-
         // When
-        every { param.get() } returns pickerParam
+        every { param.get() } returns PickerParam()
         every { deviceRepo.execute(any()) } returns true
         val isStorageLimit = viewModel.isDeviceStorageFull()
 

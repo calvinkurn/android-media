@@ -20,12 +20,12 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class CameraViewModelTest {
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutineScopeRule = CoroutineTestRule()
 
-    @get:Rule
-    val coroutineScopeRule = CoroutineTestRule()
-    private val testCoroutineScope = TestCoroutineScope(coroutineScopeRule.dispatchers.main)
+    private val testCoroutineScope = TestCoroutineScope(
+        coroutineScopeRule.dispatchers.main
+    )
 
     private lateinit var viewModel: CameraViewModel
 
@@ -49,6 +49,7 @@ class CameraViewModelTest {
         // Then
         stateOnCameraCapturePublished(mediaUiModelMockCollection.first())
         assert(eventState is EventPickerState.CameraCaptured)
+
         EventFlowFactory.reset()
     }
 
@@ -67,6 +68,7 @@ class CameraViewModelTest {
         // Then
         stateOnChangePublished(mediaUiModelMockCollection)
         assert(eventState is EventPickerState.SelectionChanged)
+
         EventFlowFactory.reset()
     }
 
@@ -85,6 +87,7 @@ class CameraViewModelTest {
         // Then
         stateOnRemovePublished(mediaUiModelMockCollection.first())
         assert(eventState is EventPickerState.SelectionRemoved)
+
         EventFlowFactory.reset()
     }
 

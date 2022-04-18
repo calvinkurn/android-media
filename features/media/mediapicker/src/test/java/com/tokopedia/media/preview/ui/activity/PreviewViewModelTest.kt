@@ -26,15 +26,16 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class PreviewViewModelTest {
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule val coroutineScopeRule = CoroutineTestRule()
 
-    @get:Rule
-    val coroutineScopeRule = CoroutineTestRule()
-    private val testCoroutineScope = TestCoroutineScope(coroutineScopeRule.dispatchers.main)
+    private val testCoroutineScope = TestCoroutineScope(
+        coroutineScopeRule.dispatchers.main
+    )
 
     private val saveToGalleryManagerMock = mockk<SaveToGalleryManager>()
     private val imageCompressorMock = mockk<ImageCompressionManager>()
+
     private lateinit var viewModel: PreviewViewModel
 
     @Before
@@ -51,17 +52,16 @@ class PreviewViewModelTest {
     fun `check isLoading not empty`() {
         // When
         every { imageCompressorMock.compress(any()) } returns flow { }
-        viewModel.files(mediaUiModelMock)
+        viewModel.files(mockMediaUiModel)
 
         // Then
         assert(viewModel.isLoading.value != null)
     }
 
-    @ExperimentalCoroutinesApi
     @Test
     fun `get result original asset`() {
         // Given
-        var pickerResult: PickerResult? = null
+        lateinit var pickerResult: PickerResult
 
         // When
         every { isVideoFormat(any()) } returns false
@@ -82,15 +82,14 @@ class PreviewViewModelTest {
                 }
         }
 
-        viewModel.files(mediaUiModelMock)
-        assertEquals(mediaUiModelMock.size, pickerResult?.originalPaths?.size)
+        viewModel.files(mockMediaUiModel)
+        assertEquals(mockMediaUiModel.size, pickerResult.originalPaths.size)
     }
 
-    @ExperimentalCoroutinesApi
     @Test
     fun `get result compressed image`() {
         // Given
-        var pickerResult: PickerResult? = null
+        lateinit var pickerResult: PickerResult
 
         // When
         every { isVideoFormat(any()) } returns false
@@ -111,12 +110,12 @@ class PreviewViewModelTest {
                 }
         }
 
-        viewModel.files(mediaUiModelMock)
-        assertEquals(expectedCompressedImageSize, pickerResult?.compressedImages?.size)
+        viewModel.files(mockMediaUiModel)
+        assertEquals(expectedCompressedImageSize, pickerResult.compressedImages.size)
     }
 
     companion object {
-        private val mediaUiModelMock = listOf(
+        private val mockMediaUiModel = listOf(
             MediaUiModel(1, "img2", "/path/img2.jpg", isFromPickerCamera = true),
             MediaUiModel(2, "img3", "/path/img3.jpg", isFromPickerCamera = true),
             MediaUiModel(3, "img1", "/path/img1.jpg"),
@@ -125,7 +124,7 @@ class PreviewViewModelTest {
             MediaUiModel(6, "vid3", "/path/vid3.mp4"),
         )
         private val expectedCompressedImageSize =
-            mediaUiModelMock.filter { it.isFromPickerCamera }.size
+            mockMediaUiModel.filter { it.isFromPickerCamera }.size
     }
 
 }
