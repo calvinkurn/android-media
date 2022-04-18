@@ -3,7 +3,6 @@ package com.tokopedia.tkpd
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
@@ -116,7 +115,10 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        RouteManager.route(this, etAppLink.text.toString())
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
     }
 
     private fun getDefaultAppLink(): String {
