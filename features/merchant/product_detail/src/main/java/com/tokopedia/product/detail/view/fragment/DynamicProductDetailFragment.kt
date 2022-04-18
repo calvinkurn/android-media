@@ -406,49 +406,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                     permissionListener = shareProductInstance?.universalSharePermissionListener
             )
         }
-
-
-
-//        view.findViewById<TabsUnify>(R.id.pdp_navigation_tab).getUnifyTabLayout().onTabSelected {
-//            val uiModel = when(it.position){
-//                0 -> pdpUiUpdater?.productDetailInfoData
-//                1 -> pdpUiUpdater?.shipmentData
-//                2 -> pdpUiUpdater?.productReviewMap
-//                else -> null
-//            }
-//
-//            val position = getComponentPosition(uiModel)
-//            scrollToPosition(position)
-//        }
-//        view.findViewById<TabItem>(R.id.pdp_navtab_item_1)?.setOnClickListener {
-//            val position = getComponentPosition(pdpUiUpdater?.productDetailInfoData)
-//            scrollToPosition(position)
-//        }
-//
-//        view.findViewById<TabItem>(R.id.pdp_navtab_item_2)?.setOnClickListener {
-//            val position = getComponentPosition(pdpUiUpdater?.shipmentData)
-//            scrollToPosition(position)
-//        }
-//
-//        view.findViewById<TabItem>(R.id.pdp_navtab_item_3)?.setOnClickListener {
-//            val position = getComponentPosition(pdpUiUpdater?.productReviewMap)
-//            scrollToPosition(position)
-//        }
-    }
-
-//    override fun onItemViewed(){
-//        view.findViewById<TabsUnify>(R.id.pdp_navigation_tab)
-//    }
-
-
-    private fun observeNavigationTab(){
-//        viewModel.showNavigationTab.observe(viewLifecycleOwner) {
-//            view?.findViewById<TabsUnify>(R.id.pdp_navigation_tab)?.showWithCondition(it)
-//        }
-    }
-
-    override fun showTemporary(view: View) {
-        viewModel.startCountShowNavTab()
     }
 
     override fun onSwipeRefresh() {
@@ -494,7 +451,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         observeDeleteCart()
         observePlayWidget()
         observeAffiliateCookie()
-        observeNavigationTab()
     }
 
     override fun loadData(forceRefresh: Boolean) {
