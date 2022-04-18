@@ -43,9 +43,9 @@ class VideoPreview(
 
             videoPlayer.listener = object : PickerVideoPlayer.Listener {
                 override fun onPlayStateChanged(isPlaying: Boolean) {
-                    videoControl.updateCenterButton(!videoPlayer.player().isPlaying)
+                    videoControl.updateCenterButton(!videoPlayer.isPlaying())
 
-                    if(videoPlayer.player().isPlaying){
+                    if(videoPlayer.isPlaying()){
                         hideJob()
                     } else {
                         cleanHideJob()
