@@ -246,6 +246,7 @@ public interface ApplinkConst {
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
+    String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
 
     String FLIGHT = "tokopedia://pesawat";
     String FLIGHT_PHONE_VERIFICATION = "tokopedia-android-internal://pesawat/phone-verification";
@@ -694,6 +695,17 @@ public interface ApplinkConst {
 
         String PARAM_SOURCE = "source";
         String PARAM_SHOW_BOTTOM_NAV = "show_bottom_nav";
+    }
+
+    interface MediaPicker {
+        String MEDIA_PICKER = "tokopedia://media-picker";
+        String MEDIA_PICKER_PREVIEW = "tokopedia://media-picker-preview";
+
+        // this param will determine which page should be landed first
+        String PARAM_LANDING_PAGE = "start";
+
+        String VALUE_CAMERA_PAGE = "0"; // camera page
+        String VALUE_GALLERY_PAGE = "1"; // gallery page
     }
 
     interface GeneralInfo {
