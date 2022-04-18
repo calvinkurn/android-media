@@ -79,7 +79,8 @@ class TwoFactorFragment: BaseDaggerFragment() {
     private fun renderViewByType(){
         when(model?.popupType){
             POPUP_TYPE_PIN -> renderPinView()
-            POPUP_TYPE_PHONE or POPUP_TYPE_BOTH -> renderPhoneView()
+            POPUP_TYPE_PHONE -> renderPhoneView()
+            POPUP_TYPE_BOTH -> renderPhoneView()
         }
     }
 

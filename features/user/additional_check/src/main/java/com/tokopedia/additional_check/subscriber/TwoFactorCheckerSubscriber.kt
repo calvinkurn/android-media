@@ -116,7 +116,9 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
         viewModel.getOffering(BiometricPromptHelper.isBiometricAvailableActivity(activity), {
             handleResponseOfferingData(activity, it)
         }, {
-            it.printStackTrace()
+            //REVERT
+//            it.printStackTrace()
+            handleResponseOfferingData(activity, mutableListOf())
         })
     }
 
@@ -126,13 +128,13 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
 
     private fun handleResponseOfferingData(activity: Activity?, offeringList: MutableList<OfferingData>){
-//        val newOfferingList = mutableListOf(
-//            OfferingData(name = "pin", false),
-//            OfferingData(name = "biometric", false),
-//        )
+        val newOfferingList = mutableListOf(
+            OfferingData(name = "phone", false),
+            OfferingData(name = "biometric", false),
+        )
 
-        if(offeringList.isNotEmpty()) {
-            val firstIntent = mapToApplink(activity!!, offeringList.first(), true)
+        if(newOfferingList.isNotEmpty()) {
+            val firstIntent = mapToApplink(activity!!, newOfferingList.first(), true)
             if(firstIntent != null) {
                 activity.startActivity(firstIntent)
             }

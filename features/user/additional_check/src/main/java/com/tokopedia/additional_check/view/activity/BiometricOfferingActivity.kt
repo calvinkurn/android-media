@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
+import com.tokopedia.additional_check.internal.TwoFactorTracker
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -22,11 +23,13 @@ class BiometricOfferingActivity: BaseActivity() {
     lateinit var additionalCheckPreference: AdditionalCheckPreference
 
     private var isWaitingRegisterResult = false
+    private val twoFactorTracker = TwoFactorTracker()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 	super.onCreate(savedInstanceState)
 	additionalCheckPreference = AdditionalCheckPreference(this)
 	createBiometricOfferingDialog(this)
+	twoFactorTracker.viewBiometricPopup()
     }
 
     fun createBiometricOfferingDialog(activity: FragmentActivity) {
@@ -35,6 +38,7 @@ class BiometricOfferingActivity: BaseActivity() {
 	    val primaryBtn = view?.findViewById<UnifyButton>(R.id.bottom_sheet_biometric_offering_primary_btn)
 	    val mainImgView = view?.findViewById<ImageUnify>(R.id.bottom_sheet_biometric_offering_img)
 
+	    isFullpage = true
 	    mainImgView?.run {
 		Glide.with(activity)
 		    .load(FingerprintDialogHelper.BIOMETRIC_OFFERING_MAIN_IMG)
@@ -42,16 +46,19 @@ class BiometricOfferingActivity: BaseActivity() {
 	    }
 
 	    primaryBtn?.setOnClickListener {
+		twoFactorTracker.clickRegisterBiometric()
 		val intent = RouteManager.getIntent(
 		    requireContext(),
 		    ApplinkConstInternalUserPlatform.REGISTER_BIOMETRIC
 		)
 		isWaitingRegisterResult = true
 		activity.startActivityForResult(intent, REQUEST_CODE_REGISTER_BIOMETRIC)
+
 		dismiss()
 	    }
 
 	    setCloseClickListener {
+		twoFactorTracker.clickCloseBiometric()
 		dismiss()
 		activity.finish()
 	    }
@@ -81,6 +88,7 @@ class BiometricOfferingActivity: BaseActivity() {
 	    }
 
 	    primaryBtn?.setOnClickListener {
+		twoFactorTracker.clickContinueShoppingWhenSuccess()
 		onSuccessRegister()
 	        finish()
 	    }
@@ -111,6 +119,7 @@ class BiometricOfferingActivity: BaseActivity() {
 	    isWaitingRegisterResult = false
 	    if(resultCode == Activity.RESULT_OK) {
 	        createBiometricOfferingSuccessDialog(this)
+		twoFactorTracker.successAddBiometric()
 	    } else if(resultCode == Activity.RESULT_CANCELED) {
 		finish()
 	    }

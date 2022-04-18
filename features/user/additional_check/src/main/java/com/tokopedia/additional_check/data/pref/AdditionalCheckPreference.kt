@@ -32,8 +32,9 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
     }
 
     fun isNeedCheck(): Boolean {
-        val interval = sharedPrefs?.getLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, 0)
-        return System.currentTimeMillis() > interval ?: 0
+//        val interval = sharedPrefs?.getLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, 0)
+//        return System.currentTimeMillis() > interval ?: 0
+        return true
     }
 
     fun setNextOffering(nextOffer: String){

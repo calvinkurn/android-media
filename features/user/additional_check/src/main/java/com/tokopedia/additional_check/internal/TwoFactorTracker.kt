@@ -44,7 +44,7 @@ class TwoFactorTracker {
         tracker.sendGeneralEvent(
                 Event.CLICK_AUTH,
                 Category.ADD_PIN_PAGE,
-                Action.CLICK_CLOSE_BUTTON_PAGE_ADD_PIN,
+                Action.CLICK_ON_BTN_CLOSE,
                 Label.EMPTY
         )
     }
@@ -67,6 +67,56 @@ class TwoFactorTracker {
                 Action.CLICK_ACCOUNT_LINKING_REMINDER,
                 label
             )
+        )
+    }
+
+    fun viewBiometricPopup() {
+        track(
+            TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.BIOMETRIC_MLU,
+                Action.VIEW_BIOMETRIC_PAGE,
+                Label.EMPTY)
+        )
+    }
+
+    fun clickRegisterBiometric() {
+        track(
+            TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.BIOMETRIC_MLU,
+                Action.CLICK_ON_REGISTER_BIOMETRIC,
+                Label.EMPTY)
+        )
+    }
+
+    fun clickCloseBiometric() {
+        track(
+            TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.BIOMETRIC_MLU,
+                Action.CLICK_ON_BTN_CLOSE,
+                Label.EMPTY)
+        )
+    }
+
+    fun successAddBiometric() {
+        track(
+            TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.BIOMETRIC_SUCCESS_MLU,
+                Action.SUCCESS_ADD_BIOMETRIC,
+                Label.EMPTY)
+        )
+    }
+
+    fun clickContinueShoppingWhenSuccess() {
+        track(
+            TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.BIOMETRIC_SUCCESS_MLU,
+                Action.CLICK_ON_BTN_CLOSE,
+                Label.EMPTY)
         )
     }
 
@@ -94,16 +144,26 @@ class TwoFactorTracker {
             const val ADD_PIN_PAGE = "2fa mlu add pin page"
 
             const val ACCOUNT_LINKING_REMINDER = "account linking reminder"
+
+            const val BIOMETRIC_MLU = "2fa mlu add biometrics"
+            const val BIOMETRIC_SUCCESS_MLU = "2fa mlu success add biometrics"
+
         }
 
         object Action {
             const val CLICK_BUTTON_ADD_PHONE_NUMBER = "click on button tambah nomor hp"
             const val VIEW_ADD_PIN_PAGE = "view 2fa mlu add pin page"
             const val CLICK_ADD_PIN_PAGE = "click on button buat pin tokopedia"
-            const val CLICK_CLOSE_BUTTON_PAGE_ADD_PIN = "click on button close"
 
             const val VIEW_ACCOUNT_LINKING_REMINDER = "view account linking reminder"
             const val CLICK_ACCOUNT_LINKING_REMINDER = "click on button account linking reminder"
+
+            const val VIEW_BIOMETRIC_PAGE = "auto pop up 2fa mlu add biometrics page"
+            const val CLICK_ON_REGISTER_BIOMETRIC = "click on daftarkan sidik jari"
+            const val CLICK_ON_BTN_CLOSE = "click on button close"
+
+            const val SUCCESS_ADD_BIOMETRIC = "auto pop up 2fa mlu success add biometrics page"
+
         }
 
 
