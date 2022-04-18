@@ -256,6 +256,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     private fun onSuccessPlayTabDataFromChipClick(
         playDataResponse: PlayGetContentSlotResponse
     ) {
+        if (adapter.slotPosition == null)
+            adapter.updateSlotPosition()
+        adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(playFeedVideoTabViewModel.currentCursor.isNotEmpty())
         val mappedData = FeedPlayVideoTabMapper.map(
@@ -330,11 +333,10 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
     //click listener for tab menu slot
     override fun clickTabMenu(item: PlaySlotTabMenuUiModel.Item, position: Int) {
         playWidgetAnalyticsListenerImp.filterCategory = item.label
-        callAPiOnTabCLick(item)
-        analyticListener.clickOnFilterChipsInVideoTab(item.label)
         if (rvWidget?.isStickyRecyclerViewIsEnabled() == true)
             adapter.updateSlotTabViewHolderState()
-        adapter.slotPosition?.let { rvWidget?.scrollToPosition(it) }
+        analyticListener.clickOnFilterChipsInVideoTab(item.label)
+        callAPiOnTabCLick(item)
     }
 
     override fun impressTabMenu(item: PlaySlotTabMenuUiModel.Item) {
