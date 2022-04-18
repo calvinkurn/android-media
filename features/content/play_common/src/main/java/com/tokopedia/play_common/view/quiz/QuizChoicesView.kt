@@ -77,7 +77,7 @@ class QuizChoicesView : ConstraintLayout {
             /**
              * Other choices beside user's answer, if correct = icon is green and false is red
              */
-            is PlayQuizOptionState.Result -> {
+            is PlayQuizOptionState.Other -> {
                 binding.tvQuizQuestion.setTextColor(defaultFontColor) 
                 getBackground(isDefault = true)
                 getIconOption(isCorrect = item.type.isCorrect)

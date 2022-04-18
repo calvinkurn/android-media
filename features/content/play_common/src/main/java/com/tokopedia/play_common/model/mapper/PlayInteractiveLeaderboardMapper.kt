@@ -59,7 +59,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor() {
                 if(item.id == userPicksId)
                     PlayQuizOptionState.Answered(isCorrect = item.isCorrect ?: false)
                 else
-                    PlayQuizOptionState.Result(isCorrect = item.isCorrect ?: false)
+                    PlayQuizOptionState.Other(isCorrect = item.isCorrect ?: false)
             )
         }
     }

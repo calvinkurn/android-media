@@ -1738,7 +1738,7 @@ class PlayViewModel @AssistedInject constructor(
                     when {
                         isLoading != null && choice.id == selectedId -> choice.copy(isLoading = true)
                         choice.id == selectedId -> choice.copy(isLoading = false, type = PlayQuizOptionState.Answered(isCorrect = correctId == selectedId))
-                        isLoading == null -> choice.copy(isLoading = false, type = PlayQuizOptionState.Result(correctId == choice.id))
+                        isLoading == null -> choice.copy(isLoading = false, type = PlayQuizOptionState.Other(correctId == choice.id))
                         else -> choice
                     }
                 }

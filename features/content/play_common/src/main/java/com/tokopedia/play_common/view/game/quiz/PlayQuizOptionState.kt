@@ -13,7 +13,7 @@ sealed class PlayQuizOptionState {
         val isCorrect: Boolean
     ): PlayQuizOptionState()
 
-    data class Result(
+    data class Other(
         val isCorrect: Boolean
     ): PlayQuizOptionState()
 
