@@ -42,6 +42,7 @@ class PickerVideoPlayer constructor(
                     }
                 }
             }
+
         })
     }
 
@@ -61,10 +62,25 @@ class PickerVideoPlayer constructor(
         exoPlayer.stop()
     }
 
+    fun pause() {
+        exoPlayer.playWhenReady = false
+        exoPlayer.playbackState
+    }
+
+    fun resume() {
+        exoPlayer.playWhenReady = true
+        exoPlayer.playbackState
+    }
+
     fun release() {
         try {
             exoPlayer.release()
-        } catch (ignored: Throwable) {}
+        } catch (ignored: Throwable) {
+        }
+    }
+
+    fun isPlaying(): Boolean {
+        return exoPlayer.isPlaying
     }
 
     private fun getOrCreateMediaSource(uri: Uri): MediaSource {
@@ -74,8 +90,11 @@ class PickerVideoPlayer constructor(
         return mediaSourceFactory.createMediaSource(uri)
     }
 
-    private fun generateMediaSourceFactory(uri: Uri, dsFactory: DataSource.Factory): MediaSourceFactory {
-        return when(val type = Util.inferContentType(uri)) {
+    private fun generateMediaSourceFactory(
+        uri: Uri,
+        dsFactory: DataSource.Factory
+    ): MediaSourceFactory {
+        return when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(dsFactory)
             C.TYPE_DASH -> DashMediaSource.Factory(dsFactory)
             C.TYPE_HLS -> HlsMediaSource.Factory(dsFactory)
