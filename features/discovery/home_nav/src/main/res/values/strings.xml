@@ -42,6 +42,8 @@
     <string name="title_transaction_section">Aktivitas saya</string>
     <string name="title_category_section">Semua Kategori</string>
     <string name="title_helpcenter_section">Pusat bantuan</string>
+    <string name="title_wishlist_section">Wishlist</string>
+    <string name="title_favorite_shop_section">Toko yang di-follow</string>
     <string name="menu_transaction_menu_all_transaction">Daftar Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
     <string name="menu_transaction_menu_review">Ulasan</string>

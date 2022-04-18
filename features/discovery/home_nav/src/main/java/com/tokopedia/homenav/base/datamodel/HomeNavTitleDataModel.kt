@@ -10,7 +10,9 @@ import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 data class HomeNavTitleDataModel (
         val identifier: Int = 0,
         val title: String = "",
-        val applink: String = ""
+        val applink: String = "",
+        val actionIconId: Int? = null,
+        val isClickViewAll: Boolean = false
 ) : HomeNavVisitable {
     override fun id(): Any = title
 

@@ -33,9 +33,11 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         const val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
         const val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
 
-        const val IDENTIFIER_TITLE_MY_ACTIVITY = 100
+        const val IDENTIFIER_TITLE_TRANSACTION_LIST = 100
         const val IDENTIFIER_TITLE_ALL_CATEGORIES = 101
         const val IDENTIFIER_TITLE_HELP_CENTER = 102
+        const val IDENTIFIER_TITLE_WISHLIST = 103
+        const val IDENTIFIER_TITLE_FAVORITE_SHOP = 104
     }
 
 
@@ -67,10 +69,17 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         return HomeNavTitleDataModel(
                 identifier = identifier,
                 title = when (identifier) {
-                    IDENTIFIER_TITLE_MY_ACTIVITY -> context.getString(R.string.title_transaction_section)
+                    IDENTIFIER_TITLE_TRANSACTION_LIST -> context.getString(R.string.title_transaction_section)
                     IDENTIFIER_TITLE_ALL_CATEGORIES -> context.getString(R.string.title_category_section)
                     IDENTIFIER_TITLE_HELP_CENTER -> context.getString(R.string.title_helpcenter_section)
+                    IDENTIFIER_TITLE_WISHLIST -> context.getString(R.string.title_wishlist_section)
+                    IDENTIFIER_TITLE_FAVORITE_SHOP -> context.getString(R.string.title_favorite_shop_section)
                     else -> ""
+                },
+                actionIconId = when(identifier){
+                    IDENTIFIER_TITLE_WISHLIST,
+                    IDENTIFIER_TITLE_FAVORITE_SHOP -> IconUnify.CHEVRON_RIGHT
+                    else -> null
                 }
         )
     }

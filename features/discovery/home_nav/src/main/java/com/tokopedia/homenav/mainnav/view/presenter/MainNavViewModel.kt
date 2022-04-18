@@ -11,8 +11,10 @@ import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_ALL_CATEGORIES
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_HELP_CENTER
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_MY_ACTIVITY
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_TRANSACTION_LIST
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.IDENTIFIER_TITLE_WISHLIST
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
@@ -449,20 +451,22 @@ class MainNavViewModel @Inject constructor(
             if (userSession.get().isLoggedIn) {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getSectionTitle(IDENTIFIER_TITLE_TRANSACTION_LIST),
                         InitialShimmerTransactionDataModel(),
                         it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
+                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
+                )
             } else {
                 transactionDataList = mutableListOf(
                         SeparatorDataModel(),
-                        it.getSectionTitle(IDENTIFIER_TITLE_MY_ACTIVITY),
+                        it.getSectionTitle(IDENTIFIER_TITLE_TRANSACTION_LIST),
                         it.getMenu(menuId = ID_ALL_TRANSACTION, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_WISHLIST_MENU, sectionId = MainNavConst.Section.ORDER),
                         it.getMenu(menuId = ID_REVIEW, sectionId = MainNavConst.Section.ORDER),
-                        it.getMenu(menuId = ID_FAVORITE_SHOP, sectionId = MainNavConst.Section.ORDER))
+                        it.getSectionTitle(IDENTIFIER_TITLE_WISHLIST),
+                        it.getSectionTitle(IDENTIFIER_TITLE_FAVORITE_SHOP)
+                )
             }
             return transactionDataList
         }

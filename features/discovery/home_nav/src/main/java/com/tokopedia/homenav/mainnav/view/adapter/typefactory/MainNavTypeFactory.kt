@@ -13,6 +13,10 @@ interface MainNavTypeFactory {
 
     fun type(transactionListItemDataModel: TransactionListItemDataModel) : Int
 
+    fun type(wishlistListItemDataModel: WishlistListItemDataModel): Int
+
+    fun type(favoriteShopListItemDataModel: FavoriteShopListItemDataModel): Int
+
     fun type(initialShimmerDataModel: InitialShimmerDataModel) : Int
 
     fun type(initialShimmerProfileDataModel: InitialShimmerProfileDataModel) : Int

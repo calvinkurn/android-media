@@ -47,6 +47,14 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return TransactionListViewHolder.LAYOUT
     }
 
+    override fun type(wishlistListItemDataModel: WishlistListItemDataModel): Int {
+        return WishlistListViewHolder.LAYOUT
+    }
+
+    override fun type(favoriteShopListItemDataModel: FavoriteShopListItemDataModel): Int {
+        return FavoriteShopListViewHolder.LAYOUT
+    }
+
     override fun type(visitable: HomeNavTickerDataModel): Int {
         return HomeNavTickerViewHolder.LAYOUT
     }
@@ -77,7 +85,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, userSession)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
-            HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view)
+            HomeNavTitleViewHolder.LAYOUT -> HomeNavTitleViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
             ErrorStateBuViewHolder.LAYOUT -> ErrorStateBuViewHolder(view, mainNavListener)
             ErrorStateOngoingTransactionViewHolder.LAYOUT -> ErrorStateOngoingTransactionViewHolder(view, mainNavListener)
