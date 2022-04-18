@@ -29,8 +29,10 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 
 /**
  * Seller Home Tracker
- * Data Tracker : https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
- * Data Tracker for Recommendation Widget : https://mynakama.tokopedia.com/datatracker/requestdetail/781
+ * Data Tracker :
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/1733
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/1732
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/781
  * */
 
 object SellerHomeTracking {
@@ -39,8 +41,13 @@ object SellerHomeTracking {
         dataKey: String,
         state: String,
         cardValue: String,
-        subtitle: String
+        isSingle: Boolean
     ) {
+        val subtitle = if (isSingle) {
+            TrackingConstant.SINGLE
+        } else {
+            TrackingConstant.MULTIPLE
+        }
         val map = createEventMap(
             event = TrackingConstant.VIEW_PG_IRIS,
             category = arrayOf(
@@ -53,7 +60,12 @@ object SellerHomeTracking {
         TrackingHelper.sendGeneralEvent(map)
     }
 
-    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String, subtitle: String) {
+    fun sendClickCardEvent(dataKey: String, state: String, cardValue: String, isSingle: Boolean) {
+        val subtitle = if (isSingle) {
+            TrackingConstant.SINGLE
+        } else {
+            TrackingConstant.MULTIPLE
+        }
         val map = createEventMap(
             event = TrackingConstant.CLICK_PG,
             category = arrayOf(

@@ -380,20 +380,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         val cardValue = model.data?.value ?: "0"
         val state = model.data?.state?.name.orEmpty()
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
         SellerHomeTracking.sendImpressionCardEvent(
             model.dataKey,
             state,
             cardValue,
-            model.data?.description.orEmpty()
+            isSingle
         )
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
+        val isSingle = model.data?.secondaryDescription.isNullOrBlank()
         SellerHomeTracking.sendClickCardEvent(
             model.dataKey,
             model.data?.state?.name.orEmpty(),
             model.data?.value ?: "0",
-            model.data?.description.orEmpty()
+            isSingle
         )
     }
 
