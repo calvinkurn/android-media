@@ -19,28 +19,28 @@ import javax.inject.Inject
  */
 
 class ProfileRoleViewModel @Inject constructor(
-        private val userProfileRoleUseCase: GraphqlUseCase<UserProfileRoleData>,
-        private val rawQueries: Map<String, String>,
-        dispatcher: CoroutineDispatcher
+    private val userProfileRoleUseCase: GraphqlUseCase<UserProfileRoleData>,
+    private val rawQueries: Map<String, String>,
+    dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val mutableUserProfileRole = MutableLiveData<Result<ProfileRoleData>>()
     val userProfileRole: LiveData<Result<ProfileRoleData>>
-        get() = mutableUserProfileRole
+	get() = mutableUserProfileRole
 
-    fun getUserProfileRole(){
-        rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]?.let { query ->
-            userProfileRoleUseCase.run {
-                setGraphqlQuery(query)
-                execute(
-                        {
-                            mutableUserProfileRole.postValue(Success(it.profileRoleData))
-                        },
-                        {
-                            mutableUserProfileRole.postValue(Fail(it))
-                        }
-                )
-            }
-        }
+    fun getUserProfileRole() {
+	rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]?.let { query ->
+	    userProfileRoleUseCase.run {
+		setGraphqlQuery(query)
+		execute(
+		    {
+			mutableUserProfileRole.postValue(Success(it.profileRoleData))
+		    },
+		    {
+			mutableUserProfileRole.postValue(Fail(it))
+		    }
+		)
+	    }
+	}
     }
 }

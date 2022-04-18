@@ -318,7 +318,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     override fun onEditProfileClicked() {
         homeAccountAnalytic.eventClickProfile()
-        goToApplink(ApplinkConstInternalGlobal.SETTING_PROFILE)
+        goToApplink(ApplinkConstInternalUserPlatform.SETTING_PROFILE)
     }
 
     override fun onMemberItemClicked(applink: String, type: Int) {
@@ -1537,7 +1537,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun gotoSettingProfile() {
         val intent =
-            RouteManager.getIntent(requireContext(), ApplinkConstInternalGlobal.SETTING_PROFILE)
+            RouteManager.getIntent(requireContext(), ApplinkConstInternalUserPlatform.SETTING_PROFILE)
         startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 

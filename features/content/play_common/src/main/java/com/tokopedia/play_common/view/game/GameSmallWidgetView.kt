@@ -5,14 +5,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.play_common.R
 import com.tokopedia.play_common.databinding.ViewGameInteractiveBinding
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import java.util.Calendar
+import java.util.*
 
 /**
  * @author by astidhiyaa on 04/04/22
@@ -27,13 +22,6 @@ class GameSmallWidgetView : FrameLayout {
         this,
         true
     )
-    private var listener: Listener? = null
-
-    init {
-        binding.root.setOnClickListener {
-            listener?.onWidgetClicked(this@GameSmallWidgetView)
-        }
-    }
 
     var description: String = ""
         set(value) {
@@ -44,17 +32,19 @@ class GameSmallWidgetView : FrameLayout {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         binding.timerEngagementTools.pause()
-        listener = null
     }
 
     fun setTimer(duration: Long, onFinished: () -> Unit){
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MILLISECOND, duration.toInt())
+        setTargetTime(calendar, onFinished)
+    }
 
+    fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit) {
         binding.timerEngagementTools.apply {
             pause()
 
-            targetDate = calendar
+            targetDate = targetTime
             onFinish = onFinished
 
             resume()
@@ -85,13 +75,5 @@ class GameSmallWidgetView : FrameLayout {
 
     fun cancelTimer(){
         binding.timerEngagementTools.timer?.cancel()
-    }
-
-    fun setListener(listener: Listener?){
-        this.listener = listener
-    }
-
-    interface Listener{
-        fun onWidgetClicked(view: GameSmallWidgetView)
     }
 }

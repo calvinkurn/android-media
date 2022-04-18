@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachcommon.data.VoucherPreview
-import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chat_common.BaseChatFragment
 import com.tokopedia.chat_common.BaseChatToolbarActivity
 import com.tokopedia.chat_common.data.*
@@ -2141,15 +2140,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initProductPreview(savedInstanceState: Bundle?) {
-        val stringProductPreviews =
+        val stringProductIds =
             getStringArgument(ApplinkConst.Chat.PRODUCT_PREVIEWS, savedInstanceState)
-        if (stringProductPreviews.isEmpty()) return
-        val listType = object : TypeToken<List<ProductPreview>>() {}.type
-        val productPreviews = CommonUtil.fromJson<List<ProductPreview>>(
-            stringProductPreviews,
+        if (stringProductIds.isEmpty()) return
+        val listType = object : TypeToken<List<String>>() {}.type
+        val productIds = CommonUtil.fromJson<List<String>>(
+            stringProductIds,
             listType
         )
-        val productIds = productPreviews.map { it.id }
         if (productIds.isNotEmpty()) {
             viewModel.loadProductPreview(productIds)
         }

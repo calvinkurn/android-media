@@ -4,7 +4,7 @@ import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveR
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import java.util.concurrent.TimeUnit
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -26,16 +26,17 @@ class PlayInteractiveMapper @Inject constructor() {
             title = data.title,
             status = when (data.status) {
                 STATUS_SCHEDULED -> InteractiveUiModel.Giveaway.Status.Upcoming(
-                    timeToStartInMs = TimeUnit.SECONDS.toMillis(
-                        data.countdownStart.toLong()
-                    ),
-                    durationInMs = TimeUnit.SECONDS.toMillis(
-                        data.countdownEnd.toLong() -
-                                data.countdownStart.toLong()
-                    )
+                    startTime = Calendar.getInstance().apply {
+                        add(Calendar.SECOND, data.countdownStart)
+                    },
+                    endTime = Calendar.getInstance().apply {
+                        add(Calendar.SECOND, data.countdownStart + data.countdownEnd)
+                    }
                 )
                 STATUS_LIVE -> InteractiveUiModel.Giveaway.Status.Ongoing(
-                    durationInMs = TimeUnit.SECONDS.toMillis(data.countdownEnd.toLong())
+                    endTime = Calendar.getInstance().apply {
+                        add(Calendar.SECOND, data.countdownEnd)
+                    }
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Giveaway.Status.Finished
                 else -> InteractiveUiModel.Giveaway.Status.Unknown
@@ -49,7 +50,9 @@ class PlayInteractiveMapper @Inject constructor() {
             title = data.question,
             status = when (data.status) {
                 STATUS_LIVE -> InteractiveUiModel.Quiz.Status.Ongoing(
-                    durationInMs = TimeUnit.SECONDS.toMillis(data.countdownEnd.toLong())
+                    endTime = Calendar.getInstance().apply {
+                        add(Calendar.SECOND, data.countdownEnd)
+                    }
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished
                 else -> InteractiveUiModel.Quiz.Status.Unknown

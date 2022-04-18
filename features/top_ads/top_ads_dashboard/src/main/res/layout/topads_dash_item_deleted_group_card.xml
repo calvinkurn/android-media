@@ -22,20 +22,79 @@
             android:layout_width="@dimen/top_ads_dp_40"
             android:layout_height="@dimen/top_ads_dp_40"
             android:layout_marginTop="@dimen/unify_space_12"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/deletedProductName"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_marginStart="@dimen/unify_space_8"
             android:layout_marginEnd="@dimen/unify_space_8"
             app:layout_constraintEnd_toStartOf="@id/delete"
             app:layout_constraintStart_toEndOf="@id/deletedProductImg"
             app:layout_constraintTop_toTopOf="@id/deletedProductImg"
             app:typographyType="heading_6"
+            tools:visibility="visible"
             tools:text="product's name' - some generic statement" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordTag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:maxWidth="@dimen/topads_dp_120"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/unify_space_8"
+            app:layout_constraintStart_toStartOf="@+id/card"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6"
+            tools:visibility="visible"
+            tools:text="Kemeja Slimfit Is the..." />
+
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/keywordTypeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:visibility="gone"
+            android:text="@string/topads_common_ads_inprogress"
+            app:labelType="highlight_light_green"
+            app:layout_constraintTop_toTopOf="@id/keywordTag"
+            app:layout_constraintStart_toEndOf="@id/keywordTag"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/iconRp"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/top_ads_dp_14"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:visibility="gone"
+            app:srcCompat="@drawable/icon_rp"
+            android:tint="@color/Unify_NN500"
+            app:layout_constraintStart_toStartOf="@id/keywordTag"
+            app:layout_constraintTop_toBottomOf="@id/keywordTag"
+            tools:visibility="visible"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/keywordPriceBid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:visibility="gone"
+            android:textColor="@color/Unify_N700_68"
+            android:layout_marginStart="@dimen/unify_space_8"
+            app:layout_constraintStart_toEndOf="@id/iconRp"
+            app:layout_constraintTop_toTopOf="@id/iconRp"
+            app:layout_constraintBottom_toBottomOf="@id/iconRp"
+            tools:visibility="visible"
+            tools:text="Rp10.000 /1000 kali tampil"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/delete"
@@ -46,6 +105,13 @@
             android:tint="@color/Unify_NN500"
             app:layout_constraintEnd_toStartOf="@id/date"
             app:layout_constraintTop_toTopOf="@id/date"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="@dimen/top_ads_dp_52" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/date"
@@ -63,7 +129,7 @@
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_12"
             app:cardElevation="@dimen/unify_space_0"
-            app:layout_constraintTop_toBottomOf="@id/deletedProductImg">
+            app:layout_constraintTop_toBottomOf="@id/guideline">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
