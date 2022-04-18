@@ -187,7 +187,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     override fun onNoAccess() {
         showToasterError(
-            context?.getString(com.tokopedia.seller.menu.common.R.string.seller_menu_admin_no_permission_oops)
+            context?.getString(R.string.sah_admin_restriction_message)
                 .orEmpty()
         )
     }

@@ -101,7 +101,6 @@ class ShopHomeAdapterTypeFactory(
         private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome, ThematicWidgetTypeFactory {
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
-    private var previousViewHolder: AbstractViewHolder<*>? = null
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
     private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
 
@@ -241,22 +240,18 @@ class ShopHomeAdapterTypeFactory(
         val viewHolder = when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeSliderSquareViewHolder.LAYOUT_RES -> ShopHomeSliderSquareViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
                     parent,
-                    previousViewHolder,
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
@@ -306,7 +301,6 @@ class ShopHomeAdapterTypeFactory(
             ThematicWidgetLoadingStateViewHolder.LAYOUT -> ThematicWidgetLoadingStateViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
-        previousViewHolder = viewHolder
         return viewHolder
     }
 }

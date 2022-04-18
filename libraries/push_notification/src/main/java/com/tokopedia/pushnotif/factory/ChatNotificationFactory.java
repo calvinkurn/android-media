@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
@@ -32,7 +31,6 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private static String MESSAGE_ID = "message_chat_id";
     private static String NOTIFICATION_ID = "notification_id";
     private static String USER_ID = "user_id";
-    private static int REQUEST_CODE_REPLY = 527;
 
     private RemoteConfig remoteConfig;
 
@@ -66,9 +64,6 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         if(isEnableReplyChatNotification()) {
             if (GlobalConfig.isSellerApp()) {
                 builder.setShowWhen(true);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    builder.setRemoteInputHistory(new String[]{""});
-                }
                 builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
             }
         }
@@ -100,7 +95,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         intent.putExtra(NOTIFICATION_ID, notificationId);
         intent.putExtra(USER_ID, userSession.getUserId());
 
-        return PendingIntent.getBroadcast(context, REQUEST_CODE_REPLY, intent,
+        return PendingIntent.getBroadcast(context, notificationId, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

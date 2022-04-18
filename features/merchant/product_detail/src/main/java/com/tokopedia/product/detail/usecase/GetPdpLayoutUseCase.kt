@@ -51,6 +51,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   isLeasing
                   isBlacklisted
                   totalStockFmt
+                  defaultMediaURL
                   menu {
                     id
                     name
@@ -103,6 +104,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         description
                         videoURLAndroid
                         isAutoplay
+                        variantOptionID
                       }
                       videos {
                         source
