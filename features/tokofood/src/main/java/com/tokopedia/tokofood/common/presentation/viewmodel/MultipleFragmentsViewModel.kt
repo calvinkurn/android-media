@@ -77,6 +77,7 @@ class MultipleFragmentsViewModel @Inject constructor(val savedStateHandle: Saved
             val loadCartParam = CheckoutTokoFoodParam()
             loadCartTokoFoodUseCase(loadCartParam).collect {
                 cartDataState.value = it.data
+                cartDataValidationState.emit(UiEvent(state = UiEvent.EVENT_SUCCESS_LOAD_CART))
             }
         }, onError = {
             Timber.e(it)

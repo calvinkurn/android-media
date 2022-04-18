@@ -17,8 +17,10 @@ import com.tokopedia.tokofood.purchase.purchasepage.domain.usecase.KeroEditAddre
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAccordionUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAddressUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getAllUnavailableProducts
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getPartiallyLoadedModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getProductByProductId
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getTickerErrorShopLevelUiModel
+import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUiModelIndex
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.VisitableDataHelper.getUnavailableReasonUiModel
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.mapper.TokoFoodPurchaseUiModelMapper
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.uimodel.*
@@ -26,6 +28,7 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
@@ -67,6 +70,9 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     private val _updateQuantityStateFlow: MutableStateFlow<CartTokoFoodParam?> = MutableStateFlow(null)
     val updateQuantityStateFlow = _updateQuantityStateFlow.asStateFlow()
 
+    private val _shouldRefreshCartData = MutableSharedFlow<Boolean>()
+    val shouldRefreshCartData = _shouldRefreshCartData.asSharedFlow()
+
     init {
         viewModelScope.launch {
             _updateQuantityState
@@ -74,6 +80,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 .flatMapConcat { productList ->
                     flow {
                         productList?.let {
+                            showPartialLoading()
                             emit(convertProductListToUpdateParam(it))
                         }
                     }
@@ -117,6 +124,57 @@ class TokoFoodPurchaseViewModel @Inject constructor(
         })
     }
 
+    fun loadDataPartial() {
+        launchCatchError(block = {
+            val param = CheckoutTokoFoodParam()
+            checkoutTokoFoodUseCase(param).collect {
+                // TODO: Load partial data only from query
+                _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_SUCCESS_LOAD_PURCHASE_PAGE)
+                // TODO: Add loading state for shop toolbar
+                _fragmentUiModel.value = TokoFoodPurchaseUiModelMapper.mapShopInfoToUiModel(it.data.shop)
+                // TODO: Check for success status
+                val isEnabled = it.status == 1
+                val partialData = TokoFoodPurchaseUiModelMapper.mapResponseToPartialUiModel(
+                    it,
+                    isEnabled,
+                    !tmpAddressData.second
+                )
+                val dataList = getVisitablesValue().toMutableList().apply {
+                    getUiModelIndex<TokoFoodPurchaseShippingTokoFoodPurchaseUiModel>().let { shippingIndex ->
+                        if (shippingIndex >= 0) {
+                            removeAt(shippingIndex)
+                            add(shippingIndex, partialData.shippingUiModel)
+                        }
+                    }
+                    getUiModelIndex<TokoFoodPurchasePromoTokoFoodPurchaseUiModel>().let { promoIndex ->
+                        if (promoIndex >= 0) {
+                            removeAt(promoIndex)
+                            add(promoIndex, partialData.promoUiModel)
+                        }
+                    }
+                    getUiModelIndex<TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>().let { summaryIndex ->
+                        if (summaryIndex >= 0) {
+                            removeAt(summaryIndex)
+                            add(summaryIndex, partialData.summaryUiModel)
+                        }
+                    }
+                    getUiModelIndex<TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>().let { totalAmountIndex ->
+                        if (totalAmountIndex >= 0) {
+                            removeAt(totalAmountIndex)
+                            add(totalAmountIndex, partialData.totalAmountUiModel)
+                        }
+                    }
+
+                }
+
+                _visitables.value = dataList
+            }
+        }, onError = {
+            _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_LOAD_PURCHASE_PAGE)
+            _fragmentUiModel.value = TokoFoodPurchaseFragmentUiModel(isLastLoadStateSuccess = false, shopName = "", shopLocation = "")
+        })
+    }
+
     private fun deleteProducts(visitables: List<Visitable<*>>, productCount: Int) {
         val dataList = getVisitablesValue().toMutableList()
         dataList.removeAll(visitables)
@@ -129,6 +187,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     fun deleteProduct(productId: String) {
+        refreshPartialCartInformation()
         // Todo : hit API to remove product, once it's success, perform below code to remove local data
         val toBeDeletedProduct = getVisitablesValue().getProductByProductId(productId)
         if (toBeDeletedProduct != null) {
@@ -194,6 +253,7 @@ class TokoFoodPurchaseViewModel @Inject constructor(
     }
 
     fun bulkDeleteUnavailableProducts() {
+        refreshPartialCartInformation()
         val dataList = getVisitablesValue()
         val unavailableSectionItems = mutableListOf<Visitable<*>>()
         // TODO: Check if ticer error section is only related to unavailable products
@@ -351,6 +411,27 @@ class TokoFoodPurchaseViewModel @Inject constructor(
                 _uiEvent.value = PurchaseUiEvent(state = PurchaseUiEvent.EVENT_FAILED_EDIT_PINPOINT)
             }
         )
+    }
+
+    // TODO: refresh cart
+    fun refreshPartialCartInformation() {
+        launch {
+            showPartialLoading()
+            _shouldRefreshCartData.emit(true)
+        }
+    }
+
+    /**
+     * This method will show loading for shipping, promo, summary, and cart sections
+     */
+    private fun showPartialLoading() {
+        val dataList = getVisitablesValue()
+        val partialLoadingLayout = dataList.getPartiallyLoadedModel(true)
+        partialLoadingLayout.forEach { (index, model) ->
+            dataList.removeAt(index)
+            dataList.add(index, model)
+        }
+        _visitables.value = dataList
     }
 
     private fun getAddressInfo() {

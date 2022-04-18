@@ -44,26 +44,8 @@ object VisitableDataHelper {
         return null
     }
 
-    fun MutableList<Visitable<*>>.getSummaryTransactionUiModel(): Pair<Int, TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel>? {
-        loop@ for ((index, data) in this.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseSummaryTransactionTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-            }
-        }
-        return null
-    }
-
-    fun MutableList<Visitable<*>>.getTotalAmountUiModel(): Pair<Int, TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel>? {
-        loop@ for ((index, data) in this.withIndex()) {
-            when (data) {
-                is TokoFoodPurchaseTotalAmountTokoFoodPurchaseUiModel -> {
-                    return Pair(index, data)
-                }
-            }
-        }
-        return null
+    inline fun <reified U: Visitable<*>> MutableList<Visitable<*>>.getUiModelIndex(): Int {
+        return indexOfFirst { it is U }
     }
 
     fun MutableList<Visitable<*>>.getTickerErrorShopLevelUiModel(): Pair<Int, TokoFoodPurchaseTickerErrorShopLevelTokoFoodPurchaseUiModel>? {
@@ -104,6 +86,18 @@ object VisitableDataHelper {
             }
         }
         return Pair(firstItemIndex, unavailableProducts)
+    }
+
+    fun MutableList<Visitable<*>>.getPartiallyLoadedModel(isLoading: Boolean): HashMap<Int, Visitable<*>> {
+        val partiallyLoadedModels = hashMapOf<Int, Visitable<*>>()
+        forEachIndexed { index, model ->
+            if (model is CanLoadPartially) {
+                (model.copyWithLoading(isLoading) as? Visitable<*>)?.let { loadingModel ->
+                    partiallyLoadedModels[index] = loadingModel
+                }
+            }
+        }
+        return partiallyLoadedModels
     }
 
 }

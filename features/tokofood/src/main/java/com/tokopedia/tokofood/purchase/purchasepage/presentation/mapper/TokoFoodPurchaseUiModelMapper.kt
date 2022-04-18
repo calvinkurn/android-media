@@ -73,6 +73,29 @@ object TokoFoodPurchaseUiModelMapper {
         }
     }
 
+    fun mapResponseToPartialUiModel(
+        response: CheckoutTokoFoodResponse,
+        isEnabled: Boolean,
+        needPinpoint: Boolean
+    ): PartialTokoFoodUiModel {
+        return PartialTokoFoodUiModel(
+            shippingUiModel = mapShippingUiModel(
+                shipping = response.data.shipping,
+                needPinpoint = needPinpoint,
+                isEnabled = isEnabled
+            ),
+            promoUiModel = mapPromoUiModel(response.data.promo),
+            summaryUiModel = mapSummaryTransactionUiModel(
+                response.data.shoppingSummary.costBreakdown,
+                response.data.shoppingSummary.discountBreakdown
+            ),
+            totalAmountUiModel = mapTotalAmountUiModel(
+                isEnabled,
+                response.data.shoppingSummary.total
+            )
+        )
+    }
+
     private fun mapGeneralTickerUiModel(ticker: CheckoutTokoFoodTickerInfo): TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel {
         return TokoFoodPurchaseGeneralTickerTokoFoodPurchaseUiModel().apply {
             // TODO: It is always no error

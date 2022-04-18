@@ -60,14 +60,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -137,6 +129,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         observeUiEvent()
         collectSharedUiState()
         collectDebouncedQuantityUpdate()
+        collectShouldRefreshCartData()
         loadData()
     }
 
@@ -341,6 +334,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         }
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
+                        viewModel.refreshPartialCartInformation()
                         view?.let {
                             Toaster.build(
                                 view = it,
@@ -350,6 +344,9 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                                 actionText = "Oke"
                             ).show()
                         }
+                    }
+                    UiEvent.EVENT_SUCCESS_LOAD_CART -> {
+
                     }
                 }
             }
@@ -362,6 +359,17 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 .collect { param ->
                     param?.let {
                         activityViewModel?.updateCart(it)
+                    }
+                }
+        }
+    }
+
+    private fun collectShouldRefreshCartData() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.shouldRefreshCartData
+                .collect { shouldRefresh ->
+                    if (shouldRefresh) {
+                        viewModel.loadDataPartial()
                     }
                 }
         }
@@ -473,10 +481,12 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun onResultFromChangeAddress(resultCode: Int, data: Intent?) {
-        data?.let {
-            val chosenAddressModel = it.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA) as? ChosenAddressModel
-            chosenAddressModel?.let {
-                viewModel.updateAddress(it)
+        if (resultCode == Activity.RESULT_OK) {
+            data?.let {
+                val chosenAddressModel = it.getParcelableExtra(EXTRA_SELECTED_ADDRESS_DATA) as? ChosenAddressModel
+                chosenAddressModel?.let {
+                    viewModel.updateAddress(it)
+                }
             }
         }
     }

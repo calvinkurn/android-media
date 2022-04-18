@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.purchase.purchasepage.presentation.viewholder
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.explorepromo.ExplorePromo
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemPurchasePromoBinding
 import com.tokopedia.tokofood.purchase.purchasepage.presentation.TokoFoodPurchaseActionListener
@@ -16,13 +17,18 @@ class TokoFoodPurchasePromoViewHolder(private val viewBinding: ItemPurchasePromo
 
     override fun bind(element: TokoFoodPurchasePromoTokoFoodPurchaseUiModel) {
         with(viewBinding) {
-            usePromoAppliedButton.run {
-                state = element.state
-                title.text = element.title
-                description.text = element.description
-            }
-            itemView.setOnClickListener {
-                listener.onPromoWidgetClicked()
+            if (element.isLoading) {
+                usePromoAppliedButton.state = ExplorePromo.STATE_LOADING
+                itemView.setOnClickListener(null)
+            } else {
+                usePromoAppliedButton.run {
+                    state = element.state
+                    title.text = element.title
+                    description.text = element.description
+                }
+                itemView.setOnClickListener {
+                    listener.onPromoWidgetClicked()
+                }
             }
         }
     }
