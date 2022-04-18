@@ -15,13 +15,15 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
-import com.tokopedia.product_bundle.common.data.model.request.*
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.GetBundleInfoResponse
 import com.tokopedia.product_bundle.common.data.model.uimodel.AddToCartDataResult
 import com.tokopedia.product_bundle.common.data.model.uimodel.ProductBundleState
 import com.tokopedia.common.ProductServiceWidgetConstant
+import com.tokopedia.product_bundle.common.data.model.request.Bundle
+import com.tokopedia.product_bundle.common.data.model.request.ProductData
+import com.tokopedia.product_bundle.common.data.model.request.UserLocation
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
 import com.tokopedia.product_bundle.common.util.AtcVariantMapper
 import com.tokopedia.product_bundle.common.util.DiscountUtil
@@ -159,12 +161,12 @@ class ProductBundleViewModel @Inject constructor(
                 getBundleInfoUseCase.setParams(
                     squad = ProductServiceWidgetConstant.SQUAD_VALUE,
                     usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
-                    requestData = RequestData(
+                    requestData = com.tokopedia.product_bundle.common.data.model.request.RequestData(
                         variantDetail = true,
                         CheckCampaign = true,
                         BundleGroup = true,
                         Preorder = true,
-                        inventoryDetail = InventoryDetail(
+                        inventoryDetail = com.tokopedia.product_bundle.common.data.model.request.InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
                                 addressId = chosenAddress?.addressId.orEmpty(),

@@ -16,7 +16,7 @@ object InventoryErrorMapper {
         if (getBundleInfoResponse is Fail) return InventoryError()
         if (selectedBundleId == 0L) return InventoryError()
 
-        val bundleInfo = (getBundleInfoResponse as Success).data.getBundleInfo ?: GetBundleInfo()
+        val bundleInfo = (getBundleInfoResponse as Success).data.getBundleInfo
         val isBundleAvailable = bundleInfo.isStockAvailable(selectedBundleId, selectedProductIds)
         val isOtherBundleAvailable = bundleInfo.isOtherStockAvailable(selectedBundleId, selectedProductIds)
         val isOtherVariantAvailable = bundleInfo.isOtherVariantStockAvailable(selectedBundleId)
@@ -27,13 +27,22 @@ object InventoryErrorMapper {
                 InventoryError(type = InventoryErrorType.NO_ERROR)
             }
             isOtherBundleAvailable && isOtherVariantAvailable -> {
-                InventoryError(type = InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE, emptyVariantProductIds)
+                InventoryError(
+                    type = InventoryErrorType.OTHER_BUNDLE_AND_VARIANT_AVAILABLE,
+                    emptyVariantProductIds
+                )
             }
             isOtherVariantAvailable && emptyVariantProductIds.isNotEmpty() -> {
-                InventoryError(type = InventoryErrorType.OTHER_VARIANT_AVAILABLE, emptyVariantProductIds)
+                InventoryError(
+                    type = InventoryErrorType.OTHER_VARIANT_AVAILABLE,
+                    emptyVariantProductIds
+                )
             }
             isOtherBundleAvailable -> {
-                InventoryError(type = InventoryErrorType.OTHER_BUNDLE_AVAILABLE, emptyVariantProductIds)
+                InventoryError(
+                    type = InventoryErrorType.OTHER_BUNDLE_AVAILABLE,
+                    emptyVariantProductIds
+                )
             }
             else -> {
                 InventoryError(type = InventoryErrorType.BUNDLE_EMPTY)

@@ -3,7 +3,7 @@ package com.tokopedia.gifting.viewmodel
 import com.tokopedia.gifting.domain.model.*
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product_bundle.util.getOrAwaitValue
+import com.tokopedia.new_product_bundle.util.getOrAwaitValue
 import io.mockk.coEvery
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

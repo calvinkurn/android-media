@@ -38,7 +38,8 @@ object AtcVariantMapper {
         try {
             val originalPrice = it.originalPrice
             val discountedPrice = it.bundlePrice
-            val discountedPercentage = DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice)
+            val discountedPercentage =
+                DiscountUtil.getDiscountPercentage(originalPrice, discountedPrice)
 
             VariantChild(
                 productId = it.productID.toString(),

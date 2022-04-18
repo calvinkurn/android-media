@@ -5,8 +5,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.product_bundle.common.customview.DiscountPriceView
-import com.tokopedia.product_bundle.common.customview.SpinnerView
+import com.tokopedia.new_product_bundle.common.customview.DiscountPriceView
+import com.tokopedia.new_product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.single.presentation.constant.SingleBundleInfoConstants.MIN_DISPLAYED_QTY
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleItem
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem

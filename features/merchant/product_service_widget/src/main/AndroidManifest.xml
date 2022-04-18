@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.product_bundle.activity.ProductBundleActivity"
+            android:name="com.tokopedia.new_product_bundle.activity.ProductBundleActivity"
             android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.product_bundle.activity.ProductBundleBottomSheetActivity"
+            android:name="com.tokopedia.new_product_bundle.activity.ProductBundleBottomSheetActivity"
             android:label="@string/title_bundling_selection_page"
             android:configChanges="orientation"
             android:theme="@style/Theme.AppCompat.Translucent"
@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.old_product_bundle.activity.ProductBundleActivity"
+            android:name="com.tokopedia.product_bundle.activity.ProductBundleActivity"
             android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"

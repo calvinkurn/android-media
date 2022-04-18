@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -25,6 +25,7 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_EMPTY_IMAGE_URL
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
@@ -36,8 +37,6 @@ import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
 import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
-import com.tokopedia.product_bundle.fragment.EntrypointFragment
-import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.single.di.DaggerSingleProductBundleComponent
 import com.tokopedia.product_bundle.single.presentation.adapter.BundleItemListener
 import com.tokopedia.product_bundle.single.presentation.adapter.SingleProductBundleAdapter
@@ -70,7 +69,7 @@ class SingleProductBundleFragment(
     lateinit var userSession: UserSessionInterface
 
     private var tvBundlePreorder: Typography? = null
-    private var bundleListLayout: ConstraintLayout? = null
+    private var bundleListLayout: LinearLayoutCompat? = null
     private var totalAmount: TotalAmount? = null
     private var geBundlePage: GlobalError? = null
     private var loaderDialog: LoaderDialog? = null
@@ -84,7 +83,7 @@ class SingleProductBundleFragment(
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_single_product_bundle, container, false)
+        return inflater.inflate(R.layout.old_fragment_single_product_bundle, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,15 +111,13 @@ class SingleProductBundleFragment(
             val selectedProductVariant = adapter.getSelectedProductVariant() ?: ProductVariant()
             adapter.setSelectedVariant(selectedProductId,
                 viewModel.getVariantText(selectedProductVariant, selectedProductId))
-            totalAmount?.bottomContentView?.apply {
-                Toaster.build(
-                    this.rootView,
-                    getString(R.string.single_bundle_success_variant_added),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.action_oke)
-                ).setAnchorView(this).show()
-            }
+            Toaster.build(
+                requireView(),
+                getString(R.string.single_bundle_success_variant_added),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.action_oke)
+            ).setAnchorView(totalAmount?.bottomContentView).show()
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             viewModel.validateAndAddToCart(
@@ -207,7 +204,8 @@ class SingleProductBundleFragment(
                 val intent = Intent()
                 intent.putExtra(EXTRA_OLD_BUNDLE_ID, selectedBundleId)
                 intent.putExtra(EXTRA_NEW_BUNDLE_ID, it.requestParams.bundleId)
-                intent.putExtra(ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
+                intent.putExtra(
+                    ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED,
                     it.responseResult.data.isNotEmpty()) // will empty if there is no GQL hit
                 activity?.setResult(Activity.RESULT_OK, intent)
                 activity?.finish()
@@ -229,10 +227,8 @@ class SingleProductBundleFragment(
                 else -> getString(R.string.single_bundle_error_unknown)
             }
             hideLoadingDialog()
-            totalAmount?.bottomContentView?.apply {
-                Toaster.build(this.rootView, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
-                    getString(R.string.action_oke)).setAnchorView(this).show()
-            }
+            Toaster.build(requireView(), errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(R.string.action_oke)).setAnchorView(totalAmount?.bottomContentView).show()
         })
     }
 
@@ -274,14 +270,12 @@ class SingleProductBundleFragment(
 
     private fun observeThrowableError() {
         viewModel.throwableError.observe(viewLifecycleOwner, {
-            totalAmount?.bottomContentView?.apply {
-                Toaster.build(
-                    this.rootView,
-                    ErrorHandler.getErrorMessage(context, it),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR
-                ).setAnchorView(this).show()
-            }
+            Toaster.build(
+                requireView(),
+                ErrorHandler.getErrorMessage(context, it),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR
+            ).setAnchorView(totalAmount?.bottomContentView).show()
             hideLoadingDialog()
             // TODO: log error
         })
@@ -362,8 +356,16 @@ class SingleProductBundleFragment(
     private fun updateTotalAmount(price: String, discount: Int = 0, slashPrice: String, priceGap: String) {
         totalAmount?.apply {
             amountView.text = price
-            setTitleText(getString(R.string.text_discount_in_percentage, discount), slashPrice)
-            setSubtitleText(context.getString(R.string.text_saving), priceGap)
+            setTitleText(
+                getString(
+                    R.string.text_discount_in_percentage,
+                    discount
+                ), slashPrice
+            )
+            setSubtitleText(
+                context.getString(R.string.text_saving),
+                priceGap
+            )
         }
     }
 
@@ -392,6 +394,11 @@ class SingleProductBundleFragment(
         loaderDialog?.dialog?.dismiss()
     }
 
+    private fun refreshPage() {
+        val productBundleActivity = requireActivity() as ProductBundleActivity
+        productBundleActivity.refreshPage()
+    }
+
     private fun atcProductBundle() {
         showLoadingDialog()
         if (userSession.userId.isEmpty()) {
@@ -406,12 +413,6 @@ class SingleProductBundleFragment(
                 adapter.getSelectedData()
             )
         }
-    }
-
-    private fun refreshPage() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
-            .commit()
     }
 
     companion object {

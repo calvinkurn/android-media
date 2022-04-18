@@ -6,9 +6,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.product_bundle.common.customview.DiscountPriceView
-import com.tokopedia.product_bundle.common.customview.RoundedCornerImageView
-import com.tokopedia.product_bundle.common.customview.SpinnerView
+import com.tokopedia.new_product_bundle.common.customview.DiscountPriceView
+import com.tokopedia.new_product_bundle.common.customview.RoundedCornerImageView
+import com.tokopedia.new_product_bundle.common.customview.SpinnerView
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter.ProductBundleDetailItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_service_widget.R
