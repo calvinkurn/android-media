@@ -69,7 +69,8 @@ class MainActivity : AppCompatActivity() {
 
         goToButton.setOnClickListener { goTo() }
         
-        startActivity(Intent(this,FoldableActivity::class.java))
+//        startActivity(Intent(this,FoldableActivity::class.java))
+        startActivity(Intent(this,ExoPlayerSampleActivity::class.java))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
