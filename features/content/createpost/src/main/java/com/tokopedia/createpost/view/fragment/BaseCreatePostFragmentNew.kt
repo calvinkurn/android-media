@@ -61,6 +61,7 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     }
     companion object {
         private const val VIEW_MODEL = "view_model"
+        val EXTRA_SHOULD_SHOW_RETRY_BUTTON = "ShouldShowRetryButton"
     }
     abstract fun fetchContentForm()
 
@@ -90,8 +91,12 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     }
     private fun setUpConnectionListener(){
         val connectionLiveData = context?.let { ConnectionLiveData(it) }
-        if (!(::sheet.isInitialized))
-            sheet = FeedNetworkErrorBottomSheet.newInstance(true)
+        if (!(::sheet.isInitialized)) {
+            val bundle = Bundle().also {
+                it.putBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, true)
+            }
+            sheet = FeedNetworkErrorBottomSheet.newInstance(bundle)
+        }
         connectionLiveData?.observe(context as AppCompatActivity) {
             if (!it) {
                 sheet.onRetry = {
@@ -182,15 +187,18 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     override fun onErrorGetContentForm(message: String, throwable: Throwable?) {
         throwable?.let {
             if (it is UnknownHostException || it is ConnectException || it is SocketTimeoutException){
-                context?.let { it1 -> showNoInterNetDialog(it1) }
+                context?.let { it1 -> showNoConnectionBottomSheet(it1) }
 
             }
         }
 
     }
 
-    private fun showNoInterNetDialog(context: Context) {
-        sheet = FeedNetworkErrorBottomSheet.newInstance(true)
+    private fun showNoConnectionBottomSheet(context: Context) {
+        val bundle = Bundle().also {
+            it.putBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, true)
+        }
+        sheet = FeedNetworkErrorBottomSheet.newInstance(bundle)
         sheet.onRetry = {
             fetchContentForm()
         }
