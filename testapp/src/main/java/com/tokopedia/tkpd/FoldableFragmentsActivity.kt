@@ -23,15 +23,22 @@ class FoldableFragmentsActivity : AppCompatActivity(), FoldableSupportManager.Fo
             .commit()
     }
 
-    override fun onClick() {
+    override fun onClick(buttonNumber: String) {
+        while(fragmentManager.backStackEntryCount > 0) {
+            fragmentManager.popBackStack()
+        }
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container_2, FoldableFragment2(), "")
+            .replace(R.id.container_2, FoldableFragment2(buttonNumber), "")
             .addToBackStack("fragment2")
             .commit()
     }
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
         if (foldableInfo.isFoldableDevice()) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container_2, FoldableFragment2("1"), "")
+                .addToBackStack("fragment2")
+                .commit()
             val set = ConstraintSet().apply { clone(constraintLayout) }
             val newSet = foldableInfo.alignSeparatorViewToFoldingFeatureBounds(
                 set,
@@ -42,6 +49,9 @@ class FoldableFragmentsActivity : AppCompatActivity(), FoldableSupportManager.Fo
             newSet.connect(R.id.container_2, ConstraintSet.START, R.id.separator, ConstraintSet.END)
             newSet.applyTo(constraintLayout)
         } else {
+            while(fragmentManager.backStackEntryCount > 0) {
+                fragmentManager.popBackStack()
+            }
             val set = ConstraintSet().apply { clone(constraintLayout) }
             set.connect(
                 R.id.container_1,

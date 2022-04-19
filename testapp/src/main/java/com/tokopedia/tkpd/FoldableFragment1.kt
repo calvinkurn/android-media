@@ -20,13 +20,25 @@ class FoldableFragment1 : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.apply {
-            findViewById<View>(R.id.buttton).setOnClickListener {
-                listener?.onClick()
+            findViewById<View>(R.id.buttton1).setOnClickListener {
+                listener?.onClick("1")
+            }
+            findViewById<View>(R.id.buttton2).setOnClickListener {
+                listener?.onClick("2")
+            }
+            findViewById<View>(R.id.buttton3).setOnClickListener {
+                listener?.onClick("3")
+            }
+            findViewById<View>(R.id.buttton4).setOnClickListener {
+                listener?.onClick("4")
+            }
+            findViewById<View>(R.id.buttton5).setOnClickListener {
+                listener?.onClick("5")
             }
         }
     }
 
     interface Listener {
-        fun onClick()
+        fun onClick(buttonNumber : String)
     }
 }
