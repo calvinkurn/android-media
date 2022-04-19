@@ -1769,13 +1769,11 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val response = repo.answerQuiz(interactiveId = _interactive.value.interactive.id.toString(), choiceId = optionId)
             updateQuizOptionUi(selectedId = optionId, correctId = response)
-            delay(3000) // Add delay before dismissing dialog
             _uiEvent.emit(QuizAnsweredEvent)
         }) {
             _uiEvent.emit(
                 ShowInfoEvent(message = UiString.Text(it.message ?: "Oops, terjadi kesalahan. Coba lagi, ya."))
             )
-            delay(3000) // Add delay before dismissing dialog
             _uiEvent.emit(QuizAnsweredEvent)
         }
     }

@@ -912,6 +912,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         )
                     }
                     QuizAnsweredEvent -> {
+                        delay(FADE_TRANSITION_DELAY)
                         InteractiveDialogFragment.getOrCreate(
                             childFragmentManager,
                             requireActivity().classLoader
