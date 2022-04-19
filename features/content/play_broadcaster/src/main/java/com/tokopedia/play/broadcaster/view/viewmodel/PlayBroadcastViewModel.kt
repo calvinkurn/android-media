@@ -50,10 +50,9 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
-import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
-import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
-import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
+import com.tokopedia.play_common.domain.model.interactive.GetCurrentInteractiveResponse
+import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -91,7 +90,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val playBroadcastWebSocket: PlayWebSocket,
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val productMapper: PlayBroProductUiMapper,
-    private val channelInteractiveMapper: PlayChannelInteractiveMapper,
+    private val interactiveMapper: PlayInteractiveMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger
 ) : ViewModel() {
@@ -138,6 +137,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _observableEvent
     val observableInteractiveState: LiveData<BroadcastInteractiveState>
         get() = _observableInteractiveState
+    val observableQuizState: LiveData<BroadcastQuizState>
+        get() = _observableQuizState
     val observableLeaderboardInfo: LiveData<NetworkResult<PlayLeaderboardInfoUiModel>>
         get() = _observableLeaderboardInfo
     val observableCreateInteractiveSession: LiveData<NetworkResult<InteractiveSessionUiModel>>
@@ -187,6 +188,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
+    private val _observableQuizState = MutableLiveData<BroadcastQuizState>()
     private val _observableLeaderboardInfo =
         MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession =
@@ -687,21 +689,47 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private suspend fun handleActiveInteractiveFromNetwork(interactive: PlayCurrentInteractiveModel) {
+    private suspend fun handleActiveInteractiveFromNetwork(interactive: InteractiveUiModel) {
         setInteractiveId(interactive.id.toString())
         setActiveInteractiveTitle(interactive.title)
-        when (val status = interactive.timeStatus) {
-            is PlayInteractiveTimeStatus.Scheduled -> onInteractiveScheduled(
-                timeToStartInMs = status.timeToStartInMs,
-                durationInMs = status.interactiveDurationInMs,
-                title = interactive.title
-            )
-            is PlayInteractiveTimeStatus.Live -> onInteractiveLiveStarted(status.remainingTimeInMs)
-            is PlayInteractiveTimeStatus.Finished -> onInteractiveFinished()
+        when (interactive) {
+            is InteractiveUiModel.Giveaway -> {
+                when (val status = interactive.status) {
+                    // TODO: adjust to new ui model usage
+                    is InteractiveUiModel.Giveaway.Status.Upcoming -> onInteractiveScheduled(
+                        timeToStartInMs = status.startTime.timeInMillis,
+                        durationInMs = status.endTime.timeInMillis - status.startTime.timeInMillis,
+                        title = interactive.title
+                    )
+                    is InteractiveUiModel.Giveaway.Status.Ongoing -> onInteractiveLiveStarted(status.endTime.timeInMillis)
+                    is InteractiveUiModel.Giveaway.Status.Finished -> onInteractiveFinished()
+                    else -> {
+                        _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+                    }
+                }
+            }
+            is InteractiveUiModel.Quiz -> {
+                when (val status = interactive.status) {
+                    is InteractiveUiModel.Quiz.Status.Ongoing -> onQuizOngoing(
+                        endTime = status.endTime,
+                        question = interactive.title)
+                    is InteractiveUiModel.Quiz.Status.Finished -> onQuizFinished()
+                    else -> {}
+                }
+            }
             else -> {
-                _observableInteractiveState.value = getNoPreviousInitInteractiveState()
+
             }
         }
+
+    }
+
+    private fun onQuizFinished() {
+        _observableQuizState.value = BroadcastQuizState.Finished
+    }
+
+    private fun onQuizOngoing(endTime: Calendar, question: String) {
+        _observableQuizState.value = BroadcastQuizState.Ongoing(endTime, question)
     }
 
     private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {
@@ -866,8 +894,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     }
                 }
             }
-            is GiveawayResponse -> {
-                val currentInteractive = channelInteractiveMapper.mapInteractive(result)
+            is GetCurrentInteractiveResponse -> {
+                val currentInteractive = interactiveMapper.mapInteractive(result.data)
                 handleActiveInteractiveFromNetwork(currentInteractive)
             }
             is PinnedMessageSocketResponse -> {
@@ -1141,20 +1169,20 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleSelectQuizDuration(duration: Long) {
         needUpdateQuizForm(false) {
             updateQuizEligibleDuration()
-            _quizFormData.setValue { copy(duration = duration) }
+            _quizFormData.setValue { copy(durationInMs = duration) }
         }
     }
 
     private fun handleSubmitQuizForm() {
         viewModelScope.launchCatchError(block = {
             _quizFormState.setValue { QuizFormStateUiModel.SetDuration(true) }
-
             val quizData = _quizFormData.value
+            val durationInSecond = TimeUnit.MILLISECONDS.toSeconds(quizData.durationInMs)
             repo.createInteractiveQuiz(
                 channelId = channelId,
                 question = quizData.title,
                 prize = quizData.gift,
-                runningTime = quizData.duration,
+                runningTime = durationInSecond,
                 choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
             )
 
@@ -1190,7 +1218,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _quizFormData.setValue {
                 QuizFormDataUiModel(
-                    duration = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
+                    durationInMs = quizConfig.eligibleStartTimeInMs.getOrNull(0) ?: 0,
                     options = initialOptions
                 )
             }

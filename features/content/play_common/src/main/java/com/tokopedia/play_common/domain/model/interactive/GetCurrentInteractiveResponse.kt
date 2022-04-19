@@ -77,7 +77,7 @@ data class QuizResponse(
     @SerializedName("choices")
     val choices: List<Choice> = emptyList(),
 
-    @SerializedName("userChoice")
+    @SerializedName("user_choice")
     val userChoice: String = "",
 ) {
 

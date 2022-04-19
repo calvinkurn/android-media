@@ -32,6 +32,7 @@ import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveState
+import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastQuizState
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
@@ -68,6 +69,8 @@ import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
+import com.tokopedia.play_common.view.game.GameSmallWidgetView
+import com.tokopedia.play_common.view.game.setupQuiz
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.view.updatePadding
@@ -190,6 +193,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         })
     }
     private val quizForm: QuizFormView by detachableView(R.id.view_quiz_form)
+
+    private val quizOngoingView: GameSmallWidgetView by detachableView(R.id.view_game_widget)
 
     private lateinit var exitDialog: DialogUnify
     private lateinit var forceStopDialog: DialogUnify
@@ -363,6 +368,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeMetrics()
         observeEvent()
         observeInteractiveConfig()
+        observeQuizState()
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
@@ -702,6 +708,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun observeQuizState(){
+        parentViewModel.observableQuizState.observe(viewLifecycleOwner) {state ->
+            when (state) {
+                is BroadcastQuizState.Finished -> {
+                    //handleFinishedQuiz
+                }
+                is BroadcastQuizState.Ongoing -> {
+                    handleOngoingQuiz(state)
+                }
+            }
+        }
+    }
+
     private fun observeCreateInteractiveSession() {
         parentViewModel.observableCreateInteractiveSession.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -921,6 +940,14 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveView.setFinish(state.coachMark)
             }
         }
+    }
+
+    private fun handleOngoingQuiz(state: BroadcastQuizState.Ongoing) {
+        quizOngoingView.show()
+        quizOngoingView.setupQuiz(state.question,state.endTime) { gameSmallWidgetView ->
+            gameIconView.show()
+        }
+        gameIconView.hide()
     }
 
     /** Game Region */
