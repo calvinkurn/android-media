@@ -10,19 +10,25 @@ import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.text.currency.NumberTextWatcher
-import kotlinx.android.synthetic.main.topads_common_edit_key_bid_sheet.*
 
 /**
  * Created by Pika on 21/7/20.
  */
 
-
 private const val CLICK_BUDGET_CREATE = "click - biaya kata kunci box"
 private const val EVENT_CLICK_BUDGET_CREATE = "biaya yang diinput"
 
 class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
+
+    private var dailybudget_description: Typography? = null
+    private var budget: TextFieldUnify? = null
+    private var min_suggested_bid: Typography? = null
+    private var btnSave: UnifyButton? = null
 
     private var contentView: View? = null
     private var minBid = "0"
@@ -47,57 +53,65 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
         shopID = UserSession(view.context).shopId
         initView()
         sendAnalyticsData()
-        budget.textFieldInput.addTextChangedListener(object : NumberTextWatcher(budget.textFieldInput, "0") {
-            override fun onNumberChanged(number: Double) {
-                super.onNumberChanged(number)
-                val result = number.toInt()
-                when {
-                    result < minBid.toDouble() -> {
-                        min_suggested_bid.visibility = View.GONE
-                        setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
-                    }
-                    (result >= minBid.toDouble() && result < suggestedBid.toDouble()) -> {
-                        budget.setError(false)
-                        budget.setMessage("")
-                        btnSave.isEnabled = true
-                        if(fromDetail)
-                           min_suggested_bid.visibility = View.VISIBLE
-                        checkResultIsMultipleOfFifty(result)
-                    }
-                    result > maxBid.toDouble() -> {
-                        min_suggested_bid.visibility = View.GONE
-                        setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
-                    }
+        budget?.let {
+            it.textFieldInput.addTextChangedListener(object :
+                NumberTextWatcher(it.textFieldInput, "0") {
+                override fun onNumberChanged(number: Double) {
+                    super.onNumberChanged(number)
+                    val result = number.toInt()
+                    when {
+                        result < minBid.toDouble() -> {
+                            min_suggested_bid?.visibility = View.GONE
+                            setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true)
+                        }
+                        (result >= minBid.toDouble() && result < suggestedBid.toDouble()) -> {
+                            budget?.setError(false)
+                            budget?.setMessage("")
+                            btnSave?.isEnabled = true
+                            if (fromDetail)
+                                min_suggested_bid?.visibility = View.VISIBLE
+                            checkResultIsMultipleOfFifty(result)
+                        }
+                        result > maxBid.toDouble() -> {
+                            min_suggested_bid?.visibility = View.GONE
+                            setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
+                        }
 
-                    else -> {
-                        min_suggested_bid.visibility = View.GONE
-                        budget.setError(false)
-                        budget.setMessage("")
-                        btnSave.isEnabled = true
-                        checkResultIsMultipleOfFifty(result)
+                        else -> {
+                            min_suggested_bid?.visibility = View.GONE
+                            budget?.setError(false)
+                            budget?.setMessage("")
+                            btnSave?.isEnabled = true
+                            checkResultIsMultipleOfFifty(result)
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun checkResultIsMultipleOfFifty(result: Int) {
-        if(result % 50 != 0) {
-            min_suggested_bid.visibility = View.GONE
+        if (result % 50 != 0) {
+            min_suggested_bid?.visibility = View.GONE
             setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
         }
     }
 
     private fun sendAnalyticsData() {
-        budget.textFieldInput.setOnFocusChangeListener { v, hasFocus ->
+        budget?.textFieldInput?.setOnFocusChangeListener { v, hasFocus ->
 
             if (hasFocus) {
                 if (fromEdit != 1) {
                     val eventLabel = "$shopID - $name - $EVENT_CLICK_BUDGET_CREATE"
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET_CREATE, eventLabel, userID)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUDGET_CREATE,
+                        eventLabel,
+                        userID)
                 } else {
                     val eventLabel = "$groupId - $name - $EVENT_CLICK_BUDGET_CREATE"
-                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(CLICK_BUDGET_CREATE, eventLabel, userID)
+                    TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEventEdit(
+                        CLICK_BUDGET_CREATE,
+                        eventLabel,
+                        userID)
                 }
             }
         }
@@ -120,44 +134,44 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     }
 
     private fun setMessageErrorField(error: String, bid: String, bool: Boolean) {
-        budget.setError(bool)
-        budget.setMessage(MethodChecker.fromHtml(String.format(error, bid)))
+        budget?.setError(bool)
+        budget?.setMessage(MethodChecker.fromHtml(String.format(error, bid)))
         if (bool)
-            btnSave.isEnabled = false
+            btnSave?.isEnabled = false
     }
 
     private fun initView() {
-        if(fromDetail) {
-            dailybudget_description.show()
-            if(fromRekomendasi) {
-                dailybudget_description.text = getString(R.string.topads_edit_bid_rekomendasi)
+        if (fromDetail) {
+            dailybudget_description?.show()
+            if (fromRekomendasi) {
+                dailybudget_description?.text = getString(R.string.topads_edit_bid_rekomendasi)
             } else {
-                dailybudget_description.text = getString(R.string.topads_edit_bid_pencerian)
+                dailybudget_description?.text = getString(R.string.topads_edit_bid_pencerian)
             }
-            if(dailyBudget.toIntOrZero() < suggestedBid.toIntOrZero()) {
-                min_suggested_bid.visibility = View.VISIBLE
+            if (dailyBudget.toIntOrZero() < suggestedBid.toIntOrZero()) {
+                min_suggested_bid?.visibility = View.VISIBLE
             } else {
-                budget.setMessage("Rekomendasi Rp$suggestedBid")
+                budget?.setMessage("Rekomendasi Rp$suggestedBid")
             }
         } else {
-            budget.textFiedlLabelText.text = "Biaya Kata kunci"
-            dailybudget_description.hide()
+            budget?.textFiedlLabelText?.text = "Biaya Kata kunci"
+            dailybudget_description?.hide()
         }
         setCloseClickListener {
             dismiss()
         }
-        btnSave.setOnClickListener {
-            onSaved?.invoke(budget.textFieldInput.text.toString().removeCommaRawString(), position)
+        btnSave?.setOnClickListener {
+            onSaved?.invoke(budget?.textFieldInput?.text.toString().removeCommaRawString(), position)
             dismiss()
         }
-        if(fromDetail) {
-            budget.textFieldInput.setText(dailyBudget)
-        } else if(fromCreate) {
-            budget.textFieldInput.setText(keywordBudget)
-        } else if(suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
-            budget.textFieldInput.setText(minBid)
+        if (fromDetail) {
+            budget?.textFieldInput?.setText(dailyBudget)
+        } else if (fromCreate) {
+            budget?.textFieldInput?.setText(keywordBudget)
+        } else if (suggestedBid.toIntOrZero() < minBid.toIntOrZero()) {
+            budget?.textFieldInput?.setText(minBid)
         } else {
-            budget.textFieldInput.setText(suggestedBid)
+            budget?.textFieldInput?.setText(suggestedBid)
         }
         setTitle(name)
     }
@@ -186,7 +200,7 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDatafromArguments()
-        if(!fromDetail) {
+        if (!fromDetail) {
             setDefaultValues()
         } else {
             showHeader = true
@@ -207,5 +221,9 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
     private fun initChildLayout() {
         contentView = View.inflate(context, R.layout.topads_common_edit_key_bid_sheet, null)
         setChild(contentView)
+        dailybudget_description = contentView?.findViewById(R.id.dailybudget_description)
+        budget = contentView?.findViewById(R.id.budget)
+        min_suggested_bid = contentView?.findViewById(R.id.min_suggested_bid)
+        btnSave = contentView?.findViewById(R.id.btnSave)
     }
 }
