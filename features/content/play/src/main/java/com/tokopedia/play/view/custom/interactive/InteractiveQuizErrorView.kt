@@ -27,7 +27,7 @@ class InteractiveQuizErrorView: ConstraintLayout {
         setupView()
     }
 
-    fun setListener(listener: Listener) {
+    fun setListener(listener: Listener?) {
         mListener = listener
     }
 

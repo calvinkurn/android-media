@@ -25,7 +25,7 @@
         android:id="@+id/tv_quiz_reward"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="@+id/iv_interactive"
         app:layout_constraintEnd_toEndOf="@+id/tv_quiz_leaderboard_title"
         app:layout_constraintHorizontal_bias="0.0"
