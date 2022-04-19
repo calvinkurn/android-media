@@ -695,13 +695,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (interactive) {
             is InteractiveUiModel.Giveaway -> {
                 when (val status = interactive.status) {
+                    // TODO: adjust to new ui model usage
                     is InteractiveUiModel.Giveaway.Status.Upcoming -> onInteractiveScheduled(
-                        timeToStartInMs = status.timeToStartInMs,
-                        durationInMs = status.durationInMs,
+                        timeToStartInMs = status.startTime.timeInMillis,
+                        durationInMs = status.endTime.timeInMillis - status.startTime.timeInMillis,
                         title = interactive.title
                     )
-                    // TODO: should be remaining time, not duration, didn't know how to get remaining time
-                    is InteractiveUiModel.Giveaway.Status.Ongoing -> onInteractiveLiveStarted(status.durationInMs)
+                    is InteractiveUiModel.Giveaway.Status.Ongoing -> onInteractiveLiveStarted(status.endTime.timeInMillis)
                     is InteractiveUiModel.Giveaway.Status.Finished -> onInteractiveFinished()
                     else -> {
                         _observableInteractiveState.value = getNoPreviousInitInteractiveState()
@@ -711,7 +711,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is InteractiveUiModel.Quiz -> {
                 when (val status = interactive.status) {
                     is InteractiveUiModel.Quiz.Status.Ongoing -> onQuizOngoing(
-                        durationInMs = status.durationInMs,
+                        endTime = status.endTime,
                         question = interactive.title)
                     is InteractiveUiModel.Quiz.Status.Finished -> onQuizFinished()
                     else -> {}
@@ -728,8 +728,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableQuizState.value = BroadcastQuizState.Finished
     }
 
-    private fun onQuizOngoing(durationInMs: Long, question: String) {
-        _observableQuizState.value = BroadcastQuizState.Ongoing(durationInMs, question)
+    private fun onQuizOngoing(endTime: Calendar, question: String) {
+        _observableQuizState.value = BroadcastQuizState.Ongoing(endTime, question)
     }
 
     private fun onInteractiveScheduled(timeToStartInMs: Long, durationInMs: Long, title: String) {

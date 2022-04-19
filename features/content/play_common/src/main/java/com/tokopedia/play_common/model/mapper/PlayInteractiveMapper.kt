@@ -50,13 +50,9 @@ class PlayInteractiveMapper @Inject constructor() {
             title = data.question,
             status = when (data.status) {
                 STATUS_LIVE -> InteractiveUiModel.Quiz.Status.Ongoing(
-<<<<<<< feature/andriyan/ongoing_quiz
-                    durationInMs = data.countdownEnd.toLong()
-=======
                     endTime = Calendar.getInstance().apply {
-                        add(Calendar.SECOND, data.countdownEnd)
+                        add(Calendar.MILLISECOND, data.countdownEnd)
                     }
->>>>>>> feature/bro/quiz
                 )
                 STATUS_FINISHED -> InteractiveUiModel.Quiz.Status.Finished
                 else -> InteractiveUiModel.Quiz.Status.Unknown

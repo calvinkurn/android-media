@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -945,7 +944,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun handleOngoingQuiz(state: BroadcastQuizState.Ongoing) {
         quizOngoingView.show()
-        quizOngoingView.setupQuiz(state.question,state.durationInMs) { gameSmallWidgetView ->
+        quizOngoingView.setupQuiz(state.question,state.endTime) { gameSmallWidgetView ->
             gameIconView.show()
         }
         gameIconView.hide()
