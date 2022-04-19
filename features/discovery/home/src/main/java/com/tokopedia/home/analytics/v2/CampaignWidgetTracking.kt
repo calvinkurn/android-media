@@ -18,6 +18,7 @@ object CampaignWidgetTracking : BaseTrackerConst() {
     const val FORMAT_PROMO_ID = "%s - %s - %s - %s"
     const val CLICK_SEE_ALL_CARD = "click view all card on dynamic channel campaign"
     const val CLICK_SEE_ALL_CHANNEL = "click view all on dynamic channel campaign"
+    const val DEFAULT_VALUE = ""
 
     fun getCampaignWidgetItemImpressionTracking(
         grid: ChannelGrid,
@@ -84,6 +85,10 @@ object CampaignWidgetTracking : BaseTrackerConst() {
             .appendUserId(userId)
             .appendAffinity(channel.trackingAttributionModel.persona)
             .appendAttribution(channel.trackingAttributionModel.galaxyAttribution)
+            .appendCampaignCode(grid.campaignCode)
+            .appendShopId(grid.shopId)
+            .appendChannelId(channel.id)
+            .appendCategoryId(grid.categoryId)
         return trackingBuilder.build()
     }
 
