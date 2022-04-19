@@ -22,13 +22,13 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PromotionalMessageBottomSheet : BottomSheetUnify() {
 
-    private lateinit var promotionalMessageInputText: TextFieldUnify
-    private lateinit var chip1: Typography
-    private lateinit var chip2: Typography
-    private lateinit var chip3: Typography
-    private lateinit var chip4: Typography
-    private lateinit var tooltipBtn: FloatingButtonUnify
-    private lateinit var saveBtn: UnifyButton
+    private var promotionalMessageInputText: TextFieldUnify? = null
+    private var chip1: Typography? = null
+    private var chip2: Typography? = null
+    private var chip3: Typography? = null
+    private var chip4: Typography? = null
+    private var tooltipBtn: FloatingButtonUnify? = null
+    private var saveBtn: UnifyButton? = null
 
     private var storeName: String = ""
     private val promoMsgRange = 1..19
@@ -48,7 +48,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                 this.storeName = storeName
                 this.promotionalMessage = promotionalMessage
                 setOnDismissListener {
-                    onDismissListener.invoke(promotionalMessageInputText.getEditableValue()
+                    onDismissListener.invoke(promotionalMessageInputText?.getEditableValue()
                         .toString())
                 }
             }
@@ -81,7 +81,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
         setUpChipsText()
         setUpToolTip()
         setUpTextField()
-        saveBtn.setOnClickListener {
+        saveBtn?.setOnClickListener {
             dismiss()
         }
     }
@@ -96,15 +96,16 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                     val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
                     imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
                 }
-        tooltipBtn.addItem(tooltipView)
-        tooltipBtn.setOnClickListener {
+        tooltipBtn?.addItem(tooltipView)
+        tooltipBtn?.setOnClickListener {
             openTemplateTipsBottomSheet()
         }
     }
 
     private fun setUpTextField() {
-        promotionalMessageInputText.textFieldInput.setText(MethodChecker.fromHtml(promotionalMessage))
-        promotionalMessageInputText.textFieldInput.addTextChangedListener(object : TextWatcher {
+        promotionalMessageInputText?.textFieldInput?.setText(MethodChecker.fromHtml(
+            promotionalMessage))
+        promotionalMessageInputText?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -115,18 +116,18 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                 s?.let {
                     when {
                         it.isEmpty() -> {
-                            promotionalMessageInputText.setError(true)
-                            promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_empty_error))
+                            promotionalMessageInputText?.setError(true)
+                            promotionalMessageInputText?.setMessage(getString(R.string.topads_headline_promotional_message_empty_error))
                             setBtnEnabled(false)
                         }
                         it.length in promoMsgRange -> {
-                            promotionalMessageInputText.setError(true)
-                            promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_length_error))
+                            promotionalMessageInputText?.setError(true)
+                            promotionalMessageInputText?.setMessage(getString(R.string.topads_headline_promotional_message_length_error))
                             setBtnEnabled(false)
                         }
                         else -> {
-                            promotionalMessageInputText.setError(false)
-                            promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_success))
+                            promotionalMessageInputText?.setError(false)
+                            promotionalMessageInputText?.setMessage(getString(R.string.topads_headline_promotional_message_success))
                             setBtnEnabled(true)
                         }
                     }
@@ -137,24 +138,24 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setBtnEnabled(isEnabled: Boolean) {
-        saveBtn.isEnabled = isEnabled
+        saveBtn?.isEnabled = isEnabled
     }
 
     private fun setUpChipsText() {
-        chip2.text = getString(R.string.topads_headline_recommended_template_2, storeName)
-        chip3.text = getString(R.string.topads_headline_recommended_template_3, storeName)
-        chip4.text = getString(R.string.topads_headline_recommended_template_4, storeName)
-        chip1.setOnClickListener {
-            promotionalMessageInputText.textFieldInput.setText(chip1.text)
+        chip2?.text = getString(R.string.topads_headline_recommended_template_2, storeName)
+        chip3?.text = getString(R.string.topads_headline_recommended_template_3, storeName)
+        chip4?.text = getString(R.string.topads_headline_recommended_template_4, storeName)
+        chip1?.setOnClickListener {
+            promotionalMessageInputText?.textFieldInput?.setText(chip1?.text)
         }
-        chip2.setOnClickListener {
-            promotionalMessageInputText.textFieldInput.setText(chip2.text)
+        chip2?.setOnClickListener {
+            promotionalMessageInputText?.textFieldInput?.setText(chip2?.text)
         }
-        chip3.setOnClickListener {
-            promotionalMessageInputText.textFieldInput.setText(chip3.text)
+        chip3?.setOnClickListener {
+            promotionalMessageInputText?.textFieldInput?.setText(chip3?.text)
         }
-        chip4.setOnClickListener {
-            promotionalMessageInputText.textFieldInput.setText(chip4.text)
+        chip4?.setOnClickListener {
+            promotionalMessageInputText?.textFieldInput?.setText(chip4?.text)
         }
     }
 
