@@ -161,7 +161,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
-    private val interactiveResultView by viewComponentOrNull { InteractiveGameResultViewComponent(it, this) }
+    private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this) }
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
