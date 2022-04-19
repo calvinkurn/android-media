@@ -789,7 +789,6 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
                 val productOriginalPrice = visitable.getOriginalPrice()
 
                 if (visitable.parentId.contains(TEMPORARY_PARENT_ID_PREFIX)) visitable.parentId = "0"
-                totalQty += productQty
                 val price = when {
                     visitable.productWholeSalePrice > 0 && !visitable.isBundlingItem -> {
                         visitable.productWholeSalePrice
@@ -817,6 +816,7 @@ class MiniCartViewModel @Inject constructor(executorDispatchers: CoroutineDispat
         allProductList.forEach { visitable ->
             if(!visitable.isProductDisabled) {
                 totalWeight += visitable.productWeight * visitable.productQty
+                totalQty += visitable.productQty
             }
         }
 

@@ -25,14 +25,8 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         var totalQty = 0
         miniCartData.data.availableSection.availableGroup.forEach { availableGroup ->
             availableGroup.cartDetails.forEach { cartDetail ->
-                val bundleDetail = cartDetail.bundleDetail
-                val isBundlingItem = bundleDetail.isBundlingItem()
-                if(isBundlingItem) {
-                    totalQty += bundleDetail.bundleQty
-                } else {
-                    cartDetail.products.forEach { product ->
-                        totalQty += product.productQuantity
-                    }
+                cartDetail.products.forEach { product ->
+                    totalQty += product.productQuantity
                 }
             }
         }
