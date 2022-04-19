@@ -155,8 +155,8 @@ class VideoTabAdapter(
     }
     fun updateSlotTabViewHolderState() {
         slotPosition?.let {
-            if (itemList[slotPosition!!] is PlaySlotTabMenuUiModel)
-                notifyItemChanged(slotPosition!!)
+            if (itemList[it] is PlaySlotTabMenuUiModel)
+                notifyItemChanged(it)
         }
     }
 
