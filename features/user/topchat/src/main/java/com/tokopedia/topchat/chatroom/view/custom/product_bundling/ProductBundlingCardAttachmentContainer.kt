@@ -27,8 +27,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.listener.ProductBundlingListener
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.BUNDLE_TYPE_MULTIPLE
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.STATUS_ACTIVE
-import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel.Companion.STATUS_UPCOMING
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.util.ViewUtil
 import com.tokopedia.unifycomponents.ImageUnify
@@ -304,7 +302,9 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
 
     private fun bindCtaClick(element: ProductBundlingUiModel) {
         button?.let {
-            if (commonListener?.isSeller() == true) {
+            if (commonListener?.isSeller() == true
+                || element.productBundling.ctaBundling?.isButtonShown == false
+            ) {
                 it.hide()
             } else {
                 bindButton(it, element)
@@ -314,12 +314,11 @@ class ProductBundlingCardAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindButton(button: UnifyButton, element: ProductBundlingUiModel) {
-        button.text = element.productBundling.ctaButton?.ctaText
+        button.text = element.productBundling.ctaBundling?.ctaText
         button.buttonType = UnifyButton.Type.MAIN
-        when(element.productBundling.bundleStatus) {
-            STATUS_ACTIVE -> bindActiveButton(button, element)
-            STATUS_UPCOMING -> bindActiveButton(button, element)
-            else -> bindDisabledButton(button)
+        when(element.productBundling.ctaBundling?.isDisabled) {
+            false -> bindActiveButton(button, element)
+            true -> bindDisabledButton(button)
         }
     }
 

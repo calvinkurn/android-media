@@ -2927,6 +2927,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             element.productBundling.bundleItem?.first()?.productId?: "",
             element.productBundling.bundleId?: ""
         )
+        if (!element.productBundling.ctaBundling?.buttonAndroidLink.isNullOrEmpty()) {
+            context?.let {
+                val intent = RouteManager.getIntent(it,
+                    element.productBundling.ctaBundling?.buttonAndroidLink)
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onSeenProductBundling(element: ProductBundlingUiModel) {

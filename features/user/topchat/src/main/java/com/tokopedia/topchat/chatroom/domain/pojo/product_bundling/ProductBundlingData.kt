@@ -17,8 +17,8 @@ data class ProductBundlingData (
     var bundlePrice: String? = "",
     @SerializedName("total_discount")
     var totalDiscount: String? = "",
-    @SerializedName("cta_button")
-    var ctaButton: BundleButton? = BundleButton(),
+    @SerializedName("cta_bundling")
+    var ctaBundling: CtaBundling? = CtaBundling(),
     @SerializedName("bundle_item")
     var bundleItem: List<BundleItem>? = listOf()
 )
