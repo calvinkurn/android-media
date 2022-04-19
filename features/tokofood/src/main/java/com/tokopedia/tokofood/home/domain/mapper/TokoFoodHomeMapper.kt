@@ -28,6 +28,7 @@ import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeIconsUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeItemUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeLoadingStateUiModel
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodHomeUSPUiModel
+import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodIcon
 import com.tokopedia.tokofood.home.presentation.uimodel.TokoFoodUSPModel
 
 object TokoFoodHomeMapper {
@@ -103,7 +104,16 @@ object TokoFoodHomeMapper {
     }
 
     private fun mapDynamicIconModel(response: HomeLayoutResponse, state: TokoFoodHomeLayoutItemState): TokoFoodHomeItemUiModel {
-        val dynamicIconModel = TokoFoodHomeIconsUiModel("id", emptyList(), TokoFoodHomeLayoutState.LOADING)
+        val dynamicIconModel = TokoFoodHomeIconsUiModel("id", listOf(
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Terdekat"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Terlaris"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Promo"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Sehat"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Most Loved"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "24 Jam"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Bugdet"),
+            TokoFoodIcon("", "https://images.tokopedia.net/img/SnKlQx/2022/2/2/459e236c-b66a-484d-82dc-461ea8a18c63.png", "Sehat"),
+        ), TokoFoodHomeLayoutState.LOADING)
         return TokoFoodHomeItemUiModel(dynamicIconModel, state)
     }
 
