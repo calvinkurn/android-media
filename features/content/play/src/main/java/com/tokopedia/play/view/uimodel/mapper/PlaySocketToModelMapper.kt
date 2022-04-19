@@ -100,7 +100,7 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapQuizFromSocket(response: QuizResponse): InteractiveUiModel{
-        return interactiveMapper.mapQuiz(response)
+        return interactiveMapper.mapQuiz(response, response.waitingDuration)
     }
 
     /**

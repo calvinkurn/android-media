@@ -49,7 +49,7 @@ class PlayInteractiveMapper @Inject constructor() {
         )
     }
 
-    private fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
+    fun mapQuiz(data: QuizResponse, waitingDurationInMillis: Long): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = data.interactiveID,
             title = data.question,
