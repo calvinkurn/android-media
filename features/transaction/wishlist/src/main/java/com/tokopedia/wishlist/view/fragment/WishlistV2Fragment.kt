@@ -1145,6 +1145,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
+    override fun onTickerCTAShowBottomSheet() {
+        println("++ onTickerCTAShowBottomSheet")
+    }
+
+    override fun onTickerCTASortFromLatest() {
+        println("++ onTickerCTASortFromLatest")
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()

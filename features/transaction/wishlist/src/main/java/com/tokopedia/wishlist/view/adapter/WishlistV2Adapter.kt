@@ -24,6 +24,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TICKER
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
@@ -48,6 +49,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_RECOMMENDATION_CAROUSEL = 10
         const val LAYOUT_COUNT_MANAGE_ROW = 11
         const val LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN = 12
+        const val LAYOUT_TICKER = 13
     }
 
     interface ActionListener {
@@ -68,6 +70,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemImpression(recommendationItem: RecommendationItem, position: Int)
         fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int)
+        fun onTickerCTAShowBottomSheet()
+        fun onTickerCTASortFromLatest()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -123,6 +127,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN -> {
                 val binding = WishlistV2RecommendationTitleItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 WishlistV2RecommendationTitleViewHolder(binding, true)
+            }
+            LAYOUT_TICKER -> {
+                val binding = WishlistV2TickerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                WishlistV2TickerViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -197,9 +205,6 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     (holder as WishlistV2RecommendationTitleViewHolder).bind(element, isShowCheckbox)
                 }
                 TYPE_TOPADS -> {
-                    /*val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
-                    params.isFullSpan = true
-                    holder.itemView.layoutParams = params*/
                     (holder as WishlistV2TdnViewHolder).bind(element, holder.adapterPosition, isShowCheckbox)
                 }
                 TYPE_RECOMMENDATION_CAROUSEL -> {
@@ -213,6 +218,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
                     (holder as WishlistV2RecommendationTitleViewHolder).bind(element, isShowCheckbox)
+                }
+                TYPE_TICKER -> {
+                    val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
+                    params.isFullSpan = true
+                    holder.itemView.layoutParams = params
+                    (holder as WishlistV2TickerViewHolder).bind(element)
                 }
             }
         }
@@ -237,6 +248,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_TOPADS -> LAYOUT_TOPADS
             TYPE_RECOMMENDATION_CAROUSEL -> LAYOUT_RECOMMENDATION_CAROUSEL
             TYPE_RECOMMENDATION_TITLE_WITH_MARGIN -> LAYOUT_RECOMMENDATION_TITLE_WITH_MARGIN
+            TYPE_TICKER -> LAYOUT_TICKER
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

@@ -44,6 +44,14 @@ class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlR
                         url
                       }
                     }
+                    ticker {
+                        message
+                        type
+                        button {
+                            text
+                            action
+                        }
+                    }
                     sort_filters {
                       id
                       name

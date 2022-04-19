@@ -28,6 +28,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE_WITH_MARGIN
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TICKER
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment.Companion.ATC_WISHLIST
@@ -132,9 +133,13 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             listData = mapToEmptyState(wishlistV2Response, listData, isFilterActive)
 
         } else {
+            if (wishlistV2Response.ticker.message.isNotEmpty()) {
+                listData.add(WishlistV2TypeLayoutData(wishlistV2Response.ticker, TYPE_TICKER))
+            }
+
             // only for wishlist which has 1 page response
             if (wishlistV2Response.page == 1 && !wishlistV2Response.hasNextPage) {
-                listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+                mapToProductCardList(listData, wishlistV2Response.items, typeLayout)
 
                 when {
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
@@ -155,7 +160,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     }
                 }
             } else {
-                listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+                mapToProductCardList(listData, wishlistV2Response.items, typeLayout)
 
                 if (wishlistV2Response.page == 1) {
                     mapToTopads(recommPosition, listData)
@@ -222,8 +227,11 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return listData
     }
 
-    fun mapToProductCardList(items: List<WishlistV2Response.Data.WishlistV2.Item>, typeLayout: String?) : ArrayList<WishlistV2TypeLayoutData> {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
+    private fun mapToProductCardList(
+        listData: ArrayList<WishlistV2TypeLayoutData>,
+        items: List<WishlistV2Response.Data.WishlistV2.Item>,
+        typeLayout: String?
+    ) : ArrayList<WishlistV2TypeLayoutData> {
         items.forEach { item ->
             val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
 
@@ -260,9 +268,9 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     slashedPrice = item.originalPriceFmt,
                     freeOngkir = ProductCardModel.FreeOngkir(item.bebasOngkir.imageUrl.isNotEmpty(), item.bebasOngkir.imageUrl),
                     isOutOfStock = !item.available)
-            listItem.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
+            listData.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
         }
-        return listItem
+        return listData
     }
 
     suspend fun getRecommendationWishlistV2(page: Int, productIds: List<String>, pageName: String): WishlistV2RecommendationDataModel {

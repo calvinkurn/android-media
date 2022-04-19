@@ -46,7 +46,10 @@ data class WishlistV2Response(
 				val items: List<Item> = emptyList(),
 
 				@SerializedName("empty_state")
-				val emptyState: EmptyState = EmptyState()
+				val emptyState: EmptyState = EmptyState(),
+
+				@SerializedName("ticker")
+				val ticker: TickerState = TickerState()
 		) {
 			data class Item(
 
@@ -253,6 +256,27 @@ data class WishlistV2Response(
 							val url: String = ""
 					)
 				}
+			}
+
+			data class TickerState(
+
+				@SerializedName("message")
+				val message: String = "",
+
+				@SerializedName("type")
+				val type: String = "",
+
+				@SerializedName("button")
+				val button: ButtonTicker = ButtonTicker()
+			) {
+				data class ButtonTicker(
+
+					@SerializedName("action")
+					val action: String = "",
+
+					@SerializedName("text")
+					val text: String = ""
+				)
 			}
 
 			data class EmptyState(
