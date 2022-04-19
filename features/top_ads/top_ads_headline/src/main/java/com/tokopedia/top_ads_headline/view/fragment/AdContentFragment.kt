@@ -40,12 +40,12 @@ private const val CLICK_LANJUTKAN = "click - lanjutkan on isi konten iklan page"
 class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
-    private lateinit var contentSelectedText: com.tokopedia.unifyprinciples.Typography
-    private lateinit var productImagePreviewWidget: TopAdsProductImagePreviewWidget
-    private lateinit var productPickerErrorText: com.tokopedia.unifyprinciples.Typography
-    private lateinit var promotionalMessageInputText: com.tokopedia.unifycomponents.TextFieldUnify
-    private lateinit var topAdsBannerView: com.tokopedia.topads.sdk.widget.TopAdsBannerView
-    private lateinit var btnSubmit: com.tokopedia.unifycomponents.UnifyButton
+    private var contentSelectedText: com.tokopedia.unifyprinciples.Typography? = null
+    private var productImagePreviewWidget: TopAdsProductImagePreviewWidget? = null
+    private var productPickerErrorText: com.tokopedia.unifyprinciples.Typography? = null
+    private var promotionalMessageInputText: com.tokopedia.unifycomponents.TextFieldUnify? = null
+    private var topAdsBannerView: com.tokopedia.topads.sdk.widget.TopAdsBannerView? = null
+    private var btnSubmit: com.tokopedia.unifycomponents.UnifyButton? = null
 
     companion object {
         fun newInstance() = AdContentFragment()
@@ -123,25 +123,25 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         } else {
             MethodChecker.fromHtml(stepperModel?.slogan)
         }
-        promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
+        promotionalMessageInputText?.textFieldInput?.setText(promotionalMessage)
     }
 
     override fun populateView() {
         setUpSelectedText()
-        productImagePreviewWidget.setTopAdsImagePreviewClick(this)
+        productImagePreviewWidget?.setTopAdsImagePreviewClick(this)
         setPromotionalText()
-        promotionalMessageInputText.textFieldInput.isFocusable = false
-        promotionalMessageInputText.textFieldInput.setOnClickListener {
+        promotionalMessageInputText?.textFieldInput?.isFocusable = false
+        promotionalMessageInputText?.textFieldInput?.setOnClickListener {
             openPromotionalMessageBottomSheet()
         }
         if (stepperListener == null) {
-            btnSubmit.hide()
+            btnSubmit?.hide()
         } else {
             onStepperModelChange()
-            btnSubmit.setOnClickListener {
+            btnSubmit?.setOnClickListener {
                 onClickSubmit()
             }
-            btnSubmit.show()
+            btnSubmit?.show()
         }
 
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_KONTEN_IKLAN,
@@ -159,7 +159,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             userSession.userId)
         when {
             ifLessProductSelected() -> {
-                productPickerErrorText.show()
+                productPickerErrorText?.show()
                 view?.let { it1 ->
                     Toaster.toasterCustomBottomHeight =
                         resources.getDimensionPixelSize(R.dimen.dp_60)
@@ -182,7 +182,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                 return false
             }
             else -> {
-                stepperModel?.slogan = promotionalMessageInputText.textFieldInput.text.toString()
+                stepperModel?.slogan = promotionalMessageInputText?.textFieldInput?.text.toString()
                 stepperModel?.selectedProductIds = getAdItems()
                 stepperModel?.adOperations = getAdOperations()
                 if (stepperListener == null) {
@@ -216,7 +216,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         if (cpmModel != null) {
             stepperModel?.cpmModel = cpmModel
         }
-        topAdsBannerView.displayAdsWithProductShimmer(stepperModel?.cpmModel, true)
+        topAdsBannerView?.displayAdsWithProductShimmer(stepperModel?.cpmModel, true)
     }
 
     private fun openPromotionalMessageBottomSheet() {
@@ -227,17 +227,17 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     private fun onPromotionalBottomSheetDismiss(promotionalMessage: String) {
-        promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
+        promotionalMessageInputText?.textFieldInput?.setText(promotionalMessage)
         stepperModel?.let {
             it.slogan = promotionalMessage
             it.cpmModel.data[0].cpm.cpmShop.slogan = promotionalMessage
-            topAdsBannerView.displayAds(stepperModel?.cpmModel)
+            topAdsBannerView?.displayAds(stepperModel?.cpmModel)
         }
-        btnSubmit.isEnabled = promotionalMessage.length >= MIN_PROMOTIONAL_MSG_COUNT
+        btnSubmit?.isEnabled = promotionalMessage.length >= MIN_PROMOTIONAL_MSG_COUNT
     }
 
     private fun setUpSelectedText() {
-        contentSelectedText.text = getString(R.string.topads_headline_product_selected,
+        contentSelectedText?.text = getString(R.string.topads_headline_product_selected,
             stepperModel?.selectedTopAdsProducts?.size.toString())
     }
 
@@ -254,7 +254,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                 onProductsSelectionChange()
             }
             if (stepperModel?.selectedTopAdsProducts?.isNotEmpty() == true) {
-                productPickerErrorText.hide()
+                productPickerErrorText?.hide()
             }
         }
     }
@@ -267,7 +267,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         if (stepperModel?.selectedTopAdsProducts?.size ?: 0 >= MAX_PRODUCT_PREVIEW - 1) {
             showTopAdsBannerPreview()
         }
-        productImagePreviewWidget.setSelectedProductList(imageList)
+        productImagePreviewWidget?.setSelectedProductList(imageList)
         setUpSelectedText()
     }
 
