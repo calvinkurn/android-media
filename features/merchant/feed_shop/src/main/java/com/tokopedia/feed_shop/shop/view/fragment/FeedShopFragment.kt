@@ -221,6 +221,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onDestroy() {
         presenter.detachView()
+        shopFeedTabSharedViewModel.feedTabClearCache.removeObservers(this)
         super.onDestroy()
     }
 
