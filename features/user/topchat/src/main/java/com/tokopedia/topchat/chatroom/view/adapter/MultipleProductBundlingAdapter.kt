@@ -40,12 +40,18 @@ class MultipleProductBundlingAdapter(
         }
     }
 
-    override fun getItemCount(): Int = carousel?.listBundling?.size ?: 0
+    override fun getItemCount(): Int = carousel?.listBundling?.size ?: EMPTY_PRODUCT_BUNDLING
 
     override fun getItemViewType(position: Int): Int {
-        return when(carousel?.listBundling?.size?: 0) {
-            1 -> ProductBundlingCardViewHolder.LAYOUT_SINGLE
+        return when(carousel?.listBundling?.size?: EMPTY_PRODUCT_BUNDLING) {
+            EMPTY_PRODUCT_BUNDLING -> throw IllegalStateException("No such type")
+            MAX_SINGLE_SIZE -> ProductBundlingCardViewHolder.LAYOUT_SINGLE
             else -> ProductBundlingCardViewHolder.LAYOUT_CAROUSEL
         }
+    }
+
+    companion object {
+        private const val EMPTY_PRODUCT_BUNDLING = 0
+        private const val MAX_SINGLE_SIZE = 1
     }
 }
