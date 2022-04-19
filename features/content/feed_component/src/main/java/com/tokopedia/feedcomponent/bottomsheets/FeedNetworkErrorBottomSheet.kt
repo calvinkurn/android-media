@@ -42,9 +42,7 @@ class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
         showCloseIcon = true
         isDragable = false
         val shouldShowRetryBtn = arguments?.getBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, false) ?: false
-        if (shouldShowRetryBtn)
         globalError.errorAction.showWithCondition(shouldShowRetryBtn)
-
 
         globalError.errorAction.setOnClickListener {
             onRetry?.invoke()
