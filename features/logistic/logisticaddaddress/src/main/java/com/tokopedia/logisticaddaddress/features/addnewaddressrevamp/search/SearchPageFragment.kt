@@ -75,6 +75,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private var isFromPinpoint: Boolean = false
 
     private var isPermissionAccessed: Boolean = false
+    private var isUndefinedWithoutPermission: Boolean = false
 
     private var saveDataModel: SaveAddressDataModel? = null
     private var currentKotaKecamatan: String? = ""
@@ -168,19 +169,27 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         var isAllowed = false
         for (permission in permissions) {
-            if (!isPermissionAccessed) {
+//            if (!isPermissionAccessed) {
                 if (activity?.let { ActivityCompat.shouldShowRequestPermissionRationale(it, permission) } == true) {
                     //no-op
                 } else {
                     if (activity?.let { ActivityCompat.checkSelfPermission(it, permission) } == PackageManager.PERMISSION_GRANTED) {
                         isAllowed = true
-                        getLocation()
-                        isPermissionAccessed = true
                     } else {
+                        isAllowed = false
                         showBottomSheetLocUndefined(true)
                     }
                 }
+//            }
+        }
+
+        if (isAllowed) {
+            if (!isUndefinedWithoutPermission) {
+                getLocation()
+            } else {
+                isUndefinedWithoutPermission = false
             }
+            isPermissionAccessed = true
         }
 
         if (!isEdit) {
@@ -283,10 +292,12 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     hasRequestedLocation = true
                     getLocation()
                 } else {
+                    isUndefinedWithoutPermission = true
                     hasRequestedLocation = false
                     requestPermissionLocation()
                 }
             } else {
+                isUndefinedWithoutPermission = !allPermissionsGranted()
                 requestPermissionLocation()
             }
         }
