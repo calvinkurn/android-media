@@ -14,6 +14,8 @@ object ProductBundleApplinkMapper {
     private const val PRODUCT_ID_SEGMENT_SIZE_MIN = 2
     private const val APPLINK_ARRAY_DELIMITER = ","
 
+    const val MINICART = "minicart"
+
     fun getProductIdFromUri(uri: Uri, pathSegments: List<String>): Long {
         return if (pathSegments.size >= PRODUCT_ID_SEGMENT_SIZE_MIN) {
             uri.pathSegments?.getOrNull(PRODUCT_ID_SEGMENT_INDEX).toLongOrZero()

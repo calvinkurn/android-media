@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleApplinkMapper
 import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -26,10 +27,27 @@ class ProductBundleBottomSheet : BottomSheetUnify(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val entryPoint = EntrypointFragment()
+        val entryPoint = createEntryPoint()
         val ft = childFragmentManager.beginTransaction()
         ft.replace(R.id.parent_view, entryPoint)
         ft.commit()
+    }
+
+    private fun createEntryPoint(): EntrypointFragment {
+        return activity?.intent?.data?.let {
+            val source = ProductBundleApplinkMapper.getPageSourceFromUri(it)
+            val bundleId = ProductBundleApplinkMapper.getBundleIdFromUri(it)
+            val selectedProductIds = ProductBundleApplinkMapper.getSelectedProductIdsFromUri(it)
+            val parentProductId = ProductBundleApplinkMapper.getProductIdFromUri(it, it.pathSegments.orEmpty())
+
+            EntrypointFragment.newInstance(
+                bundleId = bundleId,
+                selectedProductsId = ArrayList(selectedProductIds),
+                source = source,
+                parentProductId = parentProductId
+            )
+
+        } ?: EntrypointFragment()
     }
 
     private fun initView(view: View) {
