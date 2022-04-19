@@ -399,14 +399,11 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                                 imei = tradeInHomePageVM.imei,
                                 isDiagnosed = logistic.isDiagnosed
                             )
-                            viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute?.imei?.firstOrNull()
-                                ?.let { imei ->
-                                    if (imei.isNotEmpty())
-                                        startLaku6Testing()
-                                    else {
-                                        openImeiBottomSheet()
-                                    }
-                                }
+                            if(viewModel.tradeInDetailLiveData.value?.getTradeInDetail?.deviceAttribute?.imei?.firstOrNull()?.isNotEmpty() == true)
+                                startLaku6Testing()
+                            else {
+                                openImeiBottomSheet()
+                            }
                         }
                     }
 

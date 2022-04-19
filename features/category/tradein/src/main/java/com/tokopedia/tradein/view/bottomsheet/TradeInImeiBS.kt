@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,10 +20,7 @@ import com.tokopedia.tradein.di.DaggerTradeInComponent
 import com.tokopedia.tradein.di.TradeInComponent
 import com.tokopedia.tradein.model.Laku6DeviceModel
 import com.tokopedia.tradein.viewmodel.TradeInImeiBSViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TextAreaUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.*
 import javax.inject.Inject
 
 class TradeInImeiBS() : BottomSheetUnify() {
@@ -83,6 +81,13 @@ class TradeInImeiBS() : BottomSheetUnify() {
                 }
             }
         })
+
+        viewModel.getErrorMessage().observe(viewLifecycleOwner, Observer {
+            etWrapper?.isError = true
+            etWrapper?.textAreaMessage = it.message ?: getString(R.string.wrong_imei_string)
+            etWrapper?.textAreaInput?.isEnabled = true
+        })
+
         viewModel.getProgBarVisibility().observe(viewLifecycleOwner, Observer {
             if(it){
                 view?.findViewById<View>(R.id.loader_parent)?.show()
