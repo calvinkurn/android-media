@@ -46,7 +46,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.autoCleared
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 import javax.inject.Inject
@@ -85,7 +85,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         get() = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION)
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
-    private var binding by autoCleared<FragmentSearchAddressBinding>()
+    private var binding by autoClearedNullable<FragmentSearchAddressBinding>()
 
     override fun getScreenName(): String = ""
 
@@ -93,9 +93,9 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
         getComponent(AddNewAddressRevampComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSearchAddressBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -192,16 +192,16 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun initView() {
         autoCompleteAdapter = AutoCompleteListAdapter(this)
-        binding.rvAddressList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.rvAddressList.adapter = autoCompleteAdapter
+        binding?.rvAddressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding?.rvAddressList?.adapter = autoCompleteAdapter
 
     }
 
     private fun showInitialLoadMessage() {
-        binding.searchPageInput.searchBarPlaceholder = getString(R.string.txt_hint_search)
-        binding.searchPageInput.searchBarTextField.setText("")
-        binding.tvMessageSearch.text = getString(R.string.txt_message_initial_load)
-        binding.tvMessageSearch.setOnClickListener {
+        binding?.searchPageInput?.searchBarPlaceholder = getString(R.string.txt_hint_search)
+        binding?.searchPageInput?.searchBarTextField?.setText("")
+        binding?.tvMessageSearch?.text = getString(R.string.txt_message_initial_load)
+        binding?.tvMessageSearch?.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickIsiAlamatManualSearch(userSession.userId)
             Intent(context, AddressFormActivity::class.java).apply {
                 putExtra(EXTRA_IS_POSITIVE_FLOW, false)
@@ -213,7 +213,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     }
 
     private fun setSearchView() {
-        binding.searchPageInput.searchBarTextField.run {
+        binding?.searchPageInput?.searchBarTextField?.run {
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     AddNewAddressRevampAnalytics.onClickFieldCariLokasi(userSession.userId)
@@ -233,11 +233,11 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    binding.tvMessageSearch.text = getString(R.string.txt_message_ana_negative)
-                    if (TextUtils.isEmpty(binding.searchPageInput.searchBarTextField.text.toString())) {
+                    binding?.tvMessageSearch?.text = getString(R.string.txt_message_ana_negative)
+                    if (TextUtils.isEmpty(binding?.searchPageInput?.searchBarTextField?.text.toString())) {
                         hideListLocation()
                     } else {
-                        loadAutoComplete(binding.searchPageInput.searchBarTextField.text.toString())
+                        loadAutoComplete(binding?.searchPageInput?.searchBarTextField?.text.toString())
                     }
                 }
 
@@ -248,7 +248,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun setViewListener() {
         fusedLocationClient = FusedLocationProviderClient(requireActivity())
-        binding.rlSearchCurrentLocation.setOnClickListener {
+        binding?.rlSearchCurrentLocation?.setOnClickListener {
             AddNewAddressRevampAnalytics.onClickGunakanLokasiSaatIniSearch(userSession.userId)
             if (AddNewAddressUtils.isGpsEnabled(context)) {
                 if (allPermissionsGranted()) {
@@ -372,8 +372,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 is Fail -> {
                     Timber.d(it.throwable)
                     hideListLocation()
-                    binding.layoutEmptyState.visibility = View.VISIBLE
-                    binding.ivEmptyState.setImageUrl(LOCATION_NOT_FOUND)
+                    binding?.layoutEmptyState?.visibility = View.VISIBLE
+                    binding?.ivEmptyState?.setImageUrl(LOCATION_NOT_FOUND)
                 }
             }
         })
@@ -389,14 +389,14 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun loadListLocation(suggestedPlace: Place) {
         if (suggestedPlace.data.isNotEmpty()) {
-            binding.rvAddressList.visibility = View.VISIBLE
-            binding.layoutEmptyState.visibility = View.GONE
+            binding?.rvAddressList?.visibility = View.VISIBLE
+            binding?.layoutEmptyState?.visibility = View.GONE
             autoCompleteAdapter.setData(suggestedPlace.data)
         }
     }
 
     private fun hideListLocation() {
-        binding.rvAddressList.visibility = View.GONE
+        binding?.rvAddressList?.visibility = View.GONE
     }
 
     private fun requestPermissionLocation() {
