@@ -42,8 +42,8 @@ class PdpFintechWidget @JvmOverloads constructor(
     private var categoryId: String? = null
     private var productID: String? = ""
     private var productPrice: String? = ""
-    private val NOT_BRANDER_CHIPS = "not branded chips"
-    private val BRANDER_CHIPS = "branded chips"
+    private val NOT_BRANDER_CHIPS = "NON BRANDED"
+    private val BRANDER_CHIPS = "BRANDED"
     private var logInStatus = false
 
 
@@ -133,6 +133,36 @@ class PdpFintechWidget @JvmOverloads constructor(
         recyclerView?.adapter = fintechWidgetAdapter
     }
 
+    private fun sendClickEvent(
+        fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass,
+        rediretionLink: String
+    ) {
+
+        if (fintechRedirectionWidgetDataClass.gatewayId == 0)
+            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                FintechWidgetAnalyticsEvent.PdpWidgetClick(
+                    this.productID,
+                    fintechRedirectionWidgetDataClass.linkingStatus,
+                    fintechRedirectionWidgetDataClass.userStatus, NOT_BRANDER_CHIPS,
+                    fintechRedirectionWidgetDataClass.installmentAmout,
+                    "${fintechRedirectionWidgetDataClass.tenure}",
+                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+                )
+            )
+        else
+            pdpWidgetAnalytics.get().sendAnalyticsEvent(
+                FintechWidgetAnalyticsEvent.PdpWidgetClick(
+                    this.productID,
+                    fintechRedirectionWidgetDataClass.linkingStatus,
+                    fintechRedirectionWidgetDataClass.userStatus, BRANDER_CHIPS,
+                    fintechRedirectionWidgetDataClass.installmentAmout,
+                    "${fintechRedirectionWidgetDataClass.tenure}",
+                    fintechRedirectionWidgetDataClass.gatewayPartnerName, rediretionLink
+                )
+            )
+    }
+
+
     private fun routeToPdp(fintechRedirectionWidgetDataClass: FintechRedirectionWidgetDataClass) {
         val rediretionLink = fintechRedirectionWidgetDataClass.redirectionUrl +
                 "?productID=${this.productID}" +
@@ -140,6 +170,8 @@ class PdpFintechWidget @JvmOverloads constructor(
                 "&gatewayCode=${fintechRedirectionWidgetDataClass.gatewayCode}" +
                 "&gatewayID=${fintechRedirectionWidgetDataClass.gatewayId}" +
                 "&productURL=${setProductUrl()}"
+
+        sendClickEvent(fintechRedirectionWidgetDataClass, rediretionLink)
         instanceProductUpdateListner?.fintechChipClicked(
             fintechRedirectionWidgetDataClass,
             rediretionLink
@@ -177,8 +209,7 @@ class PdpFintechWidget @JvmOverloads constructor(
             }
         } catch (e: Exception) {
             instanceProductUpdateListner?.removeWidget()
-        }
-        finally {
+        } finally {
             this.logInStatus = loggedIn
         }
     }
@@ -216,7 +247,7 @@ class PdpFintechWidget @JvmOverloads constructor(
 
     private fun sendPdpImpression(chipList: ArrayList<ChipsData>) {
         for (i in 0 until chipList.size) {
-            if (chipList[i].productIconLight.isNullOrBlank() && chipList[i].productIconDark.isNullOrBlank())
+            if (chipList[i].gatewayId == 0)
                 pdpWidgetAnalytics.get().sendAnalyticsEvent(
                     FintechWidgetAnalyticsEvent.PdpWidgetImpression(
                         productID ?: "",
