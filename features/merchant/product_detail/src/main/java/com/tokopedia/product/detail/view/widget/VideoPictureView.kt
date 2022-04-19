@@ -70,6 +70,7 @@ class VideoPictureView @JvmOverloads constructor(
         lastPosition = position
         binding.pdpViewPager.setCurrentItem(position, smoothScroll)
         binding.imageSliderPageControl.setCurrentIndicator(position)
+        updateMediaLabel(position)
     }
 
     private fun setupViewPager() {
@@ -103,6 +104,8 @@ class VideoPictureView @JvmOverloads constructor(
                         mListener?.onSwipePicture(type, if (isVideoType()) videoUrl else urlOriginal, position + 1, componentTrackDataModel)
                     }
                     binding.imageSliderPageControl.setCurrentIndicator(position)
+                    updateMediaLabel(position)
+
                     lastPosition = position
                 }
             }
@@ -110,18 +113,6 @@ class VideoPictureView @JvmOverloads constructor(
             override fun onPageScrollStateChanged(state: Int) {
                 if (state == RecyclerView.SCROLL_STATE_IDLE) {
                     mListener?.getProductVideoCoordinator()?.onScrollChangedListener(binding.pdpViewPager, lastPosition)
-                }
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                val mediaDescription =
-                    videoPictureAdapter?.currentList?.getOrNull(position)?.mediaDescription ?: ""
-                binding.pdpVideoPictureLabel.showIfWithBlock(mediaDescription.isNotEmpty()) {
-                    text = mediaDescription
                 }
             }
         })
@@ -153,6 +144,13 @@ class VideoPictureView @JvmOverloads constructor(
             mutableListOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
         } else
             media.toMutableList()
+    }
+
+    private fun updateMediaLabel(position: Int) {
+        val desc = videoPictureAdapter?.currentList?.getOrNull(position)?.mediaDescription ?: ""
+        binding.pdpVideoPictureLabel.showIfWithBlock(desc.isNotEmpty()) {
+            text = desc
+        }
     }
 
     companion object {
