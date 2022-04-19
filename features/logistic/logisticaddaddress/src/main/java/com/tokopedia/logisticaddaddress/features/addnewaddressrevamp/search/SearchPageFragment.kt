@@ -132,7 +132,6 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             if(requestCode == REQUEST_PINPOINT_PAGE) {
-                // todo ini kalo pilih suggestion / pake location saat ini -> ke pinpoint
                 val isFromAddressForm = data?.getBooleanExtra(EXTRA_FROM_ADDRESS_FORM, false)
                 var newAddress = data?.getParcelableExtra<SaveAddressDataModel>(LogisticConstant.EXTRA_ADDRESS_NEW)
                 if (newAddress == null) {
@@ -146,6 +145,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 newAddress?.let { finishActivity(it, false) }
             } else if (requestCode == GPS_REQUEST) {
                 bottomSheetLocUndefined?.dismiss()
+                binding.loaderCurrentLocation.visibility = View.VISIBLE
                 Handler().postDelayed ({getLocation()}, 1000)
             }
         } else {
@@ -446,6 +446,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             fusedLocationClient?.lastLocation?.addOnSuccessListener { data ->
                 isPermissionAccessed = false
                 if (data != null) {
+                    binding.loaderCurrentLocation.visibility = View.GONE
                     currentLat = data.latitude
                     currentLong = data.longitude
                     goToPinpointPage(null, data.latitude, data.longitude,
@@ -482,6 +483,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                     //send to maps
                     hasRequestedLocation = true
                 }
+                binding.loaderCurrentLocation.visibility = View.GONE
                 currentLat = locationResult.lastLocation.latitude
                 currentLong = locationResult.lastLocation.longitude
                 goToPinpointPage(null, locationResult.lastLocation.latitude, locationResult.lastLocation.longitude,
