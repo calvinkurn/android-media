@@ -236,6 +236,7 @@ class ProductDetailNavigation(
             val indexTab = items.indexOfFirst { firstVisibleItemPosition == it.position }
 
             pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
+                if (isSelected) return
                 enableTabSelectedListener = false
                 select()
                 enableTabSelectedListener = true
