@@ -1858,7 +1858,7 @@ class PlayViewModel @AssistedInject constructor(
 
                 _uiEvent.emit(
                     if(winnerStatus.userId.toString() == userId){
-                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText)
+                        ShowWinningDialogEvent(winnerStatus.imageUrl, winnerStatus.winnerTitle, winnerStatus.winnerText, _interactive.value.interactive)
                     }
                     else {
                         ShowCoachMarkWinnerEvent(winnerStatus.loserTitle, winnerStatus.loserText)
