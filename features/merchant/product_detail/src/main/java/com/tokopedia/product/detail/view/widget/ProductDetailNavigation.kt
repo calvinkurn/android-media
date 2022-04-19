@@ -257,10 +257,6 @@ class ProductDetailNavigation(
         override fun getVerticalSnapPreference(): Int {
             return SNAP_TO_START
         }
-
-        override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-            return 50f / displayMetrics.densityDpi
-        }
     }
 
     override val coroutineContext: CoroutineContext = Dispatchers.Main
