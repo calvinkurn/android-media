@@ -42,6 +42,14 @@ query get_chat_replies($msgId: Int!, $page: Int!) {
               html
             }
           }
+          parentReply {
+            attachmentID
+            senderID
+            name
+            replyID
+            mainText
+            replyTimeUnixNano
+          }
         }
       }
     }

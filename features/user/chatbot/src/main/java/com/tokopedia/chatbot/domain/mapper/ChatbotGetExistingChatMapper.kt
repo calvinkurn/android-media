@@ -1,14 +1,20 @@
 package com.tokopedia.chatbot.domain.mapper
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
@@ -20,6 +26,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.replybubble.ReplyBubbleUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
@@ -66,6 +73,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+    //        TYPE_REPLY_BUBBLE -> convertToReplyBubble(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -268,4 +276,12 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 .build()
     }
 
+//    private fun convertToReplyBubble(chatItemPojoByDateByTime: Reply): Visitable<*> {
+//
+//        val s = ReplyBubbleUiModel.Builder()
+//            .withResponseFromGQL(chatItemPojoByDateByTime)
+//            .withParentReply(chatItemPojoByDateByTime.parentReply)
+//            .build()
+//        return s
+//    }
 }

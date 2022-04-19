@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
@@ -28,7 +29,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     interface Listener {
         fun getUserName(senderId: String): String
         fun goToBubble(parentReply: ParentReply)
-        fun showReplyOption()
+        fun showReplyOption(messageUiModel: MessageUiModel)
     }
 
     fun setReplyListener(listener: Listener) {
@@ -108,7 +109,7 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
     fun bindReplyData(uiModel : BaseChatUiModel){
         val parentReply = uiModel.parentReply
         if (parentReply!=null && !uiModel.isDeleted()){
-            bindParentReplyData(parentReply,uiModel.replyId)
+            bindParentReplyData(parentReply,uiModel.replyId,"","")
             updateCloseButtonState(false)
             show()
         }else{
@@ -116,25 +117,25 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
         }
     }
 
-    private fun bindParentReplyData(parentReply: ParentReply, replyId: String) {
+    private fun bindParentReplyData(parentReply: ParentReply, replyId: String?, message : String, from : String) {
         referTo(parentReply)
-        setTitle(parentReply.senderId)
-        setReplyMsg(parentReply.mainText)
+        setTitle(from)
+        setReplyMsg(message)
         //TODO fix bindClick
-    //    bindClick(parentReply, childReplyId)
+    //    bindClick(parentReply, replyId)
     }
 
     private fun referTo(parentReply: ParentReply) {
         referredMsg = parentReply
     }
 
-    private fun setTitle(senderId: String?) {
-        senderId ?: return
-        val senderName = listener?.getUserName(senderId)
-        this.title?.text = MethodChecker.fromHtml(senderName)
+    private fun setTitle(sender: String?) {
+        sender ?: return
+        title?.text = sender
     }
 
-    private fun setReplyMsg(msg: String) {
+    private fun setReplyMsg(msg: String?) {
+        msg ?: return
         description?.text = MethodChecker.fromHtml(msg)
     }
 
@@ -163,6 +164,42 @@ class ReplyBubbleAreaMessage : ConstraintLayout {
             background = bgOpposite
         else
             background = bgSender
+    }
+
+    fun composeMsg(title : String?, msg : String?){
+        setTitle(title)
+        setReplyMsg(msg)
+    }
+
+    fun composeReplyData(
+        referredMsg: BaseChatUiModel,
+        text: CharSequence,
+        enableCloseButton: Boolean = false
+    ) {
+        //TODO change source value to match the original
+        val parentReply = ParentReply(
+            attachmentId = referredMsg.attachmentId,
+            attachmentType = referredMsg.attachmentType,
+            senderId = referredMsg.fromUid ?: "",
+            replyTime = referredMsg.replyTime ?: "",
+            mainText = text.toString(),
+            subText = "",
+            imageUrl = referredMsg.getReferredImageUrl(),
+            localId = referredMsg.localId,
+            source = "chat",
+            replyId = referredMsg.replyId
+        )
+        bindParentReplyData(parentReply, null,referredMsg.message,referredMsg.from)
+        updateCloseButtonState(enableCloseButton)
+        show()
+    }
+
+    fun getTitle() : String{
+        return title?.text.toString()
+    }
+
+    fun getMsg() : String{
+        return description?.text.toString()
     }
 
     companion object {

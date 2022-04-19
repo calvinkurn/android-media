@@ -7,6 +7,8 @@ object ChatbotConstant {
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
+    const val MODE_AGENT = "agent"
+    const val MODE_BOT = "bot"
 
     object CsatRating {
         const val RATING_ONE = 1

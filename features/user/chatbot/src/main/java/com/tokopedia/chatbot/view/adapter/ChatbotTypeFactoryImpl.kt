@@ -19,12 +19,11 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.replybubble.ReplyBubbleUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.*
-import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMessageViewHolder
-import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageViewHolder
-import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.RightChatMessageViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.*
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.user.session.UserSessionInterface

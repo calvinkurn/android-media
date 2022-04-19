@@ -82,6 +82,7 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.replybubble.ReplyBubbleUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.di.ChatbotModule
@@ -1002,14 +1003,29 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         chatbotAnalytics.eventClick(ACTION_REPLY_BUTTON_CLICKED)
         val sendMessage = replyEditText.text.toString()
         val startTime = SendableUiModel.generateStartTime()
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
-                onSendingMessage(sendMessage, startTime))
+
+//        if(replyBubbleContainer?.referredMsg!=null){
+//            var replyBubbleUiModel = replyBubbleContainer?.referredMsg?.let {
+//                generateChatBubbleReplyViewModel(
+//                    it
+//                )
+//            }
+//            replyBubbleContainer.hide()
+//            replyBubbleUiModel?.let { getViewState()?.onSendingMessage(it) }
+//        }
+
+//        getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
+//            .name, sendMessage, startTime,replyBubbleContainer?.referredMsg)
+        presenter.sendMessage(messageId, sendMessage, startTime, opponentId, replyBubbleContainer?.referredMsg,onSendingMessage(sendMessage, startTime,replyBubbleContainer?.referredMsg!!))
+        replyBubbleContainer?.referredMsg = null
+        clearChatText()
     }
 
-    private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
+
+    private fun onSendingMessage(sendMessage: String, startTime: String,parentReply: ParentReply?): () -> Unit {
         return {
             getViewState()?.onSendingMessage(messageId, getUserSession().userId, getUserSession()
-                    .name, sendMessage, startTime)
+                    .name, sendMessage, startTime, parentReply)
             getViewState()?.scrollToBottom()
         }
     }
@@ -1178,7 +1194,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val sendMessage = selectedMessage
         val startTime = SendableUiModel.generateStartTime()
         presenter.sendMessage(messageId, sendMessage, startTime, opponentId,
-                onSendingMessage(sendMessage, startTime))
+                onSendingMessage(sendMessage, startTime,null))
     }
 
     override fun csatOptionListSelected(selected: ChatOptionListViewModel, model: CsatOptionsViewModel?) {
@@ -1271,7 +1287,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                         if (isResoListNotEmpty) {
                             val startTime = SendableUiModel.generateStartTime()
                             presenter.sendMessage(messageId, replyText, startTime, opponentId,
-                                    onSendingMessage(replyText, startTime))
+                                    onSendingMessage(replyText, startTime,null))
                         }
                     },
                     onError = {
@@ -1307,7 +1323,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     }
 
-    override fun showReplyOption() {
+    override fun showReplyOption(messageUiModel: MessageUiModel) {
         Log.d("FATAL", "showReplyOption: On the ChatbotFragment here")
 
         if (replyBubbleEnabled) {
@@ -1320,7 +1336,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     rvPages.layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     val adapter =
-                        ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage))
+                        ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage,messageUiModel))
                     rvPages.adapter = adapter
 
                 }
@@ -1339,11 +1355,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify): (position: Int) -> Unit {
+    private fun onReplyBottomSheetItemClicked(bottomSheetPage: BottomSheetUnify,messageUiModel: MessageUiModel): (position: Int) -> Unit {
         return {
             when (it) {
                 REPLY -> {
-                    initReplyBubble()
+                    replyBubbleContainer?.composeReplyData(messageUiModel,"",true)
                     Log.d("FATAL", "onReplyBottomSheetItemClicked: HIDE")
                     bottomSheetPage.dismiss()
                 }

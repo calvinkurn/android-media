@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class LeftChatMessageViewHolder(
+open class LeftChatMessageViewHolder(
         itemView: View?,
         listener: ChatLinkHandlerListener,
         private val chatbotAdapterListener: ChatbotAdapterListener,
@@ -25,7 +25,7 @@ class LeftChatMessageViewHolder(
 
     private val senderAvatar = itemView?.findViewById<ImageUnify>(R.id.senderAvatar)
     private val senderName = itemView?.findViewById<Typography>(R.id.senderName)
-    private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
+ //   private val replyBubbleArea = itemView?.findViewById<ReplyBubbleAreaMessage>(R.id.reply)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayout,
@@ -50,13 +50,13 @@ class LeftChatMessageViewHolder(
         }
     }
 
-    private fun bindReplyBubbleListener() {
-        replyBubbleArea?.setReplyListener(replyBubbleListener)
-    }
-
-    private fun bindReplyReference(msg: MessageUiModel) {
-        replyBubbleArea?.bindReplyData(msg)
-    }
+//    private fun bindReplyBubbleListener() {
+//        replyBubbleArea?.setReplyListener(replyBubbleListener)
+//    }
+//
+//    private fun bindReplyReference(msg: MessageUiModel) {
+//        replyBubbleArea?.bindReplyData(msg)
+//    }
 
     private fun hideSenderInfo() {
         senderAvatar?.hide()
@@ -82,7 +82,7 @@ class LeftChatMessageViewHolder(
 
     private fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
-        replyBubbleArea?.updateBackground(true)
+  //      replyBubbleArea?.updateBackground(true)
     }
 
     private fun bindMessageInfo(message: MessageUiModel) {

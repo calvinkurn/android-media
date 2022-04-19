@@ -28,6 +28,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.replybubble.ReplyBubbleUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -102,6 +103,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun handleReplyBox(isEnable: Boolean) {
        showReplyBox(isEnable)
+    }
+
+    override fun onSendingMessage(it: MessageUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
     }
 
     override fun loadAvatar(avatarUrl: String) {

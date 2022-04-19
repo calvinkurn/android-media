@@ -1,9 +1,15 @@
 package com.tokopedia.chatbot.domain
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.tokopedia.applink.teleporter.Teleporter.gson
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_UPLOAD
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_REPLY_BUBBLE
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.data.replybubble.ParentReplyBubbleWs
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
 object ChatbotSendWebsocketParam {
 
@@ -64,6 +70,42 @@ object ChatbotSendWebsocketParam {
         data.addProperty("attachment_type", Integer.parseInt(TYPE_SECURE_IMAGE_UPLOAD))
         json.add("data", data)
         return json
+    }
+
+    fun generateParamSendMessageWithReplyBubble(
+        messageId: String,
+        message: String,
+        startTime: String,
+        referredMsg: ParentReply? = null
+    ): JsonObject {
+        val referredMsgObj = generateReferredMsg(referredMsg)
+        val json = JsonObject()
+        json.addProperty("code", EVENT_TOPCHAT_REPLY_MESSAGE)
+        val data = JsonObject()
+        data.addProperty("message", message)
+        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("attachment_type", Integer.parseInt(TYPE_REPLY_BUBBLE))
+        data.addProperty("start_time", startTime)
+        if (referredMsgObj != null)
+            data.add("parent_reply", referredMsgObj)
+        json.add("data", data)
+        return json
+    }
+
+    fun generateReferredMsg(referredMsg: ParentReply?): JsonElement? {
+        if (referredMsg == null)
+            return null
+
+        //TODO fix the main_text
+        val request = JsonObject(
+//            sender_id = referredMsg.senderId.toLongOrZero(),
+//            reply_time = referredMsg.replyTime.toLongOrZero(),
+//            main_text = "ABCD"
+        )
+        request.addProperty("sender_id",referredMsg.senderId.toLongOrZero())
+        request.addProperty("reply_time",referredMsg.replyTime.toLongOrZero())
+        request.addProperty("main_text","ABBCD")
+        return request
     }
 
 }

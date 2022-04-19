@@ -46,7 +46,7 @@ abstract class CustomChatbotMessageViewHolder(
         //TODO check for msg link
         customChatLayout?.message?.setOnClickListener {
             Log.d("FATAL", "bind: TESTE TEST")
-            replyBubbleListener.showReplyOption()
+            replyBubbleListener.showReplyOption(message)
         }
     }
 

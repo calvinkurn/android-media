@@ -20,6 +20,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
@@ -44,6 +45,8 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
+import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
+import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
@@ -75,6 +78,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_COD
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
@@ -142,6 +146,7 @@ class ChatbotPresenter @Inject constructor(
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SORCE_TYPE = "Apps"
+        const val SESSION_CHANGE = "31"
     }
 
     override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -233,8 +238,13 @@ class ChatbotPresenter @Inject constructor(
                         mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
 
-                    val agentMode: ReplyBubbleAttributes = Gson().fromJson(chatResponse.attachment?.attributes, ReplyBubbleAttributes::class.java)
-                    handleReplyBubble(agentMode)
+                    if(attachmentType == SESSION_CHANGE) {
+                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
+                            chatResponse.attachment?.attributes,
+                            ReplyBubbleAttributes::class.java
+                        )
+                        handleReplyBubble(agentMode)
+                    }
 
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
@@ -278,9 +288,9 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
         if (agentMode!=null){
-            if (agentMode.mode=="agent"){
+            if (agentMode.mode==MODE_AGENT){
                 view.replyBubbleStateHandler(true)
-            }else if (agentMode.mode=="bot"){
+            }else if (agentMode.mode==MODE_BOT){
                 view.replyBubbleStateHandler(false)
             }
         }
@@ -478,6 +488,20 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor)
     }
 
+    fun sendMessage(messageId: String, sendMessage: String,
+                    startTime: String, opponentId: String, parentReply: ParentReply?){
+        if(parentReply==null){
+            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
+                startTime, opponentId),
+                listInterceptor)
+        }else{
+            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                messageId,sendMessage,startTime, parentReply
+            ),listInterceptor)
+        }
+    }
+
+
     override fun generateInvoice(
         invoiceLinkPojo: InvoiceLinkPojo, senderId: String
     ) : AttachInvoiceSentUiModel {
@@ -620,6 +644,25 @@ class ChatbotPresenter @Inject constructor(
             USED_BY to getQueryParam(uri, USED_BY)
         )
 
+    }
+
+    override fun sendMessage(
+        messageId: String,
+        sendMessage: String,
+        startTime: String,
+        opponentId: String,
+        parentReply: ParentReply?,
+        onSendingMessage: () -> Unit
+    ) {
+        if(parentReply==null){
+            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessage(messageId, sendMessage,
+                startTime, opponentId),
+                listInterceptor)
+        }else{
+            RxWebSocket.send(ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                messageId,sendMessage,startTime, parentReply
+            ),listInterceptor)
+        }
     }
 
     private fun getQueryParam(uri: Uri, key: String): String {

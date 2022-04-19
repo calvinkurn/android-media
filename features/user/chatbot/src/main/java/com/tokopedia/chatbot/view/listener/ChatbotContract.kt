@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -149,5 +150,10 @@ interface ChatbotContract {
         fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
+
+        fun sendMessage(messageId: String, sendMessage: String,
+                        startTime: String, opponentId: String,
+                        parentReply: ParentReply?,
+                        onSendingMessage : () -> Unit)
     }
 }

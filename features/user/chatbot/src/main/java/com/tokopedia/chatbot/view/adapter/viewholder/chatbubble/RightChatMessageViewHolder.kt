@@ -8,6 +8,8 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 open class RightChatMessageViewHolder(
         itemView: View?,
@@ -34,15 +36,15 @@ open class RightChatMessageViewHolder(
         super.bind(message)
         ChatbotMessageViewHolderBinder.bindChatReadStatus(message, customChatLayout)
         bindBackground(message)
+        if (message.parentReply!=null){
+            replyBubbleArea?.composeMsg(message.parentReply?.name, message.parentReply?.mainText)
+            replyBubbleArea?.show()
+        }else{
+            replyBubbleArea?.hide()
+        }
     }
 
-    private fun bindReplyBubbleListener() {
-        replyBubbleArea?.setReplyListener(replyBubbleListener)
-    }
 
-    private fun bindReplyReference(msg: MessageUiModel) {
-        replyBubbleArea?.bindReplyData(msg)
-    }
 
     protected open fun bindBackground(message: MessageUiModel) {
         customChatLayout?.background = bg
