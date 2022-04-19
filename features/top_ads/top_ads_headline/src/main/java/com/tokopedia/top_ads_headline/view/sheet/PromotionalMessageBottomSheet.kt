@@ -15,10 +15,21 @@ import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.promotional_message_bottom_sheet_layout.*
 
 class PromotionalMessageBottomSheet : BottomSheetUnify() {
+
+    private lateinit var promotionalMessageInputText: TextFieldUnify
+    private lateinit var chip1: Typography
+    private lateinit var chip2: Typography
+    private lateinit var chip3: Typography
+    private lateinit var chip4: Typography
+    private lateinit var tooltipBtn: FloatingButtonUnify
+    private lateinit var saveBtn: UnifyButton
+
     private var storeName: String = ""
     private val promoMsgRange = 1..19
     private var promotionalMessage = ""
@@ -30,22 +41,39 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        fun newInstance(storeName: String, promotionalMessage: String, onDismissListener: (String) -> Unit): PromotionalMessageBottomSheet {
+        fun newInstance(
+            storeName: String, promotionalMessage: String, onDismissListener: (String) -> Unit,
+        ): PromotionalMessageBottomSheet {
             return PromotionalMessageBottomSheet().apply {
                 this.storeName = storeName
                 this.promotionalMessage = promotionalMessage
                 setOnDismissListener {
-                    onDismissListener.invoke(promotionalMessageInputText.getEditableValue().toString())
+                    onDismissListener.invoke(promotionalMessageInputText.getEditableValue()
+                        .toString())
                 }
             }
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val contentView = View.inflate(context, R.layout.promotional_message_bottom_sheet_layout, null)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val contentView =
+            View.inflate(context, R.layout.promotional_message_bottom_sheet_layout, null)
         setChild(contentView)
         setTitle(getString(R.string.topads_headline_promotional_message))
+        initView(contentView)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initView(view: View) {
+        promotionalMessageInputText = view.findViewById(R.id.promotionalMessageInputText)
+        chip1 = view.findViewById(R.id.chip1)
+        chip2 = view.findViewById(R.id.chip2)
+        chip3 = view.findViewById(R.id.chip3)
+        chip4 = view.findViewById(R.id.chip4)
+        tooltipBtn = view.findViewById(R.id.tooltipBtn)
+        saveBtn = view.findViewById(R.id.saveBtn)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,12 +87,15 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpToolTip() {
-        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
-            val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
-            tvToolTipText?.text = getString(R.string.topads_headline_promotional_tooltip_text)
-            val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
-            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
-        }
+        val tooltipView =
+            layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null)
+                .apply {
+                    val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+                    tvToolTipText?.text =
+                        getString(R.string.topads_headline_promotional_tooltip_text)
+                    val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
+                    imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+                }
         tooltipBtn.addItem(tooltipView)
         tooltipBtn.setOnClickListener {
             openTemplateTipsBottomSheet()
@@ -131,11 +162,16 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
         val tipsList: ArrayList<TipsUiModel> = ArrayList()
         tipsList.apply {
             add(TipsUiHeaderModel(R.string.topads_headline_promotional_message_header))
-            add(TipsUiRowModel(R.string.topads_headline_promotional_message_1, R.drawable.topads_create_ic_checklist))
-            add(TipsUiRowModel(R.string.topads_headline_promotional_message_2, R.drawable.topads_create_ic_checklist))
-            add(TipsUiRowModel(R.string.topads_headline_promotional_message_3, R.drawable.topads_create_ic_checklist))
-            add(TipsUiRowModel(R.string.topads_headline_promotional_message_4, R.drawable.topads_create_ic_checklist))
-            add(TipsUiRowModel(R.string.topads_headline_promotional_message_5, R.drawable.topads_create_ic_checklist))
+            add(TipsUiRowModel(R.string.topads_headline_promotional_message_1,
+                R.drawable.topads_create_ic_checklist))
+            add(TipsUiRowModel(R.string.topads_headline_promotional_message_2,
+                R.drawable.topads_create_ic_checklist))
+            add(TipsUiRowModel(R.string.topads_headline_promotional_message_3,
+                R.drawable.topads_create_ic_checklist))
+            add(TipsUiRowModel(R.string.topads_headline_promotional_message_4,
+                R.drawable.topads_create_ic_checklist))
+            add(TipsUiRowModel(R.string.topads_headline_promotional_message_5,
+                R.drawable.topads_create_ic_checklist))
         }
         val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList) }
         tipsListSheet?.show(childFragmentManager, "")
