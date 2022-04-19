@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_network_error.*
 
@@ -42,9 +43,7 @@ class FeedNetworkErrorBottomSheet : BottomSheetUnify() {
         isDragable = false
         val shouldShowRetryBtn = arguments?.getBoolean(EXTRA_SHOULD_SHOW_RETRY_BUTTON, false) ?: false
         if (shouldShowRetryBtn)
-        globalError.errorAction.visibility = View.VISIBLE
-        else
-        globalError.errorAction.visibility = View.GONE
+        globalError.errorAction.showWithCondition(shouldShowRetryBtn)
 
 
         globalError.errorAction.setOnClickListener {

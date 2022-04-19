@@ -61,7 +61,6 @@ abstract class BaseCreatePostFragmentNew : BaseDaggerFragment(),
     }
     companion object {
         private const val VIEW_MODEL = "view_model"
-        val EXTRA_SHOULD_SHOW_RETRY_BUTTON = "ShouldShowRetryButton"
     }
     abstract fun fetchContentForm()
 
