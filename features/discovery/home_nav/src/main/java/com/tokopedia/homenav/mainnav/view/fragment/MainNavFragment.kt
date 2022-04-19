@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
@@ -24,6 +25,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.base.diffutil.holder.HomeNavExpandableViewHolder
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
@@ -45,6 +47,7 @@ import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavigationDataModel
+import com.tokopedia.homenav.mainnav.view.datamodel.SeparatorDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
@@ -157,6 +160,24 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
     }
 
+    private fun addSeparator(menus: List<Visitable<*>>) : List<Visitable<*>> {
+        val listResult = mutableListOf<Visitable<*>>()
+//        if (menus.size>2)
+//            listResult.addAll(menus.subList(0,6))
+        listResult.addAll(menus)
+        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+//        listResult.add(SeparatorDataModel())
+        return listResult
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeCategoryListData()
@@ -180,6 +201,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 setProfileCacheFromAccountModel(ctx, accountHeaderModel)
             }
         })
+
+        viewModel.allCategoriesLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                val listCategory = addSeparator(it)
+                populateCategoryAdapterData(listCategory)
+            })
     }
 
     override fun onPause() {
@@ -340,6 +368,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         if (data.dataList.size > 1 && !mainNavDataFetched) {
             viewModel.getMainNavData(true)
             mainNavDataFetched = true
+        }
+    }
+
+    private fun populateCategoryAdapterData(menus: List<Visitable<*>>) {
+        val categoryViewHolder = recyclerView.findViewHolderForAdapterPosition(viewModel.findBuStartIndexPosition()?: 0)
+        (categoryViewHolder as? HomeNavExpandableViewHolder)?.let {
+            it.adapter?.submitList(menus)
         }
     }
 
