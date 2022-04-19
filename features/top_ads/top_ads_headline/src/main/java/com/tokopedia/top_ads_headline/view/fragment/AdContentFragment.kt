@@ -29,7 +29,6 @@ import com.tokopedia.topads.common.data.response.TopAdsProductModel
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.ad_content_fragment.*
 import javax.inject.Inject
 
 private const val SELECT_PRODUCT_REQUEST_CODE = 1001
@@ -38,7 +37,15 @@ private const val MIN_PROMOTIONAL_MSG_COUNT = 20
 private const val VIEW_KONTEN_IKLAN = "view - isi konten iklan"
 private const val CLICK_LANJUTKAN = "click - lanjutkan on isi konten iklan page"
 
-class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
+class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
+    TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
+
+    private lateinit var contentSelectedText: com.tokopedia.unifyprinciples.Typography
+    private lateinit var productImagePreviewWidget: TopAdsProductImagePreviewWidget
+    private lateinit var productPickerErrorText: com.tokopedia.unifyprinciples.Typography
+    private lateinit var promotionalMessageInputText: com.tokopedia.unifycomponents.TextFieldUnify
+    private lateinit var topAdsBannerView: com.tokopedia.topads.sdk.widget.TopAdsBannerView
+    private lateinit var btnSubmit: com.tokopedia.unifycomponents.UnifyButton
 
     companion object {
         fun newInstance() = AdContentFragment()
@@ -60,9 +67,17 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
         activity as? SaveButtonState
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.ad_content_fragment, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.ad_content_fragment, container, false)
+        contentSelectedText = view.findViewById(R.id.contentSelectedText)
+        productImagePreviewWidget = view.findViewById(R.id.productImagePreviewWidget)
+        productPickerErrorText = view.findViewById(R.id.productPickerErrorText)
+        promotionalMessageInputText = view.findViewById(R.id.promotionalMessageInputText)
+        topAdsBannerView = view.findViewById(R.id.topAdsBannerView)
+        btnSubmit = view.findViewById(R.id.btnSubmit)
+        return view
     }
 
     override fun getScreenName(): String {
@@ -70,8 +85,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     override fun initInjector() {
-        DaggerHeadlineAdsComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerHeadlineAdsComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,12 +99,14 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
 
     private fun setUpObservers() {
         activity?.let {
-            sharedEditHeadlineViewModel = ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
+            sharedEditHeadlineViewModel =
+                ViewModelProvider(it, viewModelFactory).get(SharedEditHeadlineViewModel::class.java)
         }
-        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()?.observe(viewLifecycleOwner, Observer {
-            stepperModel = it
-            onStepperModelChange()
-        })
+        sharedEditHeadlineViewModel?.getEditHeadlineAdLiveData()
+            ?.observe(viewLifecycleOwner, Observer {
+                stepperModel = it
+                onStepperModelChange()
+            })
     }
 
     private fun onStepperModelChange() {
@@ -126,26 +144,40 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
             btnSubmit.show()
         }
 
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_KONTEN_IKLAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEvent(VIEW_KONTEN_IKLAN,
+            "{${userSession.shopId}} - {${stepperModel?.groupName}}",
+            userSession.userId)
     }
 
     fun onClickSubmit(): Boolean {
-        if(!::userSession.isInitialized) return false
+        if (!::userSession.isInitialized) return false
         stepperModel?.selectedTopAdsProducts = getSelectedProducts()
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(CLICK_LANJUTKAN, "{${userSession.shopId}} - {${stepperModel?.groupName}}", getSelectedProducts(), userSession.userId)
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineCreatFormEcommerceCLickEvent(
+            CLICK_LANJUTKAN,
+            "{${userSession.shopId}} - {${stepperModel?.groupName}}",
+            getSelectedProducts(),
+            userSession.userId)
         when {
             ifLessProductSelected() -> {
                 productPickerErrorText.show()
                 view?.let { it1 ->
-                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
-                    Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.toasterCustomBottomHeight =
+                        resources.getDimensionPixelSize(R.dimen.dp_60)
+                    Toaster.build(it1,
+                        getString(R.string.topads_headline_submit_ad_detail_error),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR).show()
                 }
                 return false
             }
             stepperModel?.selectedTopAdsProducts?.size ?: 0 > MAX_PRODUCT_SELECTION -> {
                 view?.let {
-                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
-                    Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                    Toaster.toasterCustomBottomHeight =
+                        resources.getDimensionPixelSize(R.dimen.dp_60)
+                    Toaster.build(it,
+                        getString(R.string.topads_headline_over_product_selection),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR).show()
                 }
                 return false
             }
@@ -179,7 +211,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     private fun showTopAdsBannerPreview() {
         val cpmModel = stepperModel?.selectedTopAdsProducts?.take(MAX_PRODUCT_PREVIEW)?.let {
             cpmModelMapper.getCpmModelResponse(it, stepperModel?.slogan
-                    ?: "")
+                ?: "")
         }
         if (cpmModel != null) {
             stepperModel?.cpmModel = cpmModel
@@ -188,7 +220,8 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     private fun openPromotionalMessageBottomSheet() {
-        val promotionalMessageBottomSheet = PromotionalMessageBottomSheet.newInstance(userSession.shopName,
+        val promotionalMessageBottomSheet =
+            PromotionalMessageBottomSheet.newInstance(userSession.shopName,
                 stepperModel?.slogan ?: "", this::onPromotionalBottomSheetDismiss)
         promotionalMessageBottomSheet.show(childFragmentManager, "")
     }
@@ -204,13 +237,15 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
     }
 
     private fun setUpSelectedText() {
-        contentSelectedText.text = getString(R.string.topads_headline_product_selected, stepperModel?.selectedTopAdsProducts?.size.toString())
+        contentSelectedText.text = getString(R.string.topads_headline_product_selected,
+            stepperModel?.selectedTopAdsProducts?.size.toString())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SELECT_PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<Category, ArrayList<TopAdsProductModel>>
+            stepperModel?.selectedTopAdsProductMap =
+                data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<Category, ArrayList<TopAdsProductModel>>
                     ?: HashMap()
             stepperModel?.selectedTopAdsProducts = getSelectedProducts()
             if (data?.getBooleanExtra(IS_EDITED, false) == true) {
@@ -288,17 +323,17 @@ class AdContentFragment : BaseHeadlineStepperFragment<HeadlineAdStepperModel>(),
                     ACTION_CREATE
                 },
                 ad = TopAdsManageHeadlineInput.Operation.Group.AdOperation.Ad(
-                        id = "0",
-                        title = stepperModel?.groupName ?: "",
-                        slogan = stepperModel?.slogan
-                                ?: "",
-                        productIDs = ArrayList<String>().apply {
-                            stepperModel?.selectedProductIds?.forEach {
-                                add(it.toString())
-                            }
+                    id = "0",
+                    title = stepperModel?.groupName ?: "",
+                    slogan = stepperModel?.slogan
+                        ?: "",
+                    productIDs = ArrayList<String>().apply {
+                        stepperModel?.selectedProductIds?.forEach {
+                            add(it.toString())
                         }
+                    }
                 )
-        ))
+            ))
     }
 
     private fun getAdItems(): MutableList<String> {
