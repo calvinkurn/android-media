@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,15 +19,14 @@ import com.tokopedia.filter.common.helper.copyParcelable
 import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.common.helper.setMargin
+import com.tokopedia.filter.databinding.FilterGeneralDetailBottomSheetBinding
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
-import kotlin.LazyThreadSafetyMode.NONE
 
 class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAdapter.Callback {
 
@@ -46,18 +44,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
         filterGeneralDetailAdapter.setOptionList(it)
     }
 
-    private val buttonApplyFilterDetailContainer: LinearLayout? by lazy(NONE) {
-        filterGeneralDetailBottomSheetView?.findViewById(R.id.buttonApplyFilterDetailContainer)
-    }
-    private val searchBarFilterDetail: SearchBarUnify? by lazy(NONE) {
-        filterGeneralDetailBottomSheetView?.findViewById(R.id.searchBarFilterDetail)
-    }
-    private val recyclerViewFilterDetailBottomSheet: RecyclerView? by lazy(NONE) {
-        filterGeneralDetailBottomSheetView?.findViewById(R.id.recyclerViewFilterDetailBottomSheet)
-    }
-    private val buttonApplyFilterDetail: UnifyButton? by lazy(NONE) {
-        filterGeneralDetailBottomSheetView?.findViewById(R.id.buttonApplyFilterDetail)
-    }
+    private var binding: FilterGeneralDetailBottomSheetBinding? = null
 
     fun show(fragmentManager: FragmentManager, filter: Filter, callback: Callback) {
         this.filter = filter.copyParcelable()
@@ -84,7 +71,8 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
 
         initButtonReset()
 
-        filterGeneralDetailBottomSheetView = View.inflate(requireContext(), R.layout.filter_general_detail_bottom_sheet, null)
+        binding = FilterGeneralDetailBottomSheetBinding.inflate(layoutInflater, null, false)
+        filterGeneralDetailBottomSheetView = binding?.root
         setChild(filterGeneralDetailBottomSheetView)
 
         initSearchBar()
@@ -147,7 +135,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     private fun setButtonApplyFilterVisibility() {
         val isVisible = filter.getSelectedOptions() != originalSelectedOptionList
 
-        buttonApplyFilterDetailContainer?.showWithCondition(isVisible)
+        binding?.buttonApplyFilterDetailContainer?.showWithCondition(isVisible)
     }
 
     private fun setActionResetVisibility(isVisible: Boolean) {
@@ -168,7 +156,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initSearchBar() {
-        searchBarFilterDetail?.let {
+        binding?.searchBarFilterDetail?.let {
             it.shouldShowWithAction(filter?.search?.searchable == 1) {
                 initVisibleSearchBar(it)
             }
@@ -203,7 +191,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initRecyclerView() {
-        recyclerViewFilterDetailBottomSheet?.let {
+        binding?.recyclerViewFilterDetailBottomSheet?.let {
             filterGeneralDetailAdapter.setOptionList(filter?.options ?: listOf())
 
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
@@ -229,7 +217,7 @@ class FilterGeneralDetailBottomSheet: BottomSheetUnify(), FilterGeneralDetailAda
     }
 
     private fun initButtonApplyDetailFilter() {
-        buttonApplyFilterDetail?.setOnClickListener {
+        binding?.buttonApplyFilterDetail?.setOnClickListener {
             callback?.onApplyButtonClicked(filter?.options)
             dismiss()
         }
