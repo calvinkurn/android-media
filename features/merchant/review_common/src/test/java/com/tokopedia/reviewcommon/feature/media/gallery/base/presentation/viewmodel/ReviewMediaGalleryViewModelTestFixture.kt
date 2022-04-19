@@ -20,6 +20,10 @@ open class ReviewMediaGalleryViewModelTestFixture {
         "json/get_detailed_review_media_use_case_result_with_image_load_more.json"
     ).getSuccessData<ProductRevGetDetailedReviewMediaResponse>()
 
+    protected val getDetailedReviewMediaResultWithInvalidImageAndVideo = TestHelper.createSuccessResponse<ProductRevGetDetailedReviewMediaResponse>(
+        "json/get_detailed_review_media_use_case_result_with_invalid_image_and_video.json"
+    ).getSuccessData<ProductRevGetDetailedReviewMediaResponse>()
+
     @Before
     fun setUp() {
         viewModel = ReviewMediaGalleryViewModel(coroutineDispatchers)

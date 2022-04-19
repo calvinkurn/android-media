@@ -1,5 +1,7 @@
 package com.tokopedia.reviewcommon.feature.media.detail.presentation.uimodel
 
+import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
+
 data class ReviewDetailBasicInfoUiModel(
     val feedbackId: String = "",
     val rating: Int = 0,
@@ -12,4 +14,8 @@ data class ReviewDetailBasicInfoUiModel(
     val reviewerName: String = "",
     val reviewerStatsSummary: String = "",
     val expanded: Boolean = true
-)
+) {
+    fun getInvertedLikeStatus(): Int {
+        return if (isLiked) ToggleLikeReviewUseCase.NEUTRAL else ToggleLikeReviewUseCase.LIKED
+    }
+}

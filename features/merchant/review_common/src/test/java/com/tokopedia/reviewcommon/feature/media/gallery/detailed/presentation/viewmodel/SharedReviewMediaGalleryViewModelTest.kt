@@ -36,16 +36,114 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
                 get<Any>(any(), any(), any())
             } returns null
         }
+        var count = 0
+
+        coEvery {
+            getDetailedReviewMediaUseCase.executeOnBackground()
+        } answers {
+            count++
+            when (count) {
+                1 -> throw Exception()
+                else -> getDetailedReviewMediaResult1stPage
+            }
+        }
+
         viewModel.tryGetPreloadedData(cacheManager)
         viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 1))
+
+        Assert.assertNull(viewModel.detailedReviewMediaResult.first())
+
+        viewModel.retryGetReviewMedia()
+
+        Assert.assertEquals(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia, viewModel.detailedReviewMediaResult.first())
+    }
+
+    @Test
+    fun `retryGetReviewMedia should not call getReviewMedia when already loaded`() = runBlockingTest {
+        val cacheManager = mockk<CacheManager>(relaxed = true) {
+            every {
+                getString(any(), any())
+            } returns "123456"
+
+            every {
+                get<Any>(any(), any(), any())
+            } returns null
+        }
 
         coEvery {
             getDetailedReviewMediaUseCase.executeOnBackground()
         } returns getDetailedReviewMediaResult1stPage
 
+        viewModel.tryGetPreloadedData(cacheManager)
+        viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 1))
+
+        Assert.assertEquals(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia, viewModel.detailedReviewMediaResult.first())
+
         viewModel.retryGetReviewMedia()
 
         Assert.assertEquals(getDetailedReviewMediaResult1stPage.productrevGetReviewMedia, viewModel.detailedReviewMediaResult.first())
+    }
+
+    @Test
+    fun `retryGetReviewMedia should call getReviewMedia when not yet loaded`() = runBlockingTest {
+        val cacheManager = mockk<CacheManager>(relaxed = true) {
+            every {
+                getString(any(), any())
+            } returns "123456"
+
+            every {
+                get<Any>(any(), any(), any())
+            } returns null
+        }
+        var count = 0
+
+        coEvery {
+            getDetailedReviewMediaUseCase.executeOnBackground()
+        } answers {
+            count++
+            when (count) {
+                1 -> getDetailedReviewMediaResult1stPage
+                2 -> throw Exception()
+                else -> getDetailedReviewMediaResult2ndPage
+            }
+        }
+
+        viewModel.tryGetPreloadedData(cacheManager)
+        viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 1))
+
+        Assert.assertTrue(viewModel.detailedReviewMediaResult.first()!!.reviewMedia.size == 10)
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.first(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.first()
+        )
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.last(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.last()
+        )
+
+        viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 11))
+
+        Assert.assertTrue(viewModel.detailedReviewMediaResult.first()!!.reviewMedia.size == 10)
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.first(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.first()
+        )
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.last(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.last()
+        )
+
+        viewModel.retryGetReviewMedia()
+
+        Assert.assertTrue(viewModel.detailedReviewMediaResult.first()!!.reviewMedia.size == 20)
+        Assert.assertEquals(
+            getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.reviewMedia.first(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia[10]
+        )
+        Assert.assertEquals(
+            getDetailedReviewMediaResult2ndPage.productrevGetReviewMedia.reviewMedia.last(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.last()
+        )
     }
 
     @Test
@@ -153,7 +251,7 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
-    fun `requestToggleLike should send toggle like review request and update like count`() = runBlockingTest {
+    fun `requestToggleLike should send toggle like review request and update like count when success`() = runBlockingTest {
         val currentReviewDetailData = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.reviewDetail.first()
         val currentTotalLike = currentReviewDetailData.totalLike
         val feedbackID = currentReviewDetailData.feedbackId
@@ -175,6 +273,24 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
 
         val newTotalLike = viewModel.detailedReviewMediaResult.first()!!.detail.reviewDetail.first().totalLike
         Assert.assertEquals(currentTotalLike + 1, newTotalLike)
+    }
+
+    @Test
+    fun `requestToggleLike should send toggle like review request and not update like count when failed`() = runBlockingTest {
+        val currentReviewDetailData = getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.detail.reviewDetail.first()
+        val currentTotalLike = currentReviewDetailData.totalLike
+        val feedbackID = currentReviewDetailData.feedbackId
+        val invertedLikeStatus = if (currentReviewDetailData.isLiked) ToggleLikeReviewUseCase.NEUTRAL else ToggleLikeReviewUseCase.LIKED
+
+        coEvery {
+            toggleLikeReviewUseCase.executeOnBackground()
+        } throws Exception()
+
+        `tryGetPreloadedData should get all given data from cache manager`()
+        viewModel.requestToggleLike(feedbackID, invertedLikeStatus)
+
+        val newTotalLike = viewModel.detailedReviewMediaResult.first()!!.detail.reviewDetail.first().totalLike
+        Assert.assertEquals(currentTotalLike, newTotalLike)
     }
 
     @Test
@@ -279,6 +395,29 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
     }
 
     @Test
+    fun `getTotalMediaCount should return zero if _detailedReviewMediaResult is null`() {
+        Assert.assertEquals(0, viewModel.getTotalMediaCount())
+    }
+
+    @Test
+    fun `updateWifiConnectivityStatus should update wifi connectivity status`() = runBlockingTest {
+        viewModel.updateWifiConnectivityStatus(true)
+        Assert.assertTrue(viewModel.connectedToWifi.first())
+    }
+
+    @Test
+    fun `hasSuccessToggleLikeStatus should return false when there's no success toggle like request`() {
+        `requestToggleLike should send toggle like review request and not update like count when failed`()
+        Assert.assertFalse(viewModel.hasSuccessToggleLikeStatus())
+    }
+
+    @Test
+    fun `hasSuccessToggleLikeStatus should return true when there's success toggle like request`() {
+        `requestToggleLike should send toggle like review request and update like count when success`()
+        Assert.assertTrue(viewModel.hasSuccessToggleLikeStatus())
+    }
+
+    @Test
     fun `getReviewMedia should merge old result with new result when load more next`() = runBlockingTest {
         val mockCacheManager = mockk<CacheManager>(relaxed = true) {
             every {
@@ -363,6 +502,50 @@ class SharedReviewMediaGalleryViewModelTest: SharedReviewMediaGalleryViewModelTe
         Assert.assertEquals(
             getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.last(),
             viewModel.detailedReviewMediaResult.first()!!.reviewMedia[9]
+        )
+    }
+
+    @Test
+    fun `getReviewMedia should not be called when media is already loaded`() = runBlockingTest {
+        val mockCacheManager = mockk<CacheManager>(relaxed = true) {
+            every {
+                getString(SharedReviewMediaGalleryViewModel.EXTRAS_PRODUCT_ID, viewModel.getProductId())
+            } returns "123456"
+            every {
+                get<Any>(any(), any(), any())
+            } returns null
+        }
+        var counter = 0
+        coEvery {
+            getDetailedReviewMediaUseCase.executeOnBackground()
+        } answers {
+            if (counter.isZero()) {
+                counter++
+                getDetailedReviewMediaResult1stPage
+            } else {
+                getDetailedReviewMediaResult2ndPage
+            }
+        }
+        viewModel.tryGetPreloadedData(mockCacheManager)
+        viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 1))
+        Assert.assertTrue(viewModel.detailedReviewMediaResult.first()!!.reviewMedia.size == 10)
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.first(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.first()
+        )
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.last(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.last()
+        )
+        viewModel.updateCurrentMediaItem(LoadingStateItemUiModel(mediaNumber = 2))
+        Assert.assertTrue(viewModel.detailedReviewMediaResult.first()!!.reviewMedia.size == 10)
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.first(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.first()
+        )
+        Assert.assertEquals(
+            getDetailedReviewMediaResult1stPage.productrevGetReviewMedia.reviewMedia.last(),
+            viewModel.detailedReviewMediaResult.first()!!.reviewMedia.last()
         )
     }
 }

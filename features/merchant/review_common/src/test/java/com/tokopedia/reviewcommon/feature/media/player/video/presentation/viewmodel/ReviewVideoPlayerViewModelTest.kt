@@ -2,6 +2,7 @@ package com.tokopedia.reviewcommon.feature.media.player.video.presentation.viewm
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.reviewcommon.extension.getSavedState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoErrorUiState
 import com.tokopedia.reviewcommon.feature.media.player.video.presentation.uistate.ReviewVideoPlaybackUiState
@@ -12,6 +13,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
 import org.junit.Test
 
@@ -329,5 +331,20 @@ class ReviewVideoPlayerViewModelTest: ReviewVideoPlayerViewModelTestFixture() {
         viewModel.restoreUiState(savedState)
         Assert.assertEquals(latestVideoPlaybackUiState, viewModel.videoPlaybackUiState.first())
         Assert.assertEquals(latestVideoPlayerUiState, viewModel.videoPlayerUiState.first())
+    }
+
+    @Test
+    fun `updateWifiConnectivityStatus should make videoPlayerUiState autoplay`() = runBlockingTest {
+        viewModel.setVideoPlayerStateToRestoring()
+        var videoPlayerUiState = viewModel.videoPlayerUiState.first()
+        viewModel.updateWifiConnectivityStatus(true)
+        Assert.assertTrue(videoPlayerUiState is ReviewVideoPlayerUiState.RestoringState && !videoPlayerUiState.playWhenReady)
+        videoPlayerUiState = viewModel.videoPlayerUiState.first()
+        Assert.assertTrue(videoPlayerUiState is ReviewVideoPlayerUiState.RestoringState && videoPlayerUiState.playWhenReady)
+    }
+
+    @Test
+    fun `getImpressHolder should return ImpressHolder`() {
+        Assert.assertTrue(viewModel.getImpressHolder() is ImpressHolder)
     }
 }

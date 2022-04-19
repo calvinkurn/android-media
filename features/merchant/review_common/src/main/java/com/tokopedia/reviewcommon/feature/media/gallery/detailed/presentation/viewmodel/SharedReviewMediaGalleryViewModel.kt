@@ -163,8 +163,8 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
                 val mediaNumberToLoad = if (currentMediaItem is LoadingStateItemUiModel) {
                     currentMediaItem.mediaNumber
                 } else UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE
-                val mediaLoaded = _detailedReviewMediaResult.value?.reviewMedia?.any {
-                    it.mediaNumber == mediaNumberToLoad
+                val mediaLoaded = _detailedReviewMediaResult.value?.let { result ->
+                    result.reviewMedia.any { media -> media.mediaNumber == mediaNumberToLoad }
                 }.orFalse()
                 if (productID.isNotBlank() && mediaNumberToLoad.isMoreThanZero() && !mediaLoaded) {
                     productID to ceil(mediaNumberToLoad.toFloat() / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT.toFloat()).toInt()
@@ -279,15 +279,17 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     private fun getPrevPage(): Int {
-        val firstLoaded = _detailedReviewMediaResult.value?.reviewMedia?.firstOrNull()?.mediaNumber.orZero()
+        val firstLoaded = _detailedReviewMediaResult.value?.let {
+            it.reviewMedia.firstOrNull()?.mediaNumber
+        }.orZero()
         return (firstLoaded / GetDetailedReviewMediaUseCase.DEFAULT_LIMIT)
     }
 
     fun retryGetReviewMedia() {
         _currentMediaItem.value?.let { currentMediaItem ->
             val mediaNumberToLoad = currentMediaItem.mediaNumber
-            val mediaLoaded = _detailedReviewMediaResult.value?.reviewMedia?.any {
-                it.mediaNumber == mediaNumberToLoad
+            val mediaLoaded = _detailedReviewMediaResult.value?.let { result ->
+                result.reviewMedia.any { media -> media.mediaNumber == mediaNumberToLoad }
             }.orFalse()
             if (_productID.value.isNotBlank() && mediaNumberToLoad.isMoreThanZero() && !mediaLoaded) {
                 loadMoreDetailedReviewMediaJob = loadMoreDetailedReviewMediaJob?.takeIf {
@@ -413,7 +415,9 @@ class SharedReviewMediaGalleryViewModel @Inject constructor(
     }
 
     fun getTotalMediaCount(): Long {
-        return _detailedReviewMediaResult.value?.detail?.mediaCount.orZero()
+        return _detailedReviewMediaResult.value?.let {
+            it.detail.mediaCount
+        }.orZero()
     }
 
     fun updateWifiConnectivityStatus(connected: Boolean) {

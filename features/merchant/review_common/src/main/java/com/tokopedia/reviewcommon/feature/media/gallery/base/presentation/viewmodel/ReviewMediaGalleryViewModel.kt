@@ -215,16 +215,16 @@ class ReviewMediaGalleryViewModel @Inject constructor(
                 uiState.first { it.adapterUiState.mediaItemUiModels == initialMediaItems }
             }
             if (mediaNumberToLoad != SharedReviewMediaGalleryViewModel.UNINITIALIZED_MEDIA_NUMBER_TO_LOAD_VALUE) {
-                if (mediaItems.isEmpty()) {
+                if (response == null || mediaItems.isEmpty()) {
                     mediaItems.add(LoadingStateItemUiModel(mediaNumber = mediaNumberToLoad))
                 } else {
-                    if (response?.hasPrev == true) {
+                    if (response.hasPrev) {
                         mediaItems.add(
                             Int.ZERO,
                             LoadingStateItemUiModel(mediaNumber = mediaItems.first().mediaNumber - 1)
                         )
                     }
-                    if (response?.hasNext == true && !showSeeMore) {
+                    if (response.hasNext && !showSeeMore) {
                         mediaItems.add(LoadingStateItemUiModel(mediaNumber = mediaItems.last().mediaNumber + 1))
                     }
                 }

@@ -14,7 +14,6 @@ import com.tokopedia.reviewcommon.feature.media.detail.presentation.uistate.Revi
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.LoadingStateItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.base.presentation.uimodel.MediaItemUiModel
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.ProductrevGetReviewMedia
-import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.reviewcommon.feature.media.gallery.detailed.presentation.uistate.OrientationUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -236,12 +235,14 @@ class ReviewDetailViewModel @Inject constructor(
     }
 
     fun getFeedbackID(): String? {
-        return currentReviewDetail.value?.basicInfoUiModel?.feedbackId
+        return currentReviewDetail.value?.let {
+            it.basicInfoUiModel.feedbackId
+        }
     }
 
     fun getInvertedLikeStatus(): Int? {
-        return currentReviewDetail.value?.basicInfoUiModel?.isLiked?.let { isLiked ->
-            if (isLiked) ToggleLikeReviewUseCase.NEUTRAL else ToggleLikeReviewUseCase.LIKED
+        return currentReviewDetail.value?.let {
+            it.basicInfoUiModel.getInvertedLikeStatus()
         }
     }
 
